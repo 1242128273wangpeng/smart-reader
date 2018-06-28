@@ -30,7 +30,6 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
@@ -309,6 +308,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 }
             }
         }
+
     }
 
     /**
@@ -348,7 +348,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      * 处理被点击或更新通知的book
      */
     private fun handleBook(book: Book) {
-        BookRouter.navigateCoverOrRead(requireActivity(), book, NAVIGATE_TYPE_BOOKSHELF)
+        if (isAdded && !requireActivity().isFinishing) {
+            BookRouter.navigateCoverOrRead(requireActivity(), book, NAVIGATE_TYPE_BOOKSHELF)
+        }
+
     }
 
     /***
@@ -375,24 +378,25 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (activity != null && !requireActivity().isFinishing) {
+        if (isAdded && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
-                srl_refresh!!.onRefreshComplete()
+                srl_refresh.onRefreshComplete()
             }
             bookShelfPresenter.handleSuccessUpdate(result)
+            updateUI()
         }
     }
 
     override fun onException(exception: Exception) {
-        latestLoadDataTime = System.currentTimeMillis()
-
-        if (isAdded) {
-            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
-        }
-
-        if (srl_refresh != null) {
-            srl_refresh.onRefreshComplete()
+        if (isAdded && !requireActivity().isFinishing) {
+            latestLoadDataTime = System.currentTimeMillis()
+            if (isAdded) {
+                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+            }
+            if (srl_refresh != null) {
+                srl_refresh.onRefreshComplete()
+            }
         }
     }
 
@@ -404,20 +408,24 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onBookListQuery(books: List<Book>?) {
-        if (books != null && books.isNotEmpty()) {
-            srl_refresh?.setPullToRefreshEnabled(true)
-            ll_empty?.visibility = View.GONE
-        } else {
-            srl_refresh?.setPullToRefreshEnabled(false)
-            ll_empty?.visibility = View.VISIBLE
+        if (isAdded && !requireActivity().isFinishing) {
+            if (books != null && books.isNotEmpty()) {
+                srl_refresh?.setPullToRefreshEnabled(true)
+                ll_empty?.visibility = View.GONE
+            } else {
+                srl_refresh?.setPullToRefreshEnabled(false)
+                ll_empty?.visibility = View.VISIBLE
+            }
         }
     }
 
     override fun onBookDelete() {
-        updateUI()
-        bookShelfDeleteDialog.dismiss()
-        dismissRemoveMenu()
-        requireActivity().applicationContext.showToastMessage(R.string.bookshelf_delete_success)
+        if (isAdded && !requireActivity().isFinishing) {
+            updateUI()
+            bookShelfDeleteDialog.dismiss()
+            dismissRemoveMenu()
+            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_delete_success)
+        }
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
@@ -438,18 +446,22 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                                 "《$bookName${activity?.getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",
                                 2000L)
                     }
-                } else if (activity != null) {
-                    requireActivity().applicationContext.showToastMessage(
-                            "《$bookName${activity?.getString(R.string.bookshelf_books_update_more)}"
-                                    + "$updateCount${activity?.getString(R.string.bookshelf_books_update_chapters)}",
-                            2000L)
+                } else {
+                    if (isAdded) {
+                        requireActivity().applicationContext.showToastMessage(
+                                "《$bookName${activity?.getString(R.string.bookshelf_books_update_more)}"
+                                        + "$updateCount${activity?.getString(R.string.bookshelf_books_update_chapters)}",
+                                2000L)
+                    }
                 }
             }
         }
     }
 
     override fun onAdRefresh() {
-        bookShelfAdapter.notifyDataSetChanged()
+        if (isAdded && !requireActivity().isFinishing) {
+            bookShelfAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun showRemoveMenu() {

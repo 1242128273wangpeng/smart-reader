@@ -53,7 +53,12 @@ class RecommendBooksAdapter(context: Context,
             holder.img_book_status.setBackgroundResource(R.drawable.search_book_over)
         }
 
-        holder.txt_book_content.setText(book.description)
+        if(TextUtils.isEmpty(book.description)){
+            holder.txt_book_content.setText("暂无简介")
+        }else{
+            holder.txt_book_content.setText(book.description)
+        }
+
         if(book.score == 0.0){
             holder.txt_book_score.visibility = View.GONE
         }else{

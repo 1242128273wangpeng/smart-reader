@@ -388,6 +388,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         if (!sharedPreUtil.getBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_remove.visibility = View.VISIBLE
+            dl_home_content.lock()
             fl_guide_layout.setOnClickListener {
                 if (guideDownload) {
                     img_guide_download.visibility = View.VISIBLE
@@ -397,6 +398,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     sharedPreUtil.putBoolean(key, true)
                     img_guide_download.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
+                    dl_home_content.unlock()
                 }
             }
         }

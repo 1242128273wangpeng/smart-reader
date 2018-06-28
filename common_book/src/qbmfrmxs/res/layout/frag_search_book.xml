@@ -2,11 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
-    android:background="#ffffff"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -48,73 +45,79 @@
         android:layout_height="10dp"
         android:layout_below="@+id/rl_recommend_search"
         android:background="@drawable/top_shadow"/>
-
-    <com.intelligent.reader.view.MyScrollView
+    <RelativeLayout
+        android:id="@+id/ll_main"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/rl_recommend_search"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:id="@+id/ll_main"
+        android:orientation="vertical">
+        <com.intelligent.reader.view.MyScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            >
 
-            <TextView
-                android:id="@+id/txt_hot"
-                style="@style/style_text_normal_weak"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/search_hot"
-                />
-
-            <com.intelligent.reader.view.ScrollForGridView
-                android:id="@+id/sfgv_hot_word"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_hot"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="2"
-                android:scrollbars="none"/>
-
-
-            <View
-                android:id="@+id/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_below="@+id/sfgv_hot_word"
-                android:layout_marginTop="25dp"
-                android:background="#f0f0f0"
-                />
-
-            <TextView
-                android:id="@+id/txt_recommend_title"
-                style="@style/style_text_large_dark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/view_divider"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/search_hot_book_icon"
-                android:gravity="center"
-                android:text="@string/search_hot_book"
-                />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcv_recommend"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/txt_recommend_title"
-                android:layout_marginTop="10dp"
-                android:clipToPadding="false"
-                />
-        </RelativeLayout>
+                android:orientation="vertical">
 
-    </com.intelligent.reader.view.MyScrollView>
+                <TextView
+                    android:id="@+id/txt_hot"
+                    style="@style/style_text_normal_weak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/search_hot"
+                    />
+
+                <com.intelligent.reader.view.ScrollForGridView
+                    android:id="@+id/sfgv_hot_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_hot"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:listSelector="@android:color/transparent"
+                    android:numColumns="2"
+                    android:scrollbars="none"/>
+
+
+                <View
+                    android:id="@+id/view_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_below="@+id/sfgv_hot_word"
+                    android:layout_marginTop="25dp"
+                    android:background="#f0f0f0"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_recommend_title"
+                    style="@style/style_text_large_dark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view_divider"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/search_hot_book_icon"
+                    android:gravity="center"
+                    android:text="@string/search_hot_book"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcv_recommend"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/txt_recommend_title"
+                    android:layout_marginTop="10dp"
+                    android:clipToPadding="false"
+                    />
+            </RelativeLayout>
+
+
+        </com.intelligent.reader.view.MyScrollView>
+    </RelativeLayout>
 </RelativeLayout>

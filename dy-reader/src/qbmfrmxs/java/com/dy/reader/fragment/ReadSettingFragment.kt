@@ -154,7 +154,9 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog?.rsh_option_header?.isBookSubscribed()
         dialog.rl_read_setting_content.setOnClickListener {
-            dismiss()
+            if(dialog.isShowing){
+                dismiss()
+            }
         }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
@@ -173,9 +175,9 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventSetting) {
         if (event.type == EventSetting.Type.REFRESH_MODE) {
-            dialog.rsbd_option_bottom_detail.setMode()
+            dialog?.rsbd_option_bottom_detail?.setMode()
         } else if (event.type == EventSetting.Type.DISMISS_TOP_MENU) {
-            dialog.rsh_option_header.showMenu(false)
+            dialog?.rsh_option_header?.showMenu(false)
         }
     }
 

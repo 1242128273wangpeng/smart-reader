@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
+import com.dingyue.contract.CommonContract
 import com.dy.reader.animation.AutoAnimation
 import com.dy.reader.animation.OverlapAnimation
 import com.dy.reader.event.EventLoading
@@ -18,6 +19,7 @@ import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.reader.v2.CurlAnimation
 import com.intelligent.reader.reader.v2.IGLAnimation
 import com.intelligent.reader.reader.v2.TranslationAnimation
+import net.lzbook.kit.utils.AppLog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.microedition.khronos.egl.EGLConfig
@@ -188,7 +190,10 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
         queueEvent {
             println("ACTION_DOWN")
 
-            glAnimation?.down(event.x, event.y)
+            try {
+                glAnimation?.down(event.x, event.y)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -197,7 +202,10 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
         getTracker().addMovement(event)
 
         queueEvent {
-            glAnimation?.move(event.x, event.y)
+            try {
+                glAnimation?.move(event.x, event.y)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -210,7 +218,10 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
         queueEvent {
             println("ACTION_UP")
 
-            glAnimation?.up(event.x, event.y, xVelocity)
+            try {
+                glAnimation?.up(event.x, event.y, xVelocity)
+            } catch (e: Exception) {
+            }
         }
 
         velocityTracker?.recycle()
@@ -230,11 +241,17 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
     fun onKeyEvent(event: KeyEvent): Boolean {
         return when {
             event.keyCode == KeyEvent.KEYCODE_VOLUME_UP && this.visibility == View.VISIBLE -> {
-                onClickLife()
+                if(!CommonContract.isVolumDoubleClick(System.currentTimeMillis())){
+                    onClickLife()
+                }
+
                 true
             }
             event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN && this.visibility == View.VISIBLE -> {
-                onClickRight()
+                if(!CommonContract.isVolumDoubleClick(System.currentTimeMillis())){
+                    onClickRight()
+                }
+
                 true
             }
             else -> false

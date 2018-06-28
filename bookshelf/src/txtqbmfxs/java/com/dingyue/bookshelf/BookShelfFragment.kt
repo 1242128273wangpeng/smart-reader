@@ -54,7 +54,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(activity)
         popup.onDeleteClickListener = {
-            if(!bookShelfDeleteDialog.isShow()){
+            if (!bookShelfDeleteDialog.isShow()) {
                 bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
             }
         }
@@ -236,11 +236,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     fun updateUI() {
         if (activity != null && !activity.isFinishing) {
             val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
-            doAsync {
-                bookShelfPresenter.queryBookListAndAd(activity, isShowAD,true)
-                uiThread {
-                    bookShelfAdapter.notifyDataSetChanged()
-                }
+            bookShelfPresenter.queryBookListAndAd(activity, isShowAD, true)
+            uiThread {
+                bookShelfAdapter.notifyDataSetChanged()
             }
         }
     }
