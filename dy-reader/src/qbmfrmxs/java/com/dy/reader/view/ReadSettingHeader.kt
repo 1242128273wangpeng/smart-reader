@@ -154,19 +154,19 @@ class ReadSettingHeader : FrameLayout {
         this.visibility = View.GONE
     }
 
-    fun setBookDownLoadState(book_id: String?) {
-        if (book_id == ReaderStatus.book.book_id) {
-            bookDownloadState = CacheManager.getBookStatus(ReaderStatus.book)
-            when (bookDownloadState) {
-                DownloadState.NOSTART -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_icon)
-                DownloadState.DOWNLOADING -> ibtn_reader_download.setImageResource(R.drawable.reader_option_downloading_icon)
-                DownloadState.PAUSEED -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_pause_icon)
-                DownloadState.FINISH -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_finish_icon)
-                else -> {
-                }
-            }
-        }
-    }
+//    fun setBookDownLoadState(book_id: String?) {
+//        if (book_id == ReaderStatus.book.book_id) {
+//            bookDownloadState = CacheManager.getBookStatus(ReaderStatus.book)
+//            when (bookDownloadState) {
+//                DownloadState.NOSTART -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_icon)
+//                DownloadState.DOWNLOADING -> ibtn_reader_download.setImageResource(R.drawable.reader_option_downloading_icon)
+//                DownloadState.PAUSEED -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_pause_icon)
+//                DownloadState.FINISH -> ibtn_reader_download.setImageResource(R.drawable.reader_option_download_finish_icon)
+//                else -> {
+//                }
+//            }
+//        }
+//    }
 
     fun isBookSubscribed() {
         val subscribedBook = requestFactory.checkBookSubscribe(ReaderStatus.book.book_id)

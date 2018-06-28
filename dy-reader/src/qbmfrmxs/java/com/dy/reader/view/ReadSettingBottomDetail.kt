@@ -511,8 +511,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
             R.id.img_jump_back -> {
 
+                img_jump_back.isEnabled = false
                 anim?.cancel()
-                rl_jump_back.alpha = 0F
+                anim = rl_jump_back.animate()
+                anim?.alpha(0F)
+                anim?.duration = 2000
+                anim?.startDelay = 2000
+                anim?.start()
 
                 jumpChapter(lastProgress)
                 if (lastProgress < 1 || lastProgress < 1) {
@@ -810,12 +815,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         if (fromUser && seekBar.id == R.id.skbar_reader_chapter_change) {
             rl_jump_back.visibility = View.VISIBLE
             rl_jump_back.alpha = 1F
-            anim?.cancel()
-            anim = rl_jump_back.animate()
-            anim?.alpha(0F)
-            anim?.duration = 2000
-            anim?.startDelay = 2000
-            anim?.start()
+            rl_jump_back.isEnabled = true
 //            val resizeProgress = progress.times(ReaderStatus.chapterList.size).div(100)
             if (!ReaderStatus.chapterList.isEmpty()
                     && progress <= ReaderStatus.chapterList.size && progress >= 0) {
