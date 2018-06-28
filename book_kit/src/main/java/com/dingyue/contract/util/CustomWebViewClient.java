@@ -17,6 +17,7 @@ import android.webkit.WebView;
 
 import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient;
+import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.utils.AppLog;
@@ -134,6 +135,7 @@ public class CustomWebViewClient extends BridgeWebViewClient {
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         ERROR_CODE = errorCode;// FIXME 标识是否出错
         AppLog.e(TAG, "error[" + errorCode + " --- " + failingUrl + "] " + description);
+        Logger.e("WebView Error: " + errorCode + " : " + failingUrl + " : " + description);
         if (webview != null) {
             webview.clearView();
             webview.stopLoading();
