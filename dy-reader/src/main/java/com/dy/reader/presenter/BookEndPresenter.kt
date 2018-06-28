@@ -26,7 +26,11 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
 
     var sourceList = ArrayList<Source>()
 
-    private val recommendBooks = ArrayList<RecommendBean>()
+    private var recommendList = ArrayList<RecommendBean>()
+
+    private var recommendBookList = ArrayList<RecommendBean>()
+
+    private var recommendIndex = 0
 
     private val sharePreUtil: SharedPreUtil by lazy {
         SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
@@ -154,27 +158,8 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommend(book_id, bookIDs, object : RequestSubscriber<RecommendBooks>() {
             override fun requestResult(result: RecommendBooks?) {
                 if (result != null) {
-                    val scale = sharePreUtil.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
-
-                    if (scale.size >= 2) {
-                        if (!TextUtils.isEmpty(scale[0])) {
-                            val count = Integer.parseInt(scale[0])
-                            if (result.znList != null && result.znList!!.size > count) {
-                                for (index in 0 until count) {
-                                    recommendBooks.add(result.znList!![index])
-                                }
-                            }
-                        }
-                        if (!TextUtils.isEmpty(scale[1])) {
-                            val count = Integer.parseInt(scale[1])
-                            if (result.qgList != null && result.qgList!!.size > count) {
-                                for (index in 0 until count) {
-                                    recommendBooks.add(result.qgList!![index])
-                                }
-                            }
-                        }
-                    }
-                    contract.showRecommend(recommendBooks)
+                    handleRecommendBooks(result)
+                    changeRecommendBooks()
                 } else {
                     contract.showRecommend(null)
                 }
@@ -185,6 +170,115 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
                 contract.showRecommend(null)
             }
         })
+    }
+
+    fun handleRecommendBooks(recommendBooks: RecommendBooks?) {
+        if (recommendBooks != null) {
+
+            recommendBookList.clear()
+
+            val scale = sharePreUtil.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
+
+            var znScale = 0
+            var qgScale = 0
+            var feeScale = 0
+
+            if (scale.isNotEmpty()) {
+                znScale = Integer.parseInt(scale[0])
+            }
+
+            if (scale.size > 1) {
+                qgScale = Integer.parseInt(scale[1])
+            }
+
+            if (scale.size > 2) {
+                feeScale = Integer.parseInt(scale[2])
+            }
+
+            var znList: ArrayList<List<RecommendBean>>? = null
+            if (znScale > 0 && recommendBooks.znList != null && recommendBooks.znList!!.size > 0) {
+                znList = subRecommendList(recommendBooks.znList!!, znScale)
+            }
+
+            var qgList: ArrayList<List<RecommendBean>>? = null
+            if (qgScale > 0 && recommendBooks.qgList != null && recommendBooks.qgList!!.size > 0) {
+                qgList = subRecommendList(recommendBooks.qgList!!, qgScale)
+            }
+
+            var feeList: ArrayList<List<RecommendBean>>? = null
+            if (feeScale > 0 && recommendBooks.feeList != null && recommendBooks.feeList!!.size > 0) {
+                feeList = subRecommendList(recommendBooks.feeList!!, feeScale)
+            }
+
+            var count = 0
+
+            if (znList != null && znList.size > 0 && qgList != null && qgList.size > 0 && feeList != null && feeList.size > 0) {
+                count = Math.min(znList.size, Math.min(qgList.size, feeList.size))
+            } else if (qgList != null && qgList.size > 0 && feeList != null && feeList.size > 0) {
+                count = Math.min(qgList.size, feeList.size)
+            } else if (znList != null && znList.size > 0 && qgList != null && qgList.size > 0) {
+                count = Math.min(znList.size, qgList.size)
+            } else if (znList != null && znList.size > 0 && feeList != null && feeList.size > 0) {
+                count = Math.min(znList.size, feeList.size)
+            } else if (znList != null && znList.size > 0) {
+                count = znList.size
+            } else if (qgList != null && qgList.size > 0) {
+                count = qgList.size
+            } else if (feeList != null && feeList.size > 0) {
+                count = feeList.size
+            }
+
+            for (i in 0 until count) {
+                if (znList != null && i < znList.size) {
+                    recommendBookList.addAll(znList[i])
+                }
+
+                if (qgList != null && i < qgList.size) {
+                    recommendBookList.addAll(qgList[i])
+                }
+
+                if (feeList != null && i < feeList.size) {
+                    recommendBookList.addAll(feeList[i])
+                }
+            }
+            znList?.clear()
+            qgList?.clear()
+            feeList?.clear()
+        }
+    }
+
+    private fun subRecommendList(recommends: ArrayList<RecommendBean>, scale: Int): ArrayList<List<RecommendBean>> {
+
+        val result = ArrayList<List<RecommendBean>>()
+        var list = ArrayList<RecommendBean>()
+
+        for (i in 0 until recommends.size) {
+            list.add(recommends[i])
+
+            if (list.size == scale) {
+                result.add(list)
+                list = ArrayList()
+            }
+        }
+
+        return result
+    }
+
+    fun changeRecommendBooks() {
+
+        if (recommendIndex + 6 > recommendBookList.size) {
+            recommendIndex = 0
+        }
+
+        recommendList.clear()
+
+        for (i in recommendIndex until recommendIndex + 6) {
+            recommendList.add(recommendBookList[i])
+        }
+
+        recommendIndex += 6
+
+        contract.showRecommend(recommendList)
     }
 
     /***
