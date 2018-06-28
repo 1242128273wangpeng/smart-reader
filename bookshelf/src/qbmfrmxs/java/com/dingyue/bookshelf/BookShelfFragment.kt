@@ -284,9 +284,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         recl_content.adapter = bookShelfAdapter
-
-//        recl_content.topShadow = img_head_shadow
-
     }
 
     private fun createHeaderView(): View {
@@ -306,6 +303,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
+
+                if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
+                    bookShelfInterface?.checkShowShelfGuide()
+                }
             }
         }
     }
