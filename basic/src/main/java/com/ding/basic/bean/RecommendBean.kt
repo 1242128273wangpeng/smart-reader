@@ -9,9 +9,9 @@ import java.io.Serializable
 class RecommendBean : Serializable {
 
     //book_source_id
-    var id: String? = null
+    var id: String = ""
 
-    var bookId: String? = null
+    var bookId: String = ""
 
     var bookName: String? = null
 
@@ -27,7 +27,7 @@ class RecommendBean : Serializable {
 
     var host: String? = null
 
-    var bookChapterId: String? = null
+    var bookChapterId: String = ""
 
     var lastChapterId: String? = null
 
@@ -58,7 +58,7 @@ class RecommendBean : Serializable {
     var readerCountDescp: String? = null
 
     //书籍评分
-    var score: Double = 0.0
+    var score: Float = 0.0f
 
     //一级分类
     var genre: String? = null

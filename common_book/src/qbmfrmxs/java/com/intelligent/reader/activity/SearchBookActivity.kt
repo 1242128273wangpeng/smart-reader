@@ -123,7 +123,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         search_result_content?.registerHandler("startCoverActivity", StartCoverHandler(this@SearchBookActivity))
 
-        search_result_content?.registerHandler("startCoverActivity", StartCoverHandler(this@SearchBookActivity))
+        search_result_content?.registerHandler("startSearchActivity", StartSearchHandler(this@SearchBookActivity))
 
         search_result_content?.send("Hello", { data ->
             Logger.e("来自JS的消息: " + data.toString())
