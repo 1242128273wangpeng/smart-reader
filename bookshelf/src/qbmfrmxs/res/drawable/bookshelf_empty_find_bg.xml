@@ -4,11 +4,11 @@
        android:useLevel="false">
 
     <solid
-        android:color="@color/color_white"/>
+        android:color="#FFFFFF"/>
 
     <stroke
         android:width="0.5dp"
-        android:color="@color/theme_primary"/>
+        android:color="#42BE54"/>
 
     <corners
         android:radius="4dp"/>

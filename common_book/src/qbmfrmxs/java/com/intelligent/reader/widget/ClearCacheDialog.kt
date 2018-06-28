@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.Gravity
 import android.view.View
 import com.intelligent.reader.R
-import kotlinx.android.synthetic.qbmfrmxs.dialog_common.*
+import kotlinx.android.synthetic.qbmfrmxs.dialog_clear_cache.*
 import net.lzbook.kit.book.view.MyDialog
 
 
@@ -16,7 +16,7 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class ClearCacheDialog(val activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_common, Gravity.CENTER)
+    private val dialog = MyDialog(activity, R.layout.dialog_clear_cache, Gravity.CENTER)
 
     private var confirmListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
@@ -65,5 +65,4 @@ class ClearCacheDialog(val activity: Activity) {
     fun dismiss() {
         dialog.dismiss()
     }
-
 }

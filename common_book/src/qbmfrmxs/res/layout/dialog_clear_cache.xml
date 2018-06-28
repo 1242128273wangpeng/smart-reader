@@ -6,78 +6,70 @@
     android:layout_height="wrap_content"
     android:gravity="center">
 
-    <!-- =================== 公用对话框 =================== -->
-    <!--书架页删除书籍-->
-    <!---->
     <RelativeLayout
-        android:layout_width="@dimen/dimen_dialog_width"
-        android:layout_height="@dimen/dimen_dialog_height"
-        android:background="@drawable/background_body_dialog">
+        android:layout_width="300dp"
+        android:layout_height="195dp"
+        android:background="@drawable/dialog_clear_cache_bg">
 
         <TextView
             android:id="@+id/txt_dialog_title"
-            style="@style/style_text_large_plain"
+            style="@style/style_text_huge_dark"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_height_20"
-            android:gravity="center_horizontal"
+            android:layout_height="63dp"
+            android:gravity="center"
+            android:textStyle="bold"
             android:text="@string/prompt"/>
 
         <LinearLayout
             android:id="@+id/ll_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_50"
+            android:layout_height="56dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_cancel"
-                style="@style/Style_Dialog_Button"
+                style="@style/style_text_great_plain"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:minWidth="24dp"
                 android:text="@string/cancel"/>
 
             <View
-                style="@style/Style_Setting_Line_View"
-                android:layout_width="@dimen/dimen_line"
-                android:layout_marginTop="@dimen/dimen_margin_16"
-                android:layout_marginBottom="@dimen/dimen_margin_16"
-                android:layout_height="match_parent"/>
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="#F1F1F1"/>
 
             <Button
                 android:id="@+id/btn_confirm"
-                style="@style/Style_Dialog_Button"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:textSize="15sp"
                 android:text="@string/confirm"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="#42BE54"/>
         </LinearLayout>
 
         <TextView
             android:id="@+id/txt_dialog_information"
-            style="@style/style_text_normal_dark"
+            style="@style/style_text_great_dark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_btn"
-            android:layout_below="@+id/txt_dialog_title"
+            android:layout_below="@id/txt_dialog_title"
             android:gravity="center"
             android:lineSpacingExtra="6dp"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
             android:text="@string/delete_book_dialog_desc"/>
-
-        <CheckBox
-            android:id="@+id/ckb_delete_cache"
-            style="@style/style_text_small_plain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_dialog_information"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
-            android:button="@drawable/dialog_checkbox_selector"
-            android:checked="false"
-            android:paddingLeft="8dp"
-            android:text="@string/bookshelf_delete_dialog_check_hint"
-            android:visibility="gone"/>
 
         <ProgressBar
             android:id="@+id/pgbar_loading"
@@ -92,16 +84,17 @@
 
         <View
             android:id="@+id/view_divider"
-            style="@style/Style_Setting_Line_View"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#F1F1F1"
             android:layout_above="@id/ll_btn"/>
-
 
     </RelativeLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
         android:id="@+id/nightShadowView"
-        android:layout_width="@dimen/dimen_dialog_width"
-        android:layout_height="@dimen/dimen_dialog_height"
+        android:layout_width="300dp"
+        android:layout_height="195dp"
         android:visibility="gone"/>
 
 </RelativeLayout>

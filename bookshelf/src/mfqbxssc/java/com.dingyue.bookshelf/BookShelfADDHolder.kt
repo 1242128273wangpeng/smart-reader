@@ -1,7 +1,9 @@
 package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.main.item_bookshelf_add.view.*
 
@@ -11,18 +13,10 @@ import kotlinx.android.synthetic.main.item_bookshelf_add.view.*
  * Mail crazylei951002@gmail.com
  * Date 2018/5/10 21:07
  */
-class BookShelfADDHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_add, parent, false)) {
 
     fun bind(book: Book?, remove: Boolean, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
 
-        if (remove) {
-            itemView.rl_content.visibility = View.INVISIBLE
-        } else {
-            itemView.rl_content.visibility = View.VISIBLE
-        }
-
-        itemView.rl_content.setOnClickListener {
-            bookshelfItemListener.clickedBookShelfItem(book, adapterPosition)
-        }
     }
 }

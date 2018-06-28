@@ -543,7 +543,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     inner class HomeBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
+            if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }

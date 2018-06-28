@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:layout_width="301dp"
@@ -16,15 +19,16 @@
 
             <TextView
                 android:id="@+id/txt_delete_title"
-                style="@style/style_text_large_plain"
+                style="@style/style_text_huge_dark"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
-                android:text="@string/prompt"/>
+                android:text="@string/prompt"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/txt_delete_prompt"
-                style="@style/style_text_normal_dark"
+                style="@style/style_text_great_dark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_delete_title"
@@ -35,7 +39,7 @@
 
             <CheckBox
                 android:id="@+id/ckb_delete_cache"
-                style="@style/style_text_small_plain"
+                style="@style/style_text_normal_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_delete_prompt"
@@ -59,7 +63,7 @@
 
                 <Button
                     android:id="@+id/btn_delete_cancel"
-                    style="@style/style_text_normal_plain"
+                    style="@style/style_text_great_plain"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -72,9 +76,9 @@
                 <View
                     android:layout_width="0.5dp"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/dimen_margin_16"
-                    android:layout_marginTop="@dimen/dimen_margin_16"
-                    android:background="@color/color_white_f1f1f1"/>
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#F1F1F1"/>
 
                 <Button
                     android:id="@+id/btn_delete_confirm"
@@ -86,7 +90,7 @@
                     android:minWidth="24dp"
                     android:singleLine="true"
                     android:text="@string/confirm"
-                    android:textColor="@color/theme_primary"
+                    android:textColor="#42BE54"
                     android:textSize="14sp"/>
             </LinearLayout>
 
@@ -95,16 +99,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_above="@id/ll_delete_option"
-                android:background="@color/color_white_f1f1f1"/>
+                android:background="#F1F1F1"/>
         </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/ll_loading_content"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:layout_centerInParent="true"
             android:background="@drawable/bookshelf_delete_dialog_bg"
-            android:gravity="center"
             android:orientation="horizontal"
-            >
+            android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/pgbar_delete_loading"
@@ -113,8 +118,7 @@
                 android:indeterminateBehavior="repeat"
                 android:indeterminateDrawable="@drawable/bookshelf_delete_loading_bg"
                 android:indeterminateDuration="1500"
-                android:indeterminateOnly="true"
-               />
+                android:indeterminateOnly="true"/>
 
             <TextView
                 android:layout_width="wrap_content"

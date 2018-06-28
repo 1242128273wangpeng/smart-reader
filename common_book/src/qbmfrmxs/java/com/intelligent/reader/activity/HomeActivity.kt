@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -18,7 +17,6 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
@@ -530,67 +528,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         handler.sendMessageDelayed(message, 2000)
     }
 
-//    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-//        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
-//        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-//            try {
-//                val data = HashMap<String, String>()
-//                data["keyword"] = keyWord
-//                data["type"] = "0"//0 代表从分类过来
-//                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-//
-//                val intent = Intent()
-//                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
-//                intent.putExtra("word", keyWord)
-//                intent.putExtra("search_type", search_type)
-//                intent.putExtra("filter_type", filter_type)
-//                intent.putExtra("filter_word", filter_word)
-//                intent.putExtra("sort_type", sort_type)
-//                intent.putExtra("from_class", "fromClass")//是否从分类来
-//                startActivity(intent)
-//                AppLog.e("kkk", "$search_type===")
-//
-//            } catch (e: Exception) {
-//                AppLog.e(TAG, "Search failed")
-//                e.printStackTrace()
-//            }
-//        }
-//        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-//                return@onAnotherWebClick
-//            }
-//            AppLog.e(TAG, "doAnotherWeb")
-//            try {
-//                val intent = Intent()
-//                intent.setClass(this@HomeActivity, FindBookDetail::class.java)
-//                intent.putExtra("url", url)
-//                intent.putExtra("title", name)
-//                startActivity(intent)
-//                AppLog.e(TAG, "EnterAnotherWeb")
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        })
-//
-//        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
-//
-//        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-//                return@onEnterCover
-//            }
-//
-//            if (!isFinishing) {
-//                val intent = Intent()
-//                intent.putExtra("book_id", book_id)
-//                intent.putExtra("book_source_id", book_source_id)
-//                intent.setClass(applicationContext, CoverPageActivity::class.java)
-//                startActivity(intent)
-//            }
-//        })
-//
-//        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-//    }
-
     override fun supportSlideBack(): Boolean {
         return false
     }
@@ -651,7 +588,11 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      * **/
     inner class HomeBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
+            if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }

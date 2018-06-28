@@ -1,8 +1,6 @@
 package com.dingyue.bookshelf
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -11,11 +9,9 @@ import com.dingyue.contract.HolderType.Type_AD
 import com.dingyue.contract.HolderType.Type_Add
 import com.dingyue.contract.HolderType.Type_Book
 import com.dingyue.contract.HolderType.Type_Header_AD
-import net.lzbook.kit.utils.AppUtils
 import java.util.*
 
-class BookShelfAdapter(private val context: Context,
-                       private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
+class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
                        private var books: ArrayList<Book>,
                        private val hasAddView: Boolean = false)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -31,7 +27,7 @@ class BookShelfAdapter(private val context: Context,
                 BookShelfADHolder(parent, false)
             }
             Type_Add -> {
-                BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
+                BookShelfADDHolder(parent)
             }
             Type_Header_AD -> {
                 BookShelfADHolder(parent, true)
@@ -45,9 +41,7 @@ class BookShelfAdapter(private val context: Context,
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (position >= books.size) {
             if (viewHolder is BookShelfADDHolder) {
-                viewHolder.bind(null, isRemove, bookShelfItemListener)
-            }else if (viewHolder is BookShelfFooterHolder) {
-                viewHolder.bind(isShowBottomLine)
+                viewHolder.bind(books.size)
             }
             return
         }

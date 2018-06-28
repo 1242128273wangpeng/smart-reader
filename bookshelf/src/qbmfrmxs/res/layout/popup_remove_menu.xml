@@ -2,9 +2,11 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_remove_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix">
 
     <ImageView
         android:id="@+id/img_bottom_shadow"
@@ -31,14 +33,8 @@
             android:minWidth="24dp"
             android:singleLine="true"
             android:text="@string/delete"
-            android:textColor="#FF19DD8B"
-            android:textSize="14sp"
+            android:textColor="#42BE54"
+            android:textSize="15sp"
             app:onPressChangeAlpha="true"/>
     </LinearLayout>
-
-    <!--<net.lzbook.kit.book.view.NightShadowView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_below="@id/img_bottom_shadow"-->
-        <!--android:visibility="gone"/>-->
 </RelativeLayout>

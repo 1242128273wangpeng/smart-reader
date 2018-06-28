@@ -43,6 +43,7 @@
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
+                android:textStyle="bold"
                 tools:text="书架"/>
 
             <ImageView
@@ -84,7 +85,7 @@
             android:visibility="gone">
             <TextView
                 android:id="@+id/txt_editor_finish"
-                style="@style/style_text_normal_plain"
+                style="@style/style_text_great_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -98,11 +99,12 @@
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
+                android:textStyle="bold"
                 android:text="@string/bookshelf_edit"/>
 
             <TextView
                 android:id="@+id/txt_editor_select_all"
-                style="@style/style_text_normal_plain"
+                style="@style/style_text_great_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -157,7 +159,7 @@
                 android:src="@drawable/bookshelf_empty_icon"/>
 
             <TextView
-                style="@style/style_text_normal_light"
+                style="@style/style_text_normal_weak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -171,7 +173,7 @@
                 android:background="@drawable/bookshelf_empty_find_bg"
                 android:gravity="center"
                 android:text="@string/bookshelf_empty_find"
-                android:textColor="@color/theme_primary"
+                android:textColor="#42BE54"
                 android:textSize="14sp"
                 app:onPressChangeAlpha="true"/>
         </LinearLayout>

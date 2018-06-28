@@ -40,7 +40,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         // 更新时间+更新章节
         val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}更新"
         val updateChapter = book.last_chapter?.name
-        txt_book_update.text = (updateTime + "：" + updateChapter)
+        txt_book_update.text = ("$updateTime：$updateChapter")
 
         // 阅读进度
         if (book.last_chapter != null) {
@@ -51,9 +51,13 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 val chapterCount = BigDecimal(book.chapter_count)
                 (readChapter.divide(chapterCount, 2, BigDecimal.ROUND_HALF_UP).toDouble() * 100).toInt()
             }
-            txt_read_status.text = ("已读$count%")
+            if (count <= 0) {
+                txt_read_status.visibility = View.GONE
+            } else {
+                txt_read_status.visibility = View.VISIBLE
+                txt_read_status.text = ("已读$count%")
+            }
         }
-
 
         //更新
         img_book_status_update.visibility = if (book.update_status == 1) View.VISIBLE else View.GONE

@@ -3,13 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_content"
     android:layout_width="match_parent"
-    android:layout_height="155dp">
+    android:layout_height="wrap_content"
+    android:background="#FAFAFA">
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="113dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="6dp"
-        android:src="@drawable/bookshelf_add_icon"/>
+    <TextView
+        android:id="@+id/txt_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="106dp"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        android:text="@string/bookshelf_foot_prompt"/>
 
 </RelativeLayout>

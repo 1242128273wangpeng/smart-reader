@@ -12,31 +12,31 @@
 
         <TextView
             android:id="@+id/txt_sort_read"
-            style="@style/style_text_normal_dark"
+            style="@style/style_text_normal_plain"
             android:layout_width="match_parent"
-            android:layout_height="49dp"
+            android:layout_height="52dp"
             android:background="@drawable/bookshelf_item_sel"
             android:gravity="center"
             android:text="@string/sort_for_reading_time"/>
 
         <View
             android:layout_width="match_parent"
-            android:background="#FFE8E9EC"
-            android:layout_height="1dp"/>
+            android:background="#F1F1F1"
+            android:layout_height="0.5dp"/>
 
         <TextView
             android:id="@+id/txt_sort_update"
-            style="@style/style_text_normal_dark"
+            style="@style/style_text_normal_plain"
             android:layout_width="match_parent"
-            android:layout_height="49dp"
+            android:layout_height="52dp"
             android:background="@drawable/bookshelf_item_sel"
             android:gravity="center"
             android:text="@string/sort_for_update_time"/>
 
         <View
             android:layout_width="match_parent"
-            android:background="#FFE8E9EC"
-            android:layout_height="1dp"/>
+            android:background="#F1F1F1"
+            android:layout_height="0.5dp"/>
 
         <TextView
             android:id="@+id/txt_sort_cancel"

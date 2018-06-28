@@ -28,18 +28,18 @@
 
             <ImageView
                 android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:background="@drawable/bookshelf_head_popup_download_icon"
                 android:contentDescription="@string/module_name"/>
 
             <TextView
+                style="@style/style_text_normal_plain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
-                android:text="@string/download_manager"
-                android:textColor="#FF212832"
-                android:textSize="13sp"/>
+                android:text="@string/download_manager"/>
         </LinearLayout>
 
         <LinearLayout
@@ -54,18 +54,18 @@
 
             <ImageView
                 android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/bookshelf_head_popup_sort_icon"
+                android:layout_gravity="center_vertical"
                 android:contentDescription="@string/module_name"/>
 
             <TextView
+                style="@style/style_text_normal_plain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
-                android:text="@string/book_sort"
-                android:textColor="#FF212832"
-                android:textSize="13sp"/>
+                android:text="@string/book_sort"/>
         </LinearLayout>
     </LinearLayout>
 

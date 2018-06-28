@@ -20,16 +20,16 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/txt_refresh_prompt"
-        android:layout_toStartOf="@+id/txt_refresh_prompt"/>
+        android:layout_toLeftOf="@id/txt_refresh_prompt"
+        android:layout_toStartOf="@id/txt_refresh_prompt"/>
 
     <ImageView
         android:id="@+id/img_refresh_arrow"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/txt_refresh_prompt"
-        android:layout_toStartOf="@+id/txt_refresh_prompt"
+        android:layout_toLeftOf="@id/txt_refresh_prompt"
+        android:layout_toStartOf="@id/txt_refresh_prompt"
         android:contentDescription="@null"
         android:textColor="#999C9E"/>
 </RelativeLayout>

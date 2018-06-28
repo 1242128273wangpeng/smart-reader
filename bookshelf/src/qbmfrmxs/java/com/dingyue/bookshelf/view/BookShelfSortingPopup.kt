@@ -25,8 +25,8 @@ class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layo
     private var recentReadListener: (() -> Unit)? = null
     private var updateTimeListener: (() -> Unit)? = null
 
-    private val selectTextColor = Color.parseColor("#212832")
-    private val selectedTextColor = Color.parseColor("#19DD8B")
+    private val selectTextColor = Color.parseColor("#616161")
+    private val selectedTextColor = Color.parseColor("#42BE54")
 
     init {
 
