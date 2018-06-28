@@ -39,7 +39,7 @@
             android:layout_below="@id/txt_dialog_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:indeterminateDrawable="@drawable/home_clear_cache_loading_bg"
+            android:indeterminateDrawable="@drawable/background_base_dialog"
             android:indeterminateDuration="1000"
             android:visibility="visible"/>
 

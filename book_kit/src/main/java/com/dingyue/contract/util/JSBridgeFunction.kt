@@ -6,6 +6,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.github.lzyzsd.jsbridge.BridgeHandler
@@ -32,7 +33,6 @@ import java.util.HashMap
 class BuildRequestUrlHandler : BridgeHandler {
 
     override fun handler(data: String?, function: CallBackFunction?) {
-        Logger.e("BuildRequestUrl")
         if (data != null && data.isNotEmpty()) {
 
             var url = data
@@ -51,7 +51,7 @@ class BuildRequestUrlHandler : BridgeHandler {
 
             url = UrlUtils.buildWebUrl(url, parameters)
 
-            Logger.e("BuildRequestUrl结果: $url")
+            Logger.e("BuildRequestUrl: $data")
 
             function?.onCallBack(url)
         }
@@ -115,6 +115,7 @@ class InsertBookShelfHandler(val activity: Activity) : BridgeHandler {
 
             val chapter = Chapter()
             chapter.name = recommend.lastChapterName
+            chapter.update_time = recommend.updateTime
 
             book.last_chapter = chapter
 
@@ -190,6 +191,9 @@ class StartCoverHandler(val activity: Activity) : BridgeHandler {
         if (data != null && data.isNotEmpty()) {
             if (!activity.isFinishing) {
                 try {
+                    if(CommonContract.isDoubleClick(System.currentTimeMillis())){
+                        return
+                    }
                     val jsCover = Gson().fromJson(data, JSCover::class.java)
 
                     if (jsCover?.book_id != null && jsCover.book_source_id != null && jsCover.book_chapter_id != null) {
@@ -217,6 +221,9 @@ class StartSearchHandler(val activity: Activity) : BridgeHandler {
     override fun handler(data: String?, function: CallBackFunction?) {
         if (data != null && data.isNotEmpty()) {
             try {
+                if(CommonContract.isDoubleClick(System.currentTimeMillis())){
+                    return
+                }
                 val bundle = Bundle()
                 bundle.putString("word", data)
                 bundle.putString("from_class", "search")
