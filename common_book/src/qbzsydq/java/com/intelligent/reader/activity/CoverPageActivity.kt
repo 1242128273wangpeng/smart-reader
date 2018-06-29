@@ -227,9 +227,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
-                book_cover_description!!.text = book.desc
+//                book_cover_description!!.text = book.desc
             } else {
-                book_cover_description!!.text = resources.getString(R.string.book_cover_no_description)
+//                book_cover_description!!.text = resources.getString(R.string.book_cover_no_description)
             }
 
             if (book.last_chapter != null) {
@@ -325,7 +325,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun onClick(view: View) {
         if (coverPagePresenter != null) {
-            coverPagePresenter!!.goToBookSearchActivity(view)
+//            coverPagePresenter!!.goToBookSearchActivity(view)
         }
         when (view.id) {
             R.id.book_cover_back -> {

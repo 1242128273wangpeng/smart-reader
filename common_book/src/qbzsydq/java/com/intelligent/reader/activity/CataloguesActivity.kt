@@ -2,8 +2,8 @@ package com.intelligent.reader.activity
 
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
-import com.intelligent.reader.adapter.BookmarkAdapter
-import com.intelligent.reader.adapter.CatalogAdapter
+//import com.intelligent.reader.adapter.BookmarkAdapter
+//import com.intelligent.reader.adapter.CatalogAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
@@ -19,25 +19,23 @@ import net.lzbook.kit.utils.StatServiceUtils
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.AbsListView
+import android.widget.*
 import android.widget.AbsListView.OnScrollListener
-import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.Button
-import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.dingyue.contract.router.RouterConfig
+import com.intelligent.reader.adapter.BookmarkAdapter
+import com.intelligent.reader.adapter.CataloguesAdapter
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.HashMap
 import java.util.concurrent.Callable
 
 import de.greenrobot.event.EventBus
@@ -45,13 +43,26 @@ import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbzsydq.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
+import java.util.*
 
 /**
  * CataloguesActivity
  * 小说目录
  */
 @Route(path = RouterConfig.CATALOGUES_ACTIVITY)
-class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, OnItemClickListener, CataloguesContract {
+class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, CataloguesContract {
+    override fun insertBookShelfResult(result: Boolean) {
+
+    }
+
+    override fun changeShelfButtonClickable(clickable: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun bookSubscribeState(subscribe: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     var type = 2
     internal var colorSelected: Int = 0
     internal var colorNormal: Int = 0
@@ -70,10 +81,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     //小说
     private var book: Book? = null
     //小说帮助类
-    private var mCatalogAdapter: CatalogAdapter? = null
-    private var mBookmarkAdapter: BookmarkAdapter? = null
-    private var chapterList: ArrayList<Chapter>? = ArrayList()
-    private var bookmarkList: ArrayList<Bookmark>? = ArrayList()
+//    private var mCatalogAdapter: CatalogAdapter? = null
+//    private var mBookmarkAdapter: BookmarkAdapter? = null
+
+    private lateinit var mCataloguesAdapter: CataloguesAdapter // 目录列表适配器
+
+    private lateinit var mBookmarkAdapter: BookmarkAdapter// 标签页列表适配器
+
+    private var chapterList: ArrayList<Chapter> = ArrayList()
+    private var bookmarkList: ArrayList<Bookmark> = ArrayList()
     private var isPositive = true
     //是否换源
     private var changeSource: Boolean = false
@@ -119,6 +135,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
 
     private fun initUI() {
+//        目录列表
+        recl_catalog_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+//        标签列表
+        recl_bookmark_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         catalog_novel_close.antiShakeClick(this)
 
@@ -143,14 +164,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     private fun initListener() {
-        if (catalog_main != null) {
-            catalog_main!!.onItemClickListener = this
-            catalog_main!!.setOnScrollListener(this)
-        }
+//        if (catalog_main != null) {
+//            catalog_main!!.onItemClickListener = this
+//            catalog_main!!.setOnScrollListener(this)
+//        }
 
-        if (bookmark_main != null) {
-            bookmark_main!!.onItemClickListener = this
-        }
+//        if (bookmark_main != null) {
+//            bookmark_main!!.onItemClickListener = this
+//        }
 
         if (catalog_empty_refresh != null) {
             catalog_empty_refresh!!.setOnClickListener(this)
@@ -162,6 +183,61 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     private fun initData(bundle: Bundle) {
+
+        mCataloguesAdapter = CataloguesAdapter()
+        recl_catalog_main.adapter = mCataloguesAdapter
+        recl_catalog_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+
+               scrollState = newState
+                if (scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING) {
+                    if (mCataloguesPresenter != null) {
+                        mCataloguesPresenter!!.delayOverLayHandler()
+                    }
+                } else {
+                    if (char_hint != null) {
+                        char_hint!!.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (chapterList != null && !chapterList!!.isEmpty()) {
+                    var manager=recl_catalog_main.layoutManager
+                    if (manager is LinearLayoutManager){
+
+                        char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
+                    }
+
+                }
+            }
+        })
+
+
+        mCataloguesAdapter.insertChapterItemClickListener(object : CataloguesAdapter.ChapterItemClickListener {
+            override fun clickedChapter(position: Int, chapter: Chapter) {
+                if (mCataloguesPresenter != null) {
+                    mCataloguesPresenter?.catalogToReading(position, true)
+                }
+            }
+        })
+
+        mBookmarkAdapter = BookmarkAdapter()
+        recl_bookmark_main.adapter = mBookmarkAdapter
+        mBookmarkAdapter.setListener(object : BookmarkAdapter.BookmarkItemClickListener {
+            override fun clickBookmarkItem(position: Int, bookmark: Bookmark) {
+                if (mCataloguesPresenter != null) {
+                    mCataloguesPresenter?.catalogToReading(position, false)
+                }
+            }
+
+            override fun clickDeleteItem(position: Int, bookmark: Bookmark) {
+                mCataloguesPresenter?.onEventReceive(bookmark)
+            }
+
+        })
+
+
 
         if (bundle.containsKey("cover")) {
             book = bundle.getSerializable("cover") as Book
@@ -275,14 +351,18 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     private fun initCatalogAndBookmark() {
-        mCatalogAdapter = CatalogAdapter(this, chapterList, "")
-        catalog_main!!.adapter = mCatalogAdapter
+        mCataloguesAdapter.insertCatalog(chapterList)
+
+//        mCatalogAdapter = CatalogAdapter(this, chapterList, "")
+//        catalog_main!!.adapter = mCatalogAdapter
         if (is_last_chapter) {
-            mCatalogAdapter!!.setSelectedItem(chapterList!!.size)
-            catalog_main!!.setSelection(chapterList!!.size)
+            mCataloguesAdapter!!.setSelectedItem(chapterList!!.size)
+            recl_catalog_main.scrollToPosition(chapterList.size - 1)
+//            catalog_main!!.setSelection(chapterList!!.size)
         } else {
-            mCatalogAdapter!!.setSelectedItem(sequence + 1)
-            catalog_main!!.setSelection(sequence + 1)
+            mCataloguesAdapter!!.setSelectedItem(sequence)
+            recl_catalog_main.scrollToPosition(sequence)
+//            catalog_main!!.setSelection(sequence + 1)
         }
 
     }
@@ -322,9 +402,13 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     fun notifyChangeDownLoad() {
-        if (mCatalogAdapter != null) {
-            mCatalogAdapter!!.notifyDataSetChanged()
+        if (mCataloguesAdapter != null) {
+            mCataloguesAdapter.notifyDataSetChanged()
         }
+
+//        if (mCatalogAdapter != null) {
+//            mCatalogAdapter!!.notifyDataSetChanged()
+//        }
     }
 
     // 目录
@@ -364,11 +448,18 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             R.id.iv_back_reading -> finish()
             R.id.catalog_empty_refresh -> getChapterData()
             R.id.tab_catalog -> {
-                if (catalog_main != null) {
-                    catalog_main!!.visibility = View.VISIBLE
+                if (recl_catalog_main != null) {
+                    recl_catalog_main.visibility = View.VISIBLE
                 }
+//                if (catalog_main != null) {
+//                    catalog_main!!.visibility = View.VISIBLE
+//                }
                 if (rl_catalog_novel != null) {
                     rl_catalog_novel!!.visibility = View.VISIBLE
+                }
+
+                if (recl_bookmark_main != null) {
+                    recl_bookmark_main.visibility = View.GONE
                 }
                 if (bookmark_main != null) {
                     bookmark_main!!.visibility = View.GONE
@@ -379,11 +470,19 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 currentView = tab_catalog
             }
             R.id.tab_bookmark -> {
-                if (catalog_main != null) {
-                    catalog_main!!.visibility = View.GONE
+
+                if (recl_catalog_main != null) {
+                    recl_catalog_main.visibility = View.GONE
                 }
+//                if (catalog_main != null) {
+//                    catalog_main!!.visibility = View.GONE
+//                }
                 if (rl_catalog_novel != null) {
                     rl_catalog_novel!!.visibility = View.GONE
+                }
+
+                if (recl_bookmark_main != null) {
+                    recl_bookmark_main.visibility = View.VISIBLE
                 }
                 if (bookmark_main != null) {
                     bookmark_main!!.visibility = View.VISIBLE
@@ -397,8 +496,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                 isPositive = !isPositive
                 Collections.reverse(chapterList!!)
-                mCatalogAdapter!!.list = chapterList
-                mCatalogAdapter!!.notifyDataSetChanged()
+                mCataloguesAdapter.insertCatalog(chapterList)
+                mCataloguesAdapter.notifyDataSetChanged()
+//                mCatalogAdapter!!.list = chapterList
+//                mCatalogAdapter!!.notifyDataSetChanged()
                 changeSortState(isPositive)
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
@@ -460,8 +561,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun onBackPressed() {
-        if (!fromCover  && mCataloguesPresenter != null) {
-            if(!chapterList!!.isEmpty()){
+        if (!fromCover && mCataloguesPresenter != null) {
+            if (!chapterList!!.isEmpty()) {
                 sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
             }
             mCataloguesPresenter!!.activityResult(sequence)
@@ -482,19 +583,19 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         finish()
     }
 
-    override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        var isCatalog = true
-        if (parent === catalog_main) {
-            isCatalog = true
-
-        } else {
-            isCatalog = false
-        }
-
-        if (mCataloguesPresenter != null) {
-            mCataloguesPresenter!!.catalogToReading(position, isCatalog)
-        }
-    }
+//    override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+//        var isCatalog = true
+//        if (parent === catalog_main) {
+//            isCatalog = true
+//
+//        } else {
+//            isCatalog = false
+//        }
+//
+//        if (mCataloguesPresenter != null) {
+//            mCataloguesPresenter!!.catalogToReading(position, isCatalog)
+//        }
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.add("menu")
@@ -507,14 +608,23 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             loadingPage!!.onSuccess()
         }
         catalog_chapter_count!!.text = "共" + chapterList.size + "章"
-        if (mCatalogAdapter != null) {
+        if (mCataloguesAdapter != null) {
             if (fromEnd) {
                 isPositive = false
                 Collections.reverse(chapterList)
             }
-            mCatalogAdapter!!.list = chapterList
-            mCatalogAdapter!!.notifyDataSetChanged()
+            mCataloguesAdapter.insertCatalog(chapterList)
+            mCataloguesAdapter.notifyDataSetChanged()
         }
+
+//        if (mCatalogAdapter != null) {
+//            if (fromEnd) {
+//                isPositive = false
+//                Collections.reverse(chapterList)
+//            }
+//            mCatalogAdapter!!.list = chapterList
+//            mCatalogAdapter!!.notifyDataSetChanged()
+//        }
 
         //设置选中的条目
         var position = 0
@@ -524,16 +634,18 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             position = sequence
         }
 
-        if (catalog_main != null) {
-            catalog_main!!.setSelection(position)
+//        if (catalog_main != null) {
+//            catalog_main!!.setSelection(position)
+//        }
+//
+//        if (fromEnd) {
+//            catalog_main!!.setSelection(0)
+//        }
+        if (mCataloguesAdapter != null) {
+            mCataloguesAdapter.setSelectedItem(position)
         }
-
-        if (fromEnd) {
-            catalog_main!!.setSelection(0)
-        }
-
-        if (mCatalogAdapter != null)
-            mCatalogAdapter!!.setSelectedItem(position)
+//        if (mCatalogAdapter != null)
+//            mCatalogAdapter!!.setSelectedItem(position)
     }
 
     override fun requestCatalogError() {
@@ -553,15 +665,16 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     override fun notifyDataChange(isCatalog: Boolean, bookmarkList: ArrayList<Bookmark>) {
 
         this.bookmarkList = bookmarkList
+        mBookmarkAdapter.insertBookMark(this.bookmarkList!!)
 
-        if (mBookmarkAdapter == null)
-            mBookmarkAdapter = BookmarkAdapter(this, bookmarkList)
-        if (bookmark_main != null)
-            bookmark_main!!.adapter = mBookmarkAdapter
-
-        if (mBookmarkAdapter != null) {
-            mBookmarkAdapter!!.notifyDataSetChanged()
-        }
+//        if (mBookmarkAdapter == null)
+//            mBookmarkAdapter = BookmarkAdapter(this, bookmarkList)
+//        if (bookmark_main != null)
+//            bookmark_main!!.adapter = mBookmarkAdapter
+//
+//        if (mBookmarkAdapter != null) {
+//            mBookmarkAdapter!!.notifyDataSetChanged()
+//        }
         if (isCatalog) {
             showNullBookMarkNoteLayout()
         }
