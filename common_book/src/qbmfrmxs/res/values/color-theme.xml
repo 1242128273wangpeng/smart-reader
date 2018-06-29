@@ -137,6 +137,6 @@
 
     <color name="rating_bar_background">#4DFFC315</color>
     <color name="rating_bar_selected">#FFFFC315</color>
-    <color name="search_history_divider">#F1F1F1</color>
+    <color name="search_history_divider">#f4f4f4</color>
 
 </resources>

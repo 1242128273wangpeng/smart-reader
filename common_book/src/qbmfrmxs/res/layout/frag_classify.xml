@@ -10,13 +10,13 @@
     <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height">
+        android:layout_height="48dp">
 
 
         <com.intelligent.reader.widget.FlymeTabStrip
             android:id="@+id/tabstrip"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="46dp"
             android:layout_centerHorizontal="true"
             app:indicatorColor="@color/theme_primary"
             app:indicatorHeight="3dp"
@@ -34,6 +34,7 @@
             android:layout_marginRight="16dp"
             android:scaleType="fitXY"
             android:src="@mipmap/nbar_search_nor_icon"
+            android:visibility="gone"
             app:onPressChangeAlpha="true"
             tools:ignore="MissingPrefix"/>
 
@@ -45,5 +46,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title_layout"/>
-
 </RelativeLayout>

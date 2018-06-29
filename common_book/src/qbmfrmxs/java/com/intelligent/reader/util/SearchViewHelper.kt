@@ -149,10 +149,10 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mHistoryListView = ListView(context)
 
         mHistoryDataListView = ListView(context)
-        mHistoryDataListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
+//        mHistoryDataListView!!.cacheColorHint = mResources!!.getColor(R.color.search_history_divider)
         val typeColor = R.color.search_history_divider
-        mHistoryListView!!.divider = mResources!!.getDrawable(typeColor)
-        mHistoryListView!!.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
+        mHistoryDataListView!!.divider = mResources!!.getDrawable(typeColor)
+        mHistoryDataListView!!.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
         mHistoryDataListView!!.setHeaderDividersEnabled(false)
         mHistoryDataListView!!.setSelector(R.drawable.item_selector_white)
         if (mRootLayout != null) {

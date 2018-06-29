@@ -156,7 +156,7 @@
     <View
         android:id="@+id/view_book_detail_header_shadow"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="5dp"
         android:layout_below="@+id/search_result_head"
         android:background="@drawable/top_shadow"/>
 </RelativeLayout>
