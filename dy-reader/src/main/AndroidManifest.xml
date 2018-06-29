@@ -23,7 +23,6 @@
         <activity
             android:name=".activity.DisclaimerActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
     </application>

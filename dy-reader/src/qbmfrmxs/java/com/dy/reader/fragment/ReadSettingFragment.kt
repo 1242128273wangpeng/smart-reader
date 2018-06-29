@@ -32,16 +32,16 @@ import org.greenrobot.eventbus.ThreadMode
  */
 class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onTaskStatusChange(book_id: String?) {
-        if(dialog != null){
-            dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }
+//        if(dialog != null){
+//            dialog.rsh_option_header.setBookDownLoadState(book_id)
+//        }
 
     }
 
     override fun onTaskFinish(book_id: String?) {
-        if(dialog != null){
-            dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }
+//        if(dialog != null){
+//            dialog.rsh_option_header.setBookDownLoadState(book_id)
+//        }
 
     }
 
@@ -100,7 +100,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             }
         }
         if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
+//            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
             CacheManager.listeners.add(this)
         }
         return dialog

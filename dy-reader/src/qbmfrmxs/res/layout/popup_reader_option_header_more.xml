@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:id="@+id/ll_popup_content"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/reader_option_popup_bg"
         android:orientation="vertical">
@@ -22,12 +22,13 @@
             android:layout_height="45dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
             app:onPressChangeAlpha="true">
 
             <ImageView
                 android:layout_width="17dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
                 android:src="@drawable/reader_option_change_source_icon"/>
 
             <TextView
@@ -47,13 +48,14 @@
             android:layout_height="45dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
             app:onPressChangeAlpha="true">
 
             <ImageView
                 android:id="@+id/img_add_book_mark"
                 android:layout_width="17dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
                 android:src="@drawable/reader_option_bookmark_sel"/>
 
             <TextView
@@ -75,12 +77,13 @@
             android:layout_height="45dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
             app:onPressChangeAlpha="true">
 
             <ImageView
                 android:layout_width="17dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
                 android:src="@drawable/reader_option_feedback_icon"/>
 
             <TextView
@@ -101,12 +104,13 @@
             android:layout_height="45dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
             app:onPressChangeAlpha="true">
 
             <ImageView
                 android:layout_width="17dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
                 android:src="@drawable/reader_option_book_detail_icon"/>
 
             <TextView
@@ -131,6 +135,6 @@
         android:layout_alignLeft="@+id/ll_popup_content"
         android:layout_alignRight="@+id/ll_popup_content"
         android:layout_alignTop="@+id/ll_popup_content"
-        app:drawable="@drawable/reader_option_popup_shadow_bg"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:drawable="@drawable/reader_option_popup_shadow_bg"/>
 </RelativeLayout>
