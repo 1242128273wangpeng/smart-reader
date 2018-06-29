@@ -46,7 +46,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <com.github.lzyzsd.jsbridge.BridgeWebView
+    <wendu.dsbridge.DWebView
         android:id="@+id/bwv_tabulation_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

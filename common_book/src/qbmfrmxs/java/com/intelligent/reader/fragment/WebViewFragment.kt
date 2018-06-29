@@ -14,20 +14,18 @@ import com.dingyue.contract.util.*
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
-import kotlinx.android.synthetic.qbmfrmxs.webview_layout.*
-import kotlinx.android.synthetic.qbmfrmxs.bookstore_refresh_header.view.*
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.NetWorkUtils
 import com.orhanobut.logger.Logger
-import com.github.lzyzsd.jsbridge.DefaultHandler
+import kotlinx.android.synthetic.qbmfrmxs.webview_layout.*
+import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.utils.CustomWebClient
+import wendu.dsbridge.OnReturnValue
 
 open class WebViewFragment : Fragment() {
 
     private var url: String? = null
     private var type: String? = null
 
-    private var customWebViewClient: CustomWebViewClient? = null
+    private var customWebClient: CustomWebClient? = null
 
     private var prepared: Boolean = false
 
@@ -36,10 +34,6 @@ open class WebViewFragment : Fragment() {
     private var loadingPage: LoadingPage? = null
 
     private var handler: Handler = Handler()
-
-    private val refreshHeader: View by lazy {
-        LayoutInflater.from(srl_web_view_refresh.context).inflate(R.layout.bookstore_refresh_header, null)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +54,6 @@ open class WebViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-        initRefreshView()
 
         prepared = true
 
@@ -84,75 +77,21 @@ open class WebViewFragment : Fragment() {
 
         loadingPage = LoadingPage(requireActivity(), rl_web_view_content)
 
+
         if (bwv_web_view_result != null) {
-            customWebViewClient = CustomWebViewClient(requireContext(), bwv_web_view_result)
+            customWebClient = CustomWebClient(requireContext(), bwv_web_view_result)
         }
 
-        customWebViewClient?.setWebSettings()
+        customWebClient?.setWebSettings()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             bwv_web_view_result?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        bwv_web_view_result?.webViewClient = customWebViewClient
+        bwv_web_view_result?.webViewClient = customWebClient
 
-        bwv_web_view_result?.setDefaultHandler(DefaultHandler())
-
-        bwv_web_view_result?.registerHandler("buildRequestUrl", BuildRequestUrlHandler())
-
-        bwv_web_view_result?.registerHandler("startCoverActivity", StartCoverHandler(requireActivity()))
-
-        bwv_web_view_result?.registerHandler("startTabulationActivity", StartTabulationHandler(requireActivity()))
-
-        bwv_web_view_result?.send("Hello", { data ->
-            Logger.e("来自JS的消息: " + data.toString())
-        })
+        bwv_web_view_result.addJavascriptObject(BridgeObject(requireActivity()), "DingYue")
     }
-
-    private fun initRefreshView() {
-        if (!TextUtils.isEmpty(url)) {
-            srl_web_view_refresh?.setHeaderViewBackgroundColor(0x00000000)
-            srl_web_view_refresh?.setHeaderView(createHeaderView())
-            srl_web_view_refresh?.isTargetScrollWithLayout = true
-            srl_web_view_refresh?.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
-
-                override fun onRefresh() {
-                    refreshHeader.txt_refresh_prompt.text = "正在刷新"
-                    refreshHeader.img_refresh_arrow.visibility = View.GONE
-                    refreshHeader.pgbar_refresh_loading.visibility = View.VISIBLE
-                    checkUpdate()
-                }
-
-                override fun onPullDistance(distance: Int) {}
-
-                override fun onPullEnable(enable: Boolean) {
-                    refreshHeader.pgbar_refresh_loading.visibility = View.GONE
-                    refreshHeader.txt_refresh_prompt.text = if (enable) "松开刷新" else "下拉刷新"
-                    refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
-                    refreshHeader.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
-                }
-            })
-
-            if (url != null && url!!.isNotEmpty()) {
-                if (url!!.contains("recommend")) {
-                    srl_web_view_refresh?.setPullToRefreshEnabled(true)
-                } else {
-                    srl_web_view_refresh?.setPullToRefreshEnabled(false)
-                }
-            } else {
-                srl_web_view_refresh?.setPullToRefreshEnabled(false)
-            }
-        }
-    }
-
-    private fun createHeaderView(): View {
-        refreshHeader.txt_refresh_prompt.text = getString(com.dingyue.bookshelf.R.string.refresh_start)
-        refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
-        refreshHeader.img_refresh_arrow.setImageResource(com.dingyue.bookshelf.R.drawable.pulltorefresh_down_arrow)
-        refreshHeader.pgbar_refresh_loading.visibility = View.GONE
-        return refreshHeader
-    }
-
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
@@ -184,10 +123,11 @@ open class WebViewFragment : Fragment() {
             return
         }
 
-        //Android调用JS打点
-        bwv_web_view_result.callHandler("handleEvent", type, { data ->
-            Logger.e("调用JS打点: $data")
-        })
+        type.let {
+            bwv_web_view_result.callHandler("handleEvent", arrayOf(type), OnReturnValue<Boolean> { data ->
+                Logger.e("调用JS打点: $data")
+            })
+        }
     }
 
     private fun loadWebViewData(url: String?) {
@@ -208,7 +148,7 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun loadingWebView(url: String) {
-        customWebViewClient?.doClear()
+        customWebClient?.doClear()
 
         if (bwv_web_view_result != null && url.isNotEmpty()) {
             try {
@@ -221,12 +161,11 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun initWebViewCallback() {
-
-        customWebViewClient?.setStartedAction { url ->
+        customWebClient?.setStartedAction { url ->
             Logger.i("LoadStartedAction: $url")
         }
 
-        customWebViewClient?.setErrorAction {
+        customWebClient?.setErrorAction {
             Logger.i("LoadErrorAction")
 
             if (loadingPage != null) {
@@ -234,23 +173,19 @@ open class WebViewFragment : Fragment() {
             }
         }
 
-        customWebViewClient?.setFinishedAction {
+        customWebClient?.setFinishedAction {
             Logger.i("LoadFinishAction: $type")
 
             if (loadingPage != null) {
                 loadingPage?.onSuccessGone()
-            }
-
-            if (type == "recommend") {
-                checkViewSlide()
             }
         }
 
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
 
-                if (customWebViewClient != null) {
-                    customWebViewClient?.doClear()
+                if (customWebClient != null) {
+                    customWebClient?.doClear()
                 }
 
                 bwv_web_view_result?.reload()
@@ -264,7 +199,7 @@ open class WebViewFragment : Fragment() {
         handler.removeCallbacksAndMessages(null)
 
         if (bwv_web_view_result != null) {
-            bwv_web_view_result?.clearCache(true) //清空缓存
+            bwv_web_view_result?.clearCache(true)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
@@ -292,29 +227,6 @@ open class WebViewFragment : Fragment() {
 
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
-        }
-    }
-
-    private fun checkUpdate() {
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            srl_web_view_refresh?.isRefreshing = false
-            activity?.applicationContext?.showToastMessage("网络不给力！")
-            return
-        }
-
-        srl_web_view_refresh?.onRefreshComplete()
-
-        bwv_web_view_result.callHandler("refreshView", type, { data ->
-            Logger.e("调用JS刷新: $data")
-        })
-    }
-
-    private fun checkViewSlide() {
-        if (bwv_web_view_result != null) {
-
-            bwv_web_view_result?.callHandler("loadPageInformation", type, { data ->
-                Logger.e("调用JS获取页面信息: $data")
-            })
         }
     }
 }

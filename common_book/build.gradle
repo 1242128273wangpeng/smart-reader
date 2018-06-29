@@ -1011,5 +1011,5 @@ dependencies {
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
 
-    compile 'com.github.lzyzsd:jsbridge:1.0.4'
+    compile 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
 }
