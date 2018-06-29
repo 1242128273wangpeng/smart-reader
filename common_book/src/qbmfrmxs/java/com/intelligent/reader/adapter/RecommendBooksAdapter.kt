@@ -55,16 +55,16 @@ class RecommendBooksAdapter(context: Context,
         }
 
         if(TextUtils.isEmpty(book.description)){
-            holder.txt_book_content.setText("暂无简介")
+            holder.txt_book_content.text = "暂无简介"
         }else{
-            holder.txt_book_content.setText(book.description)
+            holder.txt_book_content.text = book.description
         }
 
         if(book.score == 0.0){
             holder.txt_book_score.visibility = View.GONE
         }else{
             holder.txt_book_score.visibility = View.VISIBLE
-            holder.txt_book_score.setText((DecimalFormat("0.0").format(book.score)) + "分")
+            holder.txt_book_score.text = (DecimalFormat("0.0").format(book.score)) + "分"
         }
 
         holder.txt_read_num.text = AppUtils.getCommonReadNums(java.lang.Long.valueOf(book.readerCountDescp))
@@ -124,8 +124,6 @@ class RecommendBooksAdapter(context: Context,
             txt_read_num = itemView.findViewById<View>(R.id.txt_read_num) as TextView
             txt_book_type = itemView.findViewById<View>(R.id.txt_book_type) as TextView
             txt_book_content = itemView.findViewById<View>(R.id.txt_book_content) as TextView
-
-
         }
 
         override fun onClick(v: View) {
@@ -133,5 +131,4 @@ class RecommendBooksAdapter(context: Context,
             recommendItemClickListener?.onItemClick(v, position)
         }
     }
-
 }
