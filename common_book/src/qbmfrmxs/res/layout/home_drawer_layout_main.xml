@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="33dp"
+            android:layout_marginTop="40dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
             android:src="@mipmap/bookshelf_guide_cache"
