@@ -9,12 +9,11 @@ import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.adapter.BookRecommendAdapter
-import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.dialog.BookEndChangeSourceDialog
-import com.dy.reader.dialog.ReaderChangeSourceDialog
 import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
@@ -113,7 +112,11 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         }
 
         txt_change_source.setOnClickListener {
-            changeSourceDialog.show(sourceList)
+            if (sourceList.isEmpty()) {
+                showToastMessage("本书暂无其他来源")
+            } else {
+                changeSourceDialog.show(sourceList)
+            }
         }
 
         txt_recommend_change.setOnClickListener {
