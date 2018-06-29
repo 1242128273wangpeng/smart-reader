@@ -94,7 +94,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
         if (!mHistoryDatas!!.contains(keyword)) {
             val size = mHistoryDatas!!.size
-            if (size >= 5) {
+            if (size >= 10) {
                 mHistoryDatas!!.removeAt(size - 1)
             }
             mHistoryDatas!!.add(0, keyword)
