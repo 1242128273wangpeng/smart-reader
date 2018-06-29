@@ -178,7 +178,7 @@ class BridgeObject(var activity: Activity) {
             try {
                 val result = data as String
 
-                val delete = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(data)
+                val delete = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(result)
 
                 if (delete) {
                     CacheManager.stop(data)
