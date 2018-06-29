@@ -1,12 +1,10 @@
 package com.intelligent.reader.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
@@ -14,14 +12,9 @@ import android.webkit.WebSettings
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.BuildRequestUrlHandler
-import com.dingyue.contract.util.CustomWebViewClient
+import com.dingyue.contract.util.BridgeObject
 import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.StartCoverHandler
-import com.github.lzyzsd.jsbridge.DefaultHandler
-import com.google.gson.Gson
 import com.intelligent.reader.R
-import com.intelligent.reader.util.PagerDesc
 import com.orhanobut.logger.Logger
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -35,7 +28,6 @@ import java.util.HashMap
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfrmxs.act_tabulation.*
 import net.lzbook.kit.utils.*
-import java.io.Serializable
 
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
 class TabulationActivity : FrameActivity(), View.OnClickListener {
@@ -48,7 +40,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
     private var fromType: String? = null
 
-    private var customWebViewClient: CustomWebViewClient? = null
+    private var customWebClient: CustomWebClient? = null
 
     private var urls: ArrayList<String>? = null
 
@@ -60,15 +52,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
     private var backClickCount: Int = 0
 
-    private var mPagerDesc: PagerDesc? = null
-    private var h5Margin: Int = 0
     private var isSupport = true
-
-    private val needInterceptSlide: Boolean
-        get() {
-            return !TextUtils.isEmpty(currentTitle) && (currentTitle!!.contains("男频") || currentTitle!!.contains("女频"))
-        }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,26 +112,18 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
         loadingPage = LoadingPage(this, rl_tabulation_main, LoadingPage.setting_result)
 
         if (bwv_tabulation_result != null) {
-            customWebViewClient = CustomWebViewClient(this, bwv_tabulation_result)
+            customWebClient = CustomWebClient(this, bwv_tabulation_result)
         }
 
-        customWebViewClient?.setWebSettings()
+        customWebClient?.setWebSettings()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             bwv_tabulation_result?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        bwv_tabulation_result?.webViewClient = customWebViewClient
+        bwv_tabulation_result?.webViewClient = customWebClient
 
-        bwv_tabulation_result?.setDefaultHandler(DefaultHandler())
-
-        bwv_tabulation_result?.registerHandler("buildRequestUrl", BuildRequestUrlHandler())
-
-        bwv_tabulation_result?.registerHandler("startCoverActivity", StartCoverHandler(this@TabulationActivity))
-
-        bwv_tabulation_result?.send("Hello", { data ->
-            Logger.e("来自JS的消息: " + data.toString())
-        })
+        bwv_tabulation_result.addJavascriptObject(BridgeObject(this@TabulationActivity), "DingYue")
     }
 
     private fun initListener() {
@@ -161,42 +137,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
         if (img_tabulation_search != null) {
             img_tabulation_search?.setOnClickListener(this)
-        }
-
-        insertTouchListener()
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun insertTouchListener() {
-        if (bwv_tabulation_result != null && needInterceptSlide) {
-            bwv_tabulation_result?.setOnTouchListener { _, event ->
-                val y = event.rawY
-
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        if (bwv_tabulation_result != null) {
-                            val location = IntArray(2)
-                            bwv_tabulation_result?.getLocationOnScreen(location)
-                            h5Margin = location[1]
-                        }
-
-                        if (null != mPagerDesc) {
-                            var top = mPagerDesc!!.top
-                            var bottom = top + (mPagerDesc!!.bottom - mPagerDesc!!.top)
-                            val metric = resources.displayMetrics
-                            top = (top * metric.density).toInt() + h5Margin
-                            bottom = (bottom * metric.density).toInt() + h5Margin
-
-                            isSupport = !(y > top && y < bottom)
-                        }
-                    }
-                    MotionEvent.ACTION_UP -> isSupport = true
-                    MotionEvent.ACTION_MOVE -> {
-                    }
-                    else -> isSupport = true
-                }
-                false
-            }
         }
     }
 
@@ -359,8 +299,8 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     }
 
     private fun loadingData(url: String?) {
-        if (customWebViewClient != null) {
-            customWebViewClient?.doClear()
+        if (customWebClient != null) {
+            customWebClient?.doClear()
         }
 
         if (!TextUtils.isEmpty(url) && bwv_tabulation_result != null) {
@@ -374,9 +314,9 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     }
 
     private fun initWebViewCallback() {
-        customWebViewClient?.setStartedAction { url -> Logger.i("LoadStartedAction: $url") }
+        customWebClient?.setStartedAction { url -> Logger.i("LoadStartedAction: $url") }
 
-        customWebViewClient?.setErrorAction {
+        customWebClient?.setErrorAction {
             Logger.i("LoadErrorAction")
 
             if (loadingPage != null) {
@@ -384,21 +324,19 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
             }
         }
 
-        customWebViewClient?.setFinishedAction {
+        customWebClient?.setFinishedAction {
             Logger.i("LoadFinishAction")
 
             if (loadingPage != null) {
                 loadingPage?.onSuccessGone()
             }
-
-            checkViewSlide()
         }
 
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
 
-                if (customWebViewClient != null) {
-                    customWebViewClient?.doClear()
+                if (customWebClient != null) {
+                    customWebClient?.doClear()
                 }
 
                 bwv_tabulation_result?.reload()
@@ -430,32 +368,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
         }
     }
 
-    private fun checkViewSlide() {
-        if (bwv_tabulation_result != null && needInterceptSlide) {
-
-            bwv_tabulation_result?.callHandler("loadPageInformation", currentTitle, { data ->
-
-                val jsRegion = Gson().fromJson(data, JSRegion::class.java)
-
-                mPagerDesc = if (jsRegion != null) {
-                    PagerDesc(jsRegion.y, jsRegion.x, jsRegion.x + jsRegion.w, jsRegion.y + jsRegion.h)
-                } else {
-                    null
-                }
-
-                Logger.e("调用JS获取页面信息: $data")
-            })
-        }
-    }
-
     override fun supportSlideBack(): Boolean {
         return isSupport
-    }
-
-    inner class JSRegion :Serializable {
-        var x:Int = 0
-        var y:Int = 0
-        var w:Int = 0
-        var h:Int = 0
     }
 }

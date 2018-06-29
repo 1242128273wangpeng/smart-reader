@@ -328,7 +328,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             if (txt_book_detail_word_count != null) {
-                txt_book_detail_word_count.text = if (TextUtils.isEmpty(book.word_count)) "暂无" else book.word_count
+                txt_book_detail_word_count.text = if (TextUtils.isEmpty(book.word_count)) "暂无" else AppUtils.getWordNums(java.lang.Long.parseLong(book.word_count))
             }
 
             if (txt_book_detail_author != null && !TextUtils.isEmpty(book.author)) {
@@ -356,7 +356,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 txt_book_detail_popularity.visibility = View.GONE
             } else {
                 txt_book_detail_popularity.visibility = View.VISIBLE
-                txt_book_detail_popularity.text = MessageFormat.format("{0}人气", book.uv)
+                txt_book_detail_popularity.text = AppUtils.getCommonReadNums(book.uv)
             }
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {

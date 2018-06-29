@@ -454,11 +454,5 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
     }
 
-    companion object {
 
-
-
-
-
-    }
 }

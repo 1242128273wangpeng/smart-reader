@@ -413,7 +413,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
 
             val params = HashMap<String, String>()
             params.put("keyword", searchWord)
-            params.put("search_type", searchType ?: "")
+            params.put("searchType", searchType ?: "")
             params.put("filter_type", filterType ?: "")
             params.put("filter_word", filterWord ?: "")
             params.put("sort_type", sortType ?: "")

@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.SearchRecommendBook
 import com.intelligent.reader.R
+import net.lzbook.kit.utils.AppUtils
 
 import java.lang.ref.WeakReference
 import java.text.DecimalFormat
@@ -66,7 +67,7 @@ class RecommendBooksAdapter(context: Context,
             holder.txt_book_score.setText((DecimalFormat("0.0").format(book.score)) + "分")
         }
 
-        holder.txt_read_num.text = book.readerCountDescp + "人在读"
+        holder.txt_read_num.text = AppUtils.getCommonReadNums(java.lang.Long.valueOf(book.readerCountDescp))
         if (!TextUtils.isEmpty(book.genre)) {
             holder.txt_book_type.visibility = View.VISIBLE
             holder.txt_book_type.text = book.genre
@@ -80,7 +81,7 @@ class RecommendBooksAdapter(context: Context,
 
         }
 
-        if (holder.img_book_cover != null && !TextUtils.isEmpty(book.sourceImageUrl)) {
+        if (!TextUtils.isEmpty(book.sourceImageUrl)) {
             Glide.with(weakReference.get()).load(book.sourceImageUrl).placeholder(
                     net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error(net.lzbook.kit.R.drawable.icon_book_cover_default)

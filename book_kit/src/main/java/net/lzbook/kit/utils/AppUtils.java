@@ -676,6 +676,22 @@ public class AppUtils {
 
     }
 
+    /**
+     * 多少人气显示
+     */
+    public static String getCommonReadNums(long num) {
+        if (num == 0) {
+            return "";
+        } else if (num < 10000) {
+            return num + "人气";
+        } else if (num < 100000000) {
+            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "人气";
+        } else {
+            return "9999+万人气";
+        }
+
+    }
+
     public static String getProcessName(Context context) {
         try {
             List<ActivityManager.RunningAppProcessInfo> runningApps = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
