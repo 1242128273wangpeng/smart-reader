@@ -118,12 +118,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     private fun initGuide() {
         val sp = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         if (!sp.getBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, false)) {
-            rl_reader_guide!!.visibility = View.VISIBLE
-            img_reader_guide_action.visibility = View.VISIBLE
-            rl_reader_guide!!.setOnClickListener {
+            rl_reader_guide.visibility = View.VISIBLE
+            rl_reader_guide.setOnClickListener {
                 sp.edit().putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, true).apply()
-                img_reader_guide_action.visibility = View.GONE
-                rl_reader_guide!!.visibility = View.GONE
+                rl_reader_guide.visibility = View.GONE
             }
         }
     }

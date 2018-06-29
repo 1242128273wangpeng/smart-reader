@@ -13,32 +13,47 @@
         android:id="@+id/rl_reader_guide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/reader_guide_bg"
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/img_reader_guide_action"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:contentDescription="@string/module_name"
-            android:scaleType="fitXY"
-            android:src="@drawable/reader_guide_gesture_icon"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/img_reader_guide_option"
+            android:id="@+id/img_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/view_center"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/reader_guide_center_icon"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/img_center"
+            android:layout_marginLeft="21dp"
+            android:src="@drawable/reader_guide_pre_icon"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="65dp"
-            android:scaleType="fitXY"
-            android:contentDescription="@string/module_name"
-            android:src="@drawable/reader_guide_more_icon"
-            android:visibility="gone"/>
+            android:layout_alignTop="@+id/img_center"
+            android:layout_marginRight="21dp"
+            android:src="@drawable/reader_guide_next_icon"/>
+
+        <View
+            android:id="@+id/view_center"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="124dp"
+            android:src="@drawable/reader_guide_jump_icon"/>
+
+
     </RelativeLayout>
 
     <fragment
