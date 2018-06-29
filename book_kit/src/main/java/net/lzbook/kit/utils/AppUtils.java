@@ -677,9 +677,9 @@ public class AppUtils {
     }
 
     /**
-     * 书籍封面页在读人数显示
+     * 多少人气显示
      */
-    public static String getRecommendReadNums(long num) {
+    public static String getCommonReadNums(long num) {
         if (num == 0) {
             return "";
         } else if (num < 10000) {

@@ -171,14 +171,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                style="@style/style_text_tiny_light"
+                                style="@style/style_text_small_light"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="作者："/>
 
                             <TextView
                                 android:id="@+id/txt_book_detail_author"
-                                style="@style/style_text_tiny_light"
+                                style="@style/style_text_small_light"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="望语"/>
@@ -191,7 +191,7 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                style="@style/style_text_tiny_light"
+                                style="@style/style_text_small_light"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="字数："/>
