@@ -7,6 +7,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.google.gson.Gson
@@ -56,6 +57,11 @@ class BridgeObject(var activity: Activity) {
     fun startCoverActivity(data: Any?, completionHandler: CompletionHandler<String>) {
         if (data != null) {
             if (!activity.isFinishing) {
+
+                if(CommonContract.isDoubleClick(System.currentTimeMillis())){
+                    return
+                }
+
                 try {
                     val result = data as String
 
@@ -86,6 +92,11 @@ class BridgeObject(var activity: Activity) {
     fun startTabulationActivity(data: Any?, completionHandler: CompletionHandler<String>) {
         if (data != null) {
             if (!activity.isFinishing) {
+
+                if(CommonContract.isDoubleClick(System.currentTimeMillis())){
+                    return
+                }
+
                 try {
                     val result = data as String
 
@@ -138,6 +149,7 @@ class BridgeObject(var activity: Activity) {
 
                 val chapter = Chapter()
                 chapter.name = recommend.lastChapterName
+                chapter.update_time = recommend.updateTime
 
                 book.last_chapter = chapter
 
