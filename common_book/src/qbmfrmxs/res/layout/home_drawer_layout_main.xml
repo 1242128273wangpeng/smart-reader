@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.intelligent.reader.widget.drawer.DrawerMain
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded, RtlSymmetry,MissingPrefix">
+
+    <net.lzbook.kit.book.view.NonSwipeViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_home_tab"
+        android:background="#FFFFFF"
+        android:fitsSystemWindows="true"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation"/>
+
+    <ImageView
+        android:id="@+id/img_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_home_tab"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_shadow_bg"/>
+
+    <LinearLayout
+        android:id="@+id/ll_home_tab"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_tab_bookshelf"
+            style="@style/Style_Tab_LinearLayout">
+
+            <ImageView
+                style="@style/Style_Tab_ImageView"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/home_tab_select_bookshelf"/>
+
+            <TextView
+                style="@style/Style_Tab_TextView"
+                android:text="@string/bookshelf"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tab_recommend"
+            style="@style/Style_Tab_LinearLayout">
+
+            <ImageView
+                style="@style/Style_Tab_ImageView"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/home_tab_select_recommend"/>
+
+            <TextView
+                style="@style/Style_Tab_TextView"
+                android:text="@string/recommend"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tab_search"
+            style="@style/Style_Tab_LinearLayout">
+
+            <ImageView
+                style="@style/Style_Tab_ImageView"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/home_tab_select_search"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tab_classify"
+            style="@style/Style_Tab_LinearLayout">
+
+            <ImageView
+                style="@style/Style_Tab_ImageView"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/home_tab_select_category"/>
+
+            <TextView
+                style="@style/Style_Tab_TextView"
+                android:text="@string/category"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tab_ranking"
+            style="@style/Style_Tab_LinearLayout">
+
+            <ImageView
+                style="@style/Style_Tab_ImageView"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/home_tab_select_ranking"/>
+
+            <TextView
+                style="@style/Style_Tab_TextView"
+                android:text="@string/ranking"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/fl_guide_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4D000000"
+        android:fitsSystemWindows="false"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_guide_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="40dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"
+            android:src="@mipmap/bookshelf_guide_cache"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/img_guide_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_guide_download"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="130dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"
+            android:src="@mipmap/bookshelf_guide_remove"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</com.intelligent.reader.widget.drawer.DrawerMain>

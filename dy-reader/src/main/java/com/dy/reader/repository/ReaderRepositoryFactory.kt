@@ -2,17 +2,13 @@ package com.dy.reader.repository
 
 import android.text.TextUtils
 import com.ding.basic.bean.Book
-import com.ding.basic.bean.BookSource
 import com.ding.basic.bean.Chapter
 import com.ding.basic.helper.WriteFileFailException
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.util.DataCache
 import com.dy.reader.Reader
 import com.dy.reader.setting.ReaderStatus
 import io.reactivex.Flowable
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
 
 /**
  * @desc 阅读模块数据源

@@ -40,6 +40,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.baidu.mobstat.StatService;
+import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -145,6 +146,13 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         initThemeHelper();
         initTheme();
+
+        //友盟推送
+        String packageName = AppUtils.getPackageName();
+        if("cc.remennovel".equals(packageName) ||"cc.kdqbxs.reader".equals(packageName) ){
+            PushAgent.getInstance(this).onAppStart();
+        }
+
     }
 
     public SwipeBackHelper getSwipeBackHelper() {
@@ -230,7 +238,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         packageName = AppUtils.getPackageName();
         isFirst = false;
         if (!TextUtils.isEmpty(packageName) &&
-                (packageName.equals("cc.kdqbxs.reader") || packageName.equals("cn.txtqbmfyd.reader"))) {
+                (packageName.equals("cc.kdqbxs.reader")
+                        || packageName.equals("cn.txtqbmfyd.reader")
+                        || packageName.equals("cn.qbmfrmxs.reader"))) {
             isDarkStatusBarText = true;
         } else {
             isDarkStatusBarText = false;

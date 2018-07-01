@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bookshelf_head_popup_bg"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_download_manager"
+            android:layout_width="125dp"
+            android:layout_height="49dp"
+            android:background="@drawable/bookshelf_head_menu_first_sel"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="21dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bookshelf_head_popup_download_icon"
+                android:contentDescription="@string/module_name"/>
+
+            <TextView
+                style="@style/style_text_normal_plain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="@string/download_manager"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_book_sorting"
+            android:layout_width="125dp"
+            android:layout_height="49dp"
+            android:background="@drawable/bookshelf_head_menu_second_sel"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="21dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bookshelf_head_popup_sort_icon"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/module_name"/>
+
+            <TextView
+                style="@style/style_text_normal_plain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="@string/book_sort"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="125dp"
+        android:layout_height="98dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:visibility="gone"
+        app:cornerRadius="5dp"/>
+
+</FrameLayout>

@@ -1,6 +1,7 @@
 package com.intelligent.reader.presenter.coverPage
 
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 
 /**
  * Created by zhenXiang on 2017\11\15 0015.
@@ -46,7 +47,7 @@ interface CoverPageContract {
     /***
      * 封面页推荐成功
      * **/
-    fun showRecommendSuccess(recommendBean: ArrayList<Book>)
+    fun showRecommendSuccess(recommends: ArrayList<RecommendBean>)
 
     /***
      * 封面页推荐失败

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.dingyue.contract.util.debugToastShort
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import iyouqu.theme.FrameActivity
@@ -41,14 +42,14 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.showToastMessage(ret.toString())
+                            this.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
                         onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.showToastMessage(t)
+                            this.debugToastShort(t)
                         })
             }
         }
@@ -64,14 +65,14 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.showToastMessage(ret.toString())
+                            this.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
                         onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.showToastMessage(t)
+                            this.debugToastShort(t)
                         })
             }
         }

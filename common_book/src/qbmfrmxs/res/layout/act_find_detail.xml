@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/find_book_detail_main"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:id="@+id/find_book_detail_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/top_navigation_bg_color">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+            <ImageView
+                    android:id="@+id/find_book_detail_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/dimen_padding_16"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@mipmap/nbar_back_icon"/>
+
+            <TextView
+                    android:id="@+id/find_book_detail_title"
+                    style="@style/style_text_huge_dark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"/>
+
+            <ImageView
+                    android:id="@+id/find_book_detail_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_16"
+                    android:src="@mipmap/nbar_search_nor_icon"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.intelligent.reader.widget.topshadow.TopShadowWebView
+            android:id="@+id/rank_content"
+            android:layout_below="@+id/find_book_detail_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/find_book_detail_head"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@drawable/top_shadow_bg"/>
+
+</RelativeLayout>

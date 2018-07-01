@@ -5,9 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.TextView
+import android.widget.*
 import com.ding.basic.bean.Book
-import com.ding.basic.bean.CoverRecommendBean
+import com.ding.basic.bean.RecommendBean
+import com.ding.basic.bean.RecommendBooks
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
@@ -17,7 +18,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.cover.BookCoverViewModel
+import com.intelligent.reader.cover.*
 import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
@@ -30,10 +31,9 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
-import net.lzbook.kit.utils.BaseBookHelper
-import net.lzbook.kit.utils.BookCoverUtil
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CoverPagePresenter(private val book_id: String?, private var book_source_id: String?, private var book_chapter_id: String?, val coverPageContract: CoverPageContract, val activity: Activity, onClickListener: View.OnClickListener)
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookCoverViewCallback {
@@ -44,6 +44,12 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
     var bookCoverUtil: BookCoverUtil? = null
     var sharePreUtil: SharedPreUtil? = null
     var bookCoverViewModel: BookCoverViewModel? = null
+
+    var recommendList = ArrayList<RecommendBean>()
+
+    var recommendBookList = ArrayList<RecommendBean>()
+
+    var recommendIndex = 0
 
     init {
         sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
@@ -126,24 +132,6 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         coverPageContract.changeDownloadButtonStatus()
     }
 
-    /**
-     * 去搜索页
-     */
-    fun goToBookSearchActivity(view: View) {
-        val intent = Intent()
-        if (view is RecommendItemView) {
-            val item = view
-            intent.putExtra("word", item.title)
-            intent.putExtra("search_type", "0")
-            intent.putExtra("filter_type", "0")
-            intent.putExtra("filter_word", "ALL")
-            intent.putExtra("sort_type", "0")
-            intent.setClass(activity, SearchBookActivity::class.java)
-            activity.startActivity(intent)
-            return
-        }
-    }
-
     /***
      * 跳转到目录页
      * **/
@@ -214,7 +202,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
                 cleanDialog.setCanceledOnTouchOutside(false)
                 cleanDialog.setCancelable(false)
-                (cleanDialog.findViewById<TextView>(R.id.dialog_msg)).setText(R.string.tip_cleaning_cache)
+                cleanDialog.findViewById<TextView>(R.id.dialog_msg).setText(R.string.tip_cleaning_cache)
                 cleanDialog.show()
 
                 Observable.create(ObservableOnSubscribe<Boolean> { emitter ->
@@ -277,9 +265,9 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         }
 
         if (!activity.isFinishing) {
-            if(!transformReadDialog.isShow()){
-                    transformReadDialog.show()
-                }
+            if (!transformReadDialog.isShow()) {
+                transformReadDialog.show()
+            }
 
 
         }
@@ -331,9 +319,27 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
             val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
 
             if (book != null) {
-                coverDetail?.last_chapter = book.last_chapter
 
-                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
+
+                //从H5页面直接添加书籍时部分字段补全
+                book.status = coverDetail!!.status   //更新书籍状态
+                book.book_chapter_id = coverDetail!!.book_chapter_id
+                book.name = coverDetail!!.name
+                book.desc = coverDetail!!.desc
+                book.book_type = coverDetail!!.book_type
+                book.book_id = coverDetail!!.book_id
+                book.host = coverDetail!!.host
+                book.author = coverDetail!!.author
+                book.book_source_id = coverDetail!!.book_source_id
+                book.img_url = coverDetail!!.img_url
+                book.label = coverDetail!!.label
+                book.sub_genre = coverDetail!!.sub_genre
+                book.chapters_update_index = coverDetail!!.chapters_update_index
+                book.genre = coverDetail!!.genre
+                book.score = coverDetail!!.score
+
+                val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
+                AppLog.e("result", result.toString())
             }
         }
     }
@@ -442,23 +448,11 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
     fun requestCoverRecommend() {
         if (book_id != null && !TextUtils.isEmpty(book_id)) {
             val bookIDs: String = loadBookShelfID()
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverRecommend(book_id, bookIDs, object : RequestSubscriber<CoverRecommendBean>() {
-                override fun requestResult(result: CoverRecommendBean?) {
-                    if (result?.data != null && result.data?.map != null) {
-                        if (sharePreUtil != null) {
-
-                            val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0").split(",")
-
-                            if (scale.size >= 2) {
-                                if (!TextUtils.isEmpty(scale[0])) {
-
-                                }
-                                if (!TextUtils.isEmpty(scale[1])) {
-
-                                }
-                            }
-//                            coverPageContract.showRecommendSuccess(mRecommendBooks)
-                        }
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommend(book_id, bookIDs, object : RequestSubscriber<RecommendBooks>() {
+                override fun requestResult(result: RecommendBooks?) {
+                    if (result != null) {
+                        handleRecommendBooks(result)
+                        changeRecommendBooks()
                     } else {
                         coverPageContract.showRecommendFail()
                     }
@@ -470,6 +464,122 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 }
             })
         }
+    }
+
+    fun handleRecommendBooks(recommendBooks: RecommendBooks?) {
+        if (recommendBooks != null) {
+
+            recommendBookList.clear()
+
+            if (sharePreUtil == null) {
+                sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+            }
+
+            val scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
+
+            if (scale != null) {
+                var znScale = 0
+                var qgScale = 0
+                var feeScale = 0
+
+                if (scale.isNotEmpty()) {
+                    znScale = Integer.parseInt(scale[0])
+                }
+
+                if (scale.size > 1) {
+                    qgScale = Integer.parseInt(scale[1])
+                }
+
+                if (scale.size > 2) {
+                    feeScale = Integer.parseInt(scale[2])
+                }
+
+                var znList: ArrayList<List<RecommendBean>>? = null
+                if (znScale > 0 && recommendBooks.znList != null && recommendBooks.znList!!.size > 0) {
+                    znList = subRecommendList(recommendBooks.znList!!, znScale)
+                }
+
+                var qgList: ArrayList<List<RecommendBean>>? = null
+                if (qgScale > 0 && recommendBooks.qgList != null && recommendBooks.qgList!!.size > 0) {
+                    qgList = subRecommendList(recommendBooks.qgList!!, qgScale)
+                }
+
+                var feeList: ArrayList<List<RecommendBean>>? = null
+                if (feeScale > 0 && recommendBooks.feeList != null && recommendBooks.feeList!!.size > 0) {
+                    feeList = subRecommendList(recommendBooks.feeList!!, feeScale)
+                }
+
+                var count = 0
+
+                if (znList != null && znList.size > 0 && qgList != null && qgList.size > 0 && feeList != null && feeList.size > 0) {
+                    count = Math.min(znList.size, Math.min(qgList.size, feeList.size))
+                } else if (qgList != null && qgList.size > 0 && feeList != null && feeList.size > 0) {
+                    count = Math.min(qgList.size, feeList.size)
+                } else if (znList != null && znList.size > 0 && qgList != null && qgList.size > 0) {
+                    count = Math.min(znList.size, qgList.size)
+                } else if (znList != null && znList.size > 0 && feeList != null && feeList.size > 0) {
+                    count = Math.min(znList.size, feeList.size)
+                } else if (znList != null && znList.size > 0) {
+                    count = znList.size
+                } else if (qgList != null && qgList.size > 0) {
+                    count = qgList.size
+                } else if (feeList != null && feeList.size > 0) {
+                    count = feeList.size
+                }
+
+                for (i in 0 until count) {
+                    if (znList != null && i < znList.size) {
+                        recommendBookList.addAll(znList[i])
+                    }
+
+                    if (qgList != null && i < qgList.size) {
+                        recommendBookList.addAll(qgList[i])
+                    }
+
+                    if (feeList != null && i < feeList.size) {
+                        recommendBookList.addAll(feeList[i])
+                    }
+                }
+
+                znList?.clear()
+                qgList?.clear()
+                feeList?.clear()
+            }
+        }
+    }
+
+    private fun subRecommendList(recommends: ArrayList<RecommendBean>, scale: Int): ArrayList<List<RecommendBean>> {
+
+        val result = ArrayList<List<RecommendBean>>()
+        var list = ArrayList<RecommendBean>()
+
+        for (i in 0 until recommends.size) {
+            list.add(recommends[i])
+
+            if (list.size == scale) {
+                result.add(list)
+                list = ArrayList()
+            }
+        }
+
+        return result
+    }
+
+    fun changeRecommendBooks() {
+
+        if (recommendIndex + 6 > recommendBookList.size) {
+            recommendIndex = 0
+        }
+
+        recommendList.clear()
+
+        for (i in recommendIndex until recommendIndex + 6) {
+            recommendList.add(recommendBookList[i])
+        }
+
+        recommendIndex += 6
+
+        coverPageContract.showRecommendSuccess(recommendList)
     }
 
     /***

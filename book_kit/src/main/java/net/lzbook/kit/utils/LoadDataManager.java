@@ -1,12 +1,14 @@
 package net.lzbook.kit.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.preference.PreferenceManager;
 
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.orhanobut.logger.Logger;
 
+import net.lzbook.kit.app.ActionConstants;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
@@ -32,6 +34,13 @@ public class LoadDataManager {
             public void requestResult(Boolean result) {
                 if (result) {
                     sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
+
+                    try {
+                        Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);
+                        BaseBookApplication.getGlobalContext().sendBroadcast(intent);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }
             }
 

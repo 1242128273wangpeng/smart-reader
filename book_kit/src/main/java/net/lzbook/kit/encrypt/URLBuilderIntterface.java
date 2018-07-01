@@ -36,11 +36,19 @@ public interface URLBuilderIntterface {
     public static final String SEARCH_V4 = "/v4/search/page";
 
     // webview精选页面
-    public static final String WEB_RECOMMEND = "/{packageName}/v3/recommend/index.do";
+    public static final String WEB_RECOMMEND = "/h5/{packageName}/recommend";
+
     // webview排行页面
-    public static final String WEB_RANK = "/{packageName}/v3/rank/index.do";
+    public static final String WEB_RANK = "/h5/{packageName}/rank";
+    // webview男频分类页面
+    public static final String WEB_CATEGORY_MAN = "/h5/{packageName}/categoryBoy";
+    // webview女频分类页面
+    public static final String WEB_CATEGORY_WOMAN = "/h5/{packageName}/categoryGirl";
+
     // webview分类页面
     public static final String WEB_CATEGORY = "/{packageName}/v3/category/index.do";
+
+
     //获取书籍的下载地址接口
     public static final String GET_DOWN_ADDRESS = "/v3/book/{book_source_id}/downUrl";
 
@@ -58,5 +66,8 @@ public interface URLBuilderIntterface {
 
     // 搜索
     public static final String SEARCH_V5 = "/v5/search/page";
+
+
+    public static final String SEARCH_VUE = "/h5/{packageName}/search";
 
 }

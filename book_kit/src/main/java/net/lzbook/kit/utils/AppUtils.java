@@ -27,7 +27,9 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -674,6 +676,22 @@ public class AppUtils {
 
     }
 
+    /**
+     * 多少人气显示
+     */
+    public static String getCommonReadNums(long num) {
+        if (num == 0) {
+            return "";
+        } else if (num < 10000) {
+            return num + "人气";
+        } else if (num < 100000000) {
+            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "人气";
+        } else {
+            return "9999+万人气";
+        }
+
+    }
+
     public static String getProcessName(Context context) {
         try {
             List<ActivityManager.RunningAppProcessInfo> runningApps = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
@@ -726,5 +744,40 @@ public class AppUtils {
             }
         }
         return flag;
+    }
+
+    public static void fixInputMethodManagerLeak(Context destContext) {
+        if (destContext == null) {
+            return;
+        }
+
+        InputMethodManager imm = (InputMethodManager) destContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm == null) {
+            return;
+        }
+
+        String [] arr = new String[]{"mCurRootView", "mServedView", "mNextServedView"};
+        Field f = null;
+        Object obj_get = null;
+        for (int i = 0;i < arr.length;i ++) {
+            String param = arr[i];
+            try{
+                f = imm.getClass().getDeclaredField(param);
+                if (f.isAccessible() == false) {
+                    f.setAccessible(true);
+                } // author: sodino mail:sodino@qq.com
+                obj_get = f.get(imm);
+                if (obj_get != null && obj_get instanceof View) {
+                    View v_get = (View) obj_get;
+                    if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
+                        f.set(imm, null); // 置空，破坏掉path to gc节点
+                    } else {
+                        break;
+                    }
+                }
+            }catch(Throwable t){
+                t.printStackTrace();
+            }
+        }
     }
 }

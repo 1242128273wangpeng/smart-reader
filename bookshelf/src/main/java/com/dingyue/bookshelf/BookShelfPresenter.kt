@@ -22,6 +22,7 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
@@ -132,7 +133,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
                     while (iterator.hasNext()) {
                         val entry = iterator.next()
-                        if (entry.value.item_view != null) {
+                        if (entry.key < iBookList.size && entry.value.item_view != null) {
                             iBookList.add(entry.key, entry.value)
                         }
                     }
@@ -186,18 +187,24 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 adBookMap[key] = adBook
             }
         }
+        doAsync {
+            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
+                override fun requestMediaSuccess(views: List<ViewGroup>) {
+                    runOnMain {
+                        handleADResult(views)
+                        view?.onAdRefresh()
+                    }
+                }
+                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
+                    runOnMain {
+                        handleADResult(views)
+                        view?.onAdRefresh()
+                    }
 
-        MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
-            override fun requestMediaSuccess(views: List<ViewGroup>) {
-                handleADResult(views)
-                view?.onAdRefresh()
-            }
+                }
+            })
+        }
 
-            override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
-                handleADResult(views)
-                view?.onAdRefresh()
-            }
-        })
     }
 
     /***
@@ -208,9 +215,11 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
         val iterator = adBookMap.entries.iterator()
 
+        val size = iBookList.size
+
         while (iterator.hasNext()) {
             val entry = iterator.next()
-            if (entry.value.item_view == null) {
+            if (entry.key < size && entry.value.item_view == null) {
                 if (index < views.size) {
                     entry.value.item_view = views[index]
 

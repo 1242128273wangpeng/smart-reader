@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_reader_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        tools:ignore="MissingPrefix">
+
+        <TextView
+            android:id="@+id/reader_cache_all"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/cache_all_chapter"
+            android:textColor="#616161"
+            android:textSize="@dimen/text_size_normal"
+            app:onPressChangeAlpha="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#F1F1F1"/>
+
+        <TextView
+            android:id="@+id/reader_cache_current_start"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/cache_start_current"
+            android:textColor="#616161"
+            android:textSize="14sp"
+            app:onPressChangeAlpha="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#F1F1F1"/>
+
+        <TextView
+            android:id="@+id/reader_cache_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/text_color_light"
+            android:textSize="14sp"
+            app:onPressChangeAlpha="true"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_reader_cache"
+        android:layout_alignLeft="@+id/ll_reader_cache"
+        android:layout_alignRight="@+id/ll_reader_cache"
+        android:layout_alignTop="@+id/ll_reader_cache"
+        android:visibility="gone"
+        tools:ignore="RtlHardcoded"/>
+</RelativeLayout>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">
+        #3ecc96
+    </color>
+    <color name="colorAccent">
+        #3ecc96
+    </color>
+    <color name="color_primary">
+        #3ecc96
+    </color>
+    <color name="base_bg">
+        #fafafa
+    </color>
+    <color name="color_divider">
+        #e8e8e8
+    </color>
+    <color name="color_lv_gap">
+        #F5F5F5
+    </color>
+    <color name="color_divider_item">
+        #F5F5F5
+    </color>
+    <color name="color_text_content">
+        #9B9B9B
+    </color>
+    <color name="color_text_most">
+        #171717
+    </color>
+    <color name="switchbutton_checked_color">
+        #3ecc96
+    </color>
+    <color name="switchbutton_unchecked_color">
+        #ffffff
+    </color>
+    <color name="switchbutton_bg_checked_color">
+        #78e7bd
+    </color>
+    <color name="switchbutton_bg_unchecked_color">
+        #e3e1e1
+    </color>
+    <color name="top_navigation_text_color">
+        #ffffff
+    </color>
+    <color name="top_navigation_bg_color">
+        #3ecc96
+    </color>
+    <color name="cover_bg">
+        #ffffff
+    </color>
+    <color name="cover_profile_title_color">
+        #323232
+    </color>
+    <color name="cover_profile_des_color">
+        #444444
+    </color>
+    <color name="cover_profile_bg_color">
+        #eae8e8
+    </color>
+    <color name="cover_checkdir_text_color">
+        #323232
+    </color>
+    <color name="cover_bottom_btn_text_color">
+        #ffffff
+    </color>
+    <color name="cover_bottom_bg_color">
+        #ffffff
+    </color>
+    <color name="cover_bottom_btn_remove_text_color">
+        #8e8d8d
+    </color>
+    <color name="cover_bottom_btn_add_text_color">
+        #3ecc96
+    </color>
+    <color name="cover_bottom_directory_text_color">
+        #1c1c1c
+    </color>
+    <color name="cover_profile_bg2_pic">
+        #2d2d2d
+    </color>
+    <color name="bookshelf_book_name_text_color">
+        #212121
+    </color>
+    <color name="bookshelf_book_name_text_color_1">
+        #212121
+    </color>
+    <color name="bookshelf_last_chapter_text_color">
+        #a5a5a5
+    </color>
+    <color name="bookshelf_last_chapter_text_color_1">
+        #AEAEAE
+    </color>
+    <color name="bookshelf_book_unread_text_color">
+        #949494
+    </color>
+    <color name="bookshelf_update_time_text_color">
+        #a5a5a5
+    </color>
+    <color name="bookshelf_divider">
+        #e8e8e8
+    </color>
+    <color name="bookshelf_author_text_color">
+        #949494
+    </color>
+    <color name="bookshelf_status_update_text_color">
+        #f13435
+    </color>
+    <color name="bookshelf_status_finish_text_color">
+        #1f83ff
+    </color>
+    <color name="home_bottom_tab_bg">
+        #fafafa
+    </color>
+    <color name="home_bottom_tab_divider">
+        #e8e8e8
+    </color>
+    <color name="search_input_text_color">
+        #ffffff
+    </color>
+    <color name="search_input_text_color_hint">
+        #e8e8e8
+    </color>
+    <color name="search_history_text_color">
+        #323232
+    </color>
+    <color name="search_hot_word_title_text_color">
+        #737575
+    </color>
+    <color name="search_hot_word_text_color_1">
+        #171717
+    </color>
+    <color name="search_hot_word_text_color_2">
+        #ffffff
+    </color>
+    <color name="search_hot_word_text_color_3">
+        #ffffff
+    </color>
+    <color name="search_hot_word_text_color_4">
+        #ffffff
+    </color>
+    <color name="search_history_clear_text_color">
+        #3ecc96
+    </color>
+    <color name="search_suggest_item_text_color_1">
+        #3ecc96
+    </color>
+    <color name="search_suggest_item_text_color_2">
+        #323232
+    </color>
+    <color name="bookshelf_grid_book_name_text_color">
+        #212121
+    </color>
+    <color name="bookshelf_update_time_grid_text_color">
+        #949494
+    </color>
+    <color name="dialog_title_color">
+        #323232
+    </color>
+    <color name="dialog_content_color">
+        #323232
+    </color>
+    <color name="dialog_checkbox_text_color">
+        #777777
+    </color>
+    <color name="dialog_recommend">
+        #3ecc96
+    </color>
+    <color name="dialog_download_bg">
+        #ffffff
+    </color>
+    <color name="dialog_download_cancel_color">
+        #fffefe
+    </color>
+    <color name="dialog_download_confirm_text_color">
+        #ffffff
+    </color>
+    <color name="directory_chapter_text_color">
+        #323232
+    </color>
+    <color name="directory_current_chapter_text_color">
+        #3ecc96
+    </color>
+    <color name="directory_uncached_chapter_text_color">
+        #838181
+    </color>
+    <color name="my_bg_color">
+        #ffffff
+    </color>
+    <color name="my_top_login_text">
+        #fffefe
+    </color>
+    <color name="my_item_small_text_color">
+        #747373
+    </color>
+    <color name="my_nightshift_button_checked_color">
+        #acacac
+    </color>
+    <color name="my_nightshift_button_unchecked_color">
+        #ffffff
+    </color>
+    <color name="my_nightshift_bg_checked_color">
+        #565656
+    </color>
+    <color name="my_nightshift_bg_unchecked_color">
+        #e3e1e1
+    </color>
+    <color name="changesource_text_color">
+        #323232
+    </color>
+    <color name="changesource_item_bg_color">
+        #ffffff
+    </color>
+    <color name="changesource_solid_divider_color">
+        #F5F5F5
+    </color>
+    <color name="changesource_content_color">
+        #acacac
+    </color>
+    <color name="moresetting_push_text_color">
+        #848383
+    </color>
+    <color name="download_manager_bottom_menu_bg">
+        #fafafa
+    </color>
+    <color name="download_manager_lv_bg_color">
+        #FAFAFA
+    </color>
+    <color name="download_manager_book_name_color">
+        #323232
+    </color>
+    <color name="download_manager_other_tag_color">
+        #838181
+    </color>
+    <color name="stylechange_bg">
+        #fafafa
+    </color>
+    <color name="stylechange_bottom_bg">
+        #FAFAFA
+    </color>
+    <color name="color_read_catalog_mark_pop_txt">
+        #cc000000
+    </color>
+    <color name="bg_read_catalog_mark_pop_divider">
+        #19000000
+    </color>
+    <color name="frag_catalog_mark_divider">
+        #0c000000
+    </color>
+    <color name="read_catalog_mark_des_color">
+        #858C96
+    </color>
+    <color name="read_catalog_mark_title_color">
+        #565D67
+    </color>
+    <color name="read_item_catalog_chapter_text_color">
+        #e5000000
+    </color>
+    <color name="read_item_catalog_current_chapter_text_color">
+        #CCC2B282
+    </color>
+    <color name="read_item_catalog_uncached_chapter_text_color">
+        #4c000000
+    </color>
+    <color name="read_item_mark_title_color">
+        #e5000000
+    </color>
+    <color name="read_item_mark_des_color">
+        #7f000000
+    </color>
+    <color name="color_statusBar_read">
+        #1d1d1c
+    </color>
+    
+    <color name="footprint_name_text_color">
+        #1a1a1a
+    </color>
+    <color name="footprint_author_text_color">
+        #9a9a9a
+    </color>
+    <color name="footprint_brow_time_text_color">
+        #989797
+    </color>
+    <color name="footprint_item_divider_color">
+        #eaeaea
+    </color>
+    <color name="footprint_item_divider1_color">
+        #F5F5F5
+    </color>
+    <color name="footprint_empty_hint_color">
+        #9B9B9B
+    </color>
+    <color name="footprint_empty_find_color">
+        #ffffff
+    </color>
+    <color name="footprint_title_clear_color">
+        #ffffff
+    </color>
+    <color name="footprint_title_clear_unusable_color">
+        #4Cffffff
+    </color>
+    <color name="book_end_item_title">
+        #5D646E
+    </color>
+    <color name="book_end_item_des">
+        #858C96
+    </color>
+    <color name="theme_primary">
+        #3ecc96
+    </color>
+    <color name="download_manager_wifi_pause_color">#2596C5</color>
+    <color name="down_head_pop_item_click">#0c000000</color>
+    <color name="color_gray_edeef0">#edeef0</color>
+    <color name="search_title_hint">#666D77</color>
+    <color name="search_recommend_bg">#DFE5EA</color>
+    <color name="setting_font_color">#8cFFFFFF</color>
+    <color name="color_search_recommend_title">#303135</color>
+    <color name="color_search_divider">#f0f0f0</color>
+
+</resources>

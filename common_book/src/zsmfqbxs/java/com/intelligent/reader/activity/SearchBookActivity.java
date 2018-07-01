@@ -418,6 +418,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     protected void onDestroy() {
         if (mSearchHelper != null) {
             mSearchHelper.onDestroy();
+            mSearchPresenter = null
         }
         if (search_result_content != null) {
             search_result_content.clearCache(true); //清空缓存
@@ -427,11 +428,11 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 }
                 search_result_content.stopLoading();
                 search_result_content.removeAllViews();
-                //search_result_content.destroy();
+                search_result_content.destroy();
             }else {
                 search_result_content.stopLoading();
                 search_result_content.removeAllViews();
-                //search_result_content.destroy();
+                search_result_content.destroy();
                 if (search_result_main != null) {
                     search_result_main.removeView(search_result_content);
                 }

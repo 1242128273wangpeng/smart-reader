@@ -27,6 +27,7 @@
     <string name="reading_add_succeed">已添入书架</string>
     <string name="reading_add_fail">抱歉,添加书架失败,请重试</string>
     <string name="is_first_chapter">当前已经是第一章</string>
+    <string name="book_end_change_source">更换来源</string>
 
 
 
@@ -105,6 +106,7 @@
 
     <string name="change_source">换源</string>
     <string name="insert_bookmark">添加书签</string>
+    <string name="remove_bookmark">删除书签</string>
     <string name="book_detail">书籍详情</string>
 
 

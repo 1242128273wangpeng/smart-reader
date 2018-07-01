@@ -27,7 +27,6 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -553,8 +552,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             it.checkPrivateKeyExpire() -> requestAuthAccess({
                                 if (it) {
                                     requestCoverBatch(checkBody)
-                                } else {
-                                    throw Throwable("鉴权请求异常！")
                                 }
                             })
                             it.checkResultAvailable() -> {
@@ -564,8 +561,24 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                             if (localBook != null) {
-                                                book.last_chapter = localBook.last_chapter
-                                                RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(book)
+
+                                                localBook.status = book!!.status   //更新书籍状态
+                                                localBook.book_chapter_id = book!!.book_chapter_id
+                                                localBook.name = book.name
+                                                localBook.desc = book.desc
+                                                localBook.book_type = book.book_type
+                                                localBook.book_id = book.book_id
+                                                localBook.host = book.host
+                                                localBook.author = book.author
+                                                localBook.book_source_id = book.book_source_id
+                                                localBook.img_url = book.img_url
+                                                localBook.label = book.label
+                                                localBook.sub_genre = book.sub_genre
+                                                localBook.chapters_update_index = book.chapters_update_index
+                                                localBook.genre = book.genre
+                                                localBook.score = book.score
+
+                                                RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(localBook)
                                             }
                                         }
                                     }
@@ -737,6 +750,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribeWith(object : ResourceSubscriber<CoverRecommendBean>() {
                     override fun onNext(result: CoverRecommendBean?) {
                         requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+
+    override fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestBookRecommend(book_id, shelfBooks)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object : ResourceSubscriber<CommonResult<RecommendBooks>>() {
+                    override fun onNext(result: CommonResult<RecommendBooks>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("推荐接口请求异常！"))
+                        }
                     }
 
                     override fun onError(throwable: Throwable) {

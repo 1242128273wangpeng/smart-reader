@@ -371,11 +371,10 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
      */
     override fun onDestroy() {
 
-        if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this, this)
+        if (mSearchPresenter != null) {
+            mSearchPresenter!!.onDestroy()
+            mSearchPresenter = null
         }
-        mSearchPresenter!!.onDestroy()
-        mSearchPresenter = null
 
         if (search_result_content != null) {
             search_result_content!!.clearCache(true) //清空缓存
@@ -385,11 +384,11 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 }
                 search_result_content!!.stopLoading()
                 search_result_content!!.removeAllViews()
-                //search_result_content.destroy();
+                search_result_content!!.destroy();
             } else {
                 search_result_content!!.stopLoading()
                 search_result_content!!.removeAllViews()
-                //search_result_content.destroy();
+                search_result_content!!.destroy();
                 if (search_result_main != null) {
                     search_result_main!!.removeView(search_result_content)
                 }

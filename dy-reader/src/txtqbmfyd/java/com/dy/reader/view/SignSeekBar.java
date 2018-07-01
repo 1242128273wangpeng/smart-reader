@@ -178,8 +178,8 @@ public class SignSeekBar extends View {
         mThumbRadiusOnDragging = a.getDimensionPixelSize(R.styleable.SignSeekBar_ssb_thumb_radius, mSecondTrackSize * 2);
         mSignBorderSize = a.getDimensionPixelSize(R.styleable.SignSeekBar_ssb_sign_border_size, SignUtils.dp2px(1));
         mSectionCount = a.getInteger(R.styleable.SignSeekBar_ssb_section_count, 10);
-        mTrackColor = a.getColor(R.styleable.SignSeekBar_ssb_track_color, ContextCompat.getColor(context, R.color.colorPrimary));
-        mSecondTrackColor = a.getColor(R.styleable.SignSeekBar_ssb_second_track_color, ContextCompat.getColor(context, R.color.colorAccent));
+        mTrackColor = a.getColor(R.styleable.SignSeekBar_ssb_track_color, ContextCompat.getColor(context, R.color.primary));
+        mSecondTrackColor = a.getColor(R.styleable.SignSeekBar_ssb_second_track_color, ContextCompat.getColor(context, R.color.accent));
         mThumbColor = a.getColor(R.styleable.SignSeekBar_ssb_thumb_color, mSecondTrackColor);
         isShowSectionText = a.getBoolean(R.styleable.SignSeekBar_ssb_show_section_text, false);
         mSectionTextSize = a.getDimensionPixelSize(R.styleable.SignSeekBar_ssb_section_text_size, SignUtils.sp2px(14));

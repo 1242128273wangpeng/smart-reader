@@ -75,7 +75,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var chapterList: ArrayList<Chapter>? = ArrayList()
     private var bookmarkList: ArrayList<Bookmark>? = ArrayList()
     private var isPositive = true
-
+    //是否换源
     private var changeSource: Boolean = false
 
     /**
@@ -112,6 +112,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         EventBus.getDefault().register(this)
 
     }
+
+    fun shouldLightStatusBase(): Boolean {
+        return true
+    }
+
 
     private fun initUI() {
 
@@ -568,7 +573,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun changeDownloadButtonStatus() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

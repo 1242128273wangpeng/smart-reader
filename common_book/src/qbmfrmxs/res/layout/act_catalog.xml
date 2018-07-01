@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    tools:ignore="MissingPrefix, RtlHardcoded, RtlSymmetry, HardcodedText">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rl_catalog_header"
+            android:layout_width="match_parent"
+            android:layout_height="44dp">
+
+            <ImageView
+                android:id="@+id/img_catalog_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:paddingLeft="16dp"
+                android:src="@drawable/common_back_icon"
+                app:onPressChangeAlpha="true"/>
+
+            <TextView
+                android:id="@+id/txt_catalog_name"
+                style="@style/style_text_huge_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:text="@string/app_name"
+                android:textStyle="bold"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_catalog_count"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@id/rl_catalog_header">
+
+            <TextView
+                android:id="@+id/txt_catalog_count"
+                style="@style/style_text_normal_light"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="共600章"/>
+
+            <ImageView
+                android:id="@+id/img_catalog_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:contentDescription="@string/module_name"
+                android:gravity="center"
+                android:paddingRight="16dp"
+                android:src="@drawable/common_back_icon"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/rl_catalog_header"
+            android:background="@drawable/common_header_shadow_bg"/>
+
+        <LinearLayout
+            android:id="@+id/rl_catalog_footer"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_catalog_cache"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/select_background_color"
+                android:gravity="center"
+                android:text="全本缓存"
+                android:textColor="#42BE54"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/txt_catalog_read"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#42BE54"
+                android:gravity="center"
+                android:text="转码阅读"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/txt_catalog_shelf"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/select_background_color"
+                android:gravity="center"
+                android:text="加入书架"
+                android:textColor="#42BE54"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recl_catalog_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rl_catalog_count"
+            android:layout_above="@id/rl_catalog_footer"
+            android:layerType="software"/>
+
+        <com.dy.reader.view.RecyclerViewFastScroller
+            android:id="@+id/reclfs_catalog_scroll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/rl_catalog_count"
+            android:layout_above="@id/rl_catalog_footer"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_above="@id/rl_catalog_footer"
+            android:background="@drawable/common_footer_shadow_bg"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_fix_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="15dp"
+        android:contentDescription="@string/module_name"
+        android:src="@drawable/cata_fixbook_img"
+        android:visibility="gone"/>
+
+</FrameLayout>

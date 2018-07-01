@@ -103,7 +103,7 @@
             android:layout_height="11dp"
             android:layout_centerVertical="true"
             android:scrollbars="none"
-            android:src="@drawable/reading_batty_day"/>
+            android:src="@drawable/reader_batty_icon"/>
 
         <com.dy.reader.page.TimeTextView
             android:id="@+id/txt_reader_time"

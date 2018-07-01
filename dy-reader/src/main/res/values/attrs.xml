@@ -5,4 +5,23 @@
         <attr name="mhv_HeightRatio" format="reference|float" />
         <attr name="mhv_HeightDimen" format="reference|dimension" />
     </declare-styleable>
+
+    <declare-styleable name="RecommendBookImageView">
+        <attr name="label_height" format="reference|dimension"/>
+        <attr name="label_width" format="reference|dimension"/>
+        <attr name="label_color" format="reference|color"/>
+        <attr name="label_background" format="reference|color"/>
+        <attr name="label_margin_bottom" format="reference|dimension"/>
+        <attr name="label_text" format="reference|color"/>
+        <attr name="label_text_color" format="reference|color"/>
+        <attr name="label_text_size" format="reference|dimension"/>
+
+        <attr name="selector_icon" format="reference|color"/>
+        <attr name="selector_height" format="reference|dimension"/>
+        <attr name="selector_width" format="reference|dimension"/>
+        <attr name="selector_margin_top" format="reference|dimension"/>
+        <attr name="selector_margin_right" format="reference|dimension"/>
+        <attr name="selector_isShown" format="reference|boolean"/>
+    </declare-styleable>
+
 </resources>

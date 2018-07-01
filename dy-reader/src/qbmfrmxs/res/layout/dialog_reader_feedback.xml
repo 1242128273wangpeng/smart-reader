@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_feedback_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/ll_dialog_content"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/reader_dialog_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11.5dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/feedback"
+            android:textColor="#333333"
+            android:textSize="@dimen/text_size_huge"/>
+
+        <ScrollView
+            android:id="@+id/sv_feedback_content"
+            android:layout_width="match_parent"
+            android:layout_height="170dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_empty"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_empty"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_reading_cache_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_reading_cache_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_content_repeat"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_content_repeat"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_sequence_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_sequence_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_chapter_content_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_chapter_content_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_typesetting_error"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_typesetting_error"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="13.5dp"
+                    android:paddingTop="13.5dp">
+
+                    <TextView
+                        style="@style/reader_feedback_txt_style"
+                        android:text="@string/feedback_cache_fail"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_feedback_cache_fail"
+                        style="@style/reader_feedback_check_style"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#FFEAEAEA"/>
+
+        <LinearLayout
+            android:id="@+id/ll_feedback_option"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            tools:ignore="MissingPrefix">
+
+            <TextView
+                android:id="@+id/txt_feedback_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="#555555"
+                android:textSize="@dimen/text_size_great"
+                app:onPressChangeAlpha="true"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="#F1F1F1"/>
+
+            <TextView
+                android:id="@+id/txt_feedback_submit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/submit"
+                android:textColor="#42BE54"
+                android:textSize="@dimen/text_size_great"
+                app:onPressChangeAlpha="true"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:id="@+id/nsv_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_dialog_content"
+        android:layout_alignLeft="@+id/ll_dialog_content"
+        android:layout_alignRight="@+id/ll_dialog_content"
+        android:layout_alignTop="@+id/ll_dialog_content"
+        android:visibility="gone"
+        app:cornerRadius="8dp"
+        tools:ignore="RtlHardcoded"/>
+</RelativeLayout>

@@ -27,46 +27,46 @@ object MediaConfig {
     fun getAdfree_new_user(): Int? = PlatformSDK.config()?.adfree_new_user
 
     fun setChannel_code(channel_code: String) {
-        PlatformSDK.config().setChannel_code(channel_code)
+        PlatformSDK.config()?.setChannel_code(channel_code)
     }
 
     fun setAd_userid(user_id: String) {
-        PlatformSDK.config().setAd_userid(user_id)
+        PlatformSDK.config()?.setAd_userid(user_id)
     }
 
     fun setCityName(cityName: String) {
-        PlatformSDK.config().setCityName(cityName)
+        PlatformSDK.config()?.setCityName(cityName)
     }
 
     fun setCityCode(cityCode: Int) {
-        PlatformSDK.config().setCityCode(cityCode)
+        PlatformSDK.config()?.setCityCode(cityCode)
     }
 
     fun setLatitude(latitude: Float) {
-        PlatformSDK.config().setLatitude(latitude)
+        PlatformSDK.config()?.setLatitude(latitude)
     }
 
     fun setLongitude(longitude: Float) {
-        PlatformSDK.config().setLongitude(longitude)
+        PlatformSDK.config()?.setLongitude(longitude)
     }
 
     fun setBookShelfGrid(grid: Boolean) {
-        PlatformSDK.config().setBookShelfGrid(grid)
+        PlatformSDK.config()?.setBookShelfGrid(grid)
     }
 
     fun setCusTomParam(param: String) {
-        PlatformSDK.config().setCusTomParam(param)
+        PlatformSDK.config()?.setCusTomParam(param)
     }
 
     fun getAdSwitch(ad_mark_id: String): Boolean? = PlatformSDK.config()?.getAdSwitch(ad_mark_id)
 
     fun ExposureToPlugin(nativeView: Any) {
         if (nativeView is NativeView) {
-            PlatformSDK.config().ExposureToPlugin(nativeView)
+            PlatformSDK.config()?.ExposureToPlugin(nativeView)
         }
     }
 
     fun setExpandInfo(bookmap: Map<String, String>) {
-        PlatformSDK.config().setExpandInfo(bookmap)
+        PlatformSDK.config()?.setExpandInfo(bookmap)
     }
 }

@@ -215,7 +215,7 @@ public class Constants {
     //统计开关
     public static boolean dy_ad_new_statistics_switch = true;
     //阅读页翻页统计开关
-    public static boolean dy_readPage_statistics_switch = true;
+    public static boolean dy_readPage_statistics_switch = false;
     //老的广告统计开关
     public static boolean dy_ad_old_request_switch = true;
     //是否启用新版章节末UI
@@ -267,6 +267,10 @@ public class Constants {
     public static String STYLE_CHANGE = "style1";
     public static String NOVEL_HOST = "novel_host";
     public static String WEBVIEW_HOST = "httpsWebView_host";
+    public static String UNION_HOST = "union_host";
+    public static String CONTENT_HOST = "content_host";
+
+
     public static long startReadTime = 0;
     public static long endReadTime = 0;
     public static String FILE_PATH = "";

@@ -72,4 +72,6 @@
     <string name="loading_read_page">精彩内容即将呈现...</string>
     <string name="delete_mark_bookshelf">同时从书架中删除</string>
     <string name="read_network_error">网络连接不畅，请稍后再试~</string>
+    <string name="network_error">哇哦！服务器消失了</string>
+    <string name="network_error_refresh">重新加载</string>
 </resources>

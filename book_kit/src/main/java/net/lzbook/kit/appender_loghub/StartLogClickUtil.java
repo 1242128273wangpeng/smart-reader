@@ -172,6 +172,10 @@ public class StartLogClickUtil {
     public static final String TOBOOKSTORE = "TOBOOKSTORE"; //完结页点击去书城
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
 
+    //PUSH
+    public static final String PUSHRECEIVE = "PUSHRECEIVE";//通知送达
+    public static final String PUSHCLICK = "PUSHCLICK";//通知点击
+
     //APP通用
     public static final String APPINIT = "APPINIT";//客户端启动
     public static final String HOME = "HOME";//切换至后台
@@ -311,6 +315,9 @@ public class StartLogClickUtil {
     public static final String READ_SOURCECHANGECONFIRM = "SOURCECHANGECONFIRM";//确认换源
     public static final String BOOKMARKEDIT = "BOOKMARKEDIT";//添加书签
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
+
+    //阅读完结页
+    public static final String REPLACE = "REPLACE";   //完结页点击换一换
 
 
     //搜索结果页

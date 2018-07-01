@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:id="@+id/img_head_back"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@mipmap/nbar_back_icon"/>
+
+        <TextView
+            android:id="@+id/tv_head_title"
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/push_setting"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_push"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_head"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/txt_night_shift"
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/push"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push"
+            style="@style/Style_Setting_Switch_Button"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="@color/switch_button_checked_bg"
+            app:sb_checkedbtn_color="@color/switch_button_checked_btn"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="@color/switch_button_unchecked_bg"
+            app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_push_sound"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_push"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/push_sound"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push_sound"
+            style="@style/Style_Setting_Switch_Button"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="@color/switch_button_checked_bg"
+            app:sb_checkedbtn_color="@color/switch_button_checked_btn"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="@color/switch_button_unchecked_bg"
+            app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_push_time"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_push_sound"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/txt_push_time"
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/tv_push_time_tips_setting"/>
+
+        <TextView
+            android:id="@+id/txt_push_time_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_push_time"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="@string/tv_push_time_default_setting"
+            android:textColor="@color/color_primary"
+            android:textSize="12sp"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push_time"
+            style="@style/Style_Setting_Switch_Button"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="@color/switch_button_checked_bg"
+            app:sb_checkedbtn_color="@color/switch_button_checked_btn"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="@color/switch_button_unchecked_bg"
+            app:sb_uncheckedbtn_color="@color/switch_button_unchecked_btn"/>
+    </RelativeLayout>
+
+</RelativeLayout>

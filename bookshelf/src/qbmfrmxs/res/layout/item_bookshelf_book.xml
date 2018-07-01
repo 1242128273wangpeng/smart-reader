@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_book_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bookshelf_item_sel"
+    tools:ignore="RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/img_book_select_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/bookshelf_item_check_icon"
+        android:contentDescription="@string/module_name"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_book_select_state"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="20dp">
+
+        <com.dingyue.bookshelf.view.BorderImageView
+            android:id="@+id/img_book_cover"
+            android:layout_width="60dp"
+            android:layout_height="84dp"
+            android:scaleType="fitXY"
+            tools:src="@drawable/common_book_cover_default_icon"/>
+
+        <ImageView
+            android:id="@+id/img_book_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/bookshelf_item_book_finish_icon"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/txt_book_name"
+            style="@style/style_text_large_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@id/txt_read_status"
+            android:layout_toRightOf="@id/img_book_cover"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="@string/default_title"/>
+
+        <TextView
+            android:id="@+id/txt_read_status"
+            style="@style/style_text_tiny_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_alignTop="@id/txt_book_name"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="已读100%"/>
+
+        <TextView
+            android:id="@+id/txt_book_update"
+            style="@style/style_text_small_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_book_name"
+            android:layout_marginLeft="18dp"
+            android:layout_toLeftOf="@id/txt_read_status"
+            android:layout_toRightOf="@id/img_book_cover"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="@string/default_title"/>
+
+        <ImageView
+            android:id="@+id/img_book_status_update"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_below="@id/txt_book_name"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/img_book_cover"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/bookshelf_red_point"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</RelativeLayout>

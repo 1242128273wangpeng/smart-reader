@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/txt_dialog_title"
+        style="@style/style_text_large_dark"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:text="@string/prompt"/>
+
+    <LinearLayout
+        android:id="@+id/ll_num_pickers"
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        android:background="@color/white"
+        android:layout_below="@+id/txt_dialog_title"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="32dp"
+            android:background="@drawable/number_picker_text_bg"/>
+
+        <com.intelligent.reader.widget.NumberPicker
+            android:id="@+id/np_start_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            app:np_dividerColor="#FFE6E6E6"
+            app:np_dividerDistance="30dp"
+            app:np_dividerThickness="1dp"
+            app:np_formatter="%02d"
+            app:np_max="23"
+            app:np_min="0"
+            app:np_selectedTextColor="@color/text_color_dark"
+            app:np_selectedTextSize="14sp"
+            app:np_textColor="@color/text_color_light"
+            app:np_textSize="12sp"
+            app:np_value="7"
+            app:np_wheelItemCount="5"/>
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="32dp"
+            android:background="@drawable/number_picker_text_bg"
+            android:gravity="center"
+            android:text=":"/>
+
+        <com.intelligent.reader.widget.NumberPicker
+            android:id="@+id/np_start_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            app:np_dividerColor="#FFE6E6E6"
+            app:np_dividerDistance="30dp"
+            app:np_dividerThickness="1dp"
+            app:np_formatter="%02d"
+            app:np_max="59"
+            app:np_min="0"
+            app:np_selectedTextColor="@color/text_color_dark"
+            app:np_selectedTextSize="14sp"
+            app:np_textColor="@color/text_color_light"
+            app:np_textSize="12sp"
+            app:np_value="0"
+            app:np_wheelItemCount="5"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/number_picker_text_bg"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="#FF858C96"
+            android:text="至"/>
+
+        <com.intelligent.reader.widget.NumberPicker
+            android:id="@+id/np_stop_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            app:np_dividerColor="#FFE6E6E6"
+            app:np_dividerDistance="30dp"
+            app:np_dividerThickness="1dp"
+            app:np_formatter="%02d"
+            app:np_max="23"
+            app:np_min="0"
+            app:np_selectedTextColor="@color/text_color_dark"
+            app:np_selectedTextSize="14sp"
+            app:np_textColor="@color/text_color_light"
+            app:np_textSize="12sp"
+            app:np_value="23"
+            app:np_wheelItemCount="5"/>
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="32dp"
+            android:background="@drawable/number_picker_text_bg"
+            android:gravity="center"
+            android:text=":"/>
+
+        <com.intelligent.reader.widget.NumberPicker
+            android:id="@+id/np_stop_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            app:np_dividerColor="#FFE6E6E6"
+            app:np_dividerDistance="30dp"
+            app:np_dividerThickness="1dp"
+            app:np_formatter="%02d"
+            app:np_max="59"
+            app:np_min="0"
+            app:np_selectedTextColor="@color/text_color_dark"
+            app:np_selectedTextSize="14sp"
+            app:np_textColor="@color/text_color_light"
+            app:np_textSize="12sp"
+            app:np_value="0"
+            app:np_wheelItemCount="5"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="32dp"
+            android:background="@drawable/number_picker_text_bg"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/ll_btn"
+        android:background="#FFEDEEF0"/>
+
+    <LinearLayout
+        android:id="@+id/ll_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_50"
+        android:background="@color/white"
+        android:layout_below="@+id/ll_num_pickers"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="@style/style_text_normal_plain"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_dialog_button"
+            android:gravity="center"
+            android:minWidth="@dimen/dimen_view_width_24"
+            android:singleLine="true"
+            android:text="@string/cancel"/>
+
+        <View
+            android:layout_width="@dimen/dimen_view_width_0.5"
+            android:layout_height="@dimen/dimen_view_height_30"
+            android:layout_gravity="center_vertical"
+            android:background="#FFE8E9EC"/>
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_dialog_button"
+            android:gravity="center"
+            android:minWidth="@dimen/dimen_view_width_24"
+            android:singleLine="true"
+            android:text="@string/confirm"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:layout_width="match_parent"
+            android:layout_height="252dp"
+            android:visibility="gone"/>
+
+</RelativeLayout>
+
+

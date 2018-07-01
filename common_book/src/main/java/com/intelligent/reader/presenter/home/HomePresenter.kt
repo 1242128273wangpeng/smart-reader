@@ -1,11 +1,9 @@
 package com.intelligent.reader.presenter.home
 
 import android.content.pm.PackageManager
-import android.text.TextUtils
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
 import com.intelligent.reader.app.BookApplication
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil

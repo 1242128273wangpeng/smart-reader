@@ -1,11 +1,10 @@
 package com.dy.reader.dialog
 
+import android.view.Gravity
 import android.widget.CheckBox
-import android.widget.FrameLayout
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
-import com.dy.reader.setting.ReaderSettings
 import kotlinx.android.synthetic.txtqbmfyd.dialog_reader_feedback.*
 import net.lzbook.kit.book.view.MyDialog
 
@@ -18,7 +17,7 @@ import net.lzbook.kit.book.view.MyDialog
 
 class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
 
-    private val dialog = MyDialog(readerActivity, R.layout.dialog_reader_feedback)
+    private val dialog = MyDialog(readerActivity, R.layout.dialog_reader_feedback, Gravity.BOTTOM)
 
     private var submitListener: ((type: Int) -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
@@ -30,10 +29,9 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
-        if (ReaderSettings.instance.isLandscape) {
-            dialog.sv_feedback_content.layoutParams.height = readerActivity.resources.getDimensionPixelOffset(R.dimen.feedback_content_height)
-        } else {
-            dialog.sv_feedback_content.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+        dialog.fl_feedback_content.post {
+            dialog.nsv_feedback.layoutParams.height = dialog.fl_feedback_content.height
+            dialog.fl_feedback_content.requestLayout()
         }
 
         dialog.cb_feedback_chapter_empty.setOnClickListener {
@@ -107,7 +105,7 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
         }
 
 
-        dialog.btn_feedback_submit.setOnClickListener {
+        dialog.txt_feedback_submit.setOnClickListener {
             if (checkedPosition == -1) {
                 readerActivity.applicationContext.showToastMessage("请选择错误类型！")
             } else {
@@ -117,7 +115,7 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
             dismiss()
         }
 
-        dialog.btn_feedback_cancel.setOnClickListener {
+        dialog.txt_feedback_cancel.setOnClickListener {
 
             cancelListener?.invoke()
 

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        >
+
+    <ImageView
+            android:id="@+id/iv_bestSource"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:visibility="gone"
+            android:gravity="left"
+            android:background="@drawable/icon_recommend_sources"
+            />
+    
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_18"
+            android:paddingRight="@dimen/padding_18"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="3dp">
+        
+
+        
+        <TextView
+                android:id="@+id/new_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="最新"
+                android:textColor="@color/book_end_item_title"
+                android:textSize="16.0sp"/>
+    </LinearLayout>
+    
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_18"
+            android:paddingRight="@dimen/padding_18"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_12">
+        
+        <TextView
+                android:id="@+id/site_text"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="shulou.com"
+                android:textColor="@color/book_end_item_des"
+                android:textSize="12.0sp"
+                android:singleLine="true"
+                android:ellipsize="end"/>
+        
+        <TextView
+                android:id="@+id/time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:paddingLeft="0dp"
+                android:singleLine="true"
+                android:text="12天前更新"
+                android:textColor="@color/book_end_item_des"
+                android:textSize="11sp"/>
+    </LinearLayout>
+</LinearLayout>

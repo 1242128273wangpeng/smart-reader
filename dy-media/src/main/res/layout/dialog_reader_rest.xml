@@ -50,40 +50,6 @@
         android:layout_height="321dp">
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        android:visibility="gone">
 
-        <Button
-            android:id="@+id/rest"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginRight="40dp"
-            android:layout_toLeftOf="@+id/continue_read"
-            android:background="@drawable/dialog_reader_rest_bg"
-            android:gravity="center"
-            android:minWidth="24dp"
-            android:singleLine="true"
-            android:text="休息一下"
-            android:textColor="#9c9c9c"
-            android:textSize="16sp"/>
-
-        <Button
-            android:id="@+id/continue_read"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/dialog_reader_rest_bg"
-            android:gravity="center"
-            android:minWidth="24dp"
-            android:singleLine="true"
-            android:text="继续看"
-            android:textColor="#3ECC96"
-            android:textSize="16sp"/>
-    </RelativeLayout>
 
 </LinearLayout>

@@ -1,8 +1,6 @@
 package com.dingyue.bookshelf
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -13,8 +11,7 @@ import com.dingyue.contract.HolderType.Type_Book
 import com.dingyue.contract.HolderType.Type_Header_AD
 import java.util.*
 
-class BookShelfAdapter(private val context: Context,
-                       private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
+class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
                        private var books: ArrayList<Book>,
                        private val hasAddView: Boolean = false)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -22,6 +19,7 @@ class BookShelfAdapter(private val context: Context,
     var selectedBooks: ArrayList<Book> = ArrayList()
 
     var isRemove = false
+    var isShowBottomLine = false //列表底部分割线
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -29,7 +27,7 @@ class BookShelfAdapter(private val context: Context,
                 BookShelfADHolder(parent, false)
             }
             Type_Add -> {
-                BookShelfADDHolder(LayoutInflater.from(context).inflate(R.layout.item_bookshelf_add, parent, false))
+                BookShelfADDHolder(parent)
             }
             Type_Header_AD -> {
                 BookShelfADHolder(parent, true)
@@ -43,7 +41,7 @@ class BookShelfAdapter(private val context: Context,
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (position >= books.size) {
             if (viewHolder is BookShelfADDHolder) {
-                viewHolder.bind(null, isRemove, bookShelfItemListener)
+                viewHolder.bind(books.size)
             }
             return
         }
@@ -77,6 +75,8 @@ class BookShelfAdapter(private val context: Context,
     }
 
     override fun getItemCount(): Int {
+        isShowBottomLine = books.size > 4
+
         if (hasAddView) {
             if (books.size > 0) {
                 if (books.size >= 50) {

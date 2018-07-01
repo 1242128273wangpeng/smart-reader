@@ -107,77 +107,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         view?.setHistoryHeadersTitleView()
     }
 
-    fun resetHotWordList(context: Context) {
-
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            getCacheDataFromShare(false)
-        } else {
-            view?.showLoading()
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-
-
-
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<SearchHotBean>() {
-                override fun requestResult(result: SearchHotBean?) {
-                    parseResult(result, true)
-                    view?.dimissLoading()
-                }
-
-                override fun requestError(message: String) {
-                    Logger.e("获取搜索热词异常！")
-                    getCacheDataFromShare(true)
-                    view?.dimissLoading()
-                }
-
-                override fun requestComplete() {
-
-                }
-            })
-
-
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-        }
-    }
-
-    /**
-     * if hasn't net getData from sharepreferenecs cache
-     */
-    fun getCacheDataFromShare(hasNet: Boolean) {
-        if (!TextUtils.isEmpty(sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD))) {
-            view?.showLinearParent(true)
-            hotWords!!.clear()
-            val cacheHotWords = sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD)
-            val searchHotBean = gson!!.fromJson(cacheHotWords, SearchHotBean::class.java)
-            parseResult(searchHotBean, false)
-            AppLog.e("urlbean", cacheHotWords)
-        } else {
-            if (!hasNet) {
-                BookApplication.getGlobalContext().showToastMessage("网络不给力哦！", 0L)
-            }
-            view?.showLinearParent(false)
-        }
-    }
-
-    /**
-     * parse result data
-     */
-    fun parseResult(value: SearchHotBean?, hasNet: Boolean) {
-        hotWords!!.clear()
-        if (value != null && value.data != null) {
-            hotWords = value.data as MutableList<SearchHotBean.DataBean>?
-            if (hotWords != null && hotWords!!.size >= 0) {
-                view?.showLinearParent(true)
-                if (hasNet) {
-                    sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, gson!!.toJson(value, SearchHotBean::class.java))
-                }
-                view?.setHotWordAdapter(hotWords)
-            } else {
-                sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, "")
-                view?.showLinearParent(false)
-            }
-        }
-    }
-
 
     fun showDialog(activity: Activity?) {
         if (activity != null && !activity!!.isFinishing) {
@@ -310,17 +239,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         }
     }
 
-    fun onHotItemClick(context: Context?, parent: AdapterView<*>, view1: View, position: Int, id: Long) {
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_allhotword)
-        val hotWord = hotWords!![position].word
-        val data = HashMap<String, String>()
-        data.put("topicword", hotWord.toString())
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
 
-        AppLog.e("wordType", hotWord + hotWords!![position].wordType + "")
-
-        view?.hotItemClick(hotWord.toString(), hotWords!![position].wordType.toString() + "")
-    }
 
     fun setSearchType(type: String) {
         searchType = type

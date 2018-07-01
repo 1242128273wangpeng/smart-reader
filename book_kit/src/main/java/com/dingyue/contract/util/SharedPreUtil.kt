@@ -1,11 +1,9 @@
 package com.dingyue.contract.util
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
-
 
 /**
  * Desc sharepre 工具类

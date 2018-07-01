@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_remove_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix">
+
+    <ImageView
+        android:id="@+id/img_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bookshelf_common_shadow_bg"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/img_bottom_shadow"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btn_remove_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bookshelf_remove_sel"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:singleLine="true"
+            android:text="@string/delete"
+            android:textColor="#42BE54"
+            android:textSize="15sp"
+            app:onPressChangeAlpha="true"/>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_header_more_content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingRight="6dp"
+    tools:ignore="RtlHardcoded,RtlSymmetry, MissingPrefix">
+
+    <LinearLayout
+        android:id="@+id/ll_popup_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/reader_option_popup_bg"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_change_source"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            app:onPressChangeAlpha="true">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/reader_option_change_source_icon"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:soundEffectsEnabled="true"
+                android:text="@string/change_source"
+                android:textColor="#FAFAFA"
+                android:textSize="@dimen/text_size_normal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_add_book_mark"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            app:onPressChangeAlpha="true">
+
+            <ImageView
+                android:id="@+id/img_add_book_mark"
+                android:layout_width="17dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/reader_option_bookmark_sel"/>
+
+            <TextView
+                android:id="@+id/txt_add_book_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:soundEffectsEnabled="true"
+                android:text="@string/insert_bookmark"
+                android:textColor="#FAFAFA"
+                android:textSize="@dimen/text_size_normal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            app:onPressChangeAlpha="true">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/reader_option_feedback_icon"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:soundEffectsEnabled="true"
+                android:text="@string/feedback"
+                android:textColor="#FAFAFA"
+                android:textSize="@dimen/text_size_normal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_book_detail"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            app:onPressChangeAlpha="true">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/reader_option_book_detail_icon"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:soundEffectsEnabled="true"
+                android:text="@string/book_detail"
+                android:textColor="#FAFAFA"
+                android:textSize="@dimen/text_size_normal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:id="@+id/nightShadowView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_popup_content"
+        android:layout_alignLeft="@+id/ll_popup_content"
+        android:layout_alignRight="@+id/ll_popup_content"
+        android:layout_alignTop="@+id/ll_popup_content"
+        android:visibility="gone"
+        app:drawable="@drawable/reader_option_popup_shadow_bg"/>
+</RelativeLayout>

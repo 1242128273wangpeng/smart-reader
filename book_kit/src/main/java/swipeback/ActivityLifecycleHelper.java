@@ -99,7 +99,8 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
         }
         boolean isSplashActivity = getName(activity).equals("SplashActivity");
         boolean isGuideActivity = getName(activity).equals("GuideActivity");
-        if (isSplashActivity || isGuideActivity) return;
+        boolean isOfflineNotifyActivity = getName(activity).equals("OfflineNotifyActivity");
+        if (isSplashActivity || isGuideActivity || isOfflineNotifyActivity) return;
         AppLog.e("ActivityLifecycleHelper", "add: " + getName(activity));
         activities.add(activity);
     }
@@ -134,6 +135,10 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
             return null;
         }
         return activities.get(count - 2);
+    }
+
+    public static List<Activity> getActivities() {
+        return activities;
     }
 
     private String getName(Context context) {

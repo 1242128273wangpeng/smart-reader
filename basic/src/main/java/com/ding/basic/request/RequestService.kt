@@ -42,12 +42,14 @@ interface RequestService {
         //搜索热词
         const val HOT_WORDS = "/v3/search/hotWords"
 
+        // V5搜索
+        const val SEARCH_V5 = "/v5/search/page"
 
         //新版搜索热词
         const val HOT_WORDS_V4 = "/v4/search/hotWords"
 
         //新版搜索推荐
-        const val SEARCH_RECOMMEND_V4 = "/v4/search/autoOperations"
+        const val SEARCH_RECOMMEND_V5 = "/v5/search/autoOperations"
 
         //完结页推荐
         const val RECOMMEND_FINISH = "/v4/recommend/{book_id}/readPage"
@@ -78,9 +80,6 @@ interface RequestService {
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/v5/book/down"
 
-        // 搜索
-        const val SEARCH_V5 = "/v5/search/page"
-
         // cdn智能
         const val DYNAMIC_ZN = "https://public.lsread.cn/dpzn/{packageName}.json"
 
@@ -91,19 +90,11 @@ interface RequestService {
         const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
 
 
+
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
 
-        /**
-         *  鸿雁替 新WebView精选页面
-         */
-        const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
-
-        /**
-         *  鸿雁替 新新WebView分类页面
-         */
-        const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
-
+        const val BOOK_RECOMMEND = "/v5/search/recommend"
 
     }
 
@@ -145,7 +136,7 @@ interface RequestService {
     @GET(HOT_WORDS_V4)
     fun requestHotWordV4(): Flowable<Result<SearchResult>>
 
-    @GET(SEARCH_RECOMMEND_V4)
+    @GET(SEARCH_RECOMMEND_V5)
     fun requestSearchRecommend(@Query("shelfBooks") shelfBooks: String): Flowable<SearchRecommendBook>
 
     @GET(HOT_WORDS)
@@ -184,7 +175,12 @@ interface RequestService {
     fun requestDownTaskConfig(@Query(value = "bookId") str: String, @Query(value = "bookSourceId") str2: String, @Query(value = "type") i: Int, @Query(value = "chapterId") str3: String): Flowable<BasicResult<CacheTaskConfig>>
 
 
+
     @FormUrlEncoded
     @POST(COVER_RECOMMEND)
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
+
+
+    @GET(BOOK_RECOMMEND)
+    fun requestBookRecommend(@Query("book_id") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
 }
