@@ -1,9 +1,9 @@
 package com.intelligent.reader.activity
 
+import android.app.Activity
 import com.intelligent.reader.R
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.CustomDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.book.view.TimePicker
 import net.lzbook.kit.constants.Constants
@@ -23,6 +23,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.intelligent.reader.view.CustomDialog
 
 import java.util.HashMap
 
@@ -61,33 +62,31 @@ class SettingMoreActivity : BaseCacheableActivity(), View.OnClickListener, Switc
         initListener()
     }
 
-    protected fun initView() {
-
-        btnBack = findViewById(R.id.btn_left_setting) as ImageView
-        title = findViewById(R.id.tv_title_name) as TextView
+    private  fun initView() {
+        btnBack = findViewById(R.id.btn_left_setting)
+        title = findViewById(R.id.tv_title_name)
 
         //推送
-        push = findViewById(R.id.push) as RelativeLayout
-        push_checkbox = findViewById(R.id.push_message_checkbox) as SwitchButton
+        push = findViewById(R.id.push)
+        push_checkbox = findViewById(R.id.push_message_checkbox)
         //推送声音
-        push_sound = findViewById(R.id.push_sound) as RelativeLayout
-        push_sound_checkbox = findViewById(R.id.push_sound_checkbox) as SwitchButton
+        push_sound = findViewById(R.id.push_sound)
+        push_sound_checkbox = findViewById(R.id.push_sound_checkbox)
         //推送时间
-        push_time = findViewById(R.id.push_time) as RelativeLayout
-        push_time_checkbox = findViewById(R.id.push_time_checkbox) as SwitchButton
+        push_time = findViewById(R.id.push_time)
+        push_time_checkbox = findViewById(R.id.push_time_checkbox)
         //推送时间设置
-        push_time_setting_text = findViewById(R.id.push_time_setting_text) as TextView
+        push_time_setting_text = findViewById(R.id.push_time_setting_text)
         //书架按时间排序
-        bookshelf_sort_time = findViewById(R.id.bookshelf_sort_time) as RelativeLayout
-        bookshelf_sort_time_checkbox = findViewById(R.id.bookshelf_sort_time_checkbox) as ImageView
+        bookshelf_sort_time = findViewById(R.id.bookshelf_sort_time)
+        bookshelf_sort_time_checkbox = findViewById(R.id.bookshelf_sort_time_checkbox)
         //书架按更新时间排序
-        bookshelf_sort_update_time = findViewById(R.id.bookshelf_sort_update_time) as RelativeLayout
-        bookshelf_sort_update_time_checkbox = findViewById(R.id.bookshelf_sort_update_time_checkbox) as ImageView
+        bookshelf_sort_update_time = findViewById(R.id.bookshelf_sort_update_time)
+        bookshelf_sort_update_time_checkbox = findViewById(R.id.bookshelf_sort_update_time_checkbox)
         //        tv_feedback = findViewById(R.id.tv_feedback);
         time_dialog = LayoutInflater.from(this).inflate(R.layout.view_custom_dialog_push_time_setting, null)
-        time_picker = time_dialog!!.findViewById(R.id.timepicker) as TimePicker
-        linear_book_sort = findViewById(R.id.linear_book_sort) as LinearLayout
-
+        time_picker = time_dialog!!.findViewById(R.id.timepicker)
+        linear_book_sort = findViewById(R.id.linear_book_sort)
 
     }
 
