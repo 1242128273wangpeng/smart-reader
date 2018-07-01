@@ -100,7 +100,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
                 SearchCommonBeanYouHua bean = (SearchCommonBeanYouHua) mData.get(position);
                 String type = bean.getWordtype();
                 if(hodler!=null) {
-                    if (type.equals("author")) {
+                    if (type.equals("authorType")) {
                         hodler.iv_shadow.setVisibility(View.GONE);
                         hodler.iv_icon.setImageResource(R.drawable.search_personal_yh);
                         hodler.iv_type.setImageResource(R.drawable.search_writer);

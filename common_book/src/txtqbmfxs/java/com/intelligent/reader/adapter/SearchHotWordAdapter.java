@@ -1,13 +1,8 @@
 package com.intelligent.reader.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.media.Image;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,42 +10,37 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ding.basic.bean.HotWordBean;
 import com.intelligent.reader.R;
 
 
-import net.lzbook.kit.data.search.HotWordBean;
-import net.lzbook.kit.data.search.SearchHotBean;
-
 import java.util.List;
-import java.util.Random;
 
 /**
- * Created by Administrator on 2017\9\4 0004.
+ * Function：搜索热词子条目
+ *
+ * Created by JoannChen on 2018/6/14 0013 21:08
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
-
 public class SearchHotWordAdapter extends BaseAdapter {
-    private List<SearchHotBean.DataBean> hotData;
-    private Activity mContext;
-    private int layoutResourceId;
-    private Random random;
-    private int oldType = -1;
-    private List<HotWordBean> datas;
 
-    public SearchHotWordAdapter(Activity context,List<HotWordBean> datas) {
+    private Activity mContext;
+    private List<HotWordBean> list;
+
+    public SearchHotWordAdapter(Activity context, List<HotWordBean> list) {
         this.mContext = context;
-        this.datas = datas;
-        random = new Random();
+        this.list = list;
     }
 
     @Override
     public int getCount() {
-        if(datas!=null&&datas.size()!=0){
-            if (datas.size() >= 5) {
+        if (list != null && list.size() != 0) {
+            if (list.size() >= 5) {
                 return 6;
-            }else{
-                return datas.size();
+            } else {
+                return list.size();
             }
-        }else{
+        } else {
             return 0;
         }
     }
@@ -72,27 +62,31 @@ public class SearchHotWordAdapter extends BaseAdapter {
             LayoutInflater inflater = mContext.getLayoutInflater();
             convertView = inflater.inflate(R.layout.search_item_hotword, parent, false);
             holder = new ViewHolder();
-            holder.tvHotWord = (TextView) convertView.findViewById(R.id.tv_hotword);
-            holder.iv_type = (ImageView) convertView.findViewById(R.id.iv_type);
+            holder.tvHotWord = convertView.findViewById(R.id.tv_hotword);
+            holder.iv_type = convertView.findViewById(R.id.iv_type);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        HotWordBean dataBean = datas.get(position);
+        HotWordBean dataBean = list.get(position);
         holder.tvHotWord.setText(dataBean.getKeyword());
-        if(!TextUtils.isEmpty(dataBean.getSuperscript())){
+        if (!TextUtils.isEmpty(dataBean.getSuperscript())) {
             holder.iv_type.setVisibility(View.VISIBLE);
-            if(dataBean.getSuperscript().equals("热")){
-                holder.iv_type.setImageResource(R.drawable.icon_search_hot);
-            }else if(dataBean.getSuperscript().equals("荐")){
-                holder.iv_type.setImageResource(R.drawable.icon_search_recommend);
-            }else if(dataBean.getSuperscript().equals("新")){
-                holder.iv_type.setImageResource(R.drawable.icon_search_new);
+            switch (dataBean.getSuperscript()) {
+                case "热":
+                    holder.iv_type.setImageResource(R.drawable.icon_search_hot);
+                    break;
+                case "荐":
+                    holder.iv_type.setImageResource(R.drawable.icon_search_recommend);
+                    break;
+                case "新":
+                    holder.iv_type.setImageResource(R.drawable.icon_search_new);
+                    break;
             }
-        }else{
+        } else {
             holder.iv_type.setVisibility(View.GONE);
         }
-        if(!TextUtils.isEmpty(dataBean.getColor())){
+        if (!TextUtils.isEmpty(dataBean.getColor())) {
             holder.tvHotWord.setTextColor(Color.parseColor(dataBean.getColor()));
             holder.tvHotWord.setBackgroundResource(R.drawable.booksearch_theme_color_bg);
         }
@@ -106,8 +100,8 @@ public class SearchHotWordAdapter extends BaseAdapter {
     }
 
 
-    public void setDatas(List<HotWordBean> datas) {
-        this.datas = datas;
+    public void setList(List<HotWordBean> list) {
+        this.list = list;
     }
 
 }

@@ -47,7 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ExpandableTextView2 extends LinearLayout implements View.OnClickListener {
+public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
 
     private static final int MAX_COLLAPSED_LINES = 8;
 
@@ -84,17 +84,17 @@ public class ExpandableTextView2 extends LinearLayout implements View.OnClickLis
     private SparseBooleanArray mCollapsedStatus;
     private int mPosition;
 
-    public ExpandableTextView2(Context context) {
+    public ExpandableTextView(Context context) {
         super(context);
     }
 
-    public ExpandableTextView2(Context context, AttributeSet attrs) {
+    public ExpandableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public ExpandableTextView2(Context context, AttributeSet attrs, int defStyle) {
+    public ExpandableTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }

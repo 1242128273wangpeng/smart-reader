@@ -13,8 +13,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/widget_size_20"
-        android:layout_marginTop="@dimen/widget_size_20"
         android:background="@drawable/activity_splash_txt_step_in_sel"
         android:paddingBottom="3dp"
         android:paddingLeft="15dp"
@@ -22,7 +20,10 @@
         android:paddingTop="3dp"
         android:text="跳过"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_size_12" />
+         />
+    <!--android:textSize="@dimen/font_size_12"-->
+        <!--android:layout_marginRight="@dimen/widget_size_20"-->
+        <!--android:layout_marginTop="@dimen/widget_size_20"-->
 
     <TextView
         android:id="@+id/tv_title"
@@ -30,11 +31,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_step_in"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/widget_size_88"
         android:textStyle="bold"
         android:text="让我们更了解你"
-        android:textColor="@color/color_primary"
-        android:textSize="@dimen/font_size_24" />
+        android:textColor="@color/color_primary"/>
+        <!--android:textSize="@dimen/font_size_24" -->
+        <!--android:layout_marginTop="@dimen/widget_size_88"-->
 
     <TextView
         android:id="@+id/tv_loading"
@@ -42,23 +43,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_step_in"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/widget_size_88"
         android:text="正在进入..."
         android:textColor="@color/color_primary"
         android:textStyle="bold"
-        android:textSize="@dimen/font_size_24"
         android:visibility="invisible" />
 
+        <!--android:layout_marginTop="@dimen/widget_size_88"-->
+        <!--android:textSize="@dimen/font_size_24"-->
     <TextView
         android:id="@+id/tv_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/widget_size_8"
         android:text="为你发现更适合的好书"
         android:textColor="@color/color_primary"
-        android:textSize="@dimen/font_size_16" />
+         />
+        <!--android:textSize="@dimen/font_size_16"-->
+        <!--android:layout_marginTop="@dimen/widget_size_8"-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,10 +68,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tv_title"
-        android:layout_marginTop="@dimen/widget_size_80"
         android:clipChildren="false"
         android:gravity="center"
         android:weightSum="2.5">
+        <!--android:layout_marginTop="@dimen/widget_size_80"-->
 
 
         <RelativeLayout

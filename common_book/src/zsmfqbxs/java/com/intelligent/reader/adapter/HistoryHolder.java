@@ -47,8 +47,8 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
         if (!TextUtils.isEmpty(book.getName()))
             this.mName.setText(book.getName());
 
-        if (!TextUtils.isEmpty(book.getAuthor())) {
-            mAuthor.setText("作者: " + book.getAuthor());
+        if (!TextUtils.isEmpty(book.getAuthorType())) {
+            mAuthor.setText("作者: " + book.getAuthorType());
         }
 
         if (this.mBrowTime != null) {

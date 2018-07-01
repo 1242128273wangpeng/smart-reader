@@ -19,7 +19,7 @@ import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.qbzsydq.act_book_end.*
+import kotlinx.android.synthetic.txtqbmfxs.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants

@@ -26,9 +26,9 @@ import com.dy.reader.presenter.CatalogMark
 import com.dy.reader.presenter.CatalogMarkPresenter
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.view.ReaderDeleteBookmarkPopup
-import kotlinx.android.synthetic.qbzsydq.frag_catalog_mark.*
-import kotlinx.android.synthetic.qbzsydq.frag_catalog_mark.view.*
-import kotlinx.android.synthetic.qbzsydq.item_reader_bookmark.view.*
+import kotlinx.android.synthetic.txtqbmfxs.frag_catalog_mark.*
+import kotlinx.android.synthetic.txtqbmfxs.frag_catalog_mark.view.*
+import kotlinx.android.synthetic.txtqbmfxs.item_reader_bookmark.view.*
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils

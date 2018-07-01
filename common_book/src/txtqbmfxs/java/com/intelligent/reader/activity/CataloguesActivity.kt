@@ -123,7 +123,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         tab_bookmark.antiShakeClick(this)
 
         //返回、倒序
-        iv_back.antiShakeClick(this)
+        img_back.antiShakeClick(this)
         tv_catalog_novel_sort.antiShakeClick(this)
 
         // 返回顶层按钮
@@ -205,16 +205,16 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             loadingPage = LoadingPage(this, LoadingPage.setting_result)
             loadingPage!!.setCustomBackgroud()
 
-            if (mCataloguesPresenter != null) {
+           /* if (mCataloguesPresenter != null) {
                 mCataloguesPresenter?.requestCatalogList()
-            }
+            }*/
 
             if (loadingPage != null) {
                 loadingPage?.isCategory = true
                 loadingPage?.setReloadAction(Callable<Void> {
-                    if (mCataloguesPresenter != null) {
+                 /*   if (mCataloguesPresenter != null) {
                         mCataloguesPresenter?.requestCatalogList()
-                    }
+                    }*/
                     null
                 })
             }
@@ -345,7 +345,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.catalog_novel_close -> {
+            R.id.img_back -> {
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
@@ -428,24 +428,27 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private fun startDeleteBookmarks(currentView: View, list: ArrayList<Int>) {
         if (list.size > 0) {
             val mDialog = MyDialog(this@CataloguesActivity, R.layout.publish_hint_dialog, Gravity.CENTER, true)
-            val dialog_prompt = mDialog.findViewById(R.id.dialog_title) as TextView
-            dialog_prompt.setText(R.string.prompt)
-            val dialog_information = mDialog.findViewById(R.id.publish_content) as TextView
-            dialog_information.setText(R.string.determine_remove_bookmark)
-            dialog_information.gravity = Gravity.CENTER
-            val dialog_cancel = mDialog.findViewById(R.id.publish_stay) as Button
-            dialog_cancel.setText(R.string.cancel)
-            val dialog_confirm = mDialog.findViewById(R.id.publish_leave) as Button
-            dialog_confirm.setText(R.string.delete)
-            dialog_confirm.setOnClickListener {
+            val dialogPrompt = mDialog.findViewById<TextView>(R.id.dialog_title)
+            dialogPrompt.setText(R.string.prompt)
+            val dialogInformation = mDialog.findViewById<TextView>(R.id.publish_content)
+            dialogInformation.setText(R.string.determine_remove_bookmark)
+            dialogInformation.gravity = Gravity.CENTER
+
+            val dialogCancel = mDialog.findViewById<Button>(R.id.publish_stay)
+            dialogCancel.setText(R.string.cancel)
+            val dialogConfirm = mDialog.findViewById<Button>(R.id.publish_leave)
+            dialogConfirm.setText(R.string.delete)
+
+            dialogConfirm.setOnClickListener {
                 if (currentView === tab_bookmark) {
                     if (mCataloguesPresenter != null) {
                         mCataloguesPresenter!!.doDeleteBookmarks(list)
                     }
                 }
-                mDialog?.dismiss()
+                mDialog.dismiss()
             }
-            dialog_cancel.setOnClickListener { mDialog?.dismiss() }
+
+            dialogCancel.setOnClickListener { mDialog.dismiss() }
             try {
                 mDialog.show()
             } catch (e: Exception) {

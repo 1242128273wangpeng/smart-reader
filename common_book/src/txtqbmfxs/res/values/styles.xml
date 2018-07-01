@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--首页-书架-书城-按钮样式-->
+
+    <style name="style_bookshelf_bookstore_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:drawablePadding">@dimen/dimen_margin_5</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/dimen_text_15</item>
+        <item name="android:textColor">@drawable/home_bookshelf_txt_selector</item>
+        <!--<item name="android:background">@drawable/home_bookshelf_parent_selector</item>-->
+    </style>
+
+    <!--设置页-左侧图标-文字-右侧更多按钮-->
+
+    <style name="style_setting_icon_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginTop">@dimen/dimen_padding_28</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_16</item>
+        <item name="android:layout_marginRight">@dimen/dimen_margin_24</item>
+        <item name="android:drawableRight">@mipmap/my_more</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/color_text_most</item>
+    </style>
+
+    <!--设置页左侧带图标的item-->
+
+    <style name="style_setting_text_font">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_16</item>
+        <item name="android:drawablePadding">4dp</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!--设置页左侧带图标的item-->
+
+    <style name="style_setting_switch_button">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <!--设置页分割线-->
+
+    <style name="style_setting_line_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/dialog_line</item>
+    </style>
+
+</resources>

@@ -62,12 +62,12 @@ class NightShadowView : View {
             } else {
                 val shapeDrawable = GradientDrawable()
 //                shapeDrawable.cornerRadius = radius
-                shapeDrawable.setCornerRadii(floatArrayOf(
+                shapeDrawable.cornerRadii = floatArrayOf(
                         radius, radius,
                         radius, radius,
                         radius, radius,
                         radius, radius
-                ))
+                )
                 shapeDrawable.shape = GradientDrawable.RECTANGLE
                 shapeDrawable.setColor(Color.BLACK)
                 setBackgroundDrawable(shapeDrawable)

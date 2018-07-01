@@ -38,8 +38,8 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.qbzsydq.act_reader.*
-import kotlinx.android.synthetic.qbzsydq.reader_content.*
+import kotlinx.android.synthetic.txtqbmfxs.act_reader.*
+import kotlinx.android.synthetic.txtqbmfxs.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils

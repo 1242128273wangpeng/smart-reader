@@ -1,12 +1,5 @@
 package com.intelligent.reader.receiver;
 
-import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.dy.reader.activity.ReaderActivity;
-import com.intelligent.reader.activity.HomeActivity;
-
-import net.lzbook.kit.app.BaseBookApplication;
-
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import com.ding.basic.bean.Book;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.dy.reader.activity.ReaderActivity;
+import com.intelligent.reader.activity.HomeActivity;
+
+import net.lzbook.kit.app.BaseBookApplication;
 
 public class DownBookClickReceiver extends BroadcastReceiver {
     public static final String action = "cn.txtzsydsq.reader.receiver.CLICK_DOWN_BOOK";

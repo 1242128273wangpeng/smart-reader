@@ -133,7 +133,6 @@ android {
 
     def channel = "dev_channel"
 
-
     lintOptions {
         // true--错误发生后停止gradle构建
         abortOnError false
@@ -521,13 +520,11 @@ N多网	        blf1298_10885_001
                     AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBMFXS}",
                     WECHAT_APPID : "wx4dfa750e9f5f9389",
                     QQ_APPID     : "1105888471",
-//                    PACKAGE_NAME : "cc.lianzainovel"
                     IFLYTEK_APPID: "${IFLYTEK_APPID_TXTQBMFXS}",
                     PACKAGE_NAME : defaultConfig.applicationId
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
-//            notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费小说"
             notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0aeda7846c"
             notOverrideResValue getOwner(), "string", "push_key", "5IGK3hQjIasKH9P9thgBtqop5tTzjiuF"
@@ -666,13 +663,11 @@ N多网	        blf1298_10885_001
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfyd_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
             notOverrideResValue getOwner(), "string", "database_name", "txtqbmfydBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24812888"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "2baf3d5d4f949e5189afbe37a8e1302e"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.youshiit.com:443"
         }
@@ -698,7 +693,6 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "mmpPNZqjHZz1ttpumE3PRouk9mHtN0pU"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731849"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "becf9b2d02e1caa350b0f9f8b84bb1bd"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
         }

@@ -1,5 +1,4 @@
-
-void log(def str){
+void log(def str) {
     System.err.println("gradle: " + str)
 }
 
@@ -12,8 +11,8 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbzsydsq.reader"
-    defaultPublishConfig = 'qbzsydqDebug'
+    applicationId = "cc.lianzainovel"
+    defaultPublishConfig = 'txtqbmfxs' + 'Debug'
 
     minifyEnable = false
     shrinkResEnable = minifyEnable
@@ -34,15 +33,15 @@ ext {
     def appPackageIDConfig = [
             kdzsydq   : "cn.txtzsydsq.reader",
             qbzsydq   : "cn.qbzsydsq.reader",
-            mfqbxssc  : "cc.kdqbxs.reader",
-            zsmfqbxs  : "cc.mianfeinovel",
-            txtqbmfxs : "cc.lianzainovel",
-            qbmfxsydq : "cc.quanben.novel",
-            txtqbdzs  : "cc.remennovel",
+            mfqbxssc  : "cc.kdqbxs.reader", //快读替
+            zsmfqbxs  : "cc.mianfeinovel", //阅微替
+            txtqbmfxs : "cc.lianzainovel", //鸿雁替
+            qbmfxsydq : "cc.quanben.novel",//五步替
+            txtqbdzs  : "cc.remennovel",   //智胜电子书替
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
-            qbmfkdxs  : "cc.quanbennovel"
+            qbmfkdxs  : "cc.quanbennovel" //今日多看
     ]
 
     def startParameter = project.getGradle().getStartParameter()
@@ -55,7 +54,7 @@ ext {
     if (!startParameter.taskRequests.isEmpty()) {
         def arg0 = startParameter.taskRequests[0].args[0]
         log(arg0)
-        if(arg0.contains(":common_book:")) {
+        if (arg0.contains(":common_book:")) {
             def isDebug = arg0.contains("Debug")
             def app = arg0.replace(":common_book:", "")
                     .replace("generate", "")
@@ -65,14 +64,14 @@ ext {
                     .replace("Custom", "")
                     .replace("Sources", "").toLowerCase()
             log(app)
-            if(!appPackageIDConfig.containsKey(app)){
+            if (!appPackageIDConfig.containsKey(app)) {
                 throw new RuntimeException("app not found: $app")
             }
             applicationId = appPackageIDConfig.get(app)
-            if(isDebug) {
-                defaultPublishConfig = app+"Debug"
-            }else{
-                defaultPublishConfig = app+"Release"
+            if (isDebug) {
+                defaultPublishConfig = app + "Debug"
+            } else {
+                defaultPublishConfig = app + "Release"
             }
 
             hasad = !noadList.contains(applicationId)

@@ -126,10 +126,10 @@
                 android:layout_marginTop="@dimen/margin_22"
                 android:background="@color/list_divider" />
 
-            <include
-                android:id="@+id/book_end_item_ad_layout"
-                layout="@layout/ad_item_small_layout"
-                android:visibility="gone"/>
+            <!--<include-->
+                <!--android:id="@+id/book_end_item_ad_layout"-->
+                <!--layout="@layout/ad_item_small_layout"-->
+                <!--android:visibility="gone"/>-->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

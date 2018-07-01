@@ -50,13 +50,13 @@
                     tools:text="青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募青果作家招募"
 
                     android:layout_centerVertical="true"
-                    android:textColor="@color/color_search_recommend_title"
                     android:layout_toRightOf="@+id/iv_card"
                     android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:layout_height="wrap_content"/>
+                    <!--android:textColor="@color/color_search_recommend_title"-->
 
             <TextView
                     android:id="@+id/tv_author"
@@ -157,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_view_height_0.5"
             android:layout_below="@+id/relative_main"
-            android:background="@color/color_search_divider"/>
-
+            />
+    <!--android:background="@color/color_search_divider"-->
 </RelativeLayout>
 

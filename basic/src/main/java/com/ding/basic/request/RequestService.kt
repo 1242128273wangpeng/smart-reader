@@ -78,6 +78,9 @@ interface RequestService {
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/v5/book/down"
 
+        // 搜索
+        const val SEARCH_V5 = "/v5/search/page"
+
         // cdn智能
         const val DYNAMIC_ZN = "https://public.lsread.cn/dpzn/{packageName}.json"
 
@@ -88,9 +91,20 @@ interface RequestService {
         const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
 
 
-
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
+
+        /**
+         *  鸿雁替 新WebView精选页面
+         */
+        const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
+
+        /**
+         *  鸿雁替 新新WebView分类页面
+         */
+        const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
+
+
     }
 
     @GET(DEFAULT_BOOK)
@@ -168,7 +182,6 @@ interface RequestService {
     /************************************* 缓存相关 *************************************/
     @GET(DOWN_TASK_CONFIG)
     fun requestDownTaskConfig(@Query(value = "bookId") str: String, @Query(value = "bookSourceId") str2: String, @Query(value = "type") i: Int, @Query(value = "chapterId") str3: String): Flowable<BasicResult<CacheTaskConfig>>
-
 
 
     @FormUrlEncoded

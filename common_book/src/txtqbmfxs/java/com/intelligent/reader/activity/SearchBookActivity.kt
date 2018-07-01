@@ -1,28 +1,14 @@
 package com.intelligent.reader.activity
 
-import com.intelligent.reader.R
-import com.intelligent.reader.search.SearchHelper
-import com.intelligent.reader.util.SearchViewHelper
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.HWEditText
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.data.db.BookDaoHelper
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.CustomWebClient
-import net.lzbook.kit.utils.JSInterfaceHelper
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.Tools
-
-import android.content.Intent
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.InflateException
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -30,18 +16,22 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebSettings
-import android.webkit.WebView
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.router.RouterConfig
-
-import java.util.HashMap
-
+import com.dingyue.contract.util.showToastMessage
+import com.intelligent.reader.R
+import com.intelligent.reader.search.SearchPresenter
+import com.intelligent.reader.search.SearchView
+import com.intelligent.reader.search.SearchViewHelper
+import com.orhanobut.logger.Logger
 import iyouqu.theme.FrameActivity
+import kotlinx.android.synthetic.txtqbmfxs.act_search_book.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.utils.*
+import java.util.*
 
 /**
  * Function：搜索书籍页
@@ -50,260 +40,179 @@ import iyouqu.theme.FrameActivity
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
-class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall, SearchHelper.JsNoneResultSearchCall {
+class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener,
+        SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-    private var search_result_back: ImageView? = null
-    private var search_result_button: ImageView? = null
-    private var search_result_outcome: RelativeLayout? = null
-    private var search_result_count: TextView? = null
-    private var search_result_keyword: TextView? = null
-    private var search_result_default: RelativeLayout? = null
-    private var search_result_clear: ImageView? = null
-    private var search_result_input: HWEditText? = null
-    private var search_result_main: RelativeLayout? = null
-    private var search_result_content: WebView? = null
-    private var search_result_hint: FrameLayout? = null
 
-    private var searchViewHelper: SearchViewHelper? = null
+    companion object {
+        /**
+         * 静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
+         */
+        var isStayHistory = false
+    }
+
+    /**
+     * 记录是否退出当前界面,for:修复退出界面时出现闪影
+     */
+    private var isBackPressed = false
+
     private var handler: Handler? = Handler()
 
     private var customWebClient: CustomWebClient? = null
     private var jsInterfaceHelper: JSInterfaceHelper? = null
 
-    internal var isSearch = false
-    //记录是否退出当前界面,for:修复退出界面时出现闪影
-    internal var isBackPressed = false
+    private var isSearch = false
+
 
     private var loadingPage: LoadingPage? = null
+    private var mSearchPresenter: SearchPresenter? = null
+    private var mSearchViewHelper: SearchViewHelper? = null
 
-    private var mSearchHelper: SearchHelper? = null
+    private var ziyougb: Boolean = false
 
-    internal var ziyougb: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.act_search_book)
+
+        initView()
+        initListener()
+
+        if (mSearchPresenter != null && !TextUtils.isEmpty(mSearchPresenter?.word)) {
+            loadDataFromNet()
+        }
+    }
+
+
     override fun onJsSearch() {
-        if (search_result_content != null) {
-            search_result_content!!.clearView()
+        if (wv_search_result != null) {
+            wv_search_result.clearCache(true)
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
+
         }
     }
 
     override fun onStartLoad(url: String) {
-        startLoading(handler, url)
+
+        if (wv_search_result == null) return
+        search_result_main.visibility = View.VISIBLE
+        handler?.post { loadingData(url) }
+
         webViewCallback()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        try {
-            setContentView(R.layout.activity_search_book)
-        } catch (e: InflateException) {
-            e.printStackTrace()
-            return
-        }
 
-        initData()
-        initView()
-        if (mSearchHelper != null && !TextUtils.isEmpty(mSearchHelper!!.word)) {
-            loadDataFromNet(isNotAuthor)
-        }
-    }
-
+    @SuppressLint("JavascriptInterface")
     private fun initView() {
-        search_result_back = findViewById(R.id.search_result_back) as ImageView
-        search_result_button = findViewById(R.id.search_result_button) as ImageView
-        search_result_outcome = findViewById(R.id.search_result_outcome) as RelativeLayout
-        if (search_result_outcome != null) {
-            search_result_outcome!!.visibility = View.VISIBLE
-        }
-        search_result_count = findViewById(R.id.search_result_count) as TextView
-        search_result_keyword = findViewById(R.id.search_result_keyword) as TextView
-        search_result_default = findViewById(R.id.search_result_default) as RelativeLayout
-        search_result_clear = findViewById(R.id.search_result_clear) as ImageView
-        if (search_result_clear != null) {
-            search_result_clear!!.visibility = View.GONE
-        }
-        search_result_input = findViewById(R.id.search_result_input) as HWEditText
-        search_result_main = findViewById(R.id.search_result_main) as RelativeLayout
 
-        search_result_content = findViewById(R.id.search_result_content) as WebView
-
-        search_result_hint = findViewById(R.id.search_result_hint) as FrameLayout
-
-        if (mSearchHelper == null) {
-            mSearchHelper = SearchHelper(this)
+        if (mSearchPresenter == null) {
+            mSearchPresenter = SearchPresenter(this, this, this)
         }
 
-        if (searchViewHelper == null) {
-            searchViewHelper = SearchViewHelper(this, search_result_hint, search_result_input, mSearchHelper)
+        if (mSearchViewHelper == null) {
+            mSearchViewHelper = SearchViewHelper(this, fl_search_auto_hint, etxt_search_input, mSearchPresenter)
         }
 
-        initListener()
-
-        if (Build.VERSION.SDK_INT >= 11) {
-            search_result_content!!.setLayerType(View.LAYER_TYPE_NONE, null)
+        if (Build.VERSION.SDK_INT >= 14) {
+            wv_search_result.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-        if (search_result_content != null) {
-            customWebClient = CustomWebClient(this, search_result_content)
+        customWebClient = CustomWebClient(this, wv_search_result)
+        customWebClient?.setWebSettings()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wv_search_result.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        if (search_result_content != null && customWebClient != null) {
-            customWebClient!!.setWebSettings()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                search_result_content!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-            search_result_content!!.webViewClient = customWebClient
+        wv_search_result.webViewClient = customWebClient
+
+        jsInterfaceHelper = JSInterfaceHelper(this, wv_search_result)
+        wv_search_result.addJavascriptInterface(jsInterfaceHelper, "J_search")
+        mSearchPresenter?.initJsInterfaceHelper(jsInterfaceHelper)
+
+
+        if (intent != null) {
+            mSearchPresenter?.setInitType(intent)
         }
 
-        if (search_result_content != null) {
-            jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
-        }
-
-        if (jsInterfaceHelper != null && search_result_content != null) {
-            search_result_content!!.addJavascriptInterface(jsInterfaceHelper, "J_search")
-            mSearchHelper!!.initJSHelp(jsInterfaceHelper)
+        if (!TextUtils.isEmpty(mSearchPresenter?.word)) {
+            mSearchViewHelper?.setSearchWord(mSearchPresenter?.word)
         }
 
     }
 
 
     private fun initListener() {
-        if (mSearchHelper != null) {
-            mSearchHelper!!.setJsCallSearchCall(this)
-            mSearchHelper!!.setJsNoneResultSearchCall(this)
-            mSearchHelper!!.setStartLoadCall(this)
-        }
 
-        if (search_result_back != null) {
-            search_result_back!!.setOnClickListener(this)
-        }
+        img_back.antiShakeClick(this)
+//        img_search.antiShakeClick(this)
+        img_search.setOnClickListener(this)
 
-        if (search_result_button != null) {
-            search_result_button!!.setOnClickListener(this)
-        }
+        search_result_outcome.setOnClickListener(this)
+        search_result_count.setOnClickListener(this)
+        search_result_default.setOnClickListener(this)
+        search_result_keyword.setOnClickListener(this)
+        img_clear.setOnClickListener(this)
 
-        if (search_result_outcome != null) {
-            search_result_outcome!!.setOnClickListener(this)
-        }
+        etxt_search_input.setOnClickListener(this)
+        etxt_search_input.onFocusChangeListener = this
+        etxt_search_input.addTextChangedListener(this)
+        etxt_search_input.setOnEditorActionListener(this)
 
-        if (search_result_count != null) {
-            search_result_count!!.setOnClickListener(this)
-        }
 
-        if (search_result_default != null) {
-            search_result_default!!.setOnClickListener(this)
-        }
+        /*      mSearchPresenter?.let {
+                  it.setStartLoadCall(this)
+                  it.setJsCallSearchCall(this)
+                  it.setJsNoneResultSearchCall(this)
+              }*/
 
-        if (search_result_keyword != null) {
-            search_result_keyword!!.setOnClickListener(this)
-        }
-
-        if (search_result_clear != null) {
-            search_result_clear!!.setOnClickListener(this)
-        }
-
-        if (search_result_input != null) {
-            search_result_input!!.setOnClickListener(this)
-            search_result_input!!.onFocusChangeListener = this
-            search_result_input!!.addTextChangedListener(this)
-            search_result_input!!.setOnEditorActionListener(this)
-        }
-
-        if (searchViewHelper != null) {
-            searchViewHelper!!.setOnHistoryClickListener(this)
-            searchViewHelper!!.onHotWordClickListener = SearchViewHelper.OnHotWordClickListener { tag, searchType ->
-                if (mSearchHelper != null) {
-                    mSearchHelper!!.setHotWordType(tag, searchType)
-                }
-                loadDataFromNet(isNotAuthor)
+        /*mSearchViewHelper?.let {
+            it.setOnHistoryClickListener(this)
+            it.onHotWordClickListener = { tag, searchType ->
+                mSearchPresenter?.setHotWordType(tag, searchType)
+                loadDataFromNet()
             }
+        }*/
 
-        }
-    }
-
-    private fun initData() {
-        if (mSearchHelper == null) {
-            mSearchHelper = SearchHelper(this)
-        }
-        val intent = intent
-        if (intent != null) {
-            mSearchHelper!!.setInitType(intent)
-        }
-        if (searchViewHelper != null && !TextUtils.isEmpty(mSearchHelper!!.word)) {
-            searchViewHelper!!.setSearchWord(mSearchHelper!!.word)
-        }
-
-        if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance()
-        }
-    }
-
-    private fun loadDataFromNet(isAuthor: Int) {
-
-        if (mSearchHelper == null) {
-            mSearchHelper = SearchHelper(this)
-        }
-
-        if (search_result_count != null) {
-            search_result_count!!.text = null
-        }
-
-        if (!TextUtils.isEmpty(mSearchHelper!!.word)) {
-            if (search_result_input != null)
-                if (isAuthor != 1) {
-                    search_result_input!!.setText(mSearchHelper!!.word)
-                    //                    search_result_input.setTextColor(getResources().getColor(R.color.search_title_hint));
-                } else {
-                    mSearchHelper!!.searchType = "2"
-                    search_result_input!!.setText(Tools.getKeyWord())
-                    //                    search_result_input.setTextColor(getResources().getColor(R.color.search_title_hint));
-                }
-            if (search_result_keyword != null) {
-                if (isAuthor != 1) {
-                    search_result_keyword!!.text = mSearchHelper!!.word
-                    //                    search_result_keyword.setTextColor(getResources().getColor(R.color.search_title_hint));
-                } else {
-                    mSearchHelper!!.searchType = "2"
-                    search_result_keyword!!.text = Tools.getKeyWord()
-                    //                    search_result_keyword.setTextColor(getResources().getColor(R.color.search_title_hint));
-                }
-            }
-
-            if (searchViewHelper != null) {
-                searchViewHelper!!.addHistoryWord(mSearchHelper!!.word)
-            }
-
-            hideSearchView()
-
-            if (loadingPage == null) {
-                loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
-            }
-
-            mSearchHelper!!.startLoadData(isAuthor)
-
-        } else {
-            showSearchViews()
-        }
     }
 
 
-    private fun startLoading(handler: Handler?, url: String) {
-        if (search_result_content == null) {
-            return
+    /**
+     * 从网络加载数据
+     */
+    private fun loadDataFromNet() {
+
+        if (mSearchPresenter == null) mSearchPresenter = SearchPresenter(this, this, this)
+
+        if (TextUtils.isEmpty(mSearchPresenter?.word)) showSearchViews()
+
+        search_result_count.text = null
+        etxt_search_input.setText(mSearchPresenter?.word)
+        search_result_keyword.text = mSearchPresenter?.word
+        mSearchViewHelper?.addHistoryWord(mSearchPresenter?.word)
+        mSearchViewHelper?.setShowHintEnabled(false)
+
+        hideSearchView()
+
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
         }
-        search_result_main!!.visibility = View.VISIBLE
-        handler?.post { loadingData(url) } ?: loadingData(url)
+
+        mSearchPresenter?.startLoadData(0)
+
     }
+
 
     private fun loadingData(url: String) {
         if (customWebClient != null) {
             customWebClient!!.doClear()
         }
-        AppLog.e(TAG, "LoadingData ==> " + url)
-        if (!TextUtils.isEmpty(url) && search_result_content != null) {
+        Logger.e("LoadingData ==> " + url)
+        if (!TextUtils.isEmpty(url) && wv_search_result != null) {
             try {
-                search_result_content!!.loadUrl(url)
+                wv_search_result.loadUrl(url)
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 this.finish()
@@ -314,120 +223,104 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun webViewCallback() {
 
-        if (search_result_content == null) {
+        if (wv_search_result == null) {
             return
         }
 
-        if (customWebClient != null) {
-            customWebClient!!.setStartedAction { url ->
-                AppLog.e(TAG, "onLoadStarted: " + url)
-                if (mSearchHelper == null) {
-                    mSearchHelper = SearchHelper(this@SearchBookActivity)
+        customWebClient?.let {
+            it.setStartedAction { url ->
+                Logger.e("onLoadStarted: " + url)
+                if (mSearchPresenter == null) {
+                    mSearchPresenter = SearchPresenter(this, this, this)
                 }
-                mSearchHelper!!.setStartedAction()
+                mSearchPresenter?.setStartedAction()
             }
 
-            customWebClient!!.setErrorAction {
-                AppLog.e(TAG, "onErrorReceived")
+            it.setErrorAction {
+                Logger.e("onErrorReceived")
                 if (loadingPage != null) {
-                    AppLog.e(TAG, "loadingPage != Null")
-                    loadingPage!!.onErrorVisable()
+                    loadingPage?.onErrorVisable()
                 }
             }
 
-            customWebClient!!.setFinishedAction {
-                AppLog.e(TAG, "onLoadFinished")
-                if (mSearchHelper == null) {
-                    mSearchHelper = SearchHelper(this@SearchBookActivity)
+            it.setFinishedAction {
+                Logger.e("onLoadFinished")
+                if (mSearchPresenter == null) {
+                    mSearchPresenter = SearchPresenter(this, this, this)
                 }
-                mSearchHelper!!.onLoadFinished()
+                mSearchPresenter!!.onLoadFinished()
                 if (loadingPage != null) {
                     if (isSearch) {
                         hideSearchView()
                     }
-                    loadingPage!!.onSuccessGone()
+                    loadingPage?.onSuccessGone()
                 }
             }
         }
 
         if (loadingPage != null) {
-            loadingPage!!.setReloadAction(LoadingPage.reloadCallback {
-                AppLog.e(TAG, "doReload")
-                if (customWebClient != null) {
-                    customWebClient!!.doClear()
-                }
-                search_result_content!!.reload()
+            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+                if (customWebClient != null) customWebClient?.doClear()
+                wv_search_result.reload()
             })
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (isSatyHistory && searchViewHelper != null && searchViewHelper!!.showStatus) {
-            if (mSearchHelper != null && mSearchHelper!!.fromClass != null && mSearchHelper!!.fromClass != "fromClass") {
+        if (isStayHistory && mSearchViewHelper != null && mSearchViewHelper?.getShowStatus()!!) {
+            if (mSearchPresenter != null && mSearchPresenter?.fromClass != null && mSearchPresenter?.fromClass != "fromClass") {
                 val historyDates = Tools.getKeyWord()
 
-                if (search_result_input != null) {
-                    search_result_input!!.requestFocus()
-                    search_result_input!!.setText(historyDates)
-                    //设置光标的索引
-                    val index = search_result_input!!.text
-                    search_result_input!!.setSelection(index.length)
-                    showSearchViews()
-                }
+                etxt_search_input.requestFocus()
+                etxt_search_input.setText(historyDates)
+                //设置光标的索引
+                val index = etxt_search_input.text
+                etxt_search_input.setSelection(index.length)
+                showSearchViews()
             }
 
         }
     }
 
-    /**
-     * 重载方法
-     */
     override fun onPause() {
         super.onPause()
+        if (etxt_search_input != null) etxt_search_input?.clearFocus()
     }
 
-    /**
-     * 重载方法
-     */
     override fun onStop() {
         super.onStop()
+        if (etxt_search_input != null) etxt_search_input?.clearFocus()
     }
 
-    /**
-     * 重载方法
-     */
     override fun onDestroy() {
-        if (mSearchHelper != null) {
-            mSearchHelper!!.onDestroy()
-        }
-        if (search_result_content != null) {
-            search_result_content!!.clearCache(true) //清空缓存
+
+        if (wv_search_result != null) {
+            wv_search_result.clearCache(true)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (search_result_main != null) {
-                    search_result_main!!.removeView(search_result_content)
+                    search_result_main.removeView(wv_search_result)
                 }
-                search_result_content!!.stopLoading()
-                search_result_content!!.removeAllViews()
-                //search_result_content.destroy();
+                wv_search_result.stopLoading()
+                wv_search_result.removeAllViews()
+                wv_search_result.destroy()
             } else {
-                search_result_content!!.stopLoading()
-                search_result_content!!.removeAllViews()
-                //search_result_content.destroy();
+                wv_search_result.stopLoading()
+                wv_search_result.removeAllViews()
+                wv_search_result.destroy()
                 if (search_result_main != null) {
-                    search_result_main!!.removeView(search_result_content)
+                    search_result_main.removeView(wv_search_result)
                 }
             }
-            search_result_content = null
         }
 
         if (loadingPage != null) {
             loadingPage = null
         }
 
-        if (searchViewHelper != null) {
-            searchViewHelper!!.onDestroy()
-            searchViewHelper = null
+        if (mSearchViewHelper != null) {
+            mSearchViewHelper?.onDestroy()
+            mSearchViewHelper = null
         }
 
         super.onDestroy()
@@ -440,102 +333,83 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     }
 
 
-    private fun showSearchViews() {
-        if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
-            return
-        }
-        isSearch = true
-        if (search_result_outcome != null && search_result_outcome!!.visibility != View.GONE) {
-            search_result_outcome!!.visibility = View.GONE
-        }
+    /**
+     * 点击搜索按钮
+     */
+    private fun getSearchResult() {
 
-        if (search_result_default != null && search_result_default!!.visibility != View.VISIBLE) {
-            search_result_default!!.visibility = View.VISIBLE
-        }
+        val keyword = etxt_search_input.text.toString()
 
-        if (search_result_content != null && search_result_content!!.visibility != View.GONE) {
-            search_result_content!!.visibility = View.GONE
-        }
+        if (TextUtils.isEmpty(keyword)) return
 
-        if (mSearchHelper == null) {
-            mSearchHelper = SearchHelper(this)
-        }
-        mSearchHelper!!.word = search_result_input!!.text.toString()
-
-        if (!TextUtils.isEmpty(mSearchHelper!!.word)) {
-
-            //            search_result_input.setText(word);
-            //            search_result_input.setSelection(word.length());
-
-            if (search_result_hint != null) {
-                search_result_hint!!.visibility = View.GONE
-            }
-
-            if (searchViewHelper != null) {
-                searchViewHelper!!.hideRecommendListView()
-            }
-
-            if (searchViewHelper != null) {
-                //                String finalContent = AppUtils.deleteAllIllegalChar(mSearchHelper.getWord());
-                searchViewHelper!!.showHintList()
-                //                searchViewHelper.showRemainWords(finalContent);
-            }
-
+        if (TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
+            this.applicationContext.showToastMessage(R.string.search_click_check_isright)
         } else {
-            search_result_input!!.setText(null)
-            search_result_input!!.editableText.clear()
-            search_result_input!!.text.clear()
+            hideInputMethod(etxt_search_input)
+
+            if (mSearchViewHelper != null) {
+                mSearchViewHelper?.addHistoryWord(keyword)
+
+//                if (mSearchPresenter?.searchType == null) return
+                if (mSearchPresenter?.fromClass != null && mSearchPresenter?.fromClass != "other") {
+                    mSearchPresenter?.setHotWordType(keyword, mSearchPresenter?.searchType)
+                } else {
+//                    val type = if (mSearchPresenter?.searchType != "0") mSearchPresenter?.searchType else "0"
+                    mSearchPresenter?.setHotWordType(keyword, "0")
+                }
+                loadDataFromNet()
+
+                val data = HashMap<String, String>()
+                data.put("type", "0")
+                data.put("keyword", keyword)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data)
+            } else {
+                showSearchViews()
+            }
+
+
         }
-        search_result_input!!.requestFocus()
-        dealSoftKeyboard(search_result_input)
+    }
+
+    private fun showSearchViews() {
+
+        if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) return
+
+        isSearch = true
+
+        search_result_default.visibility = View.VISIBLE
+        search_result_outcome.visibility = View.GONE
+        wv_search_result.visibility = View.GONE
+
+
+        if (!TextUtils.isEmpty(etxt_search_input.text)) {
+            fl_search_auto_hint.visibility = View.GONE
+            mSearchViewHelper?.hideRecommendListView()
+            mSearchViewHelper?.showHintList(mSearchPresenter?.word)
+        } else {
+            etxt_search_input.text = null
+            etxt_search_input.editableText.clear()
+            etxt_search_input.text.clear()
+        }
+
+        etxt_search_input.requestFocus()
+        showSoftKeyboard(etxt_search_input)
+
     }
 
     private fun hideSearchView() {
+
         isSearch = false
 
-        if (search_result_outcome != null && search_result_outcome!!.visibility != View.VISIBLE && !isBackPressed) {
-            search_result_outcome!!.visibility = View.VISIBLE
-        }
+        search_result_default.visibility = View.GONE
+        search_result_outcome.visibility = View.VISIBLE
+        wv_search_result.visibility = View.VISIBLE
+        fl_search_auto_hint.visibility = View.GONE
 
-        if (search_result_default != null && search_result_default!!.visibility != View.GONE) {
-            search_result_default!!.visibility = View.GONE
-        }
-
-        if (search_result_content != null && search_result_content!!.visibility != View.VISIBLE && !isBackPressed) {
-            search_result_content!!.visibility = View.VISIBLE
-        }
-
-        if (search_result_input != null) {
-            search_result_input!!.clearFocus()
-        }
-
-        if (searchViewHelper != null) {
-            searchViewHelper!!.hideHintList()
-        }
-        if (search_result_hint != null) {
-            search_result_hint!!.visibility = View.GONE
-        }
+        etxt_search_input.clearFocus()
+        mSearchViewHelper?.hideHintList()
     }
 
-    protected fun backAction() {
-        isBackPressed = true
-        finish()
-    }
-
-    fun dealSoftKeyboard(view: View?) {
-        if (handler == null) {
-            handler = Handler()
-        }
-        handler!!.postDelayed({
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-            // 弹出软键盘
-            if (view != null) {
-                imm.showSoftInput(view, 0)
-            }
-        }, 500)
-
-    }
 
     fun hideInputMethod(paramView: View?) {
         if (paramView == null || paramView.context == null)
@@ -548,121 +422,69 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.search_result_back -> {
-                val data1 = HashMap<String, String>()
-                data1.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BACK, data1)
-                backAction()
+            R.id.img_back -> {
+                val data = HashMap<String, String>()
+                data.put("type", "1")
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BACK, data)
+                isBackPressed = true
+                finish()
             }
-
-            R.id.search_result_clear -> {
+            R.id.img_clear -> {
                 ziyougb = true
-                if (search_result_input != null)
-                    search_result_input!!.setText(null)
-                if (search_result_clear != null)
-                    search_result_clear!!.visibility = View.GONE
-                dealSoftKeyboard(search_result_input)
+                etxt_search_input.text = null
+                img_clear.visibility = View.GONE
+                showSoftKeyboard(etxt_search_input)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.CLEAR)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR)
             }
+            R.id.img_search -> getSearchResult()
 
-            R.id.search_result_outcome, R.id.search_result_keyword, R.id.search_result_count ->
-                //                if (search_result_input != null)
-                //                    search_result_input.setSelection(search_result_input.length());
-                showSearchViews()
-
-            R.id.search_result_default, R.id.search_result_input -> showSearchViews()
-
-            R.id.search_result_button -> {
-                var keyword: String? = null
-
-                if (searchViewHelper != null) {
-                    searchViewHelper!!.isFocus = false
-                }
-
-                if (search_result_input != null) {
-                    keyword = search_result_input!!.text.toString()
-                }
-                if (keyword != null && TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-                    showToastShort(R.string.search_click_check_isright)
-                } else {
-                    hideInputMethod(search_result_input)
-                    if (keyword != null && !TextUtils.isEmpty(keyword.trim { it <= ' ' }) && searchViewHelper != null) {
-                        searchViewHelper!!.addHistoryWord(keyword)
-                        if (mSearchHelper == null) {
-                            mSearchHelper = SearchHelper(this)
-                        }
-
-                        if (mSearchHelper!!.fromClass != null && mSearchHelper!!.fromClass != "other") {
-                            if (mSearchHelper!!.searchType != null) {
-                                mSearchHelper!!.setHotWordType(keyword, mSearchHelper!!.searchType)
-                                AppLog.e("type14", mSearchHelper!!.searchType + "===")
-                            }
-                        } else {
-
-                            if (mSearchHelper!!.searchType != null && mSearchHelper!!.searchType != "0") {
-                                AppLog.e("type12", mSearchHelper!!.searchType + "===")
-                                mSearchHelper!!.setHotWordType(keyword, mSearchHelper!!.searchType)
-                            } else {
-                                AppLog.e("type12", 0.toString() + "===")
-                                mSearchHelper!!.setHotWordType(keyword, "0")
-                                mSearchHelper!!.searchType = "0"
-                            }
-                        }
-                        loadDataFromNet(isNotAuthor)
-
-                        val data = HashMap<String, String>()
-                        data.put("type", "0")
-                        data.put("keyword", keyword)
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data)
-                    } else {
-                        showSearchViews()
-                    }
-                }
-            }
+            R.id.search_result_outcome -> showSearchViews()
+            R.id.search_result_keyword -> showSearchViews()
+            R.id.search_result_count -> showSearchViews()
+            R.id.search_result_default -> showSearchViews()
+            R.id.etxt_search_input -> showSearchViews()
 
             else -> {
             }
         }
     }
 
+
     override fun onFocusChange(view: View, hasFocus: Boolean) {
-        if (search_result_input == null)
-            return
+
+        if (etxt_search_input == null) return
+
         if (hasFocus) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BAR)
-            dealSoftKeyboard(search_result_input)
+            showSoftKeyboard(etxt_search_input)
 
-            if (search_result_content != null && search_result_content!!.visibility != View.GONE) {
-                search_result_content!!.visibility = View.GONE
-            }
+            wv_search_result.visibility = View.GONE
 
-            if (searchViewHelper != null && search_result_input != null) {
-                if (mSearchHelper == null) {
-                    mSearchHelper = SearchHelper(this)
-                }
+            if (mSearchViewHelper != null) {
 
-                if (TextUtils.isEmpty(mSearchHelper!!.word)) {
-                    search_result_input!!.text.clear()
-                    search_result_input!!.editableText.clear()
-                    search_result_input!!.setText(null)
+                if (TextUtils.isEmpty(mSearchPresenter?.word)) {
+                    etxt_search_input.text.clear()
+                    etxt_search_input.editableText.clear()
+                    etxt_search_input.text = null
                 } else {
                     if (!ziyougb) {
-                        search_result_input!!.setText(mSearchHelper!!.word)
-                        search_result_input!!.setSelection(mSearchHelper!!.word.length)
+                        etxt_search_input.setText(mSearchPresenter?.word)
+                        etxt_search_input.setSelection(mSearchPresenter?.word!!.length)
                     }
                 }
-                search_result_keyword!!.setTextColor(resources.getColor(R.color.search_input_text_color))
-                search_result_input!!.setTextColor(resources.getColor(R.color.search_input_text_color))
+                etxt_search_input.setTextColor(ContextCompat.getColor(this, R.color.search_input_text_color))
+                search_result_keyword.setTextColor(ContextCompat.getColor(this, R.color.search_input_text_color))
+
                 //判断当用户没有对editText进行操作时（即编辑框没有内容时），显示搜索历史
-                if (search_result_input!!.text.toString() == "") {
-                    searchViewHelper!!.showHistoryList()
+                if (etxt_search_input.text.toString() == "") {
+                    mSearchViewHelper?.showHistoryList()
                 }
             }
             ziyougb = true
         } else {
             ziyougb = false
-            hideInputMethod(search_result_input)
+            hideInputMethod(etxt_search_input)
         }
     }
 
@@ -677,87 +499,74 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     }
 
 
-    override fun afterTextChanged(s: Editable) {
-        if (mSearchHelper != null && mSearchHelper!!.word != null) {
-            if (mSearchHelper!!.fromClass != null) {
-                if (mSearchHelper!!.word.trim { it <= ' ' } != s.toString().trim { it <= ' ' }) {
-                    AppLog.e("typ11", "typ111")
-                    if (mSearchHelper!!.fromClass != "other") {
-                        AppLog.e("typ", "typ")
-                        mSearchHelper!!.fromClass = "other"
-                    }
-                    mSearchHelper!!.searchType = "0"
-                }
-            } else {
-                if (mSearchHelper!!.word.trim { it <= ' ' } != s.toString().trim { it <= ' ' }) {
-                    mSearchHelper!!.searchType = "0"
-                }
+    override fun afterTextChanged(editable: Editable) {
+
+        if (mSearchPresenter != null &&
+                mSearchPresenter?.word != null &&
+                mSearchPresenter?.word?.trim { it <= ' ' } != editable.toString().trim { it <= ' ' }) {
+
+            mSearchPresenter?.searchType = "0"
+
+            if (mSearchPresenter?.fromClass != null && mSearchPresenter?.fromClass != "other") {
+                mSearchPresenter?.fromClass = "other"
             }
         }
 
-        if (search_result_clear == null) {
+        if (img_clear == null) {
             return
         }
 
-        if (!TextUtils.isEmpty(s.toString())) {
-            if (search_result_input!!.isFocused == true) {
-                search_result_clear!!.visibility = View.VISIBLE
-            } else {
-                search_result_clear!!.visibility = View.GONE
-            }
+        if (!TextUtils.isEmpty(editable.toString())) {
+            img_clear.visibility = if (etxt_search_input.isFocused) View.VISIBLE else View.GONE
         } else {
-            search_result_clear!!.visibility = View.GONE
-            s.clear()
-            search_result_main!!.visibility = View.GONE
+            editable.clear()
+            img_clear.visibility = View.GONE
+            search_result_main.visibility = View.GONE
         }
 
         //保存用户搜索词
-        Tools.setUserSearchWord(s.toString())
+        Tools.setUserSearchWord(editable.toString())
 
         //网络请求
-        if (searchViewHelper != null) {
-            val finalContent = AppUtils.deleteAllIllegalChar(s.toString())
-            searchViewHelper!!.showRemainWords(finalContent)
+        if (mSearchViewHelper != null) {
+            mSearchViewHelper?.showRemainWords(AppUtils.deleteAllIllegalChar(editable.toString()))
         }
     }
 
-    override fun OnHistoryClick(history: String, searchType: String, isAuthor: Int) {
-        if (mSearchHelper == null) {
-            mSearchHelper = SearchHelper(this)
-        }
-        mSearchHelper!!.setHotWordType(history, searchType)
-        if ("3" == searchType) {
 
-        } else {
-            loadDataFromNet(isAuthor)
+    override fun onHistoryClick(history: String, searchType: String) {
+        mSearchPresenter?.setHotWordType(history, searchType)
+        if (searchType != "3") {
+            loadDataFromNet()
         }
     }
-
 
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent): Boolean {
-        if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
-                actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT ||
-                actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-            var keyword: String? = null
-            if (search_result_input != null) {
-                keyword = search_result_input!!.text.toString()
-            }
-            if (keyword != null && keyword.trim { it <= ' ' } == "") {
-                showToastShort(R.string.search_click_check_isright)
+        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                actionId == EditorInfo.IME_ACTION_GO ||
+                actionId == EditorInfo.IME_ACTION_DONE ||
+                actionId == EditorInfo.IME_ACTION_NEXT ||
+                actionId == EditorInfo.IME_ACTION_SEND ||
+                actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+
+            val keyword = etxt_search_input!!.text.toString()
+
+            if (keyword.trim { it <= ' ' } == "") {
+                this.showToastMessage(R.string.search_click_check_isright)
             } else {
+                mSearchViewHelper?.isFocus = false
 
-                searchViewHelper!!.isFocus = false
                 hideInputMethod(v)
-                if (keyword != null && keyword != "" && searchViewHelper != null) {
-                    searchViewHelper!!.addHistoryWord(keyword)
-                    mSearchHelper!!.setHotWordType(keyword, "0")
-                    loadDataFromNet(isNotAuthor)
 
-                    val data = HashMap<String, String>()
-                    data.put("type", "1")
-                    data.put("keyword", keyword)
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data)
-                }
+                mSearchViewHelper?.addHistoryWord(keyword)
+                mSearchPresenter?.setHotWordType(keyword, "0")
+                loadDataFromNet()
+
+                val data = HashMap<String, String>()
+                data.put("type", "1")
+                data.put("keyword", keyword)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data)
+
             }
             return true
         }
@@ -771,27 +580,39 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_default!!.visibility = View.VISIBLE
         }
 
-        if (search_result_input != null) {
-            search_result_input!!.setText(searchWord)
+        if (etxt_search_input != null) {
+            etxt_search_input!!.setText(searchWord)
         }
 
-        if (searchViewHelper != null) {
-            searchViewHelper!!.addHistoryWord(searchWord)
-            searchViewHelper!!.hideHintList()
+        if (mSearchViewHelper != null) {
+            mSearchViewHelper?.addHistoryWord(searchWord)
+            mSearchViewHelper?.hideHintList()
         }
 
-        if (search_result_content != null) {
-            search_result_content!!.clearView()
+        if (wv_search_result != null) {
+            wv_search_result!!.clearView()
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
         }
     }
 
-    companion object {
-        //静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
-        var isSatyHistory = false
 
-        val isNotAuthor = 0//不是作者
+    /**
+     * 弹出软键盘
+     */
+    private fun showSoftKeyboard(view: View?) {
+
+        if (handler == null) handler = Handler()
+
+        handler?.postDelayed({
+
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (view != null) {
+                imm.showSoftInput(view, 0)
+            }
+        }, 500)
+
     }
+
 }

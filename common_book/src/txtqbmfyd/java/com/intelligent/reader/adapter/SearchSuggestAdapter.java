@@ -69,7 +69,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         }
         SearchCommonBean bean = mData.get(position);
         String type = bean.getWordtype();
-        if (type.equals("author")) {
+        if (type.equals("authorType")) {
             hodler.iv_type.setImageResource(R.drawable.search_author);
 
         } else if (type.equals("label")) {

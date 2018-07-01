@@ -17,7 +17,7 @@
             android:layout_height="@dimen/top_bar_height">
 
             <ImageView
-                android:id="@+id/search_result_back"
+                android:id="@id/img_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
@@ -27,7 +27,7 @@
                 android:src="@mipmap/top_back"/>
 
             <ImageView
-                android:id="@+id/search_result_button"
+                android:id="@+id/img_search"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
@@ -41,8 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_view_height_35"
                 android:layout_centerInParent="true"
-                android:layout_toLeftOf="@id/search_result_button"
-                android:layout_toRightOf="@id/search_result_back"
+                android:layout_toLeftOf="@id/img_search"
+                android:layout_toRightOf="@id/img_back"
                 android:background="@drawable/search_input_bg"
                 android:visibility="visible">
 
@@ -77,13 +77,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_view_height_35"
                 android:layout_centerInParent="true"
-                android:layout_toLeftOf="@id/search_result_button"
-                android:layout_toRightOf="@id/search_result_back"
-                android:background="@drawable/search_input_bg"
-                android:visibility="visible">
+                android:layout_toLeftOf="@id/img_search"
+                android:layout_toRightOf="@id/img_back"
+                android:background="@drawable/search_input_bg">
 
                 <ImageView
-                    android:id="@+id/search_result_clear"
+                    android:id="@id/img_clear"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
@@ -94,15 +93,15 @@
                     android:paddingRight="@dimen/dimen_padding_10"
                     android:scaleType="fitCenter"
                     android:src="@drawable/search_edit_clear"
-                    android:visibility="visible"/>
+                    android:visibility="gone"/>
 
                 <net.lzbook.kit.book.view.HWEditText
-                    android:id="@+id/search_result_input"
+                    android:id="@+id/etxt_search_input"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dimen_margin_12"
-                    android:layout_toLeftOf="@id/search_result_clear"
+                    android:layout_toLeftOf="@id/img_clear"
                     android:background="@color/transparent"
                     android:cursorVisible="true"
                     android:gravity="center|left"
@@ -128,16 +127,17 @@
             android:layout_height="match_parent">
 
             <WebView
-                android:id="@+id/search_result_content"
+                android:id="@+id/wv_search_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </WebView>
 
-
         </RelativeLayout>
 
+        <!--自动补全布局-->
+
         <FrameLayout
-            android:id="@+id/search_result_hint"
+            android:id="@+id/fl_search_auto_hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/base_bg">

@@ -79,7 +79,7 @@ public class CatalogAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewCache viewCache;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.content_catalog_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_catalog, parent, false);
             viewCache = new ViewCache(convertView);
             convertView.setTag(viewCache);
         } else {

@@ -154,7 +154,7 @@ public class DynamicParamter {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
         UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
-        UrlUtils.setBookWebviewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
+        UrlUtils.setBookWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
 
         Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
         Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));

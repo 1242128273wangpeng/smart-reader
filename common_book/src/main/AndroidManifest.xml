@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.intelligent.reader"
-        android:installLocation="auto"
-        android:largeHeap="true"
-        android:versionCode="17"
-        android:versionName="1.5.4">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.intelligent.reader"
+    android:installLocation="auto"
+    android:largeHeap="true"
+    android:versionCode="17"
+    android:versionName="1.5.4">
 
     <uses-sdk
-            android:minSdkVersion="14"
-            android:targetSdkVersion="22"
-            tools:overrideLibrary="comm.umeng.com.umeng_community_library_project"/>
+        android:minSdkVersion="14"
+        android:targetSdkVersion="22"
+        tools:overrideLibrary="comm.umeng.com.umeng_community_library_project"/>
 
     <!-- 百度推送权限 -->
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
@@ -20,8 +20,8 @@
     <!-- 适配Android N系统必需的ContentProvider写权限声明，写权限包含应用包名-->
     <uses-permission android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"/>
     <permission
-            android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"
-            android:protectionLevel="signature">
+        android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"
+        android:protectionLevel="signature">
     </permission>
 
     <!-- 用于在屏幕关闭时维持下载网络 -->
@@ -86,91 +86,94 @@
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <!--qq-->
     <supports-screens
-            android:anyDensity="true"
-            android:largeScreens="true"
-            android:normalScreens="true"
-            android:smallScreens="true"
-            android:xlargeScreens="true"/>
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true"/>
 
     <application
-            android:name=".app.BookApplication"
-            android:allowBackup="true"
-            android:icon="@drawable/icon"
-            android:label="@string/app_name"
-            android:largeHeap="true"
-            android:resizeableActivity="true"
-            tools:replace="android:allowBackup">
+        android:name=".app.BookApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:resizeableActivity="false"
+        tools:replace="android:allowBackup">
         <!--适配全面屏手机-->
-        <meta-data android:name="android.max_aspect"
+        <meta-data
+            android:name="android.max_aspect"
             android:value="2.2"/>
         <!--huawei-->
-        <meta-data android:name="android.notch_support" android:value="true"/>
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
         <!-- start for GaoDe Map -->
         <service android:name="com.amap.api.location.APSService"/>
 
         <meta-data
-                android:name="com.amap.api.v2.apikey"
-                android:value="${AMAP_APIKEY}"/>
+            android:name="com.amap.api.v2.apikey"
+            android:value="${AMAP_APIKEY}"/>
         <!-- end for GaoDe Map -->
 
         <meta-data
-                android:name="UMENG_APPKEY"
-                android:value="${UMENG_APP_KEY}"/>
+            android:name="UMENG_APPKEY"
+            android:value="${UMENG_APP_KEY}"/>
 
 
         <!-- 您从百度网站获取的APP KEY -->
         <meta-data
-                android:name="BaiduMobAd_STAT_ID"
-                android:value="${BAIDU_STAT_ID}"/>
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="${BAIDU_STAT_ID}"/>
         <!-- 应用程序的分发渠道 -->
         <meta-data
-                android:name="BaiduMobAd_CHANNEL"
-                android:value="${CHANNEL_NAME}"/>
+            android:name="BaiduMobAd_CHANNEL"
+            android:value="${CHANNEL_NAME}"/>
         <!-- baidu channel -->
 
         <meta-data
-                android:name="WECHAT_APPID"
-                android:value="${WECHAT_APPID}"
-                />
+            android:name="WECHAT_APPID"
+            android:value="${WECHAT_APPID}"
+            />
         <meta-data
-                android:name="QQ_APPID"
-                android:value="${QQ_APPID}"
-                />
+            android:name="QQ_APPID"
+            android:value="${QQ_APPID}"
+            />
 
         <!-- 注册Service，应用下载所需 -->
         <service
-                android:name="com.adsmogo.controller.service.UpdateService"
-                android:exported="true"
-                android:process=":remote"/>
+            android:name="com.adsmogo.controller.service.UpdateService"
+            android:exported="true"
+            android:process=":remote"/>
         <!-- 注册Service，应用被安装所用 -->
         <service
-                android:name="com.adsmogo.controller.service.CountService"
-                android:exported="true"
-                android:process=":remote"/>
+            android:name="com.adsmogo.controller.service.CountService"
+            android:exported="true"
+            android:process=":remote"/>
 
         <activity
-                android:name="com.qq.e.ads.InterstitialAd"
-                android:configChanges="keyboard|keyboardHidden|orientation"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:name="com.qq.e.ads.InterstitialAd"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-                android:name="com.qq.e.ads.ADActivity"
-                android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
+            android:name="com.qq.e.ads.ADActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
 
         <!-- 百度广告Activity声明 -->
         <activity
-                android:name="com.baidu.mobads.AppActivity"
-                android:configChanges="keyboard|keyboardHidden|orientation"/>
+            android:name="com.baidu.mobads.AppActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"/>
 
         <service
-                android:name="com.qq.e.comm.DownloadService"
-                android:exported="false"/>
+            android:name="com.qq.e.comm.DownloadService"
+            android:exported="false"/>
         <!-- <activity android:name="com.qq.e.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" /> -->
 
         <activity
-                android:name=".activity.SplashActivity"
-                android:label="@string/app_name"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.Start">
+            android:name=".activity.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Start">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -178,54 +181,65 @@
             </intent-filter>
         </activity>
         <activity
-                android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
-                android:screenOrientation="portrait"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                android:exported="true">
+            android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
         <!-- 书架页 发现页 -->
         <activity
-                android:name=".activity.HomeActivity"
-                android:launchMode="singleTask"
-                android:clearTaskOnLaunch="true"
-                android:configChanges="keyboard|orientation|screenSize|screenLayout|navigation"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppTheme">
+            android:name=".activity.HomeActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="keyboard|orientation|screenSize|screenLayout|navigation"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN2"/>-->
+            <!--<action android:name="android.intent.action.MAIN2"/>-->
 
-                <!--<category android:name="android.intent.category.main"/>-->
+            <!--<category android:name="android.intent.category.main"/>-->
             <!--</intent-filter>-->
         </activity>
 
         <activity
-                android:name=".activity.LoginActivity"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent">
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent">
 
         </activity>
         <!--<activity-->
-                <!--android:name="com.dy.reader.activity.ReaderActivity"-->
-                <!--android:hardwareAccelerated="true"-->
-                <!--android:launchMode="singleTask"-->
-                <!--android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"-->
-                <!--android:screenOrientation="nosensor"-->
-                <!--android:theme="@style/Theme.DesignDemo"/>-->
+        <!--android:name="com.dy.reader.activity.ReaderActivity"-->
+        <!--android:hardwareAccelerated="true"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"-->
+        <!--android:screenOrientation="nosensor"-->
+        <!--android:theme="@style/Theme.DesignDemo"/>-->
         <activity
-                android:name=".activity.CataloguesActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.CataloguesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
         <!-- 关于 -->
 
+
+        <!--调试模式-->
+        <activity
+            android:name=".activity.DebugActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
+
+        <activity
+            android:name=".activity.DebugHostActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 阅读设置页面 -->
 
         <!-- 更多设置 -->
         <activity
-                android:name=".activity.SettingMoreActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.SettingMoreActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 设置页 -->
         <activity
@@ -236,31 +250,32 @@
 
         <!-- 下载apk失败页面 -->
         <activity
-                android:name=".activity.DownloadErrorActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.DownloadErrorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 找书页面 -->
         <activity
-                android:name=".activity.SearchBookActivity"
-                android:configChanges="keyboard"
-                android:windowSoftInputMode="adjustNothing"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.SearchBookActivity"
+            android:configChanges="keyboard"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
-                android:name=".activity.StyleChangeActivity"
-                android:configChanges="keyboard"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.StyleChangeActivity"
+            android:configChanges="keyboard"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
-        <activity android:name=".activity.WelfareCenterActivity"
-                  android:configChanges="keyboard"
-                  android:windowSoftInputMode="adjustNothing"
-                  android:launchMode="singleTop"
-                  android:screenOrientation="portrait"
-                  android:theme="@style/AppThemeTranslucent"/>
+        <activity
+            android:name=".activity.WelfareCenterActivity"
+            android:configChanges="keyboard"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"
+            android:windowSoftInputMode="adjustNothing"/>
 
         <!-- 推送 -->
         <receiver android:name=".receiver.PushClickReceiver">
@@ -286,8 +301,8 @@
         </receiver>
         <!-- 百度推送 push必须的receviver和service声明 -->
         <receiver
-                android:name="com.baidu.android.pushservice.PushServiceReceiver"
-                android:process=":bdservice_v1">
+            android:name="com.baidu.android.pushservice.PushServiceReceiver"
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
@@ -301,8 +316,8 @@
             </intent-filter>
         </receiver>
         <receiver
-                android:name="com.baidu.android.pushservice.RegistrationReceiver"
-                android:process=":bdservice_v1">
+            android:name="com.baidu.android.pushservice.RegistrationReceiver"
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.METHOD"/>
                 <action android:name="com.baidu.android.pushservice.action.BIND_SYNC"/>
@@ -315,85 +330,85 @@
         </receiver>
 
         <service
-                android:name="com.baidu.android.pushservice.PushService"
-                android:exported="true"
-                android:process=":bdservice_v1">
+            android:name="com.baidu.android.pushservice.PushService"
+            android:exported="true"
+            android:process=":bdservice_v1">
             <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE"/>
             </intent-filter>
         </service>
         <service
-                android:name="com.baidu.android.pushservice.CommandService"
-                android:exported="true"/>
+            android:name="com.baidu.android.pushservice.CommandService"
+            android:exported="true"/>
 
         <!-- 适配Android N系统必需的ContentProvider声明，写权限包含应用包名-->
         <provider
-                android:name="com.baidu.android.pushservice.PushInfoProvider"
-                android:authorities="${PACKAGE_NAME}.bdpush"
-                android:writePermission="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"
-                android:protectionLevel="signature"
-                android:exported="true"/>
+            android:name="com.baidu.android.pushservice.PushInfoProvider"
+            android:authorities="${PACKAGE_NAME}.bdpush"
+            android:exported="true"
+            android:protectionLevel="signature"
+            android:writePermission="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"/>
         <!-- 百度推送push结束 -->
 
         <!-- Inmobi广告 下载类广告需要的 -->
         <!--<activity-->
-                <!--android:name="com.inmobi.rendering.InMobiAdActivity"-->
-                <!--android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"-->
-                <!--android:hardwareAccelerated="true"-->
-                <!--android:resizeableActivity="false"-->
-                <!--android:theme="@android:style/Theme.NoTitleBar"-->
-                <!--tools:ignore="UnusedAttribute"/>-->
+        <!--android:name="com.inmobi.rendering.InMobiAdActivity"-->
+        <!--android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"-->
+        <!--android:hardwareAccelerated="true"-->
+        <!--android:resizeableActivity="false"-->
+        <!--android:theme="@android:style/Theme.NoTitleBar"-->
+        <!--tools:ignore="UnusedAttribute"/>-->
         <!--<receiver-->
-                <!--android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"-->
-                <!--android:enabled="true"-->
-                <!--android:exported="true"-->
-                <!--tools:ignore="ExportedReceiver">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.inmobi.share.id"/>-->
-            <!--</intent-filter>-->
+        <!--android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"-->
+        <!--android:enabled="true"-->
+        <!--android:exported="true"-->
+        <!--tools:ignore="ExportedReceiver">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="com.inmobi.share.id"/>-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
         <!--<service-->
-                <!--android:name="com.inmobi.ads.ApkDownloader$ApkDownloadService"-->
-                <!--android:enabled="true"></service>-->
+        <!--android:name="com.inmobi.ads.ApkDownloader$ApkDownloadService"-->
+        <!--android:enabled="true"></service>-->
         <!-- Inmobi相关配置结束 -->
 
         <activity
-                android:name=".activity.CoverPageActivity"
+            android:name=".activity.CoverPageActivity"
 
-                android:label="@string/title_activity_act_book_cover"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:label="@string/title_activity_act_book_cover"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
         <activity
-                android:name=".activity.FootprintActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.FootprintActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
         <!--<activity-->
-                <!--android:name=".activity.BookEndActivity"-->
-                <!--android:launchMode="singleTask"-->
-                <!--android:label="@string/title_activity_act_book_over"-->
-                <!--android:screenOrientation="portrait"-->
-                <!--android:theme="@style/AppThemeTranslucent"/>-->
+        <!--android:name=".activity.BookEndActivity"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:label="@string/title_activity_act_book_over"-->
+        <!--android:screenOrientation="portrait"-->
+        <!--android:theme="@style/AppThemeTranslucent"/>-->
         <activity
-                android:name=".activity.GuideActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppTheme"/>
+            android:name=".activity.GuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
         <activity
-                android:name=".activity.FindBookDetail"
-                android:configChanges="keyboard"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.FindBookDetail"
+            android:configChanges="keyboard"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
         <activity
-                android:name=".activity.SwitchModeActivity"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppThemeTranslucent"/>
+            android:name=".activity.SwitchModeActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
         <activity
-                android:name=".activity.GoToCoverOrReadActivity"
-                android:taskAffinity=".gotocoverorreadactivity"
-                android:launchMode="singleInstance"
-                android:noHistory="true">
+            android:name=".activity.GoToCoverOrReadActivity"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:taskAffinity=".gotocoverorreadactivity">
             <!--<intent-filter>-->
             <!--<action android:name="${applicationId}.GoToCoverOrReadActivity"/>-->
             <!--<category android:name="android.intent.category.DEFAULT"/>-->
@@ -401,10 +416,10 @@
         </activity>
         <!-- 腾讯SSO授权的Activity注册 -->
         <activity
-                android:name="com.tencent.tauth.AuthActivity"
-                android:launchMode="singleTask"
-                android:noHistory="true"
-                android:screenOrientation="portrait">
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -415,14 +430,14 @@
             </intent-filter>
         </activity>
         <activity
-                android:name="com.tencent.connect.common.AssistActivity"
-                android:screenOrientation="portrait"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <activity
             android:name=".activity.SwitchSplashAdActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- 微信回调activity -->
 
 
@@ -441,9 +456,9 @@
 
         <!-- 新浪微博 -->
         <activity
-                android:name=".WBShareActivity"
-                android:configChanges="keyboardHidden|orientation"
-                android:screenOrientation="portrait">
+            android:name=".WBShareActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
 
@@ -451,15 +466,15 @@
             </intent-filter>
         </activity>
         <activity
-                android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
-                android:configChanges="keyboardHidden|orientation"
-                android:exported="false"
-                android:screenOrientation="portrait"
-                android:windowSoftInputMode="adjustResize"/>
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <service
-                android:name="com.sina.weibo.sdk.net.DownloadService"
-                android:exported="false"/>
+            android:name="com.sina.weibo.sdk.net.DownloadService"
+            android:exported="false"/>
 
         <receiver android:name=".receiver.ConnectionChangeReceiver">
             <intent-filter>
@@ -473,15 +488,15 @@
         </receiver>
 
         <service
-                android:name="net.lzbook.kit.utils.update.DownloadIntentService"
-                android:enabled="true"
-                android:exported="true"/>
+            android:name="net.lzbook.kit.utils.update.DownloadIntentService"
+            android:enabled="true"
+            android:exported="true"/>
 
         <!-- 科大讯飞 -->
         <service android:name="com.iflytek.voiceads.update.DownloadService"/>
         <activity
-                android:name="com.iflytek.voiceads.request.IFLYBrowser"
-                android:screenOrientation="portrait"/>
+            android:name="com.iflytek.voiceads.request.IFLYBrowser"
+            android:screenOrientation="portrait"/>
 
     </application>
 

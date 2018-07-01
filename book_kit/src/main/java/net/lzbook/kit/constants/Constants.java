@@ -13,6 +13,13 @@ import java.io.File;
 
 public class Constants {
 
+    //开屏选男女
+    public static int SBOY = 1;
+    public static int SGIRL = 2;
+    public static int SDEFAULT = 0;
+    public static int NONE = -1;
+    public static int SGENDER = SDEFAULT;
+
     // 反射resourceType
     public static final int DRAWABLE = 1;
     public static final int COLOR = 2;

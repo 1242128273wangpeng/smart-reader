@@ -47,8 +47,9 @@
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="@string/app_name"
                         android:scaleType="fitXY"
-                        android:background="@mipmap/bookshelf_book_cover_default"
-                        android:src="@mipmap/bookshelf_book_cover_default"/>
+                       />
+                <!--android:background="@mipmap/bookshelf_book_cover_default"-->
+                <!--android:src="@mipmap/bookshelf_book_cover_default"-->
             </FrameLayout>
 
 

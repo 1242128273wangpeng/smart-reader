@@ -24,11 +24,14 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.ThemeHelper
-import kotlinx.android.synthetic.qbzsydq.reader_option_bottom.view.*
-import kotlinx.android.synthetic.qbzsydq.reader_option_detail.view.*
+import kotlinx.android.synthetic.txtqbmfxs.reader_option_bottom.view.*
+import kotlinx.android.synthetic.txtqbmfxs.reader_option_detail.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.ResourceUtil
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 

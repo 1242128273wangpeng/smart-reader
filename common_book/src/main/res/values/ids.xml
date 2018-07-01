@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--标题栏返回按钮-->
     <item name="btn_back" type="id"/>
-    <item name="iv_back" type="id"/>
+    <item name="img_back" type="id"/><!--返回按钮-->
+    <item name="img_clear" type="id"/><!--清除按钮-->
+    <item name="rl_title" type="id"/><!--标题栏布局-->
 
 
     <!-- PullToRefreshGridview-->

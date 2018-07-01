@@ -73,11 +73,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:button="@null"
-                android:drawableTop="@drawable/style_change_selector1"
                 android:textColor="@color/color_text_most"
                 android:text="@string/style_change_1"
                 android:drawablePadding="-15dp"
                 android:textAlignment="center">
+                <!--android:drawableTop="@drawable/style_change_selector1"-->
         </RadioButton>
 
         <RadioButton
@@ -87,10 +87,10 @@
                 android:layout_weight="1"
                 android:button="@null"
                 android:textColor="@color/color_text_most"
-                android:drawableTop="@drawable/style_change_selector2"
                 android:text="@string/style_change_2"
                 android:drawablePadding="-15dp"
                 android:textAlignment="center">
+                <!--android:drawableTop="@drawable/style_change_selector2"-->
         </RadioButton>
 
         <RadioButton
@@ -101,10 +101,10 @@
                 android:button="@null"
                 android:visibility="invisible"
                 android:textColor="@color/color_text_most"
-                android:drawableTop="@drawable/style_change_selector3"
                 android:text="@string/style_change_3"
                 android:drawablePadding="15dp"
                 android:textAlignment="center">
+                <!--android:drawableTop="@drawable/style_change_selector3"-->
         </RadioButton>
 
         <RadioButton
@@ -116,10 +116,10 @@
                 android:layout_weight="1"
                 android:button="@null"
                 android:textColor="@color/color_text_most"
-                android:drawableTop="@drawable/style_change_selector4"
                 android:text="@string/style_change_4"
                 android:drawablePadding="-15dp"
                 android:textAlignment="center">
+                <!--android:drawableTop="@drawable/style_change_selector4"-->
         </RadioButton>
     </RadioGroup>
 </LinearLayout>

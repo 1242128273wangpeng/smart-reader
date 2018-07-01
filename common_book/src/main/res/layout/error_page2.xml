@@ -37,21 +37,21 @@
                 android:id="@+id/loading_error_reload"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
-                android:background="@drawable/bookshelf_no_book_btn_bg"
                 android:gravity="center"
                 android:text="@string/network_error_retry"
-                android:textColor="@drawable/net_load_text_color"
                 android:textSize="@dimen/dimen_text_15"/>
-        
+                <!--android:background="@drawable/bookshelf_no_book_btn_bg"-->
+                <!--android:textColor="@drawable/net_load_text_color"-->
+
         <Button
                 android:id="@+id/loading_error_setting"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
-                android:background="@drawable/bookshelf_no_book_btn_bg"
                 android:layout_marginLeft="18dp"
                 android:gravity="center"
                 android:text="@string/read_network_retry"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/dimen_text_15"/>
+                <!--android:background="@drawable/bookshelf_no_book_btn_bg"-->
     </LinearLayout>
 </RelativeLayout>

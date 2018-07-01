@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.*
+import android.widget.TextView
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverRecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
@@ -17,7 +17,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.cover.*
+import com.intelligent.reader.cover.BookCoverViewModel
 import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
@@ -30,8 +30,9 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.RecommendItemView
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.BaseBookHelper
+import net.lzbook.kit.utils.BookCoverUtil
+import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 
 class CoverPagePresenter(private val book_id: String?, private var book_source_id: String?, private var book_chapter_id: String?, val coverPageContract: CoverPageContract, val activity: Activity, onClickListener: View.OnClickListener)
@@ -213,7 +214,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 val cleanDialog = MyDialog(activity, R.layout.dialog_download_clean)
                 cleanDialog.setCanceledOnTouchOutside(false)
                 cleanDialog.setCancelable(false)
-                (cleanDialog.findViewById(R.id.dialog_msg) as TextView).setText(R.string.tip_cleaning_cache)
+                (cleanDialog.findViewById<TextView>(R.id.dialog_msg)).setText(R.string.tip_cleaning_cache)
                 cleanDialog.show()
 
                 Observable.create(ObservableOnSubscribe<Boolean> { emitter ->

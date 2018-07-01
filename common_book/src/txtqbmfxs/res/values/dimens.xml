@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="book_height">124dp</dimen>
     <dimen name="search_recommend_padding">12dp</dimen>
     <dimen name="search_recommend_bookname_padding">13dp</dimen>

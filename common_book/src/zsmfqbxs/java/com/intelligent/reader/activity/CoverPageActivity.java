@@ -30,7 +30,7 @@ import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.cover.BookCoverViewModel;
-import com.intelligent.reader.view.ExpandableTextView2;
+import com.intelligent.reader.view.ExpandableTextView;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -523,7 +523,7 @@ public class CoverPageActivity extends BaseCacheableActivity implements OnClickL
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
                         StartLogClickUtil.BACK, data);
                 finish();
-//                SearchBookActivity.isSatyHistory = true;
+//                SearchBookActivity.isStayHistory = true;
                 break;
 
 //            case R.id.book_cover_source_view:

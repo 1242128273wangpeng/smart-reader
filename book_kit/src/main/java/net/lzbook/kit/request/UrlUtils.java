@@ -1,6 +1,7 @@
 package net.lzbook.kit.request;
 
 import com.ding.basic.Config;
+import com.dingyue.contract.util.SharedPreUtil;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
@@ -18,36 +19,79 @@ import java.util.Map;
 public class UrlUtils {
 
 
-////    //正式线上API，域名例子：api.wubutianxia.com
-    public static String BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
-    //正式线上webview地址，域名例子：bookwebview.wubutianxia.com
-    public static String BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+    private static SharedPreUtil sharedPreUtil = new SharedPreUtil(0);
 
 
-    public static String BOOK_CONTENT;
+    /**
+     * 正式地址
+     */
+    private static String BOOK_NOVEL_DEPLOY_HOST = sharedPreUtil.getString(
+            SharedPreUtil.Companion.getAPI_URL()).isEmpty() ?
+            ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+            : sharedPreUtil.getString(SharedPreUtil.Companion.getAPI_URL());
+    private static String BOOK_WEBVIEW_HOST = sharedPreUtil.getString(
+            SharedPreUtil.Companion.getWEB_URL()).isEmpty() ?
+            ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+            : sharedPreUtil.getString(SharedPreUtil.Companion.getWEB_URL());
 
-
-    private UrlUtils() {
-
+    /**
+     * 测试地址
+     */
+    public static void dynamic() {
+        if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getSTART_PARAMS())) {
+            BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
+            BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
+            sharedPreUtil.putString(SharedPreUtil.Companion.getAPI_URL(),
+                    BOOK_NOVEL_DEPLOY_HOST);
+            sharedPreUtil.putString(SharedPreUtil.Companion.getWEB_URL(),
+                    BOOK_WEBVIEW_HOST);
+        } else {
+            BOOK_NOVEL_DEPLOY_HOST = "http://8086.zn.bookapi.cn";
+            BOOK_WEBVIEW_HOST = "http://8086.zn.bookapi.cn";
+            sharedPreUtil.putString(SharedPreUtil.Companion.getAPI_URL(),
+                    BOOK_NOVEL_DEPLOY_HOST);
+            sharedPreUtil.putString(SharedPreUtil.Companion.getWEB_URL(),
+                    BOOK_WEBVIEW_HOST);
+        }
     }
+
+    public static void setApiUrl(String apiUrl) {
+        BOOK_NOVEL_DEPLOY_HOST = apiUrl;
+        BOOK_WEBVIEW_HOST = apiUrl;
+//        NetService.INSTANCE.initService();
+    }
+
 
     public static String getBookNovelDeployHost() {
         return BOOK_NOVEL_DEPLOY_HOST;
     }
 
-    public static void setBookNovelDeployHost(String bookNovelDeployHost) {
-        if (!TextUtils.isEmpty(bookNovelDeployHost)) {
-            BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
-        }
-    }
-
-    public static String getBookWebviewHost() {
+    public static String getBookWebViewHost() {
         return BOOK_WEBVIEW_HOST;
     }
 
-    public static void setBookWebviewHost(String bookWebviewHost) {
-        if (!TextUtils.isEmpty(bookWebviewHost)) {
-            BOOK_WEBVIEW_HOST = bookWebviewHost;
+    /**
+     * 测试~注掉赋值部分代码
+     */
+    public static void setBookNovelDeployHost(String bookNovelDeployHost) {
+
+
+        if (!TextUtils.isEmpty(bookNovelDeployHost)) {
+            if (!BOOK_NOVEL_DEPLOY_HOST.contains("test") && !bookNovelDeployHost.contains("test")) {
+                if (sharedPreUtil.getBoolean(sharedPreUtil.Companion.getSTART_PARAMS())) {
+                    BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
+                }
+            }
+        }
+    }
+
+    public static void setBookWebViewHost(String bookWebViewHost) {
+
+        if (!TextUtils.isEmpty(bookWebViewHost)) {
+
+            if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getSTART_PARAMS())) {
+                BOOK_WEBVIEW_HOST = bookWebViewHost;
+            }
         }
     }
 

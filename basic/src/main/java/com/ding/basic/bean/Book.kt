@@ -154,6 +154,9 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
     var chapters_update_index: Int = 0
 
 
+    //在读人数
+    var readPersonNum: String? = null
+
     //区分书籍状态，目前没有本地书籍，暂时标识书籍和广告两种状态
     @Ignore
     var item_type: Int = 0

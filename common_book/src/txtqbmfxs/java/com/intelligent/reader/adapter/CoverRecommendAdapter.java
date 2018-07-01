@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ding.basic.bean.Book;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.Book;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.lang.ref.WeakReference;
@@ -45,24 +45,24 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Book book = books.get(position);
-        holder.tv_book_name.setText(book.name);
-        if (book.readPersonNum != null && !TextUtils.isEmpty(book.readPersonNum) && !book.readPersonNum.equals("null")) {
-            if (Constants.QG_SOURCE.equals(book.site)) {
-                if(!AppUtils.isContainChinese(book.readPersonNum)){
-                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.readPersonNum)));
+        holder.tv_book_name.setText(book.getName());
+        if (book.getReadPersonNum() != null && !TextUtils.isEmpty(book.getReadPersonNum())) {
+            if (Constants.QG_SOURCE.equals(book.getHost())) {
+                if(!AppUtils.isContainChinese(book.getReadPersonNum())){
+                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.getReadPersonNum())));
                 }else{
                     holder.tv_readnum.setText("");
                 }
             } else {
-                holder.tv_readnum.setText(book.readPersonNum + "人在读");
+                holder.tv_readnum.setText((book.getReadPersonNum() + "人在读"));
             }
 
         } else {
             holder.tv_readnum.setText("");
         }
 
-        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.img_url)) {
-            Glide.with(weakReference.get()).load(book.img_url).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
+        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getImg_url())) {
+            Glide.with(weakReference.get()).load(book.getImg_url()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_recommend_image);
         } else {
@@ -93,9 +93,9 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
             super(itemView);
             this.recommendItemClickListener = recommendItemClickListener;
             itemView.setOnClickListener(this);
-            iv_recommend_image = (ImageView) itemView.findViewById(R.id.iv_recommend_image);
-            tv_book_name = (TextView) itemView.findViewById(R.id.tv_book_name);
-            tv_readnum = (TextView) itemView.findViewById(R.id.tv_readnum);
+            iv_recommend_image =  itemView.findViewById(R.id.iv_recommend_image);
+            tv_book_name =  itemView.findViewById(R.id.tv_book_name);
+            tv_readnum =  itemView.findViewById(R.id.tv_readnum);
 
         }
 

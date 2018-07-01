@@ -149,4 +149,5 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
                     StartLogClickUtil.upLoadApps(message)
                 })
     }
+
 }

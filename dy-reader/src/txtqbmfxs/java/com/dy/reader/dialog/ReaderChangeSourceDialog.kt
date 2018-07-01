@@ -8,7 +8,7 @@ import com.dy.reader.R
 import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.setting.ReaderSettings
-import kotlinx.android.synthetic.qbzsydq.dialog_reader_chang_source.*
+import kotlinx.android.synthetic.txtqbmfxs.dialog_reader_chang_source.*
 import net.lzbook.kit.book.view.MyDialog
 import java.util.ArrayList
 

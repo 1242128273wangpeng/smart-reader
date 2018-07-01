@@ -13,12 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.data.search.SearchCommonBeanYouHua;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
-import com.bumptech.glide.Glide;
+import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.intelligent.reader.R;
 
 /**
@@ -88,9 +87,9 @@ public class SearchSuggestAdapter extends BaseAdapter {
                     }
                     if (convertView != null) {
                         hodler = new ViewHolder();
-                        hodler.iv_icon = (ImageView) convertView.findViewById(R.id.iv_icon);
-                        hodler.iv_type = (ImageView) convertView.findViewById(R.id.iv_type);
-                        hodler.tv_2 = (TextView) convertView.findViewById(R.id.tv_search_item_2);
+                        hodler.iv_icon =  convertView.findViewById(R.id.iv_icon);
+                        hodler.iv_type =  convertView.findViewById(R.id.iv_type);
+                        hodler.tv_2 =  convertView.findViewById(R.id.tv_search_item_2);
                         convertView.setTag(hodler);
                     }
                 } else {
@@ -99,7 +98,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
                 SearchCommonBeanYouHua bean = (SearchCommonBeanYouHua) mData.get(position);
                 String type = bean.getWordtype();
                 if(hodler!=null) {
-                    if (type.equals("author")) {
+                    if (type.equals("authorType")) {
                         hodler.iv_icon.setImageResource(R.drawable.search_personal_yh);
                         hodler.iv_type.setImageResource(R.drawable.search_writer);
 

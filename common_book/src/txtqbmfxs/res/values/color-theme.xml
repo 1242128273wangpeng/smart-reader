@@ -6,6 +6,14 @@
     <color name="theme_primary">#87af4c</color>
 
 
+    <color name="dialog_line">#4DB8C5D9</color>
+
+
+    <color name="search_recommend_author_color">#949494</color>
+    <color name="search_recommend_finish_color">#DD400D</color>
+    <color name="search_recommend_lianzai_color">#DD9A0D</color>
+    <color name="search_recommend_score_color">#B8B8B8</color>
+
     <color name="base_bg">
         #fafafa
     </color>

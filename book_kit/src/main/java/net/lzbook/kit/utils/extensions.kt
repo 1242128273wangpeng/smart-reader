@@ -94,7 +94,7 @@ fun Any.log(str: String, vararg param: Any?) {
 fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
     if (msDebuggAble || level == LOG_LEVEL.ERR) {
         var builder = StringBuilder()
-        param?.forEach {
+        param.forEach {
             builder.append(it.toString() + " | ")
         }
 

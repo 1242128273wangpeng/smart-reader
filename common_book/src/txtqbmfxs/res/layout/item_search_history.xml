@@ -21,12 +21,12 @@
         android:singleLine="true"
         android:maxEms="15"
         android:ellipsize="end"
-        android:textColor="@color/color_search_recommend_title"
         android:textSize="16sp"
         android:text="默默"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dimen_margin_7"
         android:layout_toRightOf="@id/historyImg"/>
+        <!--android:textColor="@color/color_search_recommend_title"-->
 
 
     <ImageView
@@ -34,9 +34,9 @@
         android:layout_width="30dp"
         android:layout_height="50dp"
         android:layout_marginRight="@dimen/dimen_margin_16"
-        android:src="@drawable/search_history_clear"
         android:scaleType="center"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:src="@drawable/search_history_clear"/>
 
 </RelativeLayout>

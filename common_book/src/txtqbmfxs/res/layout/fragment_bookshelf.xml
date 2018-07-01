@@ -109,8 +109,8 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="@dimen/dimen_margin_10"
             android:layout_marginTop="@dimen/dimen_margin_30"
-            android:progressDrawable="@drawable/background_splash_progress"/>
-
+            />
+        <!--android:progressDrawable="@drawable/background_splash_progress"-->
         <ProgressBar
             android:id="@+id/loading_progressbar"
             style="@style/CircleProgressBar"
@@ -119,8 +119,8 @@
             android:layout_above="@id/loading_progress"
             android:layout_centerHorizontal="true"
             android:indeterminateDuration="1000"
-            android:progressDrawable="@drawable/background_splash_progress"/>
-
+            />
+        <!--android:progressDrawable="@drawable/background_splash_progress"-->
         <TextView
             android:id="@+id/loading_message_first"
             android:layout_width="wrap_content"

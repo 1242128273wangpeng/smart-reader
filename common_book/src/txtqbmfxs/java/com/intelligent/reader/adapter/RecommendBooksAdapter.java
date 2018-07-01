@@ -1,9 +1,9 @@
 package com.intelligent.reader.adapter;
 
 import com.bumptech.glide.Glide;
+import com.ding.basic.bean.SearchRecommendBook;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.data.search.SearchRecommendBook;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
