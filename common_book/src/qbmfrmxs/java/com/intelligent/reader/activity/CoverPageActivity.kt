@@ -27,6 +27,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
@@ -107,11 +108,17 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     }
 
                     if (!TextUtils.isEmpty(recommendBean.bookId)) {
-                        data["Tbookid"] = recommendBean.bookId!!
+                        data["Tbookid"] = recommendBean.bookId
                     }
 
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
-//                    BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
+
+                    val bundle = Bundle()
+                    bundle.putString("book_id", recommendBean.bookId)
+                    bundle.putString("book_source_id", recommendBean.id)
+                    bundle.putString("book_chapter_id", recommendBean.bookChapterId)
+
+                    RouterUtil.navigation(this@CoverPageActivity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
                 }
             }
         }
@@ -440,10 +447,31 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             recommendList = recommends
             bookRecommendAdapter.setData(recommends)
+
+            initGridViewHeight()
         }
     }
 
     override fun showRecommendFail() {
 
+    }
+
+    fun initGridViewHeight() {
+        var totalHeight = 0
+
+        for (i in 0 until bookRecommendAdapter.count step 3) {
+            val childView = bookRecommendAdapter.getView(i, null, sfgv_book_detail_recommend)
+            if (childView != null) {
+                childView.measure(0, 0)
+                totalHeight += childView.measuredHeight
+            }
+        }
+
+        val layoutParameters = sfgv_book_detail_recommend.layoutParams
+        layoutParameters.height = totalHeight
+
+        sfgv_book_detail_recommend.layoutParams = layoutParameters
+
+        bookRecommendAdapter.notifyDataSetChanged()
     }
 }

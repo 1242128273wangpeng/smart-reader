@@ -64,7 +64,6 @@ class BookRecommendAdapter : BaseAdapter() {
 
     fun setData(recommends: List<RecommendBean>) {
         this.recommends = recommends
-        notifyDataSetChanged()
     }
 
 

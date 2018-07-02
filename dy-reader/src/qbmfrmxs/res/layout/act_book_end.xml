@@ -61,7 +61,6 @@
         android:layout_below="@+id/rl_header"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:paddingBottom="20dp"
         android:paddingTop="20dp"
         android:visibility="gone">
 
@@ -89,12 +88,11 @@
     <GridView
         android:id="@+id/gv_recommend"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/rl_footer"
         android:layout_below="@+id/rl_recommend"
         android:listSelector="@android:color/transparent"
         android:numColumns="3"
-        android:verticalSpacing="24dp"
         android:visibility="gone"/>
 
     <View

@@ -273,10 +273,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:paddingBottom="20dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp">
+                    android:paddingTop="20dp">
 
                     <TextView
                         style="@style/style_text_large_dark"
@@ -297,24 +297,24 @@
                             style="@style/style_text_normal_plain"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
                             android:lineSpacingExtra="2dp"
                             android:lineSpacingMultiplier="1.2"
-                            android:ellipsize="end"
                             tools:text="唐门外门弟子唐三，因偷学内门绝学为唐门所不容，跳崖明志时却发现没有死，反而以另外一个身份来到了另一个世界，一个属于武魂的世界，名叫斗罗大陆。这里的每个人，在自己六岁的时候，都会在武魂殿中令武魂觉醒。武魂有动物，有植物，有器物，武魂可以辅助人们的日常生活。"/>
 
                         <TextView
                             android:id="@+id/expand_prompt"
                             android:layout_width="40dp"
                             android:layout_height="19dp"
-                            android:layout_alignParentRight="true"
                             android:layout_alignBottom="@id/expand_content"
+                            android:layout_alignParentRight="true"
                             android:background="@drawable/cover_expand_prompt_bg"
+                            android:gravity="end"
                             android:lineSpacingExtra="2dp"
                             android:lineSpacingMultiplier="1.2"
-                            android:gravity="end"
                             android:text="展开"
-                            android:textSize="14sp"
-                            android:textColor="#42BE54"/>
+                            android:textColor="#42BE54"
+                            android:textSize="14sp"/>
 
                         <ImageView
                             android:id="@+id/expand_view"
@@ -389,8 +389,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:paddingBottom="20dp"
-                    android:paddingTop="20dp"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone">
 
                     <TextView
@@ -414,14 +413,14 @@
 
                 </RelativeLayout>
 
-                <com.intelligent.reader.view.ScrollForGridView
+                <GridView
                     android:id="@+id/sfgv_book_detail_recommend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:listSelector="@color/transparent"
                     android:numColumns="3"
                     android:scrollbars="none"
-                    android:verticalSpacing="24dp"
                     android:visibility="gone"/>
 
                 <TextView
