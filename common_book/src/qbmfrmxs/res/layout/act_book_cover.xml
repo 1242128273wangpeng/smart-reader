@@ -37,7 +37,7 @@
     <View
         android:id="@+id/view_book_detail_header_shadow"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="5dp"
         android:layout_below="@id/rl_book_detail_header"
         android:background="@drawable/common_header_shadow_bg"/>
 

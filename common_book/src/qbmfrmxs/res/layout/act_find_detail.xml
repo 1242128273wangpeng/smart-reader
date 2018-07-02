@@ -14,7 +14,7 @@
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/top_bar_height">
+                android:layout_height="48dp">
 
             <ImageView
                     android:id="@+id/find_book_detail_back"

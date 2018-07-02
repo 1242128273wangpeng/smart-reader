@@ -8,7 +8,7 @@
         android:paddingTop="16dp"
         android:id="@+id/rl_contain"
         android:paddingBottom="16dp"
-        android:background="#F4F4F4 "
+        android:background="#fafafa"
         android:focusableInTouchMode="true">
 
     <TextView
