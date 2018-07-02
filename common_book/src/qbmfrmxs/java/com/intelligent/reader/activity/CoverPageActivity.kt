@@ -456,19 +456,22 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     }
 
-    fun initGridViewHeight() {
-        var totalHeight = 0
+    private fun initGridViewHeight() {
+        var childMaxHeight = 0
 
-        for (i in 0 until bookRecommendAdapter.count step 3) {
+        for (i in 0 until bookRecommendAdapter.count) {
             val childView = bookRecommendAdapter.getView(i, null, sfgv_book_detail_recommend)
             if (childView != null) {
                 childView.measure(0, 0)
-                totalHeight += childView.measuredHeight
+
+                if (childView.measuredHeight > childMaxHeight) {
+                    childMaxHeight = childView.measuredHeight
+                }
             }
         }
 
         val layoutParameters = sfgv_book_detail_recommend.layoutParams
-        layoutParameters.height = totalHeight
+        layoutParameters.height = childMaxHeight * 2
 
         sfgv_book_detail_recommend.layoutParams = layoutParameters
 
