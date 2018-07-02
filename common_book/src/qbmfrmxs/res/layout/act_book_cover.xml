@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,7 +23,7 @@
             android:contentDescription="@string/module_name"
             android:paddingLeft="16dp"
             android:src="@drawable/common_back_icon"
-            expandableTextView:onPressChangeAlpha="true"/>
+            app:onPressChangeAlpha="true"/>
 
         <TextView
             style="@style/style_text_huge_dark"
@@ -273,10 +273,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="20dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:paddingTop="20dp">
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp">
 
                     <TextView
                         style="@style/style_text_large_dark"
@@ -287,13 +287,45 @@
                         android:paddingBottom="20dp"
                         android:text="作品简介"/>
 
-                    <TextView
+                    <com.intelligent.reader.widget.ExpandTextView
                         android:id="@+id/txt_book_detail_desc"
-                        style="@style/style_text_normal_plain"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.4"
-                        tools:text="@string/default_message"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/expand_content"
+                            style="@style/style_text_normal_plain"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="2dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:ellipsize="end"
+                            tools:text="唐门外门弟子唐三，因偷学内门绝学为唐门所不容，跳崖明志时却发现没有死，反而以另外一个身份来到了另一个世界，一个属于武魂的世界，名叫斗罗大陆。这里的每个人，在自己六岁的时候，都会在武魂殿中令武魂觉醒。武魂有动物，有植物，有器物，武魂可以辅助人们的日常生活。"/>
+
+                        <TextView
+                            android:id="@+id/expand_prompt"
+                            android:layout_width="40dp"
+                            android:layout_height="19dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignBottom="@id/expand_content"
+                            android:background="@drawable/cover_expand_prompt_bg"
+                            android:lineSpacingExtra="2dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:gravity="end"
+                            android:text="展开"
+                            android:textSize="14sp"
+                            android:textColor="#42BE54"/>
+
+                        <ImageView
+                            android:id="@+id/expand_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/expand_content"
+                            android:layout_centerHorizontal="true"
+                            android:paddingTop="4dp"
+                            android:src="@drawable/cover_expand_icon"/>
+
+                    </com.intelligent.reader.widget.ExpandTextView>
                 </LinearLayout>
 
                 <View
@@ -388,6 +420,7 @@
                     android:layout_height="wrap_content"
                     android:listSelector="@color/transparent"
                     android:numColumns="3"
+                    android:scrollbars="none"
                     android:verticalSpacing="24dp"
                     android:visibility="gone"/>
 

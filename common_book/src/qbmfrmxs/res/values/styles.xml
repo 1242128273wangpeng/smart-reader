@@ -96,4 +96,12 @@
     <style name="rating_bar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/cover_rating_bar_bg</item>
     </style>
+
+
+    <declare-styleable name="ExpandTextVIew">
+        <attr name="expandMaxLine" format="integer"/>
+        <attr name="expandAnimDuration" format="integer"/>
+        <attr name="expandAnimAlphaStart" format="float"/>
+    </declare-styleable>
+
 </resources>

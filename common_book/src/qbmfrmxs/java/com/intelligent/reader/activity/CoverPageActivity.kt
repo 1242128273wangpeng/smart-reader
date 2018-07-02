@@ -360,9 +360,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
-                txt_book_detail_desc.text = book.desc
+                txt_book_detail_desc.setText(book.desc)
             } else {
-                txt_book_detail_desc.text = "暂无简介"
+                txt_book_detail_desc.setText("暂无简介")
             }
 
             if (book.last_chapter != null) {
