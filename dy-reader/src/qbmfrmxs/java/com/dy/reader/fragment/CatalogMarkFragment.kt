@@ -132,7 +132,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                     presenter.loadCatalog(reverse)
                 }
                 R.id.rbtn_bookmark -> {
-                    rl_book_content.visibility = View.GONE
+                    rl_book_content.visibility = View.INVISIBLE
                     presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {

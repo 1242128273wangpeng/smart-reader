@@ -50,6 +50,10 @@ open class WebViewFragment : Fragment() {
         return inflater.inflate(R.layout.webview_layout, container, false)
     }
 
+    fun setTitle(title:String){
+        txt_web_view_header_title?.text = title
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

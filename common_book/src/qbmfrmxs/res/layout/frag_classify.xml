@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="46dp"
             android:layout_centerHorizontal="true"
-            app:indicatorColor="@color/theme_primary"
+            app:indicatorColor="#42BE54"
             app:indicatorHeight="3dp"
             app:indicatorMargin="20dp"
             app:indicatorTextColor="@color/text_color_dark"

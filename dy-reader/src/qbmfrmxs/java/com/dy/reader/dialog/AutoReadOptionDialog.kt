@@ -114,13 +114,13 @@ class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
             R.id.txt_speed_decelerate -> {
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_down)
                 readerSettings.autoReadSpeed = Math.max(10, readerSettings.autoReadSpeed - 1)
-                ssb_speed_number.setProgress(readerSettings.autoReadSpeed.toFloat())
+                dialog?.ssb_speed_number?.setProgress(readerSettings.autoReadSpeed.toFloat())
                 setRateValue()
             }
             R.id.txt_speed_accelerate -> {
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_up)
                 readerSettings.autoReadSpeed = Math.min(20, readerSettings.autoReadSpeed + 1)
-                ssb_speed_number.setProgress(readerSettings.autoReadSpeed.toFloat())
+                dialog?.ssb_speed_number?.setProgress(readerSettings.autoReadSpeed.toFloat())
                 setRateValue()
 
             }
