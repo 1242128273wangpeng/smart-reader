@@ -76,11 +76,7 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     override fun getItemCount(): Int {
         if (hasAddView) {
             if (books.size > 0) {
-                return if (books.size >= 50) {
-                    51
-                } else {
-                    books.size
-                }
+                books.size + 1
             }
         }
         return books.size
