@@ -102,7 +102,7 @@
             tools:replace="android:allowBackup">
         <!--适配全面屏手机-->
         <meta-data android:name="android.max_aspect"
-            android:value="2.2"/>
+            android:value="2.4"/>
         <!--huawei-->
         <meta-data android:name="android.notch_support" android:value="true"/>
         <!-- start for GaoDe Map -->
