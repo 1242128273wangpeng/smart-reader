@@ -91,11 +91,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
+    // webview精选页面
+    private val WEB_RECOMMEND = "/{packageName}/v3/recommend/index.do"
+    // webview排行页面
+    private val WEB_RANK = "/{packageName}/v3/rank/index.do"
+
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+        val uri = WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -105,7 +110,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+        val uri = WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment

@@ -76,14 +76,14 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mShouldShowHint = showHint
     }
 
-    override fun showLoading(){
+    override fun showLoading() {
         if (loadingPage == null && this.activity != null) {
             loadingPage = LoadingPage(this.activity, mRootLayout, LoadingPage.setting_result)
         }
     }
 
     override fun dimissLoading() {
-        if(loadingPage != null){
+        if (loadingPage != null) {
             loadingPage!!.onSuccess()
         }
 
@@ -237,8 +237,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
 
         if (listHeader != null) {
-            mGridView = listHeader.findViewById(R.id.grid) as ScrollForGridView
-            linear_parent = listHeader.findViewById(R.id.linear_parent) as LinearLayout
+            mGridView = listHeader.findViewById(R.id.grid)
+            linear_parent = listHeader.findViewById(R.id.linear_parent)
             mGridView!!.onItemClickListener = OnItemClickListener { parent, view, position, id ->
                 mSearchHelpPresenter?.onHotItemClick(mContext, parent, view, position, id)
             }
@@ -328,9 +328,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             e.printStackTrace()
         }
 
-        if (mHistoryHeadersTitle != null)
-            tv_clear_history_search_view = mHistoryHeadersTitle!!.findViewById(R.id
-                    .tv_clear_history_search_view) as TextView
+        tv_clear_history_search_view = mHistoryHeadersTitle?.findViewById(R.id
+                .tv_clear_history_search_view)
 
 //        if (mHistoryListView != null) {
 //            mHistoryListView!!.addHeaderView(mHistoryHeadersTitle)
