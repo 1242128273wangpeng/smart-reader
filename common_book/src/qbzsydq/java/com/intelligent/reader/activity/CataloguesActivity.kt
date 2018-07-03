@@ -197,7 +197,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                     var manager=recl_catalog_main.layoutManager
                     if (manager is LinearLayoutManager){
 
-                        char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstCompletelyVisibleItemPosition()].sequence + 1)
+                        char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
                     }
 
                 }
