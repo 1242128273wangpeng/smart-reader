@@ -26,9 +26,9 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.doAsync
-import net.lzbook.kit.utils.uiThread
+import net.lzbook.kit.utils.*
+import android.content.BroadcastReceiver
+
 
 /**
  * Function：书架
@@ -55,7 +55,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(requireActivity())
         popup.onDeleteClickListener = {
-            if(!bookShelfDeleteDialog.isShow()){
+            if (!bookShelfDeleteDialog.isShow()) {
                 bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
             }
         }
@@ -66,7 +66,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     val bookShelfAdapter: BookShelfAdapter by lazy {
-        BookShelfAdapter(requireActivity(), object : BookShelfAdapter.BookShelfItemListener {
+        BookShelfAdapter(object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
                 if (position < 0 || position >= bookShelfPresenter.iBookList.size) return
                 if (isRemoveMenuShow()) {
@@ -89,7 +89,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 return false
             }
 
-        }, bookShelfPresenter.iBookList)
+        }, bookShelfPresenter.iBookList, false)
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
@@ -160,7 +160,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
         }
+
     }
+
 
     override fun onResume() {
         super.onResume()

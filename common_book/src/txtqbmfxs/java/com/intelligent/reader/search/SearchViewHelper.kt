@@ -23,6 +23,7 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
+import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
@@ -59,9 +60,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
         for (item in suggestList) {
             mSuggestList?.add(item)
         }
-        if (mSearchHandler == null) {
-            return
-        }
+
         mSearchHandler.post(Runnable {
             if (mSuggestAdapter != null) {
                 var inputString: String? = ""
@@ -79,13 +78,12 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
         })
     }
 
-    override fun onItemClickListener(position: Int) {
-        val message = mSearchHandler.obtainMessage()
-        message.arg1 = position
-        message.what = 10
-        mSearchHandler.handleMessage(message)
-    }
 
+
+
+    /**
+     * 搜索推荐书籍子条目
+     */
     override fun onItemClick(view: View?, position: Int) {
 
         val dataBean = recommendBooks?.get(position)
@@ -98,12 +96,30 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
                     StartLogClickUtil.HOTREADCLICK, data)
 
-            CoverPageActivity.launcher(mContext, dataBean.host, dataBean.bookId,
-                    dataBean.id, dataBean.bookName,
-                    dataBean.authorName, "", "")
+//            CoverPageActivity.launcher(mContext, dataBean.host, dataBean.bookId,
+//                    dataBean.id, dataBean.bookName,
+//                    dataBean.authorName)
+
+            val intent = Intent(activity, CoverPageActivity::class.java)
+            intent.putExtra("book_id", dataBean.bookId)
+            intent.putExtra("book_chapter_id", dataBean.bookChapterId)
+
+            mContext.startActivity(intent)
+
         }
         isBackSearch = true
         isFocus = true
+    }
+
+
+    /**
+     * 历史记录子条目
+     */
+    override fun onItemClickListener(position: Int) {
+        val message = mSearchHandler.obtainMessage()
+        message.arg1 = position
+        message.what = 10
+        mSearchHandler.handleMessage(message)
     }
 
 
@@ -224,18 +240,18 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_allhotword)
 
-            /* val hotWord = mHotWords[position]
+             val hotWord = mHotWords[position]
              val data = HashMap<String, String>()
-             data.put("topicword", hotWord.keyword)
+            hotWord.keyword?.let { data.put("topicword", it) }
              data.put("rank", hotWord.sort.toString())
-             data.put("type", hotWord.superscript)
+            hotWord.superscript?.let { data.put("type", it) }
              StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
 
              mSearchEditText?.setText(hotWord.keyword)
 
              isFocus = false
 
-             onHotWordClickListener?.hotWordClick(hotWord.keyword, mHotWords[position].keywordType.toString() + "")*/
+             onHotWordClickListener?.hotWordClick(hotWord.keyword!!, mHotWords[position].keywordType.toString() + "")
         }
 
     }
@@ -447,13 +463,24 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE,
                             StartLogClickUtil.ENTER, data1)
 
-                    val intent = Intent(activity, CoverPageActivity::class.java)
-                    val bundle = Bundle()
-                    bundle.putString("book_id", searchCommonBeanYouHua.book_id)
-                    bundle.putString("book_source_id", searchCommonBeanYouHua.book_source_id)
+//                    CoverPageActivity.launcher(mContext,"",
+//                            searchCommonBeanYouHua.book_id,searchCommonBeanYouHua.book_source_id,"","")
 
-                    intent.putExtras(bundle)
+                    val intent = Intent(activity, CoverPageActivity::class.java)
+                    intent.putExtra("book_id", searchCommonBeanYouHua.book_id)
+                    intent.putExtra("book_source_id", searchCommonBeanYouHua.book_source_id)
+
                     mContext.startActivity(intent)
+
+
+
+//                    val intent = Intent(activity, CoverPageActivity::class.java)
+//                    val bundle = Bundle()
+//                    bundle.putString("book_id", searchCommonBeanYouHua.book_id)
+//                    bundle.putString("book_source_id", searchCommonBeanYouHua.book_source_id)
+//
+//                    intent.putExtras(bundle)
+//                    mContext.startActivity(intent)
                     addHistoryWord(suggest)
 
                 }

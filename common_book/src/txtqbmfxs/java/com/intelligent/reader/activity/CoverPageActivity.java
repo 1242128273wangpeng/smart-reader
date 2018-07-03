@@ -29,14 +29,19 @@
 //import com.bumptech.glide.Glide;
 //import com.bumptech.glide.load.engine.DiskCacheStrategy;
 //import com.ding.basic.bean.Book;
+//import com.ding.basic.bean.RecommendBooks;
 //import com.ding.basic.repository.RequestRepositoryFactory;
+//import com.ding.basic.request.RequestSubscriber;
 //import com.dingyue.bookshelf.ShelfGridLayoutManager;
 //import com.dingyue.contract.router.RouterConfig;
+//import com.dingyue.contract.util.CommonUtil;
 //import com.intelligent.reader.R;
 //import com.intelligent.reader.adapter.CoverRecommendAdapter;
 //import com.intelligent.reader.adapter.CoverSourceAdapter;
+//import com.intelligent.reader.presenter.coverPage.CoverPagePresenter;
 //import com.intelligent.reader.view.ExpandableTextView;
 //import com.intelligent.reader.view.MyScrollView;
+//import com.orhanobut.logger.Logger;
 //
 //import net.lzbook.kit.app.BaseBookApplication;
 //import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -61,6 +66,8 @@
 //import net.lzbook.kit.utils.Tools;
 //import net.lzbook.kit.utils.oneclick.AntiShake;
 //
+//import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.Nullable;
 //import org.json.JSONException;
 //
 //import java.lang.ref.WeakReference;
@@ -86,6 +93,10 @@
 //        BookCoverUtil
 //                .OnDownloadState, BookCoverUtil.OnDownLoadService,
 //        MyScrollView.ScrollChangedListener, CoverRecommendAdapter.RecommendItemClickListener {
+//
+//   private  CoverPagePresenter coverPagePresenter;
+//
+//
 //
 //    final static int DOWNLOADING = 0x10;
 //    final static int NO_DOWNLOAD = DOWNLOADING + 1;
@@ -127,7 +138,6 @@
 //    private RelativeLayout book_cover_catalog_view;
 //    private RelativeLayout book_cover_catalog_view_nobg;
 //
-//    private ChapterDaoHelper bookDaoHelper;
 //    private BookCoverUtil bookCoverUtil;
 //    private LoadingPage loadingPage;
 //
@@ -141,7 +151,7 @@
 //    private CoverPage.SourcesBean currentSource;
 //    private MyDialog confirm_change_source_dialog;
 //    private RecyclerView recycler_view;
-//    private ArrayList<Book> books = new ArrayList<>();
+//    private List<Book> books = new ArrayList<>();
 //    private List<Book> mRecommendBooks = new ArrayList<>();
 //    private Random mRandom;
 //    private List<Integer> markIndexs = new ArrayList<>();//用于标记推荐书籍
@@ -178,6 +188,8 @@
 //        }
 //    }
 //
+//    RequestRepositoryFactory requestRepositoryFactory;
+//
 //    @Override
 //    public void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -186,6 +198,8 @@
 //        preferences = getSharedPreferences(
 //                "onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
 //
+//        coverPagePresenter = new CoverPagePresenter()
+//
 //        initView();
 //        initData(getIntent());
 //        initListener();
@@ -193,29 +207,29 @@
 //    }
 //
 //    protected void initView() {
-//        book_cover_back =  findViewById(R.id.book_cover_back);
-//        book_cover_content =  findViewById(R.id.book_cover_content);
-//        book_cover_image =  findViewById(R.id.book_cover_image);
-//        book_cover_title =  findViewById(R.id.book_cover_title);
-//        book_cover_author =  findViewById(R.id.book_cover_author);
-//        book_cover_category =  findViewById(R.id.book_cover_category);
-//        book_cover_category2 =  findViewById(R.id.book_cover_category2);
-//        book_cover_status =  findViewById(R.id.book_cover_status);
-//        book_cover_update_time =  findViewById(R.id.book_cover_update_time);
+//        book_cover_back = findViewById(R.id.book_cover_back);
+//        book_cover_content = findViewById(R.id.book_cover_content);
+//        book_cover_image = findViewById(R.id.book_cover_image);
+//        book_cover_title = findViewById(R.id.book_cover_title);
+//        book_cover_author = findViewById(R.id.book_cover_author);
+//        book_cover_category = findViewById(R.id.book_cover_category);
+//        book_cover_category2 = findViewById(R.id.book_cover_category2);
+//        book_cover_status = findViewById(R.id.book_cover_status);
+//        book_cover_update_time = findViewById(R.id.book_cover_update_time);
 //
-//        book_cover_source_view =  findViewById(R.id.book_cover_source_view);
-//        book_cover_source_form =  findViewById(R.id.book_cover_source_form);
+//        book_cover_source_view = findViewById(R.id.book_cover_source_view);
+//        book_cover_source_form = findViewById(R.id.book_cover_source_form);
 //
-//        book_cover_chapter_view =  findViewById(R.id.book_cover_chapter_view);
-//        book_cover_last_chapter =  findViewById(R.id.book_cover_last_chapter);
+//        book_cover_chapter_view = findViewById(R.id.book_cover_chapter_view);
+//        book_cover_last_chapter = findViewById(R.id.book_cover_last_chapter);
 //
 //        //book_cover_bookshelf_view = (RelativeLayout) findViewById(R.id.book_cover_bookshelf_view);
-//        book_cover_bookshelf =  findViewById(R.id.book_cover_bookshelf);
+//        book_cover_bookshelf = findViewById(R.id.book_cover_bookshelf);
 //
 //        // book_cover_reading_view = (RelativeLayout) findViewById(R.id.book_cover_reading_view);
-//        book_cover_reading =  findViewById(R.id.book_cover_reading);
+//        book_cover_reading = findViewById(R.id.book_cover_reading);
 //        //book_cover_download_view = (RelativeLayout) findViewById(R.id.book_cover_download_view);
-//        book_cover_download =  findViewById(R.id.book_cover_download);
+//        book_cover_download = findViewById(R.id.book_cover_download);
 //
 //        book_cover_description = (ExpandableTextView) findViewById(R.id.book_cover_description);
 //        book_cover_catalog_view = (RelativeLayout) findViewById(R.id.book_cover_catalog_view);
@@ -232,7 +246,9 @@
 //    @Override
 //    protected void onNewIntent(Intent intent) {
 //
-//        RequestRepositoryFactory factory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext());
+//        RequestRepositoryFactory factory =
+//                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+//                        BaseBookApplication.getGlobalContext());
 //        Book book = factory.checkBookSubscribe(requestItem.getBook_id());
 //
 //        if (book != null) {
@@ -322,18 +338,57 @@
 //    }
 //
 //
-//    /**
-//     * 获取封面信息
-//     */
+//
+//    /***
+//     * 获取书籍封面
+//     * **/
+//    public void requestBookDetail(final String book_id, final String book_source_id,
+//            final String book_chapter_id) {
+//        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+//                BaseBookApplication.getGlobalContext()).requestBookDetail(book_id, book_source_id,
+//                book_chapter_id, new RequestSubscriber<Book>() {
+//                    @Override
+//                    public void requestResult(@Nullable Book result) {
+//                        if (bookCoverViewCallback != null) {
+//                            bookCoverViewCallback.requestCoverDetailSuccess(result);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void requestError(@NotNull String message) {
+//                        Logger.e("请求封面异常！");
+//                        if (bookCoverViewCallback != null) {
+//                            bookCoverViewCallback.requestCoverDetailFail(message);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void requestComplete() {
+//                        Logger.i("请求封面完成！");
+//                    }
+//                });
+//    }
+//
 //    public void getOwnBookCover(Book requestItem) {
 //        if (requestItem != null && requestItem.getBook_id() != null
 //                && requestItem.getBook_source_id() != null) {
 //            RequestRepositoryFactory
 //                    .Companion
 //                    .loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-//                    .requestBookRecommend()
-//            NetService.INSTANCE.getOwnBookService().requestBookCover(requestItem.book_id,
-//                    requestItem.book_source_id)
+//                    .requestBookRecommend(requestItem.getBook_id(), requestItem.getBook_source_id(),
+//                            new RequestSubscriber<RecommendBooks>() {
+//                                @Override
+//                                public void requestResult(@Nullable RecommendBooks result) {
+//
+//                                }
+//
+//                                @Override
+//                                public void requestError(@NotNull String message) {
+//
+//                                }
+//                            });
+//            NetService.INSTANCE.getOwnBookService().requestBookCover(requestItem.getBook_id(),
+//                    requestItem.getBook_source_id())
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .subscribe(new Observer<String>() {
@@ -377,12 +432,15 @@
 //        if (intent != null) {
 //
 //            if (intent.hasExtra(Constants.REQUEST_ITEM)) {
-//                requestItem = (RequestItem) intent.getSerializableExtra(Constants.REQUEST_ITEM);
+//                requestItem = (Book) intent.getSerializableExtra(Constants.REQUEST_ITEM);
 //            }
 //        }
 //
-//        if (bookDaoHelper == null) {
-//            bookDaoHelper = BookDaoHelper.getInstance();
+//
+//        if (requestRepositoryFactory == null) {
+//            requestRepositoryFactory =
+//                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+//                            getApplicationContext());
 //        }
 //
 //        if (bookCoverUtil == null) {
@@ -396,23 +454,23 @@
 //        bookCoverUtil.setOnDownLoadService(this);
 //
 //        loadCoverInfo();
-//        if (bookDaoHelper != null && requestItem != null) {
-//            getRecommendBook(requestItem, getBookOnLineIds(bookDaoHelper));
+//        if (requestRepositoryFactory != null && requestItem != null) {
+//            getRecommendBook(requestItem, getBookOnLineIds(requestRepositoryFactory));
 //        }
 //    }
 //
 //    /**
 //     * 获取书架上的书Id
 //     */
-//    public String getBookOnLineIds(BookDaoHelper bookDaoHelper) {
-//        if (bookDaoHelper != null) {
+//    public String getBookOnLineIds(RequestRepositoryFactory requestRepositoryFactory) {
+//        if (requestRepositoryFactory != null) {
 //            books.clear();
-//            books = bookDaoHelper.getBooksOnLineList();
+//            books = requestRepositoryFactory.loadBooks();
 //            StringBuilder sb = new StringBuilder();
 //            if (books != null && books.size() > 0) {
 //                for (int i = 0; i < books.size(); i++) {
 //                    Book book = books.get(i);
-//                    sb.append(book.book_id);
+//                    sb.append(book.getBook_id());
 //                    sb.append((i == books.size() - 1) ? "" : ",");
 //                }
 //                return sb.toString();
@@ -432,22 +490,21 @@
 //
 //
 //        if (requestItem != null) {
-//            AppLog.e("loadCoverInfo", "requestItem.host-->" + requestItem.host);
-//            if (Constants.QG_SOURCE.equals(requestItem.host)) {//青果
-//                requestItem.channel_code = 1;
+//            if (Constants.QG_SOURCE.equals(requestItem.getHost())) {//青果
+//                requestItem.setChannel_code(1);
 //                RequestManager.init(getApplicationContext());
 //                String udid = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext());
-//                DataService.getBookInfo(this, requestItem.book_id, uiHandler,
+//                DataService.getBookInfo(this, requestItem.getBook_id(), uiHandler,
 //                        RequestExecutor.REQUEST_COVER_QG_SUCCESS, RequestExecutor
 //                                .REQUEST_COVER_QG_ERROR, udid);
 //            } else {//自有
-//                if (Constants.SG_SOURCE.equals(requestItem.host) || requestItem.book_id == null
-//                        || requestItem.book_source_id == null) {
+//                if (Constants.SG_SOURCE.equals(requestItem.getHost()) || requestItem.getBook_id() == null
+//                        || requestItem.getBook_source_id() == null) {
 //                    uiHandler.sendEmptyMessage(REQUEST_COVER_ERROR);
 //                } else {
 //                    getOwnBookCover(requestItem);
 //                }
-//                requestItem.channel_code = 2;
+//                requestItem.setChannel_code(2);
 //            }
 //        }
 //
@@ -456,18 +513,18 @@
 //                @Override
 //                public Void call() throws Exception {
 //                    if (requestItem != null) {
-//                        if (Constants.QG_SOURCE.equals(requestItem.host)) {//青果
+//                        if (Constants.QG_SOURCE.equals(requestItem.getHost())) {//青果
 //                            RequestManager.init(getApplicationContext());
 //                            String udid = OpenUDID.getOpenUDIDInContext(
 //                                    BaseBookApplication.getGlobalContext());
-//                            DataService.getBookInfo(CoverPageActivity.this, requestItem.book_id,
+//                            DataService.getBookInfo(CoverPageActivity.this, requestItem.getBook_id(),
 //                                    uiHandler, RequestExecutor
 //                                            .REQUEST_COVER_QG_SUCCESS,
 //                                    RequestExecutor.REQUEST_COVER_QG_ERROR, udid);
 //                        } else {//自有
-//                            if (Constants.SG_SOURCE.equals(requestItem.host)
-//                                    || requestItem.book_id == null
-//                                    || requestItem.book_source_id == null) {
+//                            if (Constants.SG_SOURCE.equals(requestItem.getHost())
+//                                    || requestItem.getBook_id() == null
+//                                    || requestItem.getBook_source_id() == null) {
 //                                uiHandler.sendEmptyMessage(REQUEST_COVER_ERROR);
 //                            } else {
 //                                getOwnBookCover(requestItem);
@@ -484,9 +541,9 @@
 //    /**
 //     * 获取推荐的书
 //     */
-//    public void getRecommendBook(RequestItem requestItem, String bookIds) {
-//        if (requestItem != null && requestItem.book_id != null) {
-//            NetService.INSTANCE.getOwnBookService().requestCoverRecommend(requestItem.book_id,
+//    public void getRecommendBook(Book requestItem, String bookIds) {
+//        if (requestItem != null) {
+//            NetService.INSTANCE.getOwnBookService().requestCoverRecommend(requestItem.getBook_id(),
 //                    bookIds)
 //                    .subscribeOn(Schedulers.io())
 //                    .observeOn(AndroidSchedulers.mainThread())
@@ -548,26 +605,28 @@
 //            Book book = new Book();
 //            CoverRecommendBean.DataBean.MapBean.ZnListBean znBean =
 //                    bean.getData().getMap().getZnList().get(index);
-//            if (requestItem != null && !requestItem.book_id.equals(znBean.getBookId())) {
+//            if (requestItem != null && !requestItem.getBook_id().equals(znBean.getBookId())) {
 //                if (znBean.getSerialStatus().equals("FINISH")) {
-//                    book.status = 2;
+//                    book.setStatus("2");
 //                } else {
-//                    book.status = 1;
+//                    book.setStatus("1");
 //                }
 //
-//                book.book_id = znBean.getBookId();
-//                book.book_source_id = znBean.getId();
-//                book.name = znBean.getBookName();
-//                book.category = znBean.getLabel();
-//                book.author = znBean.getAuthorName();
-//                book.img_url = znBean.getSourceImageUrl();
-//                book.site = znBean.getHost();
-//                book.last_chapter_name = znBean.getLastChapterName() + "";
-//                book.chapter_count = Integer.valueOf(znBean.getChapterCount());
-//                book.last_updatetime_native = znBean.getUpdateTime();
-//                book.dex = znBean.getDex();
-//                book.last_updateSucessTime = System.currentTimeMillis();
-//                book.readPersonNum = znBean.getReaderCountDescp() + "";
+//                book.setBook_id(znBean.getBookId());
+//                book.setBook_source_id(znBean.getId());
+//                book.setName(znBean.getBookName());
+//                book.setAuthor(znBean.getAuthorName());
+//                book.setLabel(znBean.getLabel());
+//                book.setImg_url(znBean.getSourceImageUrl());
+//                book.setHost(znBean.getHost());
+//
+//
+//                book.setLast_chapter_name(znBean.getLastChapterName());
+//                book.setChapter_count(znBean.getChapterCount());
+//                book.setLast_check_update_time(znBean.getUpdateTime());
+//                book.setChapters_update_index(znBean.getDex());
+//                book.setLast_update_success_time(System.currentTimeMillis());
+//                book.setReadPersonNum((znBean.getReaderCountDescp() + ""));
 //                mRecommendBooks.add(book);
 //
 //            }
@@ -575,26 +634,29 @@
 //            Book book = new Book();
 //            CoverRecommendBean.DataBean.MapBean.QgListBean qgBean =
 //                    bean.getData().getMap().getQgList().get(index);
-//            if (requestItem != null && !requestItem.book_id.equals(qgBean.getId())) {
+//            if (requestItem != null && !requestItem.getBook_id().equals(qgBean.getId())) {
 //                if (qgBean.getSerialStatus().equals("FINISH")) {
-//                    book.status = 2;
+//                    book.setStatus("2");
 //                } else {
-//                    book.status = 1;
+//                    book.setStatus("1");
 //                }
 //
-//                book.book_id = qgBean.getId();
-//                book.book_source_id = qgBean.getBookSourceId();
-//                book.name = qgBean.getBookName();
-//                book.category = qgBean.getLabels();
-//                book.author = qgBean.getAuthor_name();
-//                book.img_url = qgBean.getImage() + "";
-//                book.site = qgBean.getHost() + "";
-//                book.last_chapter_name = qgBean.getChapter_name() + "";
-//                book.chapter_count = Integer.valueOf(qgBean.getChapter_sn());
-//                book.last_updatetime_native = qgBean.getUpdate_time();
-//                book.dex = 1;
-//                book.last_updateSucessTime = System.currentTimeMillis();
-//                book.readPersonNum = qgBean.getRead_count() + "";
+//                book.setBook_id(qgBean.getId());
+//                book.setBook_source_id(qgBean.getBookSourceId());
+//                book.setName(qgBean.getBookName());
+//                book.setAuthor(qgBean.getAuthor_name());
+//                book.setLabel(qgBean.getLabels());
+//                book.setImg_url(qgBean.getImage());
+//                book.setHost(qgBean.getHost());
+//
+//
+//                book.setLast_chapter_name(qgBean.getChapter_name());
+//                book.setChapter_count(qgBean.getChapter_sn());
+//                book.setLast_check_update_time(qgBean.getUpdate_time());
+//                book.setChapters_update_index(1);
+//                book.setLast_update_success_time(System.currentTimeMillis());
+//                book.setReadPersonNum((qgBean.getRead_count() + ""));
+//
 //                mRecommendBooks.add(book);
 //            }
 //        }
@@ -698,13 +760,13 @@
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
-//        if (bookDaoHelper == null || requestItem == null) {
+//        if (requestRepositoryFactory == null || requestItem == null) {
 //            return;
 //        }
 //
 //        changeDownloadButtonStatus();
 //
-//        if (bookDaoHelper.isBookSubed(requestItem.book_id)) {
+//        if (requestRepositoryFactory.checkBookSubscribe(requestItem.getBook_id()) != null) {
 //            if (book_cover_bookshelf != null) {
 ////                book_cover_bookshelf.setText(R.string.book_cover_remove_bookshelf);
 //                setRemoveBtn();
@@ -722,7 +784,7 @@
 //        }
 //        Book book = null;
 //        if (bookCoverUtil != null) {
-//            book = bookCoverUtil.getCoverBook(bookDaoHelper, bookVo);
+//            book = bookCoverUtil.getCoverBook(requestRepositoryFactory, bookVo);
 //        }
 //        if (book != null && book_cover_download != null) {
 //            DownloadState status = CacheManager.INSTANCE.getBookStatus(book);
@@ -763,19 +825,19 @@
 //            if (bookVo != null) {
 //
 //
-//                if (requestItem != null && !TextUtils.isEmpty(requestItem.book_id)) {
-//                    bookVo.book_id = requestItem.book_id;
+//                if (requestItem != null && !TextUtils.isEmpty(requestItem.getBook_id())) {
+//                    bookVo.book_id = requestItem.getBook_id();
 //                }
 //
-//                if (requestItem != null && !TextUtils.isEmpty(requestItem.book_source_id)) {
-//                    bookVo.book_source_id = requestItem.book_source_id;
+//                if (requestItem != null && !TextUtils.isEmpty(requestItem.getBook_source_id())) {
+//                    bookVo.book_source_id = requestItem.getBook_source_id();
 //                }
 //
-//                if (requestItem != null && !TextUtils.isEmpty(requestItem.host)) {
-//                    bookVo.host = requestItem.host;
+//                if (requestItem != null && !TextUtils.isEmpty(requestItem.getHost())) {
+//                    bookVo.host = requestItem.getHost();
 //                }
 //                if (requestItem != null) {
-//                    bookVo.dex = requestItem.dex;
+//                    bookVo.dex = requestItem.getChapters_update_index();
 //                }
 //
 //            /*if (bookVo != null && !TextUtils.isEmpty(bookVo.book_id)) {
@@ -807,7 +869,7 @@
 //                bookSourceList.addAll(sources);
 //                for (int i = 0; i < bookSourceList.size(); i++) {
 //                    CoverPage.SourcesBean source = bookSourceList.get(i);
-//                    if (requestItem.book_source_id.equals(source.book_source_id)) {
+//                    if (requestItem.getBook_source_id().equals(source.book_source_id)) {
 //                        currentSource = source;
 //                    }
 //                }
@@ -1163,29 +1225,28 @@
 //                        Toast.makeText(getApplicationContext(), "当前书籍不能缓存，先去看看其他书吧",
 //                                Toast.LENGTH_SHORT).show();
 //                    } else {
-//                        if (bookDaoHelper == null) {
-//                            bookDaoHelper = BookDaoHelper.getInstance();
-//                        }
-//                        if (bookDaoHelper != null && bookCoverUtil != null) {
-//                            if (!bookDaoHelper.isBookSubed(requestItem.book_id)) {
+//
+//                        if (requestRepositoryFactory != null && bookCoverUtil != null) {
+//                            if (requestRepositoryFactory.checkBookSubscribe(
+//                                    requestItem.getBook_id()) == null) {
 //                                Book insertBook = bookCoverUtil.getCoverBook(bookDaoHelper, bookVo);
 //
 //                                if (currentSource != null) {
 //                                    insertBook.last_updatetime_native = currentSource.update_time;
 //                                }
 //
-//                                boolean succeed = bookDaoHelper.insertBook(insertBook);
+//                                boolean succeed = requestRepositoryFactory.insertBook(insertBook);
 //                                if (succeed && book_cover_bookshelf != null) {
 ////                                    book_cover_bookshelf.setText(R.string
 //// .book_cover_remove_bookshelf);
 //                                    setRemoveBtn();
-//                                    showToastShort(getString(R.string.succeed_add));
+//                                    CommonUtil.showToastMessage(getString(R.string.succeed_add));
 //                                    BaseBookHelper.startDownBookTask(CoverPageActivity.this,
-//                                            requestItem.toBook(), 0);
+//                                            requestItem, 0);
 //                                }
 //                            } else {
 //                                BaseBookHelper.startDownBookTask(CoverPageActivity.this,
-//                                        requestItem.toBook(), 0);
+//                                        requestItem, 0);
 //                            }
 //                        }
 //                    }
@@ -1292,7 +1353,7 @@
 //                    AppLog.e(TAG, "监听开始执行");
 //                    if (source != null) {
 //                        if (requestItem != null && !TextUtils.isEmpty(source.book_source_id)) {
-//                            requestItem.book_id = source.book_id;
+//                            requestItem.setBook_id(source.book_id);
 //                            requestItem.book_source_id = source.book_source_id;
 //                            requestItem.host = source.host;
 //                            requestItem.dex = source.dex;
@@ -1502,30 +1563,30 @@
 //    private void readingCustomaryBook(CoverPage.SourcesBean source, boolean isCurrentSource) {
 //        Intent intent = new Intent();
 //        Bundle bundle = new Bundle();
-//        if (bookDaoHelper == null || bookCoverUtil == null || bookVo == null) {
+//        if (requestRepositoryFactory == null || bookCoverUtil == null || bookVo == null) {
 //            return;
 //        }
 //        Book book;
 //
 //        if (source == null) {//说明是青果源的书
-//            book = bookDaoHelper.getBook(requestItem.book_id, 0);
+//            book = requestRepositoryFactory.loadBook(requestItem.getBook_id());
 //
 //        } else {
-//            book = bookDaoHelper.getBook(source.book_id, 0);
+//            book = requestRepositoryFactory.loadBook(source.book_id);
 //        }
 //
-//        if (book != null && book.sequence != -2) {
-//            bundle.putInt("sequence", book.sequence);
-//            bundle.putInt("offset", book.offset);
+//        if (book != null && book.getSequence() != -2) {
+//            bundle.putInt("sequence", book.getSequence());
+//            bundle.putInt("offset", book.getOffset());
 //        } else {
 //            bundle.putInt("sequence", -1);
 //        }
 //        if (book != null) {
 //            if (isCurrentSource) {
-//                book.last_updatetime_native = source.update_time;
+//                book.setLast_check_update_time(source.update_time);
 //            }
 //            if (Constants.QG_SOURCE.equals(bookVo.host)) {
-//                book.last_updatetime_native = bookVo.update_time;
+//                book.setLast_check_update_time(bookVo.update_time);
 //            }
 //            bundle.putSerializable("book", book);
 //        }
@@ -1541,22 +1602,23 @@
 //    private void continueReading() {
 //        Intent intent = new Intent();
 //        Bundle bundle = new Bundle();
-//        if (bookDaoHelper == null || bookCoverUtil == null || bookVo == null) {
+//        if (requestRepositoryFactory == null || bookCoverUtil == null || bookVo == null) {
 //            return;
 //        }
-//        Book book = bookCoverUtil.getCoverBook(bookDaoHelper, bookVo);
-//        if (bookDaoHelper.isBookSubed(requestItem.book_id) && book != null && book.sequence != -2) {
-//            bundle.putInt("sequence", book.sequence);
-//            bundle.putInt("offset", book.offset);
+//        Book book = bookCoverUtil.getCoverBook(requestRepositoryFactory, bookVo);
+//        if (requestRepositoryFactory.checkBookSubscribe(requestItem.getBook_id()) != null
+//                && book != null && book.getSequence() != -2) {
+//            bundle.putInt("sequence", book.getSequence());
+//            bundle.putInt("offset", book.getOffset());
 //        } else {
 //            bundle.putInt("sequence", -1);
 //        }
 //        if (book != null) {
 //            if (Constants.QG_SOURCE.equals(bookVo.host)) {
-//                book.last_updatetime_native = bookVo.update_time;
+//                book.setLast_check_update_time(bookVo.update_time);
 //            } else {
 //                if (currentSource != null) {
-//                    book.last_updatetime_native = currentSource.update_time;
+//                    book.setLast_check_update_time(currentSource.update_time);
 //                }
 //            }
 //            bundle.putSerializable("book", book);
@@ -1564,7 +1626,7 @@
 //        if (requestItem != null) {
 //            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
 //        }
-//        AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
+//        AppLog.e(TAG, "GotoReading: " + book.getHost() + " : " + requestItem.getHost());
 //        intent.setClass(CoverPageActivity.this, ReadingActivity.class);
 //        intent.putExtras(bundle);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1575,23 +1637,24 @@
 //        //进入阅读页逻辑
 //        Intent intent = new Intent();
 //        Bundle bundle = new Bundle();
-//        if (bookDaoHelper == null || bookCoverUtil == null || bookVo == null) {
+//        if (requestRepositoryFactory == null || bookCoverUtil == null || bookVo == null) {
 //            return;
 //        }
-//        Book book = bookCoverUtil.getCoverBook(bookDaoHelper, bookVo);
-//        if (bookDaoHelper.isBookSubed(requestItem.book_id) && book != null && book.sequence != -2) {
-//            bundle.putInt("sequence", book.sequence);
-//            AppLog.e(TAG, "offset : " + book.offset);
+//        Book book = bookCoverUtil.getCoverBook(requestRepositoryFactory, bookVo);
+//        if (requestRepositoryFactory.checkBookSubscribe(requestItem.getBook_id()) != null
+//                && book != null && book.getSequence() != -2) {
+//            bundle.putInt("sequence", book.getSequence());
+//            AppLog.e(TAG, "offset : " + book.getOffset());
 //        } else {
 //            bundle.putInt("sequence", -1);
 //        }
 //
 //
 //        if (requestItem != null) {
-//            requestItem.book_id = source.book_id;
-//            requestItem.book_source_id = source.book_source_id;
-//            requestItem.host = source.host;
-//            requestItem.dex = source.dex;
+//            requestItem.setBook_id(source.book_id);
+//            requestItem.setBook_source_id(source.book_source_id);
+//            requestItem.setHost(source.host);
+//            requestItem.setChapters_update_index(source.dex);
 //
 //            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem);
 //        }
@@ -1600,7 +1663,6 @@
 //            book = changeBookInformation(source, book);
 //            bundle.putSerializable("book", book);
 //        }
-//        AppLog.e(TAG, "GotoReading: " + book.site + " : " + requestItem.host);
 //        intent.setClass(CoverPageActivity.this, ReadingActivity.class);
 //        intent.putExtras(bundle);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1668,8 +1730,9 @@
 //        }
 //
 //        try {
-//            if (requestItem != null && !bookDaoHelper.isBookSubed(requestItem.book_id)) {
-//                deleteDatabase("book_chapter_" + requestItem.book_id);
+//            if (requestItem != null && requestRepositoryFactory.checkBookSubscribe(
+//                    requestItem.getBook_id()) != null) {
+//                deleteDatabase("book_chapter_" + requestItem.getBook_id());
 //            }
 //        } catch (IndexOutOfBoundsException e) {
 //            e.printStackTrace();
@@ -1706,7 +1769,7 @@
 //        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
 //                StartLogClickUtil.BACK, data);
 //        finish();
-//        SearchBookActivity.isSatyHistory = true;
+//        SearchBookActivity.Companion.setStayHistory(true);
 //    }
 //
 //    @Override
@@ -1720,19 +1783,23 @@
 //    }
 //
 //    private Book changeBookInformation(CoverPage.SourcesBean source, Book book) {
-//        BookDaoHelper bookDaoHelper = BookDaoHelper.getInstance();
-//        book.book_source_id = source.book_source_id;
-//        book.site = source.host;
-//        book.last_updatetime_native = source.update_time;
-//        book.dex = source.dex;
+//        RequestRepositoryFactory factory =
+//                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+//                        getApplicationContext());
 //
-//        if (bookDaoHelper.isBookSubed(source.book_id)) {
-//            bookDaoHelper.updateBook(book);
+//        book.setBook_source_id(source.book_source_id);
+//        book.setHost(source.host);
+//        book.setLast_check_update_time(source.update_time);
+//        book.setChapters_update_index(source.dex);
+//
+//        if (factory.checkBookSubscribe(source.book_id) != null) {
+//            factory.updateBook(book);
 //        }
 //
-//        BookChapterDao bookChapterDao = new BookChapterDao(CoverPageActivity.this, source.book_id);
-//
-//        bookChapterDao.deleteBookChapters(0);
+//        ChapterDaoHelper chapterDaoHelper =
+//                ChapterDaoHelper.Companion.loadChapterDataProviderHelper(CoverPageActivity.this,
+//                        source.book_id);
+//        chapterDaoHelper.deleteChapters(0);
 //
 //        return book;
 //    }
@@ -1762,9 +1829,9 @@
 //            return;
 //        }
 //        Map<String, String> data = new HashMap<>();
-//        if (requestItem != null && requestItem.book_id != null) {
-//            data.put("bookid", requestItem.book_id);
-//            data.put("TbookID", book.book_id);
+//        if (requestItem != null && requestItem.getBook_id() != null) {
+//            data.put("bookid", requestItem.getBook_id());
+//            data.put("TbookID", book.getBook_id());
 //        }
 //        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
 //                StartLogClickUtil.RECOMMENDEDBOOK, data);
@@ -1792,10 +1859,10 @@
 //                case REQUEST_COVER_ERROR:
 //                    coverPageActivity.handleError();
 //                    break;
-//                case RequestExecutor.REQUEST_COVER_QG_SUCCESS:
+//                case REQUEST_COVER_QG_SUCCESS:
 //                    coverPageActivity.handleOK(msg.obj, true);
 //                    break;
-//                case RequestExecutor.REQUEST_COVER_QG_ERROR:
+//                case REQUEST_COVER_QG_ERROR:
 //                    coverPageActivity.handleError();
 //                    break;
 //                case GET_CATEGORY_OK:
@@ -1809,4 +1876,5 @@
 //            }
 //        }
 //    }
+//
 //}

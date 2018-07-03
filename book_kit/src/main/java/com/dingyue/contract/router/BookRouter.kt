@@ -27,7 +27,7 @@ object BookRouter {
 
     const val NAVIGATE_TYPE_BOOKSHELF = 0
     const val NAVIGATE_TYPE_DOWNLOAD = 1
-    const val NAVIGATE_TYPE_RECOMMEND = 2
+    const val NAVIGATE_TYPE_RECOMMEND = 2 // 书籍封面页下方推荐模块
     const val NAVIGATE_TYPE_READING = 3
     const val NAVIGATE_TYPE_BOOKEND = 5
 
@@ -111,6 +111,14 @@ object BookRouter {
         return DataCache.isChapterCached(chapter)
     }
 
+    /**
+     * 针对非book类型的实体类，new一个book对象，传递三个值
+     *     val book = Book()
+     *     book.book_id = recommendBooks.bookId
+     *     book.book_source_id = recommendBooks.id
+     *     book.book_chapter_id = recommendBooks.bookChapterId
+    BookRouter.navigateCover(this, book)
+     */
     fun navigateCover(activity: Activity, book: Book) {
         val bundle = Bundle()
         bundle.putString("book_id", book.book_id)

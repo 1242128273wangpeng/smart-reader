@@ -112,7 +112,6 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         sp.edit().remove(Constants.NOVEL_HOST).apply()
         sp.edit().remove(Constants.WEBVIEW_HOST).apply()
-//        Constants.dynamic = SharedUtils.getBoolean(SharedUtils.START_PARAMS)
         UrlUtils.dynamic()
 
     }

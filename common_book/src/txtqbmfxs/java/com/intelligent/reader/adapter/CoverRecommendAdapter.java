@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.RecommendBean;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.constants.Constants;
@@ -28,9 +29,9 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
 
     private WeakReference<Context> weakReference;
     private RecommendItemClickListener recommendItemClickListener;
-    private List<Book> books = new ArrayList<>();
+    private List<RecommendBean> books = new ArrayList<>();
 
-    public CoverRecommendAdapter(Context context, RecommendItemClickListener recommendItemClickListener, List<Book> books) {
+    public CoverRecommendAdapter(Context context, RecommendItemClickListener recommendItemClickListener, List<RecommendBean> books) {
         this.weakReference = new WeakReference<>(context);
         this.recommendItemClickListener = recommendItemClickListener;
         this.books = books;
@@ -44,25 +45,27 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Book book = books.get(position);
-        holder.tv_book_name.setText(book.getName());
-        if (book.getReadPersonNum() != null && !TextUtils.isEmpty(book.getReadPersonNum())) {
-            if (Constants.QG_SOURCE.equals(book.getHost())) {
-                if(!AppUtils.isContainChinese(book.getReadPersonNum())){
-                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.getReadPersonNum())));
+        RecommendBean book = books.get(position);
+        holder.tv_book_name.setText(book.getBookName());
+        if (book.getReaderCountDescp() != null && !TextUtils.isEmpty(book.getReaderCountDescp())) {
+            holder.tv_readnum.setText((book.getReaderCountDescp() + "人在读"));
+
+        /* if (Constants.QG_SOURCE.equals(book.getHost())) {
+                if(!AppUtils.isContainChinese(book.getReaderCountDescp())){
+                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.getReaderCountDescp())));
                 }else{
                     holder.tv_readnum.setText("");
                 }
             } else {
-                holder.tv_readnum.setText((book.getReadPersonNum() + "人在读"));
-            }
+                holder.tv_readnum.setText((book.getReaderCountDescp() + "人在读"));
+            }*/
 
         } else {
             holder.tv_readnum.setText("");
         }
 
-        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getImg_url())) {
-            Glide.with(weakReference.get()).load(book.getImg_url()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
+        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getSourceImageUrl())) {
+            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_recommend_image);
         } else {

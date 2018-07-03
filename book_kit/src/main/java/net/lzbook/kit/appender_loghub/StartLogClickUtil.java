@@ -50,6 +50,7 @@ public class StartLogClickUtil {
     public static final String ACTION_HOME_PERSONAL = "PERSONAL";
     public static final String ACTION_HOME_SEARCH = "SEARCH";
     public static final String ACTION_HOME_CACHE_MANAGE = "CACHEMANAGE";
+    public static final String PREFERENCE = "PREFERENCE";//开屏选男女
 
     /***
      * 书架相关点位
@@ -125,21 +126,6 @@ public class StartLogClickUtil {
     public static final String ACTION_CACHE_MANAGER_EDIT_CANCEL = "CANCLE";//取消
     public static final String ACTION_CACHE_MANAGER_EDIT_DELETE = "DELETE";//删除
     public static final String ACTION_CACHE_MANAGER_EDIT_SELECT_ALL = "SELECTALL";//全选
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //页面编码
@@ -255,7 +241,6 @@ public class StartLogClickUtil {
     public static final String TRANSCODEPOPUP = "TRANSCODEPOPUP";//点击转码阅读
 
 
-
     //书籍目录页
     public static final String CATALOG_CASHEALL = "CASHEALL";//点击全本缓存
     public static final String CATALOG_CATALOGCHAPTER = "CATALOGCHAPTER";//目录中点击某章节
@@ -356,7 +341,6 @@ public class StartLogClickUtil {
     public static final String RESOLVEPACKE = "RESOLVEPACKE";
 
 
-
     public static final String DROPDOWN = "DROPDOWN";//下拉刷新
 
     private static List<String> prePageList = new ArrayList<>();
@@ -378,12 +362,14 @@ public class StartLogClickUtil {
         AppLog.e("log", log.getContent().toString());
         if (identify.equals(APPINIT)) log.setEventType(LocalLog.getMINORITY());
 
-        AndroidLogStorage.getInstance().accept(log);
+        AndroidLogStorage.getInstance().accept(log, context);
     }
 
 
-    public static void sendDirectLog(PLItemKey key, String page, String identify, Map<String, String> params) {
-        LogGroup logGroup = new LogGroup("", "", key.getProject(), PLItemKey.ZN_APP_EVENT.getLogstore());
+    public static void sendDirectLog(PLItemKey key, String page, String identify,
+            Map<String, String> params) {
+        LogGroup logGroup = new LogGroup("", "", key.getProject(),
+                PLItemKey.ZN_APP_EVENT.getLogstore());
         ServerLog log = getCommonLog();
         log.putContent("code", identify);//点击事件唯一标识
         log.putContent("page_code", page);
@@ -395,7 +381,8 @@ public class StartLogClickUtil {
 
         logGroup.PutLog(log);
 
-        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId, AndroidLogClient.accessKeySecret, key.getProject());
+        LOGClient logClient = new LOGClient(AndroidLogClient.endPoint, AndroidLogClient.accessKeyId,
+                AndroidLogClient.accessKeySecret, key.getProject());
         try {
             long start = System.currentTimeMillis();
             logClient.PostLog(logGroup, key.getLogstore());
@@ -430,7 +417,8 @@ public class StartLogClickUtil {
     }
 
     //上传普通的点击事件,带事件参数
-    public static void upLoadEventLog(Context context, String pageCode, String identify, Map<String, String> extraParam) {
+    public static void upLoadEventLog(Context context, String pageCode, String identify,
+            Map<String, String> extraParam) {
         if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
@@ -462,7 +450,7 @@ public class StartLogClickUtil {
             log.putContent("data", FormatUtil.forMatMap(extraParam));
         }
         AppLog.e("log", log.getContent().toString());
-        AndroidLogStorage.getInstance().accept(log);
+        AndroidLogStorage.getInstance().accept(log, context);
 
     }
 
@@ -480,15 +468,14 @@ public class StartLogClickUtil {
         log.putContent("apps", applist);
         log.putContent("time", System.currentTimeMillis() + "");
         AppLog.e("log", log.getContent().toString());
-        AndroidLogStorage.getInstance().accept(log);
+        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
     }
-
-
 
 
     public static void sendZnUserLog() {
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+        parameters.put("udid",
+                OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
         parameters.put("app_package", AppUtils.getPackageName());
         parameters.put("app_version", AppUtils.getVersionName());
         parameters.put("app_version_code", String.valueOf(AppUtils.getVersionCode()));
@@ -496,7 +483,8 @@ public class StartLogClickUtil {
         parameters.put("phone_identity", AppUtils.getIMEI(BaseBookApplication.getGlobalContext()));
         parameters.put("vendor", Build.MODEL);
         parameters.put("os", Constants.APP_SYSTEM_PLATFORM + android.os.Build.VERSION.RELEASE);
-        parameters.put("operator", AppUtils.getProvidersName(BaseBookApplication.getGlobalContext()));
+        parameters.put("operator",
+                AppUtils.getProvidersName(BaseBookApplication.getGlobalContext()));
         parameters.put("network", NetWorkUtils.NETTYPE);
         if (null != BaseBookApplication.getDisplayMetrics()) {
             String resolution_ratio = BaseBookApplication.getDisplayMetrics().widthPixels + "*" +
@@ -531,7 +519,8 @@ public class StartLogClickUtil {
             log.putContent("page_num", params[3]);//当前阅读章节被切分的总页数
             log.putContent("pager", params[4]);//章节页数索引，即当前为第几页
             log.putContent("page_size", params[5]);//当前页尺寸，可以是byte或总字数（包括所有字符，需要知道当前页内容）
-            log.putContent("from", params[6]);//当前页面来源，所有可能来源的映射唯一字符串。书籍封面/书架/上一页翻页等等（不包括退出App后在进入来源）
+            log.putContent("from",
+                    params[6]);//当前页面来源，所有可能来源的映射唯一字符串。书籍封面/书架/上一页翻页等等（不包括退出App后在进入来源）
             log.putContent("begin_time", params[7]);//进入当前页时间戳（秒数）
             log.putContent("end_time", params[8]);//退出当前页时间戳（秒数）（不包括用户退出App在进来，即该时间表示为用户主动翻页和主动退出阅读）
             log.putContent("read_time", params[9]);//总阅读时长秒数（考虑中间退出App的时长不应该包括进来，即排除打电话等时间）
@@ -544,7 +533,7 @@ public class StartLogClickUtil {
         }
 
         AppLog.e("log", log.getContent().toString());
-        AndroidLogStorage.getInstance().accept(log);
+//        AndroidLogStorage.getInstance().accept(log);
     }
 
 
@@ -592,11 +581,12 @@ public class StartLogClickUtil {
         log.putContent("cityCode", cityCode);
 
         log.putContent("os", "android");
-        log.putContent("network", NetWorkUtils.getNetWorkTypeNew(BaseBookApplication.getGlobalContext()));
+        log.putContent("network",
+                NetWorkUtils.getNetWorkTypeNew(BaseBookApplication.getGlobalContext()));
         log.putContent("city_info", Constants.adCityInfo);
         log.putContent("location_detail", Constants.adLocationDetail);
 
-        AndroidLogStorage.getInstance().accept(log);
+        AndroidLogStorage.getInstance().accept(log,BaseBookApplication.getGlobalContext());
     }
 
     private static String decode(String content) {
@@ -615,7 +605,8 @@ public class StartLogClickUtil {
     public synchronized static String getPrePageCode(String pageCode) {
         String pre_page_code = "";
 
-        if (prePageList.size() == 0 || (prePageList.size() > 0 && pageCode !=null && !prePageList.get(prePageList.size() - 1).equals(pageCode))) {
+        if (prePageList.size() == 0 || (prePageList.size() > 0 && pageCode != null
+                && !prePageList.get(prePageList.size() - 1).equals(pageCode))) {
             prePageList.add(pageCode);
             removePre(prePageList);
         }
@@ -637,11 +628,12 @@ public class StartLogClickUtil {
         return pre_page_code;
     }
 
-    public  static void removePre(List<String> prePageList){
+    public static void removePre(List<String> prePageList) {
 
         if (prePageList.size() > 6) {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++) {
                 prePageList.remove(prePageList.get(i));
+            }
         }
 
     }

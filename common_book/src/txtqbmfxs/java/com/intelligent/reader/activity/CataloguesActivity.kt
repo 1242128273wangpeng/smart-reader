@@ -55,6 +55,17 @@ import net.lzbook.kit.utils.antiShakeClick
  */
 @Route(path = RouterConfig.CATALOGUES_ACTIVITY)
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, OnItemClickListener, CataloguesContract {
+
+    override fun insertBookShelfResult(result: Boolean) {
+    }
+
+    override fun changeShelfButtonClickable(clickable: Boolean) {
+    }
+
+    override fun bookSubscribeState(subscribe: Boolean) {
+    }
+
+
     var type = 2
     internal var colorSelected: Int = 0
     internal var colorNormal: Int = 0
@@ -90,14 +101,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try {
-            setContentView(R.layout.act_catalog)
-        } catch (e: Resources.NotFoundException) {
-            e.printStackTrace()
-        }
+        setContentView(R.layout.act_catalog)
 
-        colorSelected = ContextCompat.getColor(this,R.color.theme_primary_ffffff)
-        colorNormal = ContextCompat.getColor(this,R.color.theme_primary)
+
+        colorSelected = ContextCompat.getColor(this, R.color.theme_primary_ffffff)
+        colorNormal = ContextCompat.getColor(this, R.color.theme_primary)
 
         initUI()
         initListener()
@@ -140,31 +148,23 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     private fun initListener() {
-        if (catalog_main != null) {
-            catalog_main!!.onItemClickListener = this
-            catalog_main!!.setOnScrollListener(this)
-        }
+        catalog_main.onItemClickListener = this
+        catalog_main.setOnScrollListener(this)
 
-        if (bookmark_main != null) {
-            bookmark_main!!.onItemClickListener = this
-        }
+        bookmark_main.onItemClickListener = this
 
-        if (catalog_empty_refresh != null) {
-            catalog_empty_refresh!!.setOnClickListener(this)
-        }
+        catalog_empty_refresh.setOnClickListener(this)
 
-        if (iv_fixbook != null) {
-            iv_fixbook!!.setOnClickListener(this)
-        }
+        iv_fixbook.setOnClickListener(this)
     }
 
     private fun initData(bundle: Bundle) {
 
-        if (bundle.containsKey("cover")) {
-            book = bundle.getSerializable("cover") as Book
-        }
+//        if (bundle.containsKey("cover")) {
+        book = bundle.getSerializable("cover") as Book
+//        }
 
-        if (book == null || book!!.book_id == null) {
+        if (book == null) {
             exitAndUpdate()
             return
         }
@@ -174,50 +174,38 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         fromCover = bundle.getBoolean("fromCover", true)
         fromEnd = bundle.getBoolean("fromEnd", false)
 
-        if (book != null) {
-            catalog_novel_name!!.text = book!!.name
-            if (RepairHelp.isShowFixBtn(this, book!!.book_id)) {
-                iv_fixbook!!.visibility = View.VISIBLE
-            } else {
-                iv_fixbook!!.visibility = View.GONE
-            }
+        catalog_novel_name!!.text = book!!.name
+        if (RepairHelp.isShowFixBtn(this, book!!.book_id)) {
+            iv_fixbook!!.visibility = View.VISIBLE
+        } else {
+            iv_fixbook!!.visibility = View.GONE
         }
 
 
-        if (book != null) {
-            mCataloguesPresenter = CataloguesPresenter(this, book!!, this, this, fromCover)
-        }
+        mCataloguesPresenter = CataloguesPresenter(this, book!!, this, this, fromCover)
 
         getChapterData()
 
-        if (mCataloguesPresenter != null) {
-            mCataloguesPresenter!!.loadBookMark()
-        }
+        mCataloguesPresenter?.loadBookMark()
 
     }
 
     private fun getChapterData() {
         if (book != null) {
             if (loadingPage != null) {
-                loadingPage!!.onSuccess()
+                loadingPage?.onSuccess()
             }
 
             loadingPage = LoadingPage(this, LoadingPage.setting_result)
             loadingPage!!.setCustomBackgroud()
 
-           /* if (mCataloguesPresenter != null) {
-                mCataloguesPresenter?.requestCatalogList()
-            }*/
+            mCataloguesPresenter?.requestCatalogList(false)
 
-            if (loadingPage != null) {
-                loadingPage?.isCategory = true
-                loadingPage?.setReloadAction(Callable<Void> {
-                 /*   if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter?.requestCatalogList()
-                    }*/
-                    null
-                })
-            }
+            loadingPage?.isCategory = true
+            loadingPage?.setReloadAction(Callable<Void> {
+                mCataloguesPresenter?.requestCatalogList(false)
+                null
+            })
         }
     }
 

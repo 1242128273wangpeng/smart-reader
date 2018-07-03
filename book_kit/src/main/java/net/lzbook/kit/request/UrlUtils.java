@@ -74,11 +74,9 @@ public class UrlUtils {
      * 测试~注掉赋值部分代码
      */
     public static void setBookNovelDeployHost(String bookNovelDeployHost) {
-
-
         if (!TextUtils.isEmpty(bookNovelDeployHost)) {
             if (!BOOK_NOVEL_DEPLOY_HOST.contains("test") && !bookNovelDeployHost.contains("test")) {
-                if (sharedPreUtil.getBoolean(sharedPreUtil.Companion.getSTART_PARAMS())) {
+                if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getSTART_PARAMS())) {
                     BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
                 }
             }

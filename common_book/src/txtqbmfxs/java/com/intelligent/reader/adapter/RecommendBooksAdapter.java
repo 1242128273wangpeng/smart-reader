@@ -32,7 +32,9 @@ public class RecommendBooksAdapter extends RecyclerView.Adapter<RecommendBooksAd
     private RecommendItemClickListener recommendItemClickListener;
     private List<SearchRecommendBook.DataBean> books = new ArrayList<>();
 
-    public RecommendBooksAdapter(Context context, RecommendItemClickListener recommendItemClickListener, List<SearchRecommendBook.DataBean> books) {
+    public RecommendBooksAdapter(Context context,
+            RecommendItemClickListener recommendItemClickListener,
+            List<SearchRecommendBook.DataBean> books) {
         this.weakReference = new WeakReference<>(context);
         this.recommendItemClickListener = recommendItemClickListener;
         this.books = books;
@@ -41,45 +43,51 @@ public class RecommendBooksAdapter extends RecyclerView.Adapter<RecommendBooksAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(weakReference.get()).inflate(R.layout.item_search_recommend, parent, false), recommendItemClickListener);
+        return new ViewHolder(
+                LayoutInflater.from(weakReference.get()).inflate(R.layout.item_search_recommend,
+                        parent, false), recommendItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         SearchRecommendBook.DataBean book = books.get(position);
         holder.tv_book_name.setText(book.getBookName());
-        holder.tv_author.setText("作者："+book.getAuthorName());
-        if(book.getSerialStatus().equals("SERIALIZE")){
+        holder.tv_author.setText(("作者：" + book.getAuthorName()));
+        if (book.getSerialStatus().equals("SERIALIZE")) {
             holder.tv_status.setText("连载中");
             holder.tv_status.setBackgroundResource(R.drawable.search_recommend_lianzai_bg);
-            holder.tv_status.setTextColor(weakReference.get().getResources().getColor(R.color.search_recommend_lianzai_color));
-        }else {
+            holder.tv_status.setTextColor(weakReference.get().getResources().getColor(
+                    R.color.search_recommend_lianzai_color));
+        } else {
             holder.tv_status.setText("已完结");
-            holder.tv_status.setTextColor(weakReference.get().getResources().getColor(R.color.search_recommend_finish_color));
+            holder.tv_status.setTextColor(weakReference.get().getResources().getColor(
+                    R.color.search_recommend_finish_color));
             holder.tv_status.setBackgroundResource(R.drawable.search_recommend_finish_bg);
         }
 
-        holder.tv_score.setText(new DecimalFormat("0.0").format(book.getScore())+"分");
-        holder.tv_read_num.setText(book.getReaderCountDescp()+"人在读");
-        if(!TextUtils.isEmpty(book.getGenre()) ){
+        holder.tv_score.setText((new DecimalFormat("0.0").format(book.getScore()) + "分"));
+        holder.tv_read_num.setText((book.getReaderCountDescp() + "人在读"));
+        if (!TextUtils.isEmpty(book.getGenre())) {
             holder.tv_type.setVisibility(View.VISIBLE);
             holder.tv_type.setText(book.getGenre());
-        }else{
-            if(!TextUtils.isEmpty(book.getSubGenre())){
+        } else {
+            if (!TextUtils.isEmpty(book.getSubGenre())) {
                 holder.tv_type.setVisibility(View.VISIBLE);
                 holder.tv_type.setText(book.getSubGenre());
-            }else{
+            } else {
                 holder.tv_type.setVisibility(View.GONE);
             }
 
         }
 
         if (holder.iv_url != null && !TextUtils.isEmpty(book.getSourceImageUrl())) {
-            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
+            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(
+                    net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_url);
         } else {
-            Glide.with(weakReference.get()).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(holder.iv_url);
+            Glide.with(weakReference.get()).load(
+                    net.lzbook.kit.R.drawable.icon_book_cover_default).into(holder.iv_url);
         }
 
 
@@ -100,19 +108,19 @@ public class RecommendBooksAdapter extends RecyclerView.Adapter<RecommendBooksAd
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private RecommendItemClickListener recommendItemClickListener;
         private ImageView iv_url;
-        private TextView tv_book_name,tv_author,tv_status,tv_score,tv_read_num,tv_type;
+        private TextView tv_book_name, tv_author, tv_status, tv_score, tv_read_num, tv_type;
 
         public ViewHolder(View itemView, RecommendItemClickListener recommendItemClickListener) {
             super(itemView);
             this.recommendItemClickListener = recommendItemClickListener;
             itemView.setOnClickListener(this);
-            iv_url = (ImageView) itemView.findViewById(R.id.iv_url);
-            tv_book_name = (TextView) itemView.findViewById(R.id.tv_book_name);
-            tv_author = (TextView) itemView.findViewById(R.id.tv_author);
-            tv_status = (TextView) itemView.findViewById(R.id.tv_status);
-            tv_score = (TextView) itemView.findViewById(R.id.tv_score);
-            tv_read_num = (TextView) itemView.findViewById(R.id.tv_read_num);
-            tv_type = (TextView) itemView.findViewById(R.id.tv_type);
+            iv_url = itemView.findViewById(R.id.iv_url);
+            tv_book_name = itemView.findViewById(R.id.tv_book_name);
+            tv_author = itemView.findViewById(R.id.tv_author);
+            tv_status = itemView.findViewById(R.id.tv_status);
+            tv_score = itemView.findViewById(R.id.tv_score);
+            tv_read_num = itemView.findViewById(R.id.tv_read_num);
+            tv_type = itemView.findViewById(R.id.tv_type);
 
 
         }
