@@ -487,7 +487,6 @@ public class AppUtils {
     // 获取渠道号
     public static String getChannelId() {
         initValues();
-        CommonUtil.showToastMessage("美团渠道测试"+CHANNEL_NAME);
         return CHANNEL_NAME;
     }
 

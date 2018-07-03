@@ -19,7 +19,6 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     var selectedBooks: ArrayList<Book> = ArrayList()
 
     var isRemove = false
-    var isShowBottomLine = false //列表底部分割线
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -75,8 +74,6 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     }
 
     override fun getItemCount(): Int {
-        isShowBottomLine = books.size > 4
-
         if (hasAddView) {
             if (books.size > 0) {
                 if (books.size >= 50) {
