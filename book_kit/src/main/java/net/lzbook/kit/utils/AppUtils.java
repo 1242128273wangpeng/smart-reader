@@ -60,6 +60,8 @@ import java.util.regex.Pattern;
 
 import static android.content.Context.TELEPHONY_SERVICE;
 
+import com.meituan.android.walle.WalleChannelReader;
+
 import org.apache.http.conn.util.InetAddressUtils;
 
 public class AppUtils {
@@ -765,6 +767,11 @@ public class AppUtils {
                 VERSION_NAME = getStringField("VERSION_NAME", buildConfig);
                 VERSION_CODE = getIntField("VERSION_CODE", buildConfig);
                 CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
+//                CHANNEL_NAME = "blf1298_11974_001";
+                if(WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()) != null){
+                    CHANNEL_NAME= WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -474,7 +474,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebviewHost().contains("test")) {
+        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }

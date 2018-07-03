@@ -79,6 +79,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var rankingFragment: WebViewFragment? = null
     private var categoryFragment: WebViewFragment? = null
 
+    // webview精选页面
+    private val WEB_RECOMMEND = "/{packageName}/v3/recommend/index.do"
+    // webview排行页面
+    private val WEB_RANK = "/{packageName}/v3/rank/index.do"
+
+    // webview排行页面
+    private val WEB_CATEGORY = "/{packageName}/v3/category/index.do"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -319,7 +327,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebviewHost().contains("test")) {
+        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
@@ -492,7 +500,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         recommendFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "recommend")
-                        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         recommendFragment!!.setArguments(bundle)
                     }
@@ -503,7 +511,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "rank")
-                        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment!!.arguments = bundle
                     }
@@ -514,7 +522,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         categoryFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "category")
-                        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         categoryFragment!!.arguments = bundle
                     }
