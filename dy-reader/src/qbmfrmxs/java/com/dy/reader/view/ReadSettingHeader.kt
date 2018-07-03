@@ -141,8 +141,6 @@ class ReadSettingHeader : FrameLayout {
             val result = requestFactory.insertBook(ReaderStatus.book)
             if (result > 0) {
                 ll_add_bookshelf.visibility = View.GONE
-                night_shadow_add_bookshelf.visibility = View.GONE
-                night_shadow_add_bookshelf.isEnable = false
                 context.showToastMessage(R.string.add_bookshelf_success)
             }
             StartLogClickUtil.upLoadEventLog(context.applicationContext,
@@ -174,8 +172,6 @@ class ReadSettingHeader : FrameLayout {
         val subscribedBook = requestFactory.checkBookSubscribe(ReaderStatus.book.book_id)
         if (subscribedBook != null) {
             ll_add_bookshelf.visibility = View.GONE
-            night_shadow_add_bookshelf.visibility = View.GONE
-            night_shadow_add_bookshelf.isEnable = false
         } else {
             ll_add_bookshelf.visibility = View.VISIBLE
         }

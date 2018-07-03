@@ -67,7 +67,7 @@ class RecommendBooksAdapter(context: Context,
             holder.txt_book_score.text = (DecimalFormat("0.0").format(book.score)) + "分"
         }
 
-        holder.txt_read_num.text = AppUtils.getCommonReadNums(java.lang.Long.valueOf(book.readerCountDescp))
+        holder.txt_read_num.text = AppUtils.getCommonReadNums(book.readerCount.toLong())
         if (!TextUtils.isEmpty(book.genre)) {
             holder.txt_book_type.visibility = View.VISIBLE
             holder.txt_book_type.text = book.genre

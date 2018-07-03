@@ -33,6 +33,7 @@ import com.dy.reader.page.*
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.ThemeUtil
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfrmxs.act_reader.*
@@ -99,6 +100,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         dl_reader_content.addDrawerListener(mDrawerListener)
         dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+        if (dl_reader_content != null) {
+            ThemeUtil.getModePrimaryBackground(resources, dl_reader_content)
+        }
 
         if (!ReaderSettings.instance.isLandscape) {
             mReadPresenter.loadData()
@@ -431,6 +436,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.tonken++
                     ReadMediaManager.adCache.clear()
                     mReadPresenter.loadData(true)
+                }
+            }
+            ReaderSettings.ConfigType.PAGE_REFRESH -> {
+                if (dl_reader_content != null) {
+                    ThemeUtil.getModePrimaryBackground(resources, dl_reader_content)
                 }
             }
             ReaderSettings.ConfigType.CHAPTER_REFRESH -> {

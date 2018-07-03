@@ -104,7 +104,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         bundle.putSerializable("cover", book)
         bundle.putString("book_id", book.book_id)
         bundle.putInt("sequence", ReaderStatus.book.sequence)
-        bundle.putBoolean("fromCover", false)
+        bundle.putBoolean("fromCover", true)
         bundle.putBoolean("changeSource", changeSource)
 
         val activity = this.activity.get()
