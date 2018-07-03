@@ -57,6 +57,8 @@ dependencies {
 
     compile 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
 
+    //美团打包
+    compile 'com.meituan.android.walle:library:1.1.6'
     api project(':basic')
 
 }

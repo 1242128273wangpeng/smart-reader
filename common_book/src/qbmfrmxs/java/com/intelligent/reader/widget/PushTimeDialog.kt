@@ -3,7 +3,7 @@ package com.intelligent.reader.widget
 import android.app.Activity
 import android.view.Gravity
 import com.intelligent.reader.R
-import kotlinx.android.synthetic.txtqbmfyd.dialog_push_time.*
+import kotlinx.android.synthetic.qbmfrmxs.dialog_push_time.*
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.data.bean.SettingItems
 

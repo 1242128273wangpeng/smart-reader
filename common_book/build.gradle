@@ -380,10 +380,10 @@ N多网	        blf1298_10885_001
             zipAlignEnabled true
             shrinkResources false
 
-            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
+//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
 
             fixChannelAppName(getOwner(), "${channel}")
-            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
+//            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
         //调试和开发使用
@@ -398,7 +398,7 @@ N多网	        blf1298_10885_001
 
             buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
             fixChannelAppName(getOwner(), "${channel}")
-            addManifestPlaceholders([CHANNEL_NAME: 'DEBUG'])
+//            addManifestPlaceholders([CHANNEL_NAME: 'DEBUG'])
         }
 
         //调试和开发使用
@@ -408,9 +408,9 @@ N多网	        blf1298_10885_001
             shrinkResources false
             fixChannelAppName(getOwner(), "${channel}")
 
-            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
+//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
 
-            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
+//            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
     }

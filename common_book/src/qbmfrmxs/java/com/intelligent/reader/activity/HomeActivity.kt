@@ -279,7 +279,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     }
         }
 
-        txt_market.setOnClickListener {
+        txt_mark.setOnClickListener {
             PersonalLogger.uploadPersonalMark()
             try {
                 val uri = Uri.parse("market://details?id=" + this.packageName)
@@ -305,7 +305,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         rl_check_update.setOnClickListener {
             PersonalLogger.uploadPersonalCheckUpdate()
             try {
-                apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
+                apkUpdateUtils.getApkUpdateInfo(this, handler, "SettingActivity")
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -182,5 +182,5 @@ interface RequestService {
 
 
     @GET(BOOK_RECOMMEND)
-    fun requestBookRecommend(@Query("book_id") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
+    fun requestBookRecommend(@Query("bookId") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
 }
