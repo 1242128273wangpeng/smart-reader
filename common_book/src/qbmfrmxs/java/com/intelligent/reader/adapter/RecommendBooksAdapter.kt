@@ -67,7 +67,7 @@ class RecommendBooksAdapter(context: Context,
             holder.txt_book_score.text = (DecimalFormat("0.0").format(book.score)) + "分"
         }
 
-        holder.txt_read_num.text = AppUtils.getCommonReadNums(java.lang.Long.valueOf(book.readerCountDescp))
+        holder.txt_read_num.text = book.readerCount.toString()+"人气值"
         if (!TextUtils.isEmpty(book.genre)) {
             holder.txt_book_type.visibility = View.VISIBLE
             holder.txt_book_type.text = book.genre
@@ -76,7 +76,7 @@ class RecommendBooksAdapter(context: Context,
                 holder.txt_book_type.visibility = View.VISIBLE
                 holder.txt_book_type.text = book.subGenre
             } else {
-                holder.txt_book_type.visibility = View.GONE
+                holder.txt_book_type.visibility = View.INVISIBLE
             }
 
         }
