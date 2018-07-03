@@ -335,7 +335,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             if (txt_book_detail_word_count != null) {
-                txt_book_detail_word_count.text = if (TextUtils.isEmpty(book.word_count)) "暂无" else AppUtils.getWordNums(java.lang.Long.parseLong(book.word_count))
+                txt_book_detail_word_count.text = if (TextUtils.isEmpty(book.word_count) || AppUtils.isContainChinese(book.word_count)) "暂无" else AppUtils.getWordNums(java.lang.Long.parseLong(book.word_count))
             }
 
             if (txt_book_detail_author != null && !TextUtils.isEmpty(book.author)) {
