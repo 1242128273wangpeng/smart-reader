@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import net.lzbook.kit.utils.AppUtils
 import java.text.MessageFormat
 
 class BookRecommendAdapter : BaseAdapter() {
@@ -56,14 +57,13 @@ class BookRecommendAdapter : BaseAdapter() {
 
         viewHolder.txt_recommend_name?.text = recommend.bookName
 
-        viewHolder.txt_recommend_popularity?.text = MessageFormat.format("{0}人气", recommend.uv)
+        viewHolder.txt_recommend_popularity?.text = AppUtils.getCommonReadNums(recommend.uv)
 
         return contentView
     }
 
     fun setData(recommends: List<RecommendBean>) {
         this.recommends = recommends
-        notifyDataSetChanged()
     }
 
 

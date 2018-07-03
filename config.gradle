@@ -12,8 +12,8 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbmfrmxs.reader"
-    defaultPublishConfig = 'qbmfrmxsDebug'
+    applicationId = "cc.lianzainovel"
+    defaultPublishConfig = 'txtqbmfxs' + 'Debug'
 
     minifyEnable = false
     shrinkResEnable = minifyEnable
@@ -57,7 +57,7 @@ ext {
     if (!startParameter.taskRequests.isEmpty()) {
         def arg0 = startParameter.taskRequests[0].args[0]
         log(arg0)
-        if(arg0.contains(":common_book:")) {
+        if (arg0.contains(":common_book:")) {
             def isDebug = arg0.contains("Debug")
             def app = arg0.replace(":common_book:", "")
                     .replace("generate", "")
@@ -67,14 +67,14 @@ ext {
                     .replace("Custom", "")
                     .replace("Sources", "").toLowerCase()
             log(app)
-            if(!appPackageIDConfig.containsKey(app)){
+            if (!appPackageIDConfig.containsKey(app)) {
                 throw new RuntimeException("app not found: $app")
             }
             applicationId = appPackageIDConfig.get(app)
-            if(isDebug) {
-                defaultPublishConfig = app+"Debug"
-            }else{
-                defaultPublishConfig = app+"Release"
+            if (isDebug) {
+                defaultPublishConfig = app + "Debug"
+            } else {
+                defaultPublishConfig = app + "Release"
             }
 
             hasad = !noadList.contains(applicationId)

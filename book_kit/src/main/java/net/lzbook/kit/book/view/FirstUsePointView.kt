@@ -71,10 +71,10 @@ class FirstUseManager(val context: Context) {
 
     init {
         preferences = context.getSharedPreferences("first_use_preferences", Context.MODE_PRIVATE)
-        val version = preferences!!.getString("VERSION", "")
+        val version = preferences.getString("VERSION", "")
         val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
         if (!version.equals(versionName, true)) {
-            val editor = preferences!!.edit()
+            val editor = preferences.edit()
             editor.clear()
 
             editor.putString("VERSION", versionName)

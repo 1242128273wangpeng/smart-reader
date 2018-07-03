@@ -4,42 +4,55 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -47,12 +60,15 @@ import java.util.regex.Pattern;
 
 import static android.content.Context.TELEPHONY_SERVICE;
 
+import org.apache.http.conn.util.InetAddressUtils;
+
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
     public static final int LOG_TYPE_ESCARD_PAY = LOG_TYPE_BAIDUPUSH + 1;
     public static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat min_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    public static final SimpleDateFormat log_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat log_formatter = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss");
     public final static String PERMISSION_GPS = "gps";
     final static String TAG = "AppUtils";
     private static final String text_discard = "（该网页已经技术转换）";
@@ -179,7 +195,7 @@ public class AppUtils {
     }
 
     public static void setLongPreferences(Context context, String preName,
-                                          Long value) {
+            Long value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context)
                 .edit();
         editor.putLong(preName, value);
@@ -187,7 +203,7 @@ public class AppUtils {
     }
 
     public static void setBooleanPreferences(Context context, String preName,
-                                             boolean value) {
+            boolean value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context)
                 .edit();
         editor.putBoolean(preName, value);
@@ -195,14 +211,14 @@ public class AppUtils {
     }
 
     public static boolean getBooleanPreferences(Context context,
-                                                String preName, boolean defaultValue) {
+            String preName, boolean defaultValue) {
         SharedPreferences defaultPf = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return defaultPf.getBoolean(preName, defaultValue);
     }
 
     public static long getLongPreferences(Context context, String preName,
-                                          long defaultValue) {
+            long defaultValue) {
         SharedPreferences defaultPf = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return defaultPf.getLong(preName, defaultValue);
@@ -339,6 +355,19 @@ public class AppUtils {
     }
 
     /**
+     * 获取内核版本
+     */
+    public static String getSystemInnerVersion() {
+        String ver;
+        if (android.os.Build.DISPLAY.contains(android.os.Build.VERSION.INCREMENTAL)) {
+            ver = android.os.Build.DISPLAY;
+        } else {
+            ver = android.os.Build.VERSION.INCREMENTAL;
+        }
+        return ver;
+    }
+
+    /**
      * 设备厂商
      */
     public static String getPhoneBrand() {
@@ -351,6 +380,27 @@ public class AppUtils {
     public static String getPhoneModel() {
         return Build.MODEL;
     }
+
+    /**
+     * X86架构
+     */
+    public static String getX86() {
+        return Build.CPU_ABI;
+    }
+
+    /**
+     * X86架构
+     */
+    public static String getBatteryLevel() {
+        Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
+                .registerReceiver(null,
+                        new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+        int level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+
+        return level + "%";
+    }
+
 
     /**
      * 获取手机号码
@@ -368,15 +418,20 @@ public class AppUtils {
         return _PhoneNumbber;
     }
 
+    /**
+     * 获取运营商信息
+     */
     public static String getProvidersName(Context context) {
         String providersName = "";
         if (context != null) {
             if (checkPermission(context)) {
                 try {
-                    TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+                    TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(
+                            TELEPHONY_SERVICE);
                     String subscriberId = telephonyManager.getSubscriberId();
                     if (subscriberId != null) {
-                        if (subscriberId.startsWith("46000") || subscriberId.startsWith("46002") || subscriberId.startsWith("46007")) {
+                        if (subscriberId.startsWith("46000") || subscriberId.startsWith("46002")
+                                || subscriberId.startsWith("46007")) {
                             providersName = "中国移动";
                         } else if (subscriberId.startsWith("46001")) {
                             providersName = "中国联通";
@@ -394,11 +449,15 @@ public class AppUtils {
         return providersName;
     }
 
+    /**
+     * 获取IMEI（设备串号）
+     */
     public static String getIMEI(Context context) {
-
         String deviceId = "";
         try {
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(
+                    TELEPHONY_SERVICE);
             deviceId = telephonyManager.getDeviceId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -407,9 +466,216 @@ public class AppUtils {
     }
 
     /**
+     * 判读是否启动VPN
+     */
+    public static boolean getIsVPNUsed() {
+        try {
+            Enumeration<NetworkInterface> niList = NetworkInterface.getNetworkInterfaces();
+            if (niList != null) {
+                for (NetworkInterface networkInterface : Collections.list(niList)) {
+                    if (!networkInterface.isUp()
+                            || networkInterface.getInterfaceAddresses().size() == 0) {
+                        continue;
+                    }
+                    if ("tun0".equals(networkInterface.getName()) || "ppp0".equals(
+                            networkInterface.getName())) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    /**
+     * 获取无线局域网 WLAN MAC Address
+     */
+    public static String getWLanMacAddress(Context context) {
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        return wm.getConnectionInfo().getMacAddress();
+    }
+
+    /**
+     * 获取MAC地址
+     */
+    public static String getMacAddress(Context context) {
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        return wm.getConnectionInfo().getMacAddress();
+    }
+
+    /**
+     * 获取在WiFi环境下，获取当前连接路由器的Mac地址
+     */
+    public static String getWifiMacAddress(Context context) {
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        return wm.getConnectionInfo().getBSSID();
+    }
+
+
+    /**
+     * 获取IP地址
+     */
+    public static String getIPAddress(Context context) {
+        String ip = "";
+        ConnectivityManager conMann = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        if (mobileNetworkInfo.isConnected()) {//移动网络
+            ip = getLocalIpAddress();
+        } else if (wifiNetworkInfo.isConnected()) {//wifi网络
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            int ipAddress = wifiInfo.getIpAddress();
+            ip = getWifiIPAddress(ipAddress);
+        }
+        return ip;
+    }
+
+    //如果连接的是移动网络
+    private static String getLocalIpAddress() {
+        try {
+            String ipv4;
+            ArrayList<NetworkInterface> nilist = Collections.list(
+                    NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface ni : nilist) {
+                ArrayList<InetAddress> ialist = Collections.list(ni.getInetAddresses());
+                for (InetAddress address : ialist) {
+                    if (!address.isLoopbackAddress() && InetAddressUtils.isIPv4Address(
+                            ipv4 = address.getHostAddress())) {
+                        return ipv4;
+                    }
+                }
+            }
+        } catch (SocketException e) {
+
+        }
+        return null;
+    }
+
+    // 如果连接的是WI-FI网络
+    private static String getWifiIPAddress(int ipInt) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ipInt & 0xFF).append(".");
+        sb.append((ipInt >> 8) & 0xFF).append(".");
+        sb.append((ipInt >> 16) & 0xFF).append(".");
+        sb.append((ipInt >> 24) & 0xFF);
+        return sb.toString();
+    }
+
+    /**
+     * 获取蓝牙ID
+     */
+    public static String getBluetoothID() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+            if (bluetoothAdapter.isEnabled()) {
+                return bluetoothAdapter.getAddress();
+            }
+        }
+        return "";
+
+    }
+
+    /**
+     * 获得SD卡总大小
+     */
+    public static String getSDTotalSize(Context context) {
+        File path = Environment.getExternalStorageDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long totalBlocks = stat.getBlockCount();
+        return Formatter.formatFileSize(context, blockSize * totalBlocks);
+    }
+
+    /**
+     * 获得sd卡剩余容量，即可用大小
+     */
+    public static String getSDAvailableSize(Context context) {
+        File path = Environment.getExternalStorageDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long availableBlocks = stat.getAvailableBlocks();
+        return Formatter.formatFileSize(context, blockSize * availableBlocks);
+    }
+
+    /**
+     * 获取CPU型号
+     */
+    public static String getCpuName() {
+
+
+        try {
+            FileReader fr = new FileReader("/proc/cpuinfo");
+            BufferedReader br = new BufferedReader(fr);
+            String text = br.readLine();
+            String[] array = text.split(":\\s+", 2);
+            for (int i = 0; i < array.length; i++) {
+            }
+            return array[1];
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+//
+//        String str1 = "/proc/cpuinfo";//CPU的型号
+//        String str2 = "";//CPU的频率
+//
+//        String[] cpuInfo = {"", ""};
+//        String[] arrayOfString;
+//        try {
+//            FileReader fr = new FileReader(str1);
+//            BufferedReader localBufferedReader = new BufferedReader(fr, 8192);
+//            str2 = localBufferedReader.readLine();
+//            arrayOfString = str2.split("\\s+");
+//            for (int i = 2; i < arrayOfString.length; i++) {
+//                cpuInfo[0] = cpuInfo[0] + arrayOfString[i] + " ";
+//            }
+//            str2 = localBufferedReader.readLine();
+//            arrayOfString = str2.split("\\s+");
+//            cpuInfo[1] += arrayOfString[2];
+//            localBufferedReader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return cpuInfo[0] + cpuInfo[1];
+
+
+    }
+
+    /**
+     * 获取包名
+     */
+    public static String getPackageName() {
+        initValues();
+        return APPLICATION_ID;
+    }
+
+    /**
+     * 获取渠道号
+     */
+    public static String getChannelId() {
+        initValues();
+        return CHANNEL_NAME;
+    }
+
+    /**
+     * 获取当前版本名
+     */
+    public static String getVersionName() {
+        initValues();
+        return VERSION_NAME;
+    }
+
+    /**
      * 获取版本号
-     * <p/>
-     * context
      */
     public static int getVersionCode() {
         initValues();
@@ -417,15 +683,79 @@ public class AppUtils {
     }
 
     /**
-     * getVersionName
-     * 取得当前VersionName
-     * context
-     * String 返回类型
+     * 获取屏幕分辨率
      */
-    public static String getVersionName() {
-        initValues();
-        return VERSION_NAME;
+    public static String getScreenMetrics(Context context) {
+        WindowManager wm = (WindowManager) (context.getSystemService(Context.WINDOW_SERVICE));
+        DisplayMetrics dm = new DisplayMetrics();
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(dm);
+        }
+        int mScreenWidth = dm.widthPixels;
+        int mScreenHeight = dm.heightPixels;
+        return (mScreenWidth + " * " + mScreenHeight);
     }
+
+
+    /**
+     * 获取网络状态
+     */
+    public static String getNetState(Context context) {
+        //结果返回值
+        String netType = "无网络";
+        //获取手机所有连接管理对象
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
+        //获取NetworkInfo对象
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        //NetworkInfo对象为空 则代表没有网络
+        if (networkInfo == null) {
+            return netType;
+        }
+        //否则 NetworkInfo对象不为空 则获取该networkInfo的类型
+        int nType = networkInfo.getType();
+        if (nType == ConnectivityManager.TYPE_WIFI) {
+            //WIFI
+            netType = "wifi";
+        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
+            int nSubType = networkInfo.getSubtype();
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(
+                    Context.TELEPHONY_SERVICE);
+            //4G
+            if (nSubType == TelephonyManager.NETWORK_TYPE_LTE
+                    && telephonyManager != null && !telephonyManager.isNetworkRoaming()) {
+                netType = "4G";
+            } else if (nSubType == TelephonyManager.NETWORK_TYPE_UMTS
+                    || nSubType == TelephonyManager.NETWORK_TYPE_HSDPA
+                    || nSubType == TelephonyManager.NETWORK_TYPE_EVDO_0
+                    && !telephonyManager.isNetworkRoaming()) {
+                netType = "3G";
+                //2G 移动和联通的2G为GPRS或EGDE，电信的2G为CDMA
+            } else if (nSubType == TelephonyManager.NETWORK_TYPE_GPRS
+                    || nSubType == TelephonyManager.NETWORK_TYPE_EDGE
+                    || nSubType == TelephonyManager.NETWORK_TYPE_CDMA
+                    && !telephonyManager.isNetworkRoaming()) {
+                netType = "2G";
+            } else {
+                netType = "2G";
+            }
+        }
+        return netType;
+    }
+
+
+    public static String getMetrics(Context context) {
+        String metric = null;
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int width = point.x;
+        int height = point.y;
+        metric = width + height + "";
+        return metric;
+    }
+
 
     private static void initValues() {
         if (CHANNEL_NAME == null) {
@@ -441,7 +771,8 @@ public class AppUtils {
         }
     }
 
-    private static String getStringField(String fieldName, Object obj) throws NoSuchFieldException, IllegalAccessException {
+    private static String getStringField(String fieldName, Object obj)
+            throws NoSuchFieldException, IllegalAccessException {
         Class clazz = null;
         if (obj instanceof Class) {
             clazz = (Class) obj;
@@ -453,7 +784,8 @@ public class AppUtils {
         return (String) field.get(obj);
     }
 
-    private static int getIntField(String fieldName, Object obj) throws NoSuchFieldException, IllegalAccessException {
+    private static int getIntField(String fieldName, Object obj)
+            throws NoSuchFieldException, IllegalAccessException {
         Class clazz = null;
         if (obj instanceof Class) {
             clazz = (Class) obj;
@@ -465,20 +797,6 @@ public class AppUtils {
         return field.getInt(obj);
     }
 
-
-    /**
-     * 获取包名
-     */
-    public static String getPackageName() {
-        initValues();
-        return APPLICATION_ID;
-    }
-
-    // 获取渠道号
-    public static String getChannelId() {
-        initValues();
-        return CHANNEL_NAME;
-    }
 
     public static boolean isToday(long first_time, long currentTime) {
         Calendar pre = Calendar.getInstance();
@@ -537,7 +855,8 @@ public class AppUtils {
     public static String getUniqueCode(Context context) {
 
         //获取手机IMEI
-        TelephonyManager TelephonyMgr = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+        TelephonyManager TelephonyMgr = (TelephonyManager) context.getSystemService(
+                TELEPHONY_SERVICE);
         String IMEI = "";
         if (TelephonyMgr != null) {
             IMEI = TelephonyMgr.getDeviceId();
@@ -571,59 +890,6 @@ public class AppUtils {
             m_szUniqueID = m_szUniqueID.toUpperCase();
         }
         return m_szUniqueID;
-    }
-
-    /**
-     * 获取屏幕分辨率
-     */
-    public static String getMetrics(Context context) {
-        String metric = null;
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        int width = point.x;
-        int height = point.y;
-        metric = width + height + "";
-        return metric;
-    }
-
-    /**
-     * 获取网络状态
-     */
-    public static String getNetState(Context context) {
-        //结果返回值
-        String netType = "无网络";
-        //获取手机所有连接管理对象
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        //获取NetworkInfo对象
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        //NetworkInfo对象为空 则代表没有网络
-        if (networkInfo == null) {
-            return netType;
-        }
-        //否则 NetworkInfo对象不为空 则获取该networkInfo的类型
-        int nType = networkInfo.getType();
-        if (nType == ConnectivityManager.TYPE_WIFI) {
-            //WIFI
-            netType = "wifi";
-        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
-            int nSubType = networkInfo.getSubtype();
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            //4G
-            if (nSubType == TelephonyManager.NETWORK_TYPE_LTE
-                    && telephonyManager != null && !telephonyManager.isNetworkRoaming()) {
-                netType = "4G";
-            } else if (nSubType == TelephonyManager.NETWORK_TYPE_UMTS || nSubType == TelephonyManager.NETWORK_TYPE_HSDPA || nSubType == TelephonyManager.NETWORK_TYPE_EVDO_0 && !telephonyManager.isNetworkRoaming()) {
-                netType = "3G";
-                //2G 移动和联通的2G为GPRS或EGDE，电信的2G为CDMA
-            } else if (nSubType == TelephonyManager.NETWORK_TYPE_GPRS || nSubType == TelephonyManager.NETWORK_TYPE_EDGE || nSubType == TelephonyManager.NETWORK_TYPE_CDMA && !telephonyManager.isNetworkRoaming()) {
-                netType = "2G";
-            } else {
-                netType = "2G";
-            }
-        }
-        return netType;
     }
 
 
@@ -676,9 +942,27 @@ public class AppUtils {
 
     }
 
+    /**
+     * 多少人气显示
+     */
+    public static String getCommonReadNums(long num) {
+        if (num == 0) {
+            return "";
+        } else if (num < 10000) {
+            return num + "人气";
+        } else if (num < 100000000) {
+            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "人气";
+        } else {
+            return "9999+万人气";
+        }
+
+    }
+
     public static String getProcessName(Context context) {
         try {
-            List<ActivityManager.RunningAppProcessInfo> runningApps = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
+            List<ActivityManager.RunningAppProcessInfo> runningApps =
+                    ((ActivityManager) context.getSystemService(
+                            Context.ACTIVITY_SERVICE)).getRunningAppProcesses();
             if (runningApps == null) {
                 return null;
             }
@@ -722,7 +1006,8 @@ public class AppUtils {
             try {
                 PackageManager pm = context.getPackageManager();
                 flag = (PackageManager.PERMISSION_GRANTED ==
-                        pm.checkPermission("android.permission.READ_PHONE_STATE", "com.intelligent.reader"));
+                        pm.checkPermission("android.permission.READ_PHONE_STATE",
+                                "com.intelligent.reader"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -735,17 +1020,18 @@ public class AppUtils {
             return;
         }
 
-        InputMethodManager imm = (InputMethodManager) destContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) destContext.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
         if (imm == null) {
             return;
         }
 
-        String [] arr = new String[]{"mCurRootView", "mServedView", "mNextServedView"};
+        String[] arr = new String[]{"mCurRootView", "mServedView", "mNextServedView"};
         Field f = null;
         Object obj_get = null;
-        for (int i = 0;i < arr.length;i ++) {
+        for (int i = 0; i < arr.length; i++) {
             String param = arr[i];
-            try{
+            try {
                 f = imm.getClass().getDeclaredField(param);
                 if (f.isAccessible() == false) {
                     f.setAccessible(true);
@@ -753,13 +1039,14 @@ public class AppUtils {
                 obj_get = f.get(imm);
                 if (obj_get != null && obj_get instanceof View) {
                     View v_get = (View) obj_get;
-                    if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
+                    if (v_get.getContext()
+                            == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
                         f.set(imm, null); // 置空，破坏掉path to gc节点
                     } else {
                         break;
                     }
                 }
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
         }

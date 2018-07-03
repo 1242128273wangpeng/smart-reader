@@ -7,16 +7,10 @@ class AntiShake {
     private val utils = ArrayList<OneClickUtil>()
 
     fun check(o: Any?): Boolean {
-        var flag: String? = null
-        if (o == null)
-            flag = Thread.currentThread().stackTrace[2].methodName
-        else
-            flag = o.toString()
-        for (util in utils) {
-            if (util.methodName == flag) {
-                return util.check()
-            }
-        }
+        val flag: String? = o?.toString() ?: Thread.currentThread().stackTrace[2].methodName
+
+        utils.filter { it.methodName == flag }
+                .forEach { return it.check() }
         val clickUtil = OneClickUtil(flag!!)
         utils.add(clickUtil)
         return clickUtil.check()

@@ -37,6 +37,15 @@ private object BackgroundExecutor {
     fun <R> submit(task: () -> R): Future<R> = executor.submit(task)
 }
 
+fun Context.showToastForDebug(msg: String?) {
+    if (!msDebuggAble) {
+        runOnMain {
+            android.widget.Toast.makeText(this, "$msg", android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
+
+}
+
 fun <R> R.doAsync(task: R.() -> Unit): Future<Unit> {
     return BackgroundExecutor.submit {
         return@submit try {
@@ -94,7 +103,7 @@ fun Any.log(str: String, vararg param: Any?) {
 fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
     if (msDebuggAble || level == LOG_LEVEL.ERR) {
         var builder = StringBuilder()
-        param?.forEach {
+        param.forEach {
             builder.append(it.toString() + " | ")
         }
 
@@ -224,7 +233,7 @@ fun TextView.resolveTextColor(@AttrRes attr: Int) {
 
 fun View.antiShakeClick(callback: (View) -> Unit) {
     this.setOnClickListener {
-        if(isClickable) {
+        if (isClickable) {
             callback.invoke(it)
             postDelayed({
                 isClickable = true
@@ -235,9 +244,9 @@ fun View.antiShakeClick(callback: (View) -> Unit) {
     }
 }
 
-fun View.antiShakeClick(listener:View.OnClickListener) {
+fun View.antiShakeClick(listener: View.OnClickListener) {
     this.setOnClickListener {
-        if(isClickable) {
+        if (isClickable) {
             listener.onClick(it)
             postDelayed({
                 isClickable = true

@@ -26,9 +26,9 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginLeft">@dimen/dimen_margin_16</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_20</item>
         <item name="android:layout_marginRight">@dimen/dimen_margin_24</item>
-        <item name="android:layout_marginTop">@dimen/dimen_setting_item_top</item>
+        <item name="android:layout_marginTop">30dp</item>
         <item name="android:drawableRight">@mipmap/board_more_nor_icon</item>
         <item name="android:textSize">@dimen/text_size_normal</item>
         <item name="android:textColor">@color/text_color_dark</item>
@@ -39,7 +39,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:paddingRight">20dp</item>
-        <item name="android:layout_marginLeft">@dimen/dimen_margin_16</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_20</item>
         <item name="android:textSize">@dimen/text_size_normal</item>
         <item name="android:textColor">@color/text_color_dark</item>
     </style>
@@ -95,5 +95,17 @@
 
     <style name="rating_bar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/cover_rating_bar_bg</item>
+        <item name="android:maxHeight">11dp</item>
+        <item name="android:minHeight">11dp</item>
+        <item name="android:maxWidth">11dp</item>
+        <item name="android:minWidth">11dp</item>
     </style>
+
+
+    <declare-styleable name="ExpandTextVIew">
+        <attr name="expandMaxLine" format="integer"/>
+        <attr name="expandAnimDuration" format="integer"/>
+        <attr name="expandAnimAlphaStart" format="float"/>
+    </declare-styleable>
+
 </resources>

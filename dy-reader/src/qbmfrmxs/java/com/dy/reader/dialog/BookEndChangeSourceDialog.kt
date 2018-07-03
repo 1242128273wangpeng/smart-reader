@@ -47,7 +47,6 @@ class BookEndChangeSourceDialog(activity: Activity, sourceClickListener: SourceC
     }
 
     fun show(list: ArrayList<Source>) {
-        if (list.isEmpty()) return
         sourceList.clear()
         sourceList.addAll(list)
         sourceAdapter.notifyDataSetChanged()

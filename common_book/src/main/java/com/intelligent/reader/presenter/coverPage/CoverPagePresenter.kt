@@ -145,7 +145,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         if (clickedCatalog) {
             handleCatalogAction(intent, 0, false)
         } else {
-            handleCatalogAction(intent, coverDetail!!.last_chapter!!.serial_number - 1, true)
+            handleCatalogAction(intent, coverDetail?.last_chapter!!.serial_number - 1, true)
         }
     }
 

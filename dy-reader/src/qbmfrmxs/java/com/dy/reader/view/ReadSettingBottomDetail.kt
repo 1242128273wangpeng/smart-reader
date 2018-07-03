@@ -15,6 +15,7 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import com.dingyue.contract.util.preventClickShake
 import com.dy.reader.R
+import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.page.Position
@@ -51,7 +52,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
     private var time: Long = 0
 
-    private var lastProgress = ReaderStatus.position.group
+    private var lastProgress = 0
 
     constructor(context: Context) : super(context) {
         initView()
@@ -258,11 +259,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         if (ReaderStatus.position.group == -1) {
         } else {
             txt_cur_chapter_name.text = ReaderStatus.chapterName
-            var value = (ReaderStatus.position.group * 100 / ReaderStatus.chapterCount * 100) / 100
-            if (value <= 0) value = 1
-            val percent = value.toString() + "%"
-            txt_chapter_percent.text = percent
-            lastProgress = ReaderStatus.position.group
+            if(ReaderStatus.chapterCount !=0){
+                var value = (ReaderStatus.position.group * 100 / ReaderStatus.chapterCount * 100) / 100
+                if (value <= 0) value = 1
+                val percent = value.toString() + "%"
+                txt_chapter_percent.text = percent
+            }
+
         }
 
     }
@@ -511,8 +514,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
             R.id.img_jump_back -> {
 
-                img_jump_back.isEnabled = false
+                val position = formatToPosition(lastProgress)
+                if (position.group == ReaderStatus.position.group) { // 本章不跳
+                    return
+                }
+
                 anim?.cancel()
+                rl_jump_back.alpha = 1F
                 anim = rl_jump_back.animate()
                 anim?.alpha(0F)
                 anim?.duration = 2000
@@ -525,11 +533,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 } else {
                     skbar_reader_chapter_change?.progress = lastProgress
                 }
-                txt_cur_chapter_name.text = ReaderStatus.chapterList[lastProgress].name
-                var value = (lastProgress * 100 / ReaderStatus.chapterCount * 100) / 100
-                if (value <= 0) value = 1
-                val percent = value.toString() + "%"
-                txt_chapter_percent.text = percent
+                showChapterInfo(lastProgress)
+
+                StartLogClickUtil.upLoadEventLog(context.applicationContext,
+                        StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.PROGRESSCANCLE)
+
             }
             else -> {
             }
@@ -814,8 +822,8 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.skbar_reader_chapter_change) {
             rl_jump_back.visibility = View.VISIBLE
+            anim?.cancel()
             rl_jump_back.alpha = 1F
-            rl_jump_back.isEnabled = true
 //            val resizeProgress = progress.times(ReaderStatus.chapterList.size).div(100)
             if (!ReaderStatus.chapterList.isEmpty()
                     && progress <= ReaderStatus.chapterList.size && progress >= 0) {
@@ -824,18 +832,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 img_reader_chapter_previous.alpha = 1f
 //                ReaderStatus.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                if (progress == 0) {
-                    txt_cur_chapter_name.text = ReaderStatus.chapterList[progress].name
-                    txt_chapter_percent.text = "1%"
-                } else if (progress == ReaderStatus.chapterList.size - 1) {
-                    txt_cur_chapter_name.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
-                    val percent = "100%"
-                    txt_chapter_percent.text = percent
-                } else {
-                    txt_cur_chapter_name.text = ReaderStatus.chapterList[progress - 1].name
-                    val percent = ((progress * 100 / ReaderStatus.chapterList.size * 100) / 100).toString() + "%"
-                    txt_chapter_percent.text = percent
-                }
+                showChapterInfo(progress)
             }
 //            ReaderStatus.position.group = progress
 //            refreshJumpPreBtnState()
@@ -854,8 +851,27 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
     }
 
+    private fun showChapterInfo(progress: Int) {
+        if (progress == 0) {
+            txt_cur_chapter_name.text = ReaderStatus.chapterList[progress].name
+            txt_chapter_percent.text = "1%"
+        } else if (progress == ReaderStatus.chapterList.size - 1) {
+            txt_cur_chapter_name.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
+            val percent = "100%"
+            txt_chapter_percent.text = percent
+        } else {
+            txt_cur_chapter_name.text = ReaderStatus.chapterList[progress - 1].name
+            val percent = ((progress * 100 / ReaderStatus.chapterList.size * 100) / 100).toString() + "%"
+            txt_chapter_percent.text = percent
+        }
+    }
+
     override fun onStartTrackingTouch(seekBar: SeekBar) {
-        lastProgress = seekBar.progress
+        lastProgress = if (lastProgress == 0) { // menu 重新 show 的时候，seekBar.progress 比正确值小 1
+            seekBar.progress + 1
+        } else {
+            seekBar.progress
+        }
     }
 
 
@@ -877,18 +893,22 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     private fun jumpChapter(progress: Int) {
-        if (progress == ReaderStatus.position.group) {// 本章不跳
+        val position = formatToPosition(progress)
+        if (position.group == ReaderStatus.position.group) {// 本章不跳
             return
         }
+        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, position))
+        refreshJumpPreBtnState(position.group)
+    }
+
+    private fun formatToPosition(progress: Int): Position {
         val resizeProgress = when (progress) {
             0 -> 0
             ReaderStatus.chapterList.size - 1 -> ReaderStatus.chapterList.size - 1
             else -> progress - 1
         }
         AppLog.e("progress2", resizeProgress.toString())
-        val position = Position(ReaderStatus.book.book_id, resizeProgress, 0)
-        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, position))
-        refreshJumpPreBtnState(position.group)
+        return Position(ReaderStatus.book.book_id, resizeProgress, 0)
     }
 
 

@@ -680,10 +680,16 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         fun startSearchActivity(data: Any?, completionHandler: CompletionHandler<String>) {
             if (data != null) {
                 val keyWord = data as String
+
+                runOnMain {
+                    search_result_keyword?.setText(keyWord)
+                    search_result_input?.setText(keyWord)
+                    searchViewHelper?.addHistoryWord(keyWord)
+                    mSearchPresenter?.word = keyWord
+                }
+
                 mSearchPresenter?.setHotWordType(keyWord, "0")
-
                 mSearchPresenter?.startLoadData()
-
                 onJsSearch()
 
                 completionHandler.complete("搜索正常！")

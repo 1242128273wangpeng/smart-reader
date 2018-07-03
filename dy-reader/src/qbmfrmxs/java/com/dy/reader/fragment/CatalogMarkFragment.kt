@@ -54,14 +54,6 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dividerCatalog = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
-        val dividerBookmark = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
-
-        dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
-        dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0c000000")))
-
-        recl_catalog_content.addItemDecoration(dividerCatalog)
-        recl_mark_content.addItemDecoration(dividerBookmark)
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_reader_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->
@@ -140,7 +132,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                     presenter.loadCatalog(reverse)
                 }
                 R.id.rbtn_bookmark -> {
-                    rl_book_content.visibility = View.GONE
+                    rl_book_content.visibility = View.INVISIBLE
                     presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {

@@ -84,9 +84,14 @@
             android:id="@+id/txt_auto_read_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="8"
-            android:textColor="#FF1CA66E"
-            android:textSize="16sp"/>
+            android:layout_alignEnd="@+id/ssb_speed_number"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/ssb_speed_number"
+            android:layout_marginEnd="69dp"
+            android:layout_marginRight="69dp"
+            android:textColor="#42BE54"
+            android:textSize="16sp"
+            tools:text="8"/>
     </LinearLayout>
 
     <View

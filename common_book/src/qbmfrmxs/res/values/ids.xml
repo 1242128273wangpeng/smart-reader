@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="expand_content"
+          type="id"/>
+    <item name="expand_prompt"
+          type="id"/>
+    <item name="expand_view"
+          type="id"/>
+</resources>

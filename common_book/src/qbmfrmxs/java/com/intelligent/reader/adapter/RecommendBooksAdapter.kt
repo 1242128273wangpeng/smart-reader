@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.SearchRecommendBook
 import com.intelligent.reader.R
+import net.lzbook.kit.utils.AppUtils
 
 import java.lang.ref.WeakReference
 import java.text.DecimalFormat
@@ -54,19 +55,19 @@ class RecommendBooksAdapter(context: Context,
         }
 
         if(TextUtils.isEmpty(book.description)){
-            holder.txt_book_content.setText("暂无简介")
+            holder.txt_book_content.text = "暂无简介"
         }else{
-            holder.txt_book_content.setText(book.description)
+            holder.txt_book_content.text = book.description
         }
 
         if(book.score == 0.0){
             holder.txt_book_score.visibility = View.GONE
         }else{
             holder.txt_book_score.visibility = View.VISIBLE
-            holder.txt_book_score.setText((DecimalFormat("0.0").format(book.score)) + "分")
+            holder.txt_book_score.text = (DecimalFormat("0.0").format(book.score)) + "分"
         }
 
-        holder.txt_read_num.text = book.readerCountDescp + "人在读"
+        holder.txt_read_num.text = book.readerCount.toString()+"人气"
         if (!TextUtils.isEmpty(book.genre)) {
             holder.txt_book_type.visibility = View.VISIBLE
             holder.txt_book_type.text = book.genre
@@ -80,14 +81,14 @@ class RecommendBooksAdapter(context: Context,
 
         }
 
-        if (holder.img_book_cover != null && !TextUtils.isEmpty(book.sourceImageUrl)) {
+        if (!TextUtils.isEmpty(book.sourceImageUrl)) {
             Glide.with(weakReference.get()).load(book.sourceImageUrl).placeholder(
-                    net.lzbook.kit.R.drawable.icon_book_cover_default)
-                    .error(net.lzbook.kit.R.drawable.icon_book_cover_default)
+                    R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
                     .into(holder.img_book_cover)
         } else {
             Glide.with(weakReference.get()).load(
-                    net.lzbook.kit.R.drawable.icon_book_cover_default).into(holder.img_book_cover)
+                    R.drawable.common_book_cover_default_icon).into(holder.img_book_cover)
         }
 
 
@@ -123,8 +124,6 @@ class RecommendBooksAdapter(context: Context,
             txt_read_num = itemView.findViewById<View>(R.id.txt_read_num) as TextView
             txt_book_type = itemView.findViewById<View>(R.id.txt_book_type) as TextView
             txt_book_content = itemView.findViewById<View>(R.id.txt_book_content) as TextView
-
-
         }
 
         override fun onClick(v: View) {
@@ -132,5 +131,4 @@ class RecommendBooksAdapter(context: Context,
             recommendItemClickListener?.onItemClick(v, position)
         }
     }
-
 }

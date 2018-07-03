@@ -45,7 +45,7 @@ abstract class ChaptersDatabase : RoomDatabase() {
         fun loadChapterDatabase(context: Context, book_id: String): ChaptersDatabase {
             synchronized(BookDatabase::class) {
 //                com.orhanobut.logger.Logger.e("loadChapterDatabase, loadChapterDatabasename = $CHAPTER_DATABASE$book_id.db")
-                return Room.databaseBuilder(context!!.applicationContext, ChaptersDatabase::class.java, "$CHAPTER_DATABASE$book_id.db")
+                return Room.databaseBuilder(context.applicationContext, ChaptersDatabase::class.java, "$CHAPTER_DATABASE$book_id.db")
                         .allowMainThreadQueries()
                         .build()
             }

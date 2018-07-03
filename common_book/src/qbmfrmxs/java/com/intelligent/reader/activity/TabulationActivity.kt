@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -64,6 +65,16 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
         val intent = intent
 
+        initIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        initIntent(intent)
+    }
+
+    private fun initIntent(intent: Intent?) {
         if (intent != null) {
 
             if (intent.hasExtra("url")) {

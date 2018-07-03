@@ -131,7 +131,7 @@
                     android:singleLine="true"
                     android:textColor="#949494"
                     android:textSize="12sp"
-                    tools:text="author"/>
+                    tools:text="authorType"/>
 
                 <View
                     android:id="@+id/author_progress_divider"

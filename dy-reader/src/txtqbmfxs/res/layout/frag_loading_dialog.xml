@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:id="@+id/rl_loading_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whole_bg">
+
+        <TextView
+            android:id="@+id/txt_loading_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="12dp"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/loading_prompt"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"/>
+
+        <ProgressBar
+            style="@style/reader_circle_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/txt_loading_prompt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="1dp"
+            android:indeterminateDuration="1000"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_loading_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_loading_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/reader_loading_error_icon"/>
+
+        <TextView
+            android:id="@+id/txt_loading_error_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_loading_error"
+            android:layout_marginTop="37dp"
+            android:gravity="center"
+            android:text="@string/network_error"
+            android:textColor="#9B9B9B"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/txt_loading_error_reload"
+            android:layout_width="131dp"
+            android:layout_height="31dp"
+            android:layout_below="@id/txt_loading_error_prompt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="27dp"
+            android:background="@drawable/reader_loading_error_reload_bg"
+            android:gravity="center"
+            android:text="@string/refresh"
+            android:textColor="@drawable/reader_loading_error_reload_txt_sel"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+</RelativeLayout>

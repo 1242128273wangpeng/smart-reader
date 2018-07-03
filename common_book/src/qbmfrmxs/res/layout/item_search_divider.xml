@@ -3,7 +3,7 @@
     android:id="@+id/item_list_view_space"
     android:layout_width="match_parent"
     android:layout_height="5dp"
-    android:background="#edeef0"
+    android:background="#fafafa"
     android:clickable="false"
     android:orientation="vertical" >
 

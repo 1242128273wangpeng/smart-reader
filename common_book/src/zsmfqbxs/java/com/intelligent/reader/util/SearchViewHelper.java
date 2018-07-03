@@ -42,8 +42,6 @@ import com.dingyue.contract.util.CommonUtil;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
-import com.intelligent.reader.adapter.RecommendBooksAdapter;
-import com.intelligent.reader.adapter.SearchHistoryAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
@@ -630,7 +628,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                     searchType = "1";
                     isAuthor = 0;
                     isFocus = false;
-                } else if (searchCommonBean.getWordtype().equals("author")) {
+                } else if (searchCommonBean.getWordtype().equals("authorType")) {
                     searchType = "2";
                     isAuthor = searchCommonBean.getIsAuthor();
                     isBackSearch = false;

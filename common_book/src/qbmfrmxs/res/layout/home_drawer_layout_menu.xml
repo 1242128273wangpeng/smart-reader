@@ -20,7 +20,7 @@
             <ImageView
                 android:id="@+id/txt_menu_title"
                 android:layout_width="305dp"
-                android:layout_height="120dp"
+                android:layout_height="130dp"
                 android:background="@drawable/setting_bg_icon"
                 android:scaleType="fitXY"/>
 
@@ -28,12 +28,11 @@
                 android:id="@+id/rl_night_shift"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_view_height_35">
+                android:layout_marginTop="30dp">
 
                 <TextView
                     android:id="@+id/tv_night_shift"
                     style="@style/Style_Setting_Text_Font"
-                    android:layout_marginTop="0dp"
                     android:text="@string/night_shift"/>
 
                 <com.intelligent.reader.widget.SwitchButton
@@ -52,7 +51,7 @@
                 android:id="@+id/rl_auto_download"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_view_height_32">
+                android:layout_marginTop="21dp">
 
                 <TextView
                     android:id="@+id/txt_auto_download"
@@ -74,6 +73,7 @@
             <TextView
                 android:id="@+id/txt_push_setting"
                 style="@style/Style_Setting_Icon_Text"
+                android:layout_marginTop="24dp"
                 android:text="@string/push_setting"
                 tools:ignore="RtlSymmetry"/>
 
