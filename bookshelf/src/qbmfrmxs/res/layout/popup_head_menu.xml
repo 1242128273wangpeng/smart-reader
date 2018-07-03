@@ -74,13 +74,13 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!--<net.lzbook.kit.book.view.NightShadowView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBottom="@id/rl_popup_more"-->
-        <!--android:layout_alignLeft="@id/rl_popup_more"-->
-        <!--android:layout_alignRight="@id/rl_popup_more"-->
-        <!--android:layout_alignTop="@id/rl_popup_more"-->
-        <!--android:visibility="gone"-->
-        <!--app:drawable="@drawable/bookshelf_head_popup_shadow_bg"/>-->
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/rl_popup_more"
+        android:layout_alignLeft="@id/rl_popup_more"
+        android:layout_alignRight="@id/rl_popup_more"
+        android:layout_alignTop="@id/rl_popup_more"
+        android:visibility="gone"
+        app:drawable="@drawable/bookshelf_head_popup_shadow_bg"/>
 </RelativeLayout>
