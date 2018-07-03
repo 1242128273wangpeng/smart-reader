@@ -294,6 +294,7 @@ public class StartLogClickUtil {
     public static final String HPMODEL = "HPMODEL";//点击横/竖屏模式
     public static final String AUTOREAD = "AUTOREAD";//点击自动阅读
     public static final String FULLSCREENPAGEREAD = "FULLSCREENPAGEREAD";//点击全屏翻页阅读
+    public static final String PROGRESSCANCLE = "PROGRESSCANCLE";//拖动跳章取消
 
     //阅读页更多
     public static final String READ_SOURCECHANGE = "SOURCECHANGE";//换源

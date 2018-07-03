@@ -60,8 +60,8 @@ object Config {
     fun beginInit(context: Context){
         Config.context = context
 
-        webViewHost = "http://8061.zn.bookapi.cn"
-        requestAPIHost = "http://8061.zn.bookapi.cn"
+        webViewHost = "http://8068.zn.bookapi.cn"
+        requestAPIHost = "http://8068.zn.bookapi.cn"
 
 
 //        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST

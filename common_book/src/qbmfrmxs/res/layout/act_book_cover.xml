@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,7 +23,7 @@
             android:contentDescription="@string/module_name"
             android:paddingLeft="16dp"
             android:src="@drawable/common_back_icon"
-            expandableTextView:onPressChangeAlpha="true"/>
+            app:onPressChangeAlpha="true"/>
 
         <TextView
             style="@style/style_text_huge_dark"
@@ -166,7 +166,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="10dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
@@ -187,7 +187,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -207,7 +207,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -228,13 +228,13 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp">
+                            android:layout_marginTop="10dp">
 
                             <RatingBar
                                 android:id="@+id/rb_book_detail_score"
                                 style="@style/rating_bar"
                                 android:layout_width="wrap_content"
-                                android:layout_height="42px"
+                                android:layout_height="14dp"
                                 android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
                                 android:isIndicator="true"
@@ -250,6 +250,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="6dp"
                                 android:layout_toRightOf="@id/rb_book_detail_score"
+                                android:gravity="center_vertical"
                                 android:text="9.2分"/>
 
                             <TextView
@@ -259,6 +260,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
+                                android:gravity="center_vertical"
                                 android:text="40.3万人气"/>
                         </RelativeLayout>
                     </LinearLayout>
@@ -287,13 +289,45 @@
                         android:paddingBottom="20dp"
                         android:text="作品简介"/>
 
-                    <TextView
+                    <com.intelligent.reader.widget.ExpandTextView
                         android:id="@+id/txt_book_detail_desc"
-                        style="@style/style_text_normal_plain"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.4"
-                        tools:text="@string/default_message"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/expand_content"
+                            style="@style/style_text_normal_plain"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:lineSpacingExtra="2dp"
+                            android:lineSpacingMultiplier="1.2"
+                            tools:text="唐门外门弟子唐三，因偷学内门绝学为唐门所不容，跳崖明志时却发现没有死，反而以另外一个身份来到了另一个世界，一个属于武魂的世界，名叫斗罗大陆。这里的每个人，在自己六岁的时候，都会在武魂殿中令武魂觉醒。武魂有动物，有植物，有器物，武魂可以辅助人们的日常生活。"/>
+
+                        <TextView
+                            android:id="@+id/expand_prompt"
+                            android:layout_width="40dp"
+                            android:layout_height="19dp"
+                            android:layout_alignBottom="@id/expand_content"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/cover_expand_prompt_bg"
+                            android:gravity="end"
+                            android:lineSpacingExtra="2dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="展开"
+                            android:textColor="#42BE54"
+                            android:textSize="14sp"/>
+
+                        <ImageView
+                            android:id="@+id/expand_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/expand_content"
+                            android:layout_centerHorizontal="true"
+                            android:paddingTop="4dp"
+                            android:src="@drawable/cover_expand_icon"/>
+
+                    </com.intelligent.reader.widget.ExpandTextView>
                 </LinearLayout>
 
                 <View
@@ -321,15 +355,18 @@
 
                     <TextView
                         android:id="@+id/txt_book_detail_update_time"
-                        style="@style/style_text_normal_weak"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/txt_book_detail_catalog"
                         android:layout_marginTop="16dp"
+                        android:drawablePadding="8dp"
+                        android:drawableRight="@drawable/more"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:text="10小时前更新"/>
+                        android:text="10小时前更新"
+                        android:textColor="#B9B9B9"
+                        android:textSize="14sp"/>
 
                     <TextView
                         android:id="@+id/txt_book_detail_last_chapter"
@@ -357,8 +394,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:paddingBottom="20dp"
-                    android:paddingTop="20dp"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone">
 
                     <TextView
@@ -382,13 +418,14 @@
 
                 </RelativeLayout>
 
-                <com.intelligent.reader.view.ScrollForGridView
+                <GridView
                     android:id="@+id/sfgv_book_detail_recommend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:listSelector="@color/transparent"
                     android:numColumns="3"
-                    android:verticalSpacing="24dp"
+                    android:scrollbars="none"
                     android:visibility="gone"/>
 
                 <TextView

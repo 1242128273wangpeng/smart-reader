@@ -86,7 +86,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                     CacheManager.freshBook(book.book_id, false)
                     it.onNext(true)
                     it.onComplete()
-                }.subscribeOn(Schedulers.io())
+                }.subscribeOn(Schedulers.io()).subscribe {  }
             }
 
             override fun requestError(message: String) {

@@ -279,7 +279,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     }
         }
 
-        txt_market.setOnClickListener {
+        txt_mark.setOnClickListener {
             PersonalLogger.uploadPersonalMark()
             try {
                 val uri = Uri.parse("market://details?id=" + this.packageName)
@@ -305,7 +305,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         rl_check_update.setOnClickListener {
             PersonalLogger.uploadPersonalCheckUpdate()
             try {
-                apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
+                apkUpdateUtils.getApkUpdateInfo(this, handler, "SettingActivity")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -333,6 +333,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         // 精选
         ll_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeRecommend)
+            recommendFragment.setTitle(resources.getString(R.string.recommend))
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
         }
@@ -353,6 +354,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         // 榜单
         ll_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeRanking)
+            rankingFragment.setTitle(resources.getString(R.string.ranking))
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
             HomeLogger.uploadHomeRankSelected()
         }

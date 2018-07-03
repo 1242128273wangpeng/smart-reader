@@ -98,7 +98,7 @@
                 android:background="@drawable/reader_dialog_confirm_sel"
                 android:gravity="center"
                 android:text="@string/confirm"
-                android:textColor="@drawable/reader_dialog_confirm_txt_sel"
+                android:textColor="#42BE54"
                 android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>

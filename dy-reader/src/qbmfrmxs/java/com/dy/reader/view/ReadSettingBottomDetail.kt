@@ -15,6 +15,7 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import com.dingyue.contract.util.preventClickShake
 import com.dy.reader.R
+import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.page.Position
@@ -258,10 +259,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         if (ReaderStatus.position.group == -1) {
         } else {
             txt_cur_chapter_name.text = ReaderStatus.chapterName
-            var value = (ReaderStatus.position.group * 100 / ReaderStatus.chapterCount * 100) / 100
-            if (value <= 0) value = 1
-            val percent = value.toString() + "%"
-            txt_chapter_percent.text = percent
+            if(ReaderStatus.chapterCount !=0){
+                var value = (ReaderStatus.position.group * 100 / ReaderStatus.chapterCount * 100) / 100
+                if (value <= 0) value = 1
+                val percent = value.toString() + "%"
+                txt_chapter_percent.text = percent
+            }
+
         }
 
     }
@@ -530,6 +534,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                     skbar_reader_chapter_change?.progress = lastProgress
                 }
                 showChapterInfo(lastProgress)
+
+                StartLogClickUtil.upLoadEventLog(context.applicationContext,
+                        StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.PROGRESSCANCLE)
+
             }
             else -> {
             }

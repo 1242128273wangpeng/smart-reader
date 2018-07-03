@@ -67,7 +67,7 @@ class RecommendBooksAdapter(context: Context,
             holder.txt_book_score.text = (DecimalFormat("0.0").format(book.score)) + "分"
         }
 
-        holder.txt_read_num.text = AppUtils.getCommonReadNums(java.lang.Long.valueOf(book.readerCountDescp))
+        holder.txt_read_num.text = book.readerCount.toString()+"人气"
         if (!TextUtils.isEmpty(book.genre)) {
             holder.txt_book_type.visibility = View.VISIBLE
             holder.txt_book_type.text = book.genre
@@ -83,12 +83,12 @@ class RecommendBooksAdapter(context: Context,
 
         if (!TextUtils.isEmpty(book.sourceImageUrl)) {
             Glide.with(weakReference.get()).load(book.sourceImageUrl).placeholder(
-                    net.lzbook.kit.R.drawable.icon_book_cover_default)
-                    .error(net.lzbook.kit.R.drawable.icon_book_cover_default)
+                    R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
                     .into(holder.img_book_cover)
         } else {
             Glide.with(weakReference.get()).load(
-                    net.lzbook.kit.R.drawable.icon_book_cover_default).into(holder.img_book_cover)
+                    R.drawable.common_book_cover_default_icon).into(holder.img_book_cover)
         }
 
 

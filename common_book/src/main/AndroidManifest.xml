@@ -139,9 +139,9 @@
                 android:name="BaiduMobAd_STAT_ID"
                 android:value="${BAIDU_STAT_ID}"/>
         <!-- 应用程序的分发渠道 -->
-        <meta-data
-                android:name="BaiduMobAd_CHANNEL"
-                android:value="${CHANNEL_NAME}"/>
+        <!--<meta-data-->
+                <!--android:name="BaiduMobAd_CHANNEL"-->
+                <!--android:value="${CHANNEL_NAME}"/>-->
         <!-- baidu channel -->
 
         <meta-data

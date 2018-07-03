@@ -211,7 +211,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (position == 0) {
             cacheFragment.showMenu()
         } else if (position == 1) {
-            cacheFragment.showMenu()
+            cachedFragment.showMenu()
         }
     }
 
@@ -221,7 +221,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (position == 0) {
             cacheFragment.dismissMenu()
         } else if (position == 1) {
-            cacheFragment.dismissMenu()
+            cachedFragment.dismissMenu()
         }
     }
 
@@ -231,7 +231,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (position == 0) {
             cacheFragment.checkAll(isAll)
         } else if (position == 1) {
-            cacheFragment.checkAll(isAll)
+            cachedFragment.checkAll(isAll)
         }
     }
 
@@ -241,7 +241,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (position == 0) {
             cacheFragment.sortBooks(type)
         } else if (position == 1) {
-            cacheFragment.sortBooks(type)
+            cachedFragment.sortBooks(type)
         }
     }
 
@@ -251,7 +251,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (position == 0) {
             cacheFragment.refreshData()
         } else if (position == 1) {
-            cacheFragment.refreshData()
+            cachedFragment.refreshData()
         }
     }
 
@@ -261,7 +261,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         if (position == 0) {
             cacheFragment.refreshBookState(book)
         } else if (position == 1) {
-            cacheFragment.refreshBookState(book)
+            cachedFragment.refreshBookState(book)
         }
     }
 
@@ -270,7 +270,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
 
         return when (position) {
             0 -> cacheFragment.loadRemoveState()
-            1 -> cacheFragment.loadRemoveState()
+            1 -> cachedFragment.loadRemoveState()
             else -> false
         }
     }

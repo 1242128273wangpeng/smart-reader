@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/home_bottom_tab_selected"
+    <item android:color="#616161"
           android:state_selected="true"/>
-    <item android:color="@color/home_bottom_tab_selected"
+    <item android:color="#616161"
           android:state_pressed="true"/>
-    <item android:color="@color/home_bottom_tab_selected"
+    <item android:color="#616161"
           android:state_focused="true"/>
-    <item android:color="@color/home_bottom_tab_unselected"/>
+    <item android:color="#989898"/>
 </selector>
