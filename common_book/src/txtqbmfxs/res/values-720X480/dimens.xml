@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="book_height">108dp</dimen>
+    <dimen name="search_recommend_padding">8dp</dimen>
+    <dimen name="search_recommend_bookname_padding">8dp</dimen>
+    <dimen name="search_recommend_author_padding">10dp</dimen>
+    <dimen name="cover_book_height">124dp</dimen>
+</resources>

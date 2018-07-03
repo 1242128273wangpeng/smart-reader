@@ -324,9 +324,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onClick(view: View) {
-        if (coverPagePresenter != null) {
-            coverPagePresenter!!.goToBookSearchActivity(view)
-        }
+//        if (coverPagePresenter != null) {
+//            coverPagePresenter!!.goToBookSearchActivity(view)
+//        }
         when (view.id) {
             R.id.book_cover_back -> {
                 val data = HashMap<String, String>()

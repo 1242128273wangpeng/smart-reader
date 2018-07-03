@@ -11,11 +11,23 @@ import net.lzbook.kit.utils.AppUtils
  * Mail zhenxiang_lin@dingyuegroup.cn
  * Date 2018\5\26 0026 10:12
  */
-class SharedPreUtil(val type:Int){
+class SharedPreUtil(val type: Int) {
 
     companion object {
+
         val SHARE_DEFAULT = 0  //sharePrefreences 保存的是默认地址
         val SHARE_ONLINE_CONFIG = 1  //sharePrefreences 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
+
+        /**
+         * DebugActivity
+         */
+        val API_URL = "api_url"// api地址
+        val WEB_URL = "web_url"// web地址
+        val START_PARAMS = "start_params"// 启动动态参数,默认是开启
+        val PRE_SHOW_AD = "pre_show_ad"// 提前展示广告
+        val RESET_BOOK_SHELF = "reset_book_shelf"//重置书架
+        val UPDATE_CHAPTER = "update_chapter"// 更新章节
+        val HOST_LIST = "host_list"// host列表
 
 
         /**
@@ -56,10 +68,9 @@ class SharedPreUtil(val type:Int){
         /**
          * Bookshelf
          */
-        val BOOKSHELF_GUIDE_TAG = AppUtils.getVersionCode().toString()+"bookshelf_guide_tag" //书架引导  和versionCode拼接
+        val BOOKSHELF_GUIDE_TAG = AppUtils.getVersionCode().toString() + "bookshelf_guide_tag" //书架引导  和versionCode拼接
         val BOOKSHELF_ISSHOW_CHANGE_GUIDE = "isShowChangAnGuide" //判断是否显示长按删除书籍引导  快读替 新版引导页
         val BOOKSHELF_BOOK_RACKUP_DATETIME = "bookRackUpdateTime"
-
 
 
         /**
@@ -73,7 +84,6 @@ class SharedPreUtil(val type:Int){
          */
         val SERARCH_HOT_WORD = "search_hot_word" //搜索热词 做缓存用
         val SERARCH_HOT_WORD_YOUHUA = "search_hot_word_youhua";// 4个替壳 新版搜索热词,防止升级用户首次没网，从缓存拿数据时报错
-
 
 
         /**
@@ -111,14 +121,13 @@ class SharedPreUtil(val type:Int){
     )
 
 
-    private lateinit var sp:SharedPreferences
-
+    private lateinit var sp: SharedPreferences
 
 
     init {
-        when(type){
-            SHARE_DEFAULT -> sp = shareList.get(0)
-            SHARE_ONLINE_CONFIG -> sp = shareList.get(1)
+        when (type) {
+            SHARE_DEFAULT -> sp = shareList[0]
+            SHARE_ONLINE_CONFIG -> sp = shareList[1]
 
         }
     }
@@ -144,14 +153,15 @@ class SharedPreUtil(val type:Int){
         return sp.getBoolean(key, false)
     }
 
-    fun getBoolean(key: String , defaultValue: Boolean): Boolean {
+    fun getBoolean(key: String, defaultValue: Boolean): Boolean {
         return sp.getBoolean(key, defaultValue)
     }
 
     fun getInt(key: String): Int {
         return sp.getInt(key, 0)
     }
-    fun getInt(key: String ,defaultValue: Int): Int {
+
+    fun getInt(key: String, defaultValue: Int): Int {
         return sp.getInt(key, defaultValue)
     }
 
@@ -159,7 +169,7 @@ class SharedPreUtil(val type:Int){
         return sp.getString(key, "")
     }
 
-    fun getString(key: String , defaultValue:String): String {
+    fun getString(key: String, defaultValue: String): String {
         return sp.getString(key, defaultValue)
     }
 
@@ -167,7 +177,7 @@ class SharedPreUtil(val type:Int){
         return sp.getLong(key, 0L)
     }
 
-    fun getLong(key: String , defaultValue: Long): Long {
+    fun getLong(key: String, defaultValue: Long): Long {
         return sp.getLong(key, defaultValue)
     }
 }

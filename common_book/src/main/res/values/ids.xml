@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <item name="btn_back" type="id"/>
+    <item name="img_back" type="id"/><!--返回按钮-->
+    <item name="img_clear" type="id"/><!--清除按钮-->
+    <item name="rl_title" type="id"/><!--标题栏布局-->
+
+
     <!-- PullToRefreshGridview-->
-    <item type="id"
-          name="gridview"/>
+    <item name="gridview" type="id"/>
 
-    <item name="tag_first"
-          type="id"/>
-    <item name="tag_second"
-          type="id"/>
-    <item name="selected_view"
-          type="id"/>
-    <item type="id"
-          name="expandable_text"/>
-    <item type="id"
-          name="expand_collapse"/>
-    <item type="id"
-          name="footprint_login_hint2"/>
-    <item type="id"
-          name="footprint_item_desc"/>
+    <item name="tag_first" type="id"/>
+    <item name="tag_second" type="id"/>
+    <item name="selected_view" type="id"/>
+    <item name="expandable_text" type="id"/>
+    <item name="expand_collapse" type="id"/>
+    <item name="footprint_login_hint2" type="id"/>
+    <item name="footprint_item_desc" type="id"/>
+    <item name="read_content_text" type="id"/>
 
-    <item type="id" name="read_content_text"/>
 </resources>

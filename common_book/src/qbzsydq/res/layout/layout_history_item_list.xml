@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="author"
+                        android:text="authorType"
                         android:textColor="@color/footprint_author_text_color"
                         android:textSize="@dimen/dimen_text_10"/>
             </RelativeLayout>

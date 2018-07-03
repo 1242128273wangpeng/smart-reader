@@ -24,6 +24,8 @@ interface ChapterDaoBase {
      */
     fun deleteAllChapters()
 
+    fun deleteChapters(sequence: Int)
+
     /**************************改****************************/
 
     /**

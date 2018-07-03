@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.txtqbmfxs.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import java.text.MessageFormat
@@ -40,11 +40,11 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             txt_book_read_progress.text = "未读"
         }
 
-        if (book.status == 2) {
+        if (book.status.equals("2")) {
             txt_book_chapter.text = "已完结"
         } else {
-            if (!TextUtils.isEmpty(book.last_chapter_name)) {
-                txt_book_chapter.text = book.last_chapter_name
+            if (!TextUtils.isEmpty(book.last_chapter?.name)) {
+                txt_book_chapter.text = book.last_chapter?.name
             }
         }
 
@@ -54,10 +54,12 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             img_book_update.visibility = View.VISIBLE
         }
 
-        if (txt_book_update_time != null) {
-            txt_book_update_time.text = Tools
-                    .compareTime(AppUtils.formatter, book.last_updatetime_native)
+
+        book.last_chapter?.update_time?.let {
+            val updateTime = Tools.compareTime(AppUtils.formatter, it)
+            txt_book_update_time.text = updateTime
         }
+
 
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
             Glide.with(itemView.context.applicationContext)

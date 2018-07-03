@@ -12,6 +12,11 @@ import com.alibaba.android.arouter.launcher.ARouter
 object RouterUtil {
 
     /**
+     * 仅在使用协议页面进入可以打开调试模式
+     */
+    var isFormDisclaimerPage = "isFormDisclaimerPage"
+
+    /**
      * 构建标准的路由请求
      */
     fun navigation(activity: Activity, path: String) {

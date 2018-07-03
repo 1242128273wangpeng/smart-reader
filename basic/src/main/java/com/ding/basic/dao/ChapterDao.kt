@@ -33,6 +33,10 @@ interface ChapterDao : BaseDao<Chapter> {
     @Query("DELETE FROM chapters")
     fun deleteAllChapters()
 
+
+    @Query("DELETE FROM chapters WHERE sequence >= :sequence")
+    fun deleteChapters(sequence: Int)
+
     /**************************改****************************/
 
     /**
