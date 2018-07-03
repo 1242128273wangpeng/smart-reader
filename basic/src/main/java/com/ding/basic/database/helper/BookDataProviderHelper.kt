@@ -110,11 +110,11 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     @Synchronized
     override fun insertBook(book: Book, context: Context): Long {
         val MAX_COUNT = 49
-        if (book == null || TextUtils.isEmpty(book.book_id) || TextUtils.isEmpty(book.book_source_id)) {
+        if (TextUtils.isEmpty(book.book_id) || TextUtils.isEmpty(book.book_source_id)) {
             Toast.makeText(context, "订阅失败，资源有误", Toast.LENGTH_SHORT).show()
             return 0
         }
-        if (loadBookCount()!! > MAX_COUNT) {
+        if (loadBookCount() > MAX_COUNT) {
             Toast.makeText(context, "书架已满，请整理书架", Toast.LENGTH_SHORT).show()
             return 0
         } else if (checkBookSubscribe(book.book_id) != null) {

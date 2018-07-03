@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/content_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <!--双tab的头布局，不再用include是方便svn打包只用更改一个文件-->
+    <RelativeLayout
+        android:id="@+id/home_fragment_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/top_navigation_bg_color"
+        android:fitsSystemWindows="true">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
+
+            <!--设置按钮-->
+
+            <ImageView
+                android:id="@+id/bookshelf_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_15"
+                android:paddingRight="@dimen/dimen_padding_15"
+                android:src="@mipmap/home_head_setting"/>
+
+            <!--<net.lzbook.kit.book.view.FirstUsePointView-->
+            <!--android:id="@+id/redpoint_home_setting"-->
+            <!--android:layout_width="7dp"-->
+            <!--android:layout_height="7dp"-->
+            <!--android:layout_alignRight="@+id/bookshelf_setting"-->
+            <!--android:layout_alignTop="@+id/bookshelf_setting"-->
+            <!--android:layout_marginRight="@dimen/dimen_padding_12"-->
+            <!--android:layout_marginTop="@dimen/dimen_padding_12"-->
+            <!--android:background="@color/color_red_point"/>-->
+
+            <!--搜索按钮-->
+
+            <ImageView
+                android:id="@+id/bookshelf_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="@mipmap/home_head_search"/>
+
+            <!--下载按钮-->
+
+            <ImageView
+                android:id="@+id/bookshelf_download"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/bookshelf_search"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="@mipmap/home_head_download"
+                android:visibility="gone"/>
+
+
+            <LinearLayout
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:paddingBottom="@dimen/dimen_padding_8"
+                android:paddingTop="@dimen/dimen_padding_8">
+
+                <LinearLayout
+                    android:id="@+id/ll_home_bookshelf"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/home_bookshelf_parent_selector"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/home_bookshelf_img_selector"/>
+
+
+                        <TextView
+                            android:id="@+id/home_bookshelf_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_5"
+                            android:text="@string/bookshelf"
+                            android:textColor="@drawable/home_bookshelf_txt_selector"
+                            android:textSize="@dimen/dimen_text_15"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_home_bookstore"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/home_bookshelf_parent_selector"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/home_bookstore_img_selector"/>
+
+
+                        <TextView
+                            android:id="@+id/home_bookstore_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_5"
+                            android:text="@string/bookstore"
+                            android:textColor="@drawable/home_bookshelf_txt_selector"
+                            android:textSize="@dimen/dimen_text_15"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+    <net.lzbook.kit.book.view.NonSwipeViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/home_fragment_head"
+        android:background="#FAFAFA"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation"/>
+</RelativeLayout>

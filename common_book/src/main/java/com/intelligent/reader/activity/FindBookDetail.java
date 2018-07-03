@@ -185,7 +185,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 } else if (fromType.equals("recommend")) {
                     data.put("firstrecommend", currentTitle);
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.BACK, data);
-                } else if(fromType.equals("author")) {
+                } else if(fromType.equals("authorType")) {
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE, StartLogClickUtil.BACK, data);
                 }
                 clickBackBtn();

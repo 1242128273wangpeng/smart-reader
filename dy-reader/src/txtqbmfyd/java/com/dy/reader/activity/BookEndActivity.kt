@@ -7,6 +7,7 @@ import android.text.Html
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
@@ -180,7 +181,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         dismissLoading()
     }
 
-    override fun showRecommend(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+    override fun showRecommend(recommends: ArrayList<RecommendBean>?) {
 
     }
 

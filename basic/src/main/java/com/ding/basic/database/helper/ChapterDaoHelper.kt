@@ -1,6 +1,7 @@
 package net.lzbook.kit.data.db.help
 
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import com.ding.basic.bean.*
 import com.ding.basic.dao.ChapterDao
 import com.ding.basic.database.helper.ChapterDaoBase
@@ -139,6 +140,11 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     }
 
     @Synchronized
+    override fun deleteChapters(sequence: Int) {
+        chapterDao.deleteChapters(sequence)
+    }
+
+    @Synchronized
     override fun updateChapter(chapter: Chapter): Boolean {
         return chapterDao.updateChapter(chapter) > 0
     }
@@ -168,7 +174,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     override fun queryLastChapter(): Chapter? {
         var chapter: Chapter? = null
         chapter = chapterDao.queryLastChapter()
-        Logger.v("queryLastChapter, chapter.name = " + chapter?.name)
+//        Logger.v("queryLastChapter, chapter.name = " + chapter?.name)
         return chapter
     }
 
@@ -176,7 +182,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
     override fun queryChapterBySequence(sequence: Int): Chapter? {
         var chapter: Chapter? = null
         chapter = chapterDao.queryChapterBySequence(sequence)
-        Logger.v("queryChapterBySequence, chapter.name = " + chapter?.name)
+//        Logger.v("queryChapterBySequence, chapter.name = " + chapter?.name)
         return chapter
     }
 

@@ -1,14 +1,12 @@
 package com.intelligent.reader.receiver;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.baidu.android.pushservice.PushMessageReceiver;
-import com.intelligent.reader.activity.HomeActivity;
 import com.intelligent.reader.activity.SplashActivity;
 
 import net.lzbook.kit.utils.AppLog;
-
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 
 import java.util.List;
 

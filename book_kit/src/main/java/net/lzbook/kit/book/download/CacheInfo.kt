@@ -13,11 +13,11 @@ class CacheInfo {
 
     var fileName: String? = null
         get() {
-            return downUrl?.substring(downUrl?.lastIndexOf('/') ?: 0, downUrl?.lastIndexOf('?') ?: 0) ?: null
+            return downUrl?.substring(downUrl?.lastIndexOf('/') ?: 0, downUrl?.lastIndexOf('?') ?: 0)
         }
 
     var md5: String? = null
-        get() = fileName?.split("-")?.get(2) ?: null
+        get() = fileName?.split("-")?.get(2)
 
     var chapterCount: Int? = null
         get() = fileName?.split("-")?.get(1)?.toInt() ?: 0

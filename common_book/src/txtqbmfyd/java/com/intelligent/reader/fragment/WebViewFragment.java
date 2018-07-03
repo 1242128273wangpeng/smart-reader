@@ -460,11 +460,11 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     }
 
     private View createHeaderView() {
-        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext()).inflate(R.layout.bookstore_refresh_head, null);
-        pgbar_head_loading = (ProgressBar) headerView.findViewById(R.id.pgbar_head_loading);
-        txt_head_prompt = (TextView) headerView.findViewById(R.id.txt_head_prompt);
+        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext()).inflate(R.layout.bookstore_refresh_header, null);
+        pgbar_head_loading = (ProgressBar) headerView.findViewById(R.id.pgbar_refresh_loading);
+        txt_head_prompt = (TextView) headerView.findViewById(R.id.txt_refresh_prompt);
         txt_head_prompt.setText("下拉刷新");
-        img_head_arrow = (ImageView) headerView.findViewById(R.id.img_head_arrow);
+        img_head_arrow = (ImageView) headerView.findViewById(R.id.img_refresh_arrow);
         img_head_arrow.setVisibility(View.VISIBLE);
         img_head_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow);
         pgbar_head_loading.setVisibility(View.GONE);

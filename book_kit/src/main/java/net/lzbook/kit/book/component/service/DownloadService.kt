@@ -168,7 +168,7 @@ class DownloadService : Service(), Runnable {
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                     .requestDownTaskConfig(task.book_id, task.book.book_source_id ?: ""
                             , if (task.startSequence != 0) 1 else 0
-                            , chapterList[task.startSequence].chapter_id!!)!!
+                            , chapterList[task.startSequence].chapter_id)!!
                     .subscribeBy(
                             onNext = { ret ->
                                 if (ret.checkResultAvailable() && ret.data!!.fileUrlList != null) {
@@ -187,9 +187,9 @@ class DownloadService : Service(), Runnable {
                                                 CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("package file name err"))
                                                 break
                                             }
-                                            if (info.startIndex < task.endSequence && info!!.startIndex < info.endIndex) {
+                                            if (info.startIndex < task.endSequence && info.startIndex < info.endIndex) {
 
-                                                val subList = chapterList.subList(Math.max(info!!.startIndex - 1, 0), Math.min(info!!.endIndex, chapterList.size))
+                                                val subList = chapterList.subList(Math.max(info.startIndex - 1, 0), Math.min(info.endIndex, chapterList.size))
 
                                                 if (!DataCache.isRangeCached(task.book, subList)) {
                                                     val start = System.currentTimeMillis()
@@ -272,65 +272,65 @@ class DownloadService : Service(), Runnable {
     }
 
     private fun parsePackage(fileUrlList: List<String>, info: PackageInfo, url: String, task: BookTask, chapterMap: Map<String, Chapter>): Boolean {
-        if (info != null) {
-            val data = HashMap<String, String>()
-            val startDownTime = System.currentTimeMillis()
-            var bytes: ByteArray? = null
-            var tryTimes = 0
-            while (tryTimes < RETRY_TIMES) {
-                tryTimes++
-                try {
-                    bytes = getHttpData(url)
 
-                    data.put("STATUS", "1")
-                    data.put("bookid", task.book.book_id!!)
+        val data = HashMap<String, String>()
+        val startDownTime = System.currentTimeMillis()
+        var bytes: ByteArray? = null
+        var tryTimes = 0
+        while (tryTimes < RETRY_TIMES) {
+            tryTimes++
+            try {
+                bytes = getHttpData(url)
+
+                data.put("STATUS", "1")
+                data.put("bookid", task.book.book_id)
+                data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
+                data.put("url1", fileUrlList.get(0))
+                data.put("url2", fileUrlList.last())
+                data.put("url3", url)
+                data.put("starttime", "" + startDownTime);
+                data.put("endtime", "" + System.currentTimeMillis())
+                data.put("times", "" + (System.currentTimeMillis() - startDownTime))
+                StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.DOWNLOADPACKE, data)
+
+                break
+            } catch (e: Exception) {
+                e.printStackTrace()
+                if (tryTimes >= RETRY_TIMES) {
+                    data.put("STATUS", "2");
+                    data.put("reason", e.javaClass.simpleName + ":" + e.message)
+                    data.put("bookid", task.book.book_id)
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
-                    data.put("url3", url)
-                    data.put("starttime", "" + startDownTime);
+                    data.put("url3", url);
+                    data.put("starttime", "" + startDownTime)
                     data.put("endtime", "" + System.currentTimeMillis())
                     data.put("times", "" + (System.currentTimeMillis() - startDownTime))
                     StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.DOWNLOADPACKE, data)
-
                     break
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    if (tryTimes >= RETRY_TIMES) {
-                        data.put("STATUS", "2");
-                        data.put("reason", e.javaClass.simpleName + ":" + e.message)
-                        data.put("bookid", task.book.book_id!!)
-                        data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
-                        data.put("url1", fileUrlList.get(0))
-                        data.put("url2", fileUrlList.last())
-                        data.put("url3", url);
-                        data.put("starttime", "" + startDownTime)
-                        data.put("endtime", "" + System.currentTimeMillis())
-                        data.put("times", "" + (System.currentTimeMillis() - startDownTime))
-                        StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.DOWNLOADPACKE, data)
-                        break
-                    } else {
-                        runOnMain {
-                            Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
-                        }
-                        synchronized(lock) {
-                            try {
-                                lock.wait(tryTimes * 1000L)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
+                } else {
+                    runOnMain {
+                        Toast.makeText(this@DownloadService, R.string.toast_net_weak, Toast.LENGTH_SHORT).show()
+                    }
+                    synchronized(lock) {
+                        try {
+                            lock.wait(tryTimes * 1000L)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }
             }
 
+
             if (bytes != null) {
                 val startParseTime = System.currentTimeMillis()
                 try {
-                    val z = parse(bytes!!, info, task, chapterMap)
+                    val z = parse(bytes, info, task, chapterMap)
                     val data = HashMap<String, String>()
                     data.put("STATUS", "1")
-                    data.put("bookid", task.book.book_id!!);
+                    data.put("bookid", task.book.book_id)
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
@@ -345,7 +345,7 @@ class DownloadService : Service(), Runnable {
                     val data = HashMap<String, String>()
                     data.put("STATUS", "2")
                     data.put("reason", e2.javaClass.simpleName + ":" + e2.message)
-                    data.put("bookid", task.book.book_id!!);
+                    data.put("bookid", task.book.book_id)
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
@@ -527,7 +527,7 @@ class DownloadService : Service(), Runnable {
                         index++
                         tempChapterCount++
 
-                        if(tempChapterCount > 10){
+                        if (tempChapterCount > 10) {
                             if (task.state == DownloadState.DOWNLOADING) {
 
                                 task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
@@ -649,9 +649,9 @@ class DownloadService : Service(), Runnable {
 
     @Throws(Exception::class)
     private fun getSourceChapter(chapter: Chapter): Chapter {
-        if (chapter != null) {
-            chapter.content = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestChapterContentSync(chapter)
-        }
+
+        chapter.content = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestChapterContentSync(chapter)
+
         return chapter
     }
 
@@ -670,7 +670,7 @@ class DownloadService : Service(), Runnable {
                     e.printStackTrace()
                     return
                 }
-                notifyIntent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 val pendingIntent = PendingIntent.getActivity(CacheManager.app, NOTIFY_ID_PROGRESS
                         , notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 

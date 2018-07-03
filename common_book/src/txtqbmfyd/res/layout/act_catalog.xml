@@ -85,16 +85,6 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/top_shadow"/>
 
-        <ListView
-                android:id="@+id/catalog_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"
-                android:layout_below="@+id/rl_catalog_novel"
-                android:cacheColorHint="@color/color_black_00000000"
-                android:visibility="gone"
-                android:listSelector="@android:color/transparent"/>
-
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/catalog_recyceler_main"
                 android:layout_width="match_parent"
