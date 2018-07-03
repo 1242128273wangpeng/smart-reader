@@ -158,5 +158,5 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_below="@+id/search_result_head"
-        android:background="@drawable/top_shadow"/>
+        android:background="@drawable/common_header_shadow_icon"/>
 </RelativeLayout>

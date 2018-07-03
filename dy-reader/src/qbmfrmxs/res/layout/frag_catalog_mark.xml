@@ -8,7 +8,6 @@
     tools:ignore="RtlHardcoded, UnusedAttribute">
 
     <RelativeLayout
-        android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
@@ -187,9 +186,8 @@
             android:contentDescription="@string/module_name"
             android:src="@drawable/catalog_mark_fix_book_icon"
             android:visibility="gone"/>
-
-
     </RelativeLayout>
+
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
