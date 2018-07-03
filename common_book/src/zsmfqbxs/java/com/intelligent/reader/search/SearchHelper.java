@@ -189,7 +189,7 @@ public class SearchHelper {
                 filterWord = filter_word;
                 sortType = sort_type;
 
-                startLoadData(0);
+                loadData(0);
 
                 if (mJsCallSearchCall != null) {
                     mJsCallSearchCall.onJsSearch();
@@ -245,7 +245,7 @@ public class SearchHelper {
                 try {
                     if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
                         sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
-                                "author").apply();//FindBookDetail 返回键时标识
+                                "authorType").apply();//FindBookDetail 返回键时标识
                     }
                     Intent intent = new Intent();
                     intent.setClass(mContext, FindBookDetail.class);
@@ -265,7 +265,7 @@ public class SearchHelper {
                 word = searchWord;
                 searchType = search_type;
 
-                startLoadData(0);
+                loadData(0);
 
                 if (jsNoneResultSearchCall != null) {
                     jsNoneResultSearchCall.onNoneResultSearch(searchWord);
@@ -436,11 +436,11 @@ public class SearchHelper {
             if (searchType.equals("2") && isAuthor == 1) {
 
                 Map<String, String> params = new HashMap<>();
-                params.put("author", searchWord);
-                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord;
+                params.put("authorType", searchWord);
+                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?authorType=" + searchWord;
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
-                            "author").apply();//FindBookDetail 返回键时标识
+                            "authorType").apply();//FindBookDetail 返回键时标识
                     SearchBookActivity.isSatyHistory = true;
                     Intent intent = new Intent();
                     intent.setClass(mContext, FindBookDetail.class);

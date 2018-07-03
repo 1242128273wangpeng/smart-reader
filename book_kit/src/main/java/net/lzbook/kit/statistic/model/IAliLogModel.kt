@@ -44,7 +44,7 @@ abstract class IAliLogModel {
         val log = Log()
         val json = JSON.toJSON(this) as JSONObject
         json.entries.forEach {
-            log.PutContent(it.key, (it.value as Any?).toString())
+            log.PutContent(it.key, (it.value ).toString())
         }
         return log
     }

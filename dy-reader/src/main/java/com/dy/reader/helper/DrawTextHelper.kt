@@ -10,9 +10,12 @@ import com.intelligent.reader.read.mode.NovelPageBean
 import java.util.ArrayList
 import com.dy.reader.setting.ReaderStatus
 
-
+/**
+ *  阅读页绘制辅助类
+ *  左右滑动模式
+ */
 object DrawTextHelper {
-    
+
     private val readerSettings = ReaderSettings.instance
 
     private val textPaint: Paint by lazy {
@@ -30,58 +33,58 @@ object DrawTextHelper {
      * type  0: 设置画笔颜色
      */
     private fun setPaintColor(paint: Paint, type: Int): Paint {
+        val color: Int
 
-        val color_int: Int
         if (readerSettings.readThemeMode == 51) {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_first
+            color = if (type == 0) {
+                R.color.reading_backdrop_first
             } else {
-                color_int = R.color.reading_text_color_first
+                R.color.reading_text_color_first
             }
         } else if (readerSettings.readThemeMode == 52) {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_second
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
             } else {
-                color_int = R.color.reading_text_color_second
+                R.color.reading_text_color_second
             }
         } else if (readerSettings.readThemeMode == 53) {
             if (type == 0) {
-                color_int = R.color.reading_backdrop_third
+                color = R.color.reading_backdrop_third
             } else {
-                color_int = R.color.reading_text_color_third
+                color = R.color.reading_text_color_third
             }
         } else if (readerSettings.readThemeMode == 54) {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_fourth
+            color = if (type == 0) {
+                R.color.reading_backdrop_fourth
             } else {
-                color_int = R.color.reading_text_color_fourth
+                R.color.reading_text_color_fourth
             }
         } else if (readerSettings.readThemeMode == 55) {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_fifth
+            color = if (type == 0) {
+                R.color.reading_backdrop_fifth
             } else {
-                color_int = R.color.reading_text_color_fifth
+                R.color.reading_text_color_fifth
             }
         } else if (readerSettings.readThemeMode == 56) {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_sixth
+            color = if (type == 0) {
+                R.color.reading_backdrop_sixth
             } else {
-                color_int = R.color.reading_text_color_sixth
+                R.color.reading_text_color_sixth
             }
         } else if (readerSettings.readThemeMode == 61) {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_night
+            color = if (type == 0) {
+                R.color.reading_backdrop_night
             } else {
-                color_int = R.color.reading_text_color_night
+                R.color.reading_text_color_night
             }
         } else {
-            if (type == 0) {
-                color_int = R.color.reading_backdrop_first
+            color = if (type == 0) {
+                R.color.reading_backdrop_first
             } else {
-                color_int = R.color.reading_text_color_first
+                R.color.reading_text_color_first
             }
         }
-        paint.color = Reader.context.resources.getColor(color_int)
+        paint.color = Reader.context.resources.getColor(color)
         return paint
     }
 
@@ -116,7 +119,7 @@ object DrawTextHelper {
     @Synchronized
     fun drawText(canvas: Canvas?, pageBean: NovelPageBean): Float {
         val pageLines = pageBean.lines
-        if(readerSettings.mPaint != null){
+        if (readerSettings.mPaint != null) {
             setPaintColor(readerSettings.mPaint!!, 1)
         }
         if (pageLines != null && !pageLines.isEmpty()) {
@@ -231,9 +234,9 @@ object DrawTextHelper {
             size_c = chapterNameList.size
             for (i in 0..size_c - 1) {
                 if (i == 0) {
-                        val chapterNameRemain = chapterNameList[0].lineContent
-                        textPaint.textSize = 16 * AppHelper.screenScaledDensity
-                        canvas?.drawText(chapterNameRemain, readerSettings.readContentPageLeftSpace * AppHelper.screenScaledDensity, y_chapter, textPaint)
+                    val chapterNameRemain = chapterNameList[0].lineContent
+                    textPaint.textSize = 16 * AppHelper.screenScaledDensity
+                    canvas?.drawText(chapterNameRemain, readerSettings.readContentPageLeftSpace * AppHelper.screenScaledDensity, y_chapter, textPaint)
                 } else {
                     textPaint.textSize = 23 * AppHelper.screenScaledDensity
                     fm_chapter = textPaint.fontMetrics
@@ -266,8 +269,8 @@ object DrawTextHelper {
     }
 
 
-    /*
-     * 封面页 效果
+    /**
+     *  绘制封面页效果 左右滑动
      */
     private fun drawHomePage(canvas: Canvas?): Float {
         val title_height = AppHelper.screenHeight / 3
@@ -281,10 +284,10 @@ object DrawTextHelper {
         var bookNamePaddingY = AppHelper.screenHeight / 2 - d_line
         val sloganPaddingY = 40 * AppHelper.screenScaledDensity
 
-        if (nameList == null || nameList!!.isEmpty()) {
+        if (nameList.isEmpty()) {
             return 0f
         }
-        var name_length = nameList!!.size
+        var name_length = nameList.size
         name_length = if (name_length > 4) 4 else name_length
         var x_with = 0
 
@@ -336,7 +339,9 @@ object DrawTextHelper {
         textPaint.textAlign = Paint.Align.CENTER
         paddingBottom -= textPaint.fontMetrics.descent - textPaint.fontMetrics.ascent
 
+        // 底部App灰色图标
         val iconBitmap = BitmapFactory.decodeResource(Reader.context.resources, R.drawable.reader_application_icon)
+
         // 计算左边位置
         val left = AppHelper.screenWidth / 2 - iconBitmap.getWidth() / 2
         // 计算上边位置
@@ -351,7 +356,9 @@ object DrawTextHelper {
         return AppHelper.screenHeight.toFloat()
     }
 
-    // 绘制带间距文本
+    /**
+     * 绘制带间距文本
+     */
     private fun drawSpacingText(canvas: Canvas, text: String, spacing: Int, textSize: Float, y: Float) {
         if (TextUtils.isEmpty(text)) return
         val textWidth = textPaint.measureText(text[0].toString())

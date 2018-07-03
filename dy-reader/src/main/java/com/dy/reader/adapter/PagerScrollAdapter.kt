@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
 
 /**
- * @desc 阅读页展示
+ * @desc 上下阅读页展示
  * @author lijun Lee
  * @mail jun_li@dingyuegroup.cn
  * @data 2017/11/2 14:35
@@ -101,7 +101,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
     override fun getItemViewType(position: Int): Int = if (!TextUtils.isEmpty(chapterList[position].adType) && if (ReaderSettings.instance.isLandscape) true else !chapterList[position].isLastPage) {
         AD_ITEM_TYPE
-    } else if (chapterList[position].lines != null && chapterList[position].lines.size != 0) {
+    } else if (chapterList[position].lines.size != 0) {
         chapterList[position].lines[0].sequence
     } else 0
 

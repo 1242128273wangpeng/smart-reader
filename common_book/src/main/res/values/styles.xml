@@ -9,6 +9,30 @@
     </style>
     -->
 
+    <!--调试模式界面字体-->
+
+    <style name="Debug_Widget_Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">@dimen/padding_14</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+        <item name="android:textColor">@color/color_text_most</item>
+    </style>
+
+    <!--调试模式界面button-->
+
+    <style name="Debug_Widget_View">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
+    <!---->
+
     <style name="promotion"
            parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/extension_small_item</item>
@@ -413,22 +437,22 @@
     </style>
 
     <style name="dialogStep_one_WindowAnim"
-           parent="android:Animation"
-           mce_bogus="1">
+           mce_bogus="1"
+           parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/step_dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/step_dialog_out_to_left</item>
     </style>
 
     <style name="dialogStep_two_WindowAnim"
-           parent="android:Animation"
-           mce_bogus="1">
+           mce_bogus="1"
+           parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/step_dialog_in_from_right</item>
         <item name="android:windowExitAnimation">@anim/step_dialog_out_to_left</item>
     </style>
 
     <style name="dialogStep_loading_WindowAnim"
-           parent="android:Animation"
-           mce_bogus="1">
+           mce_bogus="1"
+           parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/step_dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/step_dialog_exit</item>
     </style>
@@ -496,12 +520,12 @@
     </style>
 
     <style
-            name="NotificationInfo"
-            parent="android:TextAppearance.StatusBar.EventContent"/>
+        name="NotificationInfo"
+        parent="android:TextAppearance.StatusBar.EventContent"/>
 
     <style
-            name="NotificationTitle"
-            parent="android:TextAppearance.StatusBar.EventContent.Title"/>
+        name="NotificationTitle"
+        parent="android:TextAppearance.StatusBar.EventContent.Title"/>
 
     <style name="Theme.Start"
            parent="AppTheme">

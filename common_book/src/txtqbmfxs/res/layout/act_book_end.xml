@@ -1,0 +1,143 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_bg"
+    android:orientation="vertical"
+    android:paddingTop="0dp">
+
+    <RelativeLayout
+        android:id="@+id/rl_title_book_cover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:fitsSystemWindows="true">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:fitsSystemWindows="true">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:src="@drawable/bookend_top_back_selector" />
+
+            <TextView
+                android:id="@+id/name_bookend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:singleLine="true"
+                android:text="@string/read_end_tip"
+                android:textColor="@color/setting_login_font_color"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/change_source_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:text="换源"
+                android:textColor="@color/setting_login_font_color"
+                android:textSize="@dimen/text_size_14" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_0.5"
+        android:background="@color/list_divider" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/over_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="0dp">
+
+            <include
+                android:id="@+id/ll_recommend"
+                layout="@layout/bookend_recommend_books_layout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_marginTop="@dimen/dimen_view_height_16"
+                android:background="@color/list_divider" />
+
+            <include
+                android:id="@+id/ll_new_book"
+                layout="@layout/bookend_new_books_layout" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_margin_26"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/iv_title_right"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="@dimen/dimen_margin_18"
+                    android:layout_marginRight="@dimen/dimen_margin_22"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/end_to_bookshelf"
+                    android:textColor="@color/colorPrimary"
+                    android:background="@drawable/book_end_btn_selector_bookshelf"
+                    android:textSize="@dimen/text_size_14" />
+
+                <TextView
+                    android:id="@+id/iv_back_bookstore"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="@dimen/dimen_margin_22"
+                    android:layout_marginRight="@dimen/dimen_margin_18"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/end_to_bookstore"
+                    android:textColor="@color/color_white"
+                    android:background="@drawable/book_end_btn_selector_bookstore"
+                    android:textSize="@dimen/text_size_14" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_marginTop="@dimen/margin_22"
+                android:background="@color/list_divider" />
+
+            <RelativeLayout
+                android:id="@+id/ad_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="@dimen/padding_0"
+                android:layout_marginRight="@dimen/padding_0"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

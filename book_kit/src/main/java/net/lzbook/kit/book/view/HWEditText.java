@@ -4,6 +4,7 @@ import net.lzbook.kit.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,7 +15,7 @@ import java.lang.reflect.Field;
  * Created by Administrator on 2017/3/20 0020.
  * for 修改华为手机的EditText光标颜色
  */
-public class HWEditText extends EditText {
+public class HWEditText extends AppCompatEditText {
 
     public HWEditText(Context context) {
         this(context, null);

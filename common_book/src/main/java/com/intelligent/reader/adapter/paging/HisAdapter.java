@@ -31,8 +31,7 @@ public class HisAdapter extends BaseAdapter<HistoryInfo> {
         View view = LayoutInflater.from(mContext).inflate(R.layout
                         .layout_history_item_list,
                 parent, false);
-        return new HistoryHolder(view, shelfItemClickListener,
-                shelfItemLongClickListener);
+        return new HistoryHolder(view, shelfItemClickListener,shelfItemLongClickListener);
     }
 
     @Override
