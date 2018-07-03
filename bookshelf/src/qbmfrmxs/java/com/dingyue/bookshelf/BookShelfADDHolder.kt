@@ -17,7 +17,7 @@ class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
     fun bind(size: Int, itemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
 
-        if (size > 4) {
+        if (size >= 50) {
             itemView.rl_content.visibility = View.VISIBLE
         } else {
             itemView.rl_content.visibility = View.GONE
