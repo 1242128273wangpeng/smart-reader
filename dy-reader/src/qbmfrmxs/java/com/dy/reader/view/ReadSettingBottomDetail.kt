@@ -530,6 +530,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                     skbar_reader_chapter_change?.progress = lastProgress
                 }
                 showChapterInfo(lastProgress)
+
+                StartLogClickUtil.upLoadEventLog(context.applicationContext,
+                        StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.PROGRESSCANCLE)
+
             }
             else -> {
             }

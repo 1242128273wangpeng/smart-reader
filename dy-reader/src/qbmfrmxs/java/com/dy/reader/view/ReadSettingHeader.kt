@@ -145,6 +145,8 @@ class ReadSettingHeader : FrameLayout {
                 night_shadow_add_bookshelf.isEnable = false
                 context.showToastMessage(R.string.add_bookshelf_success)
             }
+            StartLogClickUtil.upLoadEventLog(context.applicationContext,
+                    StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SHELFADD)
         }
 
         // 初始化动画
