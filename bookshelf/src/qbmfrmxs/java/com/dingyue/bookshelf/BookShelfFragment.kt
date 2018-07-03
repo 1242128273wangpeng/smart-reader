@@ -200,9 +200,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
 
         txt_editor_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@setOnClickListener
-            }
             if (txt_editor_select_all.text == getString(R.string.select_all)) {
                 txt_editor_select_all.text = getString(R.string.cancel_select_all)
                 selectAll(true)

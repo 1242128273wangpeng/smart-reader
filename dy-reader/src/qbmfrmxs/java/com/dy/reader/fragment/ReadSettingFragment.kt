@@ -113,12 +113,12 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
         if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
             if (ReaderStatus.position.group == -1) {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = "封面"
+                if (dialog?.novel_hint_chapter != null) {
+                    dialog?.novel_hint_chapter!!.text = "封面"
                 }
             } else {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
+                if (dialog?.novel_hint_chapter != null) {
+                    dialog?.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
                 }
             }
         }
