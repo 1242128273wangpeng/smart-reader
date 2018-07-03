@@ -30,6 +30,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -46,6 +47,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.TELEPHONY_SERVICE;
+
+import com.dingyue.contract.util.CommonUtil;
+import com.meituan.android.walle.WalleChannelReader;
 
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
@@ -434,7 +438,13 @@ public class AppUtils {
                 APPLICATION_ID = getStringField("APPLICATION_ID", buildConfig);
                 VERSION_NAME = getStringField("VERSION_NAME", buildConfig);
                 VERSION_CODE = getIntField("VERSION_CODE", buildConfig);
-                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
+//                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
+                CHANNEL_NAME = "blf1298_11974_001";
+                if(WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()) != null){
+                    CHANNEL_NAME= WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext());
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -477,6 +487,7 @@ public class AppUtils {
     // 获取渠道号
     public static String getChannelId() {
         initValues();
+        CommonUtil.showToastMessage("美团渠道测试"+CHANNEL_NAME);
         return CHANNEL_NAME;
     }
 
