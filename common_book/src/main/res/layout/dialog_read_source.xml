@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/dimen_view_width_300"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:focusable="true"
@@ -23,53 +23,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="@dimen/padding_12"
+            android:padding="20dp"
             android:text="转码"
-            android:textColor="@color/color_black_323232"
-            android:textSize="@dimen/text_size_18"/>
-
-        <include
-            android:id="@+id/change_source_divider"
-            layout="@layout/dialog_divider"/>
+            android:textColor="#282828"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
         <RelativeLayout
             android:id="@+id/rl_change_source_statement"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/change_source_divider">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txt_transform_read_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_10"
-                android:layout_marginLeft="@dimen/dimen_margin_18"
-                android:layout_marginRight="@dimen/dimen_margin_18"
-                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginBottom="25dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:gravity="left|center"
                 android:lineSpacingMultiplier="1.5"
                 android:maxLines="4"
                 android:padding="@dimen/padding_4"
                 android:text="@string/translate_code_read"
-                android:textColor="@color/color_black_323232"
-                android:textSize="@dimen/dimen_text_14"/>
+                android:textColor="#282828"
+                android:textSize="15sp"/>
         </RelativeLayout>
 
+        <View
+            android:id="@+id/change_source_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#F1F1F1"/>
 
         <RelativeLayout
             android:id="@+id/rl_change_source_bottom"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_50"
-            >
+            android:layout_height="56dp">
 
             <View
                 android:id="@+id/change_source_bottom_divider"
-                android:layout_width="@dimen/dimen_view_width_0.5"
-                android:layout_height="@dimen/dimen_view_height_50"
+                android:layout_width="0.5dp"
+                android:layout_height="42dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
-                android:background="@color/color_gray_e8e8e8"/>
+                android:background="#F1F1F1"/>
 
             <TextView
                 android:id="@+id/txt_transform_read_cancel"
@@ -81,7 +81,7 @@
                 android:gravity="center"
                 android:text="@string/cancel"
                 android:textColor="@drawable/dialog_cancel_selector"
-                android:textSize="@dimen/dimen_text_16"/>
+                android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/txt_transform_read_continue"
@@ -93,11 +93,7 @@
                 android:gravity="center"
                 android:text="@string/reading_continue"
                 android:textColor="@drawable/dialog_confirm_selector"
-                android:textSize="@dimen/dimen_text_16"/>
-
-            <include
-                android:id="@+id/change_source_divider"
-                layout="@layout/dialog_divider"/>
+                android:textSize="15sp"/>
         </RelativeLayout>
     </LinearLayout>
 
@@ -105,11 +101,10 @@
         android:layout_width="wrap_content"
         android:id="@+id/nightShadowView"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ll_container"
-        android:layout_alignLeft="@+id/ll_container"
-        android:layout_alignRight="@+id/ll_container"
-        android:layout_alignTop="@+id/ll_container"
+        android:layout_alignBottom="@id/ll_container"
+        android:layout_alignLeft="@id/ll_container"
+        android:layout_alignRight="@id/ll_container"
+        android:layout_alignTop="@id/ll_container"
         android:visibility="gone"
-        app:cornerRadius="4dp"
-        />
+        app:cornerRadius="4dp"/>
 </RelativeLayout>

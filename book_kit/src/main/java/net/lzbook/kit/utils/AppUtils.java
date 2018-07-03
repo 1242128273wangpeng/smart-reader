@@ -685,7 +685,7 @@ public class AppUtils {
         } else if (num < 10000) {
             return num + "人气";
         } else if (num < 100000000) {
-            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "人气";
+            return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "万人气";
         } else {
             return "9999+万人气";
         }

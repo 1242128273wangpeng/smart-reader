@@ -139,7 +139,7 @@ class ReadSettingHeader : FrameLayout {
 
         ll_add_bookshelf.setOnClickListener {
             val result = requestFactory.insertBook(ReaderStatus.book)
-            if (result >= 0) {
+            if (result > 0) {
                 ll_add_bookshelf.visibility = View.GONE
                 night_shadow_add_bookshelf.visibility = View.GONE
                 night_shadow_add_bookshelf.isEnable = false
