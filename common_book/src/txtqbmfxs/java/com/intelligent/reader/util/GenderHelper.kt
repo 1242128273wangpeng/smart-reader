@@ -24,7 +24,6 @@ import net.lzbook.kit.utils.antiShakeClick
  * 创建人：Zach
  * 创建时间：2017/12/4 0004
  */
-
 class GenderHelper(view: View) {
 
     private val mBoySelector: ImageView = view.findViewById(R.id.iv_boy_sel)
@@ -41,13 +40,13 @@ class GenderHelper(view: View) {
     lateinit var mGenderSelectedListener: onGenderSelectedListener
     var defaultSharedPreferences: SharedPreferences
 
-    /*
+    /**
      *动画持续时间
-     * */
-    val mImgTranDuration = 700L
-    val mImgAlphaDuration = 300L
-    val mTxtTranDuration = 300L
-    val mTxtAlphaDuration = 1000L
+     */
+    private val mImgTranDuration = 700L
+    private val mImgAlphaDuration = 300L
+    private val mTxtTranDuration = 300L
+    private val mTxtAlphaDuration = 1000L
 
     init {
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mView.context)
@@ -123,7 +122,7 @@ class GenderHelper(view: View) {
     /**
      * 图片的消失
      */
-    fun vanishIconAnimation(alpha1: View, alpha2: View) {
+    private fun vanishIconAnimation(alpha1: View, alpha2: View) {
         val iconAniSet = AnimatorSet()
         val alphaAnimator1 = ObjectAnimator.ofFloat(alpha1, "alpha", 1f, 0.3f)
         val alphaAnimator2 = ObjectAnimator.ofFloat(alpha2, "alpha", 1f, 0.3f)

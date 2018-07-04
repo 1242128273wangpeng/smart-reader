@@ -6,64 +6,56 @@
                 android:layout_height="match_parent">
 
     <RelativeLayout
-            android:id="@+id/find_book_detail_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:background="@color/top_navigation_bg_color">
+        android:id="@+id/find_book_detail_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/theme_primary"
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/top_bar_height">
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
 
             <ImageView
-                    android:id="@+id/find_book_detail_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="@dimen/dimen_padding_12"
-                    android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/top_back"/>
+                android:id="@+id/find_book_detail_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="@mipmap/top_back"/>
 
             <TextView
-                    android:id="@+id/find_book_detail_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="18sp"
-                    android:textColor="@color/top_navigation_text_color"/>
+                android:id="@+id/find_book_detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/top_navigation_text_color"
+                android:textSize="18sp"/>
 
             <ImageView
-                    android:id="@+id/find_book_detail_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:paddingLeft="@dimen/dimen_padding_12"
-                    android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/search_submit_btn"/>
+                android:id="@+id/find_book_detail_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="@mipmap/search_submit_btn"/>
         </RelativeLayout>
     </RelativeLayout>
 
-    <WebView
-            android:id="@+id/rank_content"
-            android:layout_below="@+id/find_book_detail_head"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    <View
-            android:id="@+id/view_night_show"
-            android:layout_below="@+id/find_book_detail_head"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="#77000000"/>
+    <com.intelligent.reader.widget.topshadow.TopShadowWebView
+        android:id="@+id/rank_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/find_book_detail_head"/>
 
     <ImageView
-            android:id="@+id/title_shadow"
-            android:layout_below="@+id/find_book_detail_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+        android:id="@+id/title_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/find_book_detail_head"
+        android:scaleType="fitXY"
+        android:src="@mipmap/top_shadow"/>
 </RelativeLayout>
