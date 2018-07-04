@@ -67,7 +67,7 @@ class RecommendBooksAdapter(context: Context,
             holder.txt_book_score.text = (DecimalFormat("0.0").format(book.score)) + "分"
         }
 
-        holder.txt_read_num.text = book.readerCount.toString()+"人气"
+        holder.txt_read_num.text = book.readerCountDescp.toString()+"人气"
         if (!TextUtils.isEmpty(book.genre)) {
             holder.txt_book_type.visibility = View.VISIBLE
             holder.txt_book_type.text = book.genre
