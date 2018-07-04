@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--调试界面下SwitchButton-->
+    <color name="debug_switch_button_checked_color">#acacac</color>
+    <color name="debug_switch_button_unchecked_color">#ffffff</color>
+    <color name="debug_switch_bg_checked_color">#565656</color>
+    <color name="debug_switch_bg_unchecked_color">#e3e1e1</color>
+
+
     <!--阅读页相关-->
     <color name="reading_default_pageback_color">#D0BD9C</color>
 

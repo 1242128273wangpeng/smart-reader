@@ -43,11 +43,11 @@
             android:id="@+id/btn_debug_start_params"
             style="@style/Debug_Widget_View"
             app:sb_checked="true"
-            app:sb_checked_color="@color/my_nightshift_bg_checked_color"
-            app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
+            app:sb_checked_color="@color/debug_switch_bg_checked_color"
+            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
             app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color" />
+            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
 
     </RelativeLayout>
 
@@ -63,11 +63,11 @@
         <net.lzbook.kit.book.view.SwitchButton
             android:id="@+id/btn_debug_pre_show_ad"
             style="@style/Debug_Widget_View"
-            app:sb_checked_color="@color/my_nightshift_bg_checked_color"
-            app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
+            app:sb_checked_color="@color/debug_switch_bg_checked_color"
+            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
             app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color" />
+            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
 
     </RelativeLayout>
 
@@ -82,11 +82,11 @@
         <net.lzbook.kit.book.view.SwitchButton
             android:id="@+id/btn_debug_reset_book_shelf"
             style="@style/Debug_Widget_View"
-            app:sb_checked_color="@color/my_nightshift_bg_checked_color"
-            app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
+            app:sb_checked_color="@color/debug_switch_bg_checked_color"
+            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
             app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color" />
+            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
 
     </RelativeLayout>
 
@@ -101,11 +101,11 @@
         <net.lzbook.kit.book.view.SwitchButton
             android:id="@+id/btn_debug_update_chapter"
             style="@style/Debug_Widget_View"
-            app:sb_checked_color="@color/my_nightshift_bg_checked_color"
-            app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
+            app:sb_checked_color="@color/debug_switch_bg_checked_color"
+            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
             app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color" />
+            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
 
     </RelativeLayout>
 
