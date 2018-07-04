@@ -660,6 +660,14 @@ public class AppUtils {
         return APPLICATION_ID;
     }
 
+    public static boolean hasUPush() {
+        String packageName = getPackageName();
+        return packageName.equals("cc.remennovel") //智胜电子书
+                || packageName.equals("cc.kdqbxs.reader") //快读替
+                || packageName.equals("cc.quanbennovel") //今日多看
+                || packageName.equals("cc.lianzainovel"); //鸿雁替
+    }
+
     /**
      * 获取渠道号
      */
