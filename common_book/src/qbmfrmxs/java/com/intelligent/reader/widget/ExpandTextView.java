@@ -23,7 +23,7 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
 
     private static final int DEFAULT_ANIM_DURATION = 300;
 
-    private static final float DEFAULT_ANIM_ALPHA_START = 0.7f;
+    private static final float DEFAULT_ANIM_ALPHA_START = 1.0f;
 
     protected TextView contentView;
 
@@ -152,7 +152,6 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
 
                     ViewGroup.LayoutParams layoutParams = ExpandTextView.this.getLayoutParams();
                     layoutParams.height = contentHeight + expandHeight;
-
                     requestLayout();
                 } else {
                     promptView.setVisibility(VISIBLE);
@@ -254,19 +253,6 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
         relayout = true;
         contentView.setText(text);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     protected class ExpandCollapseAnimation extends Animation {
         private final View mTargetView;
