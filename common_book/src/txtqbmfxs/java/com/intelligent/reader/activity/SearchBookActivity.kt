@@ -541,7 +541,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
     }
 
-    override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent): Boolean {
+    override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_GO ||
                 actionId == EditorInfo.IME_ACTION_DONE ||

@@ -54,14 +54,12 @@ import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

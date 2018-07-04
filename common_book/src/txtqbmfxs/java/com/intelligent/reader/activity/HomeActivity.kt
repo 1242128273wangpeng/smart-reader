@@ -2,10 +2,7 @@ package com.intelligent.reader.activity
 
 import android.app.Notification
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -16,6 +13,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -32,11 +30,11 @@ import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomeView
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
+import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.update.ApkUpdateUtils
@@ -58,7 +56,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var bookView: BookShelfFragment? = null
     private var isClosed = false
     private var apkUpdateUtils: ApkUpdateUtils? = null
-    private var receiver: MyReceiver? = null
+    private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
     private var mLoadDataManager: LoadDataManager? = null
     private val shake = AntiShake()
     private var bottomType: Int = 0//青果打点搜索 1 精选 2 榜单
@@ -87,10 +85,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
 
         //注册广播接收器
-        receiver = MyReceiver()
-        /*  filter = IntentFilter()
-          filter.addAction(ActionConstants.DOWN_APP_SUCCESS_ACTION)
-          this@HomeActivity.registerReceiver(receiver, filter)*/
+        registerHomeReceiver()
 
         apkUpdateUtils = ApkUpdateUtils(this)
         try {
@@ -122,6 +117,20 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
 
         }
+    }
+
+    /***
+     * 注册广播接受器
+     * **/
+    private fun registerHomeReceiver() {
+        homeBroadcastReceiver = HomeBroadcastReceiver()
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ActionConstants.ACTION_ADD_DEFAULT_SHELF)
+        intentFilter.addAction(ActionConstants.ACTION_CHECK_UPDATE_FINISH)
+        intentFilter.addAction(ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS)
+
+        this.registerReceiver(homeBroadcastReceiver, intentFilter)
     }
 
     private fun initListener() {
@@ -172,7 +181,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     /**
      * 打开安装包文件
      */
-    fun setup(filePath: String) {
+    fun setupApplication(filePath: String) {
         val intent = Intent()
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.action = Intent.ACTION_VIEW
@@ -250,22 +259,35 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }.start();*/
         }
     }
-/*
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (viewPager != null && viewPager!!.currentItem != 0 && mHomeFragment != null) {
-                mHomeFragment!!.setTabSelected(0)
-                return true
-            } else if (removeMenuHelper != null && removeMenuHelper!!.dismissRemoveMenu()) {
+            doubleClickFinish()
+            return true
 
-                return true
-            } else {
-                doubleClickFinish()
-                return true
-            }
         }
         return super.onKeyDown(keyCode, event)
-    }*/
+    }
+
+    /**
+     * 两次返回键退出
+     */
+    private fun doubleClickFinish() {
+        BACK_COUNT++
+
+        if (BACK_COUNT == 1) {
+            this.showToastMessage(R.string.mian_click_tiwce_exit)
+        } else if (BACK_COUNT > 1 && !isClosed) {
+            isClosed = true
+            restoreSystemDisplayState()
+            ATManager.exitClient()
+            finish()
+        }
+
+        val message = handler.obtainMessage(0)
+        message.what = BACK
+        handler.sendMessageDelayed(message, 2000)
+    }
 
 /*    override fun onPause() {
         try {
@@ -294,23 +316,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }*/
 
-    /**
-     * 两次返回键退出
-     */
-/*    private fun doubleClickFinish() {
-        BACK_COUNT++
-        if (BACK_COUNT == 1) {
-            showToastLong(R.string.mian_click_tiwce_exit)
-        } else if (BACK_COUNT > 1 && !isClosed) {
-            isClosed = true
-            restoreSystemDisplayState()
-            ATManager.exitClient()
-            finish()
-        }
-        val message = handler.obtainMessage(0)
-        message.what = BACK
-        handler.sendMessageDelayed(message, 2000)
-    }*/
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         return super.onCreateOptionsMenu(menu)
@@ -356,32 +363,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun onDestroy() {
         super.onDestroy()
         AndroidLogStorage.getInstance().clear()
-        this@HomeActivity.unregisterReceiver(receiver)
-        /*if (frameHelper != null) {
-            try {
-                frameHelper!!.restoreState()
-                frameHelper = null
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        this.unregisterReceiver(homeBroadcastReceiver)
 
-        }
-        mHomeFragment = null
-        removeMenuHelper = null
-        viewPager = null
-        bookView = null
-        mHomeFragment = null
-        try {
-            setContentView(R.layout.empty)
-        } catch (e: Resources.NotFoundException) {
-            e.printStackTrace()
-        }
-
-        if (BuildConfig.DEBUG) {
-            BookApplication.getRefWatcher().watch(this)
-        }
-        EventBus.getDefault().unregister(this)
-*/
     }
 
     override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
@@ -469,30 +452,45 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     /**
-     * 获取广播数据
-     *
-     * @authorType jiqinlin
+     * 接收广播数据
      */
-    inner class MyReceiver : BroadcastReceiver() {
+    inner class HomeBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val bundle = intent.extras
-            val count = bundle!!.getInt("count")
-            val filePath = bundle.getString("filePath")
-            val downloadLink = bundle.getString("downloadLink")
-            val md5 = bundle.getString("md5")
-            val fileName = filePath!!.substring(filePath.lastIndexOf("/") + 1)
-            if (count == 100) {
-                AppLog.e("--------------->", MD5Utils.getFileMD5(File(filePath)))
-                if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
-                    setup(filePath)
-                } else {
-                    val errorIntent = Intent()
-                    errorIntent.setClass(context, DownloadErrorActivity::class.java)
-                    errorIntent.putExtra("downloadLink", downloadLink)
-                    errorIntent.putExtra("md5", md5)
-                    errorIntent.putExtra("fileName", fileName)
-                    errorIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(errorIntent)
+            if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS) {
+                val bundle = intent.extras
+
+                if (bundle != null) {
+                    val md5 = bundle.getString("md5")
+                    val count = bundle.getInt("count")
+                    val filePath = bundle.getString("filePath")
+                    val downloadLink = bundle.getString("downloadLink")
+                    val fileName = filePath!!.substring(filePath.lastIndexOf("/") + 1)
+
+                    if (count == 100) {
+                        if (MD5Utils.getFileMD5(File(filePath))!!.equals(md5!!, ignoreCase = true)) {
+                            setupApplication(filePath)
+                        } else {
+                            val errorIntent = Intent()
+                            errorIntent.setClass(context, DownloadErrorActivity::class.java)
+                            errorIntent.putExtra("downloadLink", downloadLink)
+                            errorIntent.putExtra("md5", md5)
+                            errorIntent.putExtra("fileName", fileName)
+                            errorIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            context.startActivity(errorIntent)
+                        }
+                    }
+                }
+            } else if (intent.action == ActionConstants.ACTION_CHECK_QING_STATE_SUCCESS) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
                 }
             }
         }
@@ -509,7 +507,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         override fun onPostExecute(s: String) {
 
-            /* StartLogClickUtil.upLoadApps(this@HomeActivity, s)*/
+            /*   StartLogClickUtil.upLoadApps(this, s)*/
         }
     }
 
