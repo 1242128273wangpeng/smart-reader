@@ -1,4 +1,4 @@
-package com.intelligent.reader.adapter.holder;
+package com.intelligent.reader.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;

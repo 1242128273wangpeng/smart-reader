@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 
-package com.intelligent.reader.view;
+package com.intelligent.reader.widget;
+
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
 import android.view.MotionEvent;
@@ -32,7 +37,8 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.intelligent.reader.R;
@@ -44,7 +50,8 @@ import net.lzbook.kit.utils.AppUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
+
+public class ExpandableTextView extends RelativeLayout implements View.OnClickListener {
 
     private static final int MAX_COLLAPSED_LINES = 8;
 
@@ -54,7 +61,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     protected TextView mTv;
 
-    protected TextView mButton;
+    protected ImageView mButton;
 
     private boolean mRelayout;
 
@@ -121,20 +128,22 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        if (mButton.getVisibility() != View.VISIBLE) {
+        if (mButton.getVisibility() != View.VISIBLE || mTv.getLineCount() < 2) {
             return;
         }
 
         mCollapsed = !mCollapsed;
-        mButton.setText(mCollapsed ? "展开" : "收起");
+//        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+//        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        setCollapsedMarins();
         Map<String, String> data = new HashMap<>();
 
         if (mCollapsedStatus != null) {
             mCollapsedStatus.put(mPosition, mCollapsed);
         }
-        if (mButton.getText().toString().trim().equals("展开")) {
+        if (mCollapsed) {
             data.put("type", "2");
         } else {
             data.put("type", "1");
@@ -243,13 +252,15 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     }
 
     private void findViews() {
-        mTv = findViewById(R.id.expandable_text);
+        mTv = (TextView) findViewById(R.id.expandable_text);
         mTv.setOnClickListener(this);
-        mButton =  findViewById(R.id.expand_collapse);
-        mButton.setCompoundDrawablePadding(12);
-        mButton.setText(mCollapsed ? "展开" : "收起");
+        mButton = (ImageView) findViewById(R.id.expand_collapse);
+//        mButton.setCompoundDrawablePadding(12);
+//        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+//        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        setCollapsedMarins();
         mButton.setOnClickListener(this);
     }
 
@@ -259,12 +270,28 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         boolean isCollapsed = collapsedStatus.get(position, true);
         clearAnimation();
         mCollapsed = isCollapsed;
-        mButton.setText(mCollapsed ? "展开" : "收起");
+//        mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+//        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        mButton.setImageDrawable(mCollapsed ? mExpandDrawable : mCollapseDrawable);
+        setCollapsedMarins();
         setText(text);
         getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         requestLayout();
+    }
+
+    private void setCollapsedMarins() {
+//        if (!mCollapsed) {
+////            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(TRUE);
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, R.id.expandable_text);
+//            mTv.setMaxLines(Integer.MAX_VALUE);
+//        } else {
+////            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.BELOW, TRUE);
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//            ((RelativeLayout.LayoutParams) mButton.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//            mTv.setMaxLines(3);
+//            mTv.setEllipsize(TextUtils.TruncateAt.END);
+//        }
     }
 
     public CharSequence getText() {
@@ -276,7 +303,12 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     public void setText(CharSequence text) {
         mRelayout = true;
-        mTv.setText(text);
+        SpannableStringBuilder spannableString = new SpannableStringBuilder();
+        spannableString.append("简介：");
+        spannableString.append(text);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#212832"));
+        spannableString.setSpan(colorSpan, 0, 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        mTv.setText(spannableString);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 
@@ -314,5 +346,4 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         }
     }
 
-    ;
 }

@@ -316,7 +316,8 @@
                             android:lineSpacingMultiplier="1.2"
                             android:text="展开"
                             android:textColor="#42BE54"
-                            android:textSize="14sp"/>
+                            android:textSize="14sp"
+                            android:visibility="gone"/>
 
                         <ImageView
                             android:id="@+id/expand_view"
@@ -325,6 +326,7 @@
                             android:layout_below="@id/expand_content"
                             android:layout_centerHorizontal="true"
                             android:paddingTop="4dp"
+                            android:visibility="gone"
                             android:src="@drawable/cover_expand_icon"/>
 
                     </com.intelligent.reader.widget.ExpandTextView>

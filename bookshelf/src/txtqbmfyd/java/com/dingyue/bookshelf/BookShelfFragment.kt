@@ -86,7 +86,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     val bookShelfAdapter: BookShelfAdapter by lazy {
-        BookShelfAdapter(requireContext(), object : BookShelfItemListener {
+        BookShelfAdapter(object : BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
 
                 if (position < 0 || position > bookShelfPresenter.iBookList.size) {

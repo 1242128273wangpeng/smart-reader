@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.RecommendBean
 import com.dy.reader.R
+import net.lzbook.kit.utils.AppUtils
 import java.text.MessageFormat
 
 class BookRecommendAdapter(private var recommends: ArrayList<RecommendBean>) : BaseAdapter() {
@@ -53,7 +54,7 @@ class BookRecommendAdapter(private var recommends: ArrayList<RecommendBean>) : B
 
         viewHolder.txt_recommend_name?.text = recommend.bookName
 
-        viewHolder.txt_recommend_popularity?.text = MessageFormat.format("{0}人气", recommend.uv)
+        viewHolder.txt_recommend_popularity?.text = AppUtils.getCommonReadNums(recommend.uv)
 
         return contentView
     }

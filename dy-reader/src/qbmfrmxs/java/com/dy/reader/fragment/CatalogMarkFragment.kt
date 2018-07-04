@@ -128,11 +128,13 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         rg_catalog_mark.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rbtn_catalog -> {
+                    fl_bookmark.visibility = View.GONE
                     rl_book_content.visibility = View.VISIBLE
                     presenter.loadCatalog(reverse)
                 }
                 R.id.rbtn_bookmark -> {
-                    rl_book_content.visibility = View.INVISIBLE
+                    fl_bookmark.visibility = View.VISIBLE
+                    rl_book_content.visibility = View.GONE
                     presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {

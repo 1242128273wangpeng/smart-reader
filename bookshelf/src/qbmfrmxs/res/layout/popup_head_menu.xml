@@ -1,82 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bookshelf_head_popup_bg"
     tools:ignore="RtlHardcoded">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/rl_popup_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:orientation="vertical">
+        android:background="@drawable/bookshelf_head_popup_bg">
 
         <LinearLayout
-            android:id="@+id/ll_download_manager"
-            android:layout_width="125dp"
-            android:layout_height="49dp"
-            android:background="@drawable/bookshelf_head_menu_first_sel"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="15dp"
-            android:paddingRight="21dp">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="25dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/bookshelf_head_popup_download_icon"
-                android:contentDescription="@string/module_name"/>
-
-            <TextView
-                style="@style/style_text_normal_plain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+            <LinearLayout
+                android:id="@+id/ll_download_manager"
+                android:layout_width="125dp"
+                android:layout_height="49dp"
                 android:gravity="center"
-                android:text="@string/download_manager"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="21dp">
 
-        <LinearLayout
-            android:id="@+id/ll_book_sorting"
-            android:layout_width="125dp"
-            android:layout_height="49dp"
-            android:background="@drawable/bookshelf_head_menu_second_sel"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="15dp"
-            android:paddingRight="21dp">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/bookshelf_head_popup_download_icon"
+                    android:contentDescription="@string/module_name"/>
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bookshelf_head_popup_sort_icon"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/module_name"/>
+                <TextView
+                    style="@style/style_text_normal_plain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/download_manager"/>
+            </LinearLayout>
 
-            <TextView
-                style="@style/style_text_normal_plain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+            <LinearLayout
+                android:id="@+id/ll_book_sorting"
+                android:layout_width="125dp"
+                android:layout_height="49dp"
                 android:gravity="center"
-                android:text="@string/book_sort"/>
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="21dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/bookshelf_head_popup_sort_icon"
+                    android:contentDescription="@string/module_name"/>
+
+                <TextView
+                    style="@style/style_text_normal_plain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:text="@string/book_sort"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
-        android:layout_width="125dp"
-        android:layout_height="98dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/rl_popup_more"
+        android:layout_alignLeft="@id/rl_popup_more"
+        android:layout_alignRight="@id/rl_popup_more"
+        android:layout_alignTop="@id/rl_popup_more"
         android:visibility="gone"
-        app:cornerRadius="5dp"/>
-
-</FrameLayout>
+        app:drawable="@drawable/bookshelf_head_popup_shadow_bg"/>
+</RelativeLayout>

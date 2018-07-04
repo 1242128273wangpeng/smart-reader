@@ -12,8 +12,8 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cc.lianzainovel"
-    defaultPublishConfig = 'txtqbmfxs' + 'Debug'
+    applicationId = "cn.qbmfrmxs.reader"
+    defaultPublishConfig = 'qbmfrmxs' + 'Debug'
 
     minifyEnable = false
     shrinkResEnable = minifyEnable

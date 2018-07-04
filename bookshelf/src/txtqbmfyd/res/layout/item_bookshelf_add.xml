@@ -6,6 +6,7 @@
     android:layout_height="155dp">
 
     <ImageView
+        android:id="@+id/img_add"
         android:layout_width="80dp"
         android:layout_height="113dp"
         android:layout_centerHorizontal="true"

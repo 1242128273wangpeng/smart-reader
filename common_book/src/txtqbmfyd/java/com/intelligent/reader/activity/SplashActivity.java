@@ -166,38 +166,20 @@ public class SplashActivity extends FrameActivity {
                 false);
         Constants.book_list_sort_type = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("booklist_sort_type", 0);
-        gotoActivity(versionCode, firstGuide);
+        gotoActivity();
     }
 
-    private void gotoActivity(int versionCode, boolean firstGuide) {
-        if (firstGuide) {
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                    getApplicationContext()).edit();
-            editor.putBoolean(versionCode + "first_guide", false);
-            editor.apply();
-            try {
-                Intent intent = new Intent();
-                intent.setClass(SplashActivity.this, GuideActivity.class);
-                intent.putExtra("fromA", "Loading");
-                startActivity(intent);
-                finish();
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Intent intent = new Intent();
-            intent.setClass(SplashActivity.this, HomeActivity.class);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-            finish();
+    private void gotoActivity() {
+        Intent intent = new Intent();
+        intent.setClass(SplashActivity.this, HomeActivity.class);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
+        finish();
     }
 
     private void initShield() {
