@@ -31,7 +31,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
                 android:text="@string/debug_mode"
-                android:textColor="@color/white"
+                android:textColor="@color/color_text_most"
                 android:textSize="@dimen/dimen_text_17"/>
         </RelativeLayout>
 
