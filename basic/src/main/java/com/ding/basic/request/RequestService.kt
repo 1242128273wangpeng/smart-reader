@@ -96,11 +96,20 @@ interface RequestService {
         const val BOOK_RECOMMEND = "/v5/search/recommend"
 
 
-        //  鸿雁替 新 webview分类页面
+        /**
+         * 鸿雁替 新WebView分类页面
+         */
         const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
 
-        // 鸿雁替 新webview精选页面
+        /**
+         * 鸿雁替 新WebView精选页面
+         */
         const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
+
+        /**
+         * WebView榜单排行页面
+         */
+        const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
 
     }
 

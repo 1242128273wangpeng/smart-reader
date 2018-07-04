@@ -244,7 +244,7 @@ public class BookStoreFragment extends Fragment {
                     rankingFragment = new WebViewFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("type", "rank");
-                    String uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}",
+                    String uri = RequestService.WEB_RANK_V3.replace("{packageName}",
                             AppUtils.getPackageName());
                     Map<String, String> params = new HashMap<>();
 //                    params.put("sex",sharedPreferences.getInt("gender", Constants.SGENDER)+"");
