@@ -39,8 +39,6 @@ object Config {
 
     private var privateKey: String = ""
 
-
-
     private var bookContent: String? = null
 
     private var requestParameters: HashMap<String, String> = HashMap()
@@ -68,7 +66,7 @@ object Config {
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
     }
 
-    fun getContext(): Context?{
+    fun getContext(): Context? {
         return Config.context
     }
 
@@ -113,7 +111,7 @@ object Config {
         }
     }
 
-    fun insertRequestParameters(@NotNull parameters:HashMap<String, String>) {
+    fun insertRequestParameters(@NotNull parameters: HashMap<String, String>) {
         requestParameters.putAll(parameters)
     }
 
@@ -141,12 +139,6 @@ object Config {
         }
         return URLBuilder.buildUrl(requestAPIHost, request, parameters)
     }
-
-
-
-
-
-
 
 
     fun insertMicroAPIHost(microAPIHost: String) {
