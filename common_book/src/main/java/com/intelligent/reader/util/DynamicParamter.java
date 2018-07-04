@@ -21,7 +21,6 @@ import com.orhanobut.logger.Logger;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.Tools;
@@ -37,7 +36,6 @@ import java.util.List;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import me.eugeniomarletti.kotlin.metadata.shadow.load.java.Constant;
 
 public class DynamicParamter {
 
@@ -80,7 +78,7 @@ public class DynamicParamter {
       九宫格书架页广告显示类型切换开关
     */
     public String book_shelf_state;
-	//书架页1-2开关
+    //书架页1-2开关
     public String dy_shelf_boundary_switch;
     //书架页广告间隔频率设置
     public String dy_shelf_ad_freq;
@@ -112,12 +110,12 @@ public class DynamicParamter {
     public String day_limit;
     public String network_limit;
     public String dy_ad_new_request_domain_name;
-    public String novel_host;
-    public String webView_host;
     public String download_limit;
 
-    public String union_host;
-    public String content_host;
+    private String novel_host;
+    private String webView_host;
+    private String union_host;
+    private String content_host;
 
 
     //    public String nonet_readhour;
@@ -129,15 +127,14 @@ public class DynamicParamter {
 
     public DynamicParamter(Context context) {
         this.context = context;
-        sp = context.getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0);
+        sp = context.getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0);
     }
 
     public void setDynamicParamter() {
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-
-        UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
-        UrlUtils.setBookWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+//        UrlUtils.setBookNovelDeployHost(sp.getString(Constants.NOVEL_HOST, ""));
+//        UrlUtils.setBookWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
 
         Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
         Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
@@ -165,7 +162,8 @@ public class DynamicParamter {
         //阅读页翻页统计开关
         dy_readPage_statistics_switch = getConfigParams(Constants.DY_READPAGE_STATISTICS_SWITCH);
         //阅读页上下翻页展示广告开关
-        dy_ad_readPage_slide_switch_new = getConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
+        dy_ad_readPage_slide_switch_new = getConfigParams(
+                Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
         //老的广告统计开关
         dy_ad_old_request_switch = getConfigParams(Constants.DY_AD_OLD_REQUEST_SWITCH);
         //开屏页开关
@@ -239,25 +237,27 @@ public class DynamicParamter {
         AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter");
         mDynamicUrl = RequestService.DYNAMIC_PARAMETERS;
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDynamicParameters(new RequestSubscriber<JsonObject>() {
-            @Override
-            public void requestResult(@Nullable JsonObject result) {
-                if (result != null) {
-                    checkResult(result.toString());
-                }
-            }
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestDynamicParameters(
+                new RequestSubscriber<JsonObject>() {
+                    @Override
+                    public void requestResult(@Nullable JsonObject result) {
+                        if (result != null) {
+                            checkResult(result.toString());
+                        }
+                    }
 
-            @Override
-            public void requestError(@NotNull String message) {
-                Logger.e("请求动态参数异常！");
-                startRequestCDNDynamic();
-            }
+                    @Override
+                    public void requestError(@NotNull String message) {
+                        Logger.e("请求动态参数异常！");
+                        startRequestCDNDynamic();
+                    }
 
-            @Override
-            public void requestComplete() {
+                    @Override
+                    public void requestComplete() {
 
-            }
-        });
+                    }
+                });
 
     }
 
@@ -300,7 +300,8 @@ public class DynamicParamter {
                                 if (jsonObject != null) {
                                     checkResult(jsonObject.toString());
                                 } else {
-                                    throw new Exception("requestCDNDynamicPar call back body is null");
+                                    throw new Exception(
+                                            "requestCDNDynamicPar call back body is null");
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -416,19 +417,24 @@ public class DynamicParamter {
             if (!data.isNull(Constants.DY_AD_NEW_STATISTICS_SWITCH)) {
                 dy_ad_new_statistics_switch = data.getString(Constants.DY_AD_NEW_STATISTICS_SWITCH);
                 if (isOwn) {
-                    putConfigParams(Constants.DY_AD_NEW_STATISTICS_SWITCH, dy_ad_new_statistics_switch);
+                    putConfigParams(Constants.DY_AD_NEW_STATISTICS_SWITCH,
+                            dy_ad_new_statistics_switch);
                 }
             }
             if (!data.isNull(Constants.DY_READPAGE_STATISTICS_SWITCH)) {
-                dy_readPage_statistics_switch = data.getString(Constants.DY_READPAGE_STATISTICS_SWITCH);
+                dy_readPage_statistics_switch = data.getString(
+                        Constants.DY_READPAGE_STATISTICS_SWITCH);
                 if (isOwn) {
-                    putConfigParams(Constants.DY_READPAGE_STATISTICS_SWITCH, dy_readPage_statistics_switch);
+                    putConfigParams(Constants.DY_READPAGE_STATISTICS_SWITCH,
+                            dy_readPage_statistics_switch);
                 }
             }
             if (!data.isNull(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW)) {
-                dy_ad_readPage_slide_switch_new = data.getString(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
+                dy_ad_readPage_slide_switch_new = data.getString(
+                        Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW);
                 if (isOwn) {
-                    putConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW, dy_ad_readPage_slide_switch_new);
+                    putConfigParams(Constants.DY_AD_READPAGE_SLIDE_SWITCH_NEW,
+                            dy_ad_readPage_slide_switch_new);
                 }
             }
             if (!data.isNull(Constants.DY_AD_OLD_REQUEST_SWITCH)) {
@@ -513,15 +519,19 @@ public class DynamicParamter {
             }
 
             if (!data.isNull(Constants.NATIVE_AD_PAGE_INTERSTITIAL_COUNT)) {
-                native_ad_page_interstitial_count = data.getString(Constants.NATIVE_AD_PAGE_INTERSTITIAL_COUNT);
+                native_ad_page_interstitial_count = data.getString(
+                        Constants.NATIVE_AD_PAGE_INTERSTITIAL_COUNT);
                 if (isOwn) {
-                    putConfigParams(Constants.NATIVE_AD_PAGE_INTERSTITIAL_COUNT, native_ad_page_interstitial_count);
+                    putConfigParams(Constants.NATIVE_AD_PAGE_INTERSTITIAL_COUNT,
+                            native_ad_page_interstitial_count);
                 }
             }
             if (!data.isNull(Constants.NATIVE_AD_PAGE_GAP_IN_CHAPTER)) {
-                native_ad_page_gap_in_chapter = data.getString(Constants.NATIVE_AD_PAGE_GAP_IN_CHAPTER);
+                native_ad_page_gap_in_chapter = data.getString(
+                        Constants.NATIVE_AD_PAGE_GAP_IN_CHAPTER);
                 if (isOwn) {
-                    putConfigParams(Constants.NATIVE_AD_PAGE_GAP_IN_CHAPTER, native_ad_page_gap_in_chapter);
+                    putConfigParams(Constants.NATIVE_AD_PAGE_GAP_IN_CHAPTER,
+                            native_ad_page_gap_in_chapter);
                 }
             }
 
@@ -533,9 +543,11 @@ public class DynamicParamter {
             }
 
             if (!data.isNull(Constants.NATIVE_AD_PAGE_IN_CHAPTER_LIMIT)) {
-                native_ad_page_in_chapter_limit = data.getString(Constants.NATIVE_AD_PAGE_IN_CHAPTER_LIMIT);
+                native_ad_page_in_chapter_limit = data.getString(
+                        Constants.NATIVE_AD_PAGE_IN_CHAPTER_LIMIT);
                 if (isOwn) {
-                    putConfigParams(Constants.NATIVE_AD_PAGE_IN_CHAPTER_LIMIT, native_ad_page_in_chapter_limit);
+                    putConfigParams(Constants.NATIVE_AD_PAGE_IN_CHAPTER_LIMIT,
+                            native_ad_page_in_chapter_limit);
                 }
             }
             if (!data.isNull("land_scroll_chapter_frequence")) {
@@ -619,23 +631,43 @@ public class DynamicParamter {
                 }
             }
             if (!data.isNull(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME)) {
-                dy_ad_new_request_domain_name = data.getString(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
+                dy_ad_new_request_domain_name = data.getString(
+                        Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME);
                 if (isOwn) {
-                    putConfigParams(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME, dy_ad_new_request_domain_name);
+                    putConfigParams(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME,
+                            dy_ad_new_request_domain_name);
                 }
             }
+
+            // 智能Api接口
             if (!data.isNull(Constants.NOVEL_HOST)) {
                 novel_host = data.getString(Constants.NOVEL_HOST);
-                if (isOwn) {
+                if (isOwn && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.NOVEL_HOST, novel_host);
                 }
             }
+            // WebView接口
             if (!data.isNull(Constants.WEBVIEW_HOST)) {
                 webView_host = data.getString(Constants.WEBVIEW_HOST);
-                if (isOwn) {
+                if (isOwn && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.WEBVIEW_HOST, webView_host);
                 }
             }
+            // 微服务Api接口
+            if (!data.isNull(Constants.UNION_HOST)) {
+                union_host = data.getString(Constants.UNION_HOST);
+                if (isOwn  && sp.getBoolean(Constants.START_PARAMS, true)) {
+                    putConfigParams(Constants.UNION_HOST, union_host);
+                }
+            }
+            // 微服务内容接口
+            if (!data.isNull(Constants.CONTENT_HOST)) {
+                content_host = data.getString(Constants.CONTENT_HOST);
+                if (isOwn  && sp.getBoolean(Constants.START_PARAMS, true)) {
+                    putConfigParams(Constants.CONTENT_HOST, content_host);
+                }
+            }
+
             if (!data.isNull(Constants.noNetReadNumber)) {
                 noNetReadNumber = data.getString(Constants.noNetReadNumber);
                 if (isOwn) {
@@ -666,19 +698,7 @@ public class DynamicParamter {
                 }
             }
 
-            if (!data.isNull(Constants.UNION_HOST)) {
-                union_host = data.getString(Constants.UNION_HOST);
-                if (isOwn) {
-                    putConfigParams(Constants.UNION_HOST, union_host);
-                }
-            }
 
-            if (!data.isNull(Constants.CONTENT_HOST)) {
-                content_host = data.getString(Constants.CONTENT_HOST);
-                if (isOwn) {
-                    putConfigParams(Constants.CONTENT_HOST, content_host);
-                }
-            }
 
             installParam();
         } catch (JSONException e) {
@@ -689,7 +709,7 @@ public class DynamicParamter {
     private void installParam() {
 //        setBaiduAppId();
 //        setMogoAppId();
-        setHost();
+//        setHost();
 
         setDownLoadLimitNumber();
 
@@ -715,7 +735,8 @@ public class DynamicParamter {
     }
 
     private void setNoNetReadTime() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
+                context.getApplicationContext());
         Editor editor = sp.edit();
 //        if (!TextUtils.isEmpty(nonet_readhour)) {
 //            int nonet_read = Integer.parseInt(nonet_readhour);
@@ -728,7 +749,8 @@ public class DynamicParamter {
     }
 
     private void setDownLoadLimitNumber() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
+                context.getApplicationContext());
         Editor editor = sp.edit();
         if (!TextUtils.isEmpty(download_limit)) {
             int download_limit_number = Integer.parseInt(download_limit);
@@ -737,24 +759,35 @@ public class DynamicParamter {
         }
     }
 
-    private void setHost() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    //重复
+ /*   private void setHost() {
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
+//                context.getApplicationContext());
         Editor editor = sp.edit();
-        if (!TextUtils.isEmpty(novel_host)) {
-            editor.putString(Constants.NOVEL_HOST, novel_host);
-        }
-        if (!TextUtils.isEmpty(webView_host)) {
-            editor.putString(Constants.WEBVIEW_HOST, webView_host);
+
+        // 动态参数开关，默认开启
+        if (sp.getBoolean(Constants.START_PARAMS, true)) {
+
+            if (!TextUtils.isEmpty(novel_host)) {
+                editor.putString(Constants.NOVEL_HOST, novel_host);
+            }
+
+            if (!TextUtils.isEmpty(webView_host)) {
+                editor.putString(Constants.WEBVIEW_HOST, webView_host);
+            }
+
+            if (!TextUtils.isEmpty(union_host)) {
+                editor.putString(Constants.UNION_HOST, union_host);
+            }
+
+            if (!TextUtils.isEmpty(content_host)) {
+                editor.putString(Constants.CONTENT_HOST, content_host);
+            }
+            editor.apply();
         }
 
-        if (!TextUtils.isEmpty(union_host)) {
-            editor.putString(Constants.UNION_HOST, union_host);
-        }
-        if (!TextUtils.isEmpty(content_host)) {
-            editor.putString(Constants.CONTENT_HOST, content_host);
-        }
-        editor.apply();
-    }
+
+    }*/
 
     private void setNetWorkLimit() {
         if (!TextUtils.isEmpty(network_limit)) {
@@ -918,21 +951,24 @@ public class DynamicParamter {
         //新的统计开关
         if (!TextUtils.isEmpty(dy_ad_new_statistics_switch)) {
             try {
-                Constants.dy_ad_new_statistics_switch = Boolean.parseBoolean(dy_ad_new_statistics_switch);
+                Constants.dy_ad_new_statistics_switch = Boolean.parseBoolean(
+                        dy_ad_new_statistics_switch);
             } catch (Exception e) {
             }
         }
         //阅读页翻页统计开关
         if (!TextUtils.isEmpty(dy_readPage_statistics_switch)) {
             try {
-                Constants.dy_readPage_statistics_switch = Boolean.parseBoolean(dy_readPage_statistics_switch);
+                Constants.dy_readPage_statistics_switch = Boolean.parseBoolean(
+                        dy_readPage_statistics_switch);
             } catch (Exception e) {
             }
         }
         //阅读页上下翻页展示广告开关
         if (!TextUtils.isEmpty(dy_ad_readPage_slide_switch_new)) {
             try {
-                Constants.dy_ad_readPage_slide_switch_new = Boolean.parseBoolean(dy_ad_readPage_slide_switch_new);
+                Constants.dy_ad_readPage_slide_switch_new = Boolean.parseBoolean(
+                        dy_ad_readPage_slide_switch_new);
             } catch (Exception e) {
             }
         }
@@ -1049,14 +1085,16 @@ public class DynamicParamter {
         //章节内开关
         if (!TextUtils.isEmpty(dy_page_in_chapter_ad_switch)) {
             try {
-                Constants.dy_page_in_chapter_ad_switch = Boolean.parseBoolean(dy_page_in_chapter_ad_switch);
+                Constants.dy_page_in_chapter_ad_switch = Boolean.parseBoolean(
+                        dy_page_in_chapter_ad_switch);
             } catch (Exception e) {
             }
         }
         // 原生广告间隔的章节数
         if (!TextUtils.isEmpty(native_ad_page_interstitial_count)) {
             try {
-                Constants.native_ad_page_interstitial_count = Integer.parseInt(native_ad_page_interstitial_count);
+                Constants.native_ad_page_interstitial_count = Integer.parseInt(
+                        native_ad_page_interstitial_count);
             } catch (Exception e) {
             }
         }
@@ -1064,7 +1102,8 @@ public class DynamicParamter {
         //章节内广告间隔的章节数
         if (!TextUtils.isEmpty(native_ad_page_gap_in_chapter)) {
             try {
-                Constants.native_ad_page_gap_in_chapter = Integer.parseInt(native_ad_page_gap_in_chapter);
+                Constants.native_ad_page_gap_in_chapter = Integer.parseInt(
+                        native_ad_page_gap_in_chapter);
             } catch (Exception e) {
             }
         }
@@ -1072,7 +1111,8 @@ public class DynamicParamter {
         // 章节内广告显示要求的最小页数
         if (!TextUtils.isEmpty(native_ad_page_in_chapter_limit)) {
             try {
-                Constants.native_ad_page_in_chapter_limit = Integer.parseInt(native_ad_page_in_chapter_limit);
+                Constants.native_ad_page_in_chapter_limit = Integer.parseInt(
+                        native_ad_page_in_chapter_limit);
             } catch (Exception e) {
             }
         }
@@ -1080,7 +1120,8 @@ public class DynamicParamter {
         //上下滑动间隔5章时的弹窗广告
         if (!TextUtils.isEmpty(land_scroll_chapter_frequence)) {
             try {
-                Constants.land_scroll_chapter_frequence = Integer.parseInt(land_scroll_chapter_frequence);
+                Constants.land_scroll_chapter_frequence = Integer.parseInt(
+                        land_scroll_chapter_frequence);
             } catch (Exception e) {
             }
         }
@@ -1165,7 +1206,8 @@ public class DynamicParamter {
             ReplaceConstants.getReplaceConstants().PUSH_KEY = push_key;
         }
         try {
-            PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY, ReplaceConstants.getReplaceConstants().PUSH_KEY);
+            PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY,
+                    ReplaceConstants.getReplaceConstants().PUSH_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }

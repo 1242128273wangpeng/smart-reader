@@ -11,6 +11,7 @@ import com.dy.reader.R
 import kotlinx.android.synthetic.txtqbmfxs.act_disclaimer.*
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.IntentUtil
 
 import java.util.HashMap
 
@@ -41,11 +42,11 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         }
 
         // 仅在使用协议页面进入可以打开调试模式
-        if (intent.getBooleanExtra(RouterUtil.isFormDisclaimerPage, false)) {
-            txt_content.setOnClickListener {
-                displayEggs()
-            }
+//        if (intent.getBooleanExtra(RouterUtil.isFormDisclaimerPage, false)) {
+        txt_content.setOnClickListener {
+            displayEggs()
         }
+
 
     }
 
@@ -59,7 +60,9 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
      */
     private fun displayEggs() {
 
-        mHits = LongArray(5) // 需要点击几次 就设置几
+        if (mHits == null) {
+            mHits = LongArray(5) // 需要点击几次 就设置几
+        }
 
         mHits?.let {
             //把从第二位至最后一位之间的数字复制到第一位至倒数第一位
@@ -69,7 +72,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
             it[it.size - 1] = SystemClock.uptimeMillis()
             if (SystemClock.uptimeMillis() - it[0] <= 5000) {//5秒内连续点击。
                 mHits = null    //这里说明一下，我们在进来以后需要还原状态，否则如果点击过快，第六次，第七次 都会不断进来触发该效果。重新开始计数即可
-                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
+                RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.dingyue.contract.util
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 
 /**
@@ -116,7 +117,7 @@ class SharedPreUtil(val type: Int) {
 
     val shareList = listOf<SharedPreferences>(
             PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext()),
-            BaseBookApplication.getGlobalContext().getSharedPreferences("onlineconfig_agent_online_setting_" + AppUtils.getPackageName(), 0)
+            BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
 
     )
 

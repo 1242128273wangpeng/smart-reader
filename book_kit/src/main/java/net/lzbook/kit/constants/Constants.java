@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
@@ -265,10 +266,38 @@ public class Constants {
     //public static final String CONTENT_ERROR = "文章内容较短,可能非正文,正在抓紧修复中";
     public static String FILTER_WORD = "easou";
     public static String STYLE_CHANGE = "style1";
-    public static String NOVEL_HOST = "novel_host";
-    public static String WEBVIEW_HOST = "httpsWebView_host";
-    public static String UNION_HOST = "union_host";
-    public static String CONTENT_HOST = "content_host";
+
+
+    /**
+     * SharedPreferences的key值
+     */
+    public static String SHAREDPREFERENCES_KEY =
+            "onlineconfig_agent_online_setting_" + AppUtils.getPackageName();
+
+    /**
+     * HOST分类
+     */
+    public static String NOVEL_HOST = "novel_host";//智能API接口
+    public static String WEBVIEW_HOST = "httpsWebView_host";// WebView
+    public static String UNION_HOST = "union_host";//微服务API接口
+    public static String CONTENT_HOST = "content_host";//微服务内容接口
+
+    /**
+     * 禁用动态参数前保留一份动态HOST
+     */
+    public static String NOVEL_PRE_HOST = "novel_pre_host";//
+    public static String WEBVIEW_PRE_HOST = "httpsWebView_pre_host";//
+    public static String UNION_PRE_HOST = "union_pre_host";//
+    public static String CONTENT_PRE_HOST = "content_pre_host";//
+
+    /**
+     * SharePre字段名
+     */
+    public static String START_PARAMS = "start_params";// 启动动态参数,默认是开启
+    public static String PRE_SHOW_AD = "pre_show_ad";// 提前展示广告
+    public static String RESET_BOOK_SHELF = "reset_book_shelf";//重置书架
+    public static String UPDATE_CHAPTER = "update_chapter";// 更新章节
+    public static String HOST_LIST = "host_list";// host列表
 
 
     public static long startReadTime = 0;
@@ -292,16 +321,16 @@ public class Constants {
 
     public static int WIFI_AUTO_CACHE_COUNT = 20;
 
-    public static final String SERARCH_HOT_WORD_YOUHUA = "search_hot_word_youhua";// 4个替壳 新版搜索热词,防止升级用户首次没网，从缓存拿数据时报错
-
+    public static final String SERARCH_HOT_WORD_YOUHUA = "search_hot_word_youhua";
+// 4个替壳 新版搜索热词,防止升级用户首次没网，从缓存拿数据时报错
 
 
     //书架推荐书籍比例 智能：青果
     public static String sRecommendRateForShelf = "1,2";
     //书末推荐书籍比例 智能：青果  智能：青果
     public static String sRecommendRateForBookend = "1,2,0,3";
-    public static String UPLOAD_OLDUSER_READ_SETTING = "upload_olduser_read_setting"; // 老用户每天上传一次阅读页设置
-
+    public static String UPLOAD_OLDUSER_READ_SETTING = "upload_olduser_read_setting";
+    // 老用户每天上传一次阅读页设置
 
 
     public static int authAccessRefreshTime = 30 * 60 * 1000;
@@ -311,7 +340,8 @@ public class Constants {
          * 初始化
          */
     public static void init(Context context) {
-        isSdCard = android.os.Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+        isSdCard = android.os.Environment.MEDIA_MOUNTED.equals(
+                Environment.getExternalStorageState());
         if (!isSdCard) {
             SDCARD_PATH = "mnt/sdcard";
         }

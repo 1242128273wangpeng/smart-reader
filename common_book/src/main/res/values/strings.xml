@@ -6,8 +6,12 @@
     <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
     <string name="debug_reset_book_shelf">重置获取默认书架</string>
     <string name="debug_update_chapter">更新章节</string>
-    <string name="debug_api_host">api_host:</string>
-    <string name="debug_web_host">web_host:</string>
+
+    <string name="debug_api_host">智能API接口:</string>
+    <string name="debug_web_host">WebView接口:</string>
+    <string name="debug_micro_host">微服务API接口:</string>
+    <string name="debug_micro_content_host">微服务内容接口:</string>
+
     <string name="debug_input_host">https://</string>
     <string name="choice_host">host选择</string>
     <string name="debug_mode">调试模式</string>

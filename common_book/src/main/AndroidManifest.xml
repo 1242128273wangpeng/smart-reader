@@ -234,6 +234,16 @@
                 android:theme="@style/AppThemeTranslucent"/>
         <!-- 关于 -->
 
+        <!--调试界面-->
+        <activity
+            android:name=".activity.DebugActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
+
+        <activity
+            android:name=".activity.DebugHostActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
 
         <!-- 阅读设置页面 -->
 

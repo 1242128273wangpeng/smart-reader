@@ -109,7 +109,6 @@
 
     </RelativeLayout>
 
-
     <TextView
         android:id="@+id/tv_api"
         style="@style/Debug_Widget_Text"
@@ -122,6 +121,18 @@
         style="@style/Debug_Widget_Text"
         android:layout_height="55dp"
         android:text="@string/debug_web_host" />
+
+    <TextView
+        android:id="@+id/tv_micro"
+        style="@style/Debug_Widget_Text"
+        android:layout_height="55dp"
+        android:text="@string/debug_micro_host" />
+
+    <TextView
+        android:id="@+id/tv_micro_content"
+        style="@style/Debug_Widget_Text"
+        android:layout_height="55dp"
+        android:text="@string/debug_micro_content_host" />
 
 
 </LinearLayout>

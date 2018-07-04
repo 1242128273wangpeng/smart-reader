@@ -25,8 +25,8 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
 import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
-import com.dy.reader.activity.DisclaimerActivity;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
@@ -39,9 +39,7 @@ import net.lzbook.kit.cache.DataCleanManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.SPKeys;
 import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.user.bean.LoginResp;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.IntentUtil;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.UIHelper;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
@@ -484,7 +482,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
             case R.id.disclaimer_statement_rl:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
-                IntentUtil.INSTANCE.start(this, DisclaimerActivity.class,IntentUtil.INSTANCE.isFormDisclaimerPage(),true,false);
+                RouterUtil.INSTANCE.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY);
                 break;
             case R.id.rl_history_setting:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
