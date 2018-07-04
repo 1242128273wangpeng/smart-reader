@@ -99,7 +99,7 @@ object CacheManager {
                 val data = HashMap<String, String>()
                 data.put("status", "2")
                 data.put("reason", t.javaClass.simpleName + ":" + t.message)
-                data.put("bookId", bookTask.book.book_id)
+                data.put("bookId", bookTask.book.book_id!!)
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
                 data.put(str, obj)
@@ -160,7 +160,7 @@ object CacheManager {
 
                 val data = HashMap<String, String>()
                 data.put("status", "1")
-                data.put("bookId", bookTask.book.book_id)
+                data.put("bookId", bookTask.book.book_id!!)
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
                 data.put(str, obj)
@@ -232,7 +232,7 @@ object CacheManager {
 
     private fun showFinishNotify(book: Book) {
 
-        var notifyIntent: Intent
+        var notifyIntent: Intent? = null
         try {
             notifyIntent = Intent(app, Class.forName("com.intelligent.reader.activity.GoToCoverOrReadActivity"))
         } catch (e: Exception) {
@@ -266,7 +266,7 @@ object CacheManager {
     }
 
     private fun restroeTaskInfo(book: Book): BookTask {
-        val count = ChapterDaoHelper.loadChapterDataProviderHelper(app, book.book_id).getCount()
+        val count = ChapterDaoHelper.loadChapterDataProviderHelper(app, book.book_id!!).getCount()
         val preferences = app.getSharedPreferences(DOWN_INDEX + book.book_id, 0)
         var start: Int = -1
         var state: DownloadState
@@ -283,7 +283,7 @@ object CacheManager {
                 } else if (start == -1) {
                     state = DownloadState.NOSTART
                 }
-                var list: Array<String>?
+                var list: Array<String>? = null
                 if (Constants.QG_SOURCE.equals(book.host)) {
                     list = File(Constants.QG_CACHE_PATH + book.book_id).list()
                 } else {
@@ -364,10 +364,10 @@ object CacheManager {
             return DownloadState.NOSTART
         }
 
-        return if (workMap.containsKey(book.book_id)) {
-            workMap[book.book_id]!!.state
+        if (workMap.containsKey(book.book_id!!)) {
+            return workMap[book.book_id!!]!!.state
         } else {
-            getBookTask(book).state
+            return getBookTask(book).state
         }
     }
 

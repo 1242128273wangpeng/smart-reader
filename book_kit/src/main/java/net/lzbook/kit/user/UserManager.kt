@@ -109,14 +109,17 @@ object UserManager : IWXAPIEventHandler {
                     mWXAppID = appInfo.metaData[UserConstants.WECHAT_APPID].toString()
                     mQQAppID = appInfo.metaData[UserConstants.QQ_APPID].toString()
                     log("initPlatform", mWXAppID, mQQAppID)
-
+                    if (mWXAppID == null || mQQAppID == null) {
+                        log("initPlatform", "cant init with null params")
+                        return
+                    }
                     // 通过WXAPIFactory工厂，获取IWXAPI的实例
-                    mWXApi = WXAPIFactory.createWXAPI(context.applicationContext, mWXAppID, true)
+                    mWXApi = WXAPIFactory.createWXAPI(context?.applicationContext, mWXAppID, true);
                     val registerApp = mWXApi?.registerApp(mWXAppID)
                     log("registerApp", registerApp)
 
                     try {
-                        mTencent = Tencent.createInstance(mQQAppID, context.applicationContext)
+                        mTencent = Tencent.createInstance(mQQAppID, context?.getApplicationContext())
                     } catch (exception: ExceptionInInitializerError) {
                         exception.printStackTrace()
                     }
@@ -152,8 +155,6 @@ object UserManager : IWXAPIEventHandler {
             }
             Platform.QQ -> {
                 enable = true
-            }
-            else -> {
             }
         }
         println("${platform.name} $enable")

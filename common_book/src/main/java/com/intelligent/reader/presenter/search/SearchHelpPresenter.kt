@@ -366,7 +366,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         searchType = "0"
         if (mSuggestList!![arg2].wordtype == "label") {
             searchType = "1"
-        } else if (mSuggestList!![arg2].wordtype == "authorType") {
+        } else if (mSuggestList!![arg2].wordtype == "author") {
             searchType = "2"
         } else if (mSuggestList!![arg2].wordtype == "name") {
             searchType = "3"
