@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ding.basic.Config
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
@@ -142,7 +143,11 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
             editor.putString(Constants.WEBVIEW_HOST, sharePreUtil.getString(Constants.WEBVIEW_PRE_HOST))
             editor.putString(Constants.UNION_HOST, sharePreUtil.getString(Constants.UNION_PRE_HOST))
             editor.putString(Constants.CONTENT_HOST, sharePreUtil.getString(Constants.CONTENT_PRE_HOST))
-            editor.apply()
+
+            Config.insertRequestAPIHost(sharePreUtil.getString(Constants.NOVEL_PRE_HOST))
+            Config.insertWebViewHost(sharePreUtil.getString(Constants.WEBVIEW_PRE_HOST))
+            Config.insertMicroAPIHost(sharePreUtil.getString(Constants.UNION_PRE_HOST))
+            Config.insertContentAPIHost(sharePreUtil.getString(Constants.CONTENT_PRE_HOST))
 
         } else { //禁用动态参数
             // 保留动态参数
@@ -152,6 +157,7 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
             sharePreUtil.putString(Constants.CONTENT_PRE_HOST, sp.getString(Constants.CONTENT_HOST, ""))
         }
 
+        editor.apply()
     }
 
     /**
