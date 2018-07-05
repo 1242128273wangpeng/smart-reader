@@ -13,7 +13,7 @@ import android.view.ViewGroup
 class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_add, parent, false)) {
 
-    fun bind(size: Int, bookShelfItemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
+    fun bind(size: Int) = with(itemView) {
 
     }
 }
