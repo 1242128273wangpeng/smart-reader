@@ -3,6 +3,7 @@ package com.intelligent.reader.activity
 import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import com.ding.basic.Config
 import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -65,16 +66,29 @@ class DebugHostActivity : Activity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                var type = ""
-                when (intent.getStringExtra("type")) {
-                    Constants.NOVEL_HOST -> type = Constants.NOVEL_HOST
-                    Constants.WEBVIEW_HOST -> type = Constants.WEBVIEW_HOST
-                    Constants.UNION_HOST -> type = Constants.UNION_HOST
-                    Constants.CONTENT_HOST -> type = Constants.CONTENT_HOST
+                val type = when (intent.getStringExtra("type")) {
+                    Constants.NOVEL_HOST -> {
+                        Config.insertRequestAPIHost(et_input_host.text.toString())
+                        Constants.NOVEL_HOST
+                    }
+                    Constants.WEBVIEW_HOST -> {
+                        Config.insertWebViewHost(et_input_host.text.toString())
+                        Constants.WEBVIEW_HOST
+                    }
+                    Constants.UNION_HOST -> {
+                        Config.insertMicroAPIHost(et_input_host.text.toString())
+                        Constants.UNION_HOST
+                    }
+                    Constants.CONTENT_HOST -> {
+                        Config.insertContentAPIHost(et_input_host.text.toString())
+                        Constants.CONTENT_HOST
+                    }
+                    else -> {
+                        ""
+                    }
                 }
 
                 editor.putString(type, et_input_host.text.toString())
-                editor.putBoolean(Constants.START_PARAMS, false)
                 editor.apply()
 
                 finish()
@@ -115,7 +129,7 @@ class DebugHostActivity : Activity() {
      * 添加host
      */
     private fun setHost(host: String) {
-        list.add(1, host)
+        list.add(0, host)
         mAdapter?.notifyDataSetChanged()
 
         editor.putString(Constants.HOST_LIST, Gson().toJson(list)).apply()

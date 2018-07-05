@@ -33,7 +33,7 @@ import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.qbmfkdxs.content_view.*
+import kotlinx.android.synthetic.qbmfkdxs.act_home.*
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
@@ -243,15 +243,15 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
         if (!sharedPreUtil.getBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
-            img_guide_remove.visibility = View.VISIBLE
+            img_guide_download.visibility = View.VISIBLE
             fl_guide_layout.setOnClickListener {
                 if (guideLongPress) {
-                    img_guide_long_press.visibility = View.VISIBLE
-                    img_guide_remove.visibility = View.GONE
+                    img_guide_remove.visibility = View.VISIBLE
+                    img_guide_download.visibility = View.GONE
                     guideLongPress = false
                 } else {
                     sharedPreUtil.putBoolean(key, true)
-                    img_guide_long_press.visibility = View.GONE
+                    img_guide_remove.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
                 }
             }
@@ -325,7 +325,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebviewHost().contains("test")) {
+        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }

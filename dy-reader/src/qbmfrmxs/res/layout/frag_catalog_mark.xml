@@ -9,17 +9,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/rl_book_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="24dp">
@@ -63,28 +58,6 @@
                 android:background="#F1F1F1"/>
         </RelativeLayout>
 
-
-        <FrameLayout
-            android:id="@+id/fl_bookmark"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recl_mark_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="3.5dp"
-                android:layerType="software"
-                android:visibility="gone"/>
-
-            <com.dy.reader.view.RecyclerViewFastScroller
-                android:id="@+id/rfs_mark_scroller"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone"/>
-
-        </FrameLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -104,7 +77,18 @@
                 android:layout_gravity="right"
                 android:layout_marginBottom="12dp"/>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recl_mark_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layerType="software"/>
 
+            <com.dy.reader.view.RecyclerViewFastScroller
+                android:id="@+id/rfs_mark_scroller"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginBottom="12dp"/>
 
             <LinearLayout
                 android:id="@+id/ll_mark_empty"
@@ -139,7 +123,9 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:gravity="center"
+            android:orientation="horizontal"
             android:translationZ="2dp">
+
             <RadioGroup
                 android:id="@+id/rg_catalog_mark"
                 android:layout_width="136dp"
@@ -193,10 +179,11 @@
             android:contentDescription="@string/module_name"
             android:src="@drawable/catalog_mark_fix_book_icon"
             android:visibility="gone"/>
-    </RelativeLayout>
 
-    <net.lzbook.kit.book.view.NightShadowView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+        <net.lzbook.kit.book.view.NightShadowView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 </FrameLayout>

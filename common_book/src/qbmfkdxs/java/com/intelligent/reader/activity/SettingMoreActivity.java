@@ -1,9 +1,9 @@
 package com.intelligent.reader.activity;
 
 import com.intelligent.reader.R;
+import com.intelligent.reader.view.CustomDialog;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.CustomDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.book.view.TimePicker;
 import net.lzbook.kit.constants.Constants;
@@ -26,6 +26,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import iyouqu.theme.BaseCacheableActivity;
 
 public class SettingMoreActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 

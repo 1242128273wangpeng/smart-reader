@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;

@@ -236,10 +236,14 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public void hasGetPackageName() {
         packageName = AppUtils.getPackageName();
         isFirst = false;
+
         if (!TextUtils.isEmpty(packageName) &&
                 (packageName.equals("cc.kdqbxs.reader")
                         || packageName.equals("cn.txtqbmfyd.reader")
-                        || packageName.equals("cn.qbmfrmxs.reader"))) {
+                        || packageName.equals("cn.qbmfrmxs.reader")
+                        || packageName.equals("cc.quanbennovel")// 今日多看
+                        || packageName.equals("cc.remennovel")// 智胜电子书替
+                        || packageName.equals("cn.mfxsqbyd.reader"))) {// 免费小说全本阅读
             isDarkStatusBarText = true;
         } else {
             isDarkStatusBarText = false;

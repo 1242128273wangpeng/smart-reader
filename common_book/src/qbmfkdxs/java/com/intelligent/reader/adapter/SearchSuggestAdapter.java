@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
@@ -67,7 +66,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         } else {
             hodler = (ViewHolder) convertView.getTag();
         }
-        SearchCommonBean bean = mData.get(position);
+        SearchCommonBean bean =  mData.get(position);
         String type = bean.getWordtype();
         if(hodler != null){
             if(type.equals("author")){

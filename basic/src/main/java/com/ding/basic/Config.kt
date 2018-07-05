@@ -61,7 +61,6 @@ object Config {
 //        webViewHost = "http://8068.zn.bookapi.cn"
 //        requestAPIHost = "http://8068.zn.bookapi.cn"
 
-
         webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
     }
