@@ -12,6 +12,8 @@ import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
 import com.ding.basic.Config;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.ContentAPI;
+import com.ding.basic.request.MicroAPI;
 import com.ding.basic.request.RequestAPI;
 import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
@@ -710,6 +712,15 @@ public class DynamicParamter {
 //        setBaiduAppId();
 //        setMogoAppId();
 //        setHost();
+
+        Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
+        Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
+        Config.INSTANCE.insertMicroAPIHost(sp.getString(Constants.UNION_HOST, ""));
+        Config.INSTANCE.insertContentAPIHost(sp.getString(Constants.CONTENT_HOST, ""));
+
+        MicroAPI.INSTANCE.initMicroService();
+        ContentAPI.INSTANCE.initMicroService();
+        RequestAPI.INSTANCE.initializeDataRequestService();
 
         setDownLoadLimitNumber();
 

@@ -54,11 +54,11 @@ object DataProvider {
     fun onNeedRefresh(event: EventReaderConfig) {
         if (ReaderStatus.isReady()) {
             if (event.type == ReaderSettings.ConfigType.PAGE_REFRESH) {
-                loadGroup(ReaderStatus.position.group, {
+                loadGroup(ReaderStatus.position.group, false) {
                     groupListeners.forEach {
                         it.onPageRefreshed()
                     }
-                }, false)
+                }
             } else if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH || event.type == ReaderSettings.ConfigType.FONT_REFRESH) {
                 if (event.obj == null || ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
                     AppLog.e("DataProvider", "CHAPTER_REFRESH, but obj == null or is list animation")
@@ -69,45 +69,53 @@ object DataProvider {
 
                     chapterCache.removeOther(position.group)
 
+
+                    val forceReload = event.type == ReaderSettings.ConfigType.FONT_REFRESH
+                    if (forceReload){
+                        chapterCache.clear()
+                    }
+
                     if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
-                        EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
+                        if(forceReload || Math.abs(position.group - ReaderStatus.position.group) > 1 || chapterCache.get(position.group) == null){
+                            EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
+                        }
 
                         loadPre(position.group + 2, position.group + 6)
                     }
 
-                    val forceReload = event.type == ReaderSettings.ConfigType.FONT_REFRESH
 
                     AppLog.e("DataProvider", "forceReload = " + forceReload)
 
-                    loadGroup(position.group, {
+                    loadGroup(position.group, forceReload) {
                         if (it) {
-                            loadGroup(Math.max(position.group - 1, 0), {
-                                if (it) {
-                                    loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), {
-                                        groupListeners.forEach {
-                                            if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
-                                                it.onGroupRefreshed(position, {
-                                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
-                                                })
-                                            } else {
-                                                it.onFontRefreshed(position, {
-                                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
-                                                })
+
+                            loadGroup(Math.max(position.group - 1, 0), forceReload){
+                                if(it){
+                                    groupListeners.forEach {
+                                        if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
+                                            it.onGroupRefreshed(position) {
+                                                EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
+                                            }
+                                        } else {
+                                            it.onFontRefreshed(position) {
+                                                EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                                             }
                                         }
-                                    }, forceReload)
-                                } else {
-                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                                    }
+                                }else{
+                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                         onNeedRefresh(event)
-                                    }))
+                                    })
                                 }
-                            }, forceReload)
+                            }
+
+                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload)
                         } else {
-                            EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                            EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                 onNeedRefresh(event)
-                            }))
+                            })
                         }
-                    }, forceReload)
+                    }
                 }
             }
         }
@@ -332,29 +340,29 @@ object DataProvider {
 
     fun loadGroupWithBusyUI(book_id: String, group: Int, callback: ((Boolean) -> Unit)? = null) {
         EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
-        loadGroup(group, {
+        loadGroup(group, true) {
             if (it) {
                 EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
 
                 callback?.invoke(true)
             } else {
-                EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                     loadGroupWithBusyUI(book_id, group)
-                }))
+                })
 
                 callback?.invoke(false)
             }
-        })
+        }
     }
 
     fun loadGroupWithVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
-        loadGroupForVertical(group, { success: Boolean, chapter: Chapter? ->
+        loadGroupForVertical(group) { success: Boolean, chapter: Chapter? ->
             if (success) {
                 callback?.invoke(true, chapter)
             } else {
                 callback?.invoke(false, null)
             }
-        })
+        }
     }
 
     fun getPage(position: Position): NovelPageBean {
@@ -368,14 +376,14 @@ object DataProvider {
         if (position.group > curPosition.group ||
                 (position.group == curPosition.group && position.index > curPosition.index)) {
             if (curPosition.index == 0 && getPageData(curPosition.group + 1) == null) {
-                loadGroup(curPosition.group + 1, null, false)
+                loadGroup(curPosition.group + 1, false)
             }
         }
         //在加载上一页
         if (position.group < curPosition.group ||
                 (position.group == curPosition.group && position.index < curPosition.index)) {
             if (curPosition.index == curPosition.groupChildCount - 1 && getPageData(curPosition.group - 1) == null) {
-                loadGroup(curPosition.group - 1, null, false)
+                loadGroup(curPosition.group - 1, false)
             }
         }
 
@@ -403,7 +411,7 @@ object DataProvider {
         }
     }
 
-    private fun loadGroup(group: Int, callback: ((Boolean) -> Unit)? = null, force: Boolean = true) {
+    private fun loadGroup(group: Int, force: Boolean = true, callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
             if (!force && chapterCache.get(group) != null) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
