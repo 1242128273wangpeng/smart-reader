@@ -90,7 +90,7 @@ public class BookApplication extends BaseBookApplication {
         }
 
         // 友盟推送初始化
-        if (AppUtils.hasUPush()) return;
+        if (!AppUtils.hasUPush()) return;
         try {
             ApplicationInfo appInfo = getPackageManager()
                     .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
