@@ -646,6 +646,7 @@ public class DynamicParamter {
                 novel_host = data.getString(Constants.NOVEL_HOST);
                 if (isOwn && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.NOVEL_HOST, novel_host);
+                    RequestAPI.INSTANCE.initializeDataRequestService();
                 }
             }
             // WebView接口
@@ -660,6 +661,7 @@ public class DynamicParamter {
                 union_host = data.getString(Constants.UNION_HOST);
                 if (isOwn  && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.UNION_HOST, union_host);
+                    MicroAPI.INSTANCE.initMicroService();
                 }
             }
             // 微服务内容接口
@@ -667,6 +669,7 @@ public class DynamicParamter {
                 content_host = data.getString(Constants.CONTENT_HOST);
                 if (isOwn  && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.CONTENT_HOST, content_host);
+                    ContentAPI.INSTANCE.initMicroService();
                 }
             }
 
