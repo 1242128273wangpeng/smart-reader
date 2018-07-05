@@ -32,7 +32,7 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
     private val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
     private val editor = sp.edit()
 
-    //用于保存禁用动态参数前的host,用来还原动态参数
+    //保存禁用动态参数前的host,用来还原动态参数
     private val sharePreUtil = SharedPreUtil(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,12 +131,6 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
      */
     private fun startParams() {
         if (sp.getBoolean(Constants.START_PARAMS, true)) {
-
-//            editor.remove(Constants.NOVEL_HOST)
-//            editor.remove(Constants.WEBVIEW_HOST)
-//            editor.remove(Constants.UNION_HOST)
-//            editor.remove(Constants.CONTENT_HOST)
-//            editor.apply()
 
             //还原动态参数
             editor.putString(Constants.NOVEL_HOST, sharePreUtil.getString(Constants.NOVEL_PRE_HOST))
