@@ -22,16 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 书籍封面页推荐模块实体类
  * Created by zhenXiang on 2017/10/30.
  */
-
 public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAdapter.ViewHolder> {
 
     private WeakReference<Context> weakReference;
     private RecommendItemClickListener recommendItemClickListener;
     private List<RecommendBean> books = new ArrayList<>();
 
-    public CoverRecommendAdapter(Context context, RecommendItemClickListener recommendItemClickListener, List<RecommendBean> books) {
+    public CoverRecommendAdapter(Context context,
+            RecommendItemClickListener recommendItemClickListener, List<RecommendBean> books) {
         this.weakReference = new WeakReference<>(context);
         this.recommendItemClickListener = recommendItemClickListener;
         this.books = books;
@@ -40,7 +41,9 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(weakReference.get()).inflate(R.layout.item_cover_recommend_grid, parent, false), recommendItemClickListener);
+        return new ViewHolder(
+                LayoutInflater.from(weakReference.get()).inflate(R.layout.item_cover_recommend_grid,
+                        parent, false), recommendItemClickListener);
     }
 
     @Override
@@ -48,11 +51,13 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
         RecommendBean book = books.get(position);
         holder.tv_book_name.setText(book.getBookName());
         if (book.getReaderCountDescp() != null && !TextUtils.isEmpty(book.getReaderCountDescp())) {
-            holder.tv_readnum.setText((book.getReaderCountDescp() + "人在读"));
+            holder.tv_readnum.setText((book.getReaderCountDescp() + "人气值"));
 
+//            升级后的字段提供的5.5万，之前是55000
         /* if (Constants.QG_SOURCE.equals(book.getHost())) {
                 if(!AppUtils.isContainChinese(book.getReaderCountDescp())){
-                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.getReaderCountDescp())));
+                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book
+                    .getReaderCountDescp())));
                 }else{
                     holder.tv_readnum.setText("");
                 }
@@ -65,11 +70,14 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
         }
 
         if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getSourceImageUrl())) {
-            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
+            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(
+                    net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_recommend_image);
         } else {
-            Glide.with(weakReference.get()).load(net.lzbook.kit.R.drawable.icon_book_cover_default).into(holder.iv_recommend_image);
+            Glide.with(weakReference.get()).load(
+                    net.lzbook.kit.R.drawable.icon_book_cover_default).into(
+                    holder.iv_recommend_image);
         }
 
 
@@ -96,9 +104,9 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
             super(itemView);
             this.recommendItemClickListener = recommendItemClickListener;
             itemView.setOnClickListener(this);
-            iv_recommend_image =  itemView.findViewById(R.id.iv_recommend_image);
-            tv_book_name =  itemView.findViewById(R.id.tv_book_name);
-            tv_readnum =  itemView.findViewById(R.id.tv_readnum);
+            iv_recommend_image = itemView.findViewById(R.id.iv_recommend_image);
+            tv_book_name = itemView.findViewById(R.id.tv_book_name);
+            tv_readnum = itemView.findViewById(R.id.tv_readnum);
 
         }
 

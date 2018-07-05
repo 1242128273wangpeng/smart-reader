@@ -86,10 +86,10 @@ public class SearchHotWordAdapter extends BaseAdapter {
         } else {
             holder.iv_type.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(dataBean.getColor())) {
-            holder.tvHotWord.setTextColor(Color.parseColor(dataBean.getColor()));
-            holder.tvHotWord.setBackgroundResource(R.drawable.booksearch_theme_color_bg);
-        }
+//        if (!TextUtils.isEmpty(dataBean.getColor())) {
+//            holder.tvHotWord.setTextColor(Color.parseColor(dataBean.getColor()));
+//            holder.tvHotWord.setBackgroundResource(R.drawable.booksearch_theme_color_bg);
+//        }
 
         return convertView;
     }

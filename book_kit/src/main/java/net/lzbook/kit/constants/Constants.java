@@ -275,6 +275,7 @@ public class Constants {
      */
     public static String SHAREDPREFERENCES_KEY =
             "onlineconfig_agent_online_setting_" + AppUtils.getPackageName();
+    public static String IS_FIX_CATALOG = "is_fix_catalog";//目录是否修复
 
     /**
      * HOST分类
@@ -301,6 +302,13 @@ public class Constants {
     public static String UPDATE_CHAPTER = "update_chapter";// 更新章节
     public static String HOST_LIST = "host_list";// host列表
     public static String SHOW_TOAST_LOG = "show_toast_log";//打点Toast显示，方便h5查看打点
+
+    /**
+     * Intent传参
+     */
+    public static String BOOK_ID = "book_id";
+    public static String BOOK_SOURCE_ID = "book_source_id";
+    public static String BOOK_CHAPTER_ID = "book_chapter_id";
 
     public static long startReadTime = 0;
     public static long endReadTime = 0;

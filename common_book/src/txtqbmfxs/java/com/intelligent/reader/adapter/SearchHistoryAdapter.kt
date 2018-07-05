@@ -41,8 +41,8 @@ class SearchHistoryAdapter() : BaseAdapter() {
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var holder : ViewHolder
-        var historyView : View
+        val holder : ViewHolder
+        val historyView : View
         if(convertView == null){
             holder = ViewHolder()
             historyView = LayoutInflater.from(context).inflate(R.layout.item_search_history,parent,false)
@@ -58,7 +58,7 @@ class SearchHistoryAdapter() : BaseAdapter() {
         holder.tv_history.text = searchDate!![position]
 
         holder.clearIv.setOnClickListener {
-            positionClick?.onItemClickListener(position)
+            positionClick?.onItemCleanBtnClickListener(position)
         }
 
         return historyView
@@ -74,7 +74,8 @@ class SearchHistoryAdapter() : BaseAdapter() {
      * 在Adapter中回调被点击的item的索引，处理搜索历史的数据存储
      */
      interface OnPositionClickListener {
-        fun onItemClickListener(position: Int)
+//        fun onItemClickListener(position: Int)
+        fun onItemCleanBtnClickListener(position: Int)
     }
 
 }
