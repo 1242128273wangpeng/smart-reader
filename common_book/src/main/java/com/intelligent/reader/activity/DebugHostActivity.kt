@@ -66,7 +66,7 @@ class DebugHostActivity : Activity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                var type = when (intent.getStringExtra("type")) {
+                val type = when (intent.getStringExtra("type")) {
                     Constants.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
                         Constants.NOVEL_HOST
@@ -129,7 +129,7 @@ class DebugHostActivity : Activity() {
      * 添加host
      */
     private fun setHost(host: String) {
-        list.add(1, host)
+        list.add(0, host)
         mAdapter?.notifyDataSetChanged()
 
         editor.putString(Constants.HOST_LIST, Gson().toJson(list)).apply()
