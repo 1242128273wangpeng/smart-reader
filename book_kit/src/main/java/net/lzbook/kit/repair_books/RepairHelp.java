@@ -15,6 +15,7 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.util.DataCache;
 import com.dingyue.contract.util.CommonUtil;
 
+import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.BaseBookHelper;
@@ -23,6 +24,7 @@ import net.lzbook.kit.utils.NetWorkUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -34,11 +36,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 书籍修复
  * Created by yuchao on 2017/11/1 0001.
  */
-
 public class RepairHelp {
     private static final String TAG = RepairHelp.class.getSimpleName();
+
+//    private SharedPreferences  sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
 
     public static synchronized void parserData(UpdateBean repairData) {
         if (repairData == null) {
@@ -183,13 +187,32 @@ public class RepairHelp {
                     CommonUtil.showToastMessage("本书问题章节已精修完成");
                     RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBookFix(bookFix.getBook_id());
                 } else if (bookFix.getFix_type() == 2) {
-                    if (NetWorkUtils.isNetworkAvailable(activity) && bookFix.getDialog_flag() != 1) {
+                    /*if (NetWorkUtils.isNetworkAvailable(activity) && bookFix.getDialog_flag() != 1) {*/
+                    if (NetWorkUtils.isNetworkAvailable(activity)) {
                         showFixHintDialog(activity, book, bookFix, fixCallBack);
                     }
                 }
             }
         }
 
+    }
+
+    /**
+     * 判断是否修复书籍页
+     */
+    public static boolean showFixMsg(Book book) {
+
+        if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id()) != null)) {
+            BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBookFix(book.getBook_id());
+            if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
+                if (bookFix.getFix_type() == 1) {
+                    return true;
+
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -199,8 +222,8 @@ public class RepairHelp {
             isComfire = false;
             final MyDialog myDialog = new MyDialog(activity, R.layout.fixbook_hint_dialog);
             myDialog.setCanceledOnTouchOutside(true);
-            TextView dialog_comfire = (TextView) myDialog.findViewById(R.id.publish_leave);
-            dialog_comfire.setOnClickListener(new View.OnClickListener() {
+            TextView dialog_confirm =  myDialog.findViewById(R.id.publish_leave);
+            dialog_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     isComfire = true;
@@ -215,8 +238,8 @@ public class RepairHelp {
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.REPAIRDEDIALOGUE, data2);
                 }
             });
-            TextView dialog_cancle = (TextView) myDialog.findViewById(R.id.publish_stay);
-            dialog_cancle.setOnClickListener(new View.OnClickListener() {
+            TextView dialog_cancel =  myDialog.findViewById(R.id.publish_stay);
+            dialog_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     myDialog.dismiss();

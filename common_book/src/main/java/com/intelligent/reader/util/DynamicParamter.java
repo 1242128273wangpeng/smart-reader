@@ -724,15 +724,6 @@ public class DynamicParamter {
         RequestAPI.INSTANCE.initializeDataRequestService();
 
 
-        Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
-        Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
-        Config.INSTANCE.insertMicroAPIHost(sp.getString(Constants.UNION_HOST, ""));
-        Config.INSTANCE.insertContentAPIHost(sp.getString(Constants.CONTENT_HOST, ""));
-
-        MicroAPI.INSTANCE.initMicroService();
-        ContentAPI.INSTANCE.initMicroService();
-        RequestAPI.INSTANCE.initializeDataRequestService();
-
         setDownLoadLimitNumber();
 
         setNoNetReadTime();

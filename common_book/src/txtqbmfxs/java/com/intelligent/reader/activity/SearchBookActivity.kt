@@ -43,7 +43,6 @@ import java.util.*
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener,
         SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-
     companion object {
         /**
          * 静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
@@ -70,6 +69,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private var ziyougb: Boolean = false
 
+    private val isNotAuthor = 0//不是作者
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +79,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         initListener()
 
         if (mSearchPresenter != null && !TextUtils.isEmpty(mSearchPresenter?.word)) {
-            loadDataFromNet()
+            loadDataFromNet(isNotAuthor)
         }
     }
 
@@ -178,11 +178,57 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     }
 
+    /**
+     * 从网络加载数据
+     */
+    private fun loadDataFromNet(isAuthor: Int) {
+
+        if (mSearchPresenter == null)
+            mSearchPresenter = SearchPresenter(this, this, this)
+
+        if (search_result_count != null) {
+            search_result_count.text = null
+        }
+
+        if (!TextUtils.isEmpty(mSearchPresenter?.word)) {
+
+            if (isAuthor != 1) {
+                etxt_search_input.setText(mSearchPresenter?.word)
+            } else {
+                mSearchPresenter?.searchType = "2"
+                etxt_search_input.setText(Tools.getKeyWord())
+            }
+
+
+            if (isAuthor != 1) {
+                search_result_keyword.text = mSearchPresenter?.word
+            } else {
+                mSearchPresenter?.searchType = "2"
+                search_result_keyword.text = Tools.getKeyWord()
+            }
+
+
+            if (mSearchPresenter != null) {
+                mSearchViewHelper?.addHistoryWord(mSearchPresenter?.word)
+            }
+
+            hideSearchView()
+
+            if (loadingPage == null) {
+                loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+            }
+
+            mSearchPresenter?.startLoadData(isAuthor)
+
+        } else {
+            showSearchViews()
+        }
+    }
 
     /**
      * 从网络加载数据
      */
-    private fun loadDataFromNet() {
+/*    private fun loadDataFromNet() {
 
         if (mSearchPresenter == null) mSearchPresenter = SearchPresenter(this, this, this)
 
@@ -202,7 +248,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         mSearchPresenter?.startLoadData(0)
 
-    }
+    }*/
 
 
     private fun loadingData(url: String) {
@@ -357,7 +403,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 //                    val type = if (mSearchPresenter?.searchType != "0") mSearchPresenter?.searchType else "0"
                     mSearchPresenter?.setHotWordType(keyword, "0")
                 }
-                loadDataFromNet()
+                loadDataFromNet(isNotAuthor)
 
                 val data = HashMap<String, String>()
                 data.put("type", "0")
@@ -533,11 +579,10 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
     }
 
-
-    override fun onHistoryClick(history: String, searchType: String) {
+    override fun onHistoryClick(history: String, searchType: String, isAuthor: Int) {
         mSearchPresenter?.setHotWordType(history, searchType)
         if (searchType != "3") {
-            loadDataFromNet()
+            loadDataFromNet(isNotAuthor)
         }
     }
 
@@ -560,7 +605,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
                 mSearchViewHelper?.addHistoryWord(keyword)
                 mSearchPresenter?.setHotWordType(keyword, "0")
-                loadDataFromNet()
+                loadDataFromNet(isNotAuthor)
 
                 val data = HashMap<String, String>()
                 data.put("type", "1")
