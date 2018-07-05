@@ -159,6 +159,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+
+
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
             if(lastOrientation != newConfig.orientation) {
@@ -462,7 +466,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 txt_reader_page.setTextColor(titleColor)
                 txt_reader_progress.setTextColor(titleColor)
                 txt_reader_chapter_name.setTextColor(titleColor)
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
                 BatteryView.update()
+            }
+            ReaderSettings.ConfigType.TITLE_COCLOR_REFRESH -> {
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
             }
             else -> Unit
         }
