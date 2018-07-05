@@ -57,97 +57,95 @@ public class BookApplication extends BaseBookApplication {
             return;
         }
 
-        // 友盟推送初始化
-        try {
-            String packageName = AppUtils.getPackageName();
-            if("cc.remennovel".equals(packageName) ||"cc.kdqbxs.reader".equals(packageName) ){
-                ApplicationInfo appInfo = getPackageManager()
-                        .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
-                if (pushSecret != null) {
-                    UMConfigure.init(this, 1, pushSecret);
-                    AppLog.e(TAG, "pushSecret: " + pushSecret);
+        if (AppUtils.isMainProcess(this)) {
+
+            MediaLifecycle.INSTANCE.onAppCreate(this);
+
+            // 自定义ErrorCallback
+            FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
+                @Override
+                public void onError(Context context, String errorMessage, ErrorCode code) {
+                    CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
                 }
-
-                String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
-                AppLog.e(TAG, "xiaomiId: " + xiaomiId);
-
-                String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
-                AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
-
-                // 小米通道
-                if (xiaomiId != null && xiaomiKey != null) {
-                    MiPushRegistar.register(this, xiaomiId.replace("String", ""),
-                            xiaomiKey.replace("String", ""));
+            });
+            // Feedback activity的回调
+            FeedbackAPI.addLeaveCallback(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    Log.d("DemoApplication", "custom leave callback");
+                    return null;
                 }
-
-                final PushAgent pushAgent = PushAgent.getInstance(this);
-                pushAgent.setResourcePackageName("net.lzbook.kit");
-                //注册推送服务，每次调用register方法都会回调该接口
-                pushAgent.register(new IUmengRegisterCallback() {
-                    @Override
-                    public void onSuccess(String deviceToken) {
-                        //注册成功会返回device token
-                        AppLog.e(TAG, "deviceToken: " + deviceToken);
-                        String udid = OpenUDID.getOpenUDIDInContext(BookApplication.this);
-                        AppLog.e(TAG, "udid: " + udid);
-                        pushAgent.setAlias(udid, "UDID", new UTrack.ICallBack() {
-                            @Override
-                            public void onMessage(boolean isSuccess, String message) {
-                                AppLog.e(TAG, "setAlias：" + isSuccess + "  message: " + message);
-                            }
-                        });
-                    }
-                    @Override
-                    public void onFailure(String s, String s1) {
-                        AppLog.e(TAG, "s: " + s + " --- s1: " + s1);
-                    }
-                });
-                pushAgent.setMessageHandler(new PushMessageHandler());
-                pushAgent.setNotificationClickHandler(new PushNotificationHandler());
-
-                // 华为通道
-                HuaWeiRegister.register(this);
-
+            });
+            FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
+                    ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
+            if (BuildConfig.DEBUG) {
+                if (!BuildConfig.IS_LEAKCANARY_DISABLE) {
+                    sRefWatcher = LeakCanary.install(this);
+                } else {
+                    sRefWatcher = RefWatcher.DISABLED;
+                }
             }
+            registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
+            setRxJavaErrorHandler();
+        }
+
+        // 友盟推送初始化
+        if (AppUtils.hasUPush()) return;
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            String umengAppkey = appInfo.metaData.getString("UMENG_APPKEY");
+            String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
+            if (pushSecret != null) {
+                UMConfigure.init(this, umengAppkey, AppUtils.getChannelId(),
+                        1, pushSecret);
+                AppLog.e(TAG, "pushSecret: " + pushSecret);
+            }
+
+            String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
+            AppLog.e(TAG, "xiaomiId: " + xiaomiId);
+
+            String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
+            AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
+
+            // 小米通道
+            if (xiaomiId != null && xiaomiKey != null) {
+                MiPushRegistar.register(this, xiaomiId.replace("String", ""),
+                        xiaomiKey.replace("String", ""));
+            }
+
+            final PushAgent pushAgent = PushAgent.getInstance(this);
+            pushAgent.setResourcePackageName("net.lzbook.kit");
+            //注册推送服务，每次调用register方法都会回调该接口
+            pushAgent.register(new IUmengRegisterCallback() {
+                @Override
+                public void onSuccess(String deviceToken) {
+                    //注册成功会返回device token
+                    AppLog.e(TAG, "deviceToken: " + deviceToken);
+                    String udid = OpenUDID.getOpenUDIDInContext(BookApplication.this);
+                    AppLog.e(TAG, "udid: " + udid);
+                    pushAgent.setAlias(udid, "UDID", new UTrack.ICallBack() {
+                        @Override
+                        public void onMessage(boolean isSuccess, String message) {
+                            AppLog.e(TAG, "setAlias：" + isSuccess + "  message: " + message);
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(String s, String s1) {
+                    AppLog.e(TAG, "s: " + s + " --- s1: " + s1);
+                }
+            });
+            pushAgent.setMessageHandler(new PushMessageHandler());
+            pushAgent.setNotificationClickHandler(new PushNotificationHandler());
+
+            // 华为通道
+            HuaWeiRegister.register(this);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        if (!AppUtils.isMainProcess(this)) {
-            return;
-        }
-
-        MediaLifecycle.INSTANCE.onAppCreate(this);
-
-        // 自定义ErrorCallback
-        FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
-            @Override
-            public void onError(Context context, String errorMessage, ErrorCode code) {
-                CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
-            }
-        });
-        // Feedback activity的回调
-        FeedbackAPI.addLeaveCallback(new Callable() {
-            @Override
-            public Object call() throws Exception {
-                Log.d("DemoApplication", "custom leave callback");
-                return null;
-            }
-        });
-        FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
-                ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
-        if (BuildConfig.DEBUG) {
-            if (!BuildConfig.IS_LEAKCANARY_DISABLE) {
-                sRefWatcher = LeakCanary.install(this);
-            } else {
-                sRefWatcher = RefWatcher.DISABLED;
-            }
-        }
-        registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
-        setRxJavaErrorHandler();
 
     }
 

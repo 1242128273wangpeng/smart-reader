@@ -10,7 +10,7 @@ interface BookShelfInterface {
 
     fun changeHomeNavigationState(state: Boolean)
 
-    fun changeHomePagerIndex(index: Int)
+    fun changeHomePagerIndex(index: Int)//点击去书城
 
     fun changeDrawerLayoutState()
 }

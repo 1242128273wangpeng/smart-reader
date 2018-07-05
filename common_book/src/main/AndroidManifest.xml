@@ -102,7 +102,7 @@
             tools:replace="android:allowBackup">
         <!--适配全面屏手机-->
         <meta-data android:name="android.max_aspect"
-            android:value="2.2"/>
+            android:value="2.4"/>
         <!--huawei-->
         <meta-data android:name="android.notch_support" android:value="true"/>
         <!-- start for GaoDe Map -->
@@ -118,20 +118,16 @@
                 android:value="${UMENG_APP_KEY}"/>
 
         <meta-data
-                android:name="UMENG_CHANNEL"
-                android:value="${CHANNEL_NAME}" />
+                android:name="UMENG_PUSH_SECRET"
+                android:value="${UMENG_PUSH_SECRET}"/>
 
-        <!--<meta-data-->
-                <!--android:name="UMENG_PUSH_SECRET"-->
-                <!--android:value="${UMENG_PUSH_SECRET}"/>-->
+        <meta-data
+                android:name="UMENG_PUSH_XIAOMI_ID"
+                android:value="${UMENG_PUSH_XIAOMI_ID}"/>
 
-        <!--<meta-data-->
-                <!--android:name="UMENG_PUSH_XIAOMI_ID"-->
-                <!--android:value="${UMENG_PUSH_XIAOMI_ID}"/>-->
-
-        <!--<meta-data-->
-                <!--android:name="UMENG_PUSH_XIAOMI_KEY"-->
-                <!--android:value="${UMENG_PUSH_XIAOMI_KEY}"/>-->
+        <meta-data
+                android:name="UMENG_PUSH_XIAOMI_KEY"
+                android:value="${UMENG_PUSH_XIAOMI_KEY}"/>
 
 
         <!-- 您从百度网站获取的APP KEY -->

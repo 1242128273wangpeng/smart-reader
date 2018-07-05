@@ -87,6 +87,9 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
             R.id.btn_debug_update_chapter -> {
                 updateChapter(isChecked)
             }
+            R.id.btn_debug_show_toast -> {
+                editor.putBoolean(Constants.SHOW_TOAST_LOG, isChecked).apply()
+            }
         }
 
     }
@@ -94,15 +97,22 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
 
     private fun initView() {
 
-        //启用动态参数、提前显示广告、重新获取默认书架、更新章节
+        //启用动态参数
         btn_debug_start_params.setOnCheckedChangeListener(this)
-        btn_debug_pre_show_ad.setOnCheckedChangeListener(this)
-        btn_debug_reset_book_shelf.setOnCheckedChangeListener(this)
-        btn_debug_update_chapter.setOnCheckedChangeListener(this)
-
         btn_debug_start_params.isChecked = sp.getBoolean(Constants.START_PARAMS, true)
+
+        // 提前显示广告
+        btn_debug_pre_show_ad.setOnCheckedChangeListener(this)
         btn_debug_pre_show_ad.isChecked = sp.getBoolean(Constants.PRE_SHOW_AD, false)
 
+        // 重新获取默认书架
+        btn_debug_reset_book_shelf.setOnCheckedChangeListener(this)
+        // 更新章节
+        btn_debug_update_chapter.setOnCheckedChangeListener(this)
+
+        // 打点Toast
+        btn_debug_show_toast.setOnCheckedChangeListener(this)
+        btn_debug_show_toast.isChecked = sp.getBoolean(Constants.SHOW_TOAST_LOG, false)
 
         iv_back.setOnClickListener(this)
 
@@ -136,10 +146,10 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
 
         } else { //禁用动态参数
             // 保留动态参数
-            sharePreUtil.putString(Constants.NOVEL_PRE_HOST, sp.getString(Constants.NOVEL_HOST,""))
-            sharePreUtil.putString(Constants.WEBVIEW_PRE_HOST, sp.getString(Constants.WEBVIEW_HOST,""))
-            sharePreUtil.putString(Constants.UNION_PRE_HOST, sp.getString(Constants.UNION_HOST,""))
-            sharePreUtil.putString(Constants.CONTENT_PRE_HOST, sp.getString(Constants.CONTENT_HOST,""))
+            sharePreUtil.putString(Constants.NOVEL_PRE_HOST, sp.getString(Constants.NOVEL_HOST, ""))
+            sharePreUtil.putString(Constants.WEBVIEW_PRE_HOST, sp.getString(Constants.WEBVIEW_HOST, ""))
+            sharePreUtil.putString(Constants.UNION_PRE_HOST, sp.getString(Constants.UNION_HOST, ""))
+            sharePreUtil.putString(Constants.CONTENT_PRE_HOST, sp.getString(Constants.CONTENT_HOST, ""))
         }
 
     }

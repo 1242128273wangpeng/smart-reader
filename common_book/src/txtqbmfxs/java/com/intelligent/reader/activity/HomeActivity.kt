@@ -166,6 +166,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     override fun changeHomePagerIndex(index: Int) {
+        // 去书城
+        view_pager.currentItem = 1
     }
 
     override fun changeDrawerLayoutState() {

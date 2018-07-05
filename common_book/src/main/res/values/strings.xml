@@ -6,6 +6,7 @@
     <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
     <string name="debug_reset_book_shelf">重置获取默认书架</string>
     <string name="debug_update_chapter">更新章节</string>
+    <string name="debug_show_toast">打点Toast</string>
 
     <string name="debug_api_host">智能API接口:</string>
     <string name="debug_web_host">WebView接口:</string>
