@@ -2,10 +2,8 @@ package com.dy.reader.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -128,13 +126,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         rg_catalog_mark.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rbtn_catalog -> {
-                    fl_bookmark.visibility = View.GONE
-                    rl_book_content.visibility = View.VISIBLE
+                    img_catalog_order.visibility = View.VISIBLE
                     presenter.loadCatalog(reverse)
                 }
                 R.id.rbtn_bookmark -> {
-                    fl_bookmark.visibility = View.VISIBLE
-                    rl_book_content.visibility = View.GONE
+                    img_catalog_order.visibility = View.GONE
                     presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
                 }
                 else -> {
