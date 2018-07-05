@@ -50,7 +50,6 @@ import net.lzbook.kit.utils.IntentUtils
 class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
     var TAG = SettingActivity::class.java!!.getSimpleName()
-    private var btnBack: ImageView? = null
     private var top_setting_back: ImageView? = null
 
     protected var currentThemeMode: String? = null //是否切换了主题
@@ -64,7 +63,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     private val mDivider: List<View>? = null
     private val mGap: List<View>? = null
 
-    private var tv_readpage_bbs: TextView? = null
     private var tv_style_change: TextView? = null
     private var tv_night_shift: TextView? = null
     private var tv_readpage_setting: TextView? = null
@@ -77,18 +75,11 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
     //第二种布局 登录在左侧
     private var top_navigation_bg: RelativeLayout? = null
-    private var icon_more_left: ImageView? = null
-    private var tv_login_info_detail_left: TextView? = null
-    private var tv_login_info_left: TextView? = null
     private var top_navigation_title: TextView? = null
     private var iv_mine_image_left: ImageView? = null
-    private var user_login_layout_left: RelativeLayout? = null
 
     private var rl_setting_layout: LinearLayout? = null//背景
-    private var rl_readpage_bbs: RelativeLayout? = null//论坛
     private var rl_style_change: RelativeLayout? = null//主题切换
-    private var iv_mine_image: ImageView? = null
-    private var tv_login_info: TextView? = null
     private var bt_night_shift: SwitchButton? = null//夜间模式切换按钮
     private var bt_wifi_auto: SwitchButton? = null//wifi下自动缓存
     private var rl_readpage_setting: RelativeLayout? = null//阅读页设置
@@ -147,22 +138,16 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         //用于判断是否显示Textview的Drawable
         is_show_drawable = findViewById(R.id.is_show_drawable)
         top_navigation_bg = findViewById(R.id.top_navigation_bg) as RelativeLayout
-        icon_more_left = findViewById(R.id.icon_more_left) as ImageView
-        btnBack = findViewById(R.id.setting_back) as ImageView
         top_setting_back = findViewById(R.id.top_setting_back) as ImageView
-        user_login_layout = findViewById(R.id.user_login_layout) as RelativeLayout
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image_left = findViewById(R.id.iv_mine_image_left) as ImageView
-        user_login_layout_left = findViewById(R.id.user_login_layout_left) as RelativeLayout
+//        tv_login_info = findViewById(R.id.tv_login_info) as TextView
+//        tv_login_info = findViewById(R.id.tv_login_info) as TextView
+//        iv_mine_image_left = findViewById(R.id.iv_mine_image_left) as ImageView
 
         // 福利中心
         rl_welfare = findViewById(R.id.rl_welfare) as RelativeLayout
         img_welfare = findViewById(R.id.img_welfare) as ImageView
 
-        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs) as RelativeLayout
+//        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs) as RelativeLayout
         rl_style_change = findViewById(R.id.rl_style_change) as RelativeLayout
         bt_night_shift = findViewById(R.id.bt_night_shift) as SwitchButton
         bt_wifi_auto = findViewById(R.id.bt_wifi_auto) as SwitchButton
@@ -180,7 +165,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         check_update_message = findViewById(R.id.check_update_message) as TextView
 
         //条目字
-        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
+//        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
         tv_style_change = findViewById(R.id.tv_style_change) as TextView
         tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
         tv_readpage_setting = findViewById(R.id.tv_readpage_setting) as TextView
@@ -191,8 +176,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         text_clear_cache = findViewById(R.id.text_clear_cache) as TextView
         text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement) as TextView
 
-        tv_login_info_left = findViewById(R.id.tv_login_info_left) as TextView
-        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left) as TextView
+//        tv_login_info_left = findViewById(R.id.tv_login_info_left) as TextView
+//        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left) as TextView
         top_navigation_title = findViewById(R.id.top_navigation_title) as TextView
 
 
@@ -213,30 +198,21 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     }
 
     protected fun initListener() {
-        if (btnBack != null) {
-            btnBack!!.setOnClickListener(this)
-        }
         if (top_setting_back != null) {
             top_setting_back!!.setOnClickListener(this)
         }
-        if (user_login_layout != null) {
-            user_login_layout!!.setOnClickListener(this)
-        }
-        if (iv_mine_image != null) {
-            iv_mine_image!!.setOnClickListener(this)
-        }
-        if (tv_login_info != null) {
-            tv_login_info!!.setOnClickListener(this)
-        }
+//        if (tv_login_info != null) {
+//            tv_login_info!!.setOnClickListener(this)
+//        }
         if (rl_style_change != null) {
             rl_style_change!!.setOnClickListener(this)
         }
         if (rl_welfare != null) {
             rl_welfare!!.setOnClickListener(this)
         }
-        if (rl_readpage_bbs != null) {
-            rl_readpage_bbs!!.setOnClickListener(this)
-        }
+//        if (rl_readpage_bbs != null) {
+//            rl_readpage_bbs!!.setOnClickListener(this)
+//        }
         if (rl_readpage_setting != null) {
             rl_readpage_setting!!.setOnClickListener(this)
         }
@@ -263,12 +239,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         }
         if (bt_wifi_auto != null) {
             bt_wifi_auto!!.setOnCheckedChangeListener(this)
-        }
-        if (tv_login_info != null) {
-            tv_login_info!!.setOnClickListener(this)
-        }
-        if (user_login_layout_left != null) {
-            user_login_layout_left!!.setOnClickListener(this)
         }
     }
 
@@ -336,8 +306,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 //                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change)
 //                startActivity(Intent(this@SettingActivity, StyleChangeActivity::class.java))
 //            }
-            R.id.tv_login_info -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
-            R.id.iv_mine_image, R.id.user_login_layout_left -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
+//            R.id.tv_login_info -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
+//            R.id.iv_mine_image, R.id.user_login_layout_left -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.check_update_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSION)
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver)
@@ -373,7 +343,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 //                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read)
 //                startActivity(Intent(this@SettingActivity, ReadingSettingActivity::class.java))
 //            }
-            R.id.rl_readpage_bbs -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
+//            R.id.rl_readpage_bbs -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.clear_cache_rl//清除缓存的处理
             -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
@@ -381,7 +351,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 clearCacheDialog()
             }
 
-            R.id.top_setting_back, R.id.setting_back -> {
+            R.id.top_setting_back -> {
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.BACK, data)

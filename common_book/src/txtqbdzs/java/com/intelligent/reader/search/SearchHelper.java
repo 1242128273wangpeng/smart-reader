@@ -675,7 +675,7 @@ public class SearchHelper {
 
 
         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAutoCompleteV4(
+                BaseBookApplication.getGlobalContext()).requestAutoCompleteV5(
 
                 finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
                     @Override

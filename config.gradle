@@ -12,7 +12,7 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-    applicationId = "cn.qbmfrmxs.reader"
+    applicationId = "cc.quanbennovel"
     defaultPublishConfig = 'qbmfrmxs' + 'Debug'
 
     minifyEnable = false

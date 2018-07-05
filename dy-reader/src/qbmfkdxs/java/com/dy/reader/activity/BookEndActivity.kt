@@ -3,6 +3,7 @@ package com.dy.reader.activity
 import android.os.Bundle
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
@@ -254,7 +255,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         loadingPage.onSuccess()
     }
 
-    override fun showRecommend(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+    override fun showRecommend(recommends: java.util.ArrayList<RecommendBean>?) {
 //        recommender = BookRecommender(recommendRes, Constants.sRecommendRateForBookend)
 //        if (one) {
 //            recommendBookAdapter.setBooks(recommender!!.recommendBookendBooks1)
