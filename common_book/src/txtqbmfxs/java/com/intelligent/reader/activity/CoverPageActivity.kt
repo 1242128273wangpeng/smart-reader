@@ -196,6 +196,15 @@ class CoverPageActivity : BaseCacheableActivity(),
             // Monkey
             return
         }
+
+        // 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
+        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+        if (sp.getBoolean(Constants.IS_FIX_CATALOG, false)) {
+            img_book_update.visibility = VISIBLE
+        } else {
+            img_book_update.visibility = GONE
+        }
+
         book_cover_content?.smoothScrollTo(0, 0)
 
         if (book != null) {

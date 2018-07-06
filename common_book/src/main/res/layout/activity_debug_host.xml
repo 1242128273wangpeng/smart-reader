@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/color_white_ffffff"
+              android:background="@color/white"
               android:orientation="vertical">
 
     <RelativeLayout
@@ -47,7 +47,7 @@
         android:hint="@string/debug_input_host"
         android:paddingEnd="@dimen/dimen_height_20"
         android:paddingStart="@dimen/dimen_height_20"
-        android:textColor="@color/color_black"/>
+        android:textColor="#000000"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
         android:paddingEnd="@dimen/dimen_height_20"
         android:paddingStart="@dimen/dimen_height_20"
         android:text="提示：长按host条目可以进行删除"
-        android:textColor="@color/color_red_point"/>
+        android:textColor="#FF0000"/>
 
     <ListView
         android:id="@+id/lv_host"
