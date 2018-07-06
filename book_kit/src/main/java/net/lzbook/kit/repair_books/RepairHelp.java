@@ -42,7 +42,7 @@ import java.util.Map;
 public class RepairHelp {
     private static final String TAG = RepairHelp.class.getSimpleName();
 
-//    private SharedPreferences  sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+    private static SharedPreferences  sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0);
 
     public static synchronized void parserData(UpdateBean repairData) {
         if (repairData == null) {
@@ -206,7 +206,7 @@ public class RepairHelp {
             BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).loadBookFix(book.getBook_id());
             if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
-                if (bookFix.getFix_type() == 1) {
+                if (bookFix.getFix_type() == 1) {//书籍已修复
                     return true;
 
                 }
@@ -226,6 +226,8 @@ public class RepairHelp {
             dialog_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // 更新修复状态为已修复
+                    sp.edit().putBoolean(Constants.IS_FIX_CATALOG, true).apply();
                     isComfire = true;
                     myDialog.dismiss();
                     if (NetWorkUtils.isNetworkAvailable(activity)) {

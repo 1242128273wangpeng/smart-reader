@@ -130,7 +130,7 @@
                         android:paddingBottom="@dimen/padding_10"
                         android:paddingTop="@dimen/padding_23">
 
-                        <FrameLayout
+                        <RelativeLayout
                             android:layout_width="74dp"
                             android:layout_height="98dp">
 
@@ -152,7 +152,19 @@
                                 android:layout_marginTop="2dp"
                                 android:scaleType="fitXY"
                                 android:src="@drawable/common_book_cover_default_icon"/>
-                        </FrameLayout>
+
+                            <ImageView
+                                android:id="@+id/img_book_update"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_gravity="top|right"
+                                android:layout_marginRight="5dp"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="@string/module_name"
+                                android:src="@drawable/bookshelf_book_status_update"
+                                android:visibility="gone"/>
+                        </RelativeLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
