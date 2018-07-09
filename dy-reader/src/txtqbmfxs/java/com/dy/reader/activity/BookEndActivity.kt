@@ -10,7 +10,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
-import com.dy.reader.adapter.BookRecommendAdapter
+import com.dy.reader.adapter.BookEndAdapter
 import com.dy.reader.dialog.BookEndChangeSourceDialog
 import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
@@ -40,10 +40,9 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
     private var loadingPage: LoadingPage? = null
     private val sourceList: ArrayList<Source> = ArrayList()
-    private var bookRecommendsList: ArrayList<Book>? = null
 
-    private var mRecommendBookAdapter: BookRecommendAdapter? = null
-    private var mNewBookAdapter: BookRecommendAdapter? = null
+    private var mRecommendBookAdapter: BookEndAdapter? = null
+    private var mNewBookAdapter: BookEndAdapter? = null
 
     /**
      * 推荐书籍管理类：负责书架和书末页的推荐书籍管理
@@ -53,11 +52,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     private val bookEndPresenter: BookEndPresenter by lazy {
         BookEndPresenter(this, this)
     }
-
-//    private val bookRecommendAdapter: BookRecommendAdapter by lazy {
-//        BookRecommendAdapter(bookRecommendsList)
-//    }
-
 
     private val changeSourceDialog: BookEndChangeSourceDialog by lazy {
         BookEndChangeSourceDialog(this, this)
@@ -247,14 +241,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         recommender = BookRecommender(recommendRes, Constants.sRecommendRateForBookend)
         if (one) {
             if (mRecommendBookAdapter == null) {
-                mRecommendBookAdapter = BookRecommendAdapter(this)
+                mRecommendBookAdapter = BookEndAdapter(this)
             }
             mRecommendBookAdapter?.setBooks(recommender!!.recommendBookendBooks1)
             gv_recommend_book.adapter = mRecommendBookAdapter
         }
         if (two) {
             if (mNewBookAdapter == null) {
-                mNewBookAdapter = BookRecommendAdapter(this)
+                mNewBookAdapter = BookEndAdapter(this)
             }
             mNewBookAdapter?.setBooks(recommender!!.recommendBookendBooks2)
             gv_new_book.adapter = mNewBookAdapter
