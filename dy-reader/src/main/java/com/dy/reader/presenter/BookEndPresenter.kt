@@ -3,7 +3,6 @@ package com.dy.reader.presenter
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
@@ -15,7 +14,6 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.ATManager
 import java.lang.ref.WeakReference
 import java.util.*
@@ -172,6 +170,25 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
         })
     }
 
+    /**
+     * 获取封面页推荐书籍（兼容数据融合前的App）
+     */
+    fun requestRecommendV4(one: Boolean, two: Boolean, book_id: String) {
+        val bookIDs: String = loadBookShelfID()
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommendV4(book_id, bookIDs, object : RequestSubscriber<RecommendBooksEndResp>() {
+            override fun requestResult(result: RecommendBooksEndResp?) {
+                if (result != null && result.data?.map != null) {
+                    contract.showRecommendV4(one, two, result)
+                }
+
+            }
+
+            override fun requestError(message: String) {
+                Logger.e("获取完结页推荐异常！")
+            }
+        })
+    }
+
     fun handleRecommendBooks(recommendBooks: RecommendBooks?) {
         if (recommendBooks != null) {
 
@@ -246,6 +263,8 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
             feeList?.clear()
         }
     }
+
+
 
     private fun subRecommendList(recommends: ArrayList<RecommendBean>, scale: Int): ArrayList<List<RecommendBean>> {
 

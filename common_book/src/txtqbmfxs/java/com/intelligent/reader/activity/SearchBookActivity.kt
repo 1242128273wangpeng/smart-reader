@@ -168,13 +168,20 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                   it.setJsNoneResultSearchCall(this)
               }*/
 
-        /*mSearchViewHelper?.let {
+        mSearchViewHelper?.let {
             it.setOnHistoryClickListener(this)
-            it.onHotWordClickListener = { tag, searchType ->
-                mSearchPresenter?.setHotWordType(tag, searchType)
-                loadDataFromNet()
+            it.onHotWordClickListener = object: SearchViewHelper.OnHotWordClickListener{
+                override fun hotWordClick(tag: String, searchType: String) {
+                    mSearchPresenter?.setHotWordType(tag, searchType)
+                    loadDataFromNet(isNotAuthor)
+                }
+
             }
-        }*/
+//            { tag, searchType ->
+//                mSearchPresenter?.setHotWordType(tag, searchType)
+//                loadDataFromNet()
+//            }
+        }
 
     }
 

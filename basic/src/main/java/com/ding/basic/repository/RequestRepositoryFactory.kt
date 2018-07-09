@@ -785,6 +785,27 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    /**
+     * 完结页推荐（兼容数据融合前的项目）
+     */
+    override fun requestBookRecommendV4(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<RecommendBooksEndResp>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestBookRecommendV4(book_id, recommend)!!
+                .compose(SchedulerHelper.schedulerHelper<RecommendBooksEndResp>())
+                .subscribeWith(object : ResourceSubscriber<RecommendBooksEndResp>() {
+                    override fun onNext(result: RecommendBooksEndResp?) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
     override fun checkChapterCache(chapter: Chapter?): Boolean {
         if (chapter == null) {
             return false

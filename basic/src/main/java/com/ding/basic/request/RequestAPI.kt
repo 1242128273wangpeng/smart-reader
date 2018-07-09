@@ -134,4 +134,8 @@ object RequestAPI {
     fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>? {
         return requestService.requestBookRecommend(book_id, shelfBooks)
     }
+
+    fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
+        return requestService.requestBookRecommendV4(book_id, recommend)
+    }
 }

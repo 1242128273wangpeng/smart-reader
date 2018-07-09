@@ -81,7 +81,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
     private var historyList: ArrayList<String>? = ArrayList()
 
 
-    private var onHotWordClickListener: OnHotWordClickListener? = null
+    var onHotWordClickListener: OnHotWordClickListener? = null
     private var onHistoryClickListener: OnHistoryClickListener? = null
 
     private var books: List<Book>? = ArrayList()
@@ -174,6 +174,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
      * 【点击事件】自动补全子条目点击事件
      */
     private fun onSuggestItemClick() {
+
         mSuggestListView?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
             val obj = mSuggestList?.get(position)
             if (obj is SearchCommonBeanYouHua) {
@@ -250,6 +251,16 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
             }
 
         }
+
+        mSuggestListView?.setOnScrollListener(object : AbsListView.OnScrollListener {
+            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
+                hideInputMethod(view)
+            }
+
+            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+
+            }
+        })
     }
 
 
@@ -668,15 +679,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
         onSuggestItemClick()
 
-        mSuggestListView?.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
-                hideInputMethod(view)
-            }
-
-            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-
-            }
-        })
     }
 
     /**
