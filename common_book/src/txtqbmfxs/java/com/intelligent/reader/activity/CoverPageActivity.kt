@@ -46,6 +46,9 @@ import kotlin.collections.ArrayList
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(),
         OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
+
+    }
 
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
 
