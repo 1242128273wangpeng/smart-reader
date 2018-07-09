@@ -50,6 +50,11 @@ interface CoverPageContract {
     fun showRecommendSuccess(recommends: ArrayList<RecommendBean>)
 
     /***
+     * 封面页推荐成功 使用v4接口, 例如 今日多看壳
+     * **/
+    fun showRecommendSuccessV4(recommends: ArrayList<Book>)
+
+    /***
      * 封面页推荐失败
      * **/
     fun showRecommendFail()

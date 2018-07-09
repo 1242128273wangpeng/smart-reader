@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 
 import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.Result;
+import com.ding.basic.bean.SearchAutoCompleteBean;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.bean.SearchResult;
@@ -509,7 +510,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     @Override
-    public void onSearchResult(ArrayList<SearchCommonBean> suggestList, SearchAutoCompleteBeanYouHua transmitBean) {
+    public void onSearchResult(ArrayList<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean) {
         if (mSuggestList == null) {
             return;
         }

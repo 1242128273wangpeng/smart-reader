@@ -10,8 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.ding.basic.bean.RecommendBean;
+import com.ding.basic.bean.Book;
 import com.intelligent.reader.R;
+
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.AppUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -25,9 +28,9 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
 
     private WeakReference<Context> weakReference;
     private RecommendItemClickListener recommendItemClickListener;
-    private List<RecommendBean> books = new ArrayList<>();
+    private List<Book> books = new ArrayList<>();
 
-    public CoverRecommendAdapter(Context context, RecommendItemClickListener recommendItemClickListener, List<RecommendBean> books) {
+    public CoverRecommendAdapter(Context context, RecommendItemClickListener recommendItemClickListener, List<Book> books) {
         this.weakReference = new WeakReference<>(context);
         this.recommendItemClickListener = recommendItemClickListener;
         this.books = books;
@@ -41,27 +44,23 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        RecommendBean book = books.get(position);
-        holder.tv_book_name.setText(book.getBookName());
-        if (book.getReaderCountDescp() != null && !TextUtils.isEmpty(book.getReaderCountDescp())) {
-            holder.tv_readnum.setText((book.getReaderCountDescp() + "人在读"));
+        Book book = books.get(position);
+        holder.tv_book_name.setText(book.getName());
 
-        /* if (Constants.QG_SOURCE.equals(book.getHost())) {
-                if(!AppUtils.isContainChinese(book.getReaderCountDescp())){
-                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book.getReaderCountDescp())));
-                }else{
-                    holder.tv_readnum.setText("");
-                }
-            } else {
-                holder.tv_readnum.setText((book.getReaderCountDescp() + "人在读"));
-            }*/
-
+        if ("api.qingoo.cn".equals(book.getHost())) {
+            holder.tv_readnum.setText(AppUtils.getCommonReadNums(Long.valueOf(book.getUv())));
         } else {
-            holder.tv_readnum.setText("");
+
+            // 临时使用desc接收v5接口自有人气字段
+            if (book.getDesc() != null && !TextUtils.isEmpty(book.getDesc()) && !book.getDesc().equals("null")) {
+                holder.tv_readnum.setText(book.getDesc() + "人气值");
+            } else {
+                holder.tv_readnum.setText("");
+            }
         }
 
-        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getSourceImageUrl())) {
-            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
+        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getImg_url())) {
+            Glide.with(weakReference.get()).load(book.getImg_url()).placeholder(net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_recommend_image);
         } else {

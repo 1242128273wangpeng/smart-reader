@@ -25,7 +25,11 @@ public class URLBuilder {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return host + uriTag + (uriTag.contains("?") ? "&" : "?") + mapToUrlParams(params) + "&token=" + encode;
+        if(params.isEmpty()){
+            return host + uriTag + "?token=" + encode;
+        }else {
+            return host + uriTag + (uriTag.contains("?") ? "&" : "?") + mapToUrlParams(params) + "&token=" + encode;
+        }
     }
 
     private static String mapToUrlParams(Map<String, String> params) {

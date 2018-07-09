@@ -57,9 +57,6 @@ interface RequestService {
         //书架推荐
         const val RECOMMEND_SHELF = "/v4/recommend/shelfPage"
 
-        //封面页推荐
-        const val RECOMMEND_COVER = "/v4/recommend/{book_id}/coverPage"
-
         //检查更新
         const val CHECK_UPDATE = "/v5/book/check"
 
