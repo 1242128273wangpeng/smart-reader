@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="16dp"
     tools:ignore="RtlHardcoded">
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,34 +15,34 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_size_18"
-            android:text="@string/book_recommend_title"
+            android:layout_marginLeft="18dp"
+            android:text="@string/book_new_title"
             android:textColor="@color/color_black"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="16sp"
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/tv_more_refresh"
+            android:id="@+id/txt_new_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="@dimen/dimen_margin_16"
+            android:layout_marginRight="16dp"
             android:drawableLeft="@drawable/icon_refresh"
-            android:drawablePadding="@dimen/padding_10"
-            android:text="@string/book_recommend_change"
+            android:drawablePadding="10dp"
+            android:text="@string/book_new_change"
             android:textColor="#3c3b3b"
-            android:textSize="@dimen/text_size_14"/>
+            android:textSize="14sp"/>
     </RelativeLayout>
 
     <GridView
-        android:id="@+id/gv_recommend_book"
+        android:id="@+id/gv_new_book"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_margin_18"
-        android:layout_marginRight="@dimen/dimen_margin_18"
-        android:layout_marginTop="@dimen/dimen_margin_16"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:horizontalSpacing="30dp"
         android:numColumns="3"
