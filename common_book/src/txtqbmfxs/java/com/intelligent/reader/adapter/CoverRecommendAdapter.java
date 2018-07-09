@@ -52,19 +52,6 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
         holder.tv_book_name.setText(book.getBookName());
         if (book.getReaderCountDescp() != null && !TextUtils.isEmpty(book.getReaderCountDescp())) {
             holder.tv_readnum.setText((book.getReaderCountDescp() + "人气值"));
-
-//            升级后的字段提供的5.5万，之前是55000
-        /* if (Constants.QG_SOURCE.equals(book.getHost())) {
-                if(!AppUtils.isContainChinese(book.getReaderCountDescp())){
-                    holder.tv_readnum.setText(AppUtils.getReadNums(Long.valueOf(book
-                    .getReaderCountDescp())));
-                }else{
-                    holder.tv_readnum.setText("");
-                }
-            } else {
-                holder.tv_readnum.setText((book.getReaderCountDescp() + "人在读"));
-            }*/
-
         } else {
             holder.tv_readnum.setText("");
         }

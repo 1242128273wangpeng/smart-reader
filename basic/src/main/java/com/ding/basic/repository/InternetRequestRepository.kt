@@ -113,6 +113,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBookRecommend(book_id, shelfBooks)
     }
 
+    override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
+        return RequestAPI.requestBookRecommendV4(book_id, recommend)
+    }
+
     /***************** 微服务 *****************/
 
     override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
