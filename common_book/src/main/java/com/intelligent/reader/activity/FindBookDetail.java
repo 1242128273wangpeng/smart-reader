@@ -57,7 +57,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private ImageView find_book_detail_back;
     private TextView find_book_detail_title;
     private ImageView find_book_detail_search;
-    private TopShadowWebView find_detail_content;
+    private WebView find_detail_content;
     private String currentUrl;
     private String currentTitle;
     private ArrayList<String> urls;

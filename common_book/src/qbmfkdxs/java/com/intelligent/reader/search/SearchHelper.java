@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.bean.SearchAutoCompleteBean;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -114,7 +115,7 @@ public class SearchHelper {
     }
 
     public interface SearchSuggestCallBack {
-        void onSearchResult(ArrayList<SearchCommonBean> suggestList, SearchAutoCompleteBeanYouHua transmitBean);
+        void onSearchResult(ArrayList<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean);
     }
 
     public void setStartedAction() {
@@ -426,54 +427,24 @@ public class SearchHelper {
         if (word != null) {
             searchWord = word;
             String channelID = AppUtils.getChannelId();
-            if (channelID.equals("blp1298_10882_001") || channelID.equals("blp1298_10883_001")
-                    || channelID.equals("blp1298_10699_001")) {
-                if (Constants.isBaiduExamine
-                        && Constants.versionCode == AppUtils.getVersionCode()) {
+            if (channelID.equals("blp1298_10882_001") || channelID.equals("blp1298_10883_001") || channelID.equals("blp1298_10699_001")) {
+                if (Constants.isBaiduExamine && Constants.versionCode == AppUtils.getVersionCode()) {
                     searchWord = getReplaceWord();
                     AppLog.e(TAG, searchWord);
                 }
             }
-//
-            if (searchType.equals("2") && isAuthor == 1) {
 
-                Map<String, String> params = new HashMap<>();
-                params.put("author", searchWord);
-                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord;
-                try {
-                    sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
-                            "author").apply();//FindBookDetail 返回键时标识
-                    SearchBookActivity.isSatyHistory = true;
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, FindBookDetail.class);
-                    intent.putExtra("url", mUrl);
-                    intent.putExtra("title", "作者主页");
-                    fromClass = "findBookDetail";
-                    mContext.startActivity(intent);
-                    AppLog.e(TAG, "EnterAnotherWeb");
-                    return;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                Map<String, String> params = new HashMap<>();
-                params.put("keyword", searchWord);
-                params.put("search_type", searchType);
-                params.put("filter_type", filterType);
-                params.put("filter_word", filterWord);
-                params.put("sort_type", sortType);
-                params.put("wordType", searchType);
-                params.put("searchEmpty", "1");
-                AppLog.e("kk",
-                        searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
-                                + "===" + sortType);
-                mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
-            }
-
+            Map<String, String> params = new HashMap<>();
+            params.put("word", searchWord);
+            params.put("search_type", searchType);
+            params.put("filter_type", filterType);
+            params.put("filter_word", filterWord);
+            params.put("sort_type", sortType);
+            AppLog.e("kk",searchWord+"=="+searchType+"=="+filterType+"=="+filterWord+"==="+sortType);
+            mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params);
         }
 
-        if (mStartLoadCall != null) {
+        if (mStartLoadCall != null){
             mStartLoadCall.onStartLoad(mUrl);
         }
 
@@ -556,13 +527,13 @@ public class SearchHelper {
         final String finalQuery = query;
 
         if (finalQuery != null && !TextUtils.isEmpty(finalQuery)) {
-            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAutoCompleteV5(finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAutoComplete(finalQuery, new RequestSubscriber<SearchAutoCompleteBean>() {
                 @Override
-                public void requestResult(@Nullable SearchAutoCompleteBeanYouHua result) {
+                public void requestResult(@Nullable SearchAutoCompleteBean result) {
                     ArrayList<SearchCommonBean> resultSuggest = new ArrayList<SearchCommonBean>();
                     resultSuggest.clear();
                     AppLog.e("bean", result.toString());
-                    if (result != null && result.getRespCode() == "20000"&& result.getData() != null) {
+                    if (result != null && "200".equals(result.getSuc())&& result.getData() != null) {
                         for (int i = 0; i < result.getData().getAuthors().size(); i++) {
                             SearchCommonBean searchCommonBean = new SearchCommonBean();
                             searchCommonBean.setSuggest(result.getData().getAuthors().get(i).getSuggest());

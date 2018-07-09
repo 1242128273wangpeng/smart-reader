@@ -95,27 +95,20 @@ class RequestInterceptor : Interceptor {
         var request = chain.request()
 
         if (request.url().host() == URL(Config.loadRequestAPIHost()).host || request.url().host() == Config.loadBookContent()) {
-            when (request.method().toUpperCase()) {
-                "GET" -> {
-                    request = buildRequest(request)
-                }
-
-                "POST" -> {
-                    if (request.body() != null && request.body() is FormBody) {
-                        val map = mutableMapOf<String, String>()
-                        val url = Config.buildUrl(request.url().toString().replace(Config.loadRequestAPIHost(), ""), map)
-                        if (url != null) {
-                            request = request.newBuilder().url(url).build()
-                        }
-                    } else {
-                        request = buildRequest(request)
-                    }
-                }
-
-                else -> {
-
-                }
-            }
+//            when (request.method().toUpperCase()) {
+//                "GET" -> {
+//                    request = buildRequest(request)
+//                }
+//
+//                "POST" -> {
+//                    request = buildRequest(request)
+//                }
+//
+//                else -> {
+//
+//                }
+//            }
+            request = buildRequest(request)
         } else {
             Logger.e("other host, not add token")
         }

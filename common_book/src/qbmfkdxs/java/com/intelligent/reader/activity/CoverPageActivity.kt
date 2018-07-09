@@ -50,7 +50,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
-    private var mRecommendBooks: List<RecommendBean> = ArrayList()
+    private var mRecommendBooks: List<Book> = ArrayList()
 
     private var bookVo: CoverPage.BookVoBean? = null
 
@@ -111,7 +111,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
-        coverPagePresenter?.requestCoverRecommend()
+        coverPagePresenter?.requestCoverRecommendV4()
 
         loadingPage?.setReloadAction(Callable<Void> {
             coverPagePresenter?.requestBookDetail(false)
@@ -151,23 +151,27 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 //        }
         if (view == null || position < 0 || position > mRecommendBooks.size) return
 
-        val recommendBooks = mRecommendBooks[position]
+        val bookRec = mRecommendBooks[position]
 
         val data = HashMap<String, String>()
-        data.put("bookid", recommendBooks.bookId)
-        data.put("TbookID", recommendBooks.bookId)
+        data.put("bookid", bookRec.book_id)
+        data.put("TbookID", bookRec.book_id)
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
                 StartLogClickUtil.RECOMMENDEDBOOK, data)
 
         val book = Book()
-        book.book_id = recommendBooks.bookId
-        book.book_source_id = recommendBooks.id
-        book.book_chapter_id = recommendBooks.bookChapterId
+        book.book_id = bookRec.book_id
+        book.book_source_id = bookRec.book_source_id
+        book.book_chapter_id = bookRec.book_chapter_id
         BookRouter.navigateCover(this, book)
 
     }
 
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+
+    }
+
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
         mRecommendBooks = recommends
 
         if (tv_recommend_title != null) {

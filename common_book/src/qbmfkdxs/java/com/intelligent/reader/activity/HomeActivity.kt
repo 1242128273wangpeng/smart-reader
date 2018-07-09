@@ -74,7 +74,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+        val uri = "/{packageName}/v3/recommend/index.do".replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -84,7 +84,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+        val uri = "/{packageName}/v3/rank/index.do".replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment.setTitle("榜单", WebViewFragment.TYPE_TOP)
@@ -95,7 +95,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        val uri = "/{packageName}/v3/category/index.do".replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment.setTitle("榜单", WebViewFragment.TYPE_CLASS)

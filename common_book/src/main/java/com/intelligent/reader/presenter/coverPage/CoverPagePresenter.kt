@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.*
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.CoverRecommendBean
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooks
 import com.ding.basic.repository.RequestRepositoryFactory
@@ -465,6 +466,138 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
             })
         }
     }
+
+    private val mRecommendBooks = ArrayList<Book>()
+    private val markIndexs = ArrayList<Int>()//用于标记推荐书籍
+
+    /***
+     * 获取封面页推荐书籍,  例如 今日多看 使用的v4接口
+     * **/
+    fun requestCoverRecommendV4() {
+        if (book_id != null && !TextUtils.isEmpty(book_id)) {
+            val bookIDs: String = loadBookShelfID()
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverRecommend(book_id, bookIDs, object : RequestSubscriber<CoverRecommendBean>() {
+                override fun requestResult(bean: CoverRecommendBean?) {
+
+                    mRecommendBooks.clear()
+
+                    if (bean != null && bean.data != null
+                            && bean!!.data!!.map != null) {
+                        if (sharePreUtil == null) {
+                            sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+                        }
+
+                        val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
+                        if (scale.size >= 2) {
+                            if (!TextUtils.isEmpty(scale[0])) {
+                                addZNBooks(bean, Integer.parseInt(scale[0]))
+                            }
+                            if (!TextUtils.isEmpty(scale[1])) {
+                                addQGBooks(bean, Integer.parseInt(scale[1]))
+                            }
+
+                        }
+                        coverPageContract.showRecommendSuccessV4(mRecommendBooks)
+
+                    } else {
+                        coverPageContract.showRecommendFail()
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("获取封面推荐异常！")
+                    coverPageContract.showRecommendFail()
+                }
+            })
+        }
+    }
+
+    /**
+     * 添加推荐的智能的书
+     */
+    fun addZNBooks(bean: CoverRecommendBean, znSize: Int) {
+        var znIndex = -1
+        markIndexs.clear()
+        if (bean.data!!.map!!.znList != null && bean.data!!.map!!.znList!!.size > 0) {
+            for (i in 0 until znSize) {//推荐位 智能只取 3本
+                znIndex = mRandom.nextInt(bean.data!!.map!!.znList!!.size)
+                if (markIndexs.contains(znIndex)) {
+                    while (true) {
+                        znIndex = mRandom.nextInt(bean.data!!.map!!.znList!!.size)
+                        if (!markIndexs.contains(znIndex)) {
+                            break
+                        }
+                    }
+                }
+                markIndexs.add(znIndex)
+                val book = Book()
+                val znBean = bean.data!!.map!!.znList!![znIndex]
+                if (book_id != null && !book_id.equals(znBean.bookId)) {
+                    book.status = znBean.serialStatus
+                    book.book_id = znBean.bookId ?: ""
+                    book.book_source_id = znBean.id ?: ""
+                    book.name = znBean.bookName
+                    book.label = znBean.label
+                    book.author = znBean.authorName
+                    book.img_url = znBean.sourceImageUrl
+                    book.host = znBean.host
+                    book.chapter_count = Integer.valueOf(znBean.chapterCount)
+//                    if(!AppUtils.isContainChinese(znBean.readerCountDescp + "")){
+//                        book.uv = java.lang.Long.valueOf(znBean.readerCountDescp + "")
+//                    }
+                    // 这里用desc字段临时接收readerCountDescp, 后期推荐接口统一升级为v5
+                    book.desc = znBean.readerCountDescp + ""
+                    mRecommendBooks.add(book)
+                }
+
+            }
+        }
+    }
+
+    private val mRandom: Random by lazy {
+        Random()
+    }
+
+    /**
+     * 添加推荐的青果的书
+     */
+    fun addQGBooks(bean: CoverRecommendBean, qgSize: Int) {
+        markIndexs.clear()
+        var qgIndex = -1
+        if (bean.data!!.map!!.qgList != null && bean.data!!.map!!.qgList!!.size > 0) {
+            for (i in 0 until qgSize) {//推荐位 青果只取 3本
+                qgIndex = mRandom.nextInt(bean.data!!.map!!.qgList!!.size)
+                if (markIndexs.contains(qgIndex)) {
+                    while (true) {
+                        qgIndex = mRandom.nextInt(bean.data!!.map!!.qgList!!.size)
+                        if (!markIndexs.contains(qgIndex)) {
+                            break
+                        }
+                    }
+                }
+                markIndexs.add(qgIndex)
+                val book = Book()
+                val qgBean = bean.data!!.map!!.qgList!![qgIndex]
+                if (book_id != null && !book_id.equals(qgBean.id)) {
+
+                    book.status = qgBean.serialStatus
+                    book.book_id = qgBean.id ?: ""
+                    book.book_source_id = qgBean.bookSourceId ?: ""
+                    book.name = qgBean.bookName
+                    book.label = qgBean.labels
+                    book.author = qgBean.author_name
+                    book.img_url = qgBean.image + ""
+                    book.host = qgBean.host + ""
+                    book.chapter_count = Integer.valueOf(qgBean.chapter_sn)
+                    book.uv = qgBean.read_count.toLong()
+                    mRecommendBooks.add(book)
+                }
+            }
+        }
+
+
+    }
+
 
     fun handleRecommendBooks(recommendBooks: RecommendBooks?) {
         if (recommendBooks != null) {
