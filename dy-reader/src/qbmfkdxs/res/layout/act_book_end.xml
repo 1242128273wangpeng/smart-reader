@@ -13,7 +13,6 @@
         android:id="@+id/rl_title_book_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/theme_primary"
         android:fitsSystemWindows="true">
 
 
@@ -30,18 +29,17 @@
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:src="@drawable/reader_option_back_normal_icon"/>
+                android:src="@drawable/top_back_selector"/>
 
             <TextView
                 android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:gravity="center"
                 android:singleLine="true"
-                android:textColor="#FFFFFFFF"
-                android:textSize="18sp"
-                tools:text="@string/default_title"/>
+                android:text="@string/read_end_tip"
+                android:textColor="#000000"
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/txt_change_source"
@@ -53,9 +51,9 @@
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="换源"
-                android:textColor="#FFFFFFFF"
-                android:textSize="@dimen/text_size_14"/>
+                android:text="@string/change_source"
+                android:textColor="#00C298"
+                android:textSize="14sp"/>
 
         </RelativeLayout>
     </RelativeLayout>
