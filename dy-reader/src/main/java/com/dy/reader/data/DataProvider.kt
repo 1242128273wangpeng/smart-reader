@@ -64,11 +64,12 @@ object DataProvider {
                     AppLog.e("DataProvider", "CHAPTER_REFRESH, but obj == null or is list animation")
                     return
                 }
+
                 val position = event.obj as Position
-                if (position.group >= 0 && position.group < ReaderStatus.chapterCount ?: 0 - 1) {
+
+                if (isGroupAvalable(position.group)) {
 
                     chapterCache.removeOther(position.group)
-
 
                     val forceReload = event.type == ReaderSettings.ConfigType.FONT_REFRESH
                     if (forceReload){
@@ -116,6 +117,8 @@ object DataProvider {
                             })
                         }
                     }
+                }else{
+                    EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                 }
             }
         }
@@ -413,7 +416,7 @@ object DataProvider {
 
     private fun loadGroup(group: Int, force: Boolean = true, callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
-            if (!force && chapterCache.get(group) != null) {
+            if (group < 0  || (!force && chapterCache.get(group) != null)) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
                 callback?.invoke(true)
                 return

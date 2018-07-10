@@ -63,8 +63,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 super.onLayoutChildren(recycler, state)
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != 0) {
-                    if (firstVisibleItemPosition == -1)
+                    if (firstVisibleItemPosition == -1) {
                         img_catalog_order.visibility = View.GONE
+                    }else{
+                        img_catalog_order.visibility = View.VISIBLE
+                    }
                     return
                 }
                 val lastVisibleItemPosition = findLastVisibleItemPosition()
