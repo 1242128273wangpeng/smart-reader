@@ -1,6 +1,7 @@
 package com.dy.reader.activity
 
 import android.os.Bundle
+import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
@@ -8,6 +9,7 @@ import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.adapter.BookEndAdapter
@@ -156,7 +158,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             loadingPage?.setReloadAction(Callable<Void> {
                 bookEndPresenter.requestBookSource(it)
                 bookEndPresenter.requestRecommendV4(true, true, it.book_id)
-//                bookEndPresenter.requestRecommend(it.book_id)
                 null
             })
         }
@@ -165,14 +166,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
 
     private fun initBookEndAD() {
-//        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
-//            if (isSuccess) {
-//                rl_book_end_ad.visibility = View.VISIBLE
-//                rl_book_end_ad.addView(view)
-//            } else {
-//                rl_book_end_ad.visibility = View.GONE
-//            }
-//        }
+        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            if (isSuccess) {
+                rl_book_end_ad.visibility = View.VISIBLE
+                rl_book_end_ad.addView(view)
+            } else {
+                rl_book_end_ad.visibility = View.GONE
+            }
+        }
     }
 
 
