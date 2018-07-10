@@ -15,7 +15,7 @@ import org.gradle.api.Project
  */
 class CompileBuild implements Plugin<Project> {
 
-    def ad_version = '1.6.0'
+    def ad_version = '1.6.5'
 
     @Override
     void apply(Project project) {
