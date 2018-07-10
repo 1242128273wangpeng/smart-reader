@@ -64,10 +64,11 @@ class AndroidLogStorage {
             serverLog.putContent("wifi_mac", AppUtils.getWifiMacAddress(context))//WiFi-Mac地址
 
         }
-//
-//        if (Constants.SHOW_LOG) { //打点Toast
-//            CommonUtil.showToastMessage(serverLog.content.toString())
-//        }
+
+        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+        if (sp.getBoolean(Constants.SHOW_TOAST_LOG, false)) { //打点Toast
+            CommonUtil.showToastMessage(serverLog.content.toString())
+        }
 
         AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +
                 "2、手机型号:${AppUtils.getPhoneModel()}\n" +

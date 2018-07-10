@@ -52,6 +52,7 @@ public class StartLogClickUtil {
     public static final String ACTION_HOME_CACHE_MANAGE = "CACHEMANAGE";
     public static final String PREFERENCE = "PREFERENCE";//开屏选男女
 
+
     /***
      * 书架相关点位
      * **/
@@ -105,6 +106,7 @@ public class StartLogClickUtil {
     public static final String ACTION_PERSONAL_WIFI_AUTO_CACHE = "WIFI_AUTOCACHE";//点击WIFI自动缓存
 
 
+
     /***
      * 下载管理页相关点位
      * **/
@@ -154,8 +156,6 @@ public class StartLogClickUtil {
     public static final String PERHELP_PAGE = "PERHELP";//帮助与反馈
     public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
     public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
-    public static final String TOSHELF = "TOSHELF"; //完结页点击去书架
-    public static final String TOBOOKSTORE = "TOBOOKSTORE"; //完结页点击去书城
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
 
     //PUSH
@@ -303,8 +303,10 @@ public class StartLogClickUtil {
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
 
     //阅读完结页
+    public static final String READFINISH = "READFINISH";//阅读完结页
     public static final String REPLACE = "REPLACE";   //完结页点击换一换
-
+    public static final String TOSHELF = "TOSHELF";   //完结页点击去书架
+    public static final String TOBOOKSTORE = "TOBOOKSTORE";   //完结页点击去书城
 
     //搜索结果页
     public static final String SEARCHRESULT = "SEARCHRESULT";//某本书点击

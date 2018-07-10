@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white_ffffff"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height">
+        android:layout_height="@dimen/top_bar_height"
+        android:background="@color/debug_title_bg_color">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -16,7 +17,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="15dp"
             android:paddingRight="@dimen/dimen_padding_12"
-            android:src="@mipmap/directory_back" />
+            android:src="@mipmap/welfare_center_back"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,8 +25,8 @@
             android:layout_centerInParent="true"
             android:gravity="center_vertical"
             android:text="@string/choice_host"
-            android:textColor="@color/color_text_most"
-            android:textSize="@dimen/dimen_text_17" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_text_17"/>
 
         <TextView
             android:id="@+id/tv_save"
@@ -35,7 +36,8 @@
             android:gravity="center_vertical"
             android:paddingLeft="15dp"
             android:paddingRight="@dimen/dimen_padding_12"
-            android:text="@string/save" />
+            android:text="@string/save"
+            android:textColor="@color/white"/>
     </RelativeLayout>
 
     <EditText
@@ -43,21 +45,21 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:hint="@string/debug_input_host"
-        android:textColor="@color/color_black"
         android:paddingEnd="@dimen/dimen_height_20"
-        android:paddingStart="@dimen/dimen_height_20" />
+        android:paddingStart="@dimen/dimen_height_20"
+        android:textColor="#000000"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="提示：长按host条目可以进行删除"
-        android:textColor="@color/color_red_point"
         android:paddingEnd="@dimen/dimen_height_20"
-        android:paddingStart="@dimen/dimen_height_20" />
+        android:paddingStart="@dimen/dimen_height_20"
+        android:text="提示：长按host条目可以进行删除"
+        android:textColor="#FF0000"/>
 
     <ListView
         android:id="@+id/lv_host"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

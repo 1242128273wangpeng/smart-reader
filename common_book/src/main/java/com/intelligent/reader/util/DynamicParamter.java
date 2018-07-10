@@ -12,6 +12,8 @@ import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
 import com.ding.basic.Config;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.ContentAPI;
+import com.ding.basic.request.MicroAPI;
 import com.ding.basic.request.RequestAPI;
 import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
@@ -644,6 +646,7 @@ public class DynamicParamter {
                 novel_host = data.getString(Constants.NOVEL_HOST);
                 if (isOwn && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.NOVEL_HOST, novel_host);
+
                 }
             }
             // WebView接口
@@ -658,6 +661,7 @@ public class DynamicParamter {
                 union_host = data.getString(Constants.UNION_HOST);
                 if (isOwn  && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.UNION_HOST, union_host);
+
                 }
             }
             // 微服务内容接口
@@ -665,6 +669,7 @@ public class DynamicParamter {
                 content_host = data.getString(Constants.CONTENT_HOST);
                 if (isOwn  && sp.getBoolean(Constants.START_PARAMS, true)) {
                     putConfigParams(Constants.CONTENT_HOST, content_host);
+
                 }
             }
 
@@ -710,6 +715,14 @@ public class DynamicParamter {
 //        setBaiduAppId();
 //        setMogoAppId();
 //        setHost();
+        Config.INSTANCE.insertRequestAPIHost(sp.getString(Constants.NOVEL_HOST, ""));
+        Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
+        Config.INSTANCE.insertMicroAPIHost(sp.getString(Constants.UNION_HOST, ""));
+        Config.INSTANCE.insertContentAPIHost(sp.getString(Constants.CONTENT_HOST, ""));
+        ContentAPI.INSTANCE.initMicroService();
+        MicroAPI.INSTANCE.initMicroService();
+        RequestAPI.INSTANCE.initializeDataRequestService();
+
 
         setDownLoadLimitNumber();
 

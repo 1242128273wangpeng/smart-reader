@@ -74,7 +74,7 @@
 
             <include
                 android:id="@+id/ll_recommend"
-                layout="@layout/bookend_recommend_books_layout" />
+                layout="@layout/layout_book_end_recommend_books" />
 
             <View
                 android:layout_width="match_parent"
@@ -84,7 +84,7 @@
 
             <include
                 android:id="@+id/ll_new_book"
-                layout="@layout/bookend_new_books_layout" />
+                layout="@layout/layout_book_end_new_books" />
 
 
             <LinearLayout

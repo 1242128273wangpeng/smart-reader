@@ -38,7 +38,6 @@ import java.util.*
 /**
  * Created by yuchao on 2017/8/2 0002.
  */
-
 class SearchPresenter(private val mContext: Activity, override var view: SearchView.AvtView?) : IPresenter<SearchView.AvtView> {
     private val wordInfoMap = HashMap<String, WordInfo>()
 

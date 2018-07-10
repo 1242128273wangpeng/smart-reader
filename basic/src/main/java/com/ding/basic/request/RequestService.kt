@@ -4,7 +4,6 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.http.*
 
 interface RequestService {
@@ -51,14 +50,9 @@ interface RequestService {
         //新版搜索推荐
         const val SEARCH_RECOMMEND_V5 = "/v5/search/autoOperations"
 
-        //完结页推荐
-        const val RECOMMEND_FINISH = "/v4/recommend/{book_id}/readPage"
 
         //书架推荐
         const val RECOMMEND_SHELF = "/v4/recommend/shelfPage"
-
-        //封面页推荐
-        const val RECOMMEND_COVER = "/v4/recommend/{book_id}/coverPage"
 
         //检查更新
         const val CHECK_UPDATE = "/v5/book/check"
@@ -93,14 +87,26 @@ interface RequestService {
         //书籍封面页推荐
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
 
-        const val BOOK_RECOMMEND = "/v5/search/recommend"
+        /**
+         * 完结页推荐
+         */
+        const val BOOK_END_RECOMMEND = "/v5/search/recommend"
+        const val BOOK_END_RECOMMEND_V4 = "/v4/recommend/{book_id}/readPage"
 
-
-        //  鸿雁替 新 webview分类页面
+        /**
+         * 鸿雁替 新WebView分类页面
+         */
         const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
 
-        // 鸿雁替 新webview精选页面
+        /**
+         * 鸿雁替 新WebView精选页面
+         */
         const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
+
+        /**
+         * WebView榜单排行页面
+         */
+        const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
 
     }
 
@@ -186,6 +192,11 @@ interface RequestService {
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
 
 
-    @GET(BOOK_RECOMMEND)
+    @GET(BOOK_END_RECOMMEND)
     fun requestBookRecommend(@Query("bookId") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
+
+    @FormUrlEncoded
+    @POST(BOOK_END_RECOMMEND_V4)
+    fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
+
 }

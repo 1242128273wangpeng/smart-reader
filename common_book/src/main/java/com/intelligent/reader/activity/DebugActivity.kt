@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ding.basic.Config
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
@@ -31,7 +32,7 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
     private val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
     private val editor = sp.edit()
 
-    //用于保存禁用动态参数前的host,用来还原动态参数
+    //保存禁用动态参数前的host,用来还原动态参数
     private val sharePreUtil = SharedPreUtil(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +88,9 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
             R.id.btn_debug_update_chapter -> {
                 updateChapter(isChecked)
             }
+            R.id.btn_debug_show_toast -> {
+                editor.putBoolean(Constants.SHOW_TOAST_LOG, isChecked).apply()
+            }
         }
 
     }
@@ -94,15 +98,22 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
 
     private fun initView() {
 
-        //启用动态参数、提前显示广告、重新获取默认书架、更新章节
+        //启用动态参数
         btn_debug_start_params.setOnCheckedChangeListener(this)
-        btn_debug_pre_show_ad.setOnCheckedChangeListener(this)
-        btn_debug_reset_book_shelf.setOnCheckedChangeListener(this)
-        btn_debug_update_chapter.setOnCheckedChangeListener(this)
-
         btn_debug_start_params.isChecked = sp.getBoolean(Constants.START_PARAMS, true)
+
+        // 提前显示广告
+        btn_debug_pre_show_ad.setOnCheckedChangeListener(this)
         btn_debug_pre_show_ad.isChecked = sp.getBoolean(Constants.PRE_SHOW_AD, false)
 
+        // 重新获取默认书架
+        btn_debug_reset_book_shelf.setOnCheckedChangeListener(this)
+        // 更新章节
+        btn_debug_update_chapter.setOnCheckedChangeListener(this)
+
+        // 打点Toast
+        btn_debug_show_toast.setOnCheckedChangeListener(this)
+        btn_debug_show_toast.isChecked = sp.getBoolean(Constants.SHOW_TOAST_LOG, false)
 
         iv_back.setOnClickListener(this)
 
@@ -121,27 +132,26 @@ class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnC
     private fun startParams() {
         if (sp.getBoolean(Constants.START_PARAMS, true)) {
 
-//            editor.remove(Constants.NOVEL_HOST)
-//            editor.remove(Constants.WEBVIEW_HOST)
-//            editor.remove(Constants.UNION_HOST)
-//            editor.remove(Constants.CONTENT_HOST)
-//            editor.apply()
-
             //还原动态参数
             editor.putString(Constants.NOVEL_HOST, sharePreUtil.getString(Constants.NOVEL_PRE_HOST))
             editor.putString(Constants.WEBVIEW_HOST, sharePreUtil.getString(Constants.WEBVIEW_PRE_HOST))
             editor.putString(Constants.UNION_HOST, sharePreUtil.getString(Constants.UNION_PRE_HOST))
             editor.putString(Constants.CONTENT_HOST, sharePreUtil.getString(Constants.CONTENT_PRE_HOST))
-            editor.apply()
+
+            Config.insertRequestAPIHost(sharePreUtil.getString(Constants.NOVEL_PRE_HOST))
+            Config.insertWebViewHost(sharePreUtil.getString(Constants.WEBVIEW_PRE_HOST))
+            Config.insertMicroAPIHost(sharePreUtil.getString(Constants.UNION_PRE_HOST))
+            Config.insertContentAPIHost(sharePreUtil.getString(Constants.CONTENT_PRE_HOST))
 
         } else { //禁用动态参数
             // 保留动态参数
-            sharePreUtil.putString(Constants.NOVEL_PRE_HOST, sp.getString(Constants.NOVEL_HOST,""))
-            sharePreUtil.putString(Constants.WEBVIEW_PRE_HOST, sp.getString(Constants.WEBVIEW_HOST,""))
-            sharePreUtil.putString(Constants.UNION_PRE_HOST, sp.getString(Constants.UNION_HOST,""))
-            sharePreUtil.putString(Constants.CONTENT_PRE_HOST, sp.getString(Constants.CONTENT_HOST,""))
+            sharePreUtil.putString(Constants.NOVEL_PRE_HOST, sp.getString(Constants.NOVEL_HOST, ""))
+            sharePreUtil.putString(Constants.WEBVIEW_PRE_HOST, sp.getString(Constants.WEBVIEW_HOST, ""))
+            sharePreUtil.putString(Constants.UNION_PRE_HOST, sp.getString(Constants.UNION_HOST, ""))
+            sharePreUtil.putString(Constants.CONTENT_PRE_HOST, sp.getString(Constants.CONTENT_HOST, ""))
         }
 
+        editor.apply()
     }
 
     /**

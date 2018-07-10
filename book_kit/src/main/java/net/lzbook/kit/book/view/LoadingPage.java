@@ -54,12 +54,13 @@ public class LoadingPage extends FrameLayout {
         actReference = new WeakReference<>(activity);
         Activity act = actReference.get();
         if (act != null) {
-            root = ((ViewGroup) act.getWindow().getDecorView().findViewById(android.R.id.content));
+            root = (act.getWindow().getDecorView().findViewById(android.R.id.content));
             initView();
         }
     }
 
-    public LoadingPage(Activity activity, boolean isFromReadingPage, String novelSource, int settingCode) {
+    public LoadingPage(Activity activity, boolean isFromReadingPage, String novelSource,
+            int settingCode) {
         super(activity);
         this.isFromReadingPage = isFromReadingPage;
         this.novelSource = novelSource;
@@ -67,7 +68,7 @@ public class LoadingPage extends FrameLayout {
         actReference = new WeakReference<>(activity);
         Activity act = actReference.get();
         if (act != null) {
-            root = ((ViewGroup) act.getWindow().getDecorView().findViewById(android.R.id.content));
+            root = (act.getWindow().getDecorView().findViewById(android.R.id.content));
             initView();
         }
     }
@@ -78,7 +79,7 @@ public class LoadingPage extends FrameLayout {
         Activity act = actReference.get();
         if (act != null) {
             settingCode = code;
-            root = ((ViewGroup) act.getWindow().getDecorView().findViewById(android.R.id.content));
+            root = (act.getWindow().getDecorView().findViewById(android.R.id.content));
             initView();
         }
 
@@ -109,7 +110,7 @@ public class LoadingPage extends FrameLayout {
         actReference = new WeakReference<>(activity);
         Activity act = actReference.get();
         if (act != null) {
-            root = ((ViewGroup) act.getWindow().getDecorView().findViewById(android.R.id.content));
+            root = (act.getWindow().getDecorView().findViewById(android.R.id.content));
             initView();
         }
     }
@@ -129,7 +130,8 @@ public class LoadingPage extends FrameLayout {
             public void run() {
 //                initView();
                 addRootView();
-                if (NetWorkUtils.NETWORK_NONE == NetWorkUtils.getNetWorkType(act) && Constants.is_reading_network_limit) {
+                if (NetWorkUtils.NETWORK_NONE == NetWorkUtils.getNetWorkType(act)
+                        && Constants.is_reading_network_limit) {
                     onNetWorkError();
                 } else {
                     try {
@@ -238,7 +240,7 @@ public class LoadingPage extends FrameLayout {
         }
         if (isFromReadingPage) {
             loadView = LayoutInflater.from(act).inflate(R.layout.loading_page_reading, null);
-            tv_novel_source = (TextView) loadView.findViewById(R.id.tv_novel_source);
+            tv_novel_source =  loadView.findViewById(R.id.tv_novel_source);
             setLoadUrl();
         } else {
             loadView = LayoutInflater.from(act).inflate(R.layout.loading_page, null);
@@ -248,15 +250,15 @@ public class LoadingPage extends FrameLayout {
         addView(loadView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(errorView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        tv_loading_progress = (TextView) loadView.findViewById(R.id.tv_loading_progress);
-        loading_error_view = (RelativeLayout) errorView.findViewById(R.id.loading_error_view);
-        setting_btn = (Button) errorView.findViewById(R.id.loading_error_setting);
+        tv_loading_progress =  loadView.findViewById(R.id.tv_loading_progress);
+        loading_error_view =  errorView.findViewById(R.id.loading_error_view);
+        setting_btn =  errorView.findViewById(R.id.loading_error_setting);
         setting_btn.setVisibility(GONE);
-        reload_btn = (Button) errorView.findViewById(R.id.loading_error_reload);
-        tv_network_error = (TextView) errorView.findViewById(R.id.tv_network_error);
+        reload_btn =  errorView.findViewById(R.id.loading_error_reload);
+        tv_network_error =  errorView.findViewById(R.id.tv_network_error);
         tv_network_error.setText(R.string.read_network_error);
 
-        loading_progressbar = (ProgressBar) loadView.findViewById(R.id.loading_progressbar);
+        loading_progressbar =  loadView.findViewById(R.id.loading_progressbar);
 
 //        setLoadingBg(R.color.color_white_faf9f7);
         setLoadingTextColor(R.color.color_brown_a8978d);
@@ -281,7 +283,8 @@ public class LoadingPage extends FrameLayout {
 
                 Activity act = actReference.get();
 
-                if (NetWorkUtils.getNetWorkType(act.getApplicationContext()) == NetWorkUtils.NETWORK_NONE && Constants.is_reading_network_limit) {
+                if (NetWorkUtils.getNetWorkType(act.getApplicationContext())
+                        == NetWorkUtils.NETWORK_NONE && Constants.is_reading_network_limit) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -336,21 +339,24 @@ public class LoadingPage extends FrameLayout {
             }
         });
         if (root != null) {
-            root.addView(this, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            root.addView(this,
+                    new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
     }
 
     private void addRootView() {
         if (root != null) {
             if (this.getParent() == null) {
-                root.addView(this, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                root.addView(this,
+                        new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             }
         }
     }
 
     private void setLoadUrl() {
         AppLog.e(TAG, "setLoadUrl:" + novelSource);
-        if (tv_novel_source != null && !TextUtils.isEmpty(novelSource) && !"null".equals(novelSource)) {
+        if (tv_novel_source != null && !TextUtils.isEmpty(novelSource) && !"null".equals(
+                novelSource)) {
             Activity activity = actReference.get();
             activity.runOnUiThread(new Runnable() {
                 @Override

@@ -110,6 +110,7 @@
                                     android:scaleType="fitXY"
                                     android:background="@mipmap/bookshelf_book_cover_default"
                                     android:src="@mipmap/bookshelf_book_cover_default"/>
+
                         </FrameLayout>
 
                         <LinearLayout
@@ -151,7 +152,6 @@
                                         android:layout_alignParentRight="true"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="@dimen/cover_book_state_padding"
-
                                         android:includeFontPadding="false"
                                         android:gravity="center_vertical"
                                         android:text="连载中"
@@ -345,7 +345,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"/>
 
-                    <net.lzbook.kit.book.view.ExpandableTextView
+                    <com.intelligent.reader.view.ExpandableTextView
                             android:id="@+id/book_cover_description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -379,7 +379,7 @@
                                 android:textSize="12sp"
                                 android:paddingRight="16dp"
                                 />
-                    </net.lzbook.kit.book.view.ExpandableTextView>
+                    </com.intelligent.reader.view.ExpandableTextView>
 
                     <com.intelligent.reader.view.FlowLayout
                             android:id="@+id/flowlayout"

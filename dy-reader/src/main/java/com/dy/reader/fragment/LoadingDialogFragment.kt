@@ -12,7 +12,7 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.util.ThemeUtil
-import kotlinx.android.synthetic.qbmfrmxs.frag_loading_dialog.*
+import kotlinx.android.synthetic.main.frag_loading_dialog.*
 
 class LoadingDialogFragment : DialogFragment() {
 

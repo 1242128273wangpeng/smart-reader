@@ -54,7 +54,7 @@ public class Constants {
     public static final String DY_SHELF_AD_SWITCH = "DY_shelf_ad_switch";
     //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
     public static final String BOOK_SHELF_STATE = "book_shelf_state";
- 	//书架1-2广告开关
+    //书架1-2广告开关
     public static final String DY_SHELF_BOUNDARY_SWITCH = "DY_shelf_boundary_switch";
     //书架广告频率
     public static final String DY_SHELF_AD_FREQ = "DY_shelf_ad_freq";
@@ -137,7 +137,8 @@ public class Constants {
     public static int limit_versionCode = 0;
     public static String limit_channelIds = "";
     public static boolean ad_huajiao_switch = false;
-    public static String ad_huajiao_access_address = "http://h.open.huajiao.com?channelid=quanbenzhuishu";
+    public static String ad_huajiao_access_address =
+            "http://h.open.huajiao.com?channelid=quanbenzhuishu";
     public static String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     //老版青果缓存路径
@@ -180,7 +181,8 @@ public class Constants {
     public static boolean isVolumeTurnover = true;
     public static int screenOffTimeout = 5 * 60 * 1000;// TODO屏幕休眠时间调整为5分钟
     public static boolean isSlideUp = false;
-    public static int read_rest_time = Constants.DEVELOPER_MODE ? (2 * 60 * 1000) : (30 * 60 * 1000);    //护眼提醒时间
+    public static int read_rest_time =
+            Constants.DEVELOPER_MODE ? (2 * 60 * 1000) : (30 * 60 * 1000);    //护眼提醒时间
     // (测试用时间2min对应上线时间30min)
     public static int one_day_time = 24 * 60 * 60 * 1000;
     public static int readedCount = 0;
@@ -273,6 +275,7 @@ public class Constants {
      */
     public static String SHAREDPREFERENCES_KEY =
             "onlineconfig_agent_online_setting_" + AppUtils.getPackageName();
+    public static String IS_FIX_CATALOG = "is_fix_catalog";//是否提示修复目录，点击确认后不再提示
 
     /**
      * HOST分类
@@ -298,7 +301,14 @@ public class Constants {
     public static String RESET_BOOK_SHELF = "reset_book_shelf";//重置书架
     public static String UPDATE_CHAPTER = "update_chapter";// 更新章节
     public static String HOST_LIST = "host_list";// host列表
+    public static String SHOW_TOAST_LOG = "show_toast_log";//打点Toast显示，方便h5查看打点
 
+    /**
+     * Intent传参
+     */
+    public static String BOOK_ID = "book_id";
+    public static String BOOK_SOURCE_ID = "book_source_id";
+    public static String BOOK_CHAPTER_ID = "book_chapter_id";
 
     public static long startReadTime = 0;
     public static long endReadTime = 0;

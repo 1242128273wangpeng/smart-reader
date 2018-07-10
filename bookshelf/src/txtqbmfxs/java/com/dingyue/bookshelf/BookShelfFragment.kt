@@ -16,7 +16,6 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.txtqbmfxs.bookshelf_refresh_header.view.*
@@ -26,8 +25,9 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.*
-import android.content.BroadcastReceiver
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.uiThread
 
 
 /**
@@ -157,6 +157,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             BookShelfLogger.uploadBookShelfCacheManager()
         }
         img_empty_add_book.setOnClickListener {
+            // 点击去书城
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
         }

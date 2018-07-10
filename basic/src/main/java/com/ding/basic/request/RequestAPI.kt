@@ -17,7 +17,7 @@ import kotlin.properties.Delegates
  * Created on 2018/3/13.
  * Created by crazylei.
  */
-internal object RequestAPI {
+object RequestAPI {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(RequestInterceptor()).build()
 
@@ -30,7 +30,7 @@ internal object RequestAPI {
         Logger.v("初始化OkHttpClient!")
     }
 
-    private fun initializeDataRequestService() {
+    fun initializeDataRequestService() {
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -133,5 +133,9 @@ internal object RequestAPI {
 
     fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>? {
         return requestService.requestBookRecommend(book_id, shelfBooks)
+    }
+
+    fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
+        return requestService.requestBookRecommendV4(book_id, recommend)
     }
 }

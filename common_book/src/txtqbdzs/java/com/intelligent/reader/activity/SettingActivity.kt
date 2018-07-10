@@ -435,10 +435,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                     }.start()
             })
 
-            myDialog!!.setOnCancelListener({
-                    myDialog!!.dismiss()
-            })
-            if (!myDialog!!.isShowing()) {
+            myDialog!!.setOnCancelListener { myDialog!!.dismiss() }
+            if (!myDialog!!.isShowing) {
                 try {
                     myDialog!!.show()
                 } catch (e: Exception) {
@@ -479,7 +477,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     }
 
     private fun dismissDialog() {
-        if (myDialog != null && myDialog!!.isShowing()) {
+        if (myDialog != null && myDialog!!.isShowing) {
             myDialog!!.dismiss()
         }
     }
@@ -494,7 +492,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun onCheckedChanged(view: SwitchButton, isChecked: Boolean) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
         val edit = sharedPreferences.edit()
-        if (view.getId() === R.id.bt_night_shift) {
+        if (view.id == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE)
             if (isChecked) {
                 tv_night_shift!!.setText(R.string.mode_day)
@@ -510,7 +508,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             edit.putInt("content_mode", Constants.MODE)
             edit.apply()
             nightShift(isChecked, true)
-        } else if (view.getId() === R.id.bt_wifi_auto) {
+        } else if (view.id == R.id.bt_wifi_auto) {
             edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
             edit.apply()
             val data = HashMap<String, String>()
@@ -535,7 +533,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
         override fun onPostExecute(result: String) {
             super.onPostExecute(result)
-            clear_cache_size!!.setText(result)
+            clear_cache_size!!.text = result
         }
 
     }

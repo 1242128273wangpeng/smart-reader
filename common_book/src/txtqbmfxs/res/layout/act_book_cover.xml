@@ -152,6 +152,7 @@
                                 android:layout_marginTop="2dp"
                                 android:scaleType="fitXY"
                                 android:src="@drawable/common_book_cover_default_icon"/>
+
                         </FrameLayout>
 
                         <LinearLayout

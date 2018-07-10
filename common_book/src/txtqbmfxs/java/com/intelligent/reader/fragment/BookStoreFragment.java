@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.ding.basic.request.RequestService;
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.NonSwipeViewPager;
 import net.lzbook.kit.constants.Constants;
@@ -41,8 +42,6 @@ public class BookStoreFragment extends Fragment {
     private LinearLayout bookstore_ranking;
     private LinearLayout bookstore_category;
 
-    private BookStoreAdapter bookStoreAdapter;
-
     private WebViewFragment recommendFragment;
     private WebViewFragment rankingFragment;
     private WebViewFragment categoryFragment;
@@ -51,8 +50,6 @@ public class BookStoreFragment extends Fragment {
 
     private int current_tab;
 
-    private View view;
-    private int versionCode = 0;
     private SearchClickListener mSearchClickListener;
     private SharedPreferences sharedPreferences;
 
@@ -69,8 +66,7 @@ public class BookStoreFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                getActivity().getApplicationContext());
-        versionCode = AppUtils.getVersionCode();
+                BaseBookApplication.getGlobalContext());
         fragmentManager = getChildFragmentManager();
     }
 
@@ -78,7 +74,7 @@ public class BookStoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_bookstore, container, false);
+        View view = inflater.inflate(R.layout.fragment_bookstore, container, false);
 
         bookstore_content = view.findViewById(R.id.bookstore_content);
 
@@ -87,7 +83,7 @@ public class BookStoreFragment extends Fragment {
         bookstore_category = view.findViewById(R.id.bookstore_category);
 
 
-        bookStoreAdapter = new BookStoreAdapter(fragmentManager);
+        BookStoreAdapter bookStoreAdapter = new BookStoreAdapter(fragmentManager);
         bookstore_content.setAdapter(bookStoreAdapter);
         bookstore_content.setOffscreenPageLimit(2);
 
@@ -244,7 +240,7 @@ public class BookStoreFragment extends Fragment {
                     rankingFragment = new WebViewFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("type", "rank");
-                    String uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}",
+                    String uri = RequestService.WEB_RANK_V3.replace("{packageName}",
                             AppUtils.getPackageName());
                     Map<String, String> params = new HashMap<>();
 //                    params.put("sex",sharedPreferences.getInt("gender", Constants.SGENDER)+"");
@@ -278,6 +274,9 @@ public class BookStoreFragment extends Fragment {
         switchState(current_tab);
     }
 
+    public void setOnBottomClickListener(SearchClickListener mSearchClickListener) {
+        this.mSearchClickListener = mSearchClickListener;
+    }
 
     //大数据 青果搜索打点用
     public interface SearchClickListener {
@@ -285,7 +284,7 @@ public class BookStoreFragment extends Fragment {
     }
 
     /**
-     * ViewPager 的Adapter
+     * ViewPager的Adapter
      */
     protected class BookStoreAdapter extends FragmentPagerAdapter {
 

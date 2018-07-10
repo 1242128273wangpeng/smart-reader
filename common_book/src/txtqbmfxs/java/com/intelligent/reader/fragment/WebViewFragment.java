@@ -155,7 +155,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     protected void onVisible() {
         if (type != null) {
             if (type.equals("rank")) {//榜单
-               /* jsInterfaceHelper.setRankingWebVisible();*/
+                /*jsInterfaceHelper.setRankingWebVisible();*/
                 notifyWebLog();//通知 H5 打点
             }
         }

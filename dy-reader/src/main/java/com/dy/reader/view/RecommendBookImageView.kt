@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.iv_recommend.view.*
  * 创建人：Zach
  * 创建时间：2017/10/31 0031
  */
-
 class RecommendBookImageView: RelativeLayout {
 
     var mSelectedFlag = false

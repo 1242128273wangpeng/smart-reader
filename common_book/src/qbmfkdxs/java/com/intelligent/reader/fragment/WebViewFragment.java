@@ -16,18 +16,24 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
+import com.dingyue.contract.util.CommonUtil;
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.NetWorkUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -50,9 +56,10 @@ public class WebViewFragment extends Fragment {
     private TextView txt_title;
     private ImageView img_search;
 
-    private int bottomType;//青果打点搜索 2 推荐  3 榜单
-    public static final int TYPE_TOP = 3;
-    public static final int TYPE_CLASS = 4;
+    public static final String TYPE_RECOMM = "recommend";
+    public static final String TYPE_RANK = "rank";
+    public static final String TYPE_CATEGORY = "category";
+    private String mTitle = null;
 
     @Override
     public void onAttach(Activity activity) {
@@ -70,6 +77,7 @@ public class WebViewFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             this.url = bundle.getString("url");
+            this.mTitle = bundle.getString("type");
             AppLog.e(TAG, "url---->" + url);
         }
     }
@@ -85,20 +93,28 @@ public class WebViewFragment extends Fragment {
             e.printStackTrace();
         }
         initView();
+        initRefresh();
         return rootView;
     }
 
-    public void setTitle(String title, int bottomType) {
-        if (rl_head_other != null) {
-            rl_head_other.setVisibility(View.GONE);
+    private void setTitle() {
+        if (TYPE_RECOMM.equals(mTitle)){
+            return;
         }
-        if (txt_title != null) {
-            txt_title.setText(title);
+
+        if (rl_head_other != null) {
+            rl_head_other.setVisibility(View.VISIBLE);
+        }
+        if (txt_title != null && mTitle != null) {
+            if (TYPE_RANK.equals(mTitle)){
+                txt_title.setText("榜单");
+            } else if(TYPE_CATEGORY.equals(mTitle)){
+                txt_title.setText("分类");
+            }
         }
         if (rl_head_recommend != null) {
             rl_head_recommend.setVisibility(View.GONE);
         }
-        this.bottomType = bottomType;
     }
 
     @SuppressLint("JavascriptInterface")
@@ -113,6 +129,7 @@ public class WebViewFragment extends Fragment {
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
+            setTitle();
         }
 
         if (weakReference != null) {
@@ -159,10 +176,10 @@ public class WebViewFragment extends Fragment {
             public void onClick(View v) {
                 RouterUtil.INSTANCE.navigation(requireActivity(),
                         RouterConfig.SEARCH_BOOK_ACTIVITY);
-                if (bottomType == TYPE_TOP) {
+                if ("rank".equals(mTitle)) {
                     StartLogClickUtil.upLoadEventLog(requireActivity(),
                             StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
-                } else if (bottomType == TYPE_CLASS) {
+                } else if ("category".equals(mTitle)) {
                     StartLogClickUtil.upLoadEventLog(requireActivity(),
                             StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
 
@@ -314,5 +331,97 @@ public class WebViewFragment extends Fragment {
 
         String startLoad(WebView webView, String url);
 
+    }
+
+
+    private SuperSwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar head_pb_view;
+    private TextView head_text_view;
+    private ImageView head_image_view;
+
+    private void initRefresh() {
+
+        // 免费全本小说书城 推荐页添加下拉刷新
+        if (!TextUtils.isEmpty(url) && rootView != null) {
+            swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(R.id.bookshelf_refresh_view);
+            swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
+            swipeRefreshLayout.setHeaderView(createHeaderView());
+            swipeRefreshLayout.setTargetScrollWithLayout(true);
+            swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+
+                @Override
+                public void onRefresh() {
+                    head_text_view.setText("正在刷新");
+                    head_image_view.setVisibility(View.GONE);
+                    head_pb_view.setVisibility(View.VISIBLE);
+                    checkUpdate();
+                }
+
+                @Override
+                public void onPullDistance(int distance) {
+                    // pull distance
+                }
+
+                @Override
+                public void onPullEnable(boolean enable) {
+                    head_pb_view.setVisibility(View.GONE);
+                    head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
+                    head_image_view.setVisibility(View.VISIBLE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        head_image_view.setRotation(enable ? 180 : 0);
+                    }
+                }
+            });
+            if (url.contains("recommend")) {
+                swipeRefreshLayout.setPullToRefreshEnabled(true);
+            } else {
+                swipeRefreshLayout.setPullToRefreshEnabled(false);
+            }
+        }
+    }
+
+    private View createHeaderView() {
+        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext())
+                .inflate(R.layout.layout_head, null);
+        head_pb_view = (ProgressBar) headerView.findViewById(R.id.head_pb_view);
+        head_text_view = (TextView) headerView.findViewById(R.id.head_text_view);
+        head_text_view.setText("下拉刷新");
+        head_image_view = (ImageView) headerView.findViewById(R.id.head_image_view);
+        head_image_view.setVisibility(View.VISIBLE);
+        head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow);
+        head_pb_view.setVisibility(View.GONE);
+        return headerView;
+    }
+
+    private void checkUpdate() {
+        if (swipeRefreshLayout == null) {
+            return;
+        }
+
+        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+            swipeRefreshLayout.setRefreshing(false);
+            CommonUtil.showToastMessage("网络不给力");
+            return;
+        }
+
+        swipeRefreshLayout.onRefreshComplete();
+        loadData("javascript:refreshNew()");
+    }
+
+    private void loadData(final String s) {
+        if (!TextUtils.isEmpty(s) && contentView != null) {
+            contentView.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        AppLog.e(TAG, "call back jsMethod s: " + s);
+                        contentView.loadUrl(s);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        weakReference.get().finish();
+                    }
+                }
+            });
+        }
     }
 }

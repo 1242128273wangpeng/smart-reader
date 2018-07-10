@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
@@ -45,7 +44,11 @@ import kotlin.collections.ArrayList
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
-class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
+class CoverPageActivity : BaseCacheableActivity(),
+        OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
+
+    }
 
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
 
@@ -53,9 +56,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 推荐书籍子条目点击事件
      */
     override fun onItemClick(view: View?, position: Int) {
-//        if (shake.check()) {
-//            return
-//        }
         if (view == null || position < 0 || position > mRecommendBooks.size) return
 
         val recommendBooks = mRecommendBooks[position]
@@ -109,31 +109,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private var coverPagePresenter: CoverPagePresenter? = null
 
-
-    /*  companion object {
-          fun launcher(context: Context, host: String, book_id: String,
-                       book_source_id: String, name: String, author: String) {
-              val requestItem = Book()
-              requestItem.book_id = book_id
-              requestItem.book_source_id = book_source_id
-              requestItem.host = host
-              requestItem.name = name
-              requestItem.author = author
-
-              val intent = Intent()
-              intent.setClass(context, CoverPageActivity::class.java)
-              val bundle = Bundle()
-              try {
-                  bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-                  intent.putExtras(bundle)
-                  context.startActivity(intent)
-              } catch (e: ClassCastException) {
-                  e.printStackTrace()
-              }
-          }
-
-      }*/
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.cover_into)
@@ -141,7 +116,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         initIntent(intent)
         initListener()
-//        initAD()
+        /*initAD()*/
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -162,30 +137,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     private fun initIntent(intent: Intent?) {
-        if (intent == null) return
 
-//            val bundle = intent.extras
-//
-//            if (bundle != null) {
-//                bundle.getSerializable(Constants.REQUEST_ITEM)?.let {
-//                    it as Book
-//                    bookId = it.book_id
-//                    bookSourceId = it.book_source_id
-//                    bookChapterId = it.book_chapter_id
-//                }
-//            } else {
-
-        if (intent.hasExtra("book_id")) {
-            bookId = intent.getStringExtra("book_id")
+        if (intent != null) {
+            if (intent.hasExtra(Constants.BOOK_ID)) {
+                bookId = intent.getStringExtra(Constants.BOOK_ID)
+            }
+            if (intent.hasExtra(Constants.BOOK_SOURCE_ID)) {
+                bookSourceId = intent.getStringExtra(Constants.BOOK_SOURCE_ID)
+            }
+            if (intent.hasExtra(Constants.BOOK_CHAPTER_ID)) {
+                bookChapterId = intent.getStringExtra(Constants.BOOK_CHAPTER_ID)
+            }
         }
-        if (intent.hasExtra("book_source_id")) {
-            bookSourceId = intent.getStringExtra("book_source_id")
-        }
-        if (intent.hasExtra("book_chapter_id")) {
-            bookChapterId = intent.getStringExtra("book_chapter_id")
-        }
-
-
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
@@ -236,6 +199,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             // Monkey
             return
         }
+
         book_cover_content?.smoothScrollTo(0, 0)
 
         if (book != null) {
@@ -350,15 +314,15 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showLoadingSuccess() {
-        if (loadingPage != null) {
-            loadingPage?.onSuccess()
-        }
+
+        loadingPage?.onSuccess()
+
     }
 
     override fun showLoadingFail() {
-        if (loadingPage != null) {
-            loadingPage?.onError()
-        }
+
+        loadingPage?.onError()
+
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
@@ -441,8 +405,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         super.onTaskStatusChange()
         changeDownloadButtonStatus()
     }
-/*
-    private fun initAD() {
+
+/*    private fun initAD() {
         if (!Constants.isHideAD) {
             MediaControl.loadBookCoverAd(this, { view ->
                 if (ad_view != null && !this.isFinishing()) {
