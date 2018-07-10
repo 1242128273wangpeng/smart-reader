@@ -41,6 +41,21 @@ android {
             qbmfrmxs  : "全本免费热门小说"
     ]
 
+    def appPackageIDConfig = [
+            kdzsydq   : "cn.txtzsydsq.reader",
+            qbzsydq   : "cn.qbzsydsq.reader",
+            mfqbxssc  : "cc.kdqbxs.reader",
+            zsmfqbxs  : "cc.mianfeinovel",
+            txtqbmfxs : "cc.lianzainovel",
+            qbmfxsydq : "cc.quanben.novel",
+            txtqbdzs  : "cc.remennovel",
+            kdqbdzs   : "cn.kkqbtxtxs.reader",
+            txtqbxsydq: "cn.zsqbydq.reader",
+            txtqbmfyd : "cn.txtqbmfyd.reader",
+            qbmfkdxs  : "cc.quanbennovel",
+            qbmfrmxs  : "cn.qbmfrmxs.reader"
+    ]
+
     def channel = "dev_channel"
 
 
@@ -99,10 +114,10 @@ android {
                         buildTypeName = buildTypeName.split("custom")[0]
                 }
                 System.err.println("buildTypeName = ${buildTypeName}")
-                if (rootProject.ext.appPackageIDConfig.containsKey(buildTypeName)) {
-                    System.err.println("configPkg = ${rootProject.ext.appPackageIDConfig.get(buildTypeName)}")
+                if (appPackageIDConfig.containsKey(buildTypeName)) {
+                    System.err.println("configPkg = ${appPackageIDConfig.get(buildTypeName)}")
 
-                    applicationId rootProject.ext.appPackageIDConfig.get(buildTypeName)
+                    applicationId appPackageIDConfig.get(buildTypeName)
                 }
 
                 if (appNameConfig.containsKey(buildTypeName)) {
