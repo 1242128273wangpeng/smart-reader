@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.txtqbmfxs.item_bookshelf_book.view.*
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppUtils
@@ -41,26 +43,12 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             txt_book_read_progress.text = "未读"
         }
 
-//        if (book.status.equals("2")) {
-//            txt_book_chapter.text = "已完结"
-//        } else {
-//            if (!TextUtils.isEmpty(book.last_chapter?.name)) {
-//                txt_book_chapter.text = book.last_chapter?.name
-//            }
-//        }
-//
-//        if (book.update_status != 1) {
-//            img_book_update.visibility = View.GONE
-//        } else {
-//            img_book_update.visibility = View.VISIBLE
-//        }
-
-
         /**
          * 书架检测到书籍有修复会在该书籍封面显示更新角标，
          * 并且章节信息变更为：章节已修复至最新（列表书架显示，九宫格书架只显示更新角标）
          */
-        if (RepairHelp.showFixMsg(book)) {
+        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(Constants.IS_FIX_CATALOG, true)) {
             img_book_update.visibility = View.VISIBLE
             txt_book_chapter.text = "章节已修复至最新"
         } else {

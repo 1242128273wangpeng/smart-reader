@@ -275,7 +275,7 @@ public class Constants {
      */
     public static String SHAREDPREFERENCES_KEY =
             "onlineconfig_agent_online_setting_" + AppUtils.getPackageName();
-    public static String IS_FIX_CATALOG = "is_fix_catalog";//目录是否修复
+    public static String IS_FIX_CATALOG = "is_fix_catalog";//是否提示修复目录，点击确认后不再提示
 
     /**
      * HOST分类
