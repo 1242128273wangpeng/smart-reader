@@ -12,9 +12,6 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 22
 
-//    applicationId = "cc.quanbennovel"
-//    defaultPublishConfig = 'qbmfkdxs' + 'Debug'
-
     minifyEnable = false
     shrinkResEnable = minifyEnable
 

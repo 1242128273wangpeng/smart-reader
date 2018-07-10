@@ -41,21 +41,6 @@ android {
             qbmfrmxs  : "全本免费热门小说"
     ]
 
-    def appPackageIDConfig = [
-            kdzsydq   : "cn.txtzsydsq.reader",
-            qbzsydq   : "cn.qbzsydsq.reader",
-            mfqbxssc  : "cc.kdqbxs.reader",
-            zsmfqbxs  : "cc.mianfeinovel",
-            txtqbmfxs : "cc.lianzainovel",
-            qbmfxsydq : "cc.quanben.novel",
-            txtqbdzs  : "cc.remennovel",
-            kdqbdzs   : "cn.kkqbtxtxs.reader",
-            txtqbxsydq: "cn.zsqbydq.reader",
-            txtqbmfyd : "cn.txtqbmfyd.reader",
-            qbmfkdxs  : "cc.quanbennovel",
-            qbmfrmxs  : "cn.qbmfrmxs.reader"
-    ]
-
     def channel = "dev_channel"
 
 
@@ -114,10 +99,10 @@ android {
                         buildTypeName = buildTypeName.split("custom")[0]
                 }
                 System.err.println("buildTypeName = ${buildTypeName}")
-                if (appPackageIDConfig.containsKey(buildTypeName)) {
-                    System.err.println("configPkg = ${appPackageIDConfig.get(buildTypeName)}")
+                if (rootProject.ext.appPackageIDConfig.containsKey(buildTypeName)) {
+                    System.err.println("configPkg = ${rootProject.ext.appPackageIDConfig.get(buildTypeName)}")
 
-                    applicationId appPackageIDConfig.get(buildTypeName)
+                    applicationId rootProject.ext.appPackageIDConfig.get(buildTypeName)
                 }
 
                 if (appNameConfig.containsKey(buildTypeName)) {
@@ -427,19 +412,14 @@ N多网	        blf1298_10885_001
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/mianfeinovel_new"
-//            notOverrideResValue getOwner(), "string", "app_name", "追书免费全本小说"
             notOverrideResValue getOwner(), "string", "database_name", "mianfeinovelnew.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "e4ed492234"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730466"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "77f2350e86dc8d19f644ba0cdf0efa70"
             notOverrideResValue getOwner(), "string", "push_key", "l1XQOTrS9hzzdTxSh2pMEobvgUhPoNeM"
-
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://yuedu.dushixiaoshuo.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
 
-//            System.err.println("zsmfqbxs: app_name => " + getResValues().get("app_name").value)
-//            System.err.println("${defaultConfig.applicationId} defaultConfig.getResValues ${defaultConfig.getResValues()}")
         }
 //
         txtqbmfxs {
@@ -521,7 +501,6 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "cxBc7MXYbhHQ2NAzkFBAfoM3KwPlGjr9"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731453"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "9fd4a66d6d0db1af289ff64443fdab6e"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://xiaoshuo.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
         }
@@ -603,7 +582,6 @@ N多网	        blf1298_10885_001
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfyd_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
             notOverrideResValue getOwner(), "string", "database_name", "txtqbmfydBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
@@ -632,13 +610,11 @@ N多网	        blf1298_10885_001
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbmfxsxzq_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "今日多看免费小说"
             notOverrideResValue getOwner(), "string", "database_name", "qbmfxsxzq.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "d936085832"
             notOverrideResValue getOwner(), "string", "push_key", "mmpPNZqjHZz1ttpumE3PRouk9mHtN0pU"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731849"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "becf9b2d02e1caa350b0f9f8b84bb1bd"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
         }
@@ -667,7 +643,6 @@ N多网	        blf1298_10885_001
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbmfrmxs_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
             notOverrideResValue getOwner(), "string", "database_name", "qbmfrmxsBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"

@@ -46,6 +46,9 @@ import kotlin.collections.ArrayList
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(),
         OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
+
+    }
 
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
 
@@ -195,14 +198,6 @@ class CoverPageActivity : BaseCacheableActivity(),
         if (isFinishing) {
             // Monkey
             return
-        }
-
-        // 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (sp.getBoolean(Constants.IS_FIX_CATALOG, false)) {
-            img_book_update.visibility = VISIBLE
-        } else {
-            img_book_update.visibility = GONE
         }
 
         book_cover_content?.smoothScrollTo(0, 0)
