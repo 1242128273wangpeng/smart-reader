@@ -85,7 +85,7 @@
                             android:paddingBottom="@dimen/padding_17"
                             android:paddingTop="@dimen/padding_19">
 
-                        <RelativeLayout
+                        <FrameLayout
                                 android:id="@+id/frame"
                                 android:layout_width="@dimen/cover_book_width"
                                 android:layout_height="@dimen/cover_book_height">
@@ -111,18 +111,7 @@
                                     android:background="@mipmap/bookshelf_book_cover_default"
                                     android:src="@mipmap/bookshelf_book_cover_default"/>
 
-                            <ImageView
-                                android:id="@+id/img_book_update"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:layout_gravity="top|right"
-                                android:layout_marginRight="5dp"
-                                android:adjustViewBounds="true"
-                                android:contentDescription="@string/module_name"
-                                android:src="@drawable/book_new"
-                                android:visibility="gone"/>
-                        </RelativeLayout>
+                        </FrameLayout>
 
                         <LinearLayout
                                 android:layout_toRightOf="@+id/frame"
@@ -163,7 +152,6 @@
                                         android:layout_alignParentRight="true"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="@dimen/cover_book_state_padding"
-
                                         android:includeFontPadding="false"
                                         android:gravity="center_vertical"
                                         android:text="连载中"

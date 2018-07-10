@@ -77,17 +77,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun initIntent(intent: Intent?) {
         if (intent == null) return
 
-//            val bundle = intent.extras
-//
-//            if (bundle != null) {
-//                bundle.getSerializable(Constants.REQUEST_ITEM)?.let {
-//                    it as Book
-//                    bookId = it.book_id
-//                    bookSourceId = it.book_source_id
-//                    bookChapterId = it.book_chapter_id
-//                }
-//            } else {
-
         if (intent.hasExtra("book_id")) {
             bookId = intent.getStringExtra("book_id")
         }
@@ -213,14 +202,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (isFinishing) {
             // Monkey
             return
-        }
-
-        // 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (sp.getBoolean(Constants.IS_FIX_CATALOG, false)) {
-            img_book_update.visibility = VISIBLE
-        } else {
-            img_book_update.visibility = GONE
         }
 
         book_cover_content?.smoothScrollTo(0, 0)

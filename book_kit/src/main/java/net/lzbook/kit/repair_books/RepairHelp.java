@@ -197,24 +197,6 @@ public class RepairHelp {
 
     }
 
-    /**
-     * 判断是否修复书籍页
-     */
-    public static boolean showFixMsg(Book book) {
-
-        if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id()) != null)) {
-            BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBookFix(book.getBook_id());
-            if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
-                if (bookFix.getFix_type() == 1) {//书籍已修复
-                    return true;
-
-                }
-            }
-        }
-        return false;
-    }
-
 
     private static boolean isComfire = false;
     private static void showFixHintDialog(final Activity activity, final Book book, final BookFix bookFix, final FixCallBack fixCallBack) {
@@ -227,7 +209,7 @@ public class RepairHelp {
                 @Override
                 public void onClick(View v) {
                     // 更新修复状态为已修复
-                    sp.edit().putBoolean(Constants.IS_FIX_CATALOG, true).apply();
+                    sp.edit().putBoolean(Constants.IS_FIX_CATALOG, false).apply();
                     isComfire = true;
                     myDialog.dismiss();
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
