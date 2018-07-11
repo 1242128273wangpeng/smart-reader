@@ -38,6 +38,9 @@ import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 
     private var mBackground = 0
@@ -348,9 +351,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onClick(view: View) {
-        if (coverPagePresenter != null) {
+        /*if (coverPagePresenter != null) {
             coverPagePresenter!!.goToBookSearchActivity(view)
-        }
+        }*/
         when (view.id) {
             R.id.book_cover_back -> {
                 val data = HashMap<String, String>()
