@@ -146,54 +146,53 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
         //用于判断是否显示Textview的Drawable
         is_show_drawable = findViewById(R.id.is_show_drawable)
-        top_navigation_bg = findViewById(R.id.top_navigation_bg) as RelativeLayout
-        icon_more_left = findViewById(R.id.icon_more_left) as ImageView
-        btnBack = findViewById(R.id.setting_back) as ImageView
-        top_setting_back = findViewById(R.id.top_setting_back) as ImageView
-        user_login_layout = findViewById(R.id.user_login_layout) as RelativeLayout
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image_left = findViewById(R.id.iv_mine_image_left) as ImageView
-        user_login_layout_left = findViewById(R.id.user_login_layout_left) as RelativeLayout
-
+        top_navigation_bg = findViewById(R.id.top_navigation_bg)
+        icon_more_left = findViewById(R.id.icon_more_left)
+        btnBack = findViewById(R.id.setting_back)
+        top_setting_back = findViewById(R.id.top_setting_back)
+        user_login_layout = findViewById(R.id.user_login_layout)
+        iv_mine_image = findViewById(R.id.iv_mine_image)
+        tv_login_info = findViewById(R.id.tv_login_info)
+        iv_mine_image = findViewById(R.id.iv_mine_image)
+        tv_login_info = findViewById(R.id.tv_login_info)
+        iv_mine_image_left = findViewById(R.id.iv_mine_image_left)
+        user_login_layout_left = findViewById(R.id.user_login_layout_left)
         // 福利中心
-        rl_welfare = findViewById(R.id.rl_welfare) as RelativeLayout
-        img_welfare = findViewById(R.id.img_welfare) as ImageView
+        rl_welfare = findViewById(R.id.rl_welfare)
+        img_welfare = findViewById(R.id.img_welfare)
 
-        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs) as RelativeLayout
-        rl_style_change = findViewById(R.id.rl_style_change) as RelativeLayout
-        bt_night_shift = findViewById(R.id.bt_night_shift) as SwitchButton
-        bt_wifi_auto = findViewById(R.id.bt_wifi_auto) as SwitchButton
-        rl_readpage_setting = findViewById(R.id.rl_readpage_setting) as RelativeLayout
-        rl_setting_more = findViewById(R.id.rl_setting_more) as RelativeLayout
-        rl_feedback = findViewById(R.id.rl_feedback) as RelativeLayout
-        rl_mark = findViewById(R.id.rl_mark) as RelativeLayout
-        checkUpdateGuideRL = findViewById(R.id.check_update_rl) as RelativeLayout
-        clear_cache_rl = findViewById(R.id.clear_cache_rl) as RelativeLayout
-        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl) as RelativeLayout
-        rl_setting_layout = findViewById(R.id.rl_setting_layout) as LinearLayout
+        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs)
+        rl_style_change = findViewById(R.id.rl_style_change)
+        bt_night_shift = findViewById(R.id.bt_night_shift)
+        bt_wifi_auto = findViewById(R.id.bt_wifi_auto)
+        rl_readpage_setting = findViewById(R.id.rl_readpage_setting)
+        rl_setting_more = findViewById(R.id.rl_setting_more)
+        rl_feedback = findViewById(R.id.rl_feedback)
+        rl_mark = findViewById(R.id.rl_mark)
+        checkUpdateGuideRL = findViewById(R.id.check_update_rl)
+        clear_cache_rl = findViewById(R.id.clear_cache_rl)
+        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl)
+        rl_setting_layout = findViewById(R.id.rl_setting_layout)
 
-        theme_name = findViewById(R.id.theme_name) as TextView
-        clear_cache_size = findViewById(R.id.check_cache_size) as TextView
-        check_update_message = findViewById(R.id.check_update_message) as TextView
+        theme_name = findViewById(R.id.theme_name)
+        clear_cache_size = findViewById(R.id.check_cache_size)
+        check_update_message = findViewById(R.id.check_update_message)
 
         //条目字
-        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
-        tv_style_change = findViewById(R.id.tv_style_change) as TextView
-        tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
-        tv_readpage_setting = findViewById(R.id.tv_readpage_setting) as TextView
-        tv_setting_more = findViewById(R.id.tv_setting_more) as TextView
-        tv_feedback = findViewById(R.id.tv_feedback) as TextView
-        tv_mark = findViewById(R.id.tv_mark) as TextView
-        text_check_update = findViewById(R.id.text_check_update) as TextView
-        text_clear_cache = findViewById(R.id.text_clear_cache) as TextView
-        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement) as TextView
+        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs)
+        tv_style_change = findViewById(R.id.tv_style_change)
+        tv_night_shift = findViewById(R.id.tv_night_shift)
+        tv_readpage_setting = findViewById(R.id.tv_readpage_setting)
+        tv_setting_more = findViewById(R.id.tv_setting_more)
+        tv_feedback = findViewById(R.id.tv_feedback)
+        tv_mark = findViewById(R.id.tv_mark)
+        text_check_update = findViewById(R.id.text_check_update)
+        text_clear_cache = findViewById(R.id.text_clear_cache)
+        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement)
 
-        tv_login_info_left = findViewById(R.id.tv_login_info_left) as TextView
-        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left) as TextView
-        top_navigation_title = findViewById(R.id.top_navigation_title) as TextView
+        tv_login_info_left = findViewById(R.id.tv_login_info_left)
+        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left)
+        top_navigation_title = findViewById(R.id.top_navigation_title)
 
 
         if (mThemeHelper.isNight()) {
