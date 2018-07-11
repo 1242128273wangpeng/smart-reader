@@ -47,7 +47,7 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
         Book book = books.get(position);
         holder.tv_book_name.setText(book.getName());
 
-        if ("api.qingoo.cn".equals(book.getHost())) {
+        if (book.fromQingoo()) {
             holder.tv_readnum.setText(AppUtils.getCommonReadNums(Long.valueOf(book.getUv())));
         } else {
 

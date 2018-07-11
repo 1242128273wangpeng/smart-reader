@@ -284,7 +284,7 @@ object CacheManager {
                     state = DownloadState.NOSTART
                 }
                 var list: Array<String>? = null
-                if (Constants.QG_SOURCE.equals(book.host)) {
+                if (book.fromQingoo()) {
                     list = File(Constants.QG_CACHE_PATH + book.book_id).list()
                 } else {
                     list = File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book.book_id).list()
@@ -342,7 +342,7 @@ object CacheManager {
 
     fun hasOtherSourceStatus(book: Book): Boolean {
 
-        if (Constants.QG_SOURCE.equals(book.host)) {
+        if (book.fromQingoo()) {
             return false
         }
 

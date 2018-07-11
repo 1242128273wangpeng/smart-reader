@@ -177,6 +177,13 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
         this.id = id
     }
 
+    fun fromQingoo(): Boolean {
+        host?.let {
+            return it.contains("qingoo")
+        }
+        return false
+    }
+
     public override fun clone(): Book {
         return super.clone() as Book
     }
