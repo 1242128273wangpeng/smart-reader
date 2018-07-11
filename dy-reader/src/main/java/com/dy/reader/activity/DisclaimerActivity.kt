@@ -2,19 +2,20 @@ package com.dy.reader.activity
 
 import android.os.Bundle
 import android.os.SystemClock
-import android.view.View
-
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dy.reader.R
-import kotlinx.android.synthetic.txtqbmfxs.act_disclaimer.*
-
+import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.IntentUtil
-
 import java.util.HashMap
 
+/**
+ * Function：使用协议 / 转码声明
+ *
+ * Created by JoannChen on 2018/7/11 0011 17:25
+ * E-mail:yongzuo_chen@dingyuegroup.cn
+ */
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : iyouqu.theme.FrameActivity() {
 
@@ -37,12 +38,10 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         img_back.setOnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(this@DisclaimerActivity, StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data)
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data)
             finish()
         }
 
-        // 仅在使用协议页面进入可以打开调试模式
-//        if (intent.getBooleanExtra(RouterUtil.isFormDisclaimerPage, false)) {
         txt_content.setOnClickListener {
             displayEggs()
         }
@@ -76,5 +75,4 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
             }
         }
     }
-
 }

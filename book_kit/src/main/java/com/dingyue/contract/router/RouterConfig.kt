@@ -6,6 +6,10 @@ package com.dingyue.contract.router
  */
 object RouterConfig {
 
+    /**
+     * common_book
+     */
+
     const val HOME_ACTIVITY = "/common_book/HomeActivity"
 
     const val SPLASH_ACTIVITY = "/common_book/SplashActivity"
@@ -16,11 +20,15 @@ object RouterConfig {
 
     const val SEARCH_BOOK_ACTIVITY = "/common_book/SearchBookActivity"
 
-    const val DOWNLOAD_MANAGER_ACTIVITY = "/downloadmanager/DownloadManagerActivity"
-
     const val CATALOGUES_ACTIVITY = "/common_book/CataloguesActivity"
 
     const val COVER_PAGE_ACTIVITY = "/common_book/CoverPageActivity"
+
+    const val TABULATION_ACTIVITY = "/common_book/TabulationActivity"
+
+    /**
+     * dy_reader
+     */
 
     const val READER_ACTIVITY = "/dy_reader/ReaderActivity"
 
@@ -28,7 +36,10 @@ object RouterConfig {
 
     const val BOOK_END_ACTIVITY = "/dy_reader/BookEndActivity"
 
+    /**
+     * download_manager
+     */
 
-    const val TABULATION_ACTIVITY = "/common_book/TabulationActivity"
+    const val DOWNLOAD_MANAGER_ACTIVITY = "/downloadmanager/DownloadManagerActivity"
 
 }
