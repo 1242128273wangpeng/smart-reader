@@ -137,7 +137,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             if (!chapterList.isEmpty()) {
                 val tempChapter = chapterList[position]
                 val loadFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                if (book.host == Constants.QG_SOURCE) {
+                if (book.fromQingoo()) {
                     book.channel_code = 1
                 } else {
                     book.channel_code = 2
@@ -182,7 +182,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
         book.fromType = 1// 打点统计 当前页面来源，所有可能来源的映射唯一字符串。书架(0)/目录页(1)/上一页翻页(2)/书籍封面(3)
 
-        if (book.host == Constants.QG_SOURCE) {
+        if (book.fromQingoo()) {
             book.channel_code = 1
         } else {
             book.channel_code = 2

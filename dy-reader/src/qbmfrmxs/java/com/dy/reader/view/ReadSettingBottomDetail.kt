@@ -940,8 +940,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun View.setMarginRight(rightMargin: Int) {
         val params = layoutParams
         if (params is MarginLayoutParams) {
-            params.rightMargin = rightMargin
-            requestLayout()
+            if(params.rightMargin != rightMargin) {
+                params.rightMargin = rightMargin
+                requestLayout()
+            }
         }
     }
 

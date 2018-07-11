@@ -227,7 +227,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
 
-            if (Constants.QG_SOURCE == book.host) {
+            if (book.fromQingoo()) {
                 book_cover_source_form.text = "青果阅读"
             } else {
                 book_cover_source_form.text = book.host

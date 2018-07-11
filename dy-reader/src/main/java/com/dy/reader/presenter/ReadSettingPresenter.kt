@@ -220,7 +220,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             showToastShort(R.string.read_changesource_tip)
             return
         }
-        if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+        if (ReaderStatus.book.fromQingoo()) {
             showToastShort("该小说暂无其他来源！")
             return
         }
@@ -464,7 +464,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         val book = ReaderStatus.book
         chapterErrorBean.bookName = getEncode(book.name!!)
         chapterErrorBean.author = getEncode(book.author!!)
-        chapterErrorBean.channelCode = if (Constants.QG_SOURCE == book.host) "1" else "2"
+        chapterErrorBean.channelCode = if (book.fromQingoo()) "1" else "2"
         var currChapter: Chapter? = null
         if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {
             val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id!!)

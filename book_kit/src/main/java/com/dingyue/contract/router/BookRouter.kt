@@ -60,7 +60,7 @@ object BookRouter {
             bundle.putInt("sequence", book.sequence)
             bundle.putInt("offset", book.offset)
 
-            if (Constants.QG_SOURCE == book.host) {
+            if (book.fromQingoo()) {
                 book.channel_code = 1
             } else {
                 book.channel_code = 2
