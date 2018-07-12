@@ -8,6 +8,8 @@
     <color name="debug_switch_bg_unchecked_color">#e3e1e1</color>
     <color name="debug_title_bg_color">#999999</color>
 
+    <!--标签聚合页-->
+    <color name="cover_label">#C6CCD6</color>
 
     <!--阅读页相关-->
     <color name="reading_default_pageback_color">#D0BD9C</color>

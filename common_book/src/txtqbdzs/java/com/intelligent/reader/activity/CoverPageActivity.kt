@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
 import android.view.View.*
+import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
@@ -16,11 +20,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
-import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
@@ -83,16 +87,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         setContentView(R.layout.act_book_cover)
 
-        initializeIntent(intent)
+        initIntent(intent)
 
-        initializeListener()
+        initListener()
     }
 
     override fun onNewIntent(intent: Intent) {
-        initializeIntent(intent)
+        initIntent(intent)
     }
 
-    private fun initializeListener() {
+    private fun initListener() {
         book_cover_back?.antiShakeClick(this)
         book_cover_author!!.antiShakeClick(this)
         book_cover_chapter_view!!.antiShakeClick(this)
@@ -101,11 +105,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_bookshelf!!.antiShakeClick(this)
         book_cover_reading!!.antiShakeClick(this)
         book_cover_download!!.antiShakeClick(this)
-        book_cover_catalog_view!!.antiShakeClick(this)
-        book_cover_catalog_view_nobg!!.antiShakeClick(this)
+        /*book_cover_catalog_view!!.antiShakeClick(this)*/
+        /*book_cover_catalog_view_nobg!!.antiShakeClick(this)*/
     }
 
-    private fun initializeIntent(intent: Intent?) {
+    private fun initIntent(intent: Intent?) {
         if (intent != null) {
             if (intent.hasExtra("book_id")) {
                 bookId = intent.getStringExtra("book_id")
@@ -208,51 +212,54 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
-            if (book_cover_category2 != null && !TextUtils.isEmpty(book.label)) {
-                if (!TextUtils.isEmpty(book.sub_genre)) {
-                    book_cover_category2!!.text = book.sub_genre
-                    book_cover_category2!!.visibility = VISIBLE
-                } else {
-                    book_cover_category2!!.visibility = GONE
-                }
-            }
+            /*     if (book_cover_category2 != null && !TextUtils.isEmpty(book.label)) {
+                     if (!TextUtils.isEmpty(book.sub_genre)) {
+                         book_cover_category2!!.text = book.sub_genre
+                         book_cover_category2!!.visibility = VISIBLE
+                     } else {
+                         book_cover_category2!!.visibility = GONE
+                     }
+                 }*/
 
             if (book.status == "SERIALIZE") {
-                if (book_cover_category2!!.visibility != View.VISIBLE) {
-                    book_cover_status!!.text = "—" + getString(R.string.book_cover_state_writing)
-                } else {
-                    book_cover_status!!.text = getString(R.string.book_cover_state_writing)
-                    if (!mThemeHelper.isNight) {
-                        book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
-                        val background = book_cover_status!!.background as GradientDrawable
-                        background.setColor(resources.getColor(R.color.color_white_ffffff))
-                        book_cover_status!!.setTextColor(resources.getColor(R.color.color_red_ff2d2d))
-                    } else {
-                        book_cover_status!!.setTextColor(resources.getColor(R.color.color_red_ff5656))
-                    }
-                }
+                book_cover_status!!.text = ("—" + getString(R.string.book_cover_state_writing))
             } else {
-                if (book_cover_category2!!.visibility != View.VISIBLE) {
-                    book_cover_status!!.text = "—" + getString(R.string.book_cover_state_written)
-                } else {
-                    book_cover_status!!.text = getString(R.string.book_cover_state_written)
-                    if (!mThemeHelper.isNight) {
-                        book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
-                        val background = book_cover_status!!.background as GradientDrawable
-                        background.setColor(resources.getColor(R.color.color_white_ffffff))
-                        book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e9cfae))
-                    } else {
-                        book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e2bd8d))
-                    }
-                }
+                book_cover_status!!.text = ("—" + getString(R.string.book_cover_state_written))
             }
 
-            if (!TextUtils.isEmpty(book.host)) {
-                if (Constants.QG_SOURCE == book.host) {
-                    book_cover_source_form.text = "青果阅读"
+            /* if (book.status == "SERIALIZE") {
+                 *//*  if (book_cover_category2!!.visibility != View.VISIBLE) {
+                      book_cover_status!!.text = "—" + getString(R.string.book_cover_state_writing)
+                  } else {*//*
+                book_cover_status!!.text = getString(R.string.book_cover_state_writing)
+
+                if (!mThemeHelper.isNight) {
+                    book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
+                    val background = book_cover_status!!.background as GradientDrawable
+                    background.setColor(resources.getColor(R.color.color_white_ffffff))
+                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_red_ff2d2d))
                 } else {
-                    book_cover_source_form.text = book.host
+                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_red_ff5656))
                 }
+                *//* }*//*
+            } else {
+                *//* if (book_cover_category2!!.visibility != View.VISIBLE) {
+                     book_cover_status!!.text = "—" + getString(R.string.book_cover_state_written)
+                 } else {*//*
+                book_cover_status!!.text = getString(R.string.book_cover_state_written)
+                if (!mThemeHelper.isNight) {
+                    book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
+                    val background = book_cover_status!!.background as GradientDrawable
+                    background.setColor(resources.getColor(R.color.color_white_ffffff))
+                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e9cfae))
+                } else {
+                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e2bd8d))
+                }
+                *//*}*//*
+            }*/
+
+            if (!TextUtils.isEmpty(book.host)) {
+                book_cover_source_form.text = ("来源：" + if (Constants.QG_SOURCE == book.host) "青果阅读" else book.host)
             }
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
@@ -263,7 +270,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if (book.last_chapter != null) {
                 if (book_cover_update_time != null) {
-                    book_cover_update_time!!.text = Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)
+                    book_cover_update_time!!.text = ("更新：${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}")
                 }
 
                 if (book_cover_last_chapter != null) {
@@ -272,12 +279,94 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     }
                 }
             }
+
+            if (flowLayout != null) {
+                flowLayout!!.removeAllViews()
+                if (!TextUtils.isEmpty(book.label) && Constants.QG_SOURCE != book.host) {
+                    flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
+                    flowLayout!!.rowSpacing = 17f
+                    flowLayout!!.maxRows = 1
+                    if (book.label != null) {
+                        val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                        dummyTexts.indices
+                                .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
+                                .map { buildLabel(dummyTexts[it], it) }
+                                .forEach { flowLayout!!.addView(it) }
+
+                    }
+                }
+            }
+
         } else {
             this.applicationContext.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }
         }
+    }
+
+
+    // 边框和文字颜色
+    private val labelColor = intArrayOf(R.color.cover_label_pink, R.color.cover_label_green, R.color.cover_label_blue, R.color.cover_label_yellow, R.color.cover_label_purple)
+
+    //填充色
+    private val labelColorAlpha = intArrayOf(R.color.cover_label_pink_alpha, R.color.cover_label_green_alpha, R.color.cover_label_blue_alpha, R.color.cover_label_yellow_alpha, R.color.cover_label_purple_alpha)
+
+    /**
+     * 设置边框，背景，圆角
+     */
+    private fun getLabelBgColor(solidColor: Int, strokeColor: Int): GradientDrawable {
+        val gd = GradientDrawable()
+        gd.shape = GradientDrawable.RECTANGLE
+        gd.cornerRadius = AppUtils.dp2px(this.resources, 2f)//圆角
+        gd.setColor(ContextCompat.getColor(this, solidColor))//填充色
+        gd.setStroke(2, ContextCompat.getColor(this, strokeColor))//边框
+        return gd
+    }
+
+    /**
+     * 添加标签，设置标签样式
+     */
+    private fun buildLabel(text: String, index: Int): TextView {
+        val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_padding)
+        val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_padding_right)
+        val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
+        val bottom = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
+        val textView = TextView(this)
+        textView.text = text
+        textView.textSize = 11f
+        textView.gravity = Gravity.CENTER
+
+        textView.setTextColor(ContextCompat.getColor(this, labelColor[index]))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            textView.background = getLabelBgColor(labelColorAlpha[index], labelColor[index])
+        } else {
+            textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
+            textView.setBackgroundResource(R.drawable.bg_cover_label)
+        }
+
+        textView.setPadding(left, top, right, bottom)
+        textView.setOnClickListener {
+
+            var data = HashMap<String, String>()
+            data.put("bookid", bookId + "")
+            /*data.put("name", bookVo?.name + "")*/
+            data.put("lablekey", text)
+            data.put("rank", index.toString())
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
+
+
+            val intent = Intent()
+            intent.setClass(this, LabelsDetailActivity::class.java)
+            intent.putExtra("url", RequestService.LABEL_SEARCH_V4 + "?keyword=" + text)
+            intent.putExtra("title", text)
+            intent.putExtra("fromCover", true)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+        }
+
+
+        return textView
     }
 
     override fun insertBookShelfResult(result: Boolean) {
@@ -431,14 +520,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     coverPagePresenter!!.handleDownloadAction()
                 }
             }
-            R.id.book_cover_catalog_view_nobg, R.id.book_cover_catalog_view -> {
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
+        /*R.id.book_cover_catalog_view_nobg, R.id.book_cover_catalog_view -> {
+            StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
 
-                if (coverPagePresenter != null) {
-                    coverPagePresenter!!.startCatalogActivity(true)
-                }
+            if (coverPagePresenter != null) {
+                coverPagePresenter!!.startCatalogActivity(true)
             }
+        }*/
             R.id.book_cover_chapter_view, R.id.book_cover_last_chapter -> {
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.startCatalogActivity(false)
@@ -450,18 +539,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private fun initializeRemoveShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_remove_bg
-        mTextColor = R.color.cover_bottom_btn_remove_text_color
+        mTextColor = R.color.color_theme_alpha
 
-        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        book_cover_bookshelf!!.setBackgroundResource(mBackground)
+//        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
+        //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     private fun initializeInsertShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_add_bg
-        mTextColor = R.color.cover_bottom_btn_add_text_color
+        mTextColor = R.color.color_theme_alpha
 
-        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        book_cover_bookshelf!!.setBackgroundResource(mBackground)
+//        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
+        //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     override fun onTaskStatusChange() {

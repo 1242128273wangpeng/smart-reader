@@ -241,6 +241,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
+        <!-- 标签聚合页面 -->
+        <activity
+            android:name=".activity.LabelsDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
+
         <!-- 阅读设置页面 -->
 
         <!-- 更多设置 -->

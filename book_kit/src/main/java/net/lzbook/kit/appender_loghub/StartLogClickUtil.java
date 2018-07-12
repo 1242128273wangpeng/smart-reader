@@ -239,6 +239,7 @@ public class StartLogClickUtil {
     public static final String INTRODUCTION = "INTRODUCTION";//简介点击展开/收起
     public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
     public static final String TRANSCODEPOPUP = "TRANSCODEPOPUP";//点击转码阅读
+    public static final String LABLECLICK = "LABLECLICK";//点击标签
 
 
     //书籍目录页
