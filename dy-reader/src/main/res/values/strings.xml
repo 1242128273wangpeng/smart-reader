@@ -120,6 +120,8 @@
     <string name="refresh">刷新</string>
 
     <string name="loading_prompt">精彩内容即将呈现...</string>
+    <string name="reader_loading_prompt">精彩内容即将呈现</string>
+    <string name="reader_reload_prompt">重新加载</string>
 
     <string name="network_error">好像没有网络！</string>
 
