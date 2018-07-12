@@ -611,7 +611,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             book.book_chapter_id = it.book_chapter_id
 
                                             // 保存在chapter表中
-                                            if (book.host == "open.qingoo.cn") {
+                                            if (book.fromQingoo()) {
                                                 ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
                                             }
 

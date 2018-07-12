@@ -56,11 +56,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         BookEndPresenter(this, this)
     }
 
-//    private val bookRecommendAdapter: BookRecommendAdapter by lazy {
-//        BookRecommendAdapter(bookRecommendsList)
-//    }
-
-
     private val changeSourceDialog: BookEndChangeSourceDialog by lazy {
         BookEndChangeSourceDialog(this, this)
     }

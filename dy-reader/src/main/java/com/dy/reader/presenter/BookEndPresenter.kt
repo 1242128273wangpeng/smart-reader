@@ -42,7 +42,7 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
      * 获取书籍来源
      * **/
     fun requestBookSource(book: Book) {
-        if (Constants.QG_SOURCE == book.host) {
+        if (book.fromQingoo()) {
             requestBookEndContract()?.showSourceList(sourceList)
             return
         }

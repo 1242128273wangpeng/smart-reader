@@ -299,6 +299,7 @@ public class RepairHelp {
             if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
                 if (bookFix.getFix_type() == 2) {
                     if (NetWorkUtils.isNetworkAvailable(context)) {
+                        sp.edit().putBoolean(Constants.IS_FIX_CATALOG, true).apply();
                         return true;
                     }
                 }
