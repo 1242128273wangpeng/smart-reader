@@ -90,8 +90,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
-            contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
-            contentView = (WebView) rootView.findViewById(R.id.web_content_view);
+            contentLayout =  rootView.findViewById(R.id.web_content_layout);
+            contentView =  rootView.findViewById(R.id.web_content_view);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }

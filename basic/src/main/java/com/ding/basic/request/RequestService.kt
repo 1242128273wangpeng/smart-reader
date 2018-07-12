@@ -98,14 +98,21 @@ interface RequestService {
         const val BOOK_RECOMMEND = "/v5/search/recommend"
 
         /**
-         * 鸿雁替 新WebView分类页面
+         * 标签聚合页（从书籍详情页跳入）
          */
-        const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
+        const val LABEL_SEARCH_V4 = "/v4/search/labelSearch/page"
 
         /**
-         * 鸿雁替 新WebView精选页面
+         * WebView分类页面
+         */
+        const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
+        const val WEB_CATEGORY_V3 = "/{packageName}/v3/category/index.do"
+
+        /**
+         * WebView精选页面
          */
         const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
+        const val WEB_RECOMMEND_V3 = "/{packageName}/v3/recommend/index.do"
 
         /**
          * WebView榜单排行页面

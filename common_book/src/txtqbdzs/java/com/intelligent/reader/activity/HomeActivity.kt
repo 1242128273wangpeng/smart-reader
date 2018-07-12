@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -80,7 +81,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -90,7 +91,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -100,7 +101,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
