@@ -134,6 +134,9 @@ class CoverPagePresenter(private val book_id: String?,
         if (book != null) {
             this.coverDetail = book
 
+            //获得数据后第一时间更新书架信息
+            updateBookInformation()
+
             if (coverDetail != null && bookCoverUtil != null) {
                 bookCoverUtil?.saveHistory(coverDetail)
             }
@@ -312,7 +315,7 @@ class CoverPagePresenter(private val book_id: String?,
                 bundle.putInt("offset", 0)
             }
 
-            updateBookInformation()
+//            updateBookInformation()
 
             bundle.putSerializable("book", book)
         } else {
