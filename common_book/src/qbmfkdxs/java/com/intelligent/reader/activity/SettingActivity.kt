@@ -20,6 +20,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.dy.reader.activity.DisclaimerActivity
 import com.intelligent.reader.R
@@ -336,7 +337,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             R.id.disclaimer_statement_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL)
-                IntentUtils.start(this, DisclaimerActivity::class.java, IntentUtils.isFormDisclaimerPage, true, false)
+                IntentUtils.start(this, DisclaimerActivity::class.java, RouterUtil.isFormDisclaimerPage, true, false)
             }
 //            R.id.rl_readpage_setting -> {
 //                //阅读页设置
