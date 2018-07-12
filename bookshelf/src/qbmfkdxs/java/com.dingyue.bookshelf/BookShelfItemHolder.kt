@@ -71,8 +71,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }
         }
 
-        val updateTime = Tools.compareTime(AppUtils.formatter, book
-                .last_update_success_time) + "更新"
+        val updateTime = Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time) + "更新"
         txt_book_last_update_time.text = updateTime
 
         if (book.sequence + 1 > book.chapter_count) {

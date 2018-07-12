@@ -259,7 +259,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 tv_text_number!!.text = "暂无"
             }
 
-            tv_read_num!!.text = AppUtils.getCommonReadNums(book.uv)
+            val str = AppUtils.getCommonReadNums(book.uv)
+            if (!TextUtils.isEmpty(str)) {
+                tv_read_num!!.text = str + "值"
+            } else {
+                tv_read_num!!.text = ""
+            }
 
             if (book.score == 0.0f) {
                 tv_score!!.text = "暂无评分"

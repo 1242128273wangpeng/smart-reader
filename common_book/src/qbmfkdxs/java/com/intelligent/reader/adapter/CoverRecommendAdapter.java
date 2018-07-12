@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.ding.basic.bean.Book;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.lang.ref.WeakReference;
@@ -48,7 +47,12 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
         holder.tv_book_name.setText(book.getName());
 
         if (book.fromQingoo()) {
-            holder.tv_readnum.setText(AppUtils.getCommonReadNums(Long.valueOf(book.getUv())));
+            String str = AppUtils.getCommonReadNums(Long.valueOf(book.getUv()));
+            if (!TextUtils.isEmpty(str)){
+                holder.tv_readnum.setText(str + "值");
+            }else {
+                holder.tv_readnum.setText("");
+            }
         } else {
 
             // 临时使用desc接收v5接口自有人气字段

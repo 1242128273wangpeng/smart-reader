@@ -36,6 +36,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by xian on 18-3-21.
@@ -188,7 +189,7 @@ object DataProvider {
                     }
 
                     mDisposable.add(Flowable.zipArray<Chapter, List<Chapter>>(Function { it ->
-                        val list = (it.toList() as List<Chapter>)
+                        val list = ArrayList<Chapter>((it.toList() as List<Chapter>))
                         Collections.sort(list, { first, second ->
                             (first.sequence - second.sequence)
                         })

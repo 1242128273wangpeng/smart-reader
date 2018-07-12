@@ -471,7 +471,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                if ("cc.kdqbxs.reader".equals(packageName) || "cc.quanbennovel".equals(packageName)
+                if ("cc.kdqbxs.reader".equals(packageName)
                         || "cn.txtkdxsdq.reader".equals(packageName)) {
                     try {
                         Intent intent = new Intent();
