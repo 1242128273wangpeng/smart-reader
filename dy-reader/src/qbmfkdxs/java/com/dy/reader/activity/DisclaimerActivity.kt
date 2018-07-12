@@ -40,11 +40,11 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         }
 
         // 仅在使用协议页面进入可以打开调试模式
-//        if (intent.getBooleanExtra(RouterUtil.isFormDisclaimerPage, false)) {
-        txt_content.setOnClickListener {
-            displayEggs()
+        if (intent.getBooleanExtra(RouterUtil.isFormDisclaimerPage, false)) {
+            txt_content.setOnClickListener {
+                displayEggs()
+            }
         }
-
     }
 
     /**
