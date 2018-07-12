@@ -18,4 +18,25 @@
     <color name="reading_text_color_night">#CC9B9B9B</color>
     <color name="reading_backdrop_night">#333333</color>
     <color name="color_black_858C96">#858C96</color>
+
+    <color name="cover_title_color">#252B35</color>
+    <color name="cover_recommend_read">#949AA5</color>
+
+    <color name="cover_label_pink">#D4AEB5</color>
+    <color name="cover_label_pink_alpha">#14D4AEB5</color>
+    <color name="cover_label_green">#B4C6A5</color>
+    <color name="cover_label_green_alpha">#14B4C6A5</color>
+    <color name="cover_label_blue">#B0C6D1</color>
+    <color name="cover_label_blue_alpha">#14B0C6D1</color>
+    <color name="cover_label_yellow">#D3C3A0</color>
+    <color name="cover_label_yellow_alpha">#14D3C3A0</color>
+    <color name="cover_label_purple">#B9B2CF</color>
+    <color name="cover_label_purple_alpha">#14B9B2CF</color>
+
+    <color name="cover_gray98">#989898</color>
+    <color name="cover_grayCB">#CBCBCB</color>
+    <color name="cover_grayB9">#B9B9B9</color>
+    <color name="cover_gray61">#616161</color>
+    <color name="color_theme_alpha">#4D3ECC96</color>
+
 </resources>

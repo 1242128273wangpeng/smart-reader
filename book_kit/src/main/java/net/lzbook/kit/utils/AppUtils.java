@@ -32,6 +32,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedReader;
@@ -42,6 +43,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -1063,6 +1065,39 @@ public class AppUtils {
                 }
             } catch (Throwable t) {
                 t.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     *
+     * 关闭辅助功能，针对4.2.1和4.2.2 崩溃问题  百度移动统计平台上的bug  webview
+     *
+     * https://blog.csdn.net/qq_22393017/article/details/72782801
+     *
+     * java.lang.NullPointerException
+     * at android.webkit.AccessibilityInjector$TextToSpeechWrapper$1.onInit(AccessibilityInjector.java:753)
+     * ... ...
+     * at android.webkit.CallbackProxy.handleMessage(CallbackProxy.java:321)
+     */
+    public static void disableAccessibility(Context context) {
+        if (Build.VERSION.SDK_INT == 17/*4.2 (Build.VERSION_CODES.JELLY_BEAN_MR1)*/) {
+            if (context != null) {
+                try {
+                    AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+                    if (!am.isEnabled()) {
+                        //Not need to disable accessibility
+                        return;
+                    }
+
+                    Method setState = am.getClass().getDeclaredMethod("setState", int.class);
+                    setState.setAccessible(true);
+                    setState.invoke(am, 0);/**{@link AccessibilityManager#STATE_FLAG_ACCESSIBILITY_ENABLED}*/
+                } catch (Exception ignored) {
+
+                } catch(Error ignored){
+
+                }
             }
         }
     }
