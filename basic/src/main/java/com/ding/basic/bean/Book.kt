@@ -136,7 +136,7 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
     @ColumnInfo(name = "chapter_count")
     var chapter_count: Int = 0
 
-    //最后检查更新的时间
+    //最后检查更新的时间,旧字段：last_updatetime_native
     @ColumnInfo(name = "last_check_update_time")
     var last_check_update_time: Long = 0
 
