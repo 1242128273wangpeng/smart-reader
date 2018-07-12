@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.View
 import android.view.View.*
@@ -15,11 +16,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.dingyue.bookshelf.ShelfGridLayoutManager
+import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
+import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import iyouqu.theme.BaseCacheableActivity
@@ -37,10 +41,7 @@ import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
-class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
-    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
 
 
     private var mBackground = 0
@@ -52,7 +53,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
-
+    private var mRecommendBooks: List<RecommendBean> = ArrayList()
 
     companion object {
         fun launcher(context: Context, host: String, book_id: String,
@@ -132,14 +133,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
 
-        if (coverPagePresenter != null) {
-            coverPagePresenter!!.requestBookDetail(false)
-        }
+        coverPagePresenter?.requestBookDetail(false)
+        coverPagePresenter?.requestCoverRecommend()
+
 
         if (loadingPage != null) {
             loadingPage!!.setReloadAction(Callable<Void> {
                 if (coverPagePresenter != null) {
-                    coverPagePresenter!!.requestBookDetail(false)
+                    coverPagePresenter?.requestBookDetail(false)
                 }
                 null
             })
@@ -342,7 +343,51 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
+
+    }
+
+    override fun onRecommendItemClick(view: View, position: Int) {
+        if (position < 0 || position > mRecommendBooks.size) return
+
+        val recommendBooks = mRecommendBooks[position]
+
+        val data = HashMap<String, String>()
+        data.put("bookid", recommendBooks.bookId)
+        data.put("TbookID", recommendBooks.bookId)
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                StartLogClickUtil.RECOMMENDEDBOOK, data)
+
+        val book = Book()
+        book.book_id = recommendBooks.bookId
+        book.book_source_id = recommendBooks.id
+        book.book_chapter_id = recommendBooks.bookChapterId
+        BookRouter.navigateCover(this, book)
+    }
+
+
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+        mRecommendBooks = recommends
+
+        if (tv_recommend_title != null) {
+            if (recommends.size == 0) {
+                tv_recommend_title.visibility = View.GONE
+            } else {
+                tv_recommend_title.visibility = View.VISIBLE
+            }
+        }
+        if (recycler_view != null) {
+            val coverRecommendAdapter = CoverRecommendAdapter(this, this, recommends)
+            recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
+            recycler_view.layoutManager = ShelfGridLayoutManager(this, 3)
+            recycler_view.isNestedScrollingEnabled = false
+            recycler_view.itemAnimator.addDuration = 0
+            recycler_view.itemAnimator.changeDuration = 0
+            recycler_view.itemAnimator.moveDuration = 0
+            recycler_view.itemAnimator.removeDuration = 0
+            (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+            recycler_view.adapter = coverRecommendAdapter
+        }
     }
 
     override fun showRecommendFail() {

@@ -18,4 +18,8 @@
     <color name="reading_text_color_night">#CC9B9B9B</color>
     <color name="reading_backdrop_night">#333333</color>
     <color name="color_black_858C96">#858C96</color>
+
+    <color name="cover_title_color">#252B35</color>
+    <color name="cover_recommend_read">#949AA5</color>
+
 </resources>

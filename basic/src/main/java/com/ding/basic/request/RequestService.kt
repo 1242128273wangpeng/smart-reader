@@ -90,8 +90,12 @@ interface RequestService {
         /**
          * 完结页推荐
          */
-        const val BOOK_END_RECOMMEND = "/v5/search/recommend"
         const val BOOK_END_RECOMMEND_V4 = "/v4/recommend/{book_id}/readPage"
+
+        /**
+         * 书籍推荐（包括完结页、书籍详情页）
+         */
+        const val BOOK_RECOMMEND = "/v5/search/recommend"
 
         /**
          * 鸿雁替 新WebView分类页面
@@ -192,7 +196,7 @@ interface RequestService {
     fun requestCoverRecommend(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<CoverRecommendBean>
 
 
-    @GET(BOOK_END_RECOMMEND)
+    @GET(BOOK_RECOMMEND)
     fun requestBookRecommend(@Query("bookId") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
 
     @FormUrlEncoded
