@@ -260,7 +260,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }*/
 
             if (!TextUtils.isEmpty(book.host)) {
-                book_cover_source_form.text = ("来源：" + if (Constants.QG_SOURCE == book.host) "青果阅读" else book.host)
+                book_cover_source_form.text = ("来源：" + if (book.fromQingoo()) "青果阅读" else book.host)
             }
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
@@ -283,7 +283,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if (flowLayout != null) {
                 flowLayout!!.removeAllViews()
-                if (!TextUtils.isEmpty(book.label) && Constants.QG_SOURCE != book.host) {
+                if (!TextUtils.isEmpty(book.label) && !book.fromQingoo()) {
                     flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
                     flowLayout!!.rowSpacing = 17f
                     flowLayout!!.maxRows = 1
