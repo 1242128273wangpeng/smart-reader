@@ -12,6 +12,7 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.View.*
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -288,10 +289,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     flowLayout!!.maxRows = 1
                     if (book.label != null) {
                         val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+                        lp.rightMargin = AppUtils.dp2px(resources,4f).toInt()
                         dummyTexts.indices
                                 .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
                                 .map { buildLabel(dummyTexts[it], it) }
-                                .forEach { flowLayout!!.addView(it) }
+                                .forEach { flowLayout!!.addView(it,lp) }
 
                     }
                 }
@@ -328,13 +331,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 添加标签，设置标签样式
      */
     private fun buildLabel(text: String, index: Int): TextView {
-        val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_padding)
-        val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_padding_right)
+        val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
+        val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
         val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
         val bottom = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
         val textView = TextView(this)
         textView.text = text
-        textView.textSize = 11f
+        textView.textSize = 12f
         textView.gravity = Gravity.CENTER
 
         textView.setTextColor(ContextCompat.getColor(this, labelColor[index]))

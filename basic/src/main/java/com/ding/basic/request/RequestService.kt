@@ -28,27 +28,26 @@ interface RequestService {
         //来源列表
         const val SOURCE_LIST = "/v5/book/source"
 
-        //自动补全
-        const val AUTO_COMPLETE = "/v3/search/autoComplete"
-
-        //自动补全V4接口
+        /**
+         * 搜索自动补全
+         */
+        const val AUTO_COMPLETE_V3 = "/v3/search/autoComplete"
         const val AUTO_COMPLETE_V4 = "/v4/search/autoComplete"
-
-        //自动补全V5接口
         const val AUTO_COMPLETE_V5 = "/v5/search/autoComplete"
 
+        /**
+         * 搜索热词
+         */
+        const val HOT_WORDS_V3 = "/v3/search/hotWords"
+        const val HOT_WORDS_V4 = "/v4/search/hotWords"
 
-        //搜索热词
-        const val HOT_WORDS = "/v3/search/hotWords"
+        /**
+         * 搜索推荐
+         */
+        const val SEARCH_RECOMMEND_V5 = "/v5/search/autoOperations"
 
         // V5搜索
         const val SEARCH_V5 = "/v5/search/page"
-
-        //新版搜索热词
-        const val HOT_WORDS_V4 = "/v4/search/hotWords"
-
-        //新版搜索推荐
-        const val SEARCH_RECOMMEND_V5 = "/v5/search/autoOperations"
 
 
         //书架推荐
@@ -84,18 +83,15 @@ interface RequestService {
         const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
 
 
-        //书籍封面页推荐
-        const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
-
-        /**
-         * 完结页推荐
-         */
-        const val BOOK_END_RECOMMEND_V4 = "/v4/recommend/{book_id}/readPage"
 
         /**
          * 书籍推荐（包括完结页、书籍详情页）
          */
         const val BOOK_RECOMMEND = "/v5/search/recommend"
+        //书籍封面页推荐
+        const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
+        //完结页推荐
+        const val BOOK_END_RECOMMEND_V4 = "/v4/recommend/{book_id}/readPage"
 
         /**
          * 标签聚合页（从书籍详情页跳入）
@@ -145,7 +141,7 @@ interface RequestService {
     @GET(SOURCE_LIST)
     fun requestBookSources(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<BookSource>>
 
-    @GET(AUTO_COMPLETE)
+    @GET(AUTO_COMPLETE_V3)
     fun requestAutoComplete(@Query("word") word: String): Flowable<SearchAutoCompleteBean>
 
     @GET(AUTO_COMPLETE_V4)
@@ -162,7 +158,7 @@ interface RequestService {
     @GET(SEARCH_RECOMMEND_V5)
     fun requestSearchRecommend(@Query("shelfBooks") shelfBooks: String): Flowable<SearchRecommendBook>
 
-    @GET(HOT_WORDS)
+    @GET(HOT_WORDS_V3)
     fun requestHotWords(): Flowable<SearchHotBean>
 
     @POST(CHECK_UPDATE)
