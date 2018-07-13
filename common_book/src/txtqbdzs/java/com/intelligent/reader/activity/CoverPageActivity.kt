@@ -38,7 +38,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
 import java.util.*
@@ -204,6 +203,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
+
             if (book_cover_category != null) {
                 if (!TextUtils.isEmpty(book.genre)) {
                     book_cover_category!!.text = book.genre
@@ -213,51 +213,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
-            /*     if (book_cover_category2 != null && !TextUtils.isEmpty(book.label)) {
-                     if (!TextUtils.isEmpty(book.sub_genre)) {
-                         book_cover_category2!!.text = book.sub_genre
-                         book_cover_category2!!.visibility = VISIBLE
-                     } else {
-                         book_cover_category2!!.visibility = GONE
-                     }
-                 }*/
-
             if (book.status == "SERIALIZE") {
                 book_cover_status!!.text = ("—" + getString(R.string.book_cover_state_writing))
             } else {
                 book_cover_status!!.text = ("—" + getString(R.string.book_cover_state_written))
             }
 
-            /* if (book.status == "SERIALIZE") {
-                 *//*  if (book_cover_category2!!.visibility != View.VISIBLE) {
-                      book_cover_status!!.text = "—" + getString(R.string.book_cover_state_writing)
-                  } else {*//*
-                book_cover_status!!.text = getString(R.string.book_cover_state_writing)
-
-                if (!mThemeHelper.isNight) {
-                    book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
-                    val background = book_cover_status!!.background as GradientDrawable
-                    background.setColor(resources.getColor(R.color.color_white_ffffff))
-                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_red_ff2d2d))
-                } else {
-                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_red_ff5656))
-                }
-                *//* }*//*
-            } else {
-                *//* if (book_cover_category2!!.visibility != View.VISIBLE) {
-                     book_cover_status!!.text = "—" + getString(R.string.book_cover_state_written)
-                 } else {*//*
-                book_cover_status!!.text = getString(R.string.book_cover_state_written)
-                if (!mThemeHelper.isNight) {
-                    book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
-                    val background = book_cover_status!!.background as GradientDrawable
-                    background.setColor(resources.getColor(R.color.color_white_ffffff))
-                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e9cfae))
-                } else {
-                    book_cover_status!!.setTextColor(resources.getColor(R.color.color_brown_e2bd8d))
-                }
-                *//*}*//*
-            }*/
 
             if (!TextUtils.isEmpty(book.host)) {
                 book_cover_source_form.text = ("来源：" + if (book.fromQingoo()) "青果阅读" else book.host)

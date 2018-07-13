@@ -487,19 +487,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
                         StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
 
-
-                Book book = new Book();
-                book.setBook_id(book_id);
-                book.setBook_source_id(book_source_id);
-                book.setName(name);
-                book.setHost(host);
-                book.setAuthor(author);
-
                 Intent intent = new Intent();
+                intent.putExtra("book_id", book_id);
+                intent.putExtra("book_source_id", book_source_id);
                 intent.setClass(getApplicationContext(), CoverPageActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Constants.REQUEST_ITEM, book);
-                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
