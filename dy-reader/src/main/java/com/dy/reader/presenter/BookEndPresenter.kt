@@ -15,6 +15,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.ATManager
+import net.lzbook.kit.utils.AppLog
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -284,15 +285,14 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
     }
 
     fun changeRecommendBooks() {
-
-        if (recommendIndex + 6 > recommendBookList.size) {
-            recommendIndex = 0
-        }
+//        if (recommendIndex + 6 > recommendBookList.size) {
+//            recommendIndex = 0
+//        }
 
         recommendList.clear()
 
         for (i in recommendIndex until recommendIndex + 6) {
-            recommendList.add(recommendBookList[i])
+            recommendList.add(recommendBookList[i%recommendBookList.size])
         }
 
         recommendIndex += 6
