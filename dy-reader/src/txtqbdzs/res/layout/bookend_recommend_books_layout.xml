@@ -38,16 +38,14 @@
             android:textSize="@dimen/text_size_14"/>
     </RelativeLayout>
 
-    <GridView
-        android:id="@+id/gv_recommend_book"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recl_recommend_book"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_margin_18"
-        android:layout_marginRight="@dimen/dimen_margin_18"
-        android:layout_marginTop="@dimen/dimen_margin_16"
-        android:gravity="center"
-        android:horizontalSpacing="30dp"
-        android:numColumns="3"
-        android:scrollbars="none"/>
+        android:clipToPadding="false"
+        android:layout_marginLeft="@dimen/dimen_margin_8"
+        android:layout_marginRight="@dimen/dimen_margin_8"
+        android:layout_marginTop="@dimen/dimen_margin_16" />
+
 
 </LinearLayout>
