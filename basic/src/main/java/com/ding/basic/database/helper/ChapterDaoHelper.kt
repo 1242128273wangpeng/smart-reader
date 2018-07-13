@@ -26,7 +26,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
         @Synchronized
         fun loadChapterDataProviderHelper(context: Context, book_id: String): ChapterDaoHelper {
             val daoHelper = helperMap[book_id]?.get()
-            if (daoHelper != null && dbMap[book_id]?.isOpen == true) {
+            if (daoHelper != null) {
                 Logger.d("use cached chapter helper")
                 return daoHelper
             }
