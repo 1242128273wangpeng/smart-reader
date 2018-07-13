@@ -673,27 +673,29 @@ public class SearchHelper {
         }
         final String finalQuery = query;
 
+        if (!TextUtils.isEmpty(finalQuery)) {
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).requestAutoCompleteV5(
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAutoCompleteV5(
-
-                finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
-                    @Override
-                    public void requestResult(@Nullable SearchAutoCompleteBeanYouHua bean) {
-                        if (bean != null
-                                && SearchAutoCompleteBeanYouHua.Companion.getREQUESR_SUCCESS()
-                                .equals(
-                                bean.getRespCode())
-                                && bean.getData() != null) {
-                            packageData(bean);
+                    finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
+                        @Override
+                        public void requestResult(@Nullable SearchAutoCompleteBeanYouHua bean) {
+                            if (bean != null
+                                    && SearchAutoCompleteBeanYouHua.Companion.getREQUESR_SUCCESS()
+                                    .equals(
+                                            bean.getRespCode())
+                                    && bean.getData() != null) {
+                                packageData(bean);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void requestError(@NotNull String message) {
-                        Logger.e("请求自动补全失败！");
-                    }
-                });
+                        @Override
+                        public void requestError(@NotNull String message) {
+                            Logger.e("请求自动补全失败！");
+                        }
+                    });
+        }
+
 
     }
 }
