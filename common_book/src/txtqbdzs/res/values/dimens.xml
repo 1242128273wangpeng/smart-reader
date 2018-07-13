@@ -7,9 +7,7 @@
     <dimen name="search_book_height">124dp</dimen>
     <dimen name="search_book_width">88dp</dimen>
 
-    <dimen name="cover_book_flow_layout">5dp</dimen>
-    <dimen name="cover_book_flow_layout_padding">6dp</dimen>
-    <dimen name="cover_book_flow_layout_padding_right">7dp</dimen>
-    <dimen name="cover_book_flow_layout_top">2.5dp</dimen>
+    <dimen name="cover_book_flow_layout_right">10dp</dimen>
+    <dimen name="cover_book_flow_layout_top">3dp</dimen>
 
 </resources>
