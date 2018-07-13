@@ -149,6 +149,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
         initListener()
 
+        checkShowShelfGuide()
+
         homePresenter.initParameters()
 
         registerHomeReceiver()
@@ -380,7 +382,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
-                checkShowShelfGuide()
+
             }
         })
     }
