@@ -43,9 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:layout_marginLeft="@dimen/dimen_margin_8"
-        android:layout_marginRight="@dimen/dimen_margin_8"
-        android:layout_marginTop="@dimen/dimen_margin_16" />
+        android:layout_marginLeft="@dimen/dimen_margin_3"
+        android:layout_marginRight="@dimen/dimen_margin_3" />
 
 
 </LinearLayout>

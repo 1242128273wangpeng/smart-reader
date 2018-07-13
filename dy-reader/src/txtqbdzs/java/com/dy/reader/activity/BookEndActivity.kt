@@ -101,13 +101,11 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         recl_recommend_book.adapter = bookEndAdapter
         recl_recommend_book.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
-                val spaceLR = AppUtils.dip2px(view!!.context, 10f)
-                val spaceTB = AppUtils.dip2px(view!!.context, 10f)
-                if (parent!!.getChildAdapterPosition(view)>2){
-                    outRect!!.top = spaceTB
-                }
-                    outRect!!.left = spaceLR
-                    outRect.right = spaceLR
+                val spaceLR = AppUtils.dip2px(view!!.context, 15f)
+                val spaceTB = AppUtils.dip2px(view!!.context, 16f)
+                outRect!!.top = spaceTB
+                outRect!!.left = spaceLR
+                outRect.right = spaceLR
 
             }
         })
