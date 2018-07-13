@@ -29,12 +29,14 @@ class HomePagerHolder(parent: ViewGroup, private val textColor: Int) :
     override fun bindHolder(pageLines: NovelPageBean) {
         book_name_tv.text = ReaderStatus.book.name
         book_auth_tv.text = ReaderStatus.book.author
-        slogan_tv.setTextView(2f, context.resources.getString(R.string.reader_slogan))
+        context?.let {
+            slogan_tv.setTextView(2f, it.resources.getString(R.string.reader_slogan))
+            slogan_tv.setTextColor(textColor)
+        }
         product_name_tv.setTextView(1f, context.resources.getString(R.string.application_name))
 
         book_name_tv.setTextColor(textColor)
         book_auth_tv.setTextColor(textColor)
-        slogan_tv.setTextColor(textColor)
         product_name_tv.setTextColor(textColor)
     }
 }
