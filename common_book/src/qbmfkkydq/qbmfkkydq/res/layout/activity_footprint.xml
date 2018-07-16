@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        
+        tools:context="com.intelligent.reader.activity.FootprintActivity"
+        android:background="@color/base_bg">
+    
+    <TextView
+            android:id="@+id/footprint_type_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="TypeOne"/>
+    
+    <RelativeLayout
+            android:id="@+id/rl_title_footprint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/top_navigation_bg_color">
+        
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+            
+            <ImageView
+                    android:id="@+id/book_history_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:src="@mipmap/cover_top_back"/>
+            
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="浏览足迹"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="18sp"/>
+            
+            <TextView
+                    android:id="@+id/book_history_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text="清空"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/footprint_title_clear_color"
+                    android:textSize="14sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    
+    <net.lzbook.kit.book.view.EmptyRecyclerView
+            android:id="@+id/recycler_footprint"
+            android:layout_below="@+id/rl_title_footprint"
+            android:paddingTop="10dp"
+            android:clipToPadding="false"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    
+    <RelativeLayout
+            android:id="@+id/footprint_empty"
+            android:layout_below="@+id/rl_title_footprint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+        
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/footprint_empty_find"
+                android:textSize="18sp"
+                android:textColor="@color/footprint_empty_hint_color"
+                android:text="浏览过的书会出现在这里"/>
+        
+        <TextView
+                android:id="@+id/footprint_empty_find"
+                android:layout_width="120dp"
+                android:layout_height="38dp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:textSize="16sp"
+                android:layout_centerInParent="true"
+                android:textColor="@color/footprint_empty_find_color"
+                
+                android:layout_marginTop="17dp"
+                android:text="去逛逛"/>
+    </RelativeLayout>
+    
+    <RelativeLayout
+            android:id="@+id/footprint_not_login"
+            android:layout_below="@+id/rl_title_footprint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+        
+        <TextView
+                android:id="@+id/footprint_login_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/footprint_to_login"
+                android:textSize="18sp"
+                android:textColor="@color/footprint_empty_hint_color"
+                android:text="登录后可查看浏览过的书"/>
+        
+        <TextView
+                android:id="@+id/footprint_to_login"
+                android:layout_width="120dp"
+                android:layout_height="38dp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:textSize="16sp"
+                android:layout_centerInParent="true"
+                android:textColor="@color/footprint_empty_find_color"
+                
+                android:layout_marginTop="17dp"
+                android:text="登录"/>
+    </RelativeLayout>
+    
+    <ImageView
+            android:id="@+id/title_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_title_footprint"
+            android:scaleType="fitXY"
+            android:src="@mipmap/top_shadow"/>
+</RelativeLayout>
