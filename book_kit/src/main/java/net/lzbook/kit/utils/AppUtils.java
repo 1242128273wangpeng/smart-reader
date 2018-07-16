@@ -63,6 +63,7 @@ import java.util.regex.Pattern;
 
 import static android.content.Context.TELEPHONY_SERVICE;
 
+import com.dingyue.contract.util.CommonUtil;
 import com.meituan.android.walle.WalleChannelReader;
 
 import org.apache.http.conn.util.InetAddressUtils;
@@ -686,6 +687,8 @@ public class AppUtils {
      */
     public static String getChannelId() {
         initValues();
+        CommonUtil.showToastMessage("11"+CHANNEL_NAME);
+        CommonUtil.showToastMessage("22"+WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()));
         return CHANNEL_NAME;
     }
 
