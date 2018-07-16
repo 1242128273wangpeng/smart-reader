@@ -26,13 +26,9 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="24dp"
             android:layout_marginTop="16dp"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
             android:text="@string/reader_loading_prompt"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -59,13 +55,9 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="24dp"
             android:layout_marginTop="16dp"
-            android:shadowColor="#FFFFFF"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
             android:text="@string/reader_reload_prompt"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
