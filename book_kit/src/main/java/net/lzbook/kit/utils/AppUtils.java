@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -775,18 +776,19 @@ public class AppUtils {
 
 
     private static void initValues() {
-        if (CHANNEL_NAME == null) {
+        if (TextUtils.isEmpty(CHANNEL_NAME) || CHANNEL_NAME.equals("DEBUG")) {
             try {
                 Class<?> buildConfig = Class.forName("com.intelligent.reader.BuildConfig");
                 APPLICATION_ID = getStringField("APPLICATION_ID", buildConfig);
                 VERSION_NAME = getStringField("VERSION_NAME", buildConfig);
                 VERSION_CODE = getIntField("VERSION_CODE", buildConfig);
-                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
-//                CHANNEL_NAME = "blf1298_11974_001";
-                if(WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()) != null){
-                    CHANNEL_NAME= WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext());
+//                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
+                if (!TextUtils.isEmpty(WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()))) {
+                    CHANNEL_NAME = WalleChannelReader.getChannel(
+                            BaseBookApplication.getGlobalContext());
+                } else {
+                    CHANNEL_NAME = "DEBUG";
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
