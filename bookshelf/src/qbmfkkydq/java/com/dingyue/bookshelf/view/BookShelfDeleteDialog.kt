@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.View
 import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.R
-import kotlinx.android.synthetic.txtqbdzs.dialog_bookshelf_delete.*
+import kotlinx.android.synthetic.qbmfkkydq.dialog_bookshelf_delete.*
 import net.lzbook.kit.book.view.MyDialog
 
 /**
