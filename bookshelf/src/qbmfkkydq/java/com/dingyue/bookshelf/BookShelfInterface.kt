@@ -12,5 +12,5 @@ interface BookShelfInterface {
 
     fun changeHomePagerIndex(index: Int)
 
-    fun checkShowShelfGuide()
+    fun changeDrawerLayoutState()
 }

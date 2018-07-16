@@ -1,45 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_remove_content"
+    android:id="@+id/remove_delete_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:ignore="MissingPrefix">
+    android:background="#FFFAFAFA"
+    android:gravity="center_vertical">
 
-    <ImageView
-        android:id="@+id/img_bottom_shadow"
+    <View
+        android:id="@+id/view_divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="@drawable/common_footer_shadow_icon"/>
+        android:layout_height="5dp"
+        android:background="@drawable/bookshelf_common_shadow_bg"/>
 
     <LinearLayout
+        android:id="@+id/ll_remove_content"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/img_bottom_shadow"
-        android:background="#FFFFFF"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_divider"
+        android:background="#fafafa"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/btn_remove_delete"
+        <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/bookshelf_item_sel"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:minWidth="24dp"
-            android:singleLine="true"
-            android:text="@string/delete"
-            android:textColor="#FF2AD1BE"
-            android:textSize="15sp"
-            app:onPressChangeAlpha="true"/>
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_remove_select_all"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="140dp"
+                android:layout_height="38dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bookshelf_remove_select_all_sel"
+                android:gravity="center"
+                android:text="@string/select_all"
+                android:textColor="@drawable/bookshelf_remove_select_all_text_sel"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btn_remove_delete"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="140dp"
+                android:layout_height="38dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bookshelf_remove_delete_sel"
+                android:gravity="center"
+                android:text="@string/delete"
+                android:textColor="@drawable/bookshelf_remove_delete_text_sel"
+                android:textSize="16sp"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_remove_content"
+        android:layout_alignLeft="@id/ll_remove_content"
+        android:layout_alignRight="@id/ll_remove_content"
+        android:layout_alignTop="@id/ll_remove_content"
+        android:visibility="gone"/>
 </RelativeLayout>
