@@ -17,6 +17,15 @@
         android:flipInterval="30"
         android:persistentDrawingCache="animation" />
 
+    <ImageView
+        android:id="@+id/img_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_home_tab"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_shadow_bg"/>
+
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs_nav"
         style="@style/Widget.Design.TabLayout"
