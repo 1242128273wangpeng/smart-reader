@@ -16,8 +16,8 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import kotlinx.android.synthetic.txtqbdzs.frag_bookshelf.*
-import kotlinx.android.synthetic.txtqbdzs.bookshelf_refresh_header.view.*
+import kotlinx.android.synthetic.qbmfkkydq.frag_bookshelf.*
+import kotlinx.android.synthetic.qbmfkkydq.bookshelf_refresh_header.view.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
