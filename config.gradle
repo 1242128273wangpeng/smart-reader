@@ -29,7 +29,7 @@ ext {
     noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader']
     // 改完记得重新编译项目
     applicationId = "cc.remennovel"
-    defaultPublishConfig = 'txtqbdzs' + 'Debug'
+    defaultPublishConfig = 'qbmfkkydq' + 'Debug'
 
     def appPackageIDConfig = [
             kdzsydq   : "cn.txtzsydsq.reader",
