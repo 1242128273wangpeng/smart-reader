@@ -589,11 +589,16 @@ public class AppUtils {
      * 获得SD卡总大小
      */
     public static String getSDTotalSize(Context context) {
-        File path = Environment.getExternalStorageDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long totalBlocks = stat.getBlockCount();
-        return Formatter.formatFileSize(context, blockSize * totalBlocks);
+        try {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long totalBlocks = stat.getBlockCount();
+            return Formatter.formatFileSize(context, blockSize * totalBlocks);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**

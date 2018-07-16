@@ -81,7 +81,7 @@ class ZNBook private constructor(builder: Builder) : Book() {
             return this
         }
 
-        fun imgUrl(imgUrl: String): Builder {
+        fun imgUrl(imgUrl: String?): Builder {
             this.imgUrl = imgUrl
             return this
         }
