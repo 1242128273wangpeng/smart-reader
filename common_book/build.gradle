@@ -38,7 +38,8 @@ android {
             txtqbxsydq: "TXT全本小说阅读器",
             txtqbmfyd : "TXT全本免费阅读",
             qbmfkdxs  : "全本免费快读小说",
-            qbmfrmxs  : "全本免费热门小说"
+            qbmfrmxs  : "全本免费热门小说",
+            qbmfkkydq  : "全本免费快看阅读器"
     ]
 
     def appPackageIDConfig = [
@@ -53,7 +54,8 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
-            qbmfrmxs  : "cn.qbmfrmxs.reader"
+            qbmfrmxs  : "cn.qbmfrmxs.reader",
+            qbmfkkydq  : "cn.qbmfrmxs.reader"
     ]
 
     def channel = "dev_channel"
