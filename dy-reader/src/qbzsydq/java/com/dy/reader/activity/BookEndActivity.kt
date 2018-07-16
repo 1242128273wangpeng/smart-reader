@@ -196,6 +196,10 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
     }
 
+    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+
+    }
+
     override fun clickedSource(source: Source) {
         if (bookEndPresenter != null) {
             bookEndPresenter?.clickedBookSource(source)
