@@ -295,8 +295,8 @@ N多网	        blf1298_10885_001
 
             fixChannelAppName(getOwner(), "${channel}")
 
-            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
-            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
+//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
+//            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
         //调试和开发使用
@@ -322,8 +322,8 @@ N多网	        blf1298_10885_001
             shrinkResources false
             fixChannelAppName(getOwner(), "${channel}")
 
-            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
-            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
+//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
+//            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
     }
