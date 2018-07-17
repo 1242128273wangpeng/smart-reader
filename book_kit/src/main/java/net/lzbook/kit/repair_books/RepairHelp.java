@@ -209,7 +209,7 @@ public class RepairHelp {
                 @Override
                 public void onClick(View v) {
                     // 更新修复状态为已修复
-                    sp.edit().putBoolean(Constants.IS_FIX_CATALOG, false).apply();
+                    sp.edit().putBoolean(book.getBook_id(), false).apply();
                     isComfire = true;
                     myDialog.dismiss();
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
@@ -299,7 +299,7 @@ public class RepairHelp {
             if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
                 if (bookFix.getFix_type() == 2) {
                     if (NetWorkUtils.isNetworkAvailable(context)) {
-                        sp.edit().putBoolean(Constants.IS_FIX_CATALOG, true).apply();
+                        sp.edit().putBoolean(book_id, true).apply();
                         return true;
                     }
                 }
