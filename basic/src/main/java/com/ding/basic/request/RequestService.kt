@@ -92,6 +92,8 @@ interface RequestService {
         const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
         //完结页推荐
         const val BOOK_END_RECOMMEND_V4 = "/v4/recommend/{book_id}/readPage"
+        //书籍封面页该作者其他作品推荐
+        const val AUTHOR_OTHER_BOOK_RECOMMEND = "/v5/search/authorRecommend "
 
         /**
          * 标签聚合页（从书籍详情页跳入）
@@ -201,6 +203,9 @@ interface RequestService {
 
     @GET(BOOK_RECOMMEND)
     fun requestBookRecommend(@Query("bookId") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
+
+    @GET(AUTHOR_OTHER_BOOK_RECOMMEND)
+    fun requestAuthorOtherBookRecommend(@Query("author") author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>
 
     @FormUrlEncoded
     @POST(BOOK_END_RECOMMEND_V4)

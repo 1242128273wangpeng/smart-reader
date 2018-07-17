@@ -249,7 +249,11 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestBookRecommendV4(book_id: String, shelfBooks: String): Flowable<RecommendBooksEndResp>? {
+    override fun requestAuthorOtherBookRecommend(author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return null
+    }
+
+    override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
         return null
     }
 }

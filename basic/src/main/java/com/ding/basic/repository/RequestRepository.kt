@@ -5,6 +5,7 @@ import com.ding.basic.request.RequestSubscriber
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
+import java.util.ArrayList
 import java.util.HashMap
 
 interface RequestRepository {
@@ -58,6 +59,7 @@ interface RequestRepository {
 
     fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>)
     fun requestBookRecommendV4(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<RecommendBooksEndResp>)
+    fun requestAuthorOtherBookRecommend(author: String, requestSubscriber: RequestSubscriber<ArrayList<RecommendBean>>)
 
     fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 
