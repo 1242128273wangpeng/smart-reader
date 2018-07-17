@@ -24,9 +24,10 @@ class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layo
 
     private var recentReadListener: (() -> Unit)? = null
     private var updateTimeListener: (() -> Unit)? = null
+    private var recentAddListener: (() -> Unit)? = null
 
-    private val selectTextColor = Color.parseColor("#616161")
-    private val selectedTextColor = Color.parseColor("#42BE54")
+    private val selectTextColor = Color.parseColor("#212832")
+    private val selectedTextColor = Color.parseColor("#2AD1BE")
 
     init {
 
@@ -34,6 +35,11 @@ class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layo
         popupWindow.setBackgroundDrawable(ColorDrawable(-0x50000000))
         popupWindow.isOutsideTouchable = false
         popupWindow.animationStyle = R.style.BottomPopupDialog
+
+        contentView.txt_sort_add.setOnClickListener {
+            recentAddListener?.invoke()
+            popupWindow.dismiss()
+        }
 
         contentView.txt_sort_read.setOnClickListener {
             recentReadListener?.invoke()
@@ -53,12 +59,15 @@ class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layo
         }
     }
 
+    fun setOnRecentAddClickListener(listener: () -> Unit) {
+        recentAddListener = listener
+    }
+
     fun setOnRecentReadClickListener(listener: () -> Unit) {
         recentReadListener = listener
     }
 
     fun setOnUpdateTimeClickListener(listener: () -> Unit) {
-        popupWindow.dismiss()
         updateTimeListener = listener
     }
 
@@ -66,9 +75,16 @@ class BookShelfSortingPopup(private val activity: Activity, layout: Int = R.layo
         if (CommonContract.queryBookSortingType() == 0) {
             contentView.txt_sort_update.setTextColor(selectTextColor)
             contentView.txt_sort_read.setTextColor(selectedTextColor)
+            contentView.txt_sort_add.setTextColor(selectTextColor)
+        } else if (CommonContract.queryBookSortingType() == 2) {
+            contentView.txt_sort_update.setTextColor(selectTextColor)
+            contentView.txt_sort_read.setTextColor(selectTextColor)
+            contentView.txt_sort_add.setTextColor(selectedTextColor)
+
         } else {
             contentView.txt_sort_update.setTextColor(selectedTextColor)
             contentView.txt_sort_read.setTextColor(selectTextColor)
+            contentView.txt_sort_add.setTextColor(selectTextColor)
         }
         setBackgroundAlpha(0.6f)
         showAtLocation(view)

@@ -24,7 +24,6 @@
         android:id="@+id/ll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/accent"
         android:orientation="vertical"
         android:paddingBottom="11dp"
         android:paddingLeft="16dp"
@@ -49,14 +48,13 @@
 
             <TextView
                 android:id="@+id/txt_head_title"
+                style="@style/bookshelf_title_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/dimen_text_17"
-                tools:text="@string/bookshelf" />
+                android:text="@string/bookshelf" />
 
             <ImageView
                 android:id="@+id/img_head_menu"
@@ -85,34 +83,31 @@
         <RelativeLayout
             android:id="@+id/rl_head_editor"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bookshelf_title_height"
+            android:layout_height="wrap_content"
             android:clickable="true"
-            android:fitsSystemWindows="true"
             android:focusable="true"
             android:visibility="gone">
 
             <TextView
                 android:id="@+id/txt_editor_finish"
-                style="@style/style_text_great_light"
+                style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
                 android:text="@string/finish" />
 
             <TextView
-                style="@style/style_text_huge_dark"
+                style="@style/bookshelf_title_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:text="@string/bookshelf_edit"
-                android:textStyle="bold" />
+                android:text="@string/bookshelf_edit" />
 
             <TextView
                 android:id="@+id/txt_editor_select_all"
-                style="@style/style_text_great_light"
+                style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -158,32 +153,55 @@
             android:id="@+id/ll_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bookshelf_empty_title"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="@string/bookshelf_empty_subtitle"
+                android:textColor="#c7ffffff"
+                android:textSize="14sp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/bookshelf_empty_icon" />
+                android:layout_marginTop="148dp"
+                android:src="@drawable/bookshelf_nobook_icon" />
 
             <TextView
                 style="@style/style_text_normal_weak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="28dp"
+                android:textSize="15sp"
                 android:text="@string/bookshelf_empty_prompt" />
 
             <TextView
                 android:id="@+id/txt_empty_add_book"
-                android:layout_width="100dp"
-                android:layout_height="34dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/bookshelf_empty_find_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/bookshelf_tv_bg"
                 android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingLeft="38dp"
+                android:paddingRight="38dp"
+                android:paddingTop="10dp"
                 android:text="@string/bookshelf_empty_find"
-                android:textColor="#42BE54"
-                android:textSize="14sp"
+                android:textColor="#fff"
+                android:textSize="15sp"
                 app:onPressChangeAlpha="true" />
         </LinearLayout>
     </RelativeLayout>

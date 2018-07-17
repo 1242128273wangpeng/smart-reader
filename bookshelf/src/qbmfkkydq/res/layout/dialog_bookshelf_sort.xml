@@ -9,8 +9,21 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:orientation="vertical">
-
         <TextView
+            android:id="@+id/txt_sort_add"
+            style="@style/style_text_normal_plain"
+            android:layout_width="match_parent"
+            android:background="@drawable/bookshelf_item_sel"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:text="@string/sort_for_add_time"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:background="#F1F1F1"
+            android:layout_height="0.5dp"/>
+        <TextView
+            android:background="@drawable/bookshelf_item_sel"
             android:id="@+id/txt_sort_read"
             style="@style/style_text_normal_plain"
             android:layout_width="match_parent"
@@ -24,6 +37,7 @@
             android:layout_height="0.5dp"/>
 
         <TextView
+            android:background="@drawable/bookshelf_item_sel"
             android:id="@+id/txt_sort_update"
             style="@style/style_text_normal_plain"
             android:layout_width="match_parent"
@@ -38,6 +52,7 @@
             android:layout_height="0.5dp"/>
 
         <TextView
+            android:background="@drawable/bookshelf_item_sel"
             android:id="@+id/txt_sort_cancel"
             style="@style/style_text_normal_plain"
             android:layout_width="match_parent"

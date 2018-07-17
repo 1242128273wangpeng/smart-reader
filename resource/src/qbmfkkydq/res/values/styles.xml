@@ -14,10 +14,10 @@
         <item name="android:textColor">@color/text_color_plain</item>
     </style>
 
-    <!-- 18sp #FF989898 -->
+    <!-- 17sp #FFffffff -->
     <style name="style_text_huge_light">
         <item name="android:textSize">@dimen/text_size_huge</item>
-        <item name="android:textColor">@color/text_color_light</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <!-- 18sp #FF9B9B9B -->
@@ -78,9 +78,9 @@
         <item name="android:textColor">@color/text_color_plain</item>
     </style>
 
-    <!-- 15sp #FF989898 -->
+    <!-- 14sp #FFFFFF -->
     <style name="style_text_great_light">
-        <item name="android:textSize">@dimen/text_size_great</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
         <item name="android:textColor">@color/text_color_light</item>
     </style>
 
@@ -194,12 +194,20 @@
     <!--tiny-->
 
 
-
-
-
     <style name="bottom_popup_dialog">
         <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/bottom_dialog_exit_anim</item>
+    </style>
+
+    <!-- 17sp #FFffffff -->
+    <style name="bookshelf_title_style">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <!-- 14sp #FFFFFF -->
+    <style name="bookshelf_subtitle_style">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">#FFFFFF</item>
     </style>
 
 </resources>

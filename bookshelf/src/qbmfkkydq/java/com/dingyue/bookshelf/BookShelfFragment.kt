@@ -74,6 +74,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private val bookShelfSortingPopup: BookShelfSortingPopup by lazy {
         val popup = BookShelfSortingPopup(requireActivity())
+        popup.setOnRecentAddClickListener {
+            sortBooks(2)
+        }
         popup.setOnRecentReadClickListener {
             sortBooks(0)
         }
@@ -407,10 +410,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (isAdded && !requireActivity().isFinishing) {
             if (books != null && books.isNotEmpty()) {
                 srl_refresh?.setPullToRefreshEnabled(true)
+                srl_refresh?.visibility=View.VISIBLE
                 ll_empty?.visibility = View.GONE
             } else {
                 srl_refresh?.setPullToRefreshEnabled(false)
                 ll_empty?.visibility = View.VISIBLE
+                srl_refresh?.visibility=View.GONE
             }
         }
     }
