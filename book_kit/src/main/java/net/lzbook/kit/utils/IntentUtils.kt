@@ -44,7 +44,7 @@ object IntentUtils {
      * @param clazz    Activity
      * @param isFinish 是否关闭
      */
-    fun start(activity: Activity, clazz: Class<*>,isFinish: Boolean) {
+    fun start(activity: Activity, clazz: Class<*>, isFinish: Boolean) {
         val intent = Intent(activity, clazz)
         activity.startActivity(intent)
         if (isFinish) {
@@ -53,7 +53,7 @@ object IntentUtils {
         activity.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
     }
 
-    fun start(activity: Activity, clazz: Class<*>, key: String, value: String,isFinish: Boolean) {
+    fun start(activity: Activity, clazz: Class<*>, key: String, value: String, isFinish: Boolean) {
         val intent = Intent(activity, clazz)
         intent.putExtra(key, value)
         activity.startActivity(intent)
@@ -63,7 +63,7 @@ object IntentUtils {
         activity.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
     }
 
-    fun start(activity: Activity, clazz: Class<*>, key: String, value: Boolean,isFinish: Boolean) {
+    fun start(activity: Activity, clazz: Class<*>, key: String, value: Boolean, isFinish: Boolean) {
         val intent = Intent(activity, clazz)
         intent.putExtra(key, value)
         activity.startActivity(intent)
@@ -71,6 +71,20 @@ object IntentUtils {
             activity.finish()
         }
         activity.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+    }
+
+
+    fun startCoverPageActivity(activity: Activity, clazz: Class<*>, author: String, book_id: String, book_source_id: String) {
+        val intent = Intent()
+        intent.setClass(activity, clazz)
+        val bundle = Bundle()
+        bundle.putString("author", author)
+        bundle.putString("book_id", book_id)
+        bundle.putString("book_source_id", book_source_id)
+
+        intent.putExtras(bundle)
+        activity.startActivity(intent)
+
     }
 
 }

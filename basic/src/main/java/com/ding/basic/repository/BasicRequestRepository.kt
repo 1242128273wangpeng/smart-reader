@@ -72,7 +72,7 @@ interface BasicRequestRepository {
     fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>?
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>?
 
-    fun requestAuthorOtherBookRecommend(author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>?
+    fun requestAuthorOtherBookRecommend(author: String,book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>?
 
 
 

@@ -642,9 +642,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, Sea
                     Intent intent = new Intent();
                     intent.setClass(activity, CoverPageActivity.class);
                     Bundle bundle = new Bundle();
+                    bundle.putString("author", searchCommonBeanYouHua.getAuthor());
                     bundle.putString("book_id", searchCommonBeanYouHua.getBook_id());
                     bundle.putString("book_source_id", searchCommonBeanYouHua.getBook_source_id());
-//                    bundle.putString("book_chapter_id", searchCommonBeanYouHua.get)
 
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);

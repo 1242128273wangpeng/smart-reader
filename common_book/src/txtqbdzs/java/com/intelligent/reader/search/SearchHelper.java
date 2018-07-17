@@ -227,6 +227,7 @@ public class SearchHelper {
                 Intent intent = new Intent();
                 intent.setClass(mContext, CoverPageActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString("author", author);
                 bundle.putString("book_id", book_id);
                 bundle.putString("book_source_id", book_source_id);
                 intent.putExtras(bundle);

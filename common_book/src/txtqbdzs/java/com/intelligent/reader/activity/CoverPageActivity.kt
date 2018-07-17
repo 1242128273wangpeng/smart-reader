@@ -30,7 +30,6 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
-import com.intelligent.reader.util.PagerDesc
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbdzs.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -60,7 +59,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var coverPagePresenter: CoverPagePresenter? = null
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
     private var mRecommendAuthorOtherBooks: List<RecommendBean> = ArrayList()
-    private var isSupport = true
+
+    private var mBook: Book? = null
 
     companion object {
         fun launcher(context: Context, host: String, book_id: String,
@@ -72,7 +72,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             bundle.putString("author", author)
             bundle.putString("book_id", book_id)
             bundle.putString("book_source_id", book_source_id)
-
 
             try {
                 intent.putExtras(bundle)
@@ -109,8 +108,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_bookshelf!!.antiShakeClick(this)
         book_cover_reading!!.antiShakeClick(this)
         book_cover_download!!.antiShakeClick(this)
-        /*book_cover_catalog_view!!.antiShakeClick(this)*/
-        /*book_cover_catalog_view_nobg!!.antiShakeClick(this)*/
     }
 
     private fun initIntent(intent: Intent?) {
@@ -185,6 +182,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showCoverDetail(book: Book?) {
+        mBook = book
         if (isFinishing) {
             // Monkey
             return
@@ -322,8 +320,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.setOnClickListener {
 
             var data = HashMap<String, String>()
-            data.put("bookid", bookId + "")
-            /*data.put("name", bookVo?.name + "")*/
+            data.put("bookid", mBook?.book_id + "")
+            data.put("name", mBook?.name + "")
             data.put("lablekey", text)
             data.put("rank", index.toString())
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
@@ -442,14 +440,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         if (recycler_view_author != null) {
 
-            val coverRecommendAdapter = CoverRecommendAdapter(this, object:CoverRecommendAdapter.RecommendItemClickListener{
+            val coverRecommendAdapter = CoverRecommendAdapter(this, object : CoverRecommendAdapter.RecommendItemClickListener {
                 override fun onRecommendItemClick(view: View, position: Int) {
                     if (position < 0 || position > mRecommendAuthorOtherBooks.size) return
 
                     val list = mRecommendAuthorOtherBooks[position]
 
                     val data = HashMap<String, String>()
-                    data.put("bookid", list.bookId)
+                    data.put("bookid", bookId!!)
                     data.put("TbookID", list.bookId)
                     StartLogClickUtil.upLoadEventLog(this@CoverPageActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
                             StartLogClickUtil.AUTHORBOOKROCOM, data)
@@ -483,14 +481,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (recycler_view != null) {
 
 
-            val coverRecommendAdapter = CoverRecommendAdapter(this, object:CoverRecommendAdapter.RecommendItemClickListener{
+            val coverRecommendAdapter = CoverRecommendAdapter(this, object : CoverRecommendAdapter.RecommendItemClickListener {
                 override fun onRecommendItemClick(view: View, position: Int) {
                     if (position < 0 || position > mRecommendBooks.size) return
 
                     val list = mRecommendBooks[position]
 
                     val data = HashMap<String, String>()
-                    data.put("bookid", list.bookId)
+                    data.put("bookid", bookId!!)
                     data.put("TbookID", list.bookId)
                     StartLogClickUtil.upLoadEventLog(this@CoverPageActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
                             StartLogClickUtil.RECOMMENDEDBOOK, data)

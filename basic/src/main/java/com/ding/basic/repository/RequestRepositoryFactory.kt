@@ -811,8 +811,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     /**
      * 该作者的其他作品推荐
      */
-    override fun requestAuthorOtherBookRecommend(author: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<RecommendBean>>) {
-        InternetRequestRepository.loadInternetRequestRepository(context).requestAuthorOtherBookRecommend(author)!!
+    override fun requestAuthorOtherBookRecommend(author: String,book_id: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<RecommendBean>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestAuthorOtherBookRecommend(author,book_id)!!
                 .compose(SchedulerHelper.schedulerHelper())
                 .subscribeWith(object : ResourceSubscriber<CommonResult<java.util.ArrayList<RecommendBean>>>() {
                     override fun onNext(result: CommonResult<java.util.ArrayList<RecommendBean>>?) {
