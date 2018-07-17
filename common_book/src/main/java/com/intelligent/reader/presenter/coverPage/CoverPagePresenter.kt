@@ -58,8 +58,10 @@ class CoverPagePresenter(private val book_id: String?,
     private var recommendBookList = ArrayList<RecommendBean>()
 
     var recommendIndex = 0
+    var mRandom: Random?= null
 
     init {
+        mRandom = Random()
         sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
         bookCoverViewModel = BookCoverViewModel()
         bookCoverViewModel?.setBookCoverViewCallback(this)
@@ -550,10 +552,10 @@ class CoverPagePresenter(private val book_id: String?,
         markIndexs.clear()
         if (bean.data!!.map!!.znList != null && bean.data!!.map!!.znList!!.size > 0) {
             for (i in 0 until znSize) {//推荐位 智能只取 3本
-                znIndex = mRandom.nextInt(bean.data!!.map!!.znList!!.size)
+                znIndex = mRandom!!.nextInt(bean.data!!.map!!.znList!!.size)
                 if (markIndexs.contains(znIndex)) {
                     while (true) {
-                        znIndex = mRandom.nextInt(bean.data!!.map!!.znList!!.size)
+                        znIndex = mRandom!!.nextInt(bean.data!!.map!!.znList!!.size)
                         if (!markIndexs.contains(znIndex)) {
                             break
                         }
@@ -584,9 +586,9 @@ class CoverPagePresenter(private val book_id: String?,
         }
     }
 
-    private val mRandom: Random by lazy {
-        Random()
-    }
+//    private val mRandom: Random by lazy {
+//        Random()
+//    }
 
     /**
      * 添加推荐的青果的书
@@ -596,10 +598,10 @@ class CoverPagePresenter(private val book_id: String?,
         var qgIndex = -1
         if (bean.data!!.map!!.qgList != null && bean.data!!.map!!.qgList!!.size > 0) {
             for (i in 0 until qgSize) {//推荐位 青果只取 3本
-                qgIndex = mRandom.nextInt(bean.data!!.map!!.qgList!!.size)
+                qgIndex = mRandom!!.nextInt(bean.data!!.map!!.qgList!!.size)
                 if (markIndexs.contains(qgIndex)) {
                     while (true) {
-                        qgIndex = mRandom.nextInt(bean.data!!.map!!.qgList!!.size)
+                        qgIndex = mRandom!!.nextInt(bean.data!!.map!!.qgList!!.size)
                         if (!markIndexs.contains(qgIndex)) {
                             break
                         }
