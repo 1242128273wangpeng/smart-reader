@@ -58,6 +58,13 @@ import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, BookShelfInterface, HomeView, WebViewFragment.FragmentCallback {
+    override fun checkShowShelfGuide() {
+        if(currentIndex==0){
+
+        }
+
+    }
+
     override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper?) {
 
     }
@@ -83,9 +90,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         }
     }
 
-    override fun changeDrawerLayoutState() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     private var homeAdapter: HomeAdapter? = null
     private var currentIndex = 0
