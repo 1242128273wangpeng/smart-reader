@@ -8,6 +8,7 @@ import com.dingyue.contract.router.RouterUtil
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.IntentUtils
 import java.util.HashMap
 
 /**
@@ -42,10 +43,12 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
             finish()
         }
 
-        txt_content.setOnClickListener {
-            displayEggs()
+        // 仅在使用协议页面进入可以打开调试模式
+        if (intent.getBooleanExtra(IntentUtils.isFormDisclaimerPage, false)) {
+            txt_content.setOnClickListener {
+                displayEggs()
+            }
         }
-
 
     }
 
