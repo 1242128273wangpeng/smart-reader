@@ -340,6 +340,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 //            (activity.get() as ReaderActivity).showMenu(false)
         }
         val bundle = Bundle()
+        bundle.putString("author", ReaderStatus.book.author)
         bundle.putString("book_id", ReaderStatus.book.book_id)
         bundle.putString("book_source_id", ReaderStatus.book.book_source_id)
         bundle.putString("book_chapter_id", ReaderStatus.book.book_chapter_id)
