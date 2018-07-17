@@ -214,6 +214,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             Intent intent = new Intent();
             intent.setClass(this, CoverPageActivity.class);
             Bundle bundle = new Bundle();
+            bundle.putString("author", info.getAuthor());
             bundle.putString("book_id", info.getBook_id());
             bundle.putString("book_source_id", info.getBook_source_id());
             intent.putExtras(bundle);

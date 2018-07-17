@@ -136,8 +136,8 @@ object RequestAPI {
         return requestService.requestBookRecommend(book_id, shelfBooks)
     }
 
-    fun requestAuthorOtherBookRecommend(author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
-        return requestService.requestAuthorOtherBookRecommend(author)
+    fun requestAuthorOtherBookRecommend(author: String,book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return requestService.requestAuthorOtherBookRecommend(author,book_id)
     }
 
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {

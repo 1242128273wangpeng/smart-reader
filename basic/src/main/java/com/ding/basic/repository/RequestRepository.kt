@@ -31,7 +31,7 @@ interface RequestRepository {
 
     fun requestAutoCompleteV5(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>)  //搜索V5
 
-    fun requestSearchRecommend(bookIds: String,requestSubscriber: RequestSubscriber<SearchRecommendBook>) //搜索推荐
+    fun requestSearchRecommend(bookIds: String, requestSubscriber: RequestSubscriber<SearchRecommendBook>) //搜索推荐
 
     fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>)
 
@@ -59,7 +59,7 @@ interface RequestRepository {
 
     fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>)
     fun requestBookRecommendV4(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<RecommendBooksEndResp>)
-    fun requestAuthorOtherBookRecommend(author: String, requestSubscriber: RequestSubscriber<ArrayList<RecommendBean>>)
+    fun requestAuthorOtherBookRecommend(author: String, book_id: String, requestSubscriber: RequestSubscriber<ArrayList<RecommendBean>>)
 
     fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 

@@ -455,6 +455,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), CoverPageActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString("author", author);
                 bundle.putString("book_id", book_id);
                 bundle.putString("book_source_id", book_source_id);
                 intent.putExtras(bundle);

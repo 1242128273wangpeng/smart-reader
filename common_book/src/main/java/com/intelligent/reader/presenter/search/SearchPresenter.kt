@@ -184,6 +184,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             val intent = Intent()
             intent.setClass(mContext, CoverPageActivity::class.java)
             val bundle = Bundle()
+            bundle.putString("author", author)
             bundle.putString("book_id", book_id)
             bundle.putString("book_source_id", book_source_id)
             intent.putExtras(bundle)

@@ -83,7 +83,6 @@ interface RequestService {
         const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
 
 
-
         /**
          * 书籍推荐（包括完结页、书籍详情页）
          */
@@ -205,7 +204,7 @@ interface RequestService {
     fun requestBookRecommend(@Query("bookId") book_id: String, @Query("shelfBooks") shelfBooks: String): Flowable<CommonResult<RecommendBooks>>
 
     @GET(AUTHOR_OTHER_BOOK_RECOMMEND)
-    fun requestAuthorOtherBookRecommend(@Query("author") author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>
+    fun requestAuthorOtherBookRecommend(@Query("author") author: String, @Query("blockBoooks") book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>
 
     @FormUrlEncoded
     @POST(BOOK_END_RECOMMEND_V4)

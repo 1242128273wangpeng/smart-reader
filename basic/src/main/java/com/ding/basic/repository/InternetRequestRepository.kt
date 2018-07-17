@@ -77,8 +77,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
 
-
-
     override fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return RequestAPI.requestFeedback(parameters)
     }
@@ -113,8 +111,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBookRecommend(book_id, shelfBooks)
     }
 
-    override fun requestAuthorOtherBookRecommend(author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
-        return RequestAPI.requestAuthorOtherBookRecommend(author)
+    override fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return RequestAPI.requestAuthorOtherBookRecommend(author, book_id)
     }
 
     override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {

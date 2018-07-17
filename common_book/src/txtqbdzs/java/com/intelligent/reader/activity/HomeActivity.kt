@@ -453,6 +453,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
             if (!isFinishing) {
                 val intent = Intent()
+                intent.putExtra("author", author)
                 intent.putExtra("book_id", book_id)
                 intent.putExtra("book_source_id", book_source_id)
                 intent.setClass(applicationContext, CoverPageActivity::class.java)

@@ -488,6 +488,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                         StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
 
                 Intent intent = new Intent();
+                intent.putExtra("author", author);
                 intent.putExtra("book_id", book_id);
                 intent.putExtra("book_source_id", book_source_id);
                 intent.setClass(getApplicationContext(), CoverPageActivity.class);

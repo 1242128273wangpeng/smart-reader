@@ -201,7 +201,7 @@ class CoverPagePresenter(private val book_id: String?,
                 data["type"] = "2"
                 data["bookid"] = coverDetail!!.book_id
 
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data)
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
                 coverPageContract.changeDownloadButtonStatus()
 
@@ -479,8 +479,8 @@ class CoverPagePresenter(private val book_id: String?,
      */
     fun requestAuthorOtherBookRecommend() {
 
-        if (author != null && !TextUtils.isEmpty(author)) {
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAuthorOtherBookRecommend(author!!, object : RequestSubscriber<ArrayList<RecommendBean>>() {
+        if (author != null && !TextUtils.isEmpty(author) && book_id != null && !TextUtils.isEmpty(book_id)) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAuthorOtherBookRecommend(author!!, book_id, object : RequestSubscriber<ArrayList<RecommendBean>>() {
                 override fun requestResult(result: ArrayList<RecommendBean>?) {
                     if (result != null) {
                         coverPageContract.showAuthorRecommendSuccess(result)
