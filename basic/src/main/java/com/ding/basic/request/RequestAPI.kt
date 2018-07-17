@@ -11,6 +11,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.ArrayList
 import kotlin.properties.Delegates
 
 /**
@@ -133,6 +134,10 @@ object RequestAPI {
 
     fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>? {
         return requestService.requestBookRecommend(book_id, shelfBooks)
+    }
+
+    fun requestAuthorOtherBookRecommend(author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return requestService.requestAuthorOtherBookRecommend(author)
     }
 
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {

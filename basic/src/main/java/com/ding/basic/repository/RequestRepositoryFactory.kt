@@ -785,6 +785,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+
     /**
      * 完结页推荐（兼容数据融合前的项目）
      */
@@ -794,6 +795,32 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribeWith(object : ResourceSubscriber<RecommendBooksEndResp>() {
                     override fun onNext(result: RecommendBooksEndResp?) {
                         requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+
+    /**
+     * 该作者的其他作品推荐
+     */
+    override fun requestAuthorOtherBookRecommend(author: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<RecommendBean>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestAuthorOtherBookRecommend(author)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object : ResourceSubscriber<CommonResult<java.util.ArrayList<RecommendBean>>>() {
+                    override fun onNext(result: CommonResult<java.util.ArrayList<RecommendBean>>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("作者其他作品推荐接口请求异常！"))
+                        }
                     }
 
                     override fun onError(throwable: Throwable) {

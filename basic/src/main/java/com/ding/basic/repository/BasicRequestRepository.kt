@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
 import retrofit2.Call
+import java.util.ArrayList
 
 /**
  * Created on 2018/3/19.
@@ -68,11 +69,11 @@ interface BasicRequestRepository {
                               , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>?
 
 
-
-
-
     fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>?
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>?
+
+    fun requestAuthorOtherBookRecommend(author: String): Flowable<CommonResult<ArrayList<RecommendBean>>>?
+
 
 
 }
