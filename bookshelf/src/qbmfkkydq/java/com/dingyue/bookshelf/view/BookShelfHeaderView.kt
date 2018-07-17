@@ -1,36 +1,51 @@
-package com.dingyue.bookshelf
+package com.dingyue.bookshelf.view
 
-
+import android.content.Context
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import kotlinx.android.synthetic.qbmfkkydq.item_bookshelf_book.view.*
-import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.Tools
-import android.view.ViewGroup
 import com.ding.basic.bean.Book
+import com.dingyue.bookshelf.R
+import kotlinx.android.synthetic.qbmfkkydq.bookshelf_header_view.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.repair_books.RepairHelp
 import java.text.MessageFormat
 
 /**
- * Desc 书架页item
- * Author zhenxiang
- * 2018\5\15 0015
+ * Date: 2018/7/17 19:55
+ * Author: wanghuilin
+ * Mail: huilin_wang@dingyuegroup.cn
+ * Desc: 书架也头部视图，最近阅读书籍
  */
+class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
 
-class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
+    init {
+        LayoutInflater.from(context).inflate(R.layout.bookshelf_header_view, this)
+        var layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        this.layoutParams = layoutParams
+        initView()
+    }
 
-    fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
-             contains: Boolean, remove: Boolean) = with(itemView) {
+    private fun initView() {
+        txt_continue_read.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+//              TODO 去阅读
+            }
 
+        })
+
+    }
+
+    private var mBook: Book? = null
+    fun setData(book: Book) {
+        mBook = book
         if (!TextUtils.isEmpty(book.name)) {
             txt_book_name.text = book.name
         }
@@ -40,6 +55,8 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         if (book.sequence + 1 > book.chapter_count) {
             book.sequence = book.chapter_count - 1
         }
+
+        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 " + book.last_chapter
 
         if (book.sequence >= 0) {
             txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
@@ -68,42 +85,23 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
         }
 
+
+
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-            Glide.with(itemView.context.applicationContext)
+            Glide.with(iv_book_icon.context)
                     .load(book.img_url)
                     .placeholder(R.drawable.common_book_cover_default_icon)
                     .error(R.drawable.common_book_cover_default_icon)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(img_book_cover)
+                    .into(iv_book_icon)
         } else {
-            Glide.with(itemView.context.applicationContext)
+            Glide.with(iv_book_icon.context)
                     .load(R.drawable.common_book_cover_default_icon)
-                    .into(img_book_cover)
+                    .into(iv_book_icon)
         }
 
 
-
-        if (remove) {
-            img_item_select_state.visibility = View.VISIBLE
-//            txt_book_states_finish.visibility = View.GONE
-            txt_book_states_update.visibility = View.GONE
-
-            if (contains) {
-                img_item_select_state.setImageResource(R.drawable.bookshelf_item_book_checked_icon)
-            } else {
-                img_item_select_state.setImageResource(R.drawable.bookshelf_item_book_check_icon)
-            }
-
-        } else {
-            img_item_select_state.visibility = View.GONE
-        }
-
-        rl_main.setOnClickListener {
-            bookshelfItemListener.clickedBookShelfItem(book, adapterPosition)
-        }
-
-        rl_main.setOnLongClickListener {
-            bookshelfItemListener.longClickedBookShelfItem()
-        }
     }
 }
+
+

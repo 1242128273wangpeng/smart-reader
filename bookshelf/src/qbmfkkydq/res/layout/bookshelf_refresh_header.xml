@@ -13,7 +13,7 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="10dp"
-        android:textColor="#999C9E"
+        android:textColor="#ffffff"
         tools:text="Loading"/>
 
     <ProgressBar

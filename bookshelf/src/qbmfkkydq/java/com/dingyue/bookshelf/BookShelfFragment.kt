@@ -2,18 +2,19 @@ package com.dingyue.bookshelf
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.dingyue.bookshelf.view.BookShelfDeleteDialog
-import com.dingyue.bookshelf.view.BookShelfSortingPopup
-import com.dingyue.bookshelf.view.HeadMenuPopup
-import com.dingyue.bookshelf.view.RemoveMenuPopup
+import com.dingyue.bookshelf.view.*
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
@@ -27,6 +28,8 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.rvextension.HFRecyclerAdapter
+import net.lzbook.kit.rvextension.HFRecyclerControl
 import net.lzbook.kit.utils.*
 import java.util.*
 
@@ -39,6 +42,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private val popupHeight by lazy {
         resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
     }
+
+    private var iconBgViewHeight = 1
+    private var headerViewHeight = 1
+    private var mScrollDistance = 0
 
     private val bookShelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
 
@@ -169,6 +176,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
+        fl_bg_layout.post {
+            iconBgViewHeight = fl_bg_layout.height
+        }
+
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
@@ -178,7 +189,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 checkBookUpdate()
             }
 
-            override fun onPullDistance(distance: Int) {}
+            override fun onPullDistance(distance: Int) {
+                if (distance >= 0) {
+                    fl_bg_layout.layoutParams.height = iconBgViewHeight + distance
+                }
+
+            }
 
             override fun onPullEnable(enable: Boolean) {
                 refreshHeader.pgbar_refresh_loading.visibility = View.GONE
@@ -284,6 +300,48 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         recl_content.adapter = bookShelfAdapter
+
+        recl_content.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                mScrollDistance += dy
+                var percent = mScrollDistance * 1f / headerViewHeight
+                var alpha = 255 * percent
+                setTitleLayoutAlpha(alpha.toInt())
+            }
+        })
+
+    }
+
+    /**
+     * 添加头部视图，正在阅读的书籍
+     */
+    private val hfRecyclerControl: HFRecyclerControl by lazy {
+        HFRecyclerControl()
+    }
+
+    private val headerView: BookShelfHeaderView by lazy {
+        BookShelfHeaderView(recl_content.context)
+    }
+
+    private fun addHeaderView(cReadBook: Book) {
+
+        if (hfRecyclerControl.getHeaderCount() == 0) {
+            headerView.post {
+                headerViewHeight = headerView.height
+            }
+            hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
+            hfRecyclerControl.addHeaderView(headerView)
+        }
+        headerView.setData(cReadBook)
+    }
+
+    private fun setTitleLayoutAlpha(alpha: Int) {
+        var alpha = alpha
+        if (alpha > 255) {
+            alpha = 255
+        }
+        ll_container.setBackgroundColor(Color.argb(alpha, 42, 202, 176))
     }
 
     private fun createHeaderView(): View {
@@ -300,8 +358,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
+        bookShelfPresenter.queryCurrentReadBook()
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
+
+            if (bookShelfPresenter.currentReadBook != null) {
+                addHeaderView(bookShelfPresenter.currentReadBook!!)
+            }
 
             if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
                 bookShelfInterface?.checkShowShelfGuide()
@@ -410,12 +473,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (isAdded && !requireActivity().isFinishing) {
             if (books != null && books.isNotEmpty()) {
                 srl_refresh?.setPullToRefreshEnabled(true)
-                srl_refresh?.visibility=View.VISIBLE
+                srl_refresh?.visibility = View.VISIBLE
                 ll_empty?.visibility = View.GONE
             } else {
                 srl_refresh?.setPullToRefreshEnabled(false)
                 ll_empty?.visibility = View.VISIBLE
-                srl_refresh?.visibility=View.GONE
+                srl_refresh?.visibility = View.GONE
             }
         }
     }

@@ -43,12 +43,12 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_remove_menu
         if (num == 0) {
             contentView.btn_remove_delete.text = context.getString(R.string.delete)
             contentView.btn_remove_delete.isEnabled = false
-            contentView.btn_remove_delete.setTextColor(Color.parseColor("#989898"))
+            contentView.btn_remove_delete.setTextColor(Color.parseColor("#cc2AD1BE"))
         } else {
             val text = context.getString(R.string.delete) + "(" + num + ")"
             contentView.btn_remove_delete.text = text
             contentView.btn_remove_delete.isEnabled = true
-            contentView.btn_remove_delete.setTextColor(Color.parseColor("#42BE54"))
+            contentView.btn_remove_delete.setTextColor(Color.parseColor("#FF2AD1BE"))
         }
     }
 

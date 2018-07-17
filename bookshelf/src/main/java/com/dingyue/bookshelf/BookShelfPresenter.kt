@@ -34,6 +34,7 @@ import kotlin.collections.LinkedHashMap
 class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
 
     var iBookList: ArrayList<Book> = ArrayList()
+    var currentReadBook: Book? = null
 
     private val adBookMap = LinkedHashMap<Int, Book>()
 
@@ -63,7 +64,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     fun addUpdateTask(updateCallBack: UpdateCallBack) {
 
-        val count =  RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
+        val count = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
 
         if (count > 0 && updateService != null) {
             val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
@@ -76,7 +77,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     fun queryBookListAndAd(activity: Activity, isShowAD: Boolean, isList: Boolean) {
         val adCount = calculationShelfADCount(isShowAD, isList)
-
         if (isShowAD && iBookList.isNotEmpty()) {
 
             if (isList) {
@@ -105,6 +105,18 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                 }
             }
         }
+    }
+
+    /**
+     * 获取最近阅读的书
+     */
+    public fun queryCurrentReadBook() {
+        val readBooks = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
+        if (readBooks == null || readBooks.size < 1) {
+            return
+        }
+        Collections.sort(readBooks, CommonContract.MultiComparator(1))
+        currentReadBook = readBooks[0]
     }
 
     /***
@@ -195,6 +207,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                         view?.onAdRefresh()
                     }
                 }
+
                 override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
                     runOnMain {
                         handleADResult(views)

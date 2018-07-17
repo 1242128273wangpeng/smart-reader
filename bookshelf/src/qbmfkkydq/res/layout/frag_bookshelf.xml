@@ -9,6 +9,7 @@
     tools:ignore="RtlHardcoded, MissingPrefix">
 
     <FrameLayout
+        android:id="@+id/fl_bg_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -129,14 +130,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.dingyue.bookshelf.view.TopShadowRecyclerView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/recl_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alwaysDrawnWithCache="false"
-                android:background="@color/color_white"
-                android:clipToPadding="false"
-                android:paddingTop="10dp" />
+                android:clipToPadding="false" />
 
         </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
 
@@ -157,7 +155,7 @@
             android:background="@android:color/transparent"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
