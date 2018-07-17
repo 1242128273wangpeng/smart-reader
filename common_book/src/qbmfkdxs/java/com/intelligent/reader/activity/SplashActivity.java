@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -624,6 +625,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();

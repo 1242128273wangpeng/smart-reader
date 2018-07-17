@@ -96,6 +96,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     private var theme_name: TextView? = null//主题名
     internal var apkUpdateUtils = ApkUpdateUtils(this)
     private var cacheAsyncTask: CacheAsyncTask? = null
+    var cacheSize: Long = 0
 
     private var isActivityPause = false
     private var isStyleChanged = false
@@ -494,7 +495,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             var result = "0B"
             try {
                 result = DataCleanManager.getTotalCacheSize(getApplicationContext())
-                SettingActivity.cacheSize = DataCleanManager.internalCacheSize
+                cacheSize = DataCleanManager.internalCacheSize
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -526,14 +527,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             else -> {
             }
         }
-    }
-
-    companion object {
-
-        private val PUSH_TIME_SETTING = 1
-
-        var cacheSize: Long = 0
-        private val LOGIN_SUCCESS = 0x20
     }
 
 }
