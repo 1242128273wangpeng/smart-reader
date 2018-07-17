@@ -237,9 +237,10 @@ public class StartLogClickUtil {
     public static final String ENTER = "ENTER";//进入书籍详情页
     public static final String SOURCECHANGEPOPUP = "SOURCECHANGEPOPUP";//换源弹窗
     public static final String INTRODUCTION = "INTRODUCTION";//简介点击展开/收起
-    public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
     public static final String TRANSCODEPOPUP = "TRANSCODEPOPUP";//点击转码阅读
     public static final String LABLECLICK = "LABLECLICK";//点击标签
+    public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
+    public static final String AUTHORBOOKROCOM = "AUTHORBOOKROCOM";//点击作者其他作品
 
 
     //书籍目录页

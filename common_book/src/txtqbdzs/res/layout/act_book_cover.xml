@@ -303,7 +303,7 @@
                 android:background="@color/color_divider"/>
 
             <TextView
-                android:id="@+id/tv_recommend_title"
+                android:id="@+id/tv_recommend_title_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -315,16 +315,51 @@
                 android:drawablePadding="@dimen/padding_8"
                 android:paddingLeft="@dimen/dimen_margin_16"
                 android:text="该作者的其他作品"
+                android:visibility="gone"
                 android:textColor="@color/cover_title_color"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:visibility="gone"/>
+                android:textStyle="bold"/>
 
-            <android.support.v7.widget.RecyclerView
+            <com.intelligent.reader.view.MyRecyclerView
+                android:id="@+id/recycler_view_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_recommend_title_author"
+                android:layout_marginLeft="5dp"
+                android:clipToPadding="false"/>
+
+            <View
+                android:id="@+id/line4"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_below="@id/recycler_view_author"
+                android:layout_marginBottom="@dimen/dimen_margin_20"
+                android:layout_marginTop="@dimen/dimen_margin_20"
+                android:background="@color/color_divider"/>
+
+            <TextView
+                android:id="@+id/tv_recommend_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/line4"
+                android:layout_marginBottom="6dp"
+                android:drawableLeft="@mipmap/cover_profile_icon"
+                android:drawablePadding="@dimen/padding_8"
+                android:paddingLeft="@dimen/dimen_margin_16"
+                android:visibility="gone"
+                android:text="读过这本书的人还读过"
+                android:textColor="@color/cover_title_color"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <com.intelligent.reader.view.MyRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_recommend_title"
+                android:layout_marginLeft="5dp"
                 android:clipToPadding="false"
                 android:paddingBottom="70dp"/>
 

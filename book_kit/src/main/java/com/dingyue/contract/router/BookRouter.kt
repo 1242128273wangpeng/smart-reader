@@ -93,6 +93,7 @@ object BookRouter {
 
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
 
+            bundle.putString("author", book.author)
             bundle.putString("book_id", book.book_id)
             bundle.putString("book_source_id", book.book_source_id)
             bundle.putString("book_chapter_id", book.book_chapter_id)
@@ -121,6 +122,7 @@ object BookRouter {
      */
     fun navigateCover(activity: Activity, book: Book) {
         val bundle = Bundle()
+        bundle.putString("author", book.author)
         bundle.putString("book_id", book.book_id)
         bundle.putString("book_source_id", book.book_source_id)
         bundle.putString("book_chapter_id", book.book_chapter_id)

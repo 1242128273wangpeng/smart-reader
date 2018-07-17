@@ -7,7 +7,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.SimpleItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -22,7 +22,6 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestService
-import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
@@ -31,6 +30,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.util.PagerDesc
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbdzs.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -52,12 +52,15 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
+    private var author: String? = null
     private var bookId: String? = null
     private var bookSourceId: String? = null
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
+    private var mRecommendAuthorOtherBooks: List<RecommendBean> = ArrayList()
+    private var isSupport = true
 
     companion object {
         fun launcher(context: Context, host: String, book_id: String,
@@ -66,6 +69,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             val intent = Intent()
             intent.setClass(context, CoverPageActivity::class.java)
             val bundle = Bundle()
+            bundle.putString("author", author)
             bundle.putString("book_id", book_id)
             bundle.putString("book_source_id", book_source_id)
 
@@ -111,6 +115,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private fun initIntent(intent: Intent?) {
         if (intent != null) {
+
+            if (intent.hasExtra("author")) {
+                author = intent.getStringExtra("author")
+            }
+
             if (intent.hasExtra("book_id")) {
                 bookId = intent.getStringExtra("book_id")
             }
@@ -124,7 +133,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
-            coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
+            coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this, author)
             requestBookDetail()
         }
     }
@@ -138,6 +147,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
+        coverPagePresenter?.requestAuthorOtherBookRecommend()
         coverPagePresenter?.requestCoverRecommend()
 
 
@@ -250,12 +260,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     flowLayout!!.maxRows = 1
                     if (book.label != null) {
                         val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-                        lp.rightMargin = AppUtils.dp2px(resources,4f).toInt()
+                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
                         dummyTexts.indices
                                 .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
                                 .map { buildLabel(dummyTexts[it], it) }
-                                .forEach { flowLayout!!.addView(it,lp) }
+                                .forEach { flowLayout!!.addView(it, lp) }
 
                     }
                 }
@@ -268,7 +278,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
         }
     }
-
 
     // 边框和文字颜色
     private val labelColor = intArrayOf(R.color.cover_label_pink, R.color.cover_label_green, R.color.cover_label_blue, R.color.cover_label_yellow, R.color.cover_label_purple)
@@ -412,6 +421,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 StartLogClickUtil.RECOMMENDEDBOOK, data)
 
         val book = Book()
+        book.author = recommendBooks.authorName
         book.book_id = recommendBooks.bookId
         book.book_source_id = recommendBooks.id
         book.book_chapter_id = recommendBooks.bookChapterId
@@ -419,27 +429,96 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
 
+    override fun showAuthorRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+        mRecommendAuthorOtherBooks = recommends
+
+        if (recommends.size == 0) {
+            line4.visibility = View.GONE
+            tv_recommend_title_author.visibility = View.GONE
+        } else {
+            line4.visibility = View.VISIBLE
+            tv_recommend_title_author.visibility = View.VISIBLE
+        }
+
+        if (recycler_view_author != null) {
+
+            val coverRecommendAdapter = CoverRecommendAdapter(this, object:CoverRecommendAdapter.RecommendItemClickListener{
+                override fun onRecommendItemClick(view: View, position: Int) {
+                    if (position < 0 || position > mRecommendAuthorOtherBooks.size) return
+
+                    val list = mRecommendAuthorOtherBooks[position]
+
+                    val data = HashMap<String, String>()
+                    data.put("bookid", list.bookId)
+                    data.put("TbookID", list.bookId)
+                    StartLogClickUtil.upLoadEventLog(this@CoverPageActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                            StartLogClickUtil.AUTHORBOOKROCOM, data)
+
+                    val book = Book()
+                    book.author = list.authorName
+                    book.book_id = list.bookId
+                    book.book_source_id = list.id
+                    book.book_chapter_id = list.bookChapterId
+                    BookRouter.navigateCover(this@CoverPageActivity, book)
+                }
+
+            }, recommends)
+            val ms = LinearLayoutManager(this)
+            ms.orientation = LinearLayoutManager.HORIZONTAL
+            recycler_view_author.layoutManager = ms
+            recycler_view_author.adapter = coverRecommendAdapter
+        }
+
+    }
+
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
         mRecommendBooks = recommends
 
-        if (tv_recommend_title != null) {
-            if (recommends.size == 0) {
-                tv_recommend_title.visibility = View.GONE
-            } else {
-                tv_recommend_title.visibility = View.VISIBLE
-            }
+        if (recommends.size == 0) {
+            tv_recommend_title.visibility = View.GONE
+        } else {
+            tv_recommend_title.visibility = View.VISIBLE
         }
+
         if (recycler_view != null) {
-            val coverRecommendAdapter = CoverRecommendAdapter(this, this, recommends)
-            recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
-            recycler_view.layoutManager = ShelfGridLayoutManager(this, 3)
-            recycler_view.isNestedScrollingEnabled = false
-            recycler_view.itemAnimator.addDuration = 0
-            recycler_view.itemAnimator.changeDuration = 0
-            recycler_view.itemAnimator.moveDuration = 0
-            recycler_view.itemAnimator.removeDuration = 0
-            (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+
+            val coverRecommendAdapter = CoverRecommendAdapter(this, object:CoverRecommendAdapter.RecommendItemClickListener{
+                override fun onRecommendItemClick(view: View, position: Int) {
+                    if (position < 0 || position > mRecommendBooks.size) return
+
+                    val list = mRecommendBooks[position]
+
+                    val data = HashMap<String, String>()
+                    data.put("bookid", list.bookId)
+                    data.put("TbookID", list.bookId)
+                    StartLogClickUtil.upLoadEventLog(this@CoverPageActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                            StartLogClickUtil.RECOMMENDEDBOOK, data)
+
+                    val book = Book()
+                    book.author = list.authorName
+                    book.book_id = list.bookId
+                    book.book_source_id = list.id
+                    book.book_chapter_id = list.bookChapterId
+                    BookRouter.navigateCover(this@CoverPageActivity, book)
+                }
+
+            }, recommends)
+            val ms = LinearLayoutManager(this)
+            ms.orientation = LinearLayoutManager.HORIZONTAL
+            recycler_view.layoutManager = ms
             recycler_view.adapter = coverRecommendAdapter
+
+            /* val coverRecommendAdapter = CoverRecommendAdapter(this, this, recommends)
+             recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
+             recycler_view.layoutManager = ShelfGridLayoutManager(this, 6)
+             recycler_view.isNestedScrollingEnabled = false
+             recycler_view.itemAnimator.addDuration = 0
+             recycler_view.itemAnimator.changeDuration = 0
+             recycler_view.itemAnimator.moveDuration = 0
+             recycler_view.itemAnimator.removeDuration = 0
+             (recycler_view.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+             recycler_view.adapter = coverRecommendAdapter*/
         }
     }
 
@@ -520,6 +599,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     override fun onTaskStatusChange() {
         super.onTaskStatusChange()
         changeDownloadButtonStatus()
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return recycler_view_author.isSupport && recycler_view.isSupport
     }
 
 

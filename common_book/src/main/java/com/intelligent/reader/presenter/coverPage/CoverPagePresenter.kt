@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.*
-import com.ding.basic.bean.Book
-import com.ding.basic.bean.CoverRecommendBean
-import com.ding.basic.bean.RecommendBean
-import com.ding.basic.bean.RecommendBooks
+import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
@@ -36,19 +33,29 @@ import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CoverPagePresenter(private val book_id: String?, private var book_source_id: String?, private var book_chapter_id: String?, val coverPageContract: CoverPageContract, val activity: Activity, onClickListener: View.OnClickListener)
+/**
+ * author:推荐该作者的其他作品
+ * 目前铺开的壳：智胜电子书替
+ */
+class CoverPagePresenter(private val book_id: String?,
+                         private var book_source_id: String?,
+                         private var book_chapter_id: String?,
+                         val coverPageContract: CoverPageContract,
+                         val activity: Activity,
+                         onClickListener: View.OnClickListener,
+                         private var author: String? = "")
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookCoverViewCallback {
 
     var coverDetail: Book? = null
     private var showMoreLabel: Boolean = false
 
-    var bookCoverUtil: BookCoverUtil? = null
-    var sharePreUtil: SharedPreUtil? = null
+    private var bookCoverUtil: BookCoverUtil? = null
+    private var sharePreUtil: SharedPreUtil? = null
     var bookCoverViewModel: BookCoverViewModel? = null
 
     var recommendList = ArrayList<RecommendBean>()
 
-    var recommendBookList = ArrayList<RecommendBean>()
+    private var recommendBookList = ArrayList<RecommendBean>()
 
     var recommendIndex = 0
 
@@ -461,6 +468,29 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
 
                 override fun requestError(message: String) {
                     Logger.e("获取封面推荐异常！")
+                    coverPageContract.showRecommendFail()
+                }
+            })
+        }
+    }
+
+    /**
+     * 推荐该作者的其他作品
+     */
+    fun requestAuthorOtherBookRecommend() {
+
+        if (author != null && !TextUtils.isEmpty(author)) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAuthorOtherBookRecommend(author!!, object : RequestSubscriber<ArrayList<RecommendBean>>() {
+                override fun requestResult(result: ArrayList<RecommendBean>?) {
+                    if (result != null) {
+                        coverPageContract.showAuthorRecommendSuccess(result)
+                    } else {
+                        coverPageContract.showRecommendFail()
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("获取作者推荐异常！")
                     coverPageContract.showRecommendFail()
                 }
             })
