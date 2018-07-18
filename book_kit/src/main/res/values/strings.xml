@@ -186,7 +186,8 @@
     <string name="search_of_everyone">大家都在搜</string>
 
     <string name="download_status_complete">缓存完成</string>
-    <string name="download_status_underway">缓存中...</string>
+    <string name="download_status_underway">缓存中…</string>
+    <string name="download_status_already">已缓存</string>
     <string name="download_status_total">全本缓存</string>
     <string name="download_status_paused">缓存已暂停</string>
 
@@ -229,7 +230,7 @@
     <!-- 封面页 -->
     <string name="book_cover">书籍详情</string>
     <string name="book_cover_connect">-</string>
-    <string name="book_cover_state_writing">连载</string>
+    <string name="book_cover_state_writing">连载中</string>
     <string name="book_cover_state_written">已完结</string>
     <string name="book_cover_source">来源：</string>
     <string name="book_cover_no_source">暂无来源</string>

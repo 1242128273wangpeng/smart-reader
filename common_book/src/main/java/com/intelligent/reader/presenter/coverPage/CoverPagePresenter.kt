@@ -257,7 +257,7 @@ class CoverPagePresenter(private val book_id: String?,
                 data["type"] = "1"
                 data["bookid"] = coverDetail!!.book_id
 
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data)
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
                 activity.applicationContext.showToastMessage("成功添加到书架！")
 
