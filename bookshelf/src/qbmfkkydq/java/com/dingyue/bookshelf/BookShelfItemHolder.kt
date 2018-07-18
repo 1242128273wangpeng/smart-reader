@@ -13,13 +13,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.qbmfkkydq.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.Tools
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
-import java.text.MessageFormat
 
 /**
  * Desc 书架页item

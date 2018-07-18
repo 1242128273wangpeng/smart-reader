@@ -28,7 +28,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.rvextension.HFRecyclerAdapter
 import net.lzbook.kit.rvextension.HFRecyclerControl
 import net.lzbook.kit.utils.*
 import java.util.*
@@ -368,14 +367,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
-        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         bookShelfPresenter.queryCurrentReadBook()
+        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
-
-            if (bookShelfPresenter.currentReadBook != null) {
-                addHeaderView(bookShelfPresenter.currentReadBook!!, bookShelfPresenter.currentTitle)
-            }
 
             if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
                 bookShelfInterface?.checkShowShelfGuide()
@@ -491,6 +486,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 ll_empty?.visibility = View.VISIBLE
                 srl_refresh?.visibility = View.GONE
             }
+        }
+//      添加头部正在阅读书籍信息
+        if (bookShelfPresenter.currentReadBook != null) {
+            addHeaderView(bookShelfPresenter.currentReadBook!!, bookShelfPresenter.currentTitle)
         }
     }
 
