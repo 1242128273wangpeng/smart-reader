@@ -28,16 +28,6 @@
             tools:background="#ff0000"
             tools:text="更" />
 
-        <TextView
-            android:id="@+id/txt_book_states_finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:textColor="#fff"
-            android:textSize="10sp"
-            tools:background="#ff0000"
-            tools:text="完" />
-
     </FrameLayout>
 
     <LinearLayout

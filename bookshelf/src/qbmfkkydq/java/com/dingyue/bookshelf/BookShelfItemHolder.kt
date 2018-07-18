@@ -2,6 +2,8 @@ package com.dingyue.bookshelf
 
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -43,10 +45,11 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
         if (book.sequence >= 0) {
 //            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
-            txt_book_chapter.text=(book.sequence+1).toString()+"/"+book.chapter_count+"章"
+            txt_book_chapter.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
         } else {
             txt_book_chapter.text = "未读"
         }
+
 
         /**
          * 书架检测到书籍有修复会在该书籍封面显示更新角标，
@@ -54,18 +57,36 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
          * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
          */
         val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+        txt_book_states_update.visibility = View.GONE
         if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
             txt_book_states_update.visibility = View.VISIBLE
-            txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                txt_book_states_update.background = getLabelBg("#FF0060")
+            } else {
+                txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
+            }
             txt_book_states_update.text = "更"
 
         } else {
             // 是否有更新
-            txt_book_states_update.visibility = if (book.update_status == 1) View.VISIBLE else View.GONE
-
-//            // 是否连载
-            txt_book_states_finish.visibility = if (book.status == "FINISH") View.VISIBLE else View.GONE
-//
+            if (book.update_status == 1) {
+                txt_book_states_update.visibility = View.VISIBLE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    txt_book_states_update.background = getLabelBg("#FF0060")
+                } else {
+                    txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
+                }
+                txt_book_states_update.text = "更"
+            }
+            if (book.status == "FINISH") {
+                txt_book_states_update.visibility = View.VISIBLE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    txt_book_states_update.background = getLabelBg("#2AD1BE")
+                } else {
+                    txt_book_states_update.setBackgroundColor(Color.parseColor("#2AD1BE"))
+                }
+                txt_book_states_update.text = "完"
+            }
 
         }
 
@@ -106,5 +127,20 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         rl_main.setOnLongClickListener {
             bookshelfItemListener.longClickedBookShelfItem()
         }
+    }
+
+    private fun getLabelBg(color: String): GradientDrawable {
+        var drawable = GradientDrawable()
+
+        drawable.shape = GradientDrawable.RECTANGLE
+
+        drawable.setColor(Color.parseColor(color))
+
+
+        val corner = AppUtils.dip2px(itemView.context, 2f).toFloat()
+        drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, 0f, 0f)
+
+        return drawable
+
     }
 }

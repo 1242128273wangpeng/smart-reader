@@ -5,15 +5,21 @@ import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.TextUtils
+import android.util.Log
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
@@ -35,6 +41,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     var iBookList: ArrayList<Book> = ArrayList()
     var currentReadBook: Book? = null
+    var currentTitle: String = ""
 
     private val adBookMap = LinkedHashMap<Int, Book>()
 
@@ -110,13 +117,32 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
     /**
      * 获取最近阅读的书
      */
-    public fun queryCurrentReadBook() {
+     fun queryCurrentReadBook() {
         val readBooks = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
         if (readBooks == null || readBooks.size < 1) {
             return
         }
         Collections.sort(readBooks, CommonContract.MultiComparator(1))
         currentReadBook = readBooks[0]
+
+//        val requestSubscriber = object : RequestSubscriber<List<Chapter>>() {
+//            override fun requestResult(result: List<Chapter>?) {
+//
+//                currentTitle = result!!.get(currentReadBook!!.sequence).content!!
+//
+//                Log.d("whl",currentTitle)
+//            }
+//
+//            override fun requestError(message: String) {
+//                Log.d("whl",message)
+//            }
+//        }
+//
+//        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+//                .requestCatalog(currentReadBook!!.book_id,
+//                        currentReadBook!!.book_source_id,
+//                        currentReadBook!!.book_chapter_id,
+//                        requestSubscriber, SchedulerHelper.Type_Main)
     }
 
     /***

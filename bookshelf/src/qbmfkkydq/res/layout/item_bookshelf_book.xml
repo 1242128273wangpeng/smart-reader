@@ -4,7 +4,7 @@
     android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="24dp"
+    android:paddingTop="20dp"
     android:background="@drawable/bookshelf_item_book_sel"
     android:gravity="center_horizontal"
     android:orientation="vertical"

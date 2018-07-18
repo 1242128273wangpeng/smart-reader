@@ -21,6 +21,11 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/fl_bg_layout"
+        android:background="#fff" />
 
     <LinearLayout
         android:id="@+id/ll_container"
@@ -91,12 +96,13 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/txt_editor_finish"
+                android:id="@+id/txt_editor_select_all"
                 style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="@string/finish" />
+                android:text="@string/select_all"
+                />
 
             <TextView
                 style="@style/bookshelf_title_style"
@@ -108,14 +114,16 @@
                 android:text="@string/bookshelf_edit" />
 
             <TextView
-                android:id="@+id/txt_editor_select_all"
+                android:id="@+id/txt_editor_finish"
+
                 style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
-                android:text="@string/select_all" />
+                android:text="@string/finish"
+                 />
 
         </RelativeLayout>
     </LinearLayout>
