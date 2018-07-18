@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--huge-->
+    <!-- 18sp #FF282828 -->
+    <style name="style_text_huge_dark">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!-- 18sp #FF616161 -->
+    <style name="style_text_huge_plain">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!-- 17sp #FFffffff -->
+    <style name="style_text_huge_light">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <!-- 18sp #FF9B9B9B -->
+    <style name="style_text_huge_weak">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+
+    <!-- 18sp #FFCBCBCB -->
+    <style name="style_text_huge_thin">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_thin</item>
+    </style>
+    <!--huge-->
+
+    <!--large-->
+    <!-- 16sp #FF282828 -->
+    <style name="style_text_large_dark">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!-- 16sp #FF616161 -->
+    <style name="style_text_large_plain">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!-- 16sp #FF989898 -->
+    <style name="style_text_large_light">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <!-- 16sp #FF9B9B9B -->
+    <style name="style_text_large_weak">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+
+    <!-- 16sp #FFCBCBCB -->
+    <style name="style_text_large_thin">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_thin</item>
+    </style>
+    <!--large-->
+
+    <!--great-->
+    <!-- 15sp #FF282828 -->
+    <style name="style_text_great_dark">
+        <item name="android:textSize">@dimen/text_size_great</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!-- 15sp #FF616161 -->
+    <style name="style_text_great_plain">
+        <item name="android:textSize">@dimen/text_size_great</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!-- 14sp #FFFFFF -->
+    <style name="style_text_great_light">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <!-- 15sp #FF9B9B9B -->
+    <style name="style_text_great_weak">
+        <item name="android:textSize">@dimen/text_size_great</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+
+    <!-- 15sp #FFCBCBCB -->
+    <style name="style_text_great_thin">
+        <item name="android:textSize">@dimen/text_size_great</item>
+        <item name="android:textColor">@color/text_color_thin</item>
+    </style>
+    <!--great-->
+
+    <!--normal-->
+    <!-- 14sp #FF282828 -->
+    <style name="style_text_normal_dark">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!-- 14sp #FF616161 -->
+    <style name="style_text_normal_plain">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!-- 14sp #FF989898 -->
+    <style name="style_text_normal_light">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <!-- 14sp #FF9B9B9B -->
+    <style name="style_text_normal_weak">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+
+    <!-- 14sp #FFCBCBCB -->
+    <style name="style_text_normal_thin">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_thin</item>
+    </style>
+    <!--normal-->
+
+    <!--small-->
+    <!-- 13sp #FF282828 -->
+    <style name="style_text_small_dark">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!-- 13sp #FF616161 -->
+    <style name="style_text_small_plain">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!-- 13sp #FF989898 -->
+    <style name="style_text_small_light">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <!-- 13sp #FF9B9B9B -->
+    <style name="style_text_small_weak">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+
+    <!-- 13sp #FFCBCBCB -->
+    <style name="style_text_small_thin">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_thin</item>
+    </style>
+    <!--small-->
+
+    <!--tiny-->
+    <!-- 12sp #FF282828 -->
+    <style name="style_text_tiny_dark">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <!-- 12sp #FF616161 -->
+    <style name="style_text_tiny_plain">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <!-- 12sp #FF989898 -->
+    <style name="style_text_tiny_light">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <!-- 12sp #FF9B9B9B -->
+    <style name="style_text_tiny_weak">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+
+    <!-- 12sp #FFCBCBCB -->
+    <style name="style_text_tiny_thin">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_thin</item>
+    </style>
+    <!--tiny-->
+
+
+    <style name="bottom_popup_dialog">
+        <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_dialog_exit_anim</item>
+    </style>
+
+    <!-- 17sp #FFffffff -->
+    <style name="bookshelf_title_style">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <!-- 14sp #FFFFFF -->
+    <style name="bookshelf_subtitle_style">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+</resources>

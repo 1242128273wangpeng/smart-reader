@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dl_reader_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded">
+
+    <include layout="@layout/reader_content"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_reader_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_reader_guide_action"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:contentDescription="@string/module_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/reader_guide_gesture_icon"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/img_reader_guide_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="65dp"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/reader_guide_more_icon"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/fg_catalog_mark"
+        android:name="com.dy.reader.fragment.CatalogMarkFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_marginRight="1dp"
+        android:clickable="true"
+        android:focusable="true">
+    </fragment>
+</android.support.v4.widget.DrawerLayout>

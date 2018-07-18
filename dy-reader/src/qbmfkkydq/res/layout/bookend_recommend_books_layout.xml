@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    tools:ignore="RtlHardcoded">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/text_size_18"
+            android:text="@string/book_recommend_title"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_more_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/dimen_margin_16"
+            android:drawableLeft="@drawable/icon_refresh"
+            android:drawablePadding="@dimen/padding_10"
+            android:text="@string/book_recommend_change"
+            android:textColor="#3c3b3b"
+            android:textSize="@dimen/text_size_14"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recl_recommend_book"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:layout_marginLeft="@dimen/dimen_margin_3"
+        android:layout_marginRight="@dimen/dimen_margin_3" />
+
+
+</LinearLayout>

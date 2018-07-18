@@ -161,6 +161,7 @@
     <dimen name="text_big16_size">16sp</dimen>
     <dimen name="text_big18_size">18sp</dimen>
 
+    <dimen name="text_size_11">11sp</dimen>
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="text_size_15">15sp</dimen>

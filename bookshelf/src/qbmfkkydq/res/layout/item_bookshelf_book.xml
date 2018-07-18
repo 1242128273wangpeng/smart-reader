@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bookshelf_item_book_sel"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="24dp"
+    tools:ignore="RtlHardcoded">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bookshelf_bookitem_bg">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp">
+
+            <ImageView
+                android:id="@+id/img_book_cover"
+                android:layout_width="80dp"
+                android:layout_height="113dp"
+                android:layout_gravity="center"
+                android:background="@drawable/common_book_cover_default_icon" />
+
+            <TextView
+                android:id="@+id/txt_book_states_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:textColor="#fff"
+                android:textSize="10sp"
+                tools:background="#ff0000"
+                tools:text="更" />
+
+            <TextView
+                android:id="@+id/txt_book_states_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:textColor="#fff"
+                android:textSize="10sp"
+                tools:background="#ff0000"
+                tools:text="完" />
+
+            <TextView
+                android:id="@+id/txt_book_chapter"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/bookshelf_bookitem_tv_bg"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="1dp"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                tools:text="13/100章" />
+
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/img_item_select_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="35dp"
+            android:src="@drawable/bookshelf_item_book_checked_icon" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txt_book_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:maxWidth="80dp"
+        android:textColor="#FF5D646E"
+        android:textSize="12sp"
+        tools:text="斗破苍穹" />
+
+
+</LinearLayout>
