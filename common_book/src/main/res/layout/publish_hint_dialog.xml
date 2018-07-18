@@ -27,16 +27,14 @@
                 android:gravity="center"
                 android:textColor="@color/color_black_323232"
                 android:textSize="@dimen/text_size_18"/>
-        
-        <include layout="@layout/dialog_divider"/>
-        
+
+
         <TextView
                 android:id="@+id/publish_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/publish_leave_detail"
                 android:textColor="@color/color_black_323232"
-                android:gravity="center"
                 android:textSize="@dimen/text_size_16"
                 android:layout_marginTop="@dimen/dimen_margin_10"
                 android:layout_marginBottom="@dimen/dimen_margin_10"

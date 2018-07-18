@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import iyouqu.theme.BaseCacheableActivity;
 
 public class SettingMoreActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
@@ -42,8 +41,6 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     private RelativeLayout push_time;
     private SwitchButton push_time_checkbox;
     private TextView push_time_setting_text;
-    private RelativeLayout bookshelf_sort_time;
-    private ImageView bookshelf_sort_time_checkbox;
     private RelativeLayout bookshelf_sort_update_time;
     private ImageView bookshelf_sort_update_time_checkbox;
     //设置帮助类
@@ -65,6 +62,8 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     protected void initView() {
 
+
+
         btnBack = (ImageView) findViewById(R.id.btn_left_setting);
         title = (TextView) findViewById(R.id.tv_title_name);
 
@@ -80,12 +79,9 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         //推送时间设置
         push_time_setting_text = (TextView) findViewById(R.id.push_time_setting_text);
         //书架按时间排序
-        bookshelf_sort_time = (RelativeLayout) findViewById(R.id.bookshelf_sort_time);
-        bookshelf_sort_time_checkbox = (ImageView) findViewById(R.id.bookshelf_sort_time_checkbox);
         //书架按更新时间排序
         bookshelf_sort_update_time = (RelativeLayout) findViewById(R.id.bookshelf_sort_update_time);
         bookshelf_sort_update_time_checkbox = (ImageView) findViewById(R.id.bookshelf_sort_update_time_checkbox);
-        //        tv_feedback = findViewById(R.id.tv_feedback);
         time_dialog = LayoutInflater.from(this).inflate(R.layout.view_custom_dialog_push_time_setting, null);
         time_picker = (TimePicker) time_dialog.findViewById(R.id.timepicker);
 
@@ -108,7 +104,6 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
             push_time_setting_text.setVisibility(View.VISIBLE);
         }
 
-        initBookShelfSort(settingItems.booklist_sort_type);
     }
 
     protected void initListener() {
@@ -145,13 +140,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
             push_time_setting_text.setOnClickListener(this);
         }
 
-        if (bookshelf_sort_time != null) {
-            bookshelf_sort_time.setOnClickListener(this);
-        }
 
-        if (bookshelf_sort_time_checkbox != null) {
-            bookshelf_sort_time_checkbox.setOnClickListener(this);
-        }
 
         if (bookshelf_sort_update_time != null) {
             bookshelf_sort_update_time.setOnClickListener(this);
@@ -188,7 +177,6 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
                 StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.me_set_cli_shelf_rak_time);
                 settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 0);
                 Constants.book_list_sort_type = 0;
-                initBookShelfSort(0);
                 break;
 
             case R.id.bookshelf_sort_update_time:
@@ -196,7 +184,6 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
                 StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.me_set_cli_shelf_rank_up);
                 settingItemsHelper.putInt(settingItemsHelper.booklistSortType, 1);
                 Constants.book_list_sort_type = 1;
-                initBookShelfSort(1);
                 break;
             case R.id.push_message_checkbox:
 
@@ -281,11 +268,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     }
 
-    private void initBookShelfSort(int type) {
 
-        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? R.mipmap.bookshelf_delete_checked : R.mipmap.bookshelf_delete_unchecked);
-        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? R.mipmap.bookshelf_delete_checked : R.mipmap.bookshelf_delete_unchecked);
-    }
 
     private void initPushTime() {
         if (time_picker != null) {
