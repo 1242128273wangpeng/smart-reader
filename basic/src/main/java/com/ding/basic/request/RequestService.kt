@@ -28,12 +28,15 @@ interface RequestService {
         //来源列表
         const val SOURCE_LIST = "/v5/book/source"
 
+
         /**
-         * 搜索自动补全
+         * 搜索按钮（h5为前后端分离后的接口）
          */
-        const val AUTO_COMPLETE_V3 = "/v3/search/autoComplete"
-        const val AUTO_COMPLETE_V4 = "/v4/search/autoComplete"
-        const val AUTO_COMPLETE_V5 = "/v5/search/autoComplete"
+        const val SEARCH_VUE = "/h5/{packageName}/search"
+        // 前后端不分离，数据融合（搜索一期）
+        const val SEARCH_S1_V5 = "/v5/search/page"
+        // 前后端不分离，数据融合（搜索二期）
+        const val SEARCH_S2_V5 = "/v5/search/searchPage"
 
         /**
          * 搜索热词
@@ -46,12 +49,15 @@ interface RequestService {
          */
         const val SEARCH_RECOMMEND_V5 = "/v5/search/autoOperations"
 
-        // V5搜索
-        const val SEARCH_V5 = "/v5/search/page"
+        /**
+         * 搜索自动补全
+         */
+        const val AUTO_COMPLETE_V3 = "/v3/search/autoComplete"
+        const val AUTO_COMPLETE_V4 = "/v4/search/autoComplete"
+        const val AUTO_COMPLETE_V5 = "/v5/search/autoComplete"
 
 
-        //书架推荐
-        const val RECOMMEND_SHELF = "/v4/recommend/shelfPage"
+
 
         //检查更新
         const val CHECK_UPDATE = "/v5/book/check"
@@ -84,37 +90,43 @@ interface RequestService {
 
 
         /**
-         * 书籍推荐（包括完结页、书籍详情页）
+         * 书籍推荐（包括完结页推荐、书籍详情页推荐）
          */
         const val BOOK_RECOMMEND = "/v5/search/recommend"
-        //书籍封面页推荐
-        const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
         //完结页推荐
         const val BOOK_END_RECOMMEND_V4 = "/v4/recommend/{book_id}/readPage"
+        //书籍封面页推荐
+        const val COVER_RECOMMEND = "/v4/recommend/{book_id}/coverPage"
         //书籍封面页该作者其他作品推荐
         const val AUTHOR_OTHER_BOOK_RECOMMEND = "/v5/search/authorRecommend "
+        //书架推荐
+        const val RECOMMEND_SHELF = "/v4/recommend/shelfPage"
 
         /**
-         * 标签聚合页（从书籍详情页跳入）
+         * 标签聚合页（从书籍详情页跳入，仅智能书籍有标签推荐）
          */
         const val LABEL_SEARCH_V4 = "/v4/search/labelSearch/page"
 
         /**
-         * WebView分类页面
+         * WebView分类页面（h5为前后端分离后的接口）
          */
         const val WEB_CATEGORY_V4 = "/v4/cn.dingyueWeb.reader/category/free/category"
         const val WEB_CATEGORY_V3 = "/{packageName}/v3/category/index.do"
+        const val WEB_CATEGORY_MAN_H5 = "/h5/{packageName}/categoryBoy"
+        const val WEB_CATEGORY_WOMAN_H5 = "/h5/{packageName}/categoryGirl"
 
         /**
-         * WebView精选页面
+         * WebView推荐 / 精选页面（h5为前后端分离后的接口）
          */
         const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
         const val WEB_RECOMMEND_V3 = "/{packageName}/v3/recommend/index.do"
+        const val WEB_RECOMMEND_H5 = "/h5/{packageName}/recommend"
 
         /**
-         * WebView榜单排行页面
+         * WebView排行 / 榜单排行页面（h5为前后端分离后的接口）
          */
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
+        const val WEB_RANK_H5 = "/h5/{packageName}/rank"
 
     }
 
