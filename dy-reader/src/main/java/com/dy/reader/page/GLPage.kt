@@ -213,9 +213,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                         }
                         ReadMediaManager.frameLayout?.addView(this)
                         ReadMediaManager.frameLayout?.post {
-                            this.buildDrawingCache()
                             var copy:Bitmap? = null
                             try {
+                                this.buildDrawingCache()
                                 copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
                             }catch (e:Exception){
                                 e.printStackTrace()
