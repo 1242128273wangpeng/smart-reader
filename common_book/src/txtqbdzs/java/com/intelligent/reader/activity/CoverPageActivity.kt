@@ -6,6 +6,8 @@ import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.support.annotation.StringRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
@@ -39,6 +41,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -48,7 +51,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     private var mBackground = 0
-    private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
     private var author: String? = null
@@ -346,12 +348,21 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
-            initializeRemoveShelfButton()
+            initRemoveShelfButton(book_cover_bookshelf, R.string.book_cover_havein_bookshelf)
         } else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
-            initializeInsertShelfButton()
+            initInsertShelfButton(book_cover_bookshelf, R.string.book_cover_add_bookshelf)
         }
+    }
+
+    private val mHandler = Handler {
+        val book: Book? = coverPagePresenter?.coverDetail
+        if (book != null) {
+            val progress = CacheManager.getBookTask(book).progress
+            if (progress != 100) {
+                changeDownloadButtonStatus()
+            }
+        }
+        false
     }
 
     override fun changeDownloadButtonStatus() {
@@ -366,14 +377,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (isSub) {
                 val status = CacheManager.getBookStatus(book)
                 if (status == DownloadState.FINISH) {
-                    book_cover_download.setText(R.string.download_status_complete)
+                    initRemoveShelfButton(book_cover_download, R.string.download_status_complete)
                 } else if (status == DownloadState.WAITTING || status == DownloadState.DOWNLOADING) {
-                    book_cover_download.setText(R.string.download_status_underway)
+                    val text = MessageFormat.format(" 已缓存{0}%", CacheManager.getBookTask(book).progress)
+                    initRemoveShelfButton(book_cover_download, R.string.download_status_already, text)
+                    mHandler.sendEmptyMessage(0)
                 } else {
-                    book_cover_download.setText(R.string.download_status_total)
+                    initInsertShelfButton(book_cover_download, R.string.download_status_total)
                 }
             } else {
-                book_cover_download.setText(R.string.download_status_total)
+                initInsertShelfButton(book_cover_download, R.string.download_status_total)
             }
 
         }
@@ -387,10 +400,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
-            initializeRemoveShelfButton()
+            initRemoveShelfButton(book_cover_bookshelf, R.string.book_cover_havein_bookshelf)
         } else {
-            initializeInsertShelfButton()
+            initInsertShelfButton(book_cover_bookshelf, R.string.book_cover_add_bookshelf)
         }
     }
 
@@ -582,20 +594,22 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
-    private fun initializeRemoveShelfButton() {
-        mBackground = R.drawable.cover_bottom_btn_remove_bg
-        mTextColor = R.color.color_theme_alpha
+    private fun initRemoveShelfButton(textView: TextView, @StringRes textRes: Int, text: String = "") {
 
-//        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
+        if (TextUtils.isEmpty(text)) {
+            textView.setText(textRes)
+        } else {
+            textView.text = text
+        }
+        textView.setTextColor(ContextCompat.getColor(this, R.color.color_theme_alpha))
+        textView.isEnabled = false
     }
 
-    private fun initializeInsertShelfButton() {
-        mBackground = R.drawable.cover_bottom_btn_add_bg
-        mTextColor = R.color.color_theme_alpha
+    private fun initInsertShelfButton(textView: TextView, @StringRes textRes: Int) {
+        textView.setText(textRes)
+        textView.setTextColor(ContextCompat.getColor(this, R.color.theme_primary))
+        textView.isEnabled = true
 
-//        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     override fun onTaskStatusChange() {
