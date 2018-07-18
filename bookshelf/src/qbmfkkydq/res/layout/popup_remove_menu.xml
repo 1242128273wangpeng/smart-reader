@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:scaleType="fitXY"
-        android:src="@drawable/common_footer_shadow_icon" />
+        android:src="@drawable/common_footer_shadow_icon"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"

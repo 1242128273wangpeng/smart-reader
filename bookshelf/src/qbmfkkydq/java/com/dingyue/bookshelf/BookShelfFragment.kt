@@ -210,6 +210,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         })
 
         img_head_personal.setOnClickListener {
+            RouterUtil.navigation(requireActivity(),RouterConfig.SETTING_ACTIVITY)
 
             BookShelfLogger.uploadBookShelfPersonal()
         }
