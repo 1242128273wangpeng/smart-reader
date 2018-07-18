@@ -167,7 +167,15 @@ public class Constants {
     //landscape 横屏模式
     public static boolean IS_LANDSCAPE = false;
     public static boolean is_wifi_auto_download = false;//默认false
-    public static int book_list_sort_type = 0;//0 默认自动书签时间，1 更新时间 ，2 书籍添加时间
+
+    /**
+     * 书架书籍排序
+     * 0 阅读时间
+     * 1 更新时间
+     * 2 添加时间
+     */
+    public static int book_list_sort_type = 0;
+
     public static int refreshTime = 3 * 60 * 1000;
     //阅读页行间距
     public static float READ_INTERLINEAR_SPACE = 0.3f;
