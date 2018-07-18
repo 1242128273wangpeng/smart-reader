@@ -32,7 +32,7 @@ import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.txtqbdzs.act_book_cover.*
+import kotlinx.android.synthetic.qbmfkkydq.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
