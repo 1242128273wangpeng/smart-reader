@@ -22,8 +22,8 @@ import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.txtqbdzs.act_book_end.*
-import kotlinx.android.synthetic.txtqbdzs.bookend_recommend_books_layout.*
+import kotlinx.android.synthetic.qbmfkkydq.act_book_end.*
+import kotlinx.android.synthetic.qbmfkkydq.bookend_recommend_books_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
@@ -46,11 +46,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         }
 
     }
-
-    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
-
-    }
-
 
     private var book: Book? = null
     private var bookId: String? = null

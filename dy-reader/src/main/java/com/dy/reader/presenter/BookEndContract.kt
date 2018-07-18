@@ -13,5 +13,5 @@ interface BookEndContract {
     /**
      * 结页推荐（后期数据融合铺开后，可以删掉）
      */
-    fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp)
+    fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp){}
 }

@@ -5,8 +5,10 @@ import android.app.DialogFragment
 import android.app.FragmentManager
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.WindowManager
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventLoading
@@ -17,7 +19,7 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.txtqbdzs.frag_read_setting.*
+import kotlinx.android.synthetic.qbmfkkydq.frag_read_setting.*
 import net.lzbook.kit.book.download.CallBackDownload
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

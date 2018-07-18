@@ -6,7 +6,7 @@ import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
 import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.read.mode.NovelPageBean
-import kotlinx.android.synthetic.txtqbdzs.item_reader_cover.view.*
+import kotlinx.android.synthetic.qbmfkkydq.item_reader_cover.view.*
 
 /**
  * Desc 书籍封面Holder

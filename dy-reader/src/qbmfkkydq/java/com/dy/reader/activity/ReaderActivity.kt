@@ -38,8 +38,8 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.txtqbdzs.act_reader.*
-import kotlinx.android.synthetic.txtqbdzs.reader_content.*
+import kotlinx.android.synthetic.qbmfkkydq.act_reader.*
+import kotlinx.android.synthetic.qbmfkkydq.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
@@ -370,7 +370,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventLoading) {
         if (event.type == EventLoading.Type.START) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+            /*showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)*/
         } else if (event.type == EventLoading.Type.PROGRESS_CHANGE) {
             if (ReaderStatus.position.group > -1) {
                 rl_reader_bottom.visibility = View.VISIBLE
