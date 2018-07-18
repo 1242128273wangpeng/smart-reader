@@ -54,7 +54,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
          * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
          */
         val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(Constants.IS_FIX_CATALOG, true)) {
+        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
             txt_book_states_update.visibility = View.VISIBLE
             txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
             txt_book_states_update.text = "更"
