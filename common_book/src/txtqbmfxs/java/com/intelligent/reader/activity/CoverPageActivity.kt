@@ -120,6 +120,7 @@ class CoverPageActivity : BaseCacheableActivity(),
     }
 
     override fun onNewIntent(intent: Intent) {
+        coverPagePresenter?.destroy()
         initIntent(intent)
     }
 

@@ -629,6 +629,17 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
+
     private fun onRedrawPage() {
         DataProvider.clearPreLoad()
         entrance()

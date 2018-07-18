@@ -135,7 +135,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
         book.fromType = 1
         if (isCatalog) {
             if (!chapterList.isEmpty()) {
-                val tempChapter = chapterList[position]
+                val tempChapter = chapterList[Math.max(0, position)]
                 val loadFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 if (book.fromQingoo()) {
                     book.channel_code = 1
