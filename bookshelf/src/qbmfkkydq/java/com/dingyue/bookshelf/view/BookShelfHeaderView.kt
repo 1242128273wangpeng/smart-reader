@@ -61,7 +61,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
         }
 
 
-        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 " + book.
+        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 "
 
         if (book.sequence >= 0) {
             txt_book_chapter.text=(book.sequence+1).toString()+"/"+book.chapter_count+"章"
