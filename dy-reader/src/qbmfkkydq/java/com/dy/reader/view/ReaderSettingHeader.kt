@@ -14,12 +14,11 @@ import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
-import kotlinx.android.synthetic.txtqbdzs.reader_option_header.view.*
+import kotlinx.android.synthetic.qbmfkkydq.reader_option_header.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus

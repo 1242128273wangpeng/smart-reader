@@ -16,27 +16,18 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
-import android.text.TextUtils
-import android.view.KeyEvent
-import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
-import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -44,20 +35,21 @@ import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkkydq.act_home.*
 import net.lzbook.kit.app.ActionConstants
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.download.DownloadAPKService
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.JSInterfaceHelper
+import net.lzbook.kit.utils.MD5Utils
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, BookShelfInterface, HomeView, WebViewFragment.FragmentCallback {
+
+
     override fun checkShowShelfGuide() {
         if(currentIndex==0){
 
