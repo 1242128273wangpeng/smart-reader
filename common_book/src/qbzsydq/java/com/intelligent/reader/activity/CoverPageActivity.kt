@@ -62,6 +62,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun onNewIntent(intent: Intent) {
+        coverPagePresenter?.destroy()
         initializeIntent(intent)
     }
 

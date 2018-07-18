@@ -266,7 +266,7 @@ object CacheManager {
     }
 
     private fun restroeTaskInfo(book: Book): BookTask {
-        val count = ChapterDaoHelper.loadChapterDataProviderHelper(app, book.book_id!!).getCount()
+        val count = book.chapter_count
         val preferences = app.getSharedPreferences(DOWN_INDEX + book.book_id, 0)
         var start: Int = -1
         var state: DownloadState
@@ -540,8 +540,7 @@ object CacheManager {
             if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
                 workMap.values.forEach {
 
-                    val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(app, it.book_id)
-                    val count = bookChapterDao.getCount()
+                    val count = it.book.chapter_count
 
                     if (it.state == DownloadState.WAITTING_WIFI) {
                         it.state = DownloadState.WAITTING

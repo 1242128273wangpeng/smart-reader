@@ -34,10 +34,9 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
             helperMap.filter {
                 it.value.get() == null
             }.forEach {
-                if(dbMap[it.key]?.inTransaction() != true) {
-                    dbMap[it.key]?.close()
-                    dbMap.remove(it.key)
+                if(dbMap[it.key]?.isOpen == true && dbMap[it.key]?.inTransaction() != true) {
                     helperMap.remove(it.key)
+                    dbMap.remove(it.key)?.close()
                     Logger.d("release chapter helper -> ${it.key}")
                 }
             }

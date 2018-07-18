@@ -102,6 +102,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             book_cover_bookshelf!!.isClickable = true
             insertBookShelfResult(false)
         }
+        coverPagePresenter?.destroy()
         initIntent(intent)
     }
 
