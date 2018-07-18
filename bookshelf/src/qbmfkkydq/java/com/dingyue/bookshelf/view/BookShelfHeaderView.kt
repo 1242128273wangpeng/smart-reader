@@ -1,5 +1,6 @@
 package com.dingyue.bookshelf.view
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
@@ -11,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.R
+import com.dingyue.contract.router.BookRouter
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_header_view.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
@@ -36,7 +38,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
     private fun initView() {
         txt_continue_read.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-//              TODO 去阅读
+                BookRouter.navigateCoverOrRead(mContext!!, mBook!!, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
             }
 
         })
@@ -44,8 +46,10 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private var mBook: Book? = null
-    fun setData(book: Book) {
+    private var mContext: Activity? = null
+    fun setData(book: Book, context: Activity) {
         mBook = book
+        mContext = context
         if (!TextUtils.isEmpty(book.name)) {
             txt_book_name.text = book.name
         }
@@ -56,10 +60,12 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
             book.sequence = book.chapter_count - 1
         }
 
-        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 " + book.last_chapter
+
+        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 " + book.
 
         if (book.sequence >= 0) {
-            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
+            txt_book_chapter.text=(book.sequence+1).toString()+"/"+book.chapter_count+"章"
+//            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
         } else {
             txt_book_chapter.text = "未读"
         }

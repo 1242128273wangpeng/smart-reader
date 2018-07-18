@@ -4,12 +4,10 @@
     android:id="@+id/rl_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="24dp"
     android:background="@drawable/bookshelf_item_book_sel"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingTop="24dp"
     tools:ignore="RtlHardcoded">
 
     <FrameLayout

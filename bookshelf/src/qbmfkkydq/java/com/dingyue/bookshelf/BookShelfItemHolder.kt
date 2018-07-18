@@ -42,7 +42,8 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
 
         if (book.sequence >= 0) {
-            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
+//            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
+            txt_book_chapter.text=(book.sequence+1).toString()+"/"+book.chapter_count+"章"
         } else {
             txt_book_chapter.text = "未读"
         }

@@ -96,27 +96,28 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     val bookShelfAdapter: BookShelfAdapter by lazy {
         BookShelfAdapter(object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
+                var realPosition = position - hfRecyclerControl.getHeaderCount()
 
-                if (position < 0 || position > bookShelfPresenter.iBookList.size) {
+                if (realPosition < 0 || realPosition > bookShelfPresenter.iBookList.size) {
                     return
                 }
 
                 if (!bookShelfAdapter.isRemove) {
-                    if (position == bookShelfPresenter.iBookList.size) {
+                    if (realPosition == bookShelfPresenter.iBookList.size) {
                         bookShelfInterface?.changeHomePagerIndex(1)
                         return
                     }
 
-                    if (position >= bookShelfPresenter.iBookList.size || position < 0) {
+                    if (realPosition >= bookShelfPresenter.iBookList.size || realPosition < 0) {
                         return
                     }
 
                     if (book != null) {
                         handleBook(book)
-                        BookShelfLogger.uploadBookShelfBookClick(book, position)
+                        BookShelfLogger.uploadBookShelfBookClick(book, realPosition)
                     }
                 } else {
-                    bookShelfAdapter.insertSelectedPosition(position)
+                    bookShelfAdapter.insertSelectedPosition(realPosition)
                     removeMenuPopup.setSelectedNum(bookShelfAdapter.selectedBooks.size)
                     txt_editor_select_all.text = if (bookShelfAdapter.isSelectedAll()) getString(R.string.cancel_select_all) else getString(R.string.select_all)
                 }
@@ -171,6 +172,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         return inflater.inflate(R.layout.frag_bookshelf, container, false)
     }
 
+    var titleHeight = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         MediaControl.insertBookShelfMediaType(true)
@@ -180,6 +182,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             iconBgViewHeight = fl_bg_layout.height
         }
 
+        ll_container.post {
+            titleHeight = ll_container.height
+
+        }
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
@@ -327,13 +333,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private fun addHeaderView(cReadBook: Book) {
 
         if (hfRecyclerControl.getHeaderCount() == 0) {
-            headerView.post {
-                headerViewHeight = headerView.height
-            }
             hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
             hfRecyclerControl.addHeaderView(headerView)
+            headerView.post {
+                headerViewHeight = headerView.height
+                var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
+                headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
+
+            }
+
+
         }
-        headerView.setData(cReadBook)
+        headerView.setData(cReadBook, activity!!)
     }
 
     private fun setTitleLayoutAlpha(alpha: Int) {
