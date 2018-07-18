@@ -3,6 +3,8 @@ package com.dingyue.bookshelf.view
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -18,6 +20,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.repair_books.RepairHelp
+import net.lzbook.kit.utils.AppUtils
 import java.text.MessageFormat
 
 /**
@@ -47,7 +50,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
 
     private var mBook: Book? = null
     private var mContext: Activity? = null
-    fun setData(book: Book, context: Activity) {
+    fun setData(book: Book, title: String, context: Activity) {
         mBook = book
         mContext = context
         if (!TextUtils.isEmpty(book.name)) {
@@ -61,7 +64,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
         }
 
 
-        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 "
+        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 " + title
 
         if (book.sequence >= 0) {
             txt_book_chapter.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
@@ -76,18 +79,38 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
          * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
          */
         val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+        txt_book_states_update.visibility=View.GONE
+
+
         if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
             txt_book_states_update.visibility = View.VISIBLE
-            txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                txt_book_states_update.background = getLabelBg("#FF0060")
+            } else {
+                txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
+            }
             txt_book_states_update.text = "更"
 
         } else {
             // 是否有更新
-            txt_book_states_update.visibility = if (book.update_status == 1) View.VISIBLE else View.GONE
-
-//            // 是否连载
-            txt_book_states_finish.visibility = if (book.status == "FINISH") View.VISIBLE else View.GONE
-//
+            if (book.update_status == 1) {
+                txt_book_states_update.visibility = View.VISIBLE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    txt_book_states_update.background = getLabelBg("#FF0060")
+                } else {
+                    txt_book_states_update.setBackgroundColor(Color.parseColor("#FF0060"))
+                }
+                txt_book_states_update.text = "更"
+            }
+            if (book.status == "FINISH") {
+                txt_book_states_update.visibility = View.VISIBLE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    txt_book_states_update.background = getLabelBg("#2AD1BE")
+                } else {
+                    txt_book_states_update.setBackgroundColor(Color.parseColor("#2AD1BE"))
+                }
+                txt_book_states_update.text = "完"
+            }
 
         }
 
@@ -106,6 +129,22 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
                     .into(iv_book_icon)
         }
 
+
+    }
+
+
+    private fun getLabelBg(color: String): GradientDrawable {
+        var drawable = GradientDrawable()
+
+        drawable.shape = GradientDrawable.RECTANGLE
+
+        drawable.setColor(Color.parseColor(color))
+
+
+        val corner = AppUtils.dip2px(context, 2f).toFloat()
+        drawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, corner, corner, 0f, 0f)
+
+        return drawable
 
     }
 }

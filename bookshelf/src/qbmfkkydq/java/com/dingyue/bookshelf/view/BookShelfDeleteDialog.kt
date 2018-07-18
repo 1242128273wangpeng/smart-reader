@@ -12,7 +12,6 @@ import net.lzbook.kit.book.view.MyDialog
  * Created by qiantao on 2017/11/17 0017
  */
 class BookShelfDeleteDialog(activity: Activity) {
-
     private val dialog = MyDialog(activity, R.layout.dialog_bookshelf_delete, Gravity.CENTER)
 
     private var confirmListener: ((books: ArrayList<Book>?, isOnlyDeleteCache: Boolean) -> Unit)? = null
