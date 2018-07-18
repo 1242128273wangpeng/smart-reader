@@ -65,7 +65,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             // 是否连载
             txt_book_states_finish.visibility = if (book.status == "FINISH") View.VISIBLE else View.GONE
 
-            txt_book_last_update_time.text = ("${Tools.compareTime(AppUtils.formatter, book.last_update_success_time)}更新:")
+            txt_book_last_update_time.text = ("${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}更新:")
             txt_book_last_chapter.text = book.last_chapter?.name
 
         }
