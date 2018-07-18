@@ -65,6 +65,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun onNewIntent(intent: Intent) {
+        if (book_cover_bookshelf != null) {
+            book_cover_bookshelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
         initIntent(intent)
     }
 
@@ -305,12 +309,20 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (result) {
             book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
             setRemoveBtn()
+        }else {
+            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            setInsertBtn()
         }
     }
 
 
     private fun setRemoveBtn() {
         mTextColor = R.color.home_title_search_text
+        book_cover_bookshelf!!.setTextColor(getResources().getColor(mTextColor))
+    }
+
+    private fun setInsertBtn() {
+        mTextColor = R.color.cover_title_color
         book_cover_bookshelf!!.setTextColor(getResources().getColor(mTextColor))
     }
 
