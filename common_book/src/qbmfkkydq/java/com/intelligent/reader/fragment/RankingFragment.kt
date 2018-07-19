@@ -41,24 +41,14 @@ class RankingFragment : Fragment() {
         }
 
         val webFragment = WebViewFragment();
-        val bundle=Bundle();
+        val bundle = Bundle()
         bundle.putString("url"
-        ,UrlUtils.buildWebUrl(RequestService.WEB_RANK_V3.replace("{packageName}"
-                , AppUtils.getPackageName()),HashMap()))
-
-        webFragment.arguments = getBundle("0",//男频
-                RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName()))
+                , UrlUtils.buildWebUrl(RequestService.WEB_RANK_H5.replace("{packageName}"
+                , AppUtils.getPackageName()), HashMap()))
+        webFragment.arguments = bundle
 
         childFragmentManager.beginTransaction().replace(R.id.fl_content, webFragment).commit()
 
-    }
-
-    private fun getBundle(type: String, url: String): Bundle {
-        val bundle = Bundle();
-        val map = HashMap<String, String>()
-        map["type"] = type
-        bundle.putString("url", UrlUtils.buildWebUrl(url, map))
-        return bundle
     }
 
 

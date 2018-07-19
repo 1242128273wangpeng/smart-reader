@@ -1,25 +1,19 @@
 package com.intelligent.reader.fragment
 
-import android.content.res.Resources
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.ding.basic.request.RequestService
-import com.dingyue.bookshelf.BookShelfLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
-import java.lang.reflect.Field
 
 /**
  * Date: 2018/7/19 11:52
@@ -49,22 +43,22 @@ class RecommendFragment : Fragment() {
         view_pager.adapter = adapter
         val fragments: ArrayList<Fragment> = ArrayList()
         val fragmentSelection = WebViewFragment()
-        fragmentSelection.arguments = getBundle("0",//精选
-                RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentSelection.arguments = getBundle(//精选
+                RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
 
         val fragmentMale = WebViewFragment()
-        fragmentMale.arguments = getBundle("0",//男频
-                RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentMale.arguments = getBundle(//男频
+                RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
 
 
         val fragmentFemale = WebViewFragment()
-        fragmentFemale.arguments = getBundle("1",//女频
-                RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFemale.arguments = getBundle(//女频
+                RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
 
 
         val fragmentFinish = WebViewFragment()
-        fragmentFinish.arguments = getBundle("1",//完本
-                RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFinish.arguments = getBundle(//完本
+                RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
 
         fragments.add(fragmentSelection)
         fragments.add(fragmentMale)
@@ -85,10 +79,9 @@ class RecommendFragment : Fragment() {
     }
 
 
-    private fun getBundle(type: String, url: String): Bundle {
+    private fun getBundle( url: String): Bundle {
         val bundle = Bundle();
         val map = HashMap<String, String>()
-        map["type"] = type
         bundle.putString("url", UrlUtils.buildWebUrl(url, map))
         return bundle
     }

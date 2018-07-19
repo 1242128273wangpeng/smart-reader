@@ -44,13 +44,13 @@ class CategoryFragment : Fragment() {
         val fragments: ArrayList<Fragment> = ArrayList()
 
         val fragmentMale = WebViewFragment()
-        fragmentMale.arguments = getBundle("0",//男频
-                RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentMale.arguments = getBundle(//男频
+                RequestService.WEB_CATEGORY_MAN_H5.replace("{packageName}", AppUtils.getPackageName()))
 
 
         val fragmentFemale = WebViewFragment()
-        fragmentFemale.arguments = getBundle("1",//女频
-                RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFemale.arguments = getBundle(//女频
+                RequestService.WEB_CATEGORY_WOMAN_H5.replace("{packageName}", AppUtils.getPackageName()))
 
 
         fragments.add(fragmentMale)
@@ -68,10 +68,9 @@ class CategoryFragment : Fragment() {
     }
 
 
-    private fun getBundle(type: String, url: String): Bundle {
+    private fun getBundle(url: String): Bundle {
         val bundle = Bundle();
         val map = HashMap<String, String>()
-        map["type"] = type
         bundle.putString("url", UrlUtils.buildWebUrl(url, map))
         return bundle
     }

@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.dingyue.bookshelf.BookShelfLogger
 import com.dingyue.bookshelf.R
 import com.dingyue.contract.router.BookRouter
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_header_view.view.*
@@ -45,6 +46,9 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
             }
 
         })
+        iv_book_icon.setOnClickListener {
+            BookRouter.navigateCoverOrRead(mContext!!, mBook!!, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
+        }
 
     }
 
@@ -79,7 +83,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
          * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
          */
         val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        txt_book_states_update.visibility=View.GONE
+        txt_book_states_update.visibility = View.GONE
 
 
         if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
