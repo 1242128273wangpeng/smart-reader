@@ -43,128 +43,110 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <ScrollView
-        android:id="@+id/sv_content_setting"
+    <RelativeLayout
+        android:id="@+id/rl_push"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl_setting_title"
-        android:fadingEdge="none"
-        android:scrollbars="none">
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_setting_title"
+        android:layout_marginTop="20dp">
 
-        <LinearLayout
-            android:id="@+id/ll_setting_content"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txt_night_shift"
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/push"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="#CC2AD1BE"
+            app:sb_checkedbtn_color="#FF2AD1BE "
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="#66ADB4BE"
+            app:sb_uncheckedbtn_color="#FFADB4BE"/>
 
-                <RelativeLayout
-                    android:id="@+id/push"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:gravity="center_vertical">
+    </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/text_push"
-                        style="@style/text_content_name_setting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="center_vertical"
-                        android:text="@string/push" />
+    <RelativeLayout
+        android:id="@+id/rl_push_sound"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_push"
+        android:layout_marginTop="20dp">
 
-                    <net.lzbook.kit.book.view.SwitchButton
-                        android:id="@+id/push_message_checkbox"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:contentDescription="@string/app_name"
-                        app:sb_checked_color="@color/switchbutton_bg_checked_color"
-                        app:sb_checkedbtn_color="@color/switchbutton_checked_color"
-                        app:sb_show_indicator="false"
-                        app:sb_uncheck_color="@color/switchbutton_bg_unchecked_color"
-                        app:sb_uncheckedbtn_color="@color/switchbutton_unchecked_color" />
-                </RelativeLayout>
+        <TextView
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/push_sound"/>
 
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push_sound"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="#6619DD8B"
+            app:sb_checkedbtn_color="#FF19DD8B"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="#66ADB4BE"
+            app:sb_uncheckedbtn_color="#FFADB4BE"/>
 
-                <RelativeLayout
-                    android:id="@+id/push_sound"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/text_push_sound"
-                        style="@style/text_content_name_setting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:gravity="center_vertical"
-                        android:text="@string/setting_push_sound" />
-
-                    <net.lzbook.kit.book.view.SwitchButton
-                        android:id="@+id/push_sound_checkbox"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:contentDescription="@string/app_name"
-                        app:sb_checked_color="@color/switchbutton_bg_checked_color"
-                        app:sb_checkedbtn_color="@color/switchbutton_checked_color"
-                        app:sb_show_indicator="false"
-                        app:sb_uncheck_color="@color/switchbutton_bg_unchecked_color"
-                        app:sb_uncheckedbtn_color="@color/switchbutton_unchecked_color" />
-                </RelativeLayout>
+    </RelativeLayout>
 
 
-                <RelativeLayout
-                    android:id="@+id/push_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="65dp"
-                    android:gravity="center_vertical">
+    <RelativeLayout
+        android:id="@+id/rl_push_time"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_push_sound"
+        android:layout_marginTop="20dp">
 
-                    <TextView
-                        android:id="@+id/text_push_time"
-                        style="@style/text_content_name_setting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:paddingTop="12dp"
-                        android:text="@string/tv_push_time_tips_setting" />
+        <TextView
+            android:id="@+id/txt_push_time"
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/tv_push_time_tips_setting"/>
 
-                    <TextView
-                        android:id="@+id/push_time_setting_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/text_push_time"
-                        android:gravity="center"
-                        android:text="@string/tv_push_time_default_setting"
-                        android:textColor="#FF2AD1BE"
-                        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/txt_push_time_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_push_time"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="@string/tv_push_time_default_setting"
+            android:textColor="@color/color_primary"
+            android:textSize="12sp"/>
 
-                    <net.lzbook.kit.book.view.SwitchButton
-                        android:id="@+id/push_time_checkbox"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:contentDescription="@string/app_name"
-                        app:sb_checked_color="@color/switchbutton_bg_checked_color"
-                        app:sb_checkedbtn_color="@color/switchbutton_checked_color"
-                        app:sb_show_indicator="false"
-                        app:sb_uncheck_color="@color/switchbutton_bg_unchecked_color"
-                        app:sb_uncheckedbtn_color="@color/switchbutton_unchecked_color" />
-                </RelativeLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push_time"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="#6619DD8B"
+            app:sb_checkedbtn_color="#FF19DD8B"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="#66ADB4BE"
+            app:sb_uncheckedbtn_color="#FFADB4BE"/>
+    </RelativeLayout>
 </RelativeLayout>
