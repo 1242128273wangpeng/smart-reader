@@ -9,6 +9,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.dingyue.contract.util.CommonUtil;
+import com.dy.media.MediaConfig;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
 import com.intelligent.reader.BuildConfig;
@@ -60,6 +61,10 @@ public class BookApplication extends BaseBookApplication {
         if (AppUtils.isMainProcess(this)) {
 
             MediaLifecycle.INSTANCE.onAppCreate(this);
+
+            //防止定位不回掉导致缺失id
+            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
 
             // 自定义ErrorCallback
             FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
