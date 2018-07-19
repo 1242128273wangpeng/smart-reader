@@ -110,7 +110,9 @@ class ReadSettingFragment : DialogFragment() {
         dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
         dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog.rl_read_setting_content.setOnClickListener {
-            dismiss()
+            if(dialog?.isShowing == true){
+                dismiss()
+            }
         }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)

@@ -147,16 +147,14 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onResume() {
         super.onResume()
         loge("onResume() dialog")
-        if(dialog != null){
-            dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
-            dialog.rsh_option_header.presenter = mPresenter
-            dialog.rsbd_option_bottom_detail.presenter = mPresenter
-            dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
-            dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
-            dialog?.rl_read_setting_content?.setOnClickListener {
-                if(dialog.isShowing){
-                    dismiss()
-                }
+        dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
+        dialog.rsh_option_header.presenter = mPresenter
+        dialog.rsbd_option_bottom_detail.presenter = mPresenter
+        dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
+        dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
+        dialog.rl_read_setting_content.setOnClickListener {
+            if(dialog?.isShowing == true){
+                dismiss()
             }
         }
         if (!EventBus.getDefault().isRegistered(this)) {
