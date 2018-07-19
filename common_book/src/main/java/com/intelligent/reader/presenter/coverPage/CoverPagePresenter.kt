@@ -58,6 +58,7 @@ class CoverPagePresenter(private val book_id: String?,
     private var recommendBookList = ArrayList<RecommendBean>()
 
     var recommendIndex = 0
+    var recommendCount = 6 //标识推荐书籍的数量，txt全本免费阅读只有4个书籍
     var mRandom: Random?= null
 
     init {
@@ -639,8 +640,13 @@ class CoverPagePresenter(private val book_id: String?,
             if (sharePreUtil == null) {
                 sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
             }
+             var scale:List<String>? =ArrayList<String>()
+            if(AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")){
+                scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0")?.split(",")
+            }else{
+                scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
+            }
 
-            val scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
 
             if (scale != null) {
                 var znScale = 0
@@ -659,6 +665,7 @@ class CoverPagePresenter(private val book_id: String?,
                     feeScale = Integer.parseInt(scale[2])
                 }
 
+                recommendCount = znScale + qgScale
                 var znList: ArrayList<List<RecommendBean>>? = null
                 if (znScale > 0 && recommendBooks.znList != null && recommendBooks.znList!!.size > 0) {
                     znList = subRecommendList(recommendBooks.znList!!, znScale)
@@ -732,17 +739,17 @@ class CoverPagePresenter(private val book_id: String?,
 
     fun changeRecommendBooks() {
 
-        if (recommendIndex + 6 > recommendBookList.size) {
+        if (recommendIndex + recommendCount > recommendBookList.size) {
             recommendIndex = 0
         }
 
         recommendList.clear()
 
-        for (i in recommendIndex until recommendIndex + 6) {
+        for (i in recommendIndex until recommendIndex + recommendCount) {
             recommendList.add(recommendBookList[i])
         }
 
-        recommendIndex += 6
+        recommendIndex += recommendCount
 
         coverPageContract.showRecommendSuccess(recommendList)
     }

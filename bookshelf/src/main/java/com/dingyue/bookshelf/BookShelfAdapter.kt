@@ -40,7 +40,7 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (position >= books.size) {
             if (viewHolder is BookShelfADDHolder) {
-                viewHolder.bind(books.size)
+                viewHolder.bind(books.size,bookShelfItemListener)
             }
             return
         }
@@ -76,7 +76,7 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     override fun getItemCount(): Int {
         if (hasAddView) {
             if (books.size > 0) {
-                books.size + 1
+                return books.size + 1
             }
         }
         return books.size

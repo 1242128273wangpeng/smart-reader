@@ -13,13 +13,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
-import com.intelligent.reader.presenter.search.SearchHelpYouHuaPresenter
-import com.intelligent.reader.presenter.search.SearchPresenter
-import com.intelligent.reader.presenter.search.SearchView
+import com.intelligent.reader.search.SearchView
+import com.intelligent.reader.search.SearchHelpYouHuaPresenter
+import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
@@ -71,6 +72,18 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         initSuggestListView()
     }
 
+    /**
+     * 返回isFocus 和 isBackSearch 的值，以此来确定searchBookActivity页面显示的模块
+     *
+     * @return
+     */
+    fun getShowStatus(): Boolean {
+        return if (mSearchHelpPresenter != null && !mSearchHelpPresenter!!.isBackSearch && mSearchHelpPresenter!!.isFocus) {
+            true
+        } else {
+            false
+        }
+    }
 
     fun setShowHintEnabled(showHint: Boolean) {
         mShouldShowHint = showHint
@@ -365,7 +378,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSearchHelpPresenter?.resetHotWordList(mContext!!)
     }
 
-    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    override fun onSearchResult(suggestList: List<Any>, transmitBean: SearchAutoCompleteBeanYouHua) {
         mSearchHelpPresenter?.onSearchResult(suggestList, transmitBean)
     }
 
@@ -375,7 +388,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
 
     interface OnHistoryClickListener {
-        fun OnHistoryClick(history: String?, searchType: String?)
+        fun OnHistoryClick(history: String?, searchType: String?,isAuthor: Int)
     }
 
     fun clear() {
@@ -466,9 +479,9 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
     }
 
-    override fun onStartSearch(searchWord: String?, searchType: String?) {
+    override fun onStartSearch(searchWord: String?, searchType: String?,isAuthor: Int) {
         if (mOnHistoryClickListener != null) {
-            mOnHistoryClickListener!!.OnHistoryClick(searchWord, searchType)
+            mOnHistoryClickListener!!.OnHistoryClick(searchWord, searchType,isAuthor)
         }
     }
 

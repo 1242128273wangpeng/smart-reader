@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
+    android:background="#ffffff"
     android:scrollbars="vertical"
     tools:ignore="RtlHardcoded, RtlSymmetry">
 
@@ -14,8 +15,7 @@
         android:id="@+id/ll_auto_read_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/dialog_bg"
+
         android:orientation="vertical">
 
         <TextView

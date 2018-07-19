@@ -29,6 +29,8 @@ import java.util.concurrent.Callable
 
 @Route(path = RouterConfig.BOOK_END_ACTIVITY)
 class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickListener {
+    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+    }
 
     private var book: Book? = null
     private var book_id: String? = null

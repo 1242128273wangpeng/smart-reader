@@ -58,7 +58,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onNewIntent(intent: Intent) {
-        coverPagePresenter?.destroy()
+        if (book_cover_bookshelf != null) {
+            book_cover_bookshelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
         initializeIntent(intent)
     }
 
@@ -111,8 +114,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                         data["Tbookid"] = recommendBean.bookId!!
                     }
 
+                    val book = Book()
+                    book.book_id = recommendBean.bookId
+                    book.book_source_id = recommendBean.id
+                    book.book_chapter_id = recommendBean.bookChapterId
+                    BookRouter.navigateCover(this, book)
+
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
-//                    BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
                 }
             }
         }
@@ -353,35 +361,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                         .book_cover_no_description)
             }
 
-//            if (book.wordCountDescp != null) {
-//                if (Constants.QG_SOURCE != book.host) {
-//                    word_count_tv.text = book.wordCountDescp + "字"
-//                } else {
-//                    word_count_tv.text = AppUtils.getWordNums(java.lang.Long.valueOf(book.wordCountDescp)!!)
-//                }
-//            } else {
-//                word_count_tv.text = "暂无"
-//            }
-//
-//            if (book.readerCountDescp != null) {
-//                if (Constants.QG_SOURCE == book.host) {
-//                    reading_tv.text = AppUtils.getReadNums(java.lang.Long.valueOf(book.readerCountDescp)!!)
-//                } else {
-//                    reading_tv.text = book.readerCountDescp + "人在读"
-//                }
-//
-//            } else {
-//                reading_tv!!.text = "暂无"
-//            }
-//            if (book.score == 0.0) {
-//                start_tv.text = "暂无评分"
-//            } else {
-//                if (Constants.QG_SOURCE != book.host) {
-//                    book.score = java.lang.Double.valueOf(DecimalFormat("0.0").format(book.score))!!
-//                }
-//                start_tv.text = book.score.toString() + "分"
-//
-//            }
         } else {
             this.showToastMessage(R.string.book_cover_no_resource)
 
@@ -434,6 +413,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+        ll_recommend_title.visibility = View.VISIBLE
         recommendList = recommends
         bookRecommendAdapter.setData(recommends)
     }

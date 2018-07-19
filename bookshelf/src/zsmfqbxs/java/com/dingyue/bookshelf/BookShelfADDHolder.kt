@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_bookshelf_add.view.*
 class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_add, parent, false)) {
 
-    fun bind(book: Book?, remove: Boolean, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
+    fun bind(book: Book?, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
 
     }
 }

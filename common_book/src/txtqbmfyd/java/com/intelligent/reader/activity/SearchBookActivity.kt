@@ -22,7 +22,7 @@ import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.search.SearchPresenter
+import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 import iyouqu.theme.FrameActivity
@@ -36,17 +36,6 @@ import java.util.*
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-//    private var search_result_back: ImageView? = null
-//    private var search_result_button: ImageView? = null
-//    private var search_result_outcome: RelativeLayout? = null
-//    private var search_result_count: TextView? = null
-//    private var search_result_keyword: TextView? = null
-//    private var search_result_default: RelativeLayout? = null
-//    private var search_result_clear: ImageView? = null
-//    private var search_result_input: HWEditText? = null
-//    private var search_result_main: RelativeLayout? = null
-//    private var search_result_content: WebView? = null
-//    private var search_result_hint: FrameLayout? = null
 
     private var searchViewHelper: SearchViewHelper? = null
     private var handler: Handler? = Handler()
@@ -61,6 +50,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var loadingPage: LoadingPage? = null
 
     private var mSearchPresenter: SearchPresenter? = null
+    val isNotAuthor = 0//不是作者
 
     override fun onJsSearch() {
 //        if (search_result_content != null) {
@@ -89,7 +79,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         initData()
         initView()
         if (mSearchPresenter != null && !TextUtils.isEmpty(mSearchPresenter!!.word)) {
-            loadDataFromNet()
+            loadDataFromNet(isNotAuthor)
         }
     }
 
@@ -179,7 +169,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 if (mSearchPresenter != null) {
                     mSearchPresenter!!.setHotWordType(tag, searchType)
                 }
-                loadDataFromNet()
+                loadDataFromNet(isNotAuthor)
             }
 
         }
@@ -200,7 +190,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     }
 
-    private fun loadDataFromNet() {
+    private fun loadDataFromNet(isAuthor : Int) {
 
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
@@ -228,7 +218,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
-            mSearchPresenter!!.startLoadData()
+            mSearchPresenter!!.startLoadData(isAuthor)
 
         } else {
             showSearchViews()
@@ -311,6 +301,18 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onResume() {
         super.onResume()
+        if (searchViewHelper != null && searchViewHelper!!.getShowStatus()) {
+                val historyDates = Tools.getKeyWord()
+
+                if (search_result_input != null && !TextUtils.isEmpty(historyDates)) {
+                    search_result_input.requestFocus()
+                    search_result_input.setText(historyDates)
+                    //设置光标的索引
+                    val index = search_result_input.text
+                    search_result_input.setSelection(index.length)
+                    showSearchViews()
+                }
+            }
 
     }
 
@@ -363,7 +365,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     search_result_main!!.removeView(search_result_content)
                 }
             }
-//            search_result_content = null
         }
 
         if (loadingPage != null) {
@@ -552,7 +553,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                                 mSearchPresenter!!.searchType = "0"
                             }
                         }
-                        loadDataFromNet()
+                        loadDataFromNet(isNotAuthor)
 
                         val data = HashMap<String, String>()
                         data.put("type", "0")
@@ -651,14 +652,20 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             s.clear()
             search_result_main!!.visibility = View.GONE
         }
+        //保存用户搜索词
+        Tools.setUserSearchWord(s.toString())
     }
 
-    override fun OnHistoryClick(history: String?, searchType: String?) {
+    override fun OnHistoryClick(history: String?, searchType: String?,isAuthor: Int) {
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
         }
         mSearchPresenter!!.setHotWordType(history, searchType)
-        loadDataFromNet()
+        if ("3" == searchType) {
+
+        } else {
+            loadDataFromNet(isAuthor)
+        }
     }
 
 
@@ -678,7 +685,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 if (keyword != null && keyword != "" && searchViewHelper != null) {
                     searchViewHelper!!.addHistoryWord(keyword)
                     mSearchPresenter!!.setHotWordType(keyword, "0")
-                    loadDataFromNet()
+                    loadDataFromNet(isNotAuthor)
 
                     val data = HashMap<String, String>()
                     data.put("type", "1")
