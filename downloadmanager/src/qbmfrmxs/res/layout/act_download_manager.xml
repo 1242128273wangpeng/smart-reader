@@ -85,7 +85,7 @@
         android:layout_below="@id/rl_head"
         android:layout_centerHorizontal="true"
         app:indicatorActiveColor="#42BE54"
-        app:indicatorAnimationDuration="350"
+        app:indicatorAnimationDuration="200"
         app:indicatorColor="#42BE54"
         app:indicatorFactor="2.0"
         app:indicatorGravity="bottom"
