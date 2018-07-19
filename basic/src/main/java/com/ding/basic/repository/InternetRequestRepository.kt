@@ -119,7 +119,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBookRecommendV4(book_id, recommend)
     }
 
-    fun requestPushTags(udid: String): Flowable<ArrayList<String>>{
+    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
         return RequestAPI.requestPushTags(udid)
     }
 

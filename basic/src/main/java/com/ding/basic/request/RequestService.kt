@@ -226,5 +226,5 @@ interface RequestService {
     fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
 
     @GET(PUSH_TAG)
-    fun requestPushTags(@Query("udid") udid: String): Flowable<ArrayList<String>>
+    fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
 }

@@ -13,14 +13,12 @@ import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.widget.TextView
-import com.ding.basic.repository.InternetRequestRepository
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
 import com.umeng.message.PushAgent
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -271,28 +269,26 @@ fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> 
 private fun PushAgent.addTags(context: Context, udid: String,
                               callback: (isSuccess: Boolean) -> Unit) {
     loge("addTags")
-    InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .unsubscribeOn(Schedulers.io())
-            .subscribeBy(
-                    onNext = {
-                        if (it.isNotEmpty() && it[0].isNotEmpty()) {
-                            val addTags = it.toTypedArray()
-                            loge("tags: $addTags")
-                            tagManager.addTags({ isAdd, addResult ->
-                                loge("更新用户标签结果: $isAdd",
-                                        "addResult: $addResult")
-                                callback.invoke(isAdd)
-                            }, addTags)
-                        } else {
-                            loge("用户标签为空")
-                            callback.invoke(true)
-                        }
-                    },
-                    onError = {
-                        callback.invoke(false)
+    RequestRepositoryFactory.loadRequestRepositoryFactory(context)
+            .requestPushTags(udid, object :RequestSubscriber<ArrayList<String>>(){
+                override fun requestResult(result: ArrayList<String>?) {
+                    if (result?.isNotEmpty() == true) {
+                        val addTags = result.toTypedArray()
+                        loge("tags: $addTags")
+                        tagManager.addTags({ isAdd, addResult ->
+                            loge("更新用户标签结果: $isAdd",
+                                    "addResult: $addResult")
+                            callback.invoke(isAdd)
+                        }, addTags)
+                    } else {
+                        loge("用户标签为空")
+                        callback.invoke(true)
                     }
-            )
+                }
+
+                override fun requestError(message: String) {
+                    callback.invoke(false)
+                }
+            })
 
 }

@@ -143,7 +143,7 @@ object RequestAPI {
         return requestService.requestBookRecommendV4(book_id, recommend)
     }
 
-    fun requestPushTags(udid: String): Flowable<ArrayList<String>> {
+    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
         return requestService.requestPushTags(udid)
     }
 }

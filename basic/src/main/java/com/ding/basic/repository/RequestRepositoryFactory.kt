@@ -18,6 +18,8 @@ import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
@@ -1101,5 +1103,27 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         Logger.e("鉴权请求完成！")
                     }
                 })
+    }
+
+    override fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<String>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribeBy(
+                        onNext = {
+                            if (it.checkResultAvailable()) {
+                                requestSubscriber.onNext(it.data)
+                            } else {
+                                requestSubscriber.onError(Throwable("获取用户标签错误: ${it.message}"))
+                            }
+                        },
+                        onError = {
+                            requestSubscriber.onError(it)
+                        },
+                        onComplete = {
+                            requestSubscriber.onComplete()
+                        }
+                )
     }
 }
