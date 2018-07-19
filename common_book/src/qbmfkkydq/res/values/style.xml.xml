@@ -27,5 +27,7 @@
 
     <!--底部导航栏样式（结束）-->
 
-
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">17sp</item>
+    </style>
 </resources>

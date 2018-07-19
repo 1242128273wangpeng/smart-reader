@@ -31,4 +31,10 @@
         <attr name="np_wrapSelectorWheel" format="boolean" />
     </declare-styleable>
 
+    <!--TabLayout 指示器-->
+    <declare-styleable name="TabLayoutIndicator">
+        <attr name="mindicatorWidth" format="reference|dimension" />
+        <attr name="mindicatorColor" format="reference|color" />
+    </declare-styleable>
+
 </resources>

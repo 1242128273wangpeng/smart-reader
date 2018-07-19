@@ -28,6 +28,9 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
+import com.intelligent.reader.fragment.CategoryFragment
+import com.intelligent.reader.fragment.RankingFragment
+import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -51,7 +54,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
 
     override fun checkShowShelfGuide() {
-        if(currentIndex==0){
+        if (currentIndex == 0) {
 
         }
 
@@ -87,14 +90,14 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     private var currentIndex = 0
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
     private val fragmentTypeBookShelf = 0 //书架
-    private val fragmentTypeRecommend = 1 //精选
-    private val fragmentTypeClassify = 2 //分类
-    private val fragmentTypeRanking = 3 //榜单
+    private val fragmentTypeRecommend = 1 //推荐
+    private val fragmentTypeRanking = 2 //分类
+    private val fragmentTypeClassify = 3 //榜单
     private lateinit var sharedPreUtil: SharedPreUtil
     private lateinit var apkUpdateUtils: ApkUpdateUtils
     private var bookShelfFragment: BookShelfFragment? = null
-    private val recommendFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val recommendFragment: RecommendFragment by lazy {
+        val fragment = RecommendFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
         val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
@@ -103,8 +106,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         fragment
     }
 
-    private val rankingFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val rankingFragment: RankingFragment by lazy {
+        val fragment = RankingFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
         val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
@@ -113,8 +116,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         fragment
     }
 
-    private val classifyFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val classifyFragment: CategoryFragment by lazy {
+        val fragment = CategoryFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
         val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
