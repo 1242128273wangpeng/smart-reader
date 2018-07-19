@@ -72,6 +72,8 @@ public class ShieldManager {
                         if (!TextUtils.isEmpty(longitude)) {
                             MediaConfig.INSTANCE.setLongitude(Float.valueOf(longitude));
                         }
+                        MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+                        MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
                     }
 
                     AppLog.e(TAG, "城市信息：" + aMapLocation.getCity() + "城市编码：" + aMapLocation.getCityCode() + " 经度：" + aMapLocation.getLongitude() + " 纬度：" + aMapLocation.getLatitude());
