@@ -20,16 +20,14 @@ import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import me.eugeniomarletti.kotlin.metadata.shadow.incremental.components.Position
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.utils.BaseBookHelper
-import net.lzbook.kit.utils.doAsync
-import net.lzbook.kit.utils.runOnMain
-import net.lzbook.kit.utils.uiThread
+import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
@@ -37,11 +35,10 @@ import kotlin.collections.LinkedHashMap
 /**
  * Created by qiantao on 2017/11/14 0014
  */
-class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
+open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
 
     var iBookList: ArrayList<Book> = ArrayList()
-    var currentReadBook: Book? = null
-    var currentTitle: String = ""
+
 
     private val adBookMap = LinkedHashMap<Int, Book>()
 
@@ -114,38 +111,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         }
     }
 
-    /**
-     * 获取最近阅读的书
-     */
-     fun queryCurrentReadBook() {
-        val readBooks = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
-        if (readBooks == null || readBooks.size < 1) {
-            return
-        }
-        Collections.sort(readBooks, CommonContract.MultiComparator(1))
-        currentReadBook = readBooks[0]
-
-//        val requestSubscriber = object : RequestSubscriber<List<Chapter>>() {
-//            override fun requestResult(result: List<Chapter>?) {
-//
-//                currentTitle = result!!.get(currentReadBook!!.sequence).content!!
-//
-//                Log.d("whl",currentTitle)
-//            }
-//
-//            override fun requestError(message: String) {
-//                Log.d("whl",message)
-//            }
-//        }
-//
-//        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-//                .requestCatalog(currentReadBook!!.book_id,
-//                        currentReadBook!!.book_source_id,
-//                        currentReadBook!!.book_chapter_id,
-//                        requestSubscriber, SchedulerHelper.Type_Main)
-    }
-
-    /***
+       /***
      * 刷新书籍列表，并计算请求广告数量。 注：将adBookMap插入到列表中，主要是为了解决刷新列表时，广告抖动的问题。
      * **/
     private fun calculationShelfADCount(isShowAD: Boolean, isList: Boolean): Int {

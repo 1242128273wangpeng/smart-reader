@@ -54,7 +54,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
 
     private var mBook: Book? = null
     private var mContext: Activity? = null
-    fun setData(book: Book, title: String, context: Activity) {
+    fun setData(book: Book, title: String?, context: Activity) {
         mBook = book
         mContext = context
         if (!TextUtils.isEmpty(book.name)) {
@@ -67,8 +67,10 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
             book.sequence = book.chapter_count - 1
         }
 
+        title?.let {
+            txt_book_chapter_info.text = title
+        }
 
-        txt_book_chapter_info.text = "第" + (book.sequence + 1) + "章 " + title
 
         if (book.sequence >= 0) {
             txt_book_chapter.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
