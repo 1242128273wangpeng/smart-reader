@@ -226,7 +226,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 Intent intent = new Intent();
                 intent.setClass(this, SearchBookActivity.class);
                 startActivity(intent);
-                SearchBookActivity.isSatyHistory = false;
+//                SearchBookActivity.isSatyHistory = false;
                 break;
         }
     }
@@ -279,7 +279,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
             super.onBackPressed();
         } else {
             if (urls.size() - backClickCount <= 1) {
-                SearchBookActivity.isSatyHistory = true;
+//                SearchBookActivity.isSatyHistory = true;
                 super.onBackPressed();
             } else {
                 backClickCount++;
@@ -662,7 +662,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
         if (isFromCover) {
             super.onBackPressed();
         } else {
-            SearchBookActivity.isSatyHistory = true;
+//            SearchBookActivity.isSatyHistory = true;
 
             if (urls.size() - backClickCount <= 1) {
                 LabelsDetailActivity.this.finish();

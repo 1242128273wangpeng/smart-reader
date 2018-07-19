@@ -32,6 +32,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.event.EventSetting
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
@@ -350,7 +351,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
-            RouterUtil.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY)
+            var bundle = Bundle()
+            bundle.putBoolean(RouterUtil.isFormDisclaimerPage, true)
+            RouterUtil.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY,bundle)
         }
 
         val versionName = "V${AppUtils.getVersionName()}"
@@ -704,6 +707,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
                 setNightMode(true)
+            } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
             }
         }
     }

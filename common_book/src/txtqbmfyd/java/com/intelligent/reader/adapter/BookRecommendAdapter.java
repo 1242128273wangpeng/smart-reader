@@ -67,8 +67,8 @@ public class BookRecommendAdapter extends BaseAdapter {
         hodler.book_info_tv.setText(recommend.getDescription());
         hodler.book_author_tv.setText(recommend.getAuthorName());
 
-        if (!TextUtils.isEmpty(recommend.getLabel())) {
-            hodler.book_cover_category.setText(recommend.getLabel());
+        if (!TextUtils.isEmpty(recommend.getSubGenre())) {
+            hodler.book_cover_category.setText(recommend.getSubGenre());
         } else {
             hodler.book_cover_category.setText("未分类");
         }

@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -466,43 +467,6 @@ public class SplashActivity extends FrameActivity {
         initTask.execute();
     }
 
-    /***
-     * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
-     * **/
-    private void updateBookLastChapter() {
-        if (sharedPreUtil == null) {
-            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
-        }
-
-        boolean isDataBaseRemark = sharedPreUtil.getBoolean(
-                SharedPreUtil.Companion.getDATABASE_REMARK(), false);
-
-        if (!isDataBaseRemark) {
-
-            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBooks();
-
-            if (bookList != null && bookList.size() > 0) {
-
-                for (Book book : bookList) {
-                    ChapterDaoHelper chapterDaoHelper =
-                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
-
-                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
-
-                    if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
-                        book.setLast_chapter(lastChapter);
-
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).updateBook(book);
-                    }
-                }
-            }
-            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
-        }
-    }
-
     private boolean isGo = true;
 
     private void initSplashAd() {
@@ -644,6 +608,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();
@@ -729,15 +698,14 @@ public class SplashActivity extends FrameActivity {
             }
 
             UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
-
-            //请求广告
-            initAdSwitch();
             // 5 初始化屏蔽
             try {
                 initShield();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //请求广告
+            initAdSwitch();
 
             initSplashAd();
 
