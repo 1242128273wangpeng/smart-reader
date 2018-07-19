@@ -554,7 +554,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         changeHeaderState(true)
 
-        rl_content.setPadding(0, rl_content.paddingTop, 0, popupHeight)
+//        rl_content.setPadding(0, rl_content.paddingTop, 0, popupHeight)
 
         txt_editor_select_all.text = getString(R.string.select_all)
     }
