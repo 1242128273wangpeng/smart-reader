@@ -12,6 +12,10 @@
     <string name="style_change_2">有点黄</string>
     <string name="style_change_3">静默黑</string>
     <string name="style_change_4">海洋蓝</string>
-    
+
+    <string name="push_setting_dialog_title">开启消息通知</string>
+    <string name="push_setting_dialog_subtitle">更多热门好书，精选书单及运营活动等你来看</string>
+    <string name="push_setting_dialog_action">现在开启</string>
+
 
 </resources>

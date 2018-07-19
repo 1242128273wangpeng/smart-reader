@@ -8,11 +8,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
@@ -36,6 +39,7 @@ import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbdzs.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -108,6 +112,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
 
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+        }
+        dialog
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,6 +147,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         homePresenter.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
+
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+        }
+
     }
 
     override fun onResume() {
@@ -144,6 +160,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
+
+        val isNotifyEnable = NotificationManagerCompat.from(this)
+                .areNotificationsEnabled()
+        if (isNotifyEnable) {
+            pushSettingDialog.dismiss()
+        }
     }
 
     override fun onPause() {
@@ -361,7 +383,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
-
 
 
     override fun receiveUpdateCallBack(notification: Notification) {
@@ -617,7 +638,39 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
+    private fun openPushSetting() {
+        val intent = Intent()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+            intent.putExtra("app_package", packageName)
+            intent.putExtra("app_uid", applicationInfo.uid)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent.putExtra("android.provider.extra.APP_PACKAGE", packageName)
+            }
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+            intent.data = Uri.fromParts("package", packageName, null)
+        }
+        startActivity(intent)
+    }
 
+    private fun isShouldShowPushSettingDialog(): Boolean {
+        val isNotifyEnable = NotificationManagerCompat.from(this)
+                .areNotificationsEnabled()
+        if (isNotifyEnable) return false
+        val shareKey = SharedPreUtil.PUSH_LATEST_SHOW_SETTING_DIALOG_TIME
+        val latestShowTime = sharedPreUtil
+                .getLong(shareKey, 0)
+        val currentTime = System.currentTimeMillis()
+        val time = currentTime - latestShowTime
+        return if (time > 3 * 24 * 60 * 60 * 1000) {
+            sharedPreUtil.putLong(shareKey, currentTime)
+            true
+        } else {
+            false
+        }
+    }
 
     companion object {
         private const val BACK = 0x80

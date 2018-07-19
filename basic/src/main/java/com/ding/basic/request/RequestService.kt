@@ -129,6 +129,8 @@ interface RequestService {
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
 
+        const val PUSH_TAG = "cn.dingyueWeb.reader/getUserTag"
+
     }
 
     @GET(DEFAULT_BOOK)
@@ -223,4 +225,6 @@ interface RequestService {
     @POST(BOOK_END_RECOMMEND_V4)
     fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
 
+    @GET(PUSH_TAG)
+    fun requestPushTags(@Query("udid") udid: String): Flowable<ArrayList<String>>
 }

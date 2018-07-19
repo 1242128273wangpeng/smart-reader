@@ -7,17 +7,20 @@ import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.support.annotation.AttrRes
-import android.support.annotation.IdRes
-import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.widget.TextView
+import com.ding.basic.repository.InternetRequestRepository
+import com.umeng.message.PushAgent
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -94,8 +97,8 @@ fun Any.log(str: String, vararg param: Any?) {
 fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
     if (msDebuggAble || level == LOG_LEVEL.ERR) {
         var builder = StringBuilder()
-        param?.forEach {
-            builder.append(it.toString() + " | ")
+        param.forEachIndexed { index, any ->
+            builder.append(any.toString() + if (index == param.size - 1) "" else " | ")
         }
 
         when (level) {
@@ -224,7 +227,7 @@ fun TextView.resolveTextColor(@AttrRes attr: Int) {
 
 fun View.antiShakeClick(callback: (View) -> Unit) {
     this.setOnClickListener {
-        if(isClickable) {
+        if (isClickable) {
             callback.invoke(it)
             postDelayed({
                 isClickable = true
@@ -235,9 +238,9 @@ fun View.antiShakeClick(callback: (View) -> Unit) {
     }
 }
 
-fun View.antiShakeClick(listener:View.OnClickListener) {
+fun View.antiShakeClick(listener: View.OnClickListener) {
     this.setOnClickListener {
-        if(isClickable) {
+        if (isClickable) {
             listener.onClick(it)
             postDelayed({
                 isClickable = true
@@ -246,4 +249,50 @@ fun View.antiShakeClick(listener:View.OnClickListener) {
 
         isClickable = false
     }
+}
+
+fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> Unit) {
+    loge("更新用户 PUSH 标签")
+    tagManager.getTags { isGet, allTags ->
+        loge("isGet: $isGet", "allTags: $allTags, size: ${allTags.size}")
+        if (!isGet) return@getTags
+        if (allTags?.isNotEmpty() == true && allTags[0]?.isNotEmpty() == true) {
+            tagManager.deleteTags({ isDelete, deleteResult ->
+                loge("isDelete: $isDelete", "result: $deleteResult")
+                if (!isDelete) return@deleteTags
+                addTags(context, udid, callback)
+            }, allTags.toTypedArray())
+        } else {
+            addTags(context, udid, callback)
+        }
+    }
+}
+
+private fun PushAgent.addTags(context: Context, udid: String,
+                              callback: (isSuccess: Boolean) -> Unit) {
+    loge("addTags")
+    InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .unsubscribeOn(Schedulers.io())
+            .subscribeBy(
+                    onNext = {
+                        if (it.isNotEmpty() && it[0].isNotEmpty()) {
+                            val addTags = it.toTypedArray()
+                            loge("tags: $addTags")
+                            tagManager.addTags({ isAdd, addResult ->
+                                loge("更新用户标签结果: $isAdd",
+                                        "addResult: $addResult")
+                                callback.invoke(isAdd)
+                            }, addTags)
+                        } else {
+                            loge("用户标签为空")
+                            callback.invoke(true)
+                        }
+                    },
+                    onError = {
+                        callback.invoke(false)
+                    }
+            )
+
 }

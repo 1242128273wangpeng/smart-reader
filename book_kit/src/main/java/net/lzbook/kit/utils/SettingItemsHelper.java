@@ -12,7 +12,8 @@ import android.preference.PreferenceManager;
 public class SettingItemsHelper {
     public static SettingItemsHelper settingHelper;
     public SettingItems settings;
-    public String openPush = "settings_push";
+    public String openBookPush = "settings_push";
+    public String openUmengPush = "umeng_push";
     public String openPushSound = "push_sound";
     public String setPushTime = "push_time";
     public String pushTimeStartH = "push_time_start_hour";
@@ -43,7 +44,8 @@ public class SettingItemsHelper {
     }
 
     public SettingItems getValues() {//给内存数据赋值
-        settings.isPush = getBoolean(openPush, true);
+        settings.isBookUpdatePush = getBoolean(openBookPush, true);
+        settings.isUmengPush = getBoolean(openUmengPush, true);
         settings.isSoundOpen = getBoolean(openPushSound, true);
         settings.isSetPushTime = getBoolean(setPushTime, false);
 

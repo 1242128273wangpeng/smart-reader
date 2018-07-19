@@ -59,10 +59,10 @@ object Config {
         Config.context = context
 
 //        webViewHost = "http://8068.zn.bookapi.cn"
-//        requestAPIHost = "http://8068.zn.bookapi.cn"
+        requestAPIHost = "http://10.10.60.120:8083"
 
         webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+//        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
     }
 
     fun getContext(): Context? {
@@ -82,7 +82,7 @@ object Config {
 
     fun insertRequestAPIHost(requestAPIHost: String) {
         if (!TextUtils.isEmpty(requestAPIHost)) {
-            Config.requestAPIHost = requestAPIHost
+//            Config.requestAPIHost = requestAPIHost
         }
     }
 
