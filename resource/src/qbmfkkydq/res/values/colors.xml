@@ -4,12 +4,13 @@
 
     <color name="accent">#FF2AD1BE</color>
     <color name="primary">#FF2AD1BE</color>
+    <color name="primary_alpha">#4D2AD1BE</color>
 
     <color name="text_color_dark">#FF282828</color>
     <color name="text_color_plain">#FF616161</color>
     <color name="text_color_light">#FF989898</color>
     <color name="text_color_weak">#FF9B9B9B</color>
-    <color name="text_color_thin">#FFCBCBCB</color>
+    <color name="text_color_thin">#FFADB4BE</color>
 
     <!--阅读模块-->
 

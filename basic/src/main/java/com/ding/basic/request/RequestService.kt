@@ -37,6 +37,7 @@ interface RequestService {
         const val SEARCH_S1_V5 = "/v5/search/page"
         // 前后端不分离，数据融合（搜索二期）
         const val SEARCH_S2_V5 = "/v5/search/searchPage"
+        const val SEARCH_V4 = "/v4/search/page"
 
         /**
          * 搜索热词
