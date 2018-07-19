@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.dingyue.bookshelf.childmvp.ChildBookShelfPresenter
+import com.dingyue.bookshelf.childmvp.ChildBookShelfView
 import com.dingyue.bookshelf.view.*
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
@@ -36,7 +38,11 @@ import java.util.*
  * 书架页Fragment
  */
 
-class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
+class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuManager {
+    override fun onCurrentBookCommplete(book: Book, title: String?) {
+
+        addHeaderView(book,title)
+    }
 
     private val popupHeight by lazy {
         resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
@@ -46,7 +52,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private var headerViewHeight = 1
     private var mScrollDistance = 0
 
-    private val bookShelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
+    private val bookShelfPresenter: ChildBookShelfPresenter by lazy { ChildBookShelfPresenter(this) }
 
     private var latestLoadDataTime: Long = 0
 
@@ -330,7 +336,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         BookShelfHeaderView(recl_content.context)
     }
 
-    private fun addHeaderView(cReadBook: Book, cTitle: String) {
+    private fun addHeaderView(cReadBook: Book, cTitle: String?) {
 
         if (hfRecyclerControl.getHeaderCount() == 0) {
             hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
@@ -488,10 +494,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 srl_refresh?.visibility = View.GONE
             }
         }
-//      添加头部正在阅读书籍信息
-        if (bookShelfPresenter.currentReadBook != null) {
-            addHeaderView(bookShelfPresenter.currentReadBook!!, bookShelfPresenter.currentTitle)
-        }
+
     }
 
     override fun onBookDelete() {
@@ -554,7 +557,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         changeHeaderState(true)
 
-        rl_content.setPadding(0, rl_content.paddingTop, 0, popupHeight)
+//        rl_content.setPadding(0, rl_content.paddingTop, 0, popupHeight)
 
         txt_editor_select_all.text = getString(R.string.select_all)
     }

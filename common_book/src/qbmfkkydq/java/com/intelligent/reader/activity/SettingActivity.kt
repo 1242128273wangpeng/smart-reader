@@ -15,16 +15,17 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.widget.SwitchButton
 import iyouqu.theme.BaseCacheableActivity
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.utils.AppUtils
@@ -235,6 +236,7 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
                         runOnUiThread({
                             dismissDialog()
                             clear_cache_size!!.setText("0B")
+                            showToastMessage("缓存已清除")
                         })
                     }
                 }.start()

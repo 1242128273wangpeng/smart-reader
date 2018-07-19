@@ -54,9 +54,9 @@
             android:textSize="@dimen/dimen_text_20" />
 
         <TextView
-            android:layout_marginBottom="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
             android:layout_marginTop="10dp"
             android:text="阅读方能静心"
             android:textColor="#CCFFFFFF" />
@@ -93,7 +93,7 @@
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14" />
 
-                <net.lzbook.kit.book.view.SwitchButton
+                <com.intelligent.reader.widget.SwitchButton
                     android:id="@+id/bt_night_shift"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
@@ -101,11 +101,11 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    app:sb_checked_color="@color/my_nightshift_bg_checked_color"
-                    app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
+                    app:sb_checked_color="#CC2AD1BE"
+                    app:sb_checkedbtn_color="#FF2AD1BE "
                     app:sb_show_indicator="false"
-                    app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-                    app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color" />
+                    app:sb_uncheck_color="#66ADB4BE"
+                    app:sb_uncheckedbtn_color="#FFADB4BE" />
 
             </RelativeLayout>
 
@@ -126,7 +126,7 @@
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14" />
 
-                <net.lzbook.kit.book.view.SwitchButton
+                <com.intelligent.reader.widget.SwitchButton
                     android:id="@+id/bt_wifi_auto"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
@@ -134,11 +134,11 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    app:sb_checked_color="@color/my_nightshift_bg_checked_color"
-                    app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
+                    app:sb_checked_color="#CC2AD1BE"
+                    app:sb_checkedbtn_color="#FF2AD1BE "
                     app:sb_show_indicator="false"
-                    app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-                    app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color" />
+                    app:sb_uncheck_color="#66ADB4BE"
+                    app:sb_uncheckedbtn_color="#FFADB4BE" />
 
 
             </RelativeLayout>

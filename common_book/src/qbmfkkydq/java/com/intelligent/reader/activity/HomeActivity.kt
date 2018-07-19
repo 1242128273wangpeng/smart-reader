@@ -16,18 +16,24 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
+import android.text.TextUtils
 import android.view.ViewGroup
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
+import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.fragment.CategoryFragment
+import com.intelligent.reader.fragment.RankingFragment
+import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -35,13 +41,16 @@ import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkkydq.act_home.*
 import net.lzbook.kit.app.ActionConstants
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.JSInterfaceHelper
 import net.lzbook.kit.utils.MD5Utils
+import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
 import java.util.*
@@ -51,17 +60,115 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
 
     override fun checkShowShelfGuide() {
-        if(currentIndex==0){
+        if (currentIndex == 0) {
 
         }
 
     }
+    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
+    jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
+    jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
+        try {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return@setOnSearchClick
+            }
+            val data = HashMap<String, String>()
+            data["keyword"] = keyWord
+            data["type"] = "0"//0 代表从分类过来
+            StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
 
-    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper?) {
+            val intent = Intent()
+            intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
+            intent.putExtra("word", keyWord)
+            intent.putExtra("search_type", search_type)
+            intent.putExtra("filter_type", filter_type)
+            intent.putExtra("filter_word", filter_word)
+            intent.putExtra("sort_type", sort_type)
+            intent.putExtra("from_class", "fromClass")//是否从分类来
+            startActivity(intent)
+            AppLog.e("kkk", "$search_type===")
 
+        } catch (e: Exception) {
+            AppLog.e(TAG, "Search failed")
+            e.printStackTrace()
+        }
     }
+    jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
+        if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            return@onAnotherWebClick
+        }
+        AppLog.e(TAG, "doAnotherWeb")
+        try {
+            val intent = Intent()
+            intent.setClass(this@HomeActivity, FindBookDetail::class.java)
+            intent.putExtra("url", url)
+            intent.putExtra("title", name)
+            startActivity(intent)
+            AppLog.e(TAG, "EnterAnotherWeb")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    })
 
-    override fun startLoad(webView: WebView?, url: String): String {
+    jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
+
+    jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
+        if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            return@onEnterCover
+        }
+
+        if (!isFinishing) {
+            val intent = Intent()
+            intent.putExtra("book_id", book_id)
+            intent.putExtra("book_source_id", book_source_id)
+            intent.setClass(applicationContext, CoverPageActivity::class.java)
+            startActivity(intent)
+        }
+    })
+
+    //为webview 加载广告提供回调
+    jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
+        try {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return@onWebGameClick
+            }
+            var title = ""
+            if (TextUtils.isEmpty(name)) {
+                title = AppUtils.getPackageName()
+            } else {
+                title = name
+            }
+            val welfareIntent = Intent()
+            welfareIntent.putExtra("url", url)
+            welfareIntent.putExtra("title", title)
+            welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
+            startActivity(welfareIntent)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    })
+
+    jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
+        AppLog.e("福利中心", "下载游戏: $name : $url")
+
+        try {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return@onGameAppClick
+            }
+            val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
+            intent.putExtra("url", url)
+            intent.putExtra("name", name)
+            startService(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    })
+
+    jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
+}
+
+
+override fun startLoad(webView: WebView?, url: String): String {
         return url
     }
 
@@ -87,14 +194,14 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     private var currentIndex = 0
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
     private val fragmentTypeBookShelf = 0 //书架
-    private val fragmentTypeRecommend = 1 //精选
-    private val fragmentTypeClassify = 2 //分类
-    private val fragmentTypeRanking = 3 //榜单
+    private val fragmentTypeRecommend = 1 //推荐
+    private val fragmentTypeRanking = 2 //分类
+    private val fragmentTypeClassify = 3 //榜单
     private lateinit var sharedPreUtil: SharedPreUtil
     private lateinit var apkUpdateUtils: ApkUpdateUtils
     private var bookShelfFragment: BookShelfFragment? = null
-    private val recommendFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val recommendFragment: RecommendFragment by lazy {
+        val fragment = RecommendFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
         val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
@@ -103,8 +210,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         fragment
     }
 
-    private val rankingFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val rankingFragment: RankingFragment by lazy {
+        val fragment = RankingFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
         val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
@@ -113,8 +220,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         fragment
     }
 
-    private val classifyFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val classifyFragment: CategoryFragment by lazy {
+        val fragment = CategoryFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
         val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
