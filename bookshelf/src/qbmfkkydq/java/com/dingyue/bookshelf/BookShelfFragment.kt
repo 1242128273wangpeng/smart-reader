@@ -136,7 +136,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 return false
             }
 
-        }, bookShelfPresenter.iBookList, true)
+        }, bookShelfPresenter.iBookList, false)
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {

@@ -6,7 +6,6 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.bookshelf.BookShelfPresenter
-import com.dingyue.bookshelf.BookShelfView
 import com.dingyue.contract.CommonContract
 import net.lzbook.kit.app.BaseBookApplication
 import java.util.*
