@@ -6,7 +6,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.setting.ReaderSettings
-import kotlinx.android.synthetic.txtqbdzs.dialog_reader_feedback.*
+import kotlinx.android.synthetic.qbmfkkydq.dialog_reader_feedback.*
 import net.lzbook.kit.book.view.MyDialog
 
 /**
