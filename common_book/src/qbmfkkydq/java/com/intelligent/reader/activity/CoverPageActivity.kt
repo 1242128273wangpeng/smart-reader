@@ -3,6 +3,7 @@ package com.intelligent.reader.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
@@ -106,6 +107,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_bookshelf!!.antiShakeClick(this)
         book_cover_reading!!.antiShakeClick(this)
         book_cover_download!!.antiShakeClick(this)
+
+
         /*book_cover_catalog_view!!.antiShakeClick(this)*/
         /*book_cover_catalog_view_nobg!!.antiShakeClick(this)*/
     }
@@ -205,21 +208,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
 
-            if (book_cover_category != null) {
-                if (!TextUtils.isEmpty(book.genre)) {
-                    book_cover_category!!.text = book.genre
-                    book_cover_category!!.visibility = VISIBLE
-                } else {
-                    book_cover_category!!.visibility = GONE
-                }
-            }
-
-            if (book.status == "SERIALIZE") {
-                book_cover_status!!.text = ("—" + getString(R.string.book_cover_state_writing))
-            } else {
-                book_cover_status!!.text = ("—" + getString(R.string.book_cover_state_written))
-            }
-
 
             if (!TextUtils.isEmpty(book.host)) {
                 book_cover_source_form.text = ("来源：" + if (book.fromQingoo()) "青果阅读" else book.host)
@@ -231,10 +219,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_description!!.text = resources.getString(R.string.book_cover_no_description)
             }
 
+
             if (book.last_chapter != null) {
-                if (book_cover_update_time != null) {
-                    book_cover_update_time!!.text = ("更新：${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}")
-                }
 
                 if (book_cover_last_chapter != null) {
                     if (!TextUtils.isEmpty(book.last_chapter!!.name)) {
@@ -251,12 +237,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     flowLayout!!.maxRows = 1
                     if (book.label != null) {
                         val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-                        lp.rightMargin = AppUtils.dp2px(resources,4f).toInt()
+                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
                         dummyTexts.indices
                                 .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
                                 .map { buildLabel(dummyTexts[it], it) }
-                                .forEach { flowLayout!!.addView(it,lp) }
+                                .forEach { flowLayout!!.addView(it, lp) }
 
                     }
                 }
@@ -272,19 +258,17 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     // 边框和文字颜色
-    private val labelColor = intArrayOf(R.color.cover_label_pink, R.color.cover_label_green, R.color.cover_label_blue, R.color.cover_label_yellow, R.color.cover_label_purple)
+    private val labelColor = intArrayOf(R.color.cover_label_color1, R.color.cover_label_color2, R.color.cover_label_color3)
 
-    //填充色
-    private val labelColorAlpha = intArrayOf(R.color.cover_label_pink_alpha, R.color.cover_label_green_alpha, R.color.cover_label_blue_alpha, R.color.cover_label_yellow_alpha, R.color.cover_label_purple_alpha)
 
     /**
      * 设置边框，背景，圆角
      */
-    private fun getLabelBgColor(solidColor: Int, strokeColor: Int): GradientDrawable {
+    private fun getLabelBgColor(strokeColor: Int): GradientDrawable {
         val gd = GradientDrawable()
         gd.shape = GradientDrawable.RECTANGLE
         gd.cornerRadius = AppUtils.dp2px(this.resources, 2f)//圆角
-        gd.setColor(ContextCompat.getColor(this, solidColor))//填充色
+        gd.setColor(Color.WHITE)//填充色
         gd.setStroke(2, ContextCompat.getColor(this, strokeColor))//边框
         return gd
     }
@@ -304,7 +288,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         textView.setTextColor(ContextCompat.getColor(this, labelColor[index]))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            textView.background = getLabelBgColor(labelColorAlpha[index], labelColor[index])
+            textView.background = getLabelBgColor(labelColor[index])
         } else {
             textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
             textView.setBackgroundResource(R.drawable.bg_cover_label)
@@ -433,7 +417,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (recycler_view != null) {
             val coverRecommendAdapter = CoverRecommendAdapter(this, this, recommends)
             recycler_view.recycledViewPool.setMaxRecycledViews(0, 12)
-            recycler_view.layoutManager = ShelfGridLayoutManager(this, 3)
+            recycler_view.layoutManager = ShelfGridLayoutManager(this, 4)
             recycler_view.isNestedScrollingEnabled = false
             recycler_view.itemAnimator.addDuration = 0
             recycler_view.itemAnimator.changeDuration = 0
