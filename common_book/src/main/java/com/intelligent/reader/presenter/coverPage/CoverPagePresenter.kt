@@ -364,7 +364,7 @@ class CoverPagePresenter(private val book_id: String?,
         }
         val downloadState = CacheManager.getBookStatus(coverDetail!!)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            activity.applicationContext.showToastMessage("正在缓存中...")
+            activity.applicationContext.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
         }
 
         val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)

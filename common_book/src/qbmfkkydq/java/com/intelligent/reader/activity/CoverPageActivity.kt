@@ -213,6 +213,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_source_form.text = ("来源：" + if (book.fromQingoo()) "青果阅读" else book.host)
             }
 
+            txt_score.text = String.format("%.2f", book.score) + "分"
+
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
                 book_cover_description!!.text = book.desc
             } else {

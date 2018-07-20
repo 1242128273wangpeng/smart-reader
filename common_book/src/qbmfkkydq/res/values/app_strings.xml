@@ -25,5 +25,6 @@
         <item>@drawable/home_tab_select_ranking</item>
         <item>@drawable/home_tab_select_category</item>
     </string-array>
+    <string name="download_app_nofify_title">缓存已开始</string>
 
 </resources>
