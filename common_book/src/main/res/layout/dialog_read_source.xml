@@ -25,14 +25,10 @@
             android:gravity="center"
             android:padding="20dp"
             android:text="转码"
-            android:textColor="#282828"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="#FF212832"
+            android:textSize="16sp"
+          />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#F1F1F1"/>
         <RelativeLayout
             android:id="@+id/rl_change_source_statement"
             android:layout_width="match_parent"
@@ -45,7 +41,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:gravity="center"
                 android:lineSpacingMultiplier="1.5"
                 android:maxLines="4"
                 android:layout_margin="10dp"
@@ -69,7 +64,7 @@
             <View
                 android:id="@+id/change_source_bottom_divider"
                 android:layout_width="0.5dp"
-                android:layout_height="42dp"
+                android:layout_height="56dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
                 android:background="#F1F1F1"/>

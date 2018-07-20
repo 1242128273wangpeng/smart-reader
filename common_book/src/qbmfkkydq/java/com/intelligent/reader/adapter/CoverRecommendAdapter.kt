@@ -33,9 +33,9 @@ class CoverRecommendAdapter(private val context: Context,
         val book = books[position]
         holder.bookName.text = book.bookName
         if (book.readerCountDescp != null && !TextUtils.isEmpty(book.readerCountDescp)) {
-            holder.readNum.text = (book.readerCountDescp!! + "人气值")
+            holder.authorName.text = (book.authorName!! )
         } else {
-            holder.readNum.text = ""
+            holder.authorName.text = ""
         }
 
         if (!TextUtils.isEmpty(book.sourceImageUrl)) {
@@ -60,13 +60,13 @@ class CoverRecommendAdapter(private val context: Context,
     inner class ViewHolder(itemView: View, private val recommendItemClickListener: RecommendItemClickListener?) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val recommendImage: ImageView
         val bookName: TextView
-        val readNum: TextView
+        val authorName: TextView
 
         init {
             itemView.setOnClickListener(this)
             recommendImage = itemView.findViewById(R.id.iv_recommend_image)
             bookName = itemView.findViewById(R.id.tv_book_name)
-            readNum = itemView.findViewById(R.id.tv_readnum)
+            authorName = itemView.findViewById(R.id.txt_author)
 
         }
 

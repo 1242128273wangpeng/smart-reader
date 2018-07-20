@@ -16,16 +16,9 @@
     <color name="cover_title_color">#252B35</color>
     <color name="cover_recommend_read">#949AA5</color>
 
-    <color name="cover_label_pink">#D4AEB5</color>
-    <color name="cover_label_pink_alpha">#14D4AEB5</color>
-    <color name="cover_label_green">#B4C6A5</color>
-    <color name="cover_label_green_alpha">#14B4C6A5</color>
-    <color name="cover_label_blue">#B0C6D1</color>
-    <color name="cover_label_blue_alpha">#14B0C6D1</color>
-    <color name="cover_label_yellow">#D3C3A0</color>
-    <color name="cover_label_yellow_alpha">#14D3C3A0</color>
-    <color name="cover_label_purple">#B9B2CF</color>
-    <color name="cover_label_purple_alpha">#14B9B2CF</color>
+    <color name="cover_label_color1">#FF78AF8F</color>
+    <color name="cover_label_color2">#FF799CB7</color>
+    <color name="cover_label_color3">#FF79B7AF</color>
 
     <color name="cover_gray98">#989898</color>
     <color name="cover_grayCB">#CBCBCB</color>

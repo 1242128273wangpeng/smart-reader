@@ -59,7 +59,7 @@ class CoverPagePresenter(private val book_id: String?,
 
     var recommendIndex = 0
     var recommendCount = 6 //标识推荐书籍的数量，txt全本免费阅读只有4个书籍
-    var mRandom: Random?= null
+    var mRandom: Random? = null
 
     init {
         mRandom = Random()
@@ -364,7 +364,7 @@ class CoverPagePresenter(private val book_id: String?,
         }
         val downloadState = CacheManager.getBookStatus(coverDetail!!)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            activity.applicationContext.showToastMessage("正在缓存中...")
+            activity.applicationContext.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
         }
 
         val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
@@ -382,6 +382,21 @@ class CoverPagePresenter(private val book_id: String?,
             }
         }
         coverPageContract.changeDownloadButtonStatus()
+    }
+
+    /**
+     * 暂停下载书籍
+     */
+    fun handleDownloadContinueOrStop() {
+
+        val downloadState = CacheManager.getBookStatus(coverDetail!!)
+        if (downloadState == DownloadState.DOWNLOADING) {
+            CacheManager.stop(coverDetail!!.book_id)
+            coverPageContract.changeDownloadButtonStatus()
+        }else{
+            handleDownloadAction()
+        }
+
     }
 
     /***
@@ -476,6 +491,54 @@ class CoverPagePresenter(private val book_id: String?,
             })
         }
     }
+
+    /**
+     * 获取封面页推荐书籍，随机推荐
+     */
+
+    fun requestCoverRecommendRandom(booksize: Int) {
+
+        if (book_id != null && !TextUtils.isEmpty(book_id)) {
+            val bookIDs: String = loadBookShelfID()
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommend(book_id, bookIDs, object : RequestSubscriber<RecommendBooks>() {
+                override fun requestResult(result: RecommendBooks?) {
+                    if (result?.znList != null) {
+                        if (result!!.znList!!.size <= booksize) {
+                            coverPageContract.showRecommendSuccess(result.znList!!)
+                        } else {
+                            coverPageContract.showRecommendSuccess(getRandowmBooks(booksize, result.znList!!))
+
+                        }
+
+                    } else {
+                        coverPageContract.showRecommendFail()
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("获取封面推荐异常！")
+                    coverPageContract.showRecommendFail()
+                }
+            })
+        }
+    }
+
+    /**
+     * 从数据源中随机获取定长度的书
+     * 开始下标随机，后面书籍顺序累计添加
+     */
+    fun getRandowmBooks(size: Int, books: ArrayList<RecommendBean>): ArrayList<RecommendBean> {
+        var resultList = ArrayList<RecommendBean>()
+        var randow = Random()
+        var startIndex = randow.nextInt(books.size)
+        for (i in 0 until size) {
+            resultList.add(books[startIndex % books.size])
+            startIndex++
+        }
+
+        return resultList
+    }
+
 
     /**
      * 推荐该作者的其他作品
@@ -640,10 +703,10 @@ class CoverPagePresenter(private val book_id: String?,
             if (sharePreUtil == null) {
                 sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
             }
-             var scale:List<String>? =ArrayList<String>()
-            if(AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")){
+            var scale: List<String>? = ArrayList<String>()
+            if (AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")) {
                 scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0")?.split(",")
-            }else{
+            } else {
                 scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
             }
 
