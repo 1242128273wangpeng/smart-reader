@@ -10,21 +10,24 @@ import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.txtqbdzs.act_download_manager.*
-import kotlinx.android.synthetic.txtqbdzs.item_download_manager_task_header.view.*
+import kotlinx.android.synthetic.qbmfkkydq.act_download_manager.*
+import kotlinx.android.synthetic.qbmfkkydq.item_download_manager_task_header.view.*
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
+import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
 
+/**
+ * Created by qiantao on 2017/11/22 0022
+ */
 @Route(path = RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
 class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         DownloadManagerAdapter.DownloadManagerItemListener, MenuManager {
@@ -41,7 +44,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         resources.getDimensionPixelSize(R.dimen.download_manager_popup_height)
     }
 
-    var downloadBooks: ArrayList<Book> = ArrayList()
+    private var downloadBooks: ArrayList<Book> = ArrayList()
 
     private val downloadManagerAdapter: DownloadManagerAdapter by lazy {
         DownloadManagerAdapter(this, this, downloadBooks)
@@ -63,8 +66,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         popup.setOnDeletedClickListener {
             deleteCache(downloadManagerAdapter.checkedBooks)
         }
-        popup.setOnSelectAllClickListener { isSelectAll ->
-            checkAll(isSelectAll)
+        popup.setOnCancelClickListener {
+            dismissMenu()
         }
         popup
     }
@@ -73,6 +76,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         val popup = DownloadManagerMenuPopup(this)
         popup.setOnEditClickListener {
             showMenu()
+        }
+        popup.setOnAddSortingClickListener {
+            sortBooks(2)
         }
         popup.setOnTimeSortingClickListener {
             sortBooks(1)
@@ -91,7 +97,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         CacheManagerContract.insertDownloadCallBack(this)
 
         Constants.isDownloadManagerActivity = true
-        Constants.hadShownMobilNetworkConfirm = false
 
         downloadManagerViewModel = ViewModelProviders.of(this).get(DownloadManagerViewModel::class.java)
 
@@ -101,7 +106,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
     }
 
     private fun observeViewModel(viewModel: DownloadManagerViewModel) {
-        viewModel.loadBookListLiveData().observe(this, Observer { books ->
+        viewModel.loadBookListLiveData().observe(this, Observer<List<Book>> { books ->
             if (books != null) {
                 downloadBooks.clear()
                 downloadBooks.addAll(books)
@@ -123,7 +128,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         super.onDestroy()
         CacheManagerContract.removeDownloadCallBack(this)
         Constants.isDownloadManagerActivity = false
-        Constants.hadShownMobilNetworkConfirm = false
     }
 
     private fun initView() {
@@ -131,11 +135,18 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             DownloadManagerLogger.uploadCacheManagerBack()
             finish()
         }
-
-        txt_head_cancel.setOnClickListener{
-            dismissMenu()
+        txt_head_select_all.setOnClickListener {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return@setOnClickListener
+            }
+            if (txt_head_select_all.text == getString(R.string.select_all)) {
+                txt_head_select_all.text = getString(R.string.select_all_cancel)
+                checkAll(true)
+            } else {
+                txt_head_select_all.text = getString(R.string.select_all)
+                checkAll(false)
+            }
         }
-
         txt_head_title.setOnClickListener {
             finish()
         }
@@ -172,10 +183,15 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                     val finish = CacheManagerContract.loadBookDownloadState(downloadBooks[position]) == DownloadState.FINISH
 
                     if (finish) {
-                        view.img_state.setImageResource(R.drawable.download_manager_item_header_cached_icon)
+                        view.txt_state.text = getString(R.string.cached)
                     } else {
-                        view.img_state.setImageResource(R.drawable.download_manager_item_header_nocache_icon)
+                        view.txt_state.text = getString(R.string.not_cache)
                     }
+
+                    /*  if (position == 0) {
+                          view.view_divider.visibility = View.GONE
+                      }*/
+
                     view
                 } else {
                     null
@@ -189,6 +205,25 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         //解决RecyclerView刷新列表时，图片的抖动问题
         (recl_content.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
+        recl_content.topShadow = img_head_shadow
+    }
+
+    private fun onDownloadBookQuery() {
+        if (downloadBooks.size == 0) {
+            recl_content.visibility = View.GONE
+            ll_empty.visibility = View.VISIBLE
+            img_head_more.visibility = View.GONE
+        } else {
+            ll_empty.visibility = View.GONE
+            recl_content.visibility = View.VISIBLE
+            downloadManagerAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun onDownloadDelete() {
+        downloadManagerViewModel.refreshBooks()
+        dismissMenu()
+        managerDeleteDialog.dismiss()
     }
 
     override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
@@ -208,27 +243,26 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         }
     }
 
-    override fun supportSlideBack(): Boolean {
-        return !isTaskRoot && !downloadManagerAdapter.remove
-    }
-
-    override fun onTaskStatusChange(book_id: String?) {
-        downloadManagerAdapter.notifyDataSetChanged()
-    }
-
     override fun onTaskFinish(book_id: String) {
         val book = BookHelperContract.loadLocalBook(book_id)
 
-        if (book != null && CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
-            val data = downloadBooks
-            for (b in data) {
-                if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
-                    data.remove(b)
-                    break
+        if (book != null) {
+            if (CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
+                val data = downloadBooks
+                for (b in data) {
+                    if (b.book_id.isNotEmpty() && book.book_id.isNotEmpty() && b.book_id == book.book_id) {
+                        data.remove(b)
+                        break
+                    }
                 }
             }
+            downloadManagerViewModel.refreshBooks()
         }
-        downloadManagerViewModel.refreshBooks()
+    }
+
+
+    override fun onTaskStatusChange(book_id: String?) {
+        downloadManagerAdapter.notifyDataSetChanged()
     }
 
     override fun onTaskFailed(book_id: String?, t: Throwable?) {
@@ -239,30 +273,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         downloadManagerAdapter.notifyDataSetChanged()
     }
 
-    fun onDownloadBookQuery() {
-        if (downloadBooks.size == 0) {
-            recl_content.visibility = View.GONE
-            ll_empty.visibility = View.VISIBLE
-        } else {
-            ll_empty.visibility = View.GONE
-            recl_content.visibility = View.VISIBLE
-            downloadManagerAdapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun showMenu() {
-        downloadManagerAdapter.insertRemoveState(true)
-        removeMenuPopup.show(rl_root)
-
-        recl_content.setPadding(0, recl_content.paddingTop, 0, popupHeight)
-
-        img_head_more.visibility = View.GONE
-        txt_head_title.text = getString(R.string.edit_cache)
-        txt_head_cancel.visibility = View.VISIBLE
-
-        DownloadManagerLogger.uploadCacheManagerEdit()
-    }
-
     override fun onTaskProgressUpdate(book_id: String?) {
         if (System.currentTimeMillis() - time > 500) {
             time = System.currentTimeMillis()
@@ -270,43 +280,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         }
     }
 
-    override fun dismissMenu() {
-        downloadManagerAdapter.insertRemoveState(false)
-        removeMenuPopup.dismiss()
-
-        recl_content.setPadding(0, recl_content.paddingTop, 0, 0)
-
-        img_head_more.visibility = View.VISIBLE
-        txt_head_title.text = getString(R.string.download_manager)
-        txt_head_cancel.visibility = View.GONE
-        DownloadManagerLogger.uploadCacheMangerEditCancel()
-    }
-
-    private fun onDownloadDelete() {
-        downloadManagerViewModel.refreshBooks()
-        dismissMenu()
-        managerDeleteDialog.dismiss()
-    }
-
-    override fun checkAll(all: Boolean) {
-        downloadManagerAdapter.insertSelectAllState(all)
-        removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-        DownloadManagerLogger.uploadCacheManagerEditSelectAll(all)
-    }
-
-    override fun sortBooks(type: Int) {
-        CommonContract.insertShelfSortType(type)
-        downloadManagerViewModel.refreshBooks()
-        DownloadManagerLogger.uploadCacheManagerSort(type)
-    }
-
-    override fun deleteCache(books: ArrayList<Book>) {
-        DownloadManagerLogger.uploadCacheManagerEditDeleteLog()
-        if (books.isNotEmpty()) {
-            managerDeleteDialog.show()
-            downloadManagerViewModel.deleteCache(books)
-            DownloadManagerLogger.uploadCacheManagerEditDelete(books)
-        }
+    override fun supportSlideBack(): Boolean {
+        return !isTaskRoot && !downloadManagerAdapter.remove
     }
 
     override fun clickedDownloadItem(book: Book?, position: Int) {
@@ -322,8 +297,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         } else {
             downloadManagerAdapter.insertCheckedPosition(position)
             removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-            val allText = if (downloadManagerAdapter.isCheckAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
-            removeMenuPopup.setSelectAllText(allText)
+            txt_head_select_all.text = if (downloadManagerAdapter.isCheckAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
         }
     }
 
@@ -332,5 +306,56 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             showMenu()
         }
         return false
+    }
+
+    override fun showMenu() {
+        downloadManagerAdapter.insertRemoveState(true)
+        removeMenuPopup.show(rl_root)
+
+        recl_content.setPadding(0, recl_content.paddingTop, 0, popupHeight)
+
+        img_head_more.visibility = View.GONE
+        img_head_back.visibility = View.GONE
+        txt_head_title.text = getString(R.string.edit_cache)
+        txt_head_select_all.text = getString(R.string.select_all)
+        txt_head_select_all.visibility = View.VISIBLE
+
+        DownloadManagerLogger.uploadCacheManagerEdit()
+    }
+
+    override fun dismissMenu() {
+        downloadManagerAdapter.insertRemoveState(false)
+        removeMenuPopup.dismiss()
+
+        recl_content.setPadding(0, recl_content.paddingTop, 0, 0)
+
+        img_head_more.visibility = View.VISIBLE
+        img_head_back.visibility = View.VISIBLE
+        txt_head_title.text = getString(R.string.download_manager)
+        txt_head_select_all.text = getString(R.string.select_all)
+        txt_head_select_all.visibility = View.GONE
+
+        DownloadManagerLogger.uploadCacheMangerEditCancel()
+    }
+
+    override fun checkAll(isAll: Boolean) {
+        downloadManagerAdapter.insertSelectAllState(isAll)
+        removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
+        DownloadManagerLogger.uploadCacheManagerEditSelectAll(isAll)
+    }
+
+    override fun sortBooks(type: Int) {
+        CommonContract.insertShelfSortType(type)
+        downloadManagerViewModel.refreshBooks()
+        DownloadManagerLogger.uploadCacheManagerSort(type)
+    }
+
+    override fun deleteCache(books: ArrayList<Book>) {
+        DownloadManagerLogger.uploadCacheManagerEditDeleteLog()
+        if (books.isNotEmpty()) {
+            managerDeleteDialog.show()
+            downloadManagerViewModel.deleteCache(books)
+            DownloadManagerLogger.uploadCacheManagerEditDelete(books)
+        }
     }
 }

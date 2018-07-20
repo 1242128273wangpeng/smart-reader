@@ -3,7 +3,7 @@ package com.dy.reader.dialog
 import android.app.Activity
 import android.view.Gravity
 import com.dy.reader.R
-import kotlinx.android.synthetic.txtqbdzs.dialog_reader_cache.*
+import kotlinx.android.synthetic.qbmfkkydq.dialog_reader_cache.*
 import net.lzbook.kit.book.view.MyDialog
 
 /**

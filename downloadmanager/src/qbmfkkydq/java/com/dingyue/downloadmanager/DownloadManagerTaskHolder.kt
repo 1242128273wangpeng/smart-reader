@@ -1,6 +1,5 @@
 package com.dingyue.downloadmanager
 
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
@@ -9,11 +8,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
-import kotlinx.android.synthetic.txtqbdzs.item_download_manager_task.view.*
+import kotlinx.android.synthetic.qbmfkkydq.item_download_manager_task.view.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.ReplaceConstants
-import java.text.MessageFormat
 
 class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -36,76 +34,76 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
             downloadManagerItemListener.longClickedDownloadItem()
         }
 
+        if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
+            Glide.with(itemView.context)
+                    .load(book.img_url)
+                    .placeholder(R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(img_cover)
+        } else {
+            Glide.with(itemView.context)
+                    .load(R.drawable.common_book_cover_default_icon)
+                    .into(img_cover)
+        }
+        val task = CacheManager.getBookTask(book)
+
         if (!(txt_book_name == null || TextUtils.isEmpty(book.name))) {
             txt_book_name.text = book.name
         }
 
-        if (img_book_cover != null) {
-            if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-                Glide.with(context)
-                        .load(book.img_url)
-                        .placeholder(R.drawable.common_book_cover_default_icon)
-                        .error(R.drawable.common_book_cover_default_icon)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(img_book_cover)
-            } else {
-                Glide.with(context)
-                        .load(R.drawable.common_book_cover_default_icon)
-                        .into(img_book_cover)
+        txt_download_num.visibility = View.GONE
+
+        if (txt_download_num != null && task.progress > 0) {
+            txt_download_num.visibility = View.VISIBLE
+            val progressStr = ": " + task.progress + "%"
+            txt_download_num.text = progressStr
+        }
+
+        pgbar_download.max = 100
+        pgbar_download.progress = task.progress
+
+        val state = task.state
+        pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_item_pgbar_not_cache_bg)
+        pgbar_download.visibility = View.VISIBLE
+
+        img_download.setImageResource(R.drawable.download_manager_item_download_icon)
+        img_download.visibility = View.VISIBLE
+
+        when (state) {
+            DownloadState.DOWNLOADING -> {
+                txt_download_state.text = context.getString(R.string.status_downloading)
+                img_download.setImageResource(R.drawable.download_manager_item_pause_icon)
+                pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_item_pgbar_caching_bg)
+            }
+            DownloadState.WAITTING -> {
+                txt_download_state.text = context.getString(R.string.status_wait)
+                img_download.setImageResource(R.drawable.download_manager_item_wait_icon)
+                txt_download_num.visibility = View.GONE
+            }
+            DownloadState.PAUSEED -> txt_download_state.text = context.getString(R.string.status_pause)
+            DownloadState.NONE_NETWORK -> txt_download_state.text = context.getString(R.string.status_pause)
+            null, DownloadState.NOSTART -> {
+                txt_download_state.text = context.getString(R.string.status_no_cache)
+                pgbar_download.progress = 0
+            }
+            DownloadState.FINISH -> {
+                txt_download_state.text = context.getString(R.string.status_finish)
+                txt_download_num.visibility = View.GONE
+                img_download.visibility = View.INVISIBLE
+                pgbar_download.visibility = View.INVISIBLE
+            }
+            DownloadState.WAITTING_WIFI -> {
+                txt_download_state.text = context.getString(R.string.status_wifi_require)
+                txt_download_num.visibility = View.GONE
+            }
+            else -> {
+                task.state = DownloadState.NOSTART
+                txt_download_state.text = context.getString(R.string.status_no_cache)
+                pgbar_download.progress = 0
             }
         }
 
-        pgbar_task_progress.max = 100
-
-
-        val bookTask = CacheManager.getBookTask(book)
-
-        pgbar_task_progress.progress = bookTask.progress
-
-        val state = bookTask.state
-
-        pgbar_task_progress.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_second_bg)
-        txt_task_state.setTextColor(Color.parseColor("#838181"))
-
-        if (state == DownloadState.DOWNLOADING) {
-            txt_task_state.text = context.getString(R.string.status_downloading)
-            if (txt_task_progress != null && bookTask.progress >= 0) {
-                txt_task_progress.text = MessageFormat.format("{0}%", bookTask.progress)
-            }
-            pgbar_task_progress.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_main_bg)
-        } else if (state == DownloadState.WAITTING) {
-            txt_task_state.text = context.getString(R.string.status_wait)
-            txt_task_progress.text = context.getString(R.string.status_wait_txt)
-        } else if (state == DownloadState.PAUSEED) {
-            txt_task_state.text = context.getString(R.string.status_pause)
-            if (txt_task_progress != null && bookTask.progress >= 0) {
-                txt_task_progress.text = MessageFormat.format("暂停: {0}%", bookTask.progress)
-            }
-        } else if (state == DownloadState.NONE_NETWORK) {
-            txt_task_state.text = context.getString(R.string.status_pause)
-            if (txt_task_progress != null && bookTask.progress >= 0) {
-                txt_task_progress.text = MessageFormat.format("暂停: {0}%", bookTask.progress)
-            }
-        } else if (state == null || state == DownloadState.NOSTART) {
-            pgbar_task_progress.progress = 0
-            txt_task_state.text = context.getString(R.string.status_no_cache_txt)
-            txt_task_progress.text = context.getString(R.string.status_no_cache)
-        } else if (state == DownloadState.FINISH) {
-            pgbar_task_progress.progress = 100
-            txt_task_state.text = context.getString(R.string.status_finish)
-            txt_task_progress.text = context.getString(R.string.status_finish_txt)
-        } else if (state == DownloadState.WAITTING_WIFI) {
-            txt_task_state.text = context.getString(R.string.status_wifi_require)
-            if (txt_task_progress != null && bookTask.progress >= 0) {
-                txt_task_progress.text = MessageFormat.format("暂停: {0}%", bookTask.progress)
-            }
-            txt_task_state.setTextColor(Color.parseColor("#2596C5"))
-        } else {
-            bookTask.state = DownloadState.NOSTART
-            pgbar_task_progress.progress = 0
-            txt_task_state.text = context.getString(R.string.status_no_cache_txt)
-            txt_task_progress.text = context.getString(R.string.status_no_cache)
-        }
         if (contains) {
             img_delete.setImageResource(R.drawable.download_manager_item_check_icon)
         } else {
@@ -113,17 +111,17 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         }
 
         if (remove) {
-            img_download_action.isClickable = false
+            img_download.isClickable = false
         } else {
-            img_download_action.isClickable = true
-            img_download_action.setOnClickListener {
+            img_download.isClickable = true
+            img_download.setOnClickListener {
                 val status = CacheManager.getBookStatus(book)
                 if (status == DownloadState.DOWNLOADING || status == DownloadState.WAITTING) {
                     CacheManager.stop(book.book_id)
                 } else {
                     BookHelperContract.startDownBookTask(context, book, 0)
                 }
-                DownloadManagerLogger.uploadCacheManagerButtonClick(status, book.book_id, bookTask.progress)
+                DownloadManagerLogger.uploadCacheManagerButtonClick(status, book.book_id, task.progress)
             }
         }
     }

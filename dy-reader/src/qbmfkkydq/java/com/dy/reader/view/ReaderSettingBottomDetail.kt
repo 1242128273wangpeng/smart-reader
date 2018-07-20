@@ -38,7 +38,7 @@ import java.text.NumberFormat
 class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     val readerSettings = ReaderSettings.instance
-    
+
     var presenter: ReadSettingPresenter? = null
 
     internal var isCustomReadingSpace: Boolean = false
@@ -48,7 +48,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     private var lastIndex: Int? = null
     var currentThemeMode: String? = null
 
-    var readPresenter:ReadPresenter? = null
+    var readPresenter: ReadPresenter? = null
 
     private var time: Long = 0
 
@@ -80,7 +80,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         skbar_reader_brightness_change?.max = 235
 
-        if(!readerSettings.isAutoBrightness) {
+        if (!readerSettings.isAutoBrightness) {
             setScreenBrightProgress()
         }
         setBrightnessBackground(readerSettings.isAutoBrightness)
@@ -185,7 +185,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         readerSettings.isAutoBrightness = true
         readPresenter?.startAutoBrightness()
 
-        val screenBrightness =  readerSettings.screenBrightness
+        val screenBrightness = readerSettings.screenBrightness
         if (screenBrightness > 0) {
             skbar_reader_brightness_change?.progress = screenBrightness
         }
@@ -193,17 +193,12 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     }
 
 
-
-
     private fun initPageMode() {
-        if (readerSettings.animation_mode == 1) {
-            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_simulation)
-        } else if (readerSettings.animation_mode == 2) {
-            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_translation)
-        } else if (readerSettings.animation_mode == 3) {
-            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_up_down)
-        }else{
-            rg_reader_animation_group?.check(R.id.rbtn_reader_animation_slide)
+        when (readerSettings.animation_mode) {
+            1 -> rg_reader_animation_group?.check(R.id.rbtn_reader_animation_simulation)
+            2 -> rg_reader_animation_group?.check(R.id.rbtn_reader_animation_translation)
+            3 -> rg_reader_animation_group?.check(R.id.rbtn_reader_animation_up_down)
+            else -> rg_reader_animation_group?.check(R.id.rbtn_reader_animation_slide)
         }
     }
 
@@ -351,7 +346,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     }
 
     override fun onClick(v: View) {
-        if(!ReaderStatus.isMenuShow) {
+        if (!ReaderStatus.isMenuShow) {
             return
         }
         when (v.id) {
@@ -441,7 +436,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
 
                 readerSettings.isAutoReading = true
-                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE,false))
+                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
             }
             R.id.ckb_reader_full_screen -> {
 
@@ -491,8 +486,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             openSystemLight()
         }
     }
-
-
 
 
     /**
@@ -751,7 +744,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     /**
      * 0 滑动 1 仿真 2 平移 3 上下
-     * mode
      */
     private fun changePageMode(mode: Int) {
         if (System.currentTimeMillis() - time < 500) {

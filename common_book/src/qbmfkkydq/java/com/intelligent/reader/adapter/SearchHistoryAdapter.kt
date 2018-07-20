@@ -10,15 +10,16 @@ import android.widget.TextView
 import com.intelligent.reader.R
 
 /**
+ * 搜索历史实体类
  * Created by YHang on 2017\12\2 0002.
  */
 class SearchHistoryAdapter() : BaseAdapter() {
 
-    private var context : Context? = null
-    private var searchDate : List<String>? = null
-    private var positionClick : onPositionClickListener? = null
+    private var context: Context? = null
+    private var searchDate: List<String>? = null
+    private var positionClick: OnPositionClickListener? = null
 
-    constructor(context: Context?,searchDate: List<String>) : this() {
+    constructor(context: Context?, searchDate: List<String>) : this() {
         this.context = context
         this.searchDate = searchDate
 
@@ -28,7 +29,7 @@ class SearchHistoryAdapter() : BaseAdapter() {
         return searchDate!![position]
     }
 
-    override fun getItemId(position : Int): Long {
+    override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
@@ -36,44 +37,39 @@ class SearchHistoryAdapter() : BaseAdapter() {
         return searchDate!!.size
     }
 
-    fun setPositionClickListener(onPositionClickListener: onPositionClickListener){
+    fun setPositionClickListener(onPositionClickListener: OnPositionClickListener) {
         this.positionClick = onPositionClickListener
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var holder : ViewHolder
-        var historyView : View
-        if(convertView == null){
+        val holder: ViewHolder
+        val historyView: View
+        if (convertView == null) {
             holder = ViewHolder()
-            historyView = LayoutInflater.from(context).inflate(R.layout.item_search_history,parent,false)
-            holder.iv_history = historyView.findViewById(R.id.historyImg) as ImageView
-            holder.tv_history = historyView.findViewById(R.id.history_word) as TextView
-            holder.clearIv = historyView.findViewById(R.id.history_clear) as ImageView
+            historyView = LayoutInflater.from(context).inflate(R.layout.item_search_history, parent, false)
+            holder.iv_history = historyView.findViewById(R.id.historyImg)
+            holder.tv_history = historyView.findViewById(R.id.history_word)
             historyView.tag = holder
-        }else{
+        } else {
             historyView = convertView
             holder = historyView.tag as ViewHolder
         }
 
         holder.tv_history.text = searchDate!![position]
 
-        holder.clearIv.setOnClickListener {
-            positionClick!!.onItemClickListener(position)
-        }
 
         return historyView
     }
 
-    class ViewHolder{
-        lateinit var iv_history : ImageView
+    class ViewHolder {
+        lateinit var iv_history: ImageView
         lateinit var tv_history: TextView
-        lateinit var clearIv : ImageView
     }
 
     /**
      * 在Adapter中回调被点击的item的索引，处理搜索历史的数据存储
      */
-     interface onPositionClickListener {
+    interface OnPositionClickListener {
         fun onItemClickListener(position: Int)
     }
 

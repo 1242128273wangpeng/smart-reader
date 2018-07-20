@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.ding.basic.bean.Chapter
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
@@ -26,6 +27,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
 import com.intelligent.reader.read.mode.NovelPageBean
+import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.constants.Constants

@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017\9\4 0004.
+ * Function：搜索热词(一期)
+ *
+ * Created by JoannChen on 2018/7/19 0019 16:20
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
-
 public class SearchHotBean implements Serializable{
 
 

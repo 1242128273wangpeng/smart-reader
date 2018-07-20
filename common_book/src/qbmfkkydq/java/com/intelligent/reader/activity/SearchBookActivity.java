@@ -111,24 +111,24 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     }
 
     private void initView() {
-        search_result_back = (ImageView) findViewById(R.id.search_result_back);
-        search_result_button = (ImageView) findViewById(R.id.search_result_button);
-        search_result_outcome = (RelativeLayout) findViewById(R.id.search_result_outcome);
+        search_result_back =  findViewById(R.id.search_result_back);
+        search_result_button =  findViewById(R.id.search_result_button);
+        search_result_outcome =  findViewById(R.id.search_result_outcome);
         if (search_result_outcome != null) {
             search_result_outcome.setVisibility(View.VISIBLE);
         }
-        search_result_count = (TextView) findViewById(R.id.search_result_count);
-        search_result_keyword = (TextView) findViewById(R.id.search_result_keyword);
-        search_result_default = (RelativeLayout) findViewById(R.id.search_result_default);
-        search_result_clear = (ImageView) findViewById(R.id.search_result_clear);
+        search_result_count =  findViewById(R.id.search_result_count);
+        search_result_keyword =  findViewById(R.id.search_result_keyword);
+        search_result_default =  findViewById(R.id.search_result_default);
+        search_result_clear =  findViewById(R.id.search_result_clear);
         if (search_result_clear != null) {
             search_result_clear.setVisibility(View.GONE);
         }
-        search_result_input = (HWEditText) findViewById(R.id.search_result_input);
-        search_result_main = (RelativeLayout) findViewById(R.id.search_result_main);
-        search_result_content = (WebView) findViewById(R.id.search_result_content);
+        search_result_input =  findViewById(R.id.search_result_input);
+        search_result_main =  findViewById(R.id.search_result_main);
+        search_result_content =  findViewById(R.id.search_result_content);
 
-        search_result_hint = (FrameLayout) findViewById(R.id.search_result_hint);
+        search_result_hint =  findViewById(R.id.search_result_hint);
 
         if (mSearchHelper == null){
             mSearchHelper = new SearchHelper(this);

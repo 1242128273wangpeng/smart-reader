@@ -1,84 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:id="@+id/linear_root"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/linear_root"
+
+    <TextView
+        android:id="@+id/tv_search_title"
+        style="@style/style_text_huge_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="@dimen/dimen_margin_16"
+        android:paddingRight="@dimen/dimen_margin_16"
+        android:text="大家都在搜"/>
+
+    <com.intelligent.reader.view.ScrollForGridView
+        android:id="@+id/grid_hot_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginLeft="@dimen/dimen_margin_10"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:layout_marginTop="@dimen/dimen_margin_14"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:scrollbars="none"/>
 
+    <RelativeLayout
+        android:id="@+id/rl_recommend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
 
         <TextView
-            android:id="@+id/tv_search_title"
+            style="@style/style_text_huge_dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="13dp"
-            android:visibility="gone"
-            android:text="大家都在搜"
-            android:textColor="@color/color_search_recommend_title"
-            android:textSize="17sp" />
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dimen_margin_16"
+            android:text="热门阅读"/>
 
-        <com.intelligent.reader.view.TagContainerLayout
-            android:id="@+id/tag_container_layout"
+        <TextView
+            android:id="@+id/tv_change"
+            style="@style/style_text_normal_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="14dp" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen_margin_16"
+            android:padding="4dp"
+            android:text="换一换"/>
+    </RelativeLayout>
 
-        <View
-            android:id="@+id/search_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/color_search_divider"
-            android:visibility="gone" />
-
-        <RelativeLayout
-            android:id="@+id/relative_hot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/search_recommend_top"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="13dp"
-                android:text="热门阅读"
-                android:textColor="@color/color_search_recommend_title"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/tv_change"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="13dp"
-                android:padding="4dp"
-                android:text="换一换"
-                android:textColor="@color/color_primary"
-                android:textSize="14sp" />
-        </RelativeLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_recommed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:clipToPadding="false" />
-    </LinearLayout>
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_recommed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"/>
 
 </LinearLayout>
