@@ -135,9 +135,9 @@
             <com.intelligent.reader.view.ExpandableTextView
                 android:id="@+id/book_cover_description"
                 android:layout_width="match_parent"
-                android:layout_marginTop="22dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl1"
+                android:layout_marginTop="22dp"
                 android:orientation="vertical"
                 expandableTextView:animAlphaStart="1"
                 expandableTextView:maxCollapsedLines="4">
@@ -152,7 +152,7 @@
                     android:paddingRight="8dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/color_gray_9c9c9c"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/expand_collapse"
@@ -163,7 +163,7 @@
                     android:paddingBottom="5dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/color_black_727272"/>
+                    android:textColor="@color/color_black_727272" />
             </com.intelligent.reader.view.ExpandableTextView>
 
             <!--——————————————————————内容简介结束——————————————————————-->
@@ -223,8 +223,8 @@
                     android:drawablePadding="12dp"
                     android:drawableRight="@drawable/bookcover_more_icon"
                     android:ellipsize="end"
-                    android:singleLine="true"
                     android:gravity="center"
+                    android:singleLine="true"
                     android:text="第145章 - 大结局"
                     android:textColor="#FFADB4BE"
                     android:textSize="12sp" />
@@ -264,6 +264,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_recommend_title"
+                android:layout_marginLeft="6dp"
                 android:clipToPadding="false"
                 android:paddingBottom="70dp" />
 

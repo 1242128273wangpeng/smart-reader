@@ -142,7 +142,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
-        coverPagePresenter?.requestCoverRecommend()
+        coverPagePresenter?.requestCoverRecommendRandom(8)
 
 
         if (loadingPage != null) {
@@ -320,7 +320,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
             initializeRemoveShelfButton()
         } else {
             book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
@@ -336,19 +336,22 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         val book: Book? = coverPagePresenter?.coverDetail
 
         if (book != null && book_cover_download != null) {
-            val isSub = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null
-            if (isSub) {
-                val status = CacheManager.getBookStatus(book)
-                if (status == DownloadState.FINISH) {
-                    book_cover_download.setText(R.string.download_status_complete)
-                } else if (status == DownloadState.WAITTING || status == DownloadState.DOWNLOADING) {
-                    book_cover_download.setText(R.string.download_status_underway)
-                } else {
-                    book_cover_download.setText(R.string.download_status_total)
-                }
+//            val isSub = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null
+//            if (isSub) {
+            val status = CacheManager.getBookStatus(book)
+            if (status == DownloadState.FINISH) {
+                book_cover_download.setText(R.string.download_status_complete)
+                book_cover_download.setTextColor(Color.parseColor("#FF5D646E"))
+            } else if (status == DownloadState.DOWNLOADING) {
+                book_cover_download.setText(R.string.download_status_underway)
+            } else if (status == DownloadState.PAUSEED) {
+                book_cover_download.setText("继续缓存")
             } else {
                 book_cover_download.setText(R.string.download_status_total)
             }
+//            } else {
+//                book_cover_download.setText(R.string.download_status_total)
+//            }
 
         }
     }
@@ -361,7 +364,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
             initializeRemoveShelfButton()
         } else {
             initializeInsertShelfButton()
@@ -466,7 +469,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
 
                 if (coverPagePresenter != null) {
-                    coverPagePresenter!!.handleDownloadAction()
+                    coverPagePresenter!!.handleDownloadContinueOrStop()
                 }
             }
         /*R.id.book_cover_catalog_view_nobg, R.id.book_cover_catalog_view -> {
@@ -487,17 +490,20 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     private fun initializeRemoveShelfButton() {
-        mBackground = R.drawable.cover_bottom_btn_remove_bg
-        mTextColor = R.color.color_theme_alpha
+//        mBackground = R.drawable.cover_bottom_btn_remove_bg
+//        mTextColor = R.color.color_theme_alpha
+        book_cover_bookshelf!!.setTextColor(Color.parseColor("#4C2AD1BE"))
+        book_cover_bookshelf!!.isEnabled = false
 
 //        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
         //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     private fun initializeInsertShelfButton() {
-        mBackground = R.drawable.cover_bottom_btn_add_bg
-        mTextColor = R.color.color_theme_alpha
-
+//        mBackground = R.drawable.cover_bottom_btn_add_bg
+//        mTextColor = R.color.color_theme_alpha
+        book_cover_bookshelf!!.setTextColor(Color.parseColor("#FF2AD1BE"))
+        book_cover_bookshelf!!.isEnabled = true
 //        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
         //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
