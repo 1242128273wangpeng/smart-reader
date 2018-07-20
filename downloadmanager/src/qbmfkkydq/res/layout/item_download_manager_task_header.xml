@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="false"
-    android:focusable="false"
-    android:paddingBottom="3dp"
-    android:paddingTop="7dp">
+    android:focusable="false">
 
-    <ImageView
-        android:id="@+id/img_state"
+    <TextView
+        android:id="@+id/txt_state"
+        style="@style/download_manager_item_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/download_manager_item_header_cached_icon"/>
+        android:layout_marginLeft="@dimen/dimen_margin_16"
+        android:layout_marginStart="@dimen/dimen_margin_16"
+        android:layout_marginTop="16dp"
+        android:text="@string/cached"/>
 </RelativeLayout>

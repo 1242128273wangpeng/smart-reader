@@ -55,7 +55,7 @@ android {
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
             qbmfrmxs  : "cn.qbmfrmxs.reader",
-            qbmfkkydq : "cc.remennovel"
+            qbmfkkydq : "cn.qbmfrmxs.reader"
     ]
 
     def channel = "dev_channel"

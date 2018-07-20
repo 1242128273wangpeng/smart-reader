@@ -28,8 +28,8 @@ ext {
     // 无广告列表
     noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader']
     // 改完记得重新编译项目
-    applicationId = "cc.remennovel"
-    defaultPublishConfig = 'txtqbdzs' + 'Debug'
+    applicationId = "cn.qbmfrmxs.reader"
+    defaultPublishConfig = 'qbmfkkydq' + 'Debug'
 
     def appPackageIDConfig = [
             kdzsydq   : "cn.txtzsydsq.reader",
@@ -37,14 +37,14 @@ ext {
             mfqbxssc  : "cc.kdqbxs.reader", //快读替
             zsmfqbxs  : "cc.mianfeinovel", //阅微替
             txtqbmfxs : "cc.lianzainovel", //鸿雁替
-            qbmfxsydq : "cc.quanben.novel",//五步替
+            qbmfxsydq : "cc.quanben.novel",//五步替(已移交)
             txtqbdzs  : "cc.remennovel",   //智胜电子书替
             kdqbdzs   : "cn.kkqbtxtxs.reader",
             txtqbxsydq: "cn.zsqbydq.reader",
-            txtqbmfyd : "cn.txtqbmfyd.reader",
+            txtqbmfyd : "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
             qbmfkdxs  : "cc.quanbennovel", //今日多看
-            qbmfrmxs  : "cn.qbmfrmxs.reader", //全本免费热门小说
-            qbmfkkydq  : "cc.remennovel" //全本免费快看阅读器
+            qbmfrmxs  : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
+            qbmfkkydq  : "cn.qbmfrmxs.reader" //全本免费快看阅读器(新壳4)
     ]
 
 

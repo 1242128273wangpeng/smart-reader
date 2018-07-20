@@ -12,6 +12,12 @@
     <color name="text_color_weak">#FF9B9B9B</color>
     <color name="text_color_thin">#FFADB4BE</color>
 
+
+    <!--缓存模块-->
+
+    <color name="cache_progressBar_not_cache">#C7CCD3</color>
+    <color name="cache_progressBar_pause_cache">#8D939D</color>
+
     <!--阅读模块-->
 
     <color name="reader_seek_bar_drawable">#C2B282</color>

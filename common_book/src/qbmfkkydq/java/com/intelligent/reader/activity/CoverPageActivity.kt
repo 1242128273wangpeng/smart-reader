@@ -246,7 +246,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (flowLayout != null) {
                 flowLayout!!.removeAllViews()
                 if (!TextUtils.isEmpty(book.label) && !book.fromQingoo()) {
-                    flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
+//                    左郁flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
                     flowLayout!!.rowSpacing = 17f
                     flowLayout!!.maxRows = 1
                     if (book.label != null) {
@@ -293,10 +293,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 添加标签，设置标签样式
      */
     private fun buildLabel(text: String, index: Int): TextView {
-        val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
-        val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
-        val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
-        val bottom = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
+        val left = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
+        val right = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
+        val top = resources.getDimensionPixelOffset(R.dimen.dimen_margin_5)
+        val bottom = resources.getDimensionPixelOffset(R.dimen.dimen_margin_5)
         val textView = TextView(this)
         textView.text = text
         textView.textSize = 12f

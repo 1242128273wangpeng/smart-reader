@@ -1,7 +1,7 @@
 package com.dingyue.downloadmanager
 
 import android.app.Activity
-import kotlinx.android.synthetic.txtqbdzs.dialog_download_manager_clear.*
+import android.widget.FrameLayout
 import net.lzbook.kit.book.view.MyDialog
 
 /**
@@ -9,13 +9,17 @@ import net.lzbook.kit.book.view.MyDialog
  */
 class DownloadManagerDeleteDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_download_manager_clear)
+    private val dialog = MyDialog(activity, R.layout.dialog_download_manager_clear_loading)
 
     init {
-        dialog.txt_prompt.text = "清理中..."
+        val window = dialog.window
+        val layoutParams = window.attributes
+        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
+        layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT
+        window.attributes = layoutParams
+        window.setWindowAnimations(R.style.BottomPopupDialog)
         dialog.setCancelable(false)
     }
-
     fun show() {
         dialog.show()
     }
