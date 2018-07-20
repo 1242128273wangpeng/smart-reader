@@ -44,9 +44,9 @@
     <color name="top_navigation_text_color">
         #ffffff
     </color>
-    <color name="top_navigation_bg_color">
+  <!--  <color name="top_navigation_bg_color">
         #3ecc96
-    </color>
+    </color>-->
     <color name="nav_bottom_text_color_normal">#FF5D646E</color>
     <color name="nav_bottom_text_color_selected">#FF2AD1BE</color>
     <color name="cover_bg">
@@ -315,7 +315,5 @@
     <color name="search_title_hint">#666D77</color>
     <color name="search_recommend_bg">#DFE5EA</color>
     <color name="setting_font_color">#8cFFFFFF</color>
-    <color name="color_search_recommend_title">#303135</color>
-    <color name="color_search_divider">#f0f0f0</color>
 
 </resources>

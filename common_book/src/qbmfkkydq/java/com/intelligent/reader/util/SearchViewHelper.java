@@ -47,6 +47,7 @@ import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.view.ScrollForGridView;
+import com.intelligent.reader.widget.ConfirmDialog;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -66,17 +67,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
-        SearchHistoryAdapter.onPositionClickListener
+        SearchHistoryAdapter.OnPositionClickListener
         , RecommendBooksAdapter.RecommendItemClickListener {
     private Context mContext;
     private Activity activity;
     private ViewGroup mRootLayout;
-    private ListView mHistoryListView;
-    private ListView mSuggestListView;
     private RelativeLayout mRecommendRLayout;
 
-    private static RelativeLayout mHistoryHeadersTitle;
 
     /**
      * 热词
@@ -100,13 +101,18 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
      */
     private String suggest;
     private EditText mSearchEditText;
+    private ListView mSuggestListView;
     private SearchSuggestAdapter mSuggestAdapter;
     private List<Object> mSuggestList = new ArrayList<>();
 
     /**
      * 历史记录
      */
+    private View mHistoryDeleteView;
+    private ListView mHistoryListView;
+    private SearchHistoryAdapter mHistoryAdapter;
     private static ArrayList<String> mHistoryList = new ArrayList<>();
+    private static RelativeLayout mHistoryHeadersTitle;
 
 
     public OnHotWordClickListener onHotWordClickListener;
@@ -123,7 +129,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
     private String searchType;
     private SharedPreferencesUtils sharedPreferencesUtils;
     private Gson gson;
-    private SearchHistoryAdapter historyAdapter;
 
     private SearchCommonBeanYouHua searchCommonBean;
     private LinearLayout linear_root;
@@ -291,14 +296,14 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         initHistoryMain(mContext);
 
         mHistoryList = Tools.getHistoryWord(mContext);
-        historyAdapter = new SearchHistoryAdapter(mContext, mHistoryList);
-        if (historyAdapter != null) {
-            historyAdapter.setPositionClickListener(this);
+        mHistoryAdapter = new SearchHistoryAdapter(mContext, mHistoryList);
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter.setPositionClickListener(this);
         }
 
         if (mHistoryListView != null) {
 
-            mHistoryListView.setAdapter(historyAdapter);
+            mHistoryListView.setAdapter(mHistoryAdapter);
             mHistoryListView.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
@@ -323,6 +328,23 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                 }
             });
         }
+
+        mHistoryDeleteView = View.inflate(context, R.layout.item_search_history_delete_layout,
+                null);
+        mHistoryDeleteView.setVisibility(mHistoryList.size() > 0 ? View.VISIBLE : View.GONE);
+        mHistoryDeleteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StatServiceUtils.statAppBtnClick(context,
+                        StatServiceUtils.b_search_click_his_clear);
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH,
+                        StartLogClickUtil.BARCLEAR);
+                showClearHistoryDialog();
+
+            }
+        });
+        mHistoryListView.addFooterView(mHistoryDeleteView);
+
 
         setHistoryHeadersTitleView();
         if (mRootLayout != null) {
@@ -753,22 +775,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
             if (historyWord != null) {
                 mHistoryList.addAll(historyWord);
             }
-            if (historyAdapter != null) {
-                historyAdapter.notifyDataSetChanged();
+            if (mHistoryAdapter != null) {
+                mHistoryAdapter.notifyDataSetChanged();
             }
         }
     }
 
-    private static void setHistoryHeadersTitleView() {
-        if (mHistoryHeadersTitle == null) {
-            return;
-        }
-        if (mHistoryList != null && mHistoryList.size() != 0) {
-            mHistoryHeadersTitle.setVisibility(View.VISIBLE);
-        } else {
-            mHistoryHeadersTitle.setVisibility(View.INVISIBLE);
-        }
-    }
 
     public void setSearchWord(String word) {
         if (mSearchEditText != null) {
@@ -809,20 +821,20 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
             mHistoryList.add(0, keyword);
             Tools.saveHistoryWord(mContext, mHistoryList);
         }
-        if (historyAdapter != null) {
-            historyAdapter.notifyDataSetChanged();
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter.notifyDataSetChanged();
         }
         setHistoryHeadersTitleView();
     }
 
 
-    private void clearHistory(int index) {
-        if (mHistoryList != null && index < mHistoryList.size()) {
-            mHistoryList.remove(index);
+    private void clearHistory() {
+        if (mHistoryList != null) {
+            mHistoryList.clear();
         }
         setHistoryHeadersTitleView();
-        if (historyAdapter != null) {
-            historyAdapter.notifyDataSetChanged();
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter.notifyDataSetChanged();
         }
         Tools.saveHistoryWord(mContext, mHistoryList);
     }
@@ -889,12 +901,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
     @Override
     public void onItemClickListener(int position) {
-        if (mSearchHandler != null) {
-            Message message = mSearchHandler.obtainMessage();
-            message.arg1 = position;
-            message.what = 10;
-            mSearchHandler.handleMessage(message);
-        }
+
+
     }
 
     @Override
@@ -917,6 +925,20 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         isFocus = true;
     }
 
+    public void setHistoryHeadersTitleView() {
+        if (mHistoryHeadersTitle == null) {
+            return;
+        }
+        if (mHistoryList != null && mHistoryList.size() != 0) {
+            mHistoryHeadersTitle.setVisibility(View.VISIBLE);
+        } else {
+            mHistoryHeadersTitle.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    private final Handler mSearchHandler = new SearchHandler(this);
+
     static class SearchHandler extends Handler {
         private WeakReference<SearchViewHelper> reference;
 
@@ -931,7 +953,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
             }
             switch (msg.what) {
                 case 10:
-                    helper.clearHistory(msg.arg1);
+                    helper.clearHistory();
+                    helper.setHistoryHeadersTitleView();
                     break;
 
                 case 20:
@@ -944,7 +967,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         }
     }
 
-    private final Handler mSearchHandler = new SearchHandler(this);
 
     public void setOnHistoryClickListener(OnHistoryClickListener listener) {
         mOnHistoryClickListener = listener;
@@ -1001,8 +1023,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
             mHistoryHeadersTitle = null;
         }
 
-        if (historyAdapter != null) {
-            historyAdapter = null;
+        if (mHistoryAdapter != null) {
+            mHistoryAdapter = null;
         }
         if (loadingPage != null) {
             loadingPage = null;
@@ -1034,5 +1056,45 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
         }
+    }
+
+
+    /**
+     * 清除搜索历史记录
+     */
+    private void showClearHistoryDialog() {
+
+        final ConfirmDialog dialog = new ConfirmDialog(activity);
+        dialog.setTitle(activity.getString(R.string.prompt));
+        dialog.setContent(activity.getString(R.string.determine_clear_serach_history));
+        dialog.setOnConfirmListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                HashMap<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH,
+                        StartLogClickUtil.HISTORYCLEAR, data);
+                mSearchHandler.sendEmptyMessage(10);
+                dialog.dismiss();
+
+                return null;
+            }
+        });
+
+
+        dialog.setOnCancelListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                HashMap<String, String> data = new HashMap<>();
+                data.put("type", "0");
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
+                        StartLogClickUtil.HISTORYCLEAR, data);
+                dialog.dismiss();
+                return null;
+            }
+        });
+
+        dialog.show();
+
     }
 }

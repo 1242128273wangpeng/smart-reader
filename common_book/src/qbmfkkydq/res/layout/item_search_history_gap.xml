@@ -7,4 +7,6 @@
     android:clickable="false"
     android:orientation="vertical" >
 
+    <!--自动补全分割线-->
+
 </LinearLayout>

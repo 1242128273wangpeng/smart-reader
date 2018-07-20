@@ -297,7 +297,7 @@
     <color name="read_option_progress_bg">#5D646E</color>
 
 
-    <color name="primary">#222222</color>
+    <!--<color name="primary">#222222</color>-->
     <color name="color_transparent">#00ffffff</color>
     <color name="warm_heart_red">#ce3d3e</color>
     <color name="color_white_ffffff">#ffffff</color>
