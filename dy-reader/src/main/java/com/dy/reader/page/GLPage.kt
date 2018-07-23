@@ -200,7 +200,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                         try {
                             this.buildDrawingCache()
                             copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
-                        }catch (e:Exception){
+                        } catch (e: OutOfMemoryError) {
                             e.printStackTrace()
                             Glide.get(Reader.context).clearMemory()
                         }
@@ -213,11 +213,11 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                         }
                         ReadMediaManager.frameLayout?.addView(this)
                         ReadMediaManager.frameLayout?.post {
-                            var copy:Bitmap? = null
+                            var copy: Bitmap? = null
                             try {
                                 this.buildDrawingCache()
                                 copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
-                            }catch (e:Exception){
+                            } catch (e: Exception) {
                                 e.printStackTrace()
                                 Glide.get(Reader.context).clearMemory()
                             }

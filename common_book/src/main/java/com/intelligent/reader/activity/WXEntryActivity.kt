@@ -1,4 +1,4 @@
-package cn.qbmfrmxs.reader.wxapi
+package cc.remennovel.wxapi
 
 import android.app.Activity
 import android.content.Intent
