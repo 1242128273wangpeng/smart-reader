@@ -17,8 +17,8 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.txtqbmfyd.read_option_reading_info.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_read_setting.*
+import kotlinx.android.synthetic.txtqbmfyd.reader_option_chapter_change.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.utils.loge
@@ -113,12 +113,12 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
         if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
             if (ReaderStatus.position.group == -1) {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = "封面"
+                if (dialog.txt_current_chapter_name != null) {
+                    dialog.txt_current_chapter_name!!.text = "封面"
                 }
             } else {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
+                if (dialog.txt_current_chapter_name != null) {
+                    dialog.txt_current_chapter_name!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
                 }
             }
         }
@@ -147,12 +147,12 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onResume() {
         super.onResume()
         loge("onResume() dialog")
-        dialog.rsbd_option_bottom_detail.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog.rsh_option_header.presenter = mPresenter
-        dialog.rsbd_option_bottom_detail.presenter = mPresenter
-        dialog.rsbd_option_bottom_detail.currentThemeMode = themeMode
-        dialog.rsbd_option_bottom_detail.setNovelMode(ReaderSettings.instance.readThemeMode)
-        dialog.rl_read_setting_content.setOnClickListener {
+        dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
+        dialog?.rsh_option_header?.presenter = mPresenter
+        dialog?.rsbd_option_bottom_detail?.presenter = mPresenter
+        dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
+        dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
+        dialog?.rl_read_setting_content?.setOnClickListener {
             if(dialog?.isShowing == true){
                 dismiss()
             }
