@@ -48,7 +48,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
          * 并且章节信息变更为：章节已修复至最新（列表书架显示，九宫格书架只显示更新角标）
          */
         val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(Constants.IS_FIX_CATALOG, true)) {
+        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
             img_book_update.visibility = View.VISIBLE
             txt_book_chapter.text = "章节已修复至最新"
         } else {
