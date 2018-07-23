@@ -41,6 +41,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -139,6 +140,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this, author)
             requestBookDetail()
+        } else {
+            onBackPressed()
         }
     }
 
@@ -622,5 +625,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         return recycler_view_author.isSupport && recycler_view.isSupport
     }
 
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
+    }
 
 }

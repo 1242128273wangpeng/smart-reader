@@ -45,6 +45,7 @@ import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import net.lzbook.kit.utils.IntentUtils
+import swipeback.ActivityLifecycleHelper
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -117,7 +118,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     }
 
     private val feedbackRunnable = Runnable({
-            FeedbackAPI.openFeedbackActivity()
+        FeedbackAPI.openFeedbackActivity()
     })
 
     internal var themeName = TypedValue()//分割块颜色
@@ -409,7 +410,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             myDialog!!.setCanceledOnTouchOutside(true)//设置点击dialog外面对话框消失
             myDialog!!.publish_content.setText(R.string.tip_clear_cache)
             myDialog!!.publish_stay.setOnClickListener({
-                    dismissDialog()
+                dismissDialog()
             })
             myDialog!!.publish_leave.setOnClickListener({
                 myDialog!!.publish_content.setVisibility(View.GONE)
@@ -417,22 +418,22 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 myDialog!!.change_source_bottom.setVisibility(View.GONE)
 
                 myDialog!!.progress_del.setVisibility(View.VISIBLE)
-                    //添加清除缓存的处理
-                    object : Thread() {
-                        override fun run() {
-                            super.run()
+                //添加清除缓存的处理
+                object : Thread() {
+                    override fun run() {
+                        super.run()
 
 
-                            CacheManager.removeAll()
+                        CacheManager.removeAll()
 
-                            UIHelper.clearAppCache()
-                            DataCleanManager.clearAllCache(getApplicationContext())
-                            runOnUiThread({
-                                    dismissDialog()
-                                    clear_cache_size!!.setText("0B")
-                            })
-                        }
-                    }.start()
+                        UIHelper.clearAppCache()
+                        DataCleanManager.clearAllCache(getApplicationContext())
+                        runOnUiThread({
+                            dismissDialog()
+                            clear_cache_size!!.setText("0B")
+                        })
+                    }
+                }.start()
             })
 
             myDialog!!.setOnCancelListener { myDialog!!.dismiss() }
@@ -553,6 +554,14 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             }
             else -> {
             }
+        }
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, HomeActivity::class.java))
         }
     }
 

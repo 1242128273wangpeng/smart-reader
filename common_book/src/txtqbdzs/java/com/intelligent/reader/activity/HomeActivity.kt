@@ -116,6 +116,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val dialog = PushSettingDialog(this)
         dialog.openPushListener = {
             openPushSetting()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPNOWOPEN)
         }
         dialog
     }
@@ -150,6 +152,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPMESSAGE)
         }
 
     }
@@ -641,11 +645,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private fun openPushSetting() {
         val intent = Intent()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
-            intent.putExtra("app_package", packageName)
-            intent.putExtra("app_uid", applicationInfo.uid)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                intent.putExtra("android.provider.extra.APP_PACKAGE", packageName)
+                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            } else {
+                intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                intent.putExtra("app_package", packageName)
+                intent.putExtra("app_uid", applicationInfo.uid)
             }
         } else {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

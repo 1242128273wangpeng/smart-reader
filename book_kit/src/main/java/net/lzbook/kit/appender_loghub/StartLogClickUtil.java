@@ -193,6 +193,9 @@ public class StartLogClickUtil {
     public static final String TOBOOKCITY = "TOBOOKCITY";//空白页点击跳转书城
     public static final String LONGTIMEBOOKSHELFEDIT = "LONGTIMEBOOKSHELFEDIT";//长按编辑书架
     public static final String VERSIONUPDATE2 = "VERSIONUPDATE";//点击更新
+    public static final String POPUPMESSAGE = "POPUPMESSAGE"; //弹出「开启消息通知」弹窗
+    public static final String POPUPNOWOPEN = "POPUPNOWOPEN"; //弹窗点击现在开启
+    public static final String POPUPCLOSE = "POPUPCLOSE"; //关闭弹窗
 
     //书架编辑页
     public static final String SELECTALL1 = "SELECTALL";//全选

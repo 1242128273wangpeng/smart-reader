@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.Gravity
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbdzs.dialog_push_setting.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 
 /**
@@ -25,6 +26,8 @@ class PushSettingDialog(val activity: Activity) {
 
         dialog.img_close.setOnClickListener {
             dialog.dismiss()
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPCLOSE)
         }
 
         dialog.txt_open_push.setOnClickListener {
