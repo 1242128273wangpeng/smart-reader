@@ -443,7 +443,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
                 mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord
                 try {
                     shareUtil?.putString(Constants.FINDBOOK_SEARCH, "author")//FindBookDetail 返回键时标识
-//                    SearchBookActivity.isSatyHistory= true
+                    SearchBookActivity.isSatyHistory= true
                     val intent = Intent()
                     intent.setClass(mContext, FindBookDetail::class.java)
                     intent.putExtra("url", mUrl)
@@ -457,6 +457,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
                 }
 
             } else {
+                SearchBookActivity.isSatyHistory = false
                 val params = HashMap<String, String>()
                 params.put("keyword", searchWord)
                 params.put("search_type", searchType ?: "")

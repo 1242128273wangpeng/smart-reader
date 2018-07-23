@@ -59,6 +59,7 @@ import net.lzbook.kit.data.bean.ReadConfig
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File

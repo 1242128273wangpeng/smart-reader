@@ -297,6 +297,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
                 mSearchHelpPresenter?.onSuggestItemClick(mContext, mSearchEditText!!.text.toString().trim { it <= ' ' }, arg2)
                 mShouldShowHint = false
                 mSearchEditText!!.setText(mSearchHelpPresenter?.getCurrSuggestData())
+                mSearchEditText!!.setSelection(mSearchHelpPresenter?.getCurrSuggestData()?.length!!)
             }
 
             if (mSearchPresenter != null) {
@@ -361,7 +362,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mShouldShowHint = false
         if (mSearchEditText != null) {
             mSearchEditText!!.setText(word)
-            //            mSearchEditText.setSelection(mSearchEditText.length());
+            mSearchEditText!!.setSelection(mSearchEditText!!.length());
         }
         mShouldShowHint = true
         addHistoryWord(word)

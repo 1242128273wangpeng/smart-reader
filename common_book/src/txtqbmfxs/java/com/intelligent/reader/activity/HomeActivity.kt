@@ -3,6 +3,7 @@ package com.intelligent.reader.activity
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.*
+import android.content.res.Resources
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -20,6 +21,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
+import com.bumptech.glide.Glide
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -39,6 +42,7 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.update.ApkUpdateUtils
@@ -375,7 +379,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         super.onDestroy()
         AndroidLogStorage.getInstance().clear()
         this.unregisterReceiver(homeBroadcastReceiver)
-
+        try {
+            homeAdapter = null
+            setContentView(R.layout.common_empty)
+        } catch (exception: Resources.NotFoundException) {
+            exception.printStackTrace()
+        }
+        fixInputMethodManagerLeak(applicationContext)
     }
 
     override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {

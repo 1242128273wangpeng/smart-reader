@@ -28,8 +28,10 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import java.text.DecimalFormat
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -62,6 +64,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             book_cover_bookshelf!!.isClickable = true
             insertBookShelfResult(false)
         }
+        coverPagePresenter?.destroy()
         initializeIntent(intent)
     }
 
@@ -359,6 +362,24 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             } else {
                 book_cover_description.text = resources.getString(R.string
                         .book_cover_no_description)
+            }
+            val str = AppUtils.getCommonReadNums(book.uv)
+            if (!TextUtils.isEmpty(str)) {
+                tv_read_num.text = str + "值"
+            } else {
+                tv_read_num.text = ""
+            }
+            if (tv_text_number != null && book.word_count != null && !AppUtils.isContainChinese(book.word_count)) {
+                tv_text_number.text = AppUtils.getWordNums(java.lang.Long.parseLong(book.word_count))
+            } else {
+                tv_text_number.text = "暂无"
+            }
+            if (book.score == 0.0f) {
+                tv_score!!.text = "暂无评分"
+            } else {
+                book.score = java.lang.Float.valueOf(DecimalFormat("0.00").format(book.score))!!
+
+                tv_score!!.text = book.score.toString() + "分"
             }
 
         } else {

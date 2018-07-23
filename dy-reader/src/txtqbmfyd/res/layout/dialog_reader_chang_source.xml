@@ -37,6 +37,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:visibility="gone"
             android:background="#FFF4F5F7"/>
 
         <TextView
@@ -46,6 +47,7 @@
             android:background="@drawable/reader_cache_item_sel"
             android:gravity="center"
             android:padding="20dp"
+            android:visibility="gone"
             android:text="@string/cancel"
             android:textColor="#FFF4F5F7"
             android:textSize="14sp"/>
@@ -62,7 +64,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/reader_cache_item_sel"
             android:gravity="center"
-            android:padding="20dp"
+            android:padding="15dp"
             android:text="@string/cancel"
             android:textColor="#FFF4F5F7"
             android:textSize="14sp"/>

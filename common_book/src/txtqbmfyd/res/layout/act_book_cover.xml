@@ -247,7 +247,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/word_count_tv"
+                        android:id="@+id/tv_text_number"
                         style="@style/style_text_small_light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -263,19 +263,19 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/reading_tv"
+                            android:id="@+id/tv_read_num"
                             style="@style/style_text_small_light"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/icon_cover_reading"
                             android:drawablePadding="6dp"
                             android:gravity="center"
-                            android:text="800万人在读"/>
+                            android:text="800万人气值"/>
                     </RelativeLayout>
 
 
                     <TextView
-                        android:id="@+id/start_tv"
+                        android:id="@+id/tv_score"
                         style="@style/style_text_small_light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
