@@ -52,6 +52,11 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var mSearchPresenter: SearchPresenter? = null
     val isNotAuthor = 0//不是作者
 
+
+    companion object {
+        //静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
+        var isSatyHistory = false
+    }
     override fun onJsSearch() {
 //        if (search_result_content != null) {
         search_result_content.clearView()
@@ -301,7 +306,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onResume() {
         super.onResume()
-        if (searchViewHelper != null && searchViewHelper!!.getShowStatus()) {
+        if (isSatyHistory && searchViewHelper != null && searchViewHelper!!.getShowStatus()) {
                 val historyDates = Tools.getKeyWord()
 
                 if (search_result_input != null && !TextUtils.isEmpty(historyDates)) {

@@ -21,6 +21,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
+import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
 import com.orhanobut.logger.Logger
@@ -371,7 +372,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             addHistoryWord(suggest)
         } else if (searchCommonBean!!.getWordtype() == "name") {
             searchType = "3"
-
             isFocus = true
             isBackSearch = false
             isAuthor = 0
@@ -383,8 +383,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             data1.put("source", "SEARCH")
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.BOOOKDETAIL_PAGE,
                     StartLogClickUtil.ENTER, data1)
-
-
             val intent = Intent()
             intent.setClass(context, CoverPageActivity::class.java)
             val bundle = Bundle()
@@ -395,6 +393,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             intent.putExtras(bundle)
             context?.startActivity(intent)
             addHistoryWord(suggest)
+            SearchBookActivity.isSatyHistory = true
         } else {
             searchType = "0"
             isAuthor = 0
