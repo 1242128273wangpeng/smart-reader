@@ -530,9 +530,9 @@ public class AppUtils {
         NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mobileNetworkInfo.isConnected()) {//移动网络
+        if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
             ip = getLocalIpAddress();
-        } else if (wifiNetworkInfo.isConnected()) {//wifi网络
+        } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             int ipAddress = wifiInfo.getIpAddress();
