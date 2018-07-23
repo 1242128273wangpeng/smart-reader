@@ -697,7 +697,7 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
+//            UserManager.INSTANCE.initPlatform(SplashActivity.this, null); //新壳没有登录
             // 5 初始化屏蔽
             try {
                 initShield();
