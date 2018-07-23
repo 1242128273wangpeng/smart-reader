@@ -25,6 +25,7 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
+import com.intelligent.reader.upush.OfflineNotifyActivity;
 import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
@@ -73,6 +74,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private PagerDesc mPagerDesc;
     private int h5Margin;
     private boolean isSupport = true;
+    private boolean isFromOfflineMessage = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             urls.add(currentUrl);
             currentTitle = intent.getStringExtra("title");
             names.add(currentTitle);
+            isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
+                    false);
         }
         if (currentUrl == null || currentTitle == null) {
             onBackPressed();
@@ -811,7 +815,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     @Override
     public boolean supportSlideBack() {
-        return isSupport;
+        return ActivityLifecycleHelper.getActivities().size() > 1 && isSupport;
     }
 
     protected Book genCoverBook(String host, String book_id, String book_source_id, String name,
@@ -843,8 +847,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     public void finish() {
         super.finish();
         //离线消息 跳转到主页
-        if (ActivityLifecycleHelper.getActivities().size() <= 1) {
-            startActivity(new Intent(this, HomeActivity.class));
+        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size() <= 1) {
+            startActivity(new Intent(this, SplashActivity.class));
         }
     }
 }

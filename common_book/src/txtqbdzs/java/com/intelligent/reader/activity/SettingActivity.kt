@@ -24,6 +24,7 @@ import com.dingyue.contract.util.CommonUtil
 import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
+import com.intelligent.reader.upush.OfflineNotifyActivity
 import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.BaseCacheableActivity
 
@@ -116,6 +117,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             }
         }
     }
+
+    private var isFromOfflineMessage = false
 
     private val feedbackRunnable = Runnable({
         FeedbackAPI.openFeedbackActivity()
@@ -279,6 +282,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         cacheAsyncTask!!.execute()
         val versionName = AppUtils.getVersionName()
         check_update_message!!.text = "V$versionName"
+        isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
+                false)
     }
 
     override fun onResume() {
@@ -560,9 +565,13 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun finish() {
         super.finish()
         //离线消息 跳转到主页
-        if (ActivityLifecycleHelper.getActivities().size <= 1) {
-            startActivity(Intent(this, HomeActivity::class.java))
+        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
         }
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
     }
 
     companion object {

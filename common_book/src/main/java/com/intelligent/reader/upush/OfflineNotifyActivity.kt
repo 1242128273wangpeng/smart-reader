@@ -56,7 +56,13 @@ class OfflineNotifyActivity : UmengNotifyClickActivity() {
                 val value = entry.value as String
                 putExtra(key, value)
             }
+            putExtra(IS_FROM_OFFLINE, true)
         }
+    }
+
+    companion object {
+        @JvmField
+        val IS_FROM_OFFLINE = "is_from_offline"
     }
 
 }
