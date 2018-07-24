@@ -33,6 +33,8 @@ interface RequestRepository {
 
     fun requestSearchRecommend(bookIds: String, requestSubscriber: RequestSubscriber<SearchRecommendBook>) //搜索推荐
 
+    fun requestSubBook(bookName: String , bookAuthor: String,requestSubscriber: RequestSubscriber<JsonObject>)//搜索无结果 订阅
+
     fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>)
 
     fun requestSearchOperationV4(requestSubscriber: RequestSubscriber<Result<SearchResult>>)

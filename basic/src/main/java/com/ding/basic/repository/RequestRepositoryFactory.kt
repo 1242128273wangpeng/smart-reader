@@ -32,6 +32,7 @@ import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
+
     companion object {
 
         @Volatile
@@ -834,6 +835,31 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 })
     }
+
+
+    /**
+     * 搜索无结果页  订阅
+     */
+    override fun requestSubBook(bookName: String, bookAuthor: String, requestSubscriber: RequestSubscriber<JsonObject>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestSubBook(bookName,bookAuthor)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object :RequestSubscriber<JsonObject>(){
+                    override fun requestResult(result: JsonObject?) {
+                        if (result != null ) {
+                            requestSubscriber.onNext(result)
+                        } else {
+                            requestSubscriber.onError(Throwable("接口请求异常！"))
+                        }
+                    }
+
+                    override fun requestError(message: String) {
+                        requestSubscriber.onError(Throwable("接口请求异常！"))
+                    }
+
+                })
+    }
+
+
 
     override fun checkChapterCache(chapter: Chapter?): Boolean {
         if (chapter == null) {

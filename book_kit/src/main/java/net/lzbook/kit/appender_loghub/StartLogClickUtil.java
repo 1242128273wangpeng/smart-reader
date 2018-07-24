@@ -51,6 +51,9 @@ public class StartLogClickUtil {
     public static final String ACTION_HOME_SEARCH = "SEARCH";
     public static final String ACTION_HOME_CACHE_MANAGE = "CACHEMANAGE";
     public static final String PREFERENCE = "PREFERENCE";//开屏选男女
+    public static final String NORESULT_PAGE = "NORESULT";//搜索无结果页
+    public static final String FEEDBACK_PAGE = "FEEDBACK";//搜索无结果页订阅页面
+
 
 
     /***
@@ -229,6 +232,12 @@ public class StartLogClickUtil {
     public static final String HOTREADCLICK = "HOTREADCLICK";//热门阅读-书籍点击
 
     public static final String BARLIST = "BARLIST"; //搜索框下拉历史词点击
+
+    //搜索无结果页
+    public static final String FEEDBACK = "FEEDBACK"; //点击找书反馈
+    public static final String SUBMIT = "SUBMIT"; //搜索无结果页 点击订阅书籍
+
+
 
     //书籍详情页
     public static final String SOURCECHANGE = "SOURCECHANGE";//点击切源弹出

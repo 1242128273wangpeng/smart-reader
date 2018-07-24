@@ -146,4 +146,10 @@ object RequestAPI {
     fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
         return requestService.requestPushTags(udid)
     }
+
+    fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
+        return requestService.requestSubBook(bookName, bookAuthor)
+    }
+
+
 }

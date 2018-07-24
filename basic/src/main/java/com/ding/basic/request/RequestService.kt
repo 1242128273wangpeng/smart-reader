@@ -131,6 +131,10 @@ interface RequestService {
 
         const val PUSH_TAG = "cn.dingyueWeb.reader/getUserTag"
 
+        /**
+         * 搜索无结果页  点击订阅
+         */
+        const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchBook"
     }
 
     @GET(DEFAULT_BOOK)
@@ -227,4 +231,10 @@ interface RequestService {
 
     @GET(PUSH_TAG)
     fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+
+
+    //搜索无结果页  订阅
+    @GET(SEARCH_SUB_BOOK)
+    fun requestSubBook(@Query("bookName") bookName: String, @Query("authorName") bookAuthor: String): Flowable<JsonObject>
+
 }
