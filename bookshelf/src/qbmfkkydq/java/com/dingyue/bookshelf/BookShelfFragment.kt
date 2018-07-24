@@ -7,11 +7,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
 import com.dingyue.bookshelf.childmvp.ChildBookShelfPresenter
@@ -41,7 +39,7 @@ import java.util.*
 class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuManager {
     override fun onCurrentBookCommplete(book: Book, title: String?) {
 
-        addHeaderView(book,title)
+        addHeaderView(book, title)
     }
 
     private val popupHeight by lazy {
@@ -216,7 +214,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         })
 
         img_head_personal.setOnClickListener {
-            RouterUtil.navigationWithTransition(requireActivity(),RouterConfig.SETTING_ACTIVITY)
+            RouterUtil.navigationWithTransition(requireActivity(), RouterConfig.SETTING_ACTIVITY
+                    , android.R.anim.slide_in_left, R.anim.slide_out_left)
 
             BookShelfLogger.uploadBookShelfPersonal()
         }
@@ -319,7 +318,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 mScrollDistance += dy
                 var percent = mScrollDistance * 1f / headerViewHeight
                 var alpha = 255 * percent
-                setTitleLayoutAlpha(alpha.toInt())
+                setTitleLayoutAlpha(alpha.toInt(), percent)
             }
         })
 
@@ -353,18 +352,19 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         headerView.setData(cReadBook, cTitle, activity!!)
     }
 
-    private fun setTitleLayoutAlpha(alpha: Int) {
+    private fun setTitleLayoutAlpha(alpha: Int, percent: Float) {
         var alpha = alpha
         if (alpha > 255) {
             alpha = 255
         }
         ll_container.setBackgroundColor(Color.argb(alpha, 42, 202, 176))
+        headerView.alpha = (1-percent)
     }
 
     private fun createHeaderView(): View {
         refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_start)
         refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
-        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow_white)
         refreshHeader.pgbar_refresh_loading.visibility = View.GONE
         return refreshHeader
     }

@@ -259,6 +259,11 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         goBackToHome()
     }
 
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(android.R.anim.slide_in_left, R.anim.slide_out_left)
+    }
+
     fun goBackToHome() {
         if (!currentThemeMode!!.equals(mThemeHelper.getMode()) || isStyleChanged) {
             if (getSwipeBackHelper() == null || !getSwipeBackHelper().isSliding()) {//滑动返回已结束
