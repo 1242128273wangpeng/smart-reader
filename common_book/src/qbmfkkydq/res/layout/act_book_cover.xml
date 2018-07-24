@@ -4,9 +4,9 @@
     xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="fill_parent"
     android:background="@color/cover_bg"
+    android:orientation="vertical"
     app:ignore="NamespaceTypo">
 
     <RelativeLayout
@@ -46,14 +46,15 @@
         android:id="@+id/book_cover_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_below="@id/rl_title_book_cover"
+        android:layout_weight="1"
         android:scrollbars="none">
 
         <RelativeLayout
             android:id="@+id/book_cover_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/dimen_margin_15">
 
             <!--——————————————————————书籍封面介绍——————————————————————-->
             <RelativeLayout
@@ -67,8 +68,8 @@
                 <FrameLayout
                     android:id="@+id/fl_bookicon_layout"
                     android:layout_width="95dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_height="134dp">
+                    android:layout_height="134dp"
+                    android:layout_marginRight="16dp">
 
                     <ImageView
                         android:id="@+id/book_cover_image"
@@ -275,8 +276,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/tv_recommend_title"
                 android:layout_marginLeft="6dp"
-                android:clipToPadding="false"
-                 />
+                android:clipToPadding="false" />
 
             <!--——————————————————————推荐模块结束——————————————————————-->
 
@@ -289,7 +289,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/ll_nav_layout"
-        android:layout_marginTop="@dimen/dimen_margin_15"
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY"
         android:src="@drawable/bottom_shadow_bg" />

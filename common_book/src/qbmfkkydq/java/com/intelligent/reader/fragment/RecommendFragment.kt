@@ -54,10 +54,9 @@ class RecommendFragment : Fragment() {
 
         view_pager.post {
             val params = view_pager.layoutParams
-            // 避免scrollView和WebView的滑动冲突在首次滑动出现，增加viewpager的高度，和scrollview的滑动监听距离，
-//            高度计算减去上下导航栏宽度
+            // ViewPager高度为屏幕高度减去TabLayout,导航栏和状态栏
             params.height = view_pager.context.resources.displayMetrics
-                    .heightPixels - AppUtils.dip2px(context, 34f + 50f)
+                    .heightPixels - AppUtils.dip2px(context, 34f + 50f + 20f)
 
         }
 

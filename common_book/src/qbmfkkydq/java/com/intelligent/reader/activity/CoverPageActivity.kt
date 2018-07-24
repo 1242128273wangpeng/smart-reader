@@ -139,7 +139,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             loadingPage!!.onSuccess()
         }
 
-        loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
+        loadingPage = LoadingPage(this, rl1, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
         coverPagePresenter?.requestCoverRecommendRandom(8)
@@ -343,7 +343,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             val status = CacheManager.getBookStatus(book)
             if (status == DownloadState.FINISH) {
                 book_cover_download.setText(R.string.download_status_complete)
-                book_cover_download.setTextColor(Color.parseColor("#FF5D646E"))
+                book_cover_download.setTextColor(Color.parseColor("#4D5D646E"))
             } else if (status == DownloadState.DOWNLOADING) {
                 book_cover_download.setText(R.string.download_status_underway)
             } else if (status == DownloadState.PAUSEED) {

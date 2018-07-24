@@ -136,7 +136,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 return false
             }
 
-        }, bookShelfPresenter.iBookList, false)
+        }, bookShelfPresenter.iBookList, true)
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
@@ -216,7 +216,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         })
 
         img_head_personal.setOnClickListener {
-            RouterUtil.navigation(requireActivity(),RouterConfig.SETTING_ACTIVITY)
+            RouterUtil.navigationWithTransition(requireActivity(),RouterConfig.SETTING_ACTIVITY)
 
             BookShelfLogger.uploadBookShelfPersonal()
         }
