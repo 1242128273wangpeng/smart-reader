@@ -942,7 +942,9 @@ public class AppUtils {
      * 书籍封面页字数显示
      */
     public static String getWordNums(long num) {
-        if (num < 10000) {
+        if(num == 0){
+            return "暂无";
+        }else if (num < 10000) {
             return num + "字";
         } else {
             return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "万字";
