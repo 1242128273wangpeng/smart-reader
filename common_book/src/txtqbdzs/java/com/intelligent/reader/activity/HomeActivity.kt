@@ -119,6 +119,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
                     StartLogClickUtil.POPUPNOWOPEN)
         }
+        lifecycle.addObserver(dialog)
         dialog
     }
 
@@ -164,12 +165,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
-
-        val isNotifyEnable = NotificationManagerCompat.from(this)
-                .areNotificationsEnabled()
-        if (isNotifyEnable) {
-            pushSettingDialog.dismiss()
-        }
     }
 
     override fun onPause() {
@@ -639,42 +634,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun changeHomePagerIndex(index: Int) {
         if (currentIndex != index) {
             view_pager.setCurrentItem(index, false)
-        }
-    }
-
-    private fun openPushSetting() {
-        val intent = Intent()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-            } else {
-                intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                intent.putExtra("app_package", packageName)
-                intent.putExtra("app_uid", applicationInfo.uid)
-            }
-        } else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
-            intent.data = Uri.fromParts("package", packageName, null)
-        }
-        startActivity(intent)
-    }
-
-    private fun isShouldShowPushSettingDialog(): Boolean {
-        val isNotifyEnable = NotificationManagerCompat.from(this)
-                .areNotificationsEnabled()
-        if (isNotifyEnable) return false
-        val shareKey = SharedPreUtil.PUSH_LATEST_SHOW_SETTING_DIALOG_TIME
-        val latestShowTime = sharedPreUtil
-                .getLong(shareKey, 0)
-        val currentTime = System.currentTimeMillis()
-        val time = currentTime - latestShowTime
-        return if (time > 3 * 24 * 60 * 60 * 1000) {
-            sharedPreUtil.putLong(shareKey, currentTime)
-            true
-        } else {
-            false
         }
     }
 

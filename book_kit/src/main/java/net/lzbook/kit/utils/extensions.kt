@@ -2,12 +2,17 @@ package net.lzbook.kit.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.support.annotation.AttrRes
 import android.support.v4.app.Fragment
+import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -15,6 +20,7 @@ import android.view.animation.Animation
 import android.widget.TextView
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
+import com.dingyue.contract.util.SharedPreUtil
 import com.umeng.message.PushAgent
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
@@ -291,4 +297,39 @@ private fun PushAgent.addTags(context: Context, udid: String,
                 }
             })
 
+}
+
+fun Activity.openPushSetting() {
+    val intent = Intent()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+        intent.putExtra("app_package", packageName)
+        intent.putExtra("app_uid", applicationInfo.uid)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.putExtra("android.provider.extra.APP_PACKAGE", packageName)
+        }
+    } else {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+        intent.data = Uri.fromParts("package", packageName, null)
+    }
+    startActivity(intent)
+}
+
+fun Activity.isShouldShowPushSettingDialog(): Boolean {
+    val isNotifyEnable = NotificationManagerCompat.from(this)
+            .areNotificationsEnabled()
+    if (isNotifyEnable) return false
+    val shareKey = SharedPreUtil.PUSH_LATEST_SHOW_SETTING_DIALOG_TIME
+    val share = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+    val latestShowTime = share
+            .getLong(shareKey, 0)
+    val currentTime = System.currentTimeMillis()
+    val time = currentTime - latestShowTime
+    return if (time > 3 * 24 * 60 * 60 * 1000) {
+        share.putLong(shareKey, currentTime)
+        true
+    } else {
+        false
+    }
 }
