@@ -226,7 +226,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
 
             bundle.putInt("sequence", 0)
             bundle.putInt("offset", 0)
-            bundle.putSerializable("book", ReaderStatus.book)
+            bundle.putSerializable("book", book)
             RouterUtil.navigation(mContext,RouterConfig.READER_ACTIVITY,bundle)
         })
 
