@@ -85,7 +85,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -95,7 +95,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
-        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -105,7 +105,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category")
-        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_CATEGORY_H5.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment

@@ -115,6 +115,7 @@ interface RequestService {
         const val WEB_CATEGORY_V3 = "/{packageName}/v3/category/index.do"
         const val WEB_CATEGORY_MAN_H5 = "/h5/{packageName}/categoryBoy"
         const val WEB_CATEGORY_WOMAN_H5 = "/h5/{packageName}/categoryGirl"
+        const val WEB_CATEGORY_H5 = "/h5/{packageName}/category"
 
         /**
          * WebView推荐 / 精选页面（h5为前后端分离后的接口）
