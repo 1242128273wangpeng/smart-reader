@@ -1,15 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_main"
     android:layout_width="match_parent"
-    android:layout_height="155dp">
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    tools:ignore="RtlHardcoded">
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="113dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="6dp"
-        android:src="@drawable/bookshelf_add_icon"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bookshelf_bookitem_bg">
 
-</RelativeLayout>
+            <ImageView
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="1dp"
+                android:id="@+id/img_book_cover"
+                android:layout_width="80dp"
+                android:layout_height="112dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bookshelf_add_icon"
+                android:scaleType="fitXY" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txt_book_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:maxWidth="80dp"
+        android:textColor="#FF5D646E"
+        android:textSize="12sp"
+         />
+
+
+</LinearLayout>

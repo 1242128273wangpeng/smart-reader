@@ -14,11 +14,6 @@ import net.lzbook.kit.utils.AppUtils
  */
 class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_add, parent, false)) {
-    init {
-        itemView.setPadding(itemView.paddingLeft, AppUtils.dip2px(itemView.context, 20f),
-                itemView.paddingRight, itemView.paddingBottom)
-        itemView.setBackgroundColor(Color.WHITE)
-    }
 
     fun bind(size:Int,itemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
         itemView.setOnClickListener {
