@@ -302,7 +302,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      */
     private fun buildLabel(text: String, index: Int): TextView {
 
-        var mIndex = index % labelColor.size
+        var position = index % labelColor.size
         val left = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
         val right = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
         val top = resources.getDimensionPixelOffset(R.dimen.dimen_margin_5)
@@ -312,9 +312,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.textSize = 12f
         textView.gravity = Gravity.CENTER
 
-        textView.setTextColor(ContextCompat.getColor(this, labelColor[mIndex]))
+        textView.setTextColor(ContextCompat.getColor(this, labelColor[position]))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            textView.background = getLabelBgColor(labelColor[mIndex])
+            textView.background = getLabelBgColor(labelColor[position])
         } else {
             textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
             textView.setBackgroundResource(R.drawable.bg_cover_label)
