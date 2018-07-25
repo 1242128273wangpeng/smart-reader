@@ -68,6 +68,17 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
 
     }
 
+    fun setViewClickEnable(viewclick: Boolean) {
+        if (viewclick) {
+            alpha = 1f
+        } else {
+            alpha = 0.3f
+        }
+
+        iv_book_icon.isClickable = viewclick
+        txt_continue_read.isClickable = viewclick
+    }
+
     private fun setBookData(book: Book, title: String?, context: Activity) {
         mBook = book
         mContext = context

@@ -51,6 +51,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     private var iconBgViewHeight = 1
     private var headerViewHeight = 1
     private var mScrollDistance = 0
+    private var isEditMode = false// 是否在编辑模式
 
     private val bookShelfPresenter: ChildBookShelfPresenter by lazy { ChildBookShelfPresenter(this) }
 
@@ -131,12 +132,28 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             override fun longClickedBookShelfItem(): Boolean {
                 if (!bookShelfAdapter.isRemove) {
                     showRemoveMenu()
+                    isEditMode = true
+                    changeHeaderViewState(true)
                     BookShelfLogger.uploadBookShelfLongClickBookShelfEdit()
                 }
                 return false
             }
 
         }, bookShelfPresenter.iBookList, true)
+    }
+
+    /**
+     * 如果编辑书籍状态下，headerview不可点击
+     */
+    private fun changeHeaderViewState(edit: Boolean) {
+        if (edit) {
+
+            headerView.setViewClickEnable(false)
+        } else {
+            headerView.setViewClickEnable(true)
+            headerView.alpha = 1f
+            headerView.isEnabled = true
+        }
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
@@ -179,7 +196,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
     var titleHeight = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        headerViewHeight=AppUtils.dip2px(view.context,144f)
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
@@ -243,6 +260,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         }
 
         txt_editor_finish.setOnClickListener {
+            isEditMode = false
+            changeHeaderViewState(false)
             dismissRemoveMenu()
         }
 
@@ -341,27 +360,37 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
      * 当前阅读书籍不为空时添加头部视图,为空时显示头部文案提示
      */
     private fun addHeaderView(cReadBook: Book?, cTitle: String?) {
-            if (hfRecyclerControl.getHeaderCount() == 0) {
-                hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
-                hfRecyclerControl.addHeaderView(headerView)
-                headerView.post {
-                    headerViewHeight = headerView.height
-                    var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
-                    headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
+        if (hfRecyclerControl.getHeaderCount() == 0) {
+            hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
+            hfRecyclerControl.addHeaderView(headerView)
+            headerView.post {
+                headerViewHeight = headerView.height
+//                var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
+//                headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
 
-                }
             }
-            headerView.setData(cReadBook, cTitle, activity!!)
+        }
+        headerView.setData(cReadBook, cTitle, activity!!)
 
     }
 
+    /**
+     * 改变头部headerview的透明度
+     */
     private fun setTitleLayoutAlpha(alpha: Int, percent: Float) {
-        var alpha = alpha
-        if (alpha > 255) {
-            alpha = 255
+        if (!isEditMode) {
+            var rAlpha = alpha
+            if (rAlpha > 255) {
+                rAlpha = 255
+            }
+            ll_container.setBackgroundColor(Color.argb(rAlpha, 42, 202, 176))
+            var rPercent = percent
+            if (rPercent > 1) {
+                rPercent = 1f
+            }
+            headerView.alpha = (1 - rPercent)
         }
-        ll_container.setBackgroundColor(Color.argb(alpha, 42, 202, 176))
-        headerView.alpha = (1 - percent)
+
     }
 
     private fun createHeaderView(): View {

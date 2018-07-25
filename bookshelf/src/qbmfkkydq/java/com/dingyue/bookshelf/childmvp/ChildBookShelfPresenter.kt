@@ -16,7 +16,7 @@ import java.util.*
  * Mail: huilin_wang@dingyuegroup.cn
  * Desc: 书架逻辑层，添加查询当前看的书籍
  */
-class ChildBookShelfPresenter(view:ChildBookShelfView) : BookShelfPresenter(view) {
+class ChildBookShelfPresenter(view: ChildBookShelfView) : BookShelfPresenter(view) {
     var currentReadBook: Book? = null
     var currentTitle: String? = ""
     /**
@@ -25,8 +25,8 @@ class ChildBookShelfPresenter(view:ChildBookShelfView) : BookShelfPresenter(view
     fun queryCurrentReadBook() {
         val readBooks = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
         if (readBooks == null || readBooks.size < 1) {
-            if (view is ChildBookShelfView){
-                (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook,currentTitle)
+            if (view is ChildBookShelfView) {
+                (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook, currentTitle)
             }
             return
         }
@@ -34,16 +34,13 @@ class ChildBookShelfPresenter(view:ChildBookShelfView) : BookShelfPresenter(view
         currentReadBook = readBooks[0]
 
 
-
-
-
         val requestSubscriber = object : RequestSubscriber<List<Chapter>>() {
             override fun requestResult(result: List<Chapter>?) {
 
-                if(currentReadBook?.sequence!! < result?.size!!){
+                if (currentReadBook?.sequence!! < result?.size!!) {
                     currentTitle = result?.get(currentReadBook!!.sequence)?.name
-                    if (view is ChildBookShelfView){
-                        (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook,currentTitle)
+                    if (view is ChildBookShelfView) {
+                        (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook, currentTitle)
                     }
                 }
 
@@ -53,7 +50,7 @@ class ChildBookShelfPresenter(view:ChildBookShelfView) : BookShelfPresenter(view
 
             }
         }
-//
+// 查询当前书籍的目录
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .requestCatalog(currentReadBook!!.book_id,
                         currentReadBook!!.book_source_id,

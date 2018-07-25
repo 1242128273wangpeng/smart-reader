@@ -10,6 +10,7 @@
         android:background="@color/accent"
         android:orientation="vertical"
         android:paddingLeft="16dp"
+        app:elevation="0dp"
         android:clipToPadding="true"
         android:paddingRight="16dp">
 
@@ -55,7 +56,7 @@
         <com.intelligent.reader.widget.TabLayoutIndicator
             android:id="@+id/tablayout_indicator"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="-3dp"
             app:mindicatorColor="#ffffff"

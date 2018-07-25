@@ -49,19 +49,25 @@
                 tools:background="#ff0000"
                 tools:text="完" />
 
-            <TextView
-                android:id="@+id/txt_book_chapter"
+            <FrameLayout
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
                 android:background="@drawable/bookshelf_bookitem_tv_bg"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:padding="1dp"
-                android:textColor="#ffffff"
-                android:textSize="12sp"
-                tools:text="13/100章" />
+                android:layout_gravity="bottom"
+                android:padding="2dp">
+                <TextView
+                    android:layout_marginBottom="1dp"
+                    android:id="@+id/txt_book_chapter"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="2dp"
+                    android:textColor="#ffffff"
+                    android:textSize="10sp"
+                    tools:text="13/100章" />
+            </FrameLayout>
 
 
         </FrameLayout>
@@ -77,12 +83,11 @@
 
     <TextView
         android:id="@+id/txt_book_name"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:maxWidth="80dp"
         android:textColor="#FF5D646E"
         android:textSize="12sp"
         tools:text="斗破苍穹" />
