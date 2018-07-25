@@ -25,6 +25,9 @@ class ChildBookShelfPresenter(view:ChildBookShelfView) : BookShelfPresenter(view
     fun queryCurrentReadBook() {
         val readBooks = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
         if (readBooks == null || readBooks.size < 1) {
+            if (view is ChildBookShelfView){
+                (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook,currentTitle)
+            }
             return
         }
         Collections.sort(readBooks, CommonContract.MultiComparator(0))
@@ -40,7 +43,7 @@ class ChildBookShelfPresenter(view:ChildBookShelfView) : BookShelfPresenter(view
                 if(currentReadBook?.sequence!! < result?.size!!){
                     currentTitle = result?.get(currentReadBook!!.sequence)?.name
                     if (view is ChildBookShelfView){
-                        (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook!!,currentTitle)
+                        (view as ChildBookShelfView).onCurrentBookCommplete(currentReadBook,currentTitle)
                     }
                 }
 

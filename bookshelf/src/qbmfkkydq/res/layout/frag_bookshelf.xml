@@ -19,30 +19,31 @@
             android:scaleType="centerCrop"
             android:src="@drawable/bookshelf_top_bg" />
 
-        <!--<LinearLayout-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_marginBottom="40dp"-->
-            <!--android:id="@+id/ll_currentbook_empty"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center_horizontal"-->
-            <!--android:orientation="vertical">-->
+        <LinearLayout
+            android:id="@+id/ll_currentbook_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="40dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/bookshelf_empty_title"-->
-                <!--android:textColor="#ffffff"-->
-                <!--android:textSize="20sp" />-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bookshelf_empty_title"
+                android:textColor="#ffffff"
+                android:textSize="20sp" />
 
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="13dp"-->
-                <!--android:text="@string/bookshelf_empty_subtitle"-->
-                <!--android:textColor="#c7ffffff"-->
-                <!--android:textSize="14sp" />-->
-        <!--</LinearLayout>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="@string/bookshelf_noreadingbook_title"
+                android:textColor="#c7ffffff"
+                android:textSize="14sp" />
+        </LinearLayout>
 
     </FrameLayout>
 

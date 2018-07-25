@@ -3,6 +3,7 @@ package com.dingyue.bookshelf
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
@@ -37,7 +38,7 @@ import java.util.*
  */
 
 class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuManager {
-    override fun onCurrentBookCommplete(book: Book, title: String?) {
+    override fun onCurrentBookCommplete(book: Book?, title: String?) {
 
         addHeaderView(book, title)
     }
@@ -339,8 +340,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     /**
      * 当前阅读书籍不为空时添加头部视图,为空时显示头部文案提示
      */
-    private fun addHeaderView(cReadBook: Book, cTitle: String?) {
-        if (cReadBook != null) {
+    private fun addHeaderView(cReadBook: Book?, cTitle: String?) {
             if (hfRecyclerControl.getHeaderCount() == 0) {
                 hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
                 hfRecyclerControl.addHeaderView(headerView)
@@ -352,11 +352,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 }
             }
             headerView.setData(cReadBook, cTitle, activity!!)
-        }else{
-
-
-
-        }
 
     }
 
