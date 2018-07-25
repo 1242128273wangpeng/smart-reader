@@ -133,9 +133,9 @@ interface RequestService {
         const val PUSH_TAG = "cn.dingyueWeb.reader/getUserTag"
 
         /**
-         * 搜索无结果页  点击订阅
+         * 搜索无结果页  点击订阅  searchEmpty/userSubscription
          */
-        const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchBook"
+        const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
     }
 
     @GET(DEFAULT_BOOK)

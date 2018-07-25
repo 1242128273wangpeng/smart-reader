@@ -150,7 +150,7 @@
     <LinearLayout
         android:id="@+id/ll_container_result"
         android:layout_width="280dp"
-        android:layout_height="270dp"
+        android:layout_height="275dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/dialog_bg"
         android:gravity="center_horizontal"

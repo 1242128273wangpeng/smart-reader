@@ -421,7 +421,6 @@ public class SearchHelper {
                             data.put("name",bookName+"");
                             data.put("author",bookAuthor+"");
                             StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.FEEDBACK_PAGE, StartLogClickUtil.SUBMIT,data);
-                            CommonUtil.showToastMessage(bookName+bookAuthor);
                             submitSubBook(bookName,bookAuthor);
                             subBookDialog.dismiss();
                             return null;
