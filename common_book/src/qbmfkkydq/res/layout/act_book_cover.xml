@@ -68,15 +68,17 @@
                 <FrameLayout
                     android:id="@+id/fl_bookicon_layout"
                     android:layout_width="95dp"
-                    android:layout_height="134dp"
-                    android:layout_marginRight="16dp">
+                    android:layout_height="140dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/bg_bookdetail_icon"
+                    android:paddingBottom="5dp">
+
 
                     <ImageView
                         android:id="@+id/book_cover_image"
                         android:layout_width="95dp"
                         android:layout_height="134dp"
                         android:layout_gravity="center_horizontal"
-                        android:background="@mipmap/bookshelf_book_cover_default"
                         android:scaleType="fitXY"
                         android:src="@mipmap/bookshelf_book_cover_default" />
 
@@ -166,6 +168,8 @@
                     android:layout_gravity="bottom|right"
                     android:layout_marginBottom="13dp"
                     android:layout_marginRight="3dp"
+                    android:padding="3dp"
+                    android:background="@drawable/bg_bookdetail_tv_more"
                     android:src="@drawable/bookcover_icon_down" />
             </FrameLayout>
 
@@ -220,7 +224,7 @@
 
                 <TextView
                     android:id="@+id/book_cover_last_chapter"
-                    android:layout_width="0dp"
+                    android:layout_width="253dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
