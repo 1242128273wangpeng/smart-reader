@@ -17,7 +17,6 @@ import retrofit2.Call
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
 
 
-
     companion object {
         private var localRequestRepository: LocalRequestRepository? = null
 
@@ -164,6 +163,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
+        return null
+    }
+
+    override fun requestAuthAccessSync(): Call<BasicResult<String>>? {
         return null
     }
 

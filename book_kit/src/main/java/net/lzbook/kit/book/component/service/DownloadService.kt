@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.widget.Toast
+import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.CacheTaskConfig
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.PackageInfo
@@ -16,6 +17,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
 import com.ding.basic.util.DataCache
+import com.orhanobut.logger.Logger
 import com.tencent.mm.opensdk.utils.Log
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.subscribeBy
@@ -168,104 +170,111 @@ class DownloadService : Service(), Runnable {
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                     .requestDownTaskConfig(task.book_id, task.book.book_source_id ?: ""
                             , if (task.startSequence != 0) 1 else 0
-                            , chapterList[task.startSequence].chapter_id!!)!!
-                    .subscribeBy(
-                            onNext = { ret ->
-                                if (ret.checkResultAvailable() && ret.data!!.fileUrlList != null) {
+                            , chapterList[task.startSequence].chapter_id!!, object:  RequestSubscriber<BasicResult<CacheTaskConfig>> () {
 
-                                    //清空上次的内容
-                                    parsedList.clear()
+                        override fun requestResult(ret: BasicResult<CacheTaskConfig>?) {
+                            if (ret != null && ret.checkResultAvailable() && ret.data!!.fileUrlList != null) {
 
-                                    for (url in ret.data!!.fileUrlList!!) {
+                                //清空上次的内容
+                                parsedList.clear()
 
-                                        if (task.state == DownloadState.DOWNLOADING) {
-                                            val path = url.substring(url.lastIndexOf("/") + 1)
+                                for (url in ret.data!!.fileUrlList!!) {
 
-                                            val info = PackageInfo.parse(path)
-                                            if (info == null) {
+                                    if (task.state == DownloadState.DOWNLOADING) {
+                                        val path = url.substring(url.lastIndexOf("/") + 1)
 
-                                                CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("package file name err"))
-                                                break
-                                            }
-                                            if (info.startIndex < task.endSequence && info!!.startIndex < info.endIndex) {
+                                        val info = PackageInfo.parse(path)
+                                        if (info == null) {
 
-                                                val subList = chapterList.subList(Math.max(info!!.startIndex - 1, 0), Math.min(info!!.endIndex, chapterList.size))
-
-                                                if (!DataCache.isRangeCached(task.book, subList)) {
-                                                    val start = System.currentTimeMillis()
-
-                                                    val list = ret.data!!.fileUrlList!!
-                                                    if (!parsePackage(list, info, url, task, chapterMap)) {
-                                                        CacheManager.innerListener.onTaskFailed(task.book_id, IOException("cant save chapter file"))
-                                                        return@subscribeBy
-                                                    }
-
-                                                    task.cache_times += System.currentTimeMillis() - start
-                                                    if (task.state == DownloadState.DOWNLOADING) {
-                                                        task.startSequence = Math.min(info.endIndex, task.endSequence)
-                                                        task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
-                                                        task.progress = Math.min(100, task.progress)
-                                                        progressNofitycation(task)
-                                                        CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
-                                                    }
-                                                } else {
-                                                    if (task.state == DownloadState.DOWNLOADING) {
-                                                        task.startSequence = Math.min(info.endIndex, task.endSequence)
-                                                        task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
-                                                        task.progress = Math.min(100, task.progress)
-                                                        progressNofitycation(task)
-                                                        CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
-                                                    }
-                                                    parsedList.addAll(subList)
-                                                    task.processChapterCount += subList.size
-                                                    task.startSequence += subList.size
-                                                }
-                                            }
-
-                                        } else {
+                                            CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("package file name err"))
                                             break
                                         }
-                                    }
-                                    if (task.state == DownloadState.DOWNLOADING) {
+                                        if (info.startIndex < task.endSequence && info!!.startIndex < info.endIndex) {
 
-                                        if (task.processChapterCount >= task.shouldCacheCount && (task.shouldCacheCount != chapterList.size || task.progress == 100)) {
-                                            stopForeground(true)
-                                            task.startSequence = task.endSequence
-                                            if (task.progress == 100) {
-                                                task.state = DownloadState.FINISH
+                                            val subList = chapterList.subList(Math.max(info!!.startIndex - 1, 0), Math.min(info!!.endIndex, chapterList.size))
+
+                                            if (!DataCache.isRangeCached(task.book, subList)) {
+                                                val start = System.currentTimeMillis()
+
+                                                val list = ret.data!!.fileUrlList!!
+                                                if (!parsePackage(list, info, url, task, chapterMap)) {
+                                                    CacheManager.innerListener.onTaskFailed(task.book_id, IOException("cant save chapter file"))
+                                                    return
+                                                }
+
+                                                task.cache_times += System.currentTimeMillis() - start
+                                                if (task.state == DownloadState.DOWNLOADING) {
+                                                    task.startSequence = Math.min(info.endIndex, task.endSequence)
+                                                    task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                                                    task.progress = Math.min(100, task.progress)
+                                                    progressNofitycation(task)
+                                                    CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                                                }
                                             } else {
-                                                task.state = DownloadState.PAUSEED
+                                                if (task.state == DownloadState.DOWNLOADING) {
+                                                    task.startSequence = Math.min(info.endIndex, task.endSequence)
+                                                    task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
+                                                    task.progress = Math.min(100, task.progress)
+                                                    progressNofitycation(task)
+                                                    CacheManager.innerListener.onTaskProgressUpdate(task.book_id)
+                                                }
+                                                parsedList.addAll(subList)
+                                                task.processChapterCount += subList.size
+                                                task.startSequence += subList.size
                                             }
-                                            CacheManager.innerListener.onTaskFinish(task.book_id)
-                                            stopForeground(true)
-                                        } else {
-
-                                            val unCacheList = chapterList.subList(task.beginSequence, chapterList.size).filter {
-                                                !parsedList.contains(it)
-                                            }
-                                            downChapters(task, unCacheList)
-
-                                            parsedList.clear()
                                         }
+
                                     } else {
-                                        CacheManager.innerListener.onTaskStatusChange(task.book_id)
-                                        stopForeground(true)
+                                        break
                                     }
-
-                                    //清空上次的内容
-                                    parsedList.clear()
-                                } else if (ret.code == CacheTaskConfig.USE_CHAPTER_BY_CHAPTER) {
-                                    downChapterOneByOne(task, chapterList, false)
-                                } else {
-
-                                    CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("server err : " + ret.code))
                                 }
-                            },
-                            onError = { t ->
-                                t.printStackTrace()
-                                CacheManager.innerListener.onTaskFailed(task.book_id, t)
+                                if (task.state == DownloadState.DOWNLOADING) {
+
+                                    if (task.processChapterCount >= task.shouldCacheCount && (task.shouldCacheCount != chapterList.size || task.progress == 100)) {
+                                        stopForeground(true)
+                                        task.startSequence = task.endSequence
+                                        if (task.progress == 100) {
+                                            task.state = DownloadState.FINISH
+                                        } else {
+                                            task.state = DownloadState.PAUSEED
+                                        }
+                                        CacheManager.innerListener.onTaskFinish(task.book_id)
+                                        stopForeground(true)
+                                    } else {
+
+                                        val unCacheList = chapterList.subList(task.beginSequence, chapterList.size).filter {
+                                            !parsedList.contains(it)
+                                        }
+                                        downChapters(task, unCacheList)
+
+                                        parsedList.clear()
+                                    }
+                                } else {
+                                    CacheManager.innerListener.onTaskStatusChange(task.book_id)
+                                    stopForeground(true)
+                                }
+
+                                //清空上次的内容
+                                parsedList.clear()
+                            } else if (ret != null && ret.code == CacheTaskConfig.USE_CHAPTER_BY_CHAPTER) {
+                                downChapterOneByOne(task, chapterList, false)
+                            } else if (ret != null){
+
+                                CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("server err : " + ret.code))
                             }
-                    )
+                        }
+
+                        override fun onError(throwable: Throwable) {
+                            super.onError(throwable)
+                            CacheManager.innerListener.onTaskFailed(task.book_id, throwable)
+                        }
+
+                        override fun requestError(message: String) {
+                            Logger.e("获取缓存包列表异常！")
+                        }
+
+                    })
+
         } else {
             downChapterOneByOne(task, chapterList, false)
         }

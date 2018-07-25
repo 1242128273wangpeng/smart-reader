@@ -63,6 +63,7 @@ interface RequestRepository {
 
     fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 
+    fun requestAuthAccessSync(): Boolean
 
     /************************* 本地数据 *************************/
 
