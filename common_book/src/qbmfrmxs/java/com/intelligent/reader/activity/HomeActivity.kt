@@ -344,6 +344,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         ll_tab_search.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeSearchBook)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "search")
+            HomeLogger.uploadHomeSearch()
         }
 
         // 分类
@@ -362,11 +363,16 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         }
 
         dl_home_content.setOnMenuStateChangeListener { state ->
-            if (state == DrawerLayout.MenuState.MENU_OPENED) {
-                showCacheMessage()
-
-                if (bookShelfFragment?.isRemoveMenuShow() == true) {
-                    bookShelfFragment?.dismissRemoveMenu()
+            when (state) {
+                DrawerLayout.MenuState.MENU_OPENED -> {
+                    showCacheMessage()
+                    if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                        bookShelfFragment?.dismissRemoveMenu()
+                    }
+                }
+                DrawerLayout.MenuState.MENU_START_SCROLL,
+                DrawerLayout.MenuState.MENU_END_SCROLL -> {
+                    ll_home_tab.requestLayout()
                 }
             }
         }
@@ -668,6 +674,15 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             dl_home_content.closeMenu()
         } else {
             dl_home_content.openMenu()
+            HomeLogger.uploadHomePersonal()
+        }
+    }
+
+    override fun lockDrawerLayout(isToLock: Boolean) {
+        if (isToLock) {
+            dl_home_content.lock()
+        } else {
+            dl_home_content.unlock()
         }
     }
 

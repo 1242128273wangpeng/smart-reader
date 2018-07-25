@@ -335,7 +335,7 @@ public class StartLogClickUtil {
 
     //搜索结果页
     public static final String SEARCHRESULT = "SEARCHRESULT";//某本书点击
-    public static final String SEARCHRESULT_BOOK = "BOOK";//某本书点击
+    public static final String SEARCHRESULT_BOOK = "BOOKCLICK";//某本书点击
 
     //Crash
     public static final String CRASH = "CRASH";
