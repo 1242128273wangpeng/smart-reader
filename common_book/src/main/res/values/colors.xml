@@ -6,7 +6,6 @@
     <color name="debug_switch_button_unchecked_color">#ffffff</color>
     <color name="debug_switch_bg_checked_color">#565656</color>
     <color name="debug_switch_bg_unchecked_color">#e3e1e1</color>
-    <color name="debug_title_bg_color">#999999</color>
 
     <!--标签聚合页-->
     <color name="cover_label">#C6CCD6</color>
