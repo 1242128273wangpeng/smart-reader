@@ -42,6 +42,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         addHeaderView(book, title)
     }
 
+
     private val popupHeight by lazy {
         resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
     }
@@ -335,21 +336,28 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         BookShelfHeaderView(recl_content.context)
     }
 
+    /**
+     * 当前阅读书籍不为空时添加头部视图,为空时显示头部文案提示
+     */
     private fun addHeaderView(cReadBook: Book, cTitle: String?) {
+        if (cReadBook != null) {
+            if (hfRecyclerControl.getHeaderCount() == 0) {
+                hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
+                hfRecyclerControl.addHeaderView(headerView)
+                headerView.post {
+                    headerViewHeight = headerView.height
+                    var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
+                    headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
 
-        if (hfRecyclerControl.getHeaderCount() == 0) {
-            hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
-            hfRecyclerControl.addHeaderView(headerView)
-            headerView.post {
-                headerViewHeight = headerView.height
-                var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
-                headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
-
+                }
             }
+            headerView.setData(cReadBook, cTitle, activity!!)
+        }else{
+
 
 
         }
-        headerView.setData(cReadBook, cTitle, activity!!)
+
     }
 
     private fun setTitleLayoutAlpha(alpha: Int, percent: Float) {
@@ -358,7 +366,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             alpha = 255
         }
         ll_container.setBackgroundColor(Color.argb(alpha, 42, 202, 176))
-        headerView.alpha = (1-percent)
+        headerView.alpha = (1 - percent)
     }
 
     private fun createHeaderView(): View {

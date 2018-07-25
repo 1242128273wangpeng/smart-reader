@@ -141,41 +141,33 @@
             <!--——————————————————————书籍封面介绍结束——————————————————————-->
 
             <!--——————————————————————内容简介——————————————————————-->
-
-
-            <com.intelligent.reader.view.ExpandableTextView
-                android:id="@+id/book_cover_description"
+            <FrameLayout
+                android:id="@+id/fl_des_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl1"
                 android:layout_marginTop="22dp"
-                android:orientation="vertical"
-                expandableTextView:animAlphaStart="1"
-                expandableTextView:maxCollapsedLines="4">
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
                 <TextView
-                    android:id="@+id/expandable_text"
+                    android:id="@+id/txt_book_des"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:lineSpacingMultiplier="1.2"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="8dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/color_gray_9c9c9c"
-                    android:textSize="12sp" />
+                    android:lineSpacingExtra="10dp"
+                    android:maxLines="4"
+                    android:textColor="#5D646E"
+                    android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/expand_collapse"
+                <ImageView
+                    android:id="@+id/iv_bookdes_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:layout_marginTop="@dimen/dimen_radius_10"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:textColor="@color/color_black_727272" />
-            </com.intelligent.reader.view.ExpandableTextView>
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="13dp"
+                    android:src="@drawable/bookcover_icon_down" />
+            </FrameLayout>
+
 
             <!--——————————————————————内容简介结束——————————————————————-->
 
@@ -185,7 +177,7 @@
                 android:id="@+id/flowLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/book_cover_description"
+                android:layout_below="@id/fl_des_layout"
                 android:layout_marginTop="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"

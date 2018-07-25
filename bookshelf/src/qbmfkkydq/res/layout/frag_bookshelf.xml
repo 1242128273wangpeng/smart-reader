@@ -19,6 +19,31 @@
             android:scaleType="centerCrop"
             android:src="@drawable/bookshelf_top_bg" />
 
+        <!--<LinearLayout-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_marginBottom="40dp"-->
+            <!--android:id="@+id/ll_currentbook_empty"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/bookshelf_empty_title"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="20sp" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="13dp"-->
+                <!--android:text="@string/bookshelf_empty_subtitle"-->
+                <!--android:textColor="#c7ffffff"-->
+                <!--android:textSize="14sp" />-->
+        <!--</LinearLayout>-->
+
     </FrameLayout>
 
     <FrameLayout
@@ -101,8 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="@string/select_all"
-                />
+                android:text="@string/select_all" />
 
             <TextView
                 style="@style/bookshelf_title_style"
@@ -122,8 +146,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
-                android:text="@string/finish"
-                 />
+                android:text="@string/finish" />
 
         </RelativeLayout>
     </LinearLayout>
@@ -134,6 +157,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_container">
 
+
         <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
             android:id="@+id/srl_refresh"
             android:layout_width="match_parent"
@@ -142,8 +166,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recl_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false" />
+                android:layout_height="match_parent" />
 
         </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
 

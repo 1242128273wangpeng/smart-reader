@@ -98,6 +98,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         initIntent(intent)
     }
 
+    val defaultLines: Int = 4
     private fun initListener() {
         book_cover_back?.antiShakeClick(this)
         book_cover_author!!.antiShakeClick(this)
@@ -107,7 +108,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_bookshelf!!.antiShakeClick(this)
         book_cover_reading!!.antiShakeClick(this)
         book_cover_download!!.antiShakeClick(this)
+        txt_book_des.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                if (txt_book_des.maxLines <= defaultLines) {
+                    txt_book_des.maxLines = txt_book_des.lineCount
+                    iv_bookdes_icon.visibility = GONE
+                } else {
+                    iv_bookdes_icon.visibility = VISIBLE
+                    txt_book_des.maxLines = defaultLines
+                }
 
+            }
+        }
 
         /*book_cover_catalog_view!!.antiShakeClick(this)*/
         /*book_cover_catalog_view_nobg!!.antiShakeClick(this)*/
@@ -216,9 +228,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             txt_score.text = String.format("%.1f", book.score) + "分"
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
-                book_cover_description!!.text = book.desc
+                txt_book_des!!.text = book.desc
+                if (txt_book_des.lineCount > defaultLines) {
+                    iv_bookdes_icon.visibility = VISIBLE
+                } else {
+                    iv_bookdes_icon.visibility = GONE
+                }
+
             } else {
-                book_cover_description!!.text = resources.getString(R.string.book_cover_no_description)
+                iv_bookdes_icon.visibility = GONE
+                txt_book_des!!.text = resources.getString(R.string.book_cover_no_description)
             }
 
 
@@ -234,6 +253,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (flowLayout != null) {
                 flowLayout!!.removeAllViews()
                 if (!TextUtils.isEmpty(book.label) && !book.fromQingoo()) {
+                    flowLayout.visibility = VISIBLE
 //                    左郁flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
                     flowLayout!!.rowSpacing = 17f
                     flowLayout!!.maxRows = 1
@@ -247,6 +267,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                                 .forEach { flowLayout!!.addView(it, lp) }
 
                     }
+                } else {
+                    flowLayout.visibility = GONE
                 }
             }
 
@@ -279,6 +301,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 添加标签，设置标签样式
      */
     private fun buildLabel(text: String, index: Int): TextView {
+
+        var mIndex = index % labelColor.size
         val left = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
         val right = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
         val top = resources.getDimensionPixelOffset(R.dimen.dimen_margin_5)
@@ -288,9 +312,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.textSize = 12f
         textView.gravity = Gravity.CENTER
 
-        textView.setTextColor(ContextCompat.getColor(this, labelColor[index]))
+        textView.setTextColor(ContextCompat.getColor(this, labelColor[mIndex]))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            textView.background = getLabelBgColor(labelColor[index])
+            textView.background = getLabelBgColor(labelColor[mIndex])
         } else {
             textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
             textView.setBackgroundResource(R.drawable.bg_cover_label)
@@ -322,10 +346,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
+
             initializeRemoveShelfButton()
         } else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+
             initializeInsertShelfButton()
         }
     }
@@ -366,7 +390,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
             initializeRemoveShelfButton()
         } else {
             initializeInsertShelfButton()
@@ -491,19 +514,26 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
+    /**
+     * 已经在书架
+     */
     private fun initializeRemoveShelfButton() {
 //        mBackground = R.drawable.cover_bottom_btn_remove_bg
 //        mTextColor = R.color.color_theme_alpha
         book_cover_bookshelf!!.setTextColor(Color.parseColor("#4C2AD1BE"))
         book_cover_bookshelf!!.isEnabled = false
-
+        book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
 //        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
         //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
+    /**
+     * 添加到书架
+     */
     private fun initializeInsertShelfButton() {
 //        mBackground = R.drawable.cover_bottom_btn_add_bg
 //        mTextColor = R.color.color_theme_alpha
+        book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
         book_cover_bookshelf!!.setTextColor(Color.parseColor("#FF2AD1BE"))
         book_cover_bookshelf!!.isEnabled = true
 //        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
