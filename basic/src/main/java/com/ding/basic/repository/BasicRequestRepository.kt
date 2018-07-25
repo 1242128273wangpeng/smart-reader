@@ -31,6 +31,8 @@ interface BasicRequestRepository {
 
     fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? //搜索推荐
 
+    fun requestSubBook(bookName: String , bookAuthor: String): Flowable<JsonObject>? //搜索无结果 订阅
+
     fun requestHotWordsV4(): Flowable<Result<SearchResult>>?
 
     fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>>

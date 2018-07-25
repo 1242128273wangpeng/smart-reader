@@ -47,6 +47,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         /**
          * 静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
          */
+        @JvmField
         var isStayHistory = false
     }
 

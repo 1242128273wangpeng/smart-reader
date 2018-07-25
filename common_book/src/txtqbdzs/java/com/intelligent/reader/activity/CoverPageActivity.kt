@@ -32,6 +32,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.upush.OfflineNotifyActivity
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbdzs.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -41,6 +42,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -63,6 +65,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var mRecommendAuthorOtherBooks: List<RecommendBean> = ArrayList()
 
     private var mBook: Book? = null
+
+    private var isFromOfflineMessage = false
 
     companion object {
         fun launcher(context: Context, host: String, book_id: String,
@@ -134,11 +138,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (intent.hasExtra("book_chapter_id")) {
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
+
+            isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
+                    false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this, author)
             requestBookDetail()
+        } else {
+            onBackPressed()
         }
     }
 
@@ -619,8 +628,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun supportSlideBack(): Boolean {
-        return recycler_view_author.isSupport && recycler_view.isSupport
+        return ActivityLifecycleHelper.getActivities().size > 1
+                && recycler_view_author.isSupport && recycler_view.isSupport
     }
 
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
 
 }

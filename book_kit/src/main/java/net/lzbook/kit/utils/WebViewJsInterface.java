@@ -188,4 +188,10 @@ public interface WebViewJsInterface {
      * @return 逗号分隔的所有书的id
      */
     String uploadBookShelfList();
+
+    /**
+     * 搜索无结果  点击订阅
+     */
+    void showSubBookDialog(final String word);
+
 }

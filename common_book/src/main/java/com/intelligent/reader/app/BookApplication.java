@@ -16,6 +16,7 @@ import com.dy.reader.Reader;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.upush.PushMessageHandler;
 import com.intelligent.reader.upush.PushNotificationHandler;
+import com.intelligent.reader.upush.PushRegisterCallback;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.umeng.commonsdk.UMConfigure;
@@ -66,6 +67,8 @@ public class BookApplication extends BaseBookApplication {
             //防止定位不回掉导致缺失id
             MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
+            StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
+            StatService.setAppChannel(this, AppUtils.getChannelId(), true);
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
             StatService.setAppChannel(this, AppUtils.getChannelId(), true);
@@ -125,29 +128,14 @@ public class BookApplication extends BaseBookApplication {
 
             final PushAgent pushAgent = PushAgent.getInstance(this);
             pushAgent.setResourcePackageName("net.lzbook.kit");
-            //注册推送服务，每次调用register方法都会回调该接口
-            pushAgent.register(new IUmengRegisterCallback() {
-                @Override
-                public void onSuccess(String deviceToken) {
-                    //注册成功会返回device token
-                    AppLog.e(TAG, "deviceToken: " + deviceToken);
-                    String udid = OpenUDID.getOpenUDIDInContext(BookApplication.this);
-                    AppLog.e(TAG, "udid: " + udid);
-                    pushAgent.setAlias(udid, "UDID", new UTrack.ICallBack() {
-                        @Override
-                        public void onMessage(boolean isSuccess, String message) {
-                            AppLog.e(TAG, "setAlias：" + isSuccess + "  message: " + message);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(String s, String s1) {
-                    AppLog.e(TAG, "s: " + s + " --- s1: " + s1);
-                }
-            });
+            //注册推送服务
+            pushAgent.register(new PushRegisterCallback(this));
+            //消息送达处理
             pushAgent.setMessageHandler(new PushMessageHandler());
+            //消息点击处理
             pushAgent.setNotificationClickHandler(new PushNotificationHandler());
+            //最多显示3条通知
+            pushAgent.setDisplayNotificationNumber(3);
 
             // 华为通道
             HuaWeiRegister.register(this);

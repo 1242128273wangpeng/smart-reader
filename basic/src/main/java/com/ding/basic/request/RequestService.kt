@@ -115,6 +115,7 @@ interface RequestService {
         const val WEB_CATEGORY_V3 = "/{packageName}/v3/category/index.do"
         const val WEB_CATEGORY_MAN_H5 = "/h5/{packageName}/categoryBoy"
         const val WEB_CATEGORY_WOMAN_H5 = "/h5/{packageName}/categoryGirl"
+        const val WEB_CATEGORY_H5 = "/h5/{packageName}/category"
 
         /**
          * WebView推荐 / 精选页面（h5为前后端分离后的接口）
@@ -129,6 +130,12 @@ interface RequestService {
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
 
+        const val PUSH_TAG = "cn.dingyueWeb.reader/getUserTag"
+
+        /**
+         * 搜索无结果页  点击订阅  searchEmpty/userSubscription
+         */
+        const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
     }
 
     @GET(DEFAULT_BOOK)
@@ -222,5 +229,13 @@ interface RequestService {
     @FormUrlEncoded
     @POST(BOOK_END_RECOMMEND_V4)
     fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
+
+    @GET(PUSH_TAG)
+    fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+
+
+    //搜索无结果页  订阅
+    @GET(SEARCH_SUB_BOOK)
+    fun requestSubBook(@Query("bookName") bookName: String, @Query("authorName") bookAuthor: String): Flowable<JsonObject>
 
 }

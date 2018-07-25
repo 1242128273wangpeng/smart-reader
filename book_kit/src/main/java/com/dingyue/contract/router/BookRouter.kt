@@ -113,12 +113,13 @@ object BookRouter {
     }
 
     /**
-     * 针对非book类型的实体类，new一个book对象，传递三个值
+     * 针对非book类型的实体类，new一个book对象，传递4个值
      *     val book = Book()
+     *     book.author = recommendBooks.author
      *     book.book_id = recommendBooks.bookId
      *     book.book_source_id = recommendBooks.id
      *     book.book_chapter_id = recommendBooks.bookChapterId
-    BookRouter.navigateCover(this, book)
+     *     BookRouter.navigateCover(this, book)
      */
     fun navigateCover(activity: Activity, book: Book) {
         val bundle = Bundle()

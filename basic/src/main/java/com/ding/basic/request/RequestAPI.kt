@@ -7,7 +7,6 @@ import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -143,4 +142,14 @@ object RequestAPI {
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
         return requestService.requestBookRecommendV4(book_id, recommend)
     }
+
+    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
+        return requestService.requestPushTags(udid)
+    }
+
+    fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
+        return requestService.requestSubBook(bookName, bookAuthor)
+    }
+
+
 }

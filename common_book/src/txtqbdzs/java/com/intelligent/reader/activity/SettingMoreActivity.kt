@@ -6,16 +6,17 @@ import com.intelligent.reader.view.PushTimeDialog
 import com.umeng.message.IUmengCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
+import com.umeng.message.UmengMessageHandler
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.txtqbmfxs.act_setting_more.*
+import kotlinx.android.synthetic.txtqbdzs.act_setting_more.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.SettingItems
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.loge
 import java.util.*
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.loge
 
 
 class SettingMoreActivity : BaseCacheableActivity() {
