@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/icon"
-        android:paddingLeft="@dimen/padding_25"
+        android:paddingLeft="@dimen/dimen_margin_16"
         android:paddingRight="@dimen/dimen_margin_8"
         android:scaleType="center"
         android:src="@drawable/search_time"/>

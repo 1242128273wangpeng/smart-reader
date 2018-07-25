@@ -44,8 +44,7 @@
                 android:layout_centerInParent="true"
                 android:layout_toLeftOf="@id/search_result_button"
                 android:layout_toRightOf="@id/search_result_back"
-                android:background="@drawable/search_input_bg"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/search_result_count"
@@ -81,8 +80,7 @@
                 android:layout_centerInParent="true"
                 android:layout_toLeftOf="@id/search_result_button"
                 android:layout_toRightOf="@id/search_result_back"
-                android:background="@drawable/search_input_bg"
-                android:visibility="visible">
+                android:background="@drawable/search_input_bg">
 
                 <ImageView
                     android:id="@+id/search_result_clear"
