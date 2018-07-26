@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.CommonUtil;
 import com.dy.reader.activity.DisclaimerActivity;
+import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
@@ -695,19 +696,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if(view.getId() == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
+            ReaderSettings.Companion.getInstance().initValues();
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day);
-                edit.putInt("current_light_mode", Constants.MODE);
-                Constants.MODE = 61;
+                ReaderSettings.Companion.getInstance().setReadLightThemeMode(ReaderSettings.Companion.getInstance().getReadThemeMode());
+                ReaderSettings.Companion.getInstance().setReadThemeMode(61);
                 mThemeHelper.setMode(ThemeMode.NIGHT);
             } else {
                 tv_night_shift.setText(R.string.mode_night);
-                edit.putInt("current_night_mode", Constants.MODE);
-                Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+                ReaderSettings.Companion.getInstance().setReadThemeMode(ReaderSettings.Companion.getInstance().getReadLightThemeMode());
                 mThemeHelper.setMode(ThemeMode.THEME1);
             }
-            edit.putInt("content_mode", Constants.MODE);
-            edit.apply();
+            ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
         }else if(view.getId() == R.id.bt_wifi_auto){
             edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);
