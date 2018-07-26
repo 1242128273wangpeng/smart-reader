@@ -71,6 +71,7 @@
     <color name="top_navigation_bg_color">
         #1dbfbb
     </color>
+
     <color name="top_navigation_divider_color">
         #ffffff
     </color>
@@ -99,13 +100,13 @@
         #8e8d8d
     </color>
     <color name="cover_bottom_btn_add_text_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="cover_bottom_directory_text_color">
         #1c1c1c
     </color>
     <color name="cover_profile_bg2_pic">
-        #2d2d2d
+        #e4e4e4
     </color>
     <color name="home_title_background">
         #ffffff
@@ -198,7 +199,7 @@
         #777777
     </color>
     <color name="dialog_recommend">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="dialog_download_bg">
         #ffffff
@@ -297,7 +298,7 @@
         #7f000000
     </color>
     <color name="moresetting_push_text_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="download_manager_bottom_menu_bg">
         #fafafa
