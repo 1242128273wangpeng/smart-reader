@@ -54,13 +54,13 @@
         #1d1d1c
     </color>
     <color name="switchbutton_checked_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="switchbutton_unchecked_color">
         #ffffff
     </color>
     <color name="switchbutton_bg_checked_color">
-        #f0c5c5
+        #63e4e1
     </color>
     <color name="switchbutton_bg_unchecked_color">
         #e3e1e1
@@ -240,7 +240,7 @@
         #e3e1e1
     </color>
     <color name="setting_login_font_color">
-        #FFFFFF
+        #000000
     </color>
     <color name="setting_nickname_font_color">
         #FFFFFF
@@ -249,7 +249,7 @@
         #FFFFFF
     </color>
     <color name="setting_logout_font_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="login_layout_background">
         #ffffff

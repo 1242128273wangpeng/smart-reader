@@ -260,7 +260,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             btn_login!!.visibility = View.VISIBLE
             txt_nickname!!.visibility = View.GONE
             txt_userid!!.visibility = View.GONE
-            img_head!!.setImageResource(R.mipmap.my_top_pic)
+            img_head!!.setImageResource(R.drawable.default_head)
             rl_logout.visibility = View.GONE
 
             if (txt_login_des != null) {
