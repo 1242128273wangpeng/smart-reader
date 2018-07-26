@@ -13,7 +13,7 @@
         android:id="@+id/rl_title_book_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/theme_primary"
+        android:background="@color/primary"
         android:fitsSystemWindows="true">
 
 
