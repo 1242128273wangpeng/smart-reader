@@ -44,7 +44,7 @@ class SettingMoreActivity :BaseCacheableActivity() {
     private fun initData() {
         settingItemsHelper = SettingItemsHelper.getSettingHelper(applicationContext)
         settingItems = settingItemsHelper.values
-        btn_push.isChecked = settingItems.isPush
+        btn_push.isChecked = settingItems.isBookUpdatePush
         btn_push_sound.isChecked = settingItems.isSoundOpen
         btn_push_time.isChecked = settingItems.isSetPushTime
         txt_push_time_setting.isEnabled = btn_push_time.isChecked
@@ -116,7 +116,7 @@ class SettingMoreActivity :BaseCacheableActivity() {
             btn_push_time.isEnabled = status
         }
 
-        settingItemsHelper.putBoolean(settingItemsHelper.openPush, status)
+        settingItemsHelper.putBoolean(settingItemsHelper.openBookPush, status)
 
         setPushSound(status, status)
         setPushTime(status, status)

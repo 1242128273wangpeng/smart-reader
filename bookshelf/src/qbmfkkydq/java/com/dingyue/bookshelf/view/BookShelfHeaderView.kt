@@ -54,7 +54,32 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
 
     private var mBook: Book? = null
     private var mContext: Activity? = null
-    fun setData(book: Book, title: String?, context: Activity) {
+    fun setData(book: Book?, title: String?, context: Activity) {
+
+        if (book == null) {
+            ll_no_book.visibility = View.VISIBLE
+            ll_has_book.visibility = View.GONE
+        } else {
+            ll_no_book.visibility = View.GONE
+            ll_has_book.visibility = View.VISIBLE
+            setBookData(book, title, context)
+        }
+
+
+    }
+
+    fun setViewClickEnable(viewclick: Boolean) {
+        if (viewclick) {
+            alpha = 1f
+        } else {
+            alpha = 0.3f
+        }
+
+        iv_book_icon.isClickable = viewclick
+        txt_continue_read.isClickable = viewclick
+    }
+
+    private fun setBookData(book: Book, title: String?, context: Activity) {
         mBook = book
         mContext = context
         if (!TextUtils.isEmpty(book.name)) {
@@ -134,7 +159,6 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
                     .load(R.drawable.common_book_cover_default_icon)
                     .into(iv_book_icon)
         }
-
 
     }
 

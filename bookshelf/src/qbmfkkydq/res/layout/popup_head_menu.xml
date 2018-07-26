@@ -11,15 +11,11 @@
         android:id="@+id/rl_popup_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bookshelf_head_popup_bg">
+        android:background="@drawable/bookshelf_more_bg">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="25dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -69,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:gravity="center"
-                    android:text="@string/book_sort"/>
+                    android:text="书籍排序" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

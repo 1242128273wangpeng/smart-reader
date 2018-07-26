@@ -3,6 +3,7 @@ package com.dingyue.bookshelf
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
@@ -11,7 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
 import com.dingyue.bookshelf.childmvp.ChildBookShelfPresenter
@@ -39,10 +39,11 @@ import java.util.*
  */
 
 class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuManager {
-    override fun onCurrentBookCommplete(book: Book, title: String?) {
+    override fun onCurrentBookCommplete(book: Book?, title: String?) {
 
-        addHeaderView(book,title)
+        addHeaderView(book, title)
     }
+
 
     private val popupHeight by lazy {
         resources.getDimensionPixelSize(R.dimen.bookshelf_popup_height)
@@ -51,6 +52,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     private var iconBgViewHeight = 1
     private var headerViewHeight = 1
     private var mScrollDistance = 0
+    private var isEditMode = false// 是否在编辑模式
 
     private val bookShelfPresenter: ChildBookShelfPresenter by lazy { ChildBookShelfPresenter(this) }
 
@@ -131,12 +133,28 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             override fun longClickedBookShelfItem(): Boolean {
                 if (!bookShelfAdapter.isRemove) {
                     showRemoveMenu()
+                    isEditMode = true
+
                     BookShelfLogger.uploadBookShelfLongClickBookShelfEdit()
                 }
                 return false
             }
 
-        }, bookShelfPresenter.iBookList, false)
+        }, bookShelfPresenter.iBookList, true)
+    }
+
+    /**
+     * 如果编辑书籍状态下，headerview不可点击
+     */
+    private fun changeHeaderViewState(edit: Boolean) {
+        if (edit) {
+
+            headerView.setViewClickEnable(false)
+        } else {
+            headerView.setViewClickEnable(true)
+            headerView.alpha = 1f
+            headerView.isEnabled = true
+        }
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {
@@ -179,7 +197,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
     var titleHeight = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        headerViewHeight=AppUtils.dip2px(view.context,144f)
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
@@ -216,7 +234,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         })
 
         img_head_personal.setOnClickListener {
-            RouterUtil.navigation(requireActivity(),RouterConfig.SETTING_ACTIVITY)
+            RouterUtil.navigationWithTransition(requireActivity(), RouterConfig.SETTING_ACTIVITY
+                    , android.R.anim.slide_in_left, R.anim.slide_out_left)
 
             BookShelfLogger.uploadBookShelfPersonal()
         }
@@ -242,6 +261,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         }
 
         txt_editor_finish.setOnClickListener {
+            isEditMode = false
             dismissRemoveMenu()
         }
 
@@ -319,7 +339,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 mScrollDistance += dy
                 var percent = mScrollDistance * 1f / headerViewHeight
                 var alpha = 255 * percent
-                setTitleLayoutAlpha(alpha.toInt())
+                setTitleLayoutAlpha(alpha.toInt(), percent)
             }
         })
 
@@ -336,35 +356,50 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         BookShelfHeaderView(recl_content.context)
     }
 
-    private fun addHeaderView(cReadBook: Book, cTitle: String?) {
+    /**
+     * 当前阅读书籍不为空时添加头部视图,为空时显示头部文案提示
+     */
+    private fun addHeaderView(cReadBook: Book?, cTitle: String?) {
 
         if (hfRecyclerControl.getHeaderCount() == 0) {
             hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
             hfRecyclerControl.addHeaderView(headerView)
             headerView.post {
-                headerViewHeight = headerView.height
+                if (headerView.height!=0){
+                    headerViewHeight = headerView.height
+                }
                 var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
                 headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
 
             }
-
-
         }
         headerView.setData(cReadBook, cTitle, activity!!)
+
     }
 
-    private fun setTitleLayoutAlpha(alpha: Int) {
-        var alpha = alpha
-        if (alpha > 255) {
-            alpha = 255
+    /**
+     * 改变头部headerview的透明度
+     */
+    private fun setTitleLayoutAlpha(alpha: Int, percent: Float) {
+        if (!isEditMode) {
+            var rAlpha = alpha
+            if (rAlpha > 255) {
+                rAlpha = 255
+            }
+            ll_container.setBackgroundColor(Color.argb(rAlpha, 42, 202, 176))
+            var rPercent = percent
+            if (rPercent > 1) {
+                rPercent = 1f
+            }
+            headerView.alpha = (1 - rPercent)
         }
-        ll_container.setBackgroundColor(Color.argb(alpha, 42, 202, 176))
+
     }
 
     private fun createHeaderView(): View {
         refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_start)
         refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
-        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow_white)
         refreshHeader.pgbar_refresh_loading.visibility = View.GONE
         return refreshHeader
     }
@@ -543,6 +578,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     }
 
     override fun showRemoveMenu() {
+        changeHeaderViewState(true)
         srl_refresh.setPullToRefreshEnabled(false)
 
         bookShelfPresenter.removeAd()
@@ -563,6 +599,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     }
 
     override fun dismissRemoveMenu() {
+        changeHeaderViewState(false)
         srl_refresh.setPullToRefreshEnabled(true)
 
         bookShelfAdapter.insertRemoveState(false)

@@ -170,6 +170,7 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
+        firstGuide = false;    // 不进入引导界面，开启时请注释掉
         if (firstGuide) {
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
                     getApplicationContext()).edit();

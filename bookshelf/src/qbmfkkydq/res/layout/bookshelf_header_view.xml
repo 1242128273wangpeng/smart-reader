@@ -1,94 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingLeft="20dp"
-    android:paddingTop="32dp">
-
-    <FrameLayout
-        android:layout_width="80dp"
-        android:layout_height="113dp">
-
-        <ImageView
-            android:id="@+id/iv_book_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/common_book_cover_default_icon"
-            android:scaleType="fitXY" />
-
-        <TextView
-            android:id="@+id/txt_book_states_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:textColor="#fff"
-            android:textSize="10sp"
-            tools:background="#ff0000"
-            tools:text="更" />
-
-    </FrameLayout>
+    android:layout_height="144dp">
 
     <LinearLayout
-        android:layout_marginTop="18dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_weight="1"
+        android:id="@+id/ll_has_book"
+        android:layout_width="match_parent"
+        android:layout_height="113dp"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp">
+
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="113dp">
+
+            <ImageView
+                android:id="@+id/iv_book_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/common_book_cover_default_icon"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/txt_book_states_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:textColor="#fff"
+                android:textSize="10sp"
+                tools:background="#ff0000"
+                tools:text="更" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="18dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_book_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                tools:text="斗破苍穹" />
+
+            <TextView
+                android:id="@+id/txt_book_chapter_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="#ccffffff"
+                android:textSize="12sp"
+                tools:text="第1080章" />
+
+            <TextView
+                android:id="@+id/txt_book_chapter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:singleLine="true"
+                android:textColor="#ccffffff"
+                android:textSize="12sp"
+                tools:text="1080/1080章" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_continue_read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/bookshelf_bookitem_header_tv_bg"
+            android:paddingBottom="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="4dp"
+            android:text="继续阅读"
+            android:textColor="#ffffff"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_no_book"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txt_book_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lines="1"
-            android:singleLine="true"
+            android:text="@string/bookshelf_empty_title"
             android:textColor="#ffffff"
-            android:textSize="18sp"
-            tools:text="斗破苍穹" />
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/txt_book_chapter_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:singleLine="true"
-            android:textColor="#ccffffff"
-            android:textSize="12sp"
-            tools:text="第1080章" />
+            android:layout_marginTop="13dp"
+            android:text="@string/bookshelf_noreadingbook_title"
+            android:textColor="#c7ffffff"
+            android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/txt_book_chapter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:singleLine="true"
-            android:textColor="#ccffffff"
-            android:textSize="12sp"
-            tools:text="1080/1080章" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/txt_continue_read"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/bookshelf_bookitem_header_tv_bg"
-        android:paddingBottom="4dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="4dp"
-        android:text="继续阅读"
-        android:textColor="#ffffff"
-        android:textSize="13sp" />
-
-</LinearLayout>
+</FrameLayout>

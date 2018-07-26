@@ -315,6 +315,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 添加标签，设置标签样式
      */
     private fun buildLabel(text: String, index: Int): TextView {
+        var position=index%labelColor.size
+
         val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
         val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
         val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
@@ -324,9 +326,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.textSize = 12f
         textView.gravity = Gravity.CENTER
 
-        textView.setTextColor(ContextCompat.getColor(this, labelColor[index]))
+        textView.setTextColor(ContextCompat.getColor(this, labelColor[position]))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            textView.background = getLabelBgColor(labelColorAlpha[index], labelColor[index])
+            textView.background = getLabelBgColor(labelColorAlpha[position], labelColor[position])
         } else {
             textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
             textView.setBackgroundResource(R.drawable.bg_cover_label)
