@@ -92,7 +92,7 @@ public class StartLogClickUtil {
      * 个人中心相关点位
      * **/
     //个人中心页
-    public static final String PAGE_PERSONAL = "PEASONAL";
+    public static final String PAGE_PERSONAL = "PERSONAL";
     public static final String LOGINRESULT = "LOGINRESULT";//登录结果
     public static final String PHONELOGIN = "PHONELOGIN";//点击输入手机号
     public static final String OTHERLOGIN = "OTHERLOGIN";//点击第三方登录
@@ -116,7 +116,6 @@ public class StartLogClickUtil {
     public static final String ACTION_PERSONAL_CACHE_CLEAR = "CACHECLEAR";//点击清除缓存
     public static final String ACTION_PERSONAL_VERSION_UPDATE = "VERSIONUPDATE";//点击版本更新
     public static final String ACTION_PERSONAL_WIFI_AUTO_CACHE = "WIFI_AUTOCACHE";//点击WIFI自动缓存
-
 
 
     /***
