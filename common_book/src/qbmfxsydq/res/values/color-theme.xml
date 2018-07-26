@@ -6,16 +6,16 @@
     <color name="divider_line">#f0f0f0</color>
 
     <color name="colorPrimary">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="colorAccent">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="color_primary">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="theme_primary">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="base_bg">
         #ffffff
@@ -67,6 +67,9 @@
     </color>
     <color name="top_navigation_text_color">
         #ffffff
+    </color>
+    <color name="top_navigation_bg_color">
+        #1dbfbb
     </color>
     <color name="top_navigation_divider_color">
         #ffffff
