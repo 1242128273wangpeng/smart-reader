@@ -98,11 +98,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestUserInformation(token, appid, openid)
     }
 
-    override fun requestDownTaskConfig(bookID: String, bookSourceID: String
-                                       , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
-        return RequestAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
-    }
-
     override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return RequestAPI.requestCoverRecommend(book_id, recommend)
     }
@@ -134,6 +129,12 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return MicroAPI.requestAuthAccess()
     }
 
+    /***************** 微服务同步鉴权 *****************/
+
+    override fun requestAuthAccessSync(): Call<BasicResult<String>> {
+        return MicroAPI.requestAuthAccessSync()
+    }
+
     override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
         return MicroAPI.requestBookDetail(book_id, book_source_id, book_chapter_id)
     }
@@ -148,6 +149,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
         return MicroAPI.requestCoverBatch(requestBody)
+    }
+
+    override fun requestDownTaskConfig(bookID: String, bookSourceID: String
+                                       , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
+        return MicroAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 
     override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {

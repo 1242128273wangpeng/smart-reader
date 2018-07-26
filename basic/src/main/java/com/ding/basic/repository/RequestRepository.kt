@@ -65,6 +65,8 @@ interface RequestRepository {
 
     fun requestAuthAccess(callback: ((Boolean) -> Unit)?)
 
+    fun requestAuthAccessSync(): Boolean
+
     fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<ArrayList<String>>)
 
     /************************* 本地数据 *************************/

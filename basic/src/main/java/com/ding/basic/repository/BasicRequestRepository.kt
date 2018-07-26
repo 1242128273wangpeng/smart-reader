@@ -50,6 +50,8 @@ interface BasicRequestRepository {
 
     fun requestAuthAccess(): Flowable<BasicResult<String>>?
 
+    fun requestAuthAccessSync(): Call<BasicResult<String>>?
+
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>?
 
     fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>>

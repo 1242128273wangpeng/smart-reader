@@ -40,6 +40,10 @@ object MicroAPI {
         return microService.requestAuthAccess()
     }
 
+    fun requestAuthAccessSync(): Call<BasicResult<String>> {
+        return microService.requestAuthAccessSync()
+    }
+
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
         if (book_chapter_id == "") {
             return microService.requestBookDetail(book_id, book_source_id)
@@ -60,5 +64,10 @@ object MicroAPI {
 
     fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
         return microService.requestBookUpdate(requestBody)
+    }
+
+    fun requestDownTaskConfig(bookID: String, bookSourceID: String
+                              , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
+        return microService.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 }

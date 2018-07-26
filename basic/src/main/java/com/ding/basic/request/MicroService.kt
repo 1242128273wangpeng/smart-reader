@@ -24,11 +24,16 @@ interface MicroService {
         //书架每天一次批量更新接口
         const val COVER_BATCH="/union/book/coverBatch"
 
+        //获得缓存方式和package 列表
+        const val DOWN_TASK_CONFIG = "/union/book/down"
+
     }
 
     @GET(AUTH_ACCESS)
-    fun requestAuthAccess(): Flowable<BasicResult<String>>
+    fun requestAuthAccess(): Flowable<BasicResult<String>>?
 
+    @GET(AUTH_ACCESS)
+    fun requestAuthAccessSync(): Call<BasicResult<String>>
 
     @GET(COVER_DETAIL)
     fun requestBookDetail(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Book>>
@@ -52,5 +57,9 @@ interface MicroService {
     @POST(COVER_BATCH)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<List<Book>>>
+
+    /************************************* 缓存相关 *************************************/
+    @GET(DOWN_TASK_CONFIG)
+    fun requestDownTaskConfig(@Query(value = "bookId") str: String, @Query(value = "bookSourceId") str2: String, @Query(value = "type") i: Int, @Query(value = "chapterId") str3: String): Flowable<BasicResult<CacheTaskConfig>>
 
 }

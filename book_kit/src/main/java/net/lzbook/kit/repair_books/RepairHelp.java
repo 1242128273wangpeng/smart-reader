@@ -44,139 +44,139 @@ public class RepairHelp {
 
     private static SharedPreferences  sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0);
 
-    public static synchronized void parserData(UpdateBean repairData) {
-        if (repairData == null) {
-            return;
-        }
+//    public static synchronized void parserData(UpdateBean repairData) {
+//        if (repairData == null) {
+//            return;
+//        }
+//
+//        final List<BookFix> fix_books = repairData.getFix_books();
+//        final List<FixContent> fix_contents = repairData.getFix_contents();
+//
+//        if (fix_books != null && !fix_books.isEmpty()) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    saveBookFix(fix_books);
+//                }
+//            }).start();
+//        }
+//
+//        if (fix_contents != null && !fix_contents.isEmpty()) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    fixChapterContent(fix_contents);
+//                }
+//            }).start();
+//        }
+//    }
 
-        final List<BookFix> fix_books = repairData.getFix_books();
-        final List<FixContent> fix_contents = repairData.getFix_contents();
+//    private static void saveBookFix(List<BookFix> fix_books) {
+//        for (BookFix BookFixBean : fix_books) {
+//            Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(BookFixBean.getBook_id());
+//            if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
+//                if (book.getList_version() == -1 || book.getC_version() == -1) {
+//                    book.setList_version(BookFixBean.getList_version());
+//                    book.setC_version(BookFixBean.getC_version());
+//                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+//                } else {
+//                    BookFix bookFix = new BookFix();
+//                    bookFix.setBook_id(BookFixBean.getBook_id());
+//                    bookFix.setList_version(BookFixBean.getList_version());
+//                    bookFix.setC_version(BookFixBean.getC_version());
+//                    bookFix.setFix_type(2);
+//
+//                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
+//                }
+//            }
+//        }
+//    }
 
-        if (fix_books != null && !fix_books.isEmpty()) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    saveBookFix(fix_books);
-                }
-            }).start();
-        }
+//    private static void fixChapterContent(List<FixContent> fix_contents) {
+//        for (FixContent fixContentBook : fix_contents) {
+//            if (fixContentBook.getChapters() != null && !fixContentBook.getChapters().isEmpty()) {
+//                if (TextUtils.isEmpty(fixContentBook.getBook_id())) {
+//                    continue;
+//                }
+//                ChapterDaoHelper chapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), fixContentBook.getBook_id());
+//                ContextFixState fixState = new ContextFixState();
+//
+//                boolean isNoChapterID = false;
+//                for (Chapter c : fixContentBook.getChapters()) {
+//                    //1.修复章节表
+//                    if (TextUtils.isEmpty(c.getChapter_id())) {
+//                        fixState.addMsgState(false);
+//                        continue;
+//                    }
+//                    Chapter chapter = chapterDao.getChapterById(c.getChapter_id());
+//                    if (chapter == null) {
+//                        // 根据章节id找不到该章节,这种情况可能是2016年数据流改版之前缓存的书籍
+//                        // 处理方式: 进入fix_book逻辑
+//                        fixState.addMsgState(false);
+//                        isNoChapterID = true;
+//                        continue;
+//                    }
+//                    chapter.setBook_source_id(c.getBook_source_id());
+//                    chapter.setName(c.getName());
+//                    chapter.setHost(c.getHost());
+//                    chapter.setUrl(c.getUrl());
+//                    chapter.setChapter_status(c.getChapter_status());
+//                    chapter.setUpdate_time(c.getUpdate_time());
+//                    chapter.setWord_count(c.getWord_count());
+//                    boolean isUpdateChapterByIdSucess = chapterDao.updateChapter(chapter);
+//                    fixState.addMsgState(isUpdateChapterByIdSucess);
+//                    AppLog.d(TAG, "fixChapterContent --- chapter.chapter_name = " + chapter.getName() + "isUpdateChapterByIdSucess = " + isUpdateChapterByIdSucess);
+//                    //2.修复章节缓存内容
+//                    fixChapterContent(chapter, fixState);
+//
+//                }
+//
+//                if (fixState.getFixState()) {
+//                    Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(fixContentBook.getBook_id());
+//                    if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
+//                        book.setList_version(fixContentBook.getList_version());
+//                        book.setC_version(fixContentBook.getC_version());
+//                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
+//                        if (fixState.getSaveFixState()) {
+//                            BookFix bookFix = new BookFix();
+//                            bookFix.setBook_id(book.getBook_id());
+//                            bookFix.setFix_type(1);
+//                            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
+//                        }
+//                    }
+//                }
+//
+//                if (isNoChapterID) {
+//                    BookFix bookFix = new BookFix();
+//                    bookFix.setBook_id(fixContentBook.getBook_id());
+//                    bookFix.setList_version(fixContentBook.getList_version());
+//                    bookFix.setC_version(fixContentBook.getC_version());
+//                    bookFix.setFix_type(2);
+//                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
+//                }
+//
+//            }
+//        }
+//    }
 
-        if (fix_contents != null && !fix_contents.isEmpty()) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    fixChapterContent(fix_contents);
-                }
-            }).start();
-        }
-    }
-
-    private static void saveBookFix(List<BookFix> fix_books) {
-        for (BookFix BookFixBean : fix_books) {
-            Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(BookFixBean.getBook_id());
-            if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
-                if (book.getList_version() == -1 || book.getC_version() == -1) {
-                    book.setList_version(BookFixBean.getList_version());
-                    book.setC_version(BookFixBean.getC_version());
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
-                } else {
-                    BookFix bookFix = new BookFix();
-                    bookFix.setBook_id(BookFixBean.getBook_id());
-                    bookFix.setList_version(BookFixBean.getList_version());
-                    bookFix.setC_version(BookFixBean.getC_version());
-                    bookFix.setFix_type(2);
-
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
-                }
-            }
-        }
-    }
-
-    private static void fixChapterContent(List<FixContent> fix_contents) {
-        for (FixContent fixContentBook : fix_contents) {
-            if (fixContentBook.getChapters() != null && !fixContentBook.getChapters().isEmpty()) {
-                if (TextUtils.isEmpty(fixContentBook.getBook_id())) {
-                    continue;
-                }
-                ChapterDaoHelper chapterDao = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), fixContentBook.getBook_id());
-                ContextFixState fixState = new ContextFixState();
-
-                boolean isNoChapterID = false;
-                for (Chapter c : fixContentBook.getChapters()) {
-                    //1.修复章节表
-                    if (TextUtils.isEmpty(c.getChapter_id())) {
-                        fixState.addMsgState(false);
-                        continue;
-                    }
-                    Chapter chapter = chapterDao.getChapterById(c.getChapter_id());
-                    if (chapter == null) {
-                        // 根据章节id找不到该章节,这种情况可能是2016年数据流改版之前缓存的书籍
-                        // 处理方式: 进入fix_book逻辑
-                        fixState.addMsgState(false);
-                        isNoChapterID = true;
-                        continue;
-                    }
-                    chapter.setBook_source_id(c.getBook_source_id());
-                    chapter.setName(c.getName());
-                    chapter.setHost(c.getHost());
-                    chapter.setUrl(c.getUrl());
-                    chapter.setChapter_status(c.getChapter_status());
-                    chapter.setUpdate_time(c.getUpdate_time());
-                    chapter.setWord_count(c.getWord_count());
-                    boolean isUpdateChapterByIdSucess = chapterDao.updateChapter(chapter);
-                    fixState.addMsgState(isUpdateChapterByIdSucess);
-                    AppLog.d(TAG, "fixChapterContent --- chapter.chapter_name = " + chapter.getName() + "isUpdateChapterByIdSucess = " + isUpdateChapterByIdSucess);
-                    //2.修复章节缓存内容
-                    fixChapterContent(chapter, fixState);
-
-                }
-
-                if (fixState.getFixState()) {
-                    Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(fixContentBook.getBook_id());
-                    if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
-                        book.setList_version(fixContentBook.getList_version());
-                        book.setC_version(fixContentBook.getC_version());
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book);
-                        if (fixState.getSaveFixState()) {
-                            BookFix bookFix = new BookFix();
-                            bookFix.setBook_id(book.getBook_id());
-                            bookFix.setFix_type(1);
-                            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
-                        }
-                    }
-                }
-
-                if (isNoChapterID) {
-                    BookFix bookFix = new BookFix();
-                    bookFix.setBook_id(fixContentBook.getBook_id());
-                    bookFix.setList_version(fixContentBook.getList_version());
-                    bookFix.setC_version(fixContentBook.getC_version());
-                    bookFix.setFix_type(2);
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBookFix(bookFix);
-                }
-
-            }
-        }
-    }
-
-    private static void fixChapterContent(Chapter chapter, ContextFixState fixState) {
-        if (chapter != null && DataCache.isNewCacheExists(chapter)) {
-
-            try {
-                chapter.setContent(RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestChapterContentSync(chapter));
-
-                String content = chapter.getContent();
-                if (TextUtils.isEmpty(content)) {
-                    content = "null";
-                }
-
-                fixState.addContState(DataCache.fixChapter(content, chapter));
-            } catch (Exception e) {
-                fixState.addContState(false);
-                e.printStackTrace();
-            }
-        }
-    }
+//    private static void fixChapterContent(Chapter chapter, ContextFixState fixState) {
+//        if (chapter != null && DataCache.isNewCacheExists(chapter)) {
+//
+//            try {
+//                chapter.setContent(RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestChapterContentSync(chapter));
+//
+//                String content = chapter.getContent();
+//                if (TextUtils.isEmpty(content)) {
+//                    content = "null";
+//                }
+//
+//                fixState.addContState(DataCache.fixChapter(content, chapter));
+//            } catch (Exception e) {
+//                fixState.addContState(false);
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     public static void showFixMsg(Activity activity, Book book, FixCallBack fixCallBack) {
 

@@ -32,7 +32,6 @@ import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
-
     companion object {
 
         @Volatile
@@ -457,12 +456,19 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         }
     }
 
+    /**
+     * 同步的请求章节内容的方法
+     */
     @Throws(IOException::class)
+    @Synchronized
     fun requestChapterContentSync(chapter: Chapter): String {
         val basicResult = InternetRequestRepository.loadInternetRequestRepository(context = context).requestChapterContentSync(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)?.execute()?.body()
-        if (basicResult != null && basicResult.checkResultAvailable()) {
+        if (basicResult != null) {
             if (basicResult.checkPrivateKeyExpire()) {
-                requestAuthAccess(null)
+                if (requestAuthAccessSync()) {
+                    return requestChapterContentSync(chapter)
+                }
+
             } else if (basicResult.checkResultAvailable()) {
                 if (basicResult.data!!.content != null) {
                     basicResult.data!!.content = basicResult.data!!.content!!.replace("\\n", "\n")
@@ -1085,8 +1091,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
-                              , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
-        return InternetRequestRepository.loadInternetRequestRepository(context).requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
+                              , type: Int, startChapterID: String
+                              , requestSubscriber: RequestSubscriber<BasicResult<CacheTaskConfig>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)!!
+                .subscribeBy(
+                        onNext = { ret ->
+                            if (ret.checkPrivateKeyExpire()) {
+                                requestAuthAccess {
+                                    if (it) {
+                                        requestDownTaskConfig(bookID, bookSourceID, type, startChapterID, requestSubscriber)
+                                    } else {
+                                        requestSubscriber.onError(Throwable("鉴权请求异常！"))
+                                    }
+                                }
+                            } else {
+                                requestSubscriber.onNext(ret)
+                            }
+                        },
+
+                        onError = { t ->
+                            requestSubscriber.onError(t)
+                        }
+
+                )
     }
 
     @Synchronized
@@ -1151,5 +1178,33 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             requestSubscriber.onComplete()
                         }
                 )
+    }
+
+    override fun requestAuthAccessSync(): Boolean {
+        val result = InternetRequestRepository.loadInternetRequestRepository(context).requestAuthAccessSync().execute().body()
+
+        if (result != null && result.checkResultAvailable()) {
+            Logger.e("鉴权请求结果正常！")
+
+            val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
+
+            if (message != null && message.isNotEmpty()) {
+                val access = Gson().fromJson(message, Access::class.java)
+                if (access != null) {
+                    if (access.publicKey != null) {
+                        Config.insertPublicKey(access.publicKey!!)
+                    }
+
+                    if (access.privateKey != null) {
+                        Config.insertPrivateKey(access.privateKey!!)
+                    }
+                }
+            }
+
+            return true
+        } else {
+            Logger.e("鉴权请求结果异常！")
+            return false
+        }
     }
 }
