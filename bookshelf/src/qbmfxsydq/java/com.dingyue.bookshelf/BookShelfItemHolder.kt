@@ -1,6 +1,7 @@
 package com.dingyue.bookshelf
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,76 +22,80 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, isRemove: Boolean) = with(itemView) {
 
-        if (book.img_url != null && book.img_url!!.isNotEmpty() && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
+        if (!TextUtils.isEmpty(book.name)) {
+            book_shelf_name.setText(book.name)
+        }
+
+        if (!TextUtils.isEmpty(book.author)) {
+            book_shelf_author.setText(book.author)
+        }
+
+        if (book.sequence + 1 > book.chapter_count) {
+            book.sequence = book.chapter_count - 1
+        }
+
+        if (book.sequence >= 0) {
+            book_shelf_unread.setText((book.sequence + 1).toString() + "/" + book.chapter_count + "章")
+        } else {
+            book_shelf_unread.setText("未读")
+        }
+
+
+        // 是否连载
+        if (!book.status.equals("FINISH")) {
+            book_shelf_status_finish.setVisibility(View.VISIBLE)
+        } else {
+            book_shelf_status_finish.setVisibility(View.GONE)
+        }
+        // 是否有更新
+        if (book.update_status!=1) {
+            book_shelf_status_update.setVisibility(View.GONE)
+        } else {
+           book_shelf_status_update.setVisibility(View.VISIBLE)
+            book_shelf_status_finish.setVisibility(View.GONE)
+        }
+        if (book_shelf_update_time != null) {
+            book_shelf_update_time.setText(
+                    Tools.compareTime(AppUtils.formatter, book.last_check_update_time) + "更新: ")
+        }
+
+        if (!TextUtils.isEmpty(book.img_url) && !book.img_url.equals(
+                ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
             Glide.with(itemView.context.applicationContext)
-                    .load(book.img_url)
-                    .placeholder(R.drawable.common_book_cover_default_icon)
-                    .error(R.drawable.common_book_cover_default_icon)
+                    .load(book.img_url).placeholder(R.drawable.icon_book_cover_default)
+                    .error(R.drawable.icon_book_cover_default)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(img_book_cover)
+                    .into(book_shelf_image)
         } else {
             Glide.with(itemView.context.applicationContext)
-                    .load(R.drawable.common_book_cover_default_icon)
-                    .into(img_book_cover)
+                    .load(R.drawable.icon_book_cover_default)
+                    .into(book_shelf_image)
         }
 
-        if (book.name != null && book.name!!.isNotEmpty()) {
-            txt_book_name.text = book.name
-        }
 
-        if (book.last_chapter != null) {
+        //显示最后一个章节
+        book_shelf_last_chapter.text = book.last_chapter?.name ?: ""
 
-            val count: Int = if (book.sequence <= 0) {
-                book.chapter_count
-            } else {
-                book.chapter_count - (book.sequence + 1)
-            }
-
-            if (count > 0) {
-                txt_book_unread_chapters.visibility = View.VISIBLE
-                img_book_unread_chapters.visibility = View.VISIBLE
-                val unread = "${count}章"
-                txt_book_unread_chapters.text = unread
-            } else {
-                txt_book_unread_chapters.visibility = View.GONE
-                img_book_unread_chapters.visibility = View.GONE
-            }
-
-            txt_book_latest_chapter.text = book.last_chapter?.name
-
-            val updateTime = "${Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time)}更新"
-            txt_book_last_update_time.text = updateTime
-        }
-
-        when {
-            book.update_status == 1 -> { //更新
-                img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
-            }
-            book.status == "FINISH" -> { //完结
-                img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
-            }
-            else -> img_book_status.visibility = View.GONE
-        }
 
         if (isRemove) {
-            img_book_select_state.visibility = View.VISIBLE
-            img_book_status.visibility = View.GONE
+            check_delete.setVisibility(View.VISIBLE)
+            book_shelf_status_finish.setVisibility(View.GONE)
+            book_shelf_status_update.setVisibility(View.GONE)
             if (contains) {
-                img_book_select_state.setBackgroundResource(R.drawable.bookshelf_item_selected_icon)
+                check_delete.setBackgroundResource(R.drawable.readsetting_check)
             } else {
-                img_book_select_state.setBackgroundResource(R.drawable.bookshelf_item_unselected_icon)
+                check_delete.setBackgroundResource(R.drawable.readsetting_uncheck)
             }
         } else {
-            img_book_select_state.visibility = View.GONE
+            check_delete.setVisibility(View.GONE)
+
         }
 
-        rl_book_content.setOnClickListener {
+        itemView.setOnClickListener {
             bookshelfItemListener.clickedBookShelfItem(book, adapterPosition)
         }
 
-        rl_book_content.setOnLongClickListener {
+        itemView.setOnLongClickListener {
             bookshelfItemListener.longClickedBookShelfItem()
         }
 
