@@ -5,35 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:ignore="RtlHardcoded">
-
 
     <RelativeLayout
         android:id="@+id/rl_disclaimer"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:layout_height="48dp">
+        android:fitsSystemWindows="true"
+        android:focusableInTouchMode="true">
 
-        <ImageView
-            android:id="@+id/img_back"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:src="@drawable/common_back_icon"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
 
-        <TextView
-            android:id="@+id/txt_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/disclaimer_statement"
-            android:textColor="#FF212832"
-            android:textSize="17sp"/>
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/common_back_icon"/>
+
+            <TextView
+                android:id="@+id/txt_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/disclaimer_statement"
+                android:textColor="#FF212832"
+                android:textSize="17sp"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <ImageView
@@ -41,8 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_disclaimer"
-        android:scaleType="fitXY"
         android:contentDescription="@string/module_name"
+        android:scaleType="fitXY"
         android:src="@drawable/title_shadow"/>
 
     <ScrollView
