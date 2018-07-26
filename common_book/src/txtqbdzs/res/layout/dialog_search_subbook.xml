@@ -60,6 +60,7 @@
                 android:id="@+id/edt_bookname"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
+                android:maxLength="25"
                 android:layout_toLeftOf="@id/img_clear_name"
                 android:layout_toStartOf="@id/img_clear_name"
                 android:background="@null"
@@ -103,6 +104,7 @@
                 android:hint="@string/seach_subbook_book_author"
                 android:paddingLeft="12dp"
                 android:singleLine="true"
+                android:maxLength="25"
                 android:textColorHint="#B9B9B9"
                 android:textSize="@dimen/text_size_14"/>
 
