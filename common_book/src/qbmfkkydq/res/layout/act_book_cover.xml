@@ -60,7 +60,7 @@
             <RelativeLayout
                 android:id="@+id/rl1"
                 android:layout_width="match_parent"
-                android:layout_height="134dp"
+                android:layout_height="140dp"
                 android:layout_margin="16dp"
                 android:orientation="vertical">
 
@@ -68,16 +68,15 @@
                 <FrameLayout
                     android:id="@+id/fl_bookicon_layout"
                     android:layout_width="95dp"
-                    android:layout_height="140dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@drawable/bg_bookdetail_icon"
-                    android:paddingBottom="5dp">
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="16dp">
 
 
                     <ImageView
                         android:id="@+id/book_cover_image"
-                        android:layout_width="95dp"
-                        android:layout_height="134dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="fitXY"
                         android:src="@mipmap/bookshelf_book_cover_default" />
@@ -89,11 +88,18 @@
                         android:layout_gravity="bottom|right"
                         android:background="@drawable/bg_bookcover_score"
                         android:paddingBottom="3dp"
+                        android:layout_marginBottom="5dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:paddingTop="2dp"
                         android:textColor="#ffffff"
                         android:textSize="10sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/bg_bookdetail_icon" />
                 </FrameLayout>
 
                 <TextView
@@ -168,8 +174,8 @@
                     android:layout_gravity="bottom|right"
                     android:layout_marginBottom="13dp"
                     android:layout_marginRight="3dp"
-                    android:padding="3dp"
                     android:background="@drawable/bg_bookdetail_tv_more"
+                    android:padding="3dp"
                     android:src="@drawable/bookcover_icon_down" />
             </FrameLayout>
 

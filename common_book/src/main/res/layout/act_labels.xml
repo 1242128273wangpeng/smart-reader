@@ -27,7 +27,7 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:scaleType="fitCenter"
-                android:src="@mipmap/top_back"/>
+                android:src="@drawable/common_back_icon"/>
 
             <TextView
                 android:id="@+id/find_book_detail_title"
