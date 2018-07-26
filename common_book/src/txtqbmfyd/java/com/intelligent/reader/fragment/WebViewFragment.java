@@ -131,7 +131,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             contentView = (TopShadowWebView) rootView.findViewById(R.id.web_content_view);
             contentView.setTopShadow(topShadowView);
             if (Build.VERSION.SDK_INT >= 11) {
-                contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
 
             if (type.equals("recommend")) {

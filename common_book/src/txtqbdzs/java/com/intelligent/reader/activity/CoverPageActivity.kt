@@ -341,7 +341,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             data.put("bookid", mBook?.book_id + "")
             data.put("name", mBook?.name + "")
             data.put("lablekey", text)
-            data.put("rank", index.toString())
+            data.put("rank", (index+1).toString())
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
 
 
