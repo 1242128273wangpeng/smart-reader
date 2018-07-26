@@ -336,7 +336,6 @@ N多网	        blf1298_10885_001
                     UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBZSYDQ}",
                     UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBZSYDQ}",
                     UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBZSYDQ}",
-                    APP_NAME             : '全本追书阅读器',
                     BAIDU_STAT_ID        : "${BAIDU_STAT_ID_QBZSYDQ}",
                     AMAP_APIKEY          : "${AMAP_APIKEY_QBZSYDQ}",
                     WECHAT_APPID         : "${WECHAT_APPID_QBZSYDQ}",
@@ -356,6 +355,34 @@ N多网	        blf1298_10885_001
         }
 
 
+        qbmfxsydq {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release1
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_QBMFXSYDQ}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBMFXSYDQ}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBMFXSYDQ}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBMFXSYDQ}",
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFXSYDQ}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFXSYDQ}",
+                    WECHAT_APPID : "${WECHAT_APPID_QBMFXSYDQ}",
+                    WECHAT_SECRET : "${WECHAT_SECRET_QBMFXSYDQ}",
+                    QQ_APPID     : "${QQ_APPID_QBMFXSYDQ}",
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBMFXSYDQ}",
+                    PACKAGE_NAME : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
+            notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "9368f00036"
+            notOverrideResValue getOwner(), "string", "push_key", "wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23731853"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "7be24d1f8f5196a4aa6d6d6788004d4b"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
+        }
+
         mfqbxssc {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -364,7 +391,6 @@ N多网	        blf1298_10885_001
                     UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_MFQBXSSC}",
                     UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_MFQBXSSC}",
                     UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_MFQBXSSC}",
-                    APP_NAME             : '免费全本小说书城',
                     BAIDU_STAT_ID        : "${BAIDU_STAT_ID_MFQBXSSC}",
                     AMAP_APIKEY          : "${AMAP_APIKEY_MFQBXSSC}",
                     WECHAT_APPID         : "${WECHAT_APPID_MFQBXSSC}",
