@@ -11,8 +11,10 @@ public class SettingItems implements Serializable {
      * serialVersionUID
      */
     private static final long serialVersionUID = -6113647657692733154L;
-    //推送开关
-    public boolean isPush;
+    //书籍更新推送开关
+    public boolean isBookUpdatePush;
+    //友盟消息推送开关
+    public boolean isUmengPush;
     //推送声音开关
     public boolean isSoundOpen;
     //分时间推送开关
@@ -41,7 +43,8 @@ public class SettingItems implements Serializable {
 
         SettingItems that = (SettingItems) object;
 
-        if (isPush != that.isPush) return false;
+        if (isBookUpdatePush != that.isBookUpdatePush) return false;
+        if (isUmengPush != that.isUmengPush) return false;
         if (isSoundOpen != that.isSoundOpen) return false;
         if (isSetPushTime != that.isSetPushTime) return false;
         if (pushTimeStartH != that.pushTimeStartH) return false;
@@ -58,7 +61,8 @@ public class SettingItems implements Serializable {
 
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (isPush ? 1 : 0);
+        result = 31 * result + (isBookUpdatePush ? 1 : 0);
+        result = 31 * result + (isUmengPush ? 1 : 0);
         result = 31 * result + (isSoundOpen ? 1 : 0);
         result = 31 * result + (isSetPushTime ? 1 : 0);
         result = 31 * result + pushTimeStartH;
@@ -75,7 +79,8 @@ public class SettingItems implements Serializable {
     @java.lang.Override
     public java.lang.String toString() {
         return "SettingItems{" +
-                "isPush=" + isPush +
+                "isBookUpdatePush=" + isBookUpdatePush +
+                ", isUmengPush=" + isUmengPush +
                 ", isSoundOpen=" + isSoundOpen +
                 ", isSetPushTime=" + isSetPushTime +
                 ", pushTimeStartH=" + pushTimeStartH +

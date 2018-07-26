@@ -48,8 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_title_layout"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="37dp"
-            android:text="全本免费快看阅读器"
+            android:layout_marginTop="17dp"
+            android:text="@string/application_name"
             android:textColor="#ffffff"
             android:textSize="@dimen/dimen_text_20" />
 

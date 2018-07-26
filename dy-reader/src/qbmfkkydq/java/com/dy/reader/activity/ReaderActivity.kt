@@ -255,9 +255,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
 
-        /*  else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        }*/
     }
 
     override fun onPause() {

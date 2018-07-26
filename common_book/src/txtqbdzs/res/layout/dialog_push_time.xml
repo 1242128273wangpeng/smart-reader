@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:background="@drawable/dialog_bg"
+    tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/push_time_dialog_title"
+        android:textColor="#333333"
+        android:textSize="20sp"/>
+
+    <net.lzbook.kit.book.view.TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_title"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
+    </net.lzbook.kit.book.view.TimePicker>
+
+
+    <TextView
+        android:id="@+id/txt_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/time_picker"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_toLeftOf="@+id/txt_confirm"
+        android:text="@string/push_time_dialog_cancel"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/txt_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/time_picker"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/push_time_dialog_confirm"
+        android:textColor="@color/color_primary"
+        android:textSize="18sp"/>
+
+</RelativeLayout>

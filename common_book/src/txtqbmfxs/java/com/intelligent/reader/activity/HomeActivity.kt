@@ -34,6 +34,7 @@ import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomeView
+import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -76,6 +77,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var sharedPreferences: SharedPreferences? = null
     private var homeAdapter: HomeAdapter? = null
 
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPNOWOPEN)
+        }
+        lifecycle.addObserver(dialog)
+        dialog
+    }
 
     override fun getCurrent(position: Int) {
         bottomType = position
@@ -112,8 +123,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         AndroidLogStorage.getInstance().clear()
 
-    }
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPMESSAGE)
+        }
 
+    }
 
     override fun onClick(v: View) {
         when (v.id) {

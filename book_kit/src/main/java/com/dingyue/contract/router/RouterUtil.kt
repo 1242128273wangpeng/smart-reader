@@ -24,6 +24,17 @@ object RouterUtil {
                 .build(path)
                 .navigation(activity)
     }
+    /**
+     * 构建携带动画的路由请求
+     */
+
+    fun navigationWithTransition(activity: Activity,path: String,enterAnim:Int=
+    android.R.anim.slide_in_left,exitAnim:Int=android.R.anim.slide_out_right){
+        ARouter.getInstance()
+                .build(path)
+                .withTransition(enterAnim,exitAnim)
+                .navigation(activity)
+    }
 
     /**
      * 构建标准的路由请求

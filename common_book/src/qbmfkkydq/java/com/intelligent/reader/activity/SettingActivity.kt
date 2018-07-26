@@ -71,7 +71,6 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
     internal var themeName = TypedValue()//分割块颜色
 
 
-
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         try {
@@ -144,7 +143,11 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         clear_cache_rl.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache)
-            clearCacheDialog()
+            if (clear_cache_size.text.equals("0B")) {
+                showToastMessage("缓存已清除")
+            } else {
+                clearCacheDialog()
+            }
         }
 
 
@@ -194,8 +197,6 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         super.onDestroy()
         CancelTask()
     }
-
-
 
 
     private fun checkUpdate() {
@@ -256,6 +257,11 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
 
     override fun onBackPressed() {
         goBackToHome()
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(android.R.anim.slide_in_left, R.anim.slide_out_left)
     }
 
     fun goBackToHome() {

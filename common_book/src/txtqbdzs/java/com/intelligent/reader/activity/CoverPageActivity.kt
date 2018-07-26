@@ -32,6 +32,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.upush.OfflineNotifyActivity
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbdzs.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -41,6 +42,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -63,6 +65,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var mRecommendAuthorOtherBooks: List<RecommendBean> = ArrayList()
 
     private var mBook: Book? = null
+
+    private var isFromOfflineMessage = false
 
     companion object {
         fun launcher(context: Context, host: String, book_id: String,
@@ -134,11 +138,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (intent.hasExtra("book_chapter_id")) {
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
+
+            isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
+                    false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this, author)
             requestBookDetail()
+        } else {
+            onBackPressed()
         }
     }
 
@@ -306,6 +315,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 添加标签，设置标签样式
      */
     private fun buildLabel(text: String, index: Int): TextView {
+        var position=index%labelColor.size
+
         val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
         val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_right)
         val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flow_layout_top)
@@ -315,9 +326,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.textSize = 12f
         textView.gravity = Gravity.CENTER
 
-        textView.setTextColor(ContextCompat.getColor(this, labelColor[index]))
+        textView.setTextColor(ContextCompat.getColor(this, labelColor[position]))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            textView.background = getLabelBgColor(labelColorAlpha[index], labelColor[index])
+            textView.background = getLabelBgColor(labelColorAlpha[position], labelColor[position])
         } else {
             textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
             textView.setBackgroundResource(R.drawable.bg_cover_label)
@@ -619,8 +630,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun supportSlideBack(): Boolean {
-        return recycler_view_author.isSupport && recycler_view.isSupport
+        return ActivityLifecycleHelper.getActivities().size > 1
+                && recycler_view_author.isSupport && recycler_view.isSupport
     }
 
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
 
 }

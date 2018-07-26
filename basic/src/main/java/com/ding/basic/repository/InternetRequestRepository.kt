@@ -16,6 +16,7 @@ import retrofit2.Call
  */
 class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
 
+
     companion object {
         private var internetRequestRepository: InternetRequestRepository? = null
 
@@ -112,6 +113,14 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
         return RequestAPI.requestBookRecommendV4(book_id, recommend)
+    }
+
+    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
+        return RequestAPI.requestPushTags(udid)
+    }
+
+    override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
+        return RequestAPI.requestSubBook(bookName,bookAuthor)
     }
 
     /***************** 微服务 *****************/

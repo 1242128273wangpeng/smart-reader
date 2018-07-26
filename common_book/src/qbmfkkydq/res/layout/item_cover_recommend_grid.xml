@@ -5,16 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:paddingTop="16dp"
+    android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:orientation="vertical">
+    android:paddingTop="16dp">
 
     <ImageView
         android:id="@+id/iv_recommend_image"
         android:layout_width="70dp"
-        android:layout_height="99dp"
+        android:layout_height="104dp"
+        android:scaleType="fitXY"
         android:src="@drawable/icon_book_cover_default" />
+
+    <View
+        android:layout_width="70dp"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_bookdetail_icon"
+        />
 
     <TextView
         android:id="@+id/tv_book_name"

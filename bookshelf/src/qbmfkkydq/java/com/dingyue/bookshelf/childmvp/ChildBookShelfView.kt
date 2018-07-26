@@ -11,5 +11,5 @@ import com.dingyue.bookshelf.BookShelfView
  */
 interface ChildBookShelfView : BookShelfView {
 
-    fun onCurrentBookCommplete(book: Book, title: String?)
+    fun onCurrentBookCommplete(book: Book?, title: String?)
 }

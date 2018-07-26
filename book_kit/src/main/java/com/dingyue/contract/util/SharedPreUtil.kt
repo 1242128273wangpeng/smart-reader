@@ -111,7 +111,12 @@ class SharedPreUtil(val type: Int) {
         val READ_CONTENT_PAGE_TOP_SPACE = "read_content_page_top_space" //阅读页距顶部的间距
         val READ_CONTENT_PAGE_LEFT_SPACE = "read_content_page_left_space" //阅读页距左右的间距
 
-
+        /**
+         * push
+         */
+        @JvmField
+        val PUSH_TAG_LATEST_UPDATE_TIME = "push_tag_latest_update_time"
+        val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
     }
 
 

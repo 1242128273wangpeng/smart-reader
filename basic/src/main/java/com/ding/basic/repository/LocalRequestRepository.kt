@@ -53,6 +53,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
+    override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
+        return null
+    }
+
     override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
         return Flowable.create({ emitter ->
 

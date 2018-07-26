@@ -18,6 +18,7 @@ import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
@@ -841,6 +842,31 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+
+    /**
+     * 搜索无结果页  订阅
+     */
+    override fun requestSubBook(bookName: String, bookAuthor: String, requestSubscriber: RequestSubscriber<JsonObject>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestSubBook(bookName,bookAuthor)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object :RequestSubscriber<JsonObject>(){
+                    override fun requestResult(result: JsonObject?) {
+                        if (result != null ) {
+                            requestSubscriber.onNext(result)
+                        } else {
+                            requestSubscriber.onError(Throwable("接口请求异常！"))
+                        }
+                    }
+
+                    override fun requestError(message: String) {
+                        requestSubscriber.onError(Throwable("接口请求异常！"))
+                    }
+
+                })
+    }
+
+
+
     override fun checkChapterCache(chapter: Chapter?): Boolean {
         if (chapter == null) {
             return false
@@ -1130,6 +1156,28 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         Logger.e("鉴权请求完成！")
                     }
                 })
+    }
+
+    override fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<String>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribeBy(
+                        onNext = {
+                            if (it.checkResultAvailable()) {
+                                requestSubscriber.onNext(it.data)
+                            } else {
+                                requestSubscriber.onError(Throwable("获取用户标签错误: ${it.message}"))
+                            }
+                        },
+                        onError = {
+                            requestSubscriber.onError(it)
+                        },
+                        onComplete = {
+                            requestSubscriber.onComplete()
+                        }
+                )
     }
 
     override fun requestAuthAccessSync(): Boolean {

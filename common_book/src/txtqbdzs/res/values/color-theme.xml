@@ -315,5 +315,5 @@
     <color name="setting_font_color">#8cFFFFFF</color>
     <color name="color_search_recommend_title">#303135</color>
     <color name="color_search_divider">#f0f0f0</color>
-
+    <color name="search_no_sub_color">#563ECC96</color>
 </resources>

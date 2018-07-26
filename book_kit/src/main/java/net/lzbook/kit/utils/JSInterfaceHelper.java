@@ -43,6 +43,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     private boolean isLogin = false;
 
     onSearchWordClick searchWordClick;
+    OnSubSearchBook subSearchBook;
 
 
 
@@ -340,6 +341,21 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         return bookIdList.toString();
     }
 
+    //搜索无结果 点击订阅
+    @Override
+    @JavascriptInterface
+    public void showSubBookDialog(final String word) {
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if(subSearchBook!=null){
+                    subSearchBook.showSubSearchBook(word);
+                }
+            }
+        });
+    }
+
     //收集打点信息,用于统计信息，提供给h5打点数据的通道
     @Override
     @JavascriptInterface
@@ -465,6 +481,15 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         this.toRead = turnRead;
     }
 
+
+
+    //搜索无结果 点击订阅
+    public interface OnSubSearchBook{
+        void showSubSearchBook(String word);
+    }
+    public void setSubSearchBook(OnSubSearchBook subSearchBook){
+        this.subSearchBook = subSearchBook;
+    }
 
 
     @Override
