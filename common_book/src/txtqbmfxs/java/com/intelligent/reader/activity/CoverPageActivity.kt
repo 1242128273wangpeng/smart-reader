@@ -111,7 +111,7 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     private var coverPagePresenter: CoverPagePresenter? = null
 
-    private var isFromOfflineMessage = false
+    private var isFromPush = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,8 +154,7 @@ class CoverPageActivity : BaseCacheableActivity(),
                 bookChapterId = intent.getStringExtra(Constants.BOOK_CHAPTER_ID)
             }
 
-            isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
-                    false)
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
@@ -423,7 +422,7 @@ class CoverPageActivity : BaseCacheableActivity(),
     override fun finish() {
         super.finish()
         //离线消息 跳转到主页
-        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size <= 1) {
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
             startActivity(Intent(this, SplashActivity::class.java))
         }
     }

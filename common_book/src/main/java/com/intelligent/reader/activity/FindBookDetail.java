@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -13,7 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +26,12 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
-import com.intelligent.reader.upush.OfflineNotifyActivity;
 import com.intelligent.reader.util.PagerDesc;
-import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
@@ -74,7 +72,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private PagerDesc mPagerDesc;
     private int h5Margin;
     private boolean isSupport = true;
-    private boolean isFromOfflineMessage = false;
+    private boolean isFromPush = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,8 +93,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             urls.add(currentUrl);
             currentTitle = intent.getStringExtra("title");
             names.add(currentTitle);
-            isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
-                    false);
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false);
         }
         if (currentUrl == null || currentTitle == null) {
             onBackPressed();
@@ -847,7 +844,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     public void finish() {
         super.finish();
         //离线消息 跳转到主页
-        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size() <= 1) {
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size() <= 1) {
             startActivity(new Intent(this, SplashActivity.class));
         }
     }

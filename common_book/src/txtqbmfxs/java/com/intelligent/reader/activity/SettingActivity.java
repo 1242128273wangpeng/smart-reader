@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +30,6 @@ import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.CommonUtil;
 import com.dy.reader.activity.DisclaimerActivity;
 import com.intelligent.reader.R;
-import com.intelligent.reader.upush.OfflineNotifyActivity;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -141,7 +142,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private Button btn_logout;
     private ImageView img_head_background;
     private TextView txt_login_des;
-    private boolean isFromOfflineMessage = false;
+    private boolean isFromPush = false;
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -405,8 +406,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         cacheAsyncTask.execute();
         String versionName = AppUtils.getVersionName();
         check_update_message.setText("V" + versionName);
-        isFromOfflineMessage = getIntent().getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
-                false);
+        isFromPush = getIntent().getBooleanExtra(IS_FROM_PUSH, false);
     }
 
     @Override
@@ -748,7 +748,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     public void finish() {
         super.finish();
         //离线消息 跳转到主页
-        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size() <= 1) {
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size() <= 1) {
             startActivity(new Intent(this, SplashActivity.class));
         }
     }
