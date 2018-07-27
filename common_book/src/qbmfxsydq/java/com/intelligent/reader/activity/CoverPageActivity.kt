@@ -182,20 +182,22 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
-            if (book_cover_category2 != null && !TextUtils.isEmpty(book.label)) {
 
-
+            if (TextUtils.isEmpty(book.label)) {
+                book_cover_category2.text = book.genre
+            } else {
                 book_cover_category2.text = book.label
-                if (!mThemeHelper.isNight) {
-                    book_cover_category2.setBackgroundResource(R.drawable.book_cover_label_bg)
-                    val background = book_cover_category2.background as GradientDrawable
-                    background.setColor(resources.getColor(R.color.color_white_ffffff))
-                    book_cover_category2.setTextColor(AppUtils.getRandomColor())
-                } else {
-                    book_cover_category2.setTextColor(AppUtils.getRandomColor())
-                }
-
             }
+
+            if (!mThemeHelper.isNight) {
+                book_cover_category2.setBackgroundResource(R.drawable.book_cover_label_bg)
+                val background = book_cover_category2.background as GradientDrawable
+                background.setColor(resources.getColor(R.color.color_white_ffffff))
+                book_cover_category2.setTextColor(AppUtils.getRandomColor())
+            } else {
+                book_cover_category2.setTextColor(AppUtils.getRandomColor())
+            }
+
 
             if (book.status == "SERIALIZE") {
                 if (book_cover_category2!!.visibility != View.VISIBLE) {

@@ -56,7 +56,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
         if (book_shelf_update_time != null) {
             book_shelf_update_time.setText(
-                    Tools.compareTime(AppUtils.formatter, book.last_check_update_time) + "更新: ")
+                    Tools.compareTime(AppUtils.formatter, book.last_chapter?.update_time!!) + "更新: ")
         }
 
         if (!TextUtils.isEmpty(book.img_url) && !book.img_url.equals(
