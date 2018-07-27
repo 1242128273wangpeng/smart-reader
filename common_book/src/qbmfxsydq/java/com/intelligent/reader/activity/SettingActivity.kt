@@ -445,10 +445,15 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN)
-                btn_login!!.isClickable = false
-                val loginIntent = Intent(this, LoginActivity::class.java)
-                startActivityForResult(loginIntent, CODE_REQ_LOGIN)
+                if (UserManager.isUserLogin) {
+
+                } else {
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN)
+                    btn_login!!.isClickable = false
+                    val loginIntent = Intent(this, LoginActivity::class.java)
+                    startActivityForResult(loginIntent, CODE_REQ_LOGIN)
+                }
+
             }
             R.id.btn_logout, R.id.rl_logout -> {
                 logoutDialog()

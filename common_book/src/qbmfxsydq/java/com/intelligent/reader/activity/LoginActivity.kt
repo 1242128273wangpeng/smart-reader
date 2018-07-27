@@ -12,6 +12,8 @@ import android.widget.EditText
 import com.dingyue.contract.util.debugToastShort
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.activity.DisclaimerActivity
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.intelligent.reader.R
 import com.intelligent.reader.view.login.LoadingDialog
 import com.intelligent.reader.view.login.MobileNumberEditText
@@ -24,6 +26,8 @@ import net.lzbook.kit.user.Platform
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logi
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 class LoginActivity : FrameActivity() {
 
@@ -207,9 +211,39 @@ class LoginActivity : FrameActivity() {
     }
 
     private fun smsLogin() {
-//        val number = etxt_mobile_number.getMobileNumber()
-//        val code = etxt_verify_code.text.toString()
-//        loadingDialog.show()
+        loadingDialog.show()
+        val number = etxt_mobile_number.getMobileNumber()
+        val code = etxt_verify_code.text.toString()
+        var json: JSONObject = JSONObject()
+
+        json.put("phoneNumber", number)
+        json.put("code", code)
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8")
+                , json.toString())
+        val data = HashMap<String, String>()
+        UserManager.requestSmsLogin(body) { success, result ->
+
+            if (success) {
+                uploadLoginSuccessLog("3")
+                showToastMessage(getString(R.string.login_success))
+                loadingDialog.dismiss()
+                data["status"] = "1"
+                StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
+                        StartLogClickUtil.LOGIN, data)
+               setLoginResult()
+            } else {
+                uploadLoginErrorLog("3", result?.message.toString())
+                data["status"] = "2"
+                data["reason"] = result?.message.toString()
+                StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
+                        StartLogClickUtil.LOGIN, data)
+                result?.message?.let { showToastMessage(it) }
+                loadingDialog.dismiss()
+            }
+
+        }
+
+
 //        val data = HashMap<String, String>()
 //        UserManager.smsLogin(number, code, {
 //            onSuccess {

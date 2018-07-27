@@ -33,7 +33,7 @@ interface RequestRepository {
 
     fun requestSearchRecommend(bookIds: String, requestSubscriber: RequestSubscriber<SearchRecommendBook>) //搜索推荐
 
-    fun requestSubBook(bookName: String , bookAuthor: String,requestSubscriber: RequestSubscriber<JsonObject>)//搜索无结果 订阅
+    fun requestSubBook(bookName: String, bookAuthor: String, requestSubscriber: RequestSubscriber<JsonObject>)//搜索无结果 订阅
 
     fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>)
 
@@ -50,8 +50,8 @@ interface RequestRepository {
     fun requestCoverBatch(checkBody: RequestBody)
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>)
-    fun requestSmsCode(mobile:String,requestSubscriber: RequestSubscriber<BasicResult<String>>)
-
+    fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResultV4<String>>)
+    fun requestSmsLogin(smsBody:RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>)
 
     fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>)
 

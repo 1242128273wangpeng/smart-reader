@@ -32,6 +32,7 @@ import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
+
     companion object {
 
         @Volatile
@@ -712,12 +713,12 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
-    override fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResult<String>>) {
+    override fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResultV4<String>>) {
         InternetRequestRepository.loadInternetRequestRepository(context=context)
                 .requestSmsCode(mobile)
-                ?.compose(SchedulerHelper.schedulerHelper<BasicResult<String>>())
-                ?.subscribeWith(object : ResourceSubscriber<BasicResult<String>>(){
-            override fun onNext(result: BasicResult<String>) {
+                ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+                ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>(){
+            override fun onNext(result: BasicResultV4<String>) {
                 requestSubscriber.onNext(result)
             }
 
@@ -730,6 +731,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
             }
         })
 
+    }
+    override fun requestSmsLogin(smsBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .requestSmsLogin(smsBody)
+                ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
     }
 
 

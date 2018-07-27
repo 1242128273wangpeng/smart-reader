@@ -81,8 +81,9 @@ interface RequestService {
         //刷新Token
         const val REFRESH_TOKEN = "/v3/user/refLToken"
         // 获取短信
-        const val PATH_FETCH_SMS_CODE = "/v4/message/sms"
-
+        const val PATH_FETCH_SMS_CODE_V4 = "/v4/message/sms"
+        // 短信登录
+        const val PATH_SMS_LOGIN_V4 = "/v4/user/sms_create_token"
         // 用户相关----------------------
 
 
@@ -215,8 +216,12 @@ interface RequestService {
     @GET(REFRESH_TOKEN)
     fun requestRefreshToken(@QueryMap(encoded = false) parameters: Map<String, String>): Flowable<RefreshResp>
 
-    @GET(PATH_FETCH_SMS_CODE)
-    fun requestSmsCode(@Query("phoneNumber") mobileNumber: String): Flowable<BasicResult<String>>
+    @GET(PATH_FETCH_SMS_CODE_V4)// 获取短信验证码
+    fun requestSmsCode(@Query("phoneNumber") mobileNumber: String): Flowable<BasicResultV4<String>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_SMS_LOGIN_V4) // 短信验证码登录
+    fun requestSmsLogin(@Body smsLoginBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
     @GET("https://graph.qq.com/user/get_simple_userinfo")
     fun requestUserInformation(@Query("access_token") token: String, @Query("oauth_consumer_key") appid: String, @Query("openid") openid: String): Flowable<QQSimpleInfo>

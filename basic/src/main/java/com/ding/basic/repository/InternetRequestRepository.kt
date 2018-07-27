@@ -89,8 +89,14 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     override fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestLogoutAction(parameters)
     }
-    override fun requestSmsCode(mobile:String):Flowable<BasicResult<String>>?{
+
+    override fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
         return RequestAPI.requestSmsCode(mobile)
+    }
+
+    override fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
+
+        return RequestAPI.requestSmsLogin(smsRequestBody)
     }
 
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
@@ -123,7 +129,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
-        return RequestAPI.requestSubBook(bookName,bookAuthor)
+        return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
     /***************** 微服务 *****************/

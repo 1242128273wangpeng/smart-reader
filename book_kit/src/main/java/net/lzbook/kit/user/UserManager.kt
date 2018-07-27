@@ -6,10 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import com.alibaba.fastjson.JSON
-import com.ding.basic.bean.BasicResult
-import com.ding.basic.bean.LoginResp
-import com.ding.basic.bean.QQSimpleInfo
-import com.ding.basic.bean.RefreshResp
+import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.google.gson.Gson
@@ -29,6 +26,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.user.bean.LoginReq
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.toMap
+import okhttp3.RequestBody
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -71,7 +69,6 @@ object UserManager : IWXAPIEventHandler {
     var mLogoutCallback: ((Boolean) -> Unit)? = null
     var mSuccessCallback: ((LoginResp) -> Unit)? = null
     var mFailureCallback: ((String) -> Unit)? = null
-    var mRequestSmsCodeCallback: ((Boolean, String) -> Unit)? = null
 
 
     var mWXAppID = ""
@@ -178,6 +175,29 @@ object UserManager : IWXAPIEventHandler {
                     }
 
                 })
+    }
+
+    /**
+     * 短信验证码登录
+     */
+    fun requestSmsLogin(smsBody: RequestBody, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestSmsLogin(smsBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if(result?.checkResultAvailable()!!){
+                            callBack.invoke(true,result)
+                        }else{
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+
     }
 
 
