@@ -181,7 +181,9 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .doOnNext { result ->
                     if (result != null && result.checkResultAvailable() && result.data?.chapters != null && result.data?.chapters!!.isNotEmpty()) {
 
-                        for (chapter in result.data?.chapters!!) {
+                        val resList = noRepeatList(result.data!!.chapters!!)
+
+                        for (chapter in resList) {
                             chapter.host = result.data!!.host
                             chapter.book_id = result.data!!.book_id
                             chapter.book_source_id = result.data!!.book_source_id
@@ -192,7 +194,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                         if (book != null) {
                             val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
-                            chapterDaoHelp.insertOrUpdateChapter(result.data!!.chapters!!)
+                            chapterDaoHelp.insertOrUpdateChapter(resList)
                             book.chapter_count = chapterDaoHelp.getCount()
 
                             val lastChapter = chapterDaoHelp.queryLastChapter()
@@ -203,7 +205,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
                         } else {
                             var count = -1
-                            result.data?.chapters?.forEach {
+                            resList.forEach {
                                 count++
                                 it.sequence = count
                             }
@@ -232,6 +234,17 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     requestSubscriber.onComplete()
                 })
     }
+
+    fun noRepeatList(list: List<Chapter>): ArrayList<Chapter> {
+        val mewList = ArrayList<Chapter>()
+        for (i in 0 until list.size) {
+            if (!mewList.contains(list[i])) {
+                mewList.add(list[i])
+            }
+        }
+        return mewList
+    }
+
 
     /***
      * 用于换源操作，其他拉取目录请调用requestCatalog()方法
