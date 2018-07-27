@@ -23,6 +23,7 @@ import com.baidu.mobstat.StatService;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestService;
 import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
@@ -119,7 +120,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_detail_content = findViewById(R.id.rank_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(URLBuilderIntterface.AUTHOR_V4)) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4)) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);

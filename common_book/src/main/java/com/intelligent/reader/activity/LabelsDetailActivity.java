@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.baidu.mobstat.StatService;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestService;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 
@@ -119,7 +120,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
 
 
         //判断是否是作者主页
-        if (currentUrl.contains(URLBuilderIntterface.AUTHOR_V4)) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4)) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);
