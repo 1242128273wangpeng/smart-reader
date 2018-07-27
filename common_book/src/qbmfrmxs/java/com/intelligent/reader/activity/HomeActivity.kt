@@ -409,6 +409,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     img_guide_download.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
                     dl_home_content.unlock()
+                    changeHomePagerIndex(1)//首次展示精选页
                 }
             }
         }
