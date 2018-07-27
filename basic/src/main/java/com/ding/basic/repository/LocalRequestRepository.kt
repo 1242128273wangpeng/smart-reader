@@ -109,6 +109,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
     override fun requestHotWords(): Flowable<SearchHotBean>? {
         return null
     }
+
     override fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? {
         return null
     }
@@ -116,6 +117,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
     override fun requestHotWordsV4(): Flowable<Result<SearchResult>>? {
         return null
     }
+
     override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
         chapter.content = ChapterCacheUtil.checkChapterCacheExist(chapter)
 
@@ -147,6 +149,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     override fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
+        return null
+    }
+
+    override fun requestSmsCode(mobile: String): Flowable<BasicResult<String>>? {
         return null
     }
 
@@ -191,7 +197,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     fun deleteBook(book_id: String): Boolean {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBook(book_id,context)
+        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBook(book_id, context)
     }
 
     fun deleteBooks(books: List<Book>) {
@@ -256,7 +262,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestAuthorOtherBookRecommend(author: String,book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+    override fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
         return null
     }
 

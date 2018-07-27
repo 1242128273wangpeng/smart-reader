@@ -62,6 +62,7 @@ interface BasicRequestRepository {
 
 
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>?
+    fun requestSmsCode(mobile:String):Flowable<BasicResult<String>>?
 
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>?
 

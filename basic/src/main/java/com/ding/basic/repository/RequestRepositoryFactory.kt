@@ -712,6 +712,27 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResult<String>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .requestSmsCode(mobile)
+                ?.compose(SchedulerHelper.schedulerHelper<BasicResult<String>>())
+                ?.subscribeWith(object : ResourceSubscriber<BasicResult<String>>(){
+            override fun onNext(result: BasicResult<String>) {
+                requestSubscriber.onNext(result)
+            }
+
+            override fun onError(throwable: Throwable) {
+                requestSubscriber.onError(throwable)
+            }
+
+            override fun onComplete() {
+                requestSubscriber.onComplete()
+            }
+        })
+
+    }
+
+
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestLogoutAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<JsonObject>())?.subscribeWith(object : ResourceSubscriber<JsonObject>() {
@@ -728,6 +749,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 })
     }
+
+
 
     override fun requestRefreshToken(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<RefreshResp>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestRefreshToken(parameters)!!

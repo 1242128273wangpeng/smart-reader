@@ -89,6 +89,9 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     override fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestLogoutAction(parameters)
     }
+    override fun requestSmsCode(mobile:String):Flowable<BasicResult<String>>?{
+        return RequestAPI.requestSmsCode(mobile)
+    }
 
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return RequestAPI.requestRefreshToken(parameters)

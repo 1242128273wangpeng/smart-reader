@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import com.alibaba.fastjson.JSON
+import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.LoginResp
 import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
@@ -70,6 +71,7 @@ object UserManager : IWXAPIEventHandler {
     var mLogoutCallback: ((Boolean) -> Unit)? = null
     var mSuccessCallback: ((LoginResp) -> Unit)? = null
     var mFailureCallback: ((String) -> Unit)? = null
+    var mRequestSmsCodeCallback: ((Boolean, String) -> Unit)? = null
 
 
     var mWXAppID = ""
@@ -160,6 +162,24 @@ object UserManager : IWXAPIEventHandler {
         println("${platform.name} $enable")
         return enable
     }
+
+    /**
+     * 获取短信验证码
+     */
+    fun requestSmsCode(mobile: String, callback: ((Boolean, String) -> Unit)) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestSmsCode(mobile, object : RequestSubscriber<BasicResult<String>>() {
+                    override fun requestResult(result: BasicResult<String>?) {
+                        callback.invoke(true, result!!.data!!)
+                    }
+
+                    override fun requestError(message: String) {
+                        callback.invoke(false, message)
+                    }
+
+                })
+    }
+
 
     /**
      * @param activity

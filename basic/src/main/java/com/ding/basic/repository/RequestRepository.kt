@@ -50,6 +50,8 @@ interface RequestRepository {
     fun requestCoverBatch(checkBody: RequestBody)
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>)
+    fun requestSmsCode(mobile:String,requestSubscriber: RequestSubscriber<BasicResult<String>>)
+
 
     fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>)
 

@@ -63,6 +63,7 @@ interface RequestService {
         const val AUTHOR_V4 = "/v4/author/homepage/page"
 
 
+
         //检查更新
         const val CHECK_UPDATE = "/v5/book/check"
 
@@ -70,7 +71,7 @@ interface RequestService {
         const val BOOKSHELF_UPDATE = "/v5/book/update"
 
         const val FEEDBACK_ERROR = "/v3/log/fb"
-
+        // 用户相关----------------------
         //登陆操作
         const val LOGIN_ACTION = "/v3/user/login"
 
@@ -79,6 +80,11 @@ interface RequestService {
 
         //刷新Token
         const val REFRESH_TOKEN = "/v3/user/refLToken"
+        // 获取短信
+        const val PATH_FETCH_SMS_CODE = "/v4/message/sms"
+
+        // 用户相关----------------------
+
 
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/v5/book/down"
@@ -208,6 +214,9 @@ interface RequestService {
 
     @GET(REFRESH_TOKEN)
     fun requestRefreshToken(@QueryMap(encoded = false) parameters: Map<String, String>): Flowable<RefreshResp>
+
+    @GET(PATH_FETCH_SMS_CODE)
+    fun requestSmsCode(@Query("phoneNumber") mobileNumber: String): Flowable<BasicResult<String>>
 
     @GET("https://graph.qq.com/user/get_simple_userinfo")
     fun requestUserInformation(@Query("access_token") token: String, @Query("oauth_consumer_key") appid: String, @Query("openid") openid: String): Flowable<QQSimpleInfo>

@@ -57,15 +57,14 @@ class LoginActivity : FrameActivity() {
 
                 UserManager.login(this,
                         Platform.WECHAT,
-                        onSuccess = {
-                            ret ->
+                        onSuccess = { ret ->
                             loadingDialog.dismiss()
                             flagLoginEnd = true
                             this.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
 
-                },onFailure = {t ->
+                        }, onFailure = { t ->
                     loadingDialog.dismiss()
                     flagLoginEnd = true
                     this.debugToastShort(t)
@@ -87,15 +86,14 @@ class LoginActivity : FrameActivity() {
 
                 UserManager.login(this,
                         Platform.QQ,
-                        onSuccess = {
-                            ret ->
+                        onSuccess = { ret ->
                             loadingDialog.dismiss()
                             flagLoginEnd = true
                             this.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
 
-                        },onFailure = {t ->
+                        }, onFailure = { t ->
                     loadingDialog.dismiss()
                     flagLoginEnd = true
                     this.debugToastShort(t)
@@ -171,18 +169,15 @@ class LoginActivity : FrameActivity() {
             val number = etxt_mobile_number.getMobileNumber()
             txt_fetch_code.startCountdown()
             etxt_verify_code.showKeyboard()
-//            UserManager.fetchSmsCode(number, {
-//                onSuccess {
-//                    toastShort(getString(R.string.fetch_sms_code_success), false)
-//                }
-//                onFailed {
-//                    if (it is LoginError) {
-//                        toastShort(it.message.toString(), false)
-//                    } else {
-//                        toastShort("网络不给力哦，请稍后再试", false)
-//                    }
-//                }
-//            })
+
+            UserManager.requestSmsCode(number) { b, s ->
+                if (b) {
+                    showToastMessage(getString(R.string.fetch_sms_code_success))
+                } else {
+                    showToastMessage(s)
+                }
+
+            }
         }
 
         txt_login.setOnClickListener {

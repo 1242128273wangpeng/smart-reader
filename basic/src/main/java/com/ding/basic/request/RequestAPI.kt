@@ -112,6 +112,9 @@ object RequestAPI {
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         return requestService.requestLogoutAction(parameters)
     }
+    fun requestSmsCode(mobile:String):Flowable<BasicResult<String>>?{
+        return requestService.requestSmsCode(mobile)
+    }
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return requestService.requestRefreshToken(parameters)
