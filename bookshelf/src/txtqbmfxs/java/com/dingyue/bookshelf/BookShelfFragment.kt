@@ -386,6 +386,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
             bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
         }
+
+        img_download_float.visibility = View.VISIBLE
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
