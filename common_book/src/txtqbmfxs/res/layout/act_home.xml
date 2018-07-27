@@ -30,15 +30,6 @@
                 android:paddingRight="@dimen/dimen_padding_15"
                 android:src="@mipmap/home_head_setting"/>
 
-            <!--<net.lzbook.kit.book.view.FirstUsePointView-->
-            <!--android:id="@+id/redpoint_home_setting"-->
-            <!--android:layout_width="7dp"-->
-            <!--android:layout_height="7dp"-->
-            <!--android:layout_alignRight="@+id/bookshelf_setting"-->
-            <!--android:layout_alignTop="@+id/bookshelf_setting"-->
-            <!--android:layout_marginRight="@dimen/dimen_padding_12"-->
-            <!--android:layout_marginTop="@dimen/dimen_padding_12"-->
-            <!--android:background="@color/color_red_point"/>-->
 
             <!--搜索按钮-->
 
@@ -51,19 +42,6 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:src="@mipmap/home_head_search"/>
-
-            <!--下载按钮-->
-
-            <ImageView
-                android:id="@+id/bookshelf_download"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/bookshelf_search"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/home_head_download"
-                android:visibility="gone"/>
 
 
             <LinearLayout
