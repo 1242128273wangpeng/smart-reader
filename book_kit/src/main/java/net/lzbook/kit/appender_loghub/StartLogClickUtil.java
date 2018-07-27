@@ -93,6 +93,10 @@ public class StartLogClickUtil {
      * **/
     //个人中心页
     public static final String PAGE_PERSONAL = "PEASONAL";
+    public static final String LOGINRESULT = "LOGINRESULT";//登录结果
+    public static final String PHONELOGIN = "PHONELOGIN";//点击输入手机号
+    public static final String OTHERLOGIN = "OTHERLOGIN";//点击第三方登录
+    public static final String PIN = "PIN";//点击获取验证码
     //个人中心页功能
     public static final String ACTION_PERSONAL_BACK = "BACK";//屏幕左上方点击返回按钮
     public static final String ACTION_PERSONAL_HELP = "HELP";//点击帮助与反馈

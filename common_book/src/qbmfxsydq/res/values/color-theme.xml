@@ -357,4 +357,12 @@
 
     <color name="welfare_center_header_bg">#ce3d3e</color>
     <color name="welfare_center_header_title">#ffffff</color>
+
+    <!--用户中心-->
+    <color name="login_etxt_normal">#EEEEEE</color>
+    <color name="login_etxt_error">#F75266</color>
+    <color name="login_mobile_number">#000000</color>
+    <!--用户中心-->
+
+
 </resources>
