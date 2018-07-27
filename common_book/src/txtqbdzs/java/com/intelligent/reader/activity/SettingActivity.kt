@@ -24,7 +24,6 @@ import com.dingyue.contract.util.CommonUtil
 import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.upush.OfflineNotifyActivity
 import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.BaseCacheableActivity
 
@@ -33,11 +32,7 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.UIHelper
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
@@ -45,7 +40,7 @@ import java.util.HashMap
 import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
-import net.lzbook.kit.utils.IntentUtils
+import net.lzbook.kit.utils.*
 import swipeback.ActivityLifecycleHelper
 
 
@@ -118,7 +113,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         }
     }
 
-    private var isFromOfflineMessage = false
+    private var isFromPush = false
 
     private val feedbackRunnable = Runnable({
         FeedbackAPI.openFeedbackActivity()
@@ -282,8 +277,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         cacheAsyncTask!!.execute()
         val versionName = AppUtils.getVersionName()
         check_update_message!!.text = "V$versionName"
-        isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
-                false)
+        isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
     }
 
     override fun onResume() {
@@ -565,7 +559,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun finish() {
         super.finish()
         //离线消息 跳转到主页
-        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size <= 1) {
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
             startActivity(Intent(this, SplashActivity::class.java))
         }
     }

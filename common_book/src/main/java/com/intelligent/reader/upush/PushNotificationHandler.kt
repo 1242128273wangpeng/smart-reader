@@ -12,6 +12,7 @@ import com.umeng.message.UmengNotificationClickHandler
 import com.umeng.message.entity.UMessage
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.openPushActivity
 
 /**
  * Desc 友盟消息推送 通知处理
@@ -39,24 +40,10 @@ class PushNotificationHandler : UmengNotificationClickHandler() {
     }
 
     override fun openActivity(context: Context?, msg: UMessage?) {
-        super.openActivity(context, msg)
         loge("msg.extra: ${msg?.extra}")
-    }
-
-    companion object {
-        const val ACTION_KEY = "action_key"
-        const val ACTION_COVER = "action_cover"
-        const val ACTION_H5 = "action_h5"
-        const val ACTION_SETTING = "action_setting"
-
-        const val BOOK_AUTHOR = "author"
-        const val BOOK_ID = "book_id"
-        const val BOOK_SOURCE_ID = "book_source_id"
-        const val BOOK_CHAPTER_ID = "book_chapter_id"
-
-
-        const val H5_TITLE = "title"
-        const val H5_URL = "url"
+        if (msg?.activity?.trim()?.isNotEmpty() == true) {
+            context?.openPushActivity(msg)
+        }
     }
 
 }

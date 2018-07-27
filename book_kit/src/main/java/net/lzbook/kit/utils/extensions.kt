@@ -22,6 +22,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.util.SharedPreUtil
 import com.umeng.message.PushAgent
+import com.umeng.message.entity.UMessage
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -333,3 +334,29 @@ fun Activity.isShouldShowPushSettingDialog(): Boolean {
         false
     }
 }
+
+fun Context.openPushActivity(msg: UMessage) {
+    val intent = Intent()
+    intent.putPushExtra(msg)
+    loge("umsg.activity: ${msg.activity}")
+    intent.setClassName(this, msg.activity)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
+}
+
+private fun Intent.putPushExtra(msg: UMessage) {
+    if (msg.extra != null) {
+        val it = msg.extra.entries.iterator()
+
+        while (it.hasNext()) {
+            val entry = it.next() as MutableMap.MutableEntry<*, *>
+            val key = entry.key as String
+            val value = entry.value as String
+            putExtra(key, value)
+        }
+    }
+    putExtra(IS_FROM_PUSH, true)
+}
+
+@JvmField
+val IS_FROM_PUSH = "is_from_push"

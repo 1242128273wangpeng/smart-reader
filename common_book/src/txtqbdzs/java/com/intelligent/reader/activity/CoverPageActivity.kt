@@ -66,7 +66,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private var mBook: Book? = null
 
-    private var isFromOfflineMessage = false
+    private var isFromPush = false
 
     companion object {
         fun launcher(context: Context, host: String, book_id: String,
@@ -139,8 +139,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
 
-            isFromOfflineMessage = intent.getBooleanExtra(OfflineNotifyActivity.IS_FROM_OFFLINE,
-                    false)
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
@@ -637,7 +636,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     override fun finish() {
         super.finish()
         //离线消息 跳转到主页
-        if (isFromOfflineMessage && ActivityLifecycleHelper.getActivities().size <= 1) {
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
             startActivity(Intent(this, SplashActivity::class.java))
         }
     }
