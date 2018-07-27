@@ -39,21 +39,23 @@ import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
-                       searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) :
+class SearchViewHelper(activity: Activity,
+                       rootLayout: ViewGroup,
+                       searchEditText: EditText,
+                       private val mSearchPresenter: SearchPresenter?) :
         SearchPresenter.SearchSuggestCallBack,
         SearchHistoryAdapter.OnPositionClickListener,
         RecommendBooksAdapter.RecommendItemClickListener {
-//    SearchView.HelpView,
 
 
     private val mSearchHandler = SearchHandler(this)
 
+    //热词和推荐的布局View
+    private var mHotWordAndRecommendView: View? = null
+
     /**
      * 热词
      */
-    private var linear_root: LinearLayout? = null
-    private var searchHotTitleLayout: View? = null
     private var mGridView: ScrollForGridView? = null
     private var mHotWords: MutableList<HotWordBean> = ArrayList()
     private var searchHotWordAdapter: SearchHotWordAdapter? = null
@@ -85,22 +87,15 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
     private var onHistoryClickListener: OnHistoryClickListener? = null
 
     private var books: List<Book>? = ArrayList()
-    private lateinit var mContext: Context
-    private var activity: Activity? = null
+    private var mActivity: Activity? = null
     private var mRootLayout: ViewGroup? = null
     private var mSearchEditText: EditText? = null
-    private var linear_parent: LinearLayout? = null
     internal var tv_clear_history_search_view: TextView? = null
 
     private var sharedPreferencesUtils: SharedPreferencesUtils? = null
-    private var mResources: Resources? = null
     private var gson: Gson? = null
 
     private var mShouldShowHint = true
-
-//    private var mSearchHelpPresenter: SearchHelpPresenter? = null
-
-    var context: Context? = null
 
     private var loadingPage: LoadingPage? = null
 
@@ -108,20 +103,19 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
     var isFocus = true
 
     init {
-        init(activity, activity, rootLayout, searchEditText)
+        init(activity, rootLayout, searchEditText)
     }
 
-    private fun init(context: Context, activity: Activity, rootLayout: ViewGroup, searchEditText: EditText) {
+    private fun init(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText) {
 
 
-        mContext = context
-        this.activity = activity
+        mActivity = activity
         mRootLayout = rootLayout
         mSearchEditText = searchEditText
 
         gson = Gson()
         sharedPreferencesUtils = SharedPreferencesUtils(
-                PreferenceManager.getDefaultSharedPreferences(context))
+                PreferenceManager.getDefaultSharedPreferences(activity))
 
         showSearchHistory()
         initSuggestListView()
@@ -154,15 +148,15 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
             data.put("type", "1")
             data.put("bookid", dataBean.bookId)
 
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
+            StartLogClickUtil.upLoadEventLog(mActivity, StartLogClickUtil.SEARCH_PAGE,
                     StartLogClickUtil.HOTREADCLICK, data)
 
-            val intent = Intent(activity, CoverPageActivity::class.java)
+            val intent = Intent(mActivity, CoverPageActivity::class.java)
             intent.putExtra(Constants.BOOK_ID, dataBean.bookId)
             intent.putExtra(Constants.BOOK_SOURCE_ID, dataBean.id)
             intent.putExtra(Constants.BOOK_CHAPTER_ID, dataBean.bookChapterId)
 
-            mContext.startActivity(intent)
+            mActivity?.startActivity(intent)
 
         }
         isBackSearch = true
@@ -214,13 +208,13 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                     val data1 = HashMap<String, String>()
                     data1.put("BOOKID", searchCommonBeanYouHua.book_id)
                     data1.put("source", "SEARCH")
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                    StartLogClickUtil.upLoadEventLog(mActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
                             StartLogClickUtil.ENTER, data1)
 
-                    val intent = Intent(activity, CoverPageActivity::class.java)
+                    val intent = Intent(mActivity, CoverPageActivity::class.java)
                     intent.putExtra(Constants.BOOK_ID, searchCommonBeanYouHua.book_id)
                     intent.putExtra(Constants.BOOK_SOURCE_ID, searchCommonBeanYouHua.book_source_id)
-                    mContext.startActivity(intent)
+                    mActivity?.startActivity(intent)
 
                     addHistoryWord(suggest)
 
@@ -242,7 +236,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                     position + 1 in 7..8 -> data.put("rank", (position - 1).toString() + "")
                     position + 1 > 9 -> data.put("rank", (position - 2).toString() + "")
                 }
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
+                StartLogClickUtil.upLoadEventLog(mActivity, StartLogClickUtil.SEARCH_PAGE,
                         StartLogClickUtil.TIPLISTCLICK, data)
             }
 
@@ -316,21 +310,23 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
      * 初始化热词列表布局
      */
     private fun initHotTagView() {
-        searchHotTitleLayout = View.inflate(mContext, R.layout.search_hot_title_layout, null)
 
-        linear_root = searchHotTitleLayout?.findViewById<View>(R.id.linear_root) as LinearLayout
-        mGridView = searchHotTitleLayout?.findViewById<View>(R.id.grid) as ScrollForGridView
+        mHotWordAndRecommendView = View.inflate(mActivity, R.layout.search_hot_title_layout, null)
 
-        mGridView?.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+//        hotWordAndRecommendLLayout = mHotWordAndRecommendView?.findViewById<View>(R.id.linear_root) as LinearLayout
 
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_allhotword)
+        mGridView = mHotWordAndRecommendView?.findViewById<View>(R.id.grid) as ScrollForGridView
+
+        mGridView?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
+
+            StatServiceUtils.statAppBtnClick(mActivity, StatServiceUtils.b_search_click_allhotword)
 
             val hotWord = mHotWords[position]
             val data = HashMap<String, String>()
             hotWord.keyword?.let { data.put("topicword", it) }
             data.put("rank", hotWord.sort.toString())
             hotWord.superscript?.let { data.put("type", it) }
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
+            StartLogClickUtil.upLoadEventLog(mActivity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
 
             mSearchEditText?.setText(hotWord.keyword)
 
@@ -343,12 +339,10 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
     private fun setHotTagList() {
 
-        mRecommendRecycleView = searchHotTitleLayout?.findViewById(R.id.list_recommed)
-        val tv_recommend = searchHotTitleLayout?.findViewById<TextView>(R.id.tv_recommend)
-
+        mRecommendRecycleView = mHotWordAndRecommendView?.findViewById(R.id.list_recommed)
         mRecommendRecycleView?.recycledViewPool?.setMaxRecycledViews(0, 12)
 
-        val layoutManager = ShelfGridLayoutManager(mContext, 1)
+        val layoutManager = ShelfGridLayoutManager(mActivity, 1)
         mRecommendRecycleView?.layoutManager = layoutManager
         mRecommendRecycleView?.itemAnimator?.addDuration = 0
         mRecommendRecycleView?.itemAnimator?.changeDuration = 0
@@ -357,12 +351,9 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
         (mRecommendRecycleView?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
 
-        if (NetWorkUtils.getNetWorkTypeNew(mContext) == "无") {
-            //            getCacheDataFromShare(false);
-            //            getRecommendBooksFromCache();
-            linear_root?.visibility = View.GONE
+        if (NetWorkUtils.getNetWorkTypeNew(mActivity) == "无") {
+            mHotWordAndRecommendView?.visibility = View.GONE
         } else {
-
             parseGetHotWords()
             parseGetRecommendData()
         }
@@ -372,9 +363,9 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
     private fun initRecommendView() {
 
-        mRootLayout?.addView(searchHotTitleLayout)
+        mRootLayout?.addView(mHotWordAndRecommendView)
 
-        searchHotTitleLayout?.visibility = View.VISIBLE
+        mHotWordAndRecommendView?.visibility = View.VISIBLE
         mSuggestListView?.visibility = View.GONE
         mHistoryListView?.visibility = View.GONE
 
@@ -386,15 +377,15 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
      */
     private fun showSearchHistory() {
 
-        if (searchHotTitleLayout != null && searchHotTitleLayout?.visibility == View.VISIBLE) {
-            searchHotTitleLayout?.visibility = View.GONE
+        if (mHotWordAndRecommendView != null && mHotWordAndRecommendView?.visibility == View.VISIBLE) {
+            mHotWordAndRecommendView?.visibility = View.GONE
         }
 
         //初始化搜索历史的ListView
         initHistoryMain()
 
-        historyList = Tools.getHistoryWord(mContext)
-        historyAdapter = SearchHistoryAdapter(mContext, historyList as ArrayList<String>)
+        historyList = Tools.getHistoryWord(mActivity)
+        historyAdapter = SearchHistoryAdapter(mActivity, historyList as ArrayList<String>)
         historyAdapter?.setPositionClickListener(this)
 
 
@@ -402,7 +393,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
             mHistoryListView?.adapter = historyAdapter
             mHistoryListView?.onItemClickListener = OnItemClickListener { _, _, _, position ->
-                StatServiceUtils.statAppBtnClick(context,
+                StatServiceUtils.statAppBtnClick(mActivity,
                         StatServiceUtils.b_search_click_his_word)
                 if (historyList != null && position > -1 && position < historyList!!.size) {
                     val history = historyList?.get(position.toInt())
@@ -417,7 +408,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                         data.put("keyword", history)
                     }
                     data.put("rank", position.toString() + "")
-                    StartLogClickUtil.upLoadEventLog(activity,
+                    StartLogClickUtil.upLoadEventLog(mActivity,
                             StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARLIST, data)
 
                 }
@@ -441,15 +432,13 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                     override fun requestResult(result: Result<SearchResult>?) {
                         result?.let {
                             val data = it.data
-                            linear_root?.visibility = View.VISIBLE
+                            mHotWordAndRecommendView?.visibility = View.VISIBLE
                             sharedPreferencesUtils?.putString(Constants.SERARCH_HOT_WORD_YOUHUA, gson?.toJson(data, SearchResult::class.java))
                             showHotWordsList(data)
                         }
 
 
-                        if (result != null && result.data != null) {
-
-                        } else {
+                        if (result == null || result.data == null) {
                             getCacheDataFromShare(true)
                         }
                         loadingPage?.onSuccess()
@@ -476,9 +465,9 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                 if (result != null && result.data != null) {
                     recommendBooks?.clear()
                     recommendBooks = result.data
-                    linear_root?.visibility = View.VISIBLE
+                    mHotWordAndRecommendView?.visibility = View.VISIBLE
 
-                    mRecommendBooksAdapter = RecommendBooksAdapter(mContext, this@SearchViewHelper, recommendBooks)
+                    mRecommendBooksAdapter = RecommendBooksAdapter(mActivity, this@SearchViewHelper, recommendBooks)
                     mRecommendRecycleView?.adapter = mRecommendBooksAdapter
                     mRecommendBooksAdapter?.notifyDataSetChanged()
                 }
@@ -536,17 +525,17 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                     Constants.SERARCH_HOT_WORD_YOUHUA)
             val searchResult = gson?.fromJson(cacheHotWords, SearchResult::class.java)
             if (searchResult != null) {
-                linear_root?.visibility = View.VISIBLE
+                mHotWordAndRecommendView?.visibility = View.VISIBLE
                 showHotWordsList(searchResult)
             } else {
-                linear_root?.visibility = View.GONE
+                mHotWordAndRecommendView?.visibility = View.GONE
             }
 
         } else {
             if (!hasNet) {
                 CommonUtil.showToastMessage("网络不给力哦")
             }
-            linear_root?.visibility = View.GONE
+            mHotWordAndRecommendView?.visibility = View.GONE
         }
     }
 
@@ -555,7 +544,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
         if (searchWord != null && searchWord != "") {
 
             addHistoryWord(searchWord)
-            onHistoryClickListener?.onHistoryClick(searchWord, searchType,isAuthor)
+            onHistoryClickListener?.onHistoryClick(searchWord, searchType, isAuthor)
 
         }
     }
@@ -569,7 +558,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
         mHotWords = result.hotWords
 
         if (searchHotWordAdapter == null) {
-            searchHotWordAdapter = SearchHotWordAdapter(activity, mHotWords)
+            searchHotWordAdapter = SearchHotWordAdapter(mActivity, mHotWords)
             mGridView?.adapter = searchHotWordAdapter
         } else {
             searchHotWordAdapter?.setList(mHotWords)
@@ -582,7 +571,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
      * 对外提供一个操作mRecommendListView隐藏显示的方法
      */
     fun hideRecommendListView() {
-        searchHotTitleLayout?.visibility = View.GONE
+        mHotWordAndRecommendView?.visibility = View.GONE
     }
 
     fun setShowHintEnabled(showHint: Boolean) {
@@ -616,7 +605,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
         mRootLayout?.visibility = View.VISIBLE
         mSuggestListView?.visibility = View.VISIBLE
         mHistoryListView?.visibility = View.GONE
-        searchHotTitleLayout?.visibility = View.GONE
+        mHotWordAndRecommendView?.visibility = View.GONE
         // 清空上一个词的联想词结果
         mSuggestList?.clear()
 
@@ -631,11 +620,11 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
     }
 
     private fun initHistoryMain() {
-        mHistoryListView = ListView(mContext)
+        mHistoryListView = ListView(mActivity)
         mHistoryListView?.let {
-            it.cacheColorHint = ContextCompat.getColor(mContext, R.color.transparent)
-            it.divider = ContextCompat.getDrawable(mContext, R.color.color_gray_e8e8e8)
-            it.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
+            it.cacheColorHint = ContextCompat.getColor(mActivity!!, R.color.transparent)
+            it.divider = ContextCompat.getDrawable(mActivity!!, R.color.color_gray_e8e8e8)
+            it.dividerHeight = AppUtils.dip2px(mActivity, 0.5f)
             it.setHeaderDividersEnabled(false)
             it.setSelector(R.drawable.item_selector_white)
         }
@@ -646,12 +635,12 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
         mSearchPresenter?.setSearchSuggestCallBack(this)
 
-        mSuggestListView = ListView(activity)
+        mSuggestListView = ListView(mActivity)
 
         mSuggestListView?.let {
-            it.cacheColorHint = ContextCompat.getColor(mContext, R.color.transparent)
-            it.divider = ContextCompat.getDrawable(mContext, R.color.color_gray_e8e8e8)
-            it.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
+            it.cacheColorHint = ContextCompat.getColor(mActivity!!, R.color.transparent)
+            it.divider = ContextCompat.getDrawable(mActivity!!, R.color.color_gray_e8e8e8)
+            it.dividerHeight = AppUtils.dip2px(mActivity, 0.5f)
             it.setHeaderDividersEnabled(false)
             it.setSelector(R.drawable.item_selector_white)
             it.visibility = View.GONE
@@ -672,7 +661,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                     inputString = editable.toString()
                 }
             }
-            mSuggestAdapter = SearchSuggestAdapter(activity, mSuggestList, inputString)
+            mSuggestAdapter = SearchSuggestAdapter(mActivity, mSuggestList, inputString)
         }
 
         mSuggestListView?.adapter = mSuggestAdapter
@@ -697,7 +686,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
     fun showHistoryList() {
         mHistoryListView?.visibility = View.VISIBLE
         mSuggestListView?.visibility = View.GONE
-        searchHotTitleLayout?.visibility = View.GONE
+        mHotWordAndRecommendView?.visibility = View.GONE
     }
 
     fun notifyListChanged() {
@@ -734,7 +723,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
                 historyList?.removeAt(size - 1)
             }
             historyList?.add(0, keyword)
-            Tools.saveHistoryWord(mContext, historyList)
+            Tools.saveHistoryWord(mActivity, historyList)
         }
         if (historyAdapter != null) {
             historyAdapter?.notifyDataSetChanged()
@@ -769,103 +758,13 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
     }
 
-    /*override fun notifyHisData() {
-        if (mHistoryAdapter != null) {
-            mHistoryAdapter!!.notifyDataSetChanged()
-        }
-    }
-
-    override fun setHistoryHeadersTitleView() {
-        if (mHistoryHeadersTitle == null) {
-            return
-        }
-        if (mSearchHelpPresenter!!.getHistoryData() != null && mSearchHelpPresenter!!.getHistoryData()!!.size != 0) {
-            mHistoryHeadersTitle!!.visibility = View.VISIBLE
-        } else {
-            mHistoryHeadersTitle!!.visibility = View.INVISIBLE
-        }
-    }
-
-    override fun onStartSearch(searchWord: String?, searchType: String?) {
-        if (searchWord != null && searchType != null) {
-            onHistoryClickListener?.onHistoryClick(searchWord, searchType)
-        }
-    }
-
-    override fun hotItemClick(hotword: String, searchType: String) {
-        if (mSearchEditText != null) {
-            mSearchEditText!!.setText(hotword)
-        }
-        mShouldShowHint = false
-
-        onHotWordClickListener?.invoke(hotword, searchType)
-
-    }
-
-    override fun setHotWordAdapter(hotWords: MutableList<HotWordBean>?) {
-        if (activity != null) {
-            if (searchHotWordAdapter == null) {
-                searchHotWordAdapter = SearchHotWordAdapter(activity, hotWords)
-                mGridView?.adapter = searchHotWordAdapter
-            } else {
-                searchHotWordAdapter?.setList(hotWords)
-                searchHotWordAdapter?.notifyDataSetChanged()
-            }
-        }
-    }
-
-    override fun showLinearParent(show: Boolean) {
-        if (show) {
-            linear_parent!!.visibility = View.VISIBLE
-        } else {
-            linear_parent!!.visibility = View.GONE
-        }
-    }
-
-    override fun onSuggestBack() {
-        var inputString: String? = ""
-        if (mSearchEditText != null) {
-            val editable = mSearchEditText!!.text
-            if (editable != null && editable.length > 0) {
-                inputString = editable.toString()
-            }
-        }
-        if (mSuggestAdapter != null) {
-            if (inputString != null) {
-                mSuggestAdapter!!.setEditInput(inputString)
-            }
-            mSuggestAdapter!!.notifyDataSetChanged()
-        }
-    }
-
-    override fun setEditText(text: String?) {
-        if (mSearchEditText != null) {
-            mShouldShowHint = false
-            mSearchEditText!!.setText(text)
-        }
-    }
-
-        override fun showDialogState(isShouldShow: Boolean) {
-        if (isShouldShow) {
-            if (loadingPage == null && this.activity != null) {
-                loadingPage = LoadingPage(this.activity, mRootLayout, LoadingPage.setting_result)
-            }
-        } else {
-            if (loadingPage != null) {
-                loadingPage!!.onSuccess()
-            }
-        }
-    }
-
-    */
-
     private fun clearHistory(index: Int) {
         if (historyList != null && index < historyList!!.size) {
             historyList!!.removeAt(index)
         }
         setHistoryHeadersTitleView()
         historyAdapter?.notifyDataSetChanged()
-        Tools.saveHistoryWord(mContext, historyList)
+        Tools.saveHistoryWord(mActivity, historyList)
     }
 
     private fun result(result: List<SearchCommonBeanYouHua>) {
@@ -940,8 +839,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup,
 
     fun onDestroy() {
 
-        if (activity != null) {
-            activity = null
+        if (mActivity != null) {
+            mActivity = null
         }
 
         mRootLayout?.removeAllViews()
