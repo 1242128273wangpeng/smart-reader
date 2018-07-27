@@ -14,6 +14,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
+import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.view.SwitchButton
@@ -30,7 +31,7 @@ import net.lzbook.kit.utils.LoadDataManager
  * </pre>
  */
 @Route(path = RouterConfig.DEBUG_ACTIVITY)
-class DebugActivity : Activity(), SwitchButton.OnCheckedChangeListener, View.OnClickListener {
+class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListener, View.OnClickListener {
 
     private val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
     private val editor = sp.edit()

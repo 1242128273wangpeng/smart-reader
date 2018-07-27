@@ -402,24 +402,6 @@
                     android:textColor="@color/cover_checkdir_text_color"
                     android:textSize="@dimen/text_size_14"/>
 
-
-                <!--两个查看目录？-->
-                <!--<RelativeLayout
-                    android:id="@+id/book_cover_catalog_view_nobg"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_view_height_45"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:text="查看目录"
-                        android:textColor="@color/dialog_recommend"
-                        android:textSize="@dimen/text_size_16"/>
-                </RelativeLayout>-->
-
                 <View
                     android:id="@+id/cover_dividing_line2"
                     android:layout_width="match_parent"

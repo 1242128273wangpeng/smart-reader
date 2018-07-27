@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.CommonUtil;
 import com.dy.reader.activity.DisclaimerActivity;
+import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
@@ -38,7 +39,6 @@ import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.SPKeys;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppUtils;
@@ -61,8 +61,6 @@ import swipeback.ActivityLifecycleHelper;
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
     private static final int CODE_REQ_LOGIN = 100;
-    private final static int PUSH_TIME_SETTING = 1;
-    private static final int LOGIN_SUCCESS = 0x20;
     public static SettingActivity sInstance;
     public static long cacheSize;
     public String TAG = SettingActivity.class.getSimpleName();
@@ -140,7 +138,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private Button btn_login;
     private ImageView img_head;
     private Button btn_logout;
-    private ImageView img_head_background;
     private TextView txt_login_des;
     private boolean isFromPush = false;
 
@@ -166,61 +163,60 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         //用于判断是否显示Textview的Drawable
         is_show_drawable = findViewById(R.id.is_show_drawable);
-        top_navigation_bg = (RelativeLayout) findViewById(R.id.top_navigation_bg);
-        icon_more_left = (ImageView) findViewById(R.id.icon_more_left);
-        btnBack = (ImageView) findViewById(R.id.setting_back);
-        top_setting_back = (ImageView) findViewById(R.id.top_setting_back);
-        user_login_layout = (RelativeLayout) findViewById(R.id.user_login_layout);
-        iv_mine_image = (ImageView) findViewById(R.id.iv_mine_image);
-        tv_login_info = (TextView) findViewById(R.id.tv_login_info);
-        iv_mine_image = (ImageView) findViewById(R.id.iv_mine_image);
-        tv_login_info = (TextView) findViewById(R.id.tv_login_info);
-        iv_mine_image_left = (ImageView) findViewById(R.id.iv_mine_image_left);
-        user_login_layout_left = (RelativeLayout) findViewById(R.id.user_login_layout_left);
+        top_navigation_bg =  findViewById(R.id.top_navigation_bg);
+        icon_more_left =  findViewById(R.id.icon_more_left);
+        btnBack =  findViewById(R.id.setting_back);
+        top_setting_back =  findViewById(R.id.top_setting_back);
+        user_login_layout =  findViewById(R.id.user_login_layout);
+        iv_mine_image =  findViewById(R.id.iv_mine_image);
+        tv_login_info =  findViewById(R.id.tv_login_info);
+        iv_mine_image =  findViewById(R.id.iv_mine_image);
+        tv_login_info =  findViewById(R.id.tv_login_info);
+        iv_mine_image_left =  findViewById(R.id.iv_mine_image_left);
+        user_login_layout_left =  findViewById(R.id.user_login_layout_left);
 
-        rl_readpage_bbs = (RelativeLayout) findViewById(R.id.rl_readpage_bbs);
-        rl_style_change = (RelativeLayout) findViewById(R.id.rl_style_change);
-        bt_night_shift = (SwitchButton) findViewById(R.id.bt_night_shift);
-        bt_wifi_auto = (SwitchButton) findViewById(R.id.bt_wifi_auto);
-        rl_readpage_setting = (RelativeLayout) findViewById(R.id.rl_readpage_setting);
-        rl_history_setting = (RelativeLayout) findViewById(R.id.rl_history_setting);
-        rl_setting_more = (RelativeLayout) findViewById(R.id.rl_setting_more);
-        rl_feedback = (RelativeLayout) findViewById(R.id.rl_feedback);
-        rl_mark = (RelativeLayout) findViewById(R.id.rl_mark);
-        checkUpdateGuideRL = (RelativeLayout) findViewById(R.id.check_update_rl);
-        clear_cache_rl = (RelativeLayout) findViewById(R.id.clear_cache_rl);
-        disclaimer_statement_rl = (RelativeLayout) findViewById(R.id.disclaimer_statement_rl);
-        rl_setting_layout = (LinearLayout) findViewById(R.id.rl_setting_layout);
+        rl_readpage_bbs =  findViewById(R.id.rl_readpage_bbs);
+        rl_style_change =  findViewById(R.id.rl_style_change);
+        bt_night_shift =  findViewById(R.id.bt_night_shift);
+        bt_wifi_auto =  findViewById(R.id.bt_wifi_auto);
+        rl_readpage_setting =  findViewById(R.id.rl_readpage_setting);
+        rl_history_setting =  findViewById(R.id.rl_history_setting);
+        rl_setting_more =  findViewById(R.id.rl_setting_more);
+        rl_feedback =  findViewById(R.id.rl_feedback);
+        rl_mark =  findViewById(R.id.rl_mark);
+        checkUpdateGuideRL =  findViewById(R.id.check_update_rl);
+        clear_cache_rl =  findViewById(R.id.clear_cache_rl);
+        disclaimer_statement_rl =  findViewById(R.id.disclaimer_statement_rl);
+        rl_setting_layout =  findViewById(R.id.rl_setting_layout);
 
-        theme_name = (TextView) findViewById(R.id.theme_name);
-        clear_cache_size = (TextView) findViewById(R.id.check_cache_size);
-        check_update_message = (TextView) findViewById(R.id.check_update_message);
+        theme_name =  findViewById(R.id.theme_name);
+        clear_cache_size =  findViewById(R.id.check_cache_size);
+        check_update_message =  findViewById(R.id.check_update_message);
 
         //条目字
-        tv_readpage_bbs = (TextView) findViewById(R.id.tv_readpage_bbs);
-        tv_style_change = (TextView) findViewById(R.id.tv_style_change);
-        tv_night_shift = (TextView) findViewById(R.id.tv_night_shift);
-        tv_readpage_setting = (TextView) findViewById(R.id.tv_readpage_setting);
-        tv_history_setting = (TextView) findViewById(R.id.tv_history_setting);
-        rl_welfare = (RelativeLayout) findViewById(R.id.rl_welfare);
-        img_welfare = (ImageView) findViewById(R.id.img_welfare);
-        tv_setting_more = (TextView) findViewById(R.id.tv_setting_more);
-        tv_feedback = (TextView) findViewById(R.id.tv_feedback);
-        tv_mark = (TextView) findViewById(R.id.tv_mark);
-        text_check_update = (TextView) findViewById(R.id.text_check_update);
-        text_clear_cache = (TextView) findViewById(R.id.text_clear_cache);
-        text_disclaimer_statement = (TextView) findViewById(R.id.text_disclaimer_statement);
+        tv_readpage_bbs =  findViewById(R.id.tv_readpage_bbs);
+        tv_style_change =  findViewById(R.id.tv_style_change);
+        tv_night_shift =  findViewById(R.id.tv_night_shift);
+        tv_readpage_setting =  findViewById(R.id.tv_readpage_setting);
+        tv_history_setting =  findViewById(R.id.tv_history_setting);
+        rl_welfare =  findViewById(R.id.rl_welfare);
+        img_welfare =  findViewById(R.id.img_welfare);
+        tv_setting_more =  findViewById(R.id.tv_setting_more);
+        tv_feedback =  findViewById(R.id.tv_feedback);
+        tv_mark =  findViewById(R.id.tv_mark);
+        text_check_update =  findViewById(R.id.text_check_update);
+        text_clear_cache =  findViewById(R.id.text_clear_cache);
+        text_disclaimer_statement =  findViewById(R.id.text_disclaimer_statement);
 
-        tv_login_info_left = (TextView) findViewById(R.id.tv_login_info_left);
-        tv_login_info_detail_left = (TextView) findViewById(R.id.tv_login_info_detail_left);
-        top_navigation_title = (TextView) findViewById(R.id.top_navigation_title);
+        tv_login_info_left =  findViewById(R.id.tv_login_info_left);
+        tv_login_info_detail_left =  findViewById(R.id.tv_login_info_detail_left);
+        top_navigation_title =  findViewById(R.id.top_navigation_title);
 
-        txt_nickname = (TextView) findViewById(R.id.txt_nickname);
-        txt_userid = (TextView) findViewById(R.id.txt_userid);
-        btn_login = (Button) findViewById(R.id.btn_login);
-        btn_logout = (Button) findViewById(R.id.btn_logout);
-        img_head = (ImageView) findViewById(R.id.img_head);
-        img_head_background = (ImageView) findViewById(R.id.img_head_background);
+        txt_nickname =  findViewById(R.id.txt_nickname);
+        txt_userid =  findViewById(R.id.txt_userid);
+        btn_login =  findViewById(R.id.btn_login);
+        btn_logout =  findViewById(R.id.btn_logout);
+        img_head =  findViewById(R.id.img_head);
         int desid = getResources().getIdentifier("txt_login_des", "id", getPackageName());
 
         if (desid != 0) {
@@ -695,19 +691,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if(view.getId() == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
+            ReaderSettings.Companion.getInstance().initValues();
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day);
-                edit.putInt("current_light_mode", Constants.MODE);
-                Constants.MODE = 61;
+                ReaderSettings.Companion.getInstance().setReadLightThemeMode(ReaderSettings.Companion.getInstance().getReadThemeMode());
+                ReaderSettings.Companion.getInstance().setReadThemeMode(61);
                 mThemeHelper.setMode(ThemeMode.NIGHT);
             } else {
                 tv_night_shift.setText(R.string.mode_night);
-                edit.putInt("current_night_mode", Constants.MODE);
-                Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+                ReaderSettings.Companion.getInstance().setReadThemeMode(ReaderSettings.Companion.getInstance().getReadLightThemeMode());
                 mThemeHelper.setMode(ThemeMode.THEME1);
             }
-            edit.putInt("content_mode", Constants.MODE);
-            edit.apply();
+            ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
         }else if(view.getId() == R.id.bt_wifi_auto){
             edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);

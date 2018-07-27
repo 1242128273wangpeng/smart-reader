@@ -8,6 +8,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intelligent.reader.R
+import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug_host.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
@@ -21,7 +22,7 @@ import net.lzbook.kit.constants.Constants
  * E-mail:yongzuo_chen@dingyuegroup.cn
  * </pre>
  */
-class DebugHostActivity : Activity() {
+class DebugHostActivity : BaseCacheableActivity() {
 
     private val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
     private val editor = sp.edit()

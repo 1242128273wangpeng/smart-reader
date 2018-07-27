@@ -241,6 +241,13 @@ android {
             keyPassword STORE_KEY_PASSWORD_1
         }
 
+        debug {
+            storeFile file(STORE_FILE_1)
+            storePassword STORE_PASSWORD_1
+            keyAlias STORE_KEY_ALIAS_1
+            keyPassword STORE_KEY_PASSWORD_1
+        }
+
     }
 
     buildTypes {

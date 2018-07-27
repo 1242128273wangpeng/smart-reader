@@ -134,10 +134,10 @@
 
         </RelativeLayout>
 
-        <!--自动补全布局-->
+        <!--根布局-->
 
         <FrameLayout
-            android:id="@+id/fl_search_auto_hint"
+            android:id="@+id/fl_search_result_hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/base_bg">

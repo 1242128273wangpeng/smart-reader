@@ -57,7 +57,10 @@ interface RequestService {
         const val AUTO_COMPLETE_V4 = "/v4/search/autoComplete"
         const val AUTO_COMPLETE_V5 = "/v5/search/autoComplete"
 
-
+        /**
+         * 搜索页作者
+         */
+        const val AUTHOR_V4 = "/v4/author/homepage/page"
 
 
         //检查更新
