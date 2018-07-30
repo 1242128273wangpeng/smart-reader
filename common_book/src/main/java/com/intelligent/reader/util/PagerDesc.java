@@ -5,19 +5,19 @@ package com.intelligent.reader.util;
  */
 
 public class PagerDesc {
-    private int top;
-    private int left;
-    private int right;
-    private int bottom;
+    private float top;
+    private float left;
+    private float right;
+    private float bottom;
 
-    public PagerDesc(int top, int left, int right, int bottom) {
+    public PagerDesc(float top, float left, float right, float bottom) {
         this.top = top;
         this.left = left;
         this.right = right;
         this.bottom = bottom;
     }
 
-    public int getBottom() {
+    public float getBottom() {
         return bottom;
     }
 
@@ -25,7 +25,7 @@ public class PagerDesc {
         this.bottom = bottom;
     }
 
-    public int getRight() {
+    public float getRight() {
         return right;
     }
 
@@ -33,7 +33,7 @@ public class PagerDesc {
         this.right = right;
     }
 
-    public int getLeft() {
+    public float getLeft() {
         return left;
     }
 
@@ -41,7 +41,7 @@ public class PagerDesc {
         this.left = left;
     }
 
-    public int getTop() {
+    public float getTop() {
         return top;
     }
 

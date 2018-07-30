@@ -377,7 +377,12 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     @JavascriptInterface
     public void getH5ViewPagerInfo(String x, String y, String width, String height) {
         if (this.pagerInfo != null) {
-            this.pagerInfo.onH5PagerInfo(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(width), Integer.parseInt(height));
+            try {
+                this.pagerInfo.onH5PagerInfo(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width), Float.parseFloat(height));
+            } catch (Exception e) {
+                e.printStackTrace();
+                AppLog.e("kk",e.toString());
+            }
         }
     }
 
@@ -556,7 +561,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     }
 
     public interface OnH5PagerInfoListener {
-        void onH5PagerInfo(int x, int y, int width, int height);
+        void onH5PagerInfo(float x, float y, float width, float height);
     }
 
 
