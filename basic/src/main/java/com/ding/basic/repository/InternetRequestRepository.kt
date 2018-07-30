@@ -90,11 +90,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestLogoutAction(parameters)
     }
 
-    override fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
+     fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
         return RequestAPI.requestSmsCode(mobile)
     }
 
-    override fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
+     fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
 
         return RequestAPI.requestSmsLogin(smsRequestBody)
     }

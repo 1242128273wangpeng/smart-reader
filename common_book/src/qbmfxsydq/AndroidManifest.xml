@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.intelligent.reader">
+
+    <application>
+
+        <activity
+            android:name=".activity.usercenter.UserProfileActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent" />
+    </application>
+
+</manifest>

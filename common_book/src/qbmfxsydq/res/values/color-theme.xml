@@ -362,6 +362,8 @@
     <color name="login_etxt_normal">#EEEEEE</color>
     <color name="login_etxt_error">#F75266</color>
     <color name="login_mobile_number">#000000</color>
+    <color name="user_profile_font_color">#80000000</color>
+    <color name="item_divider_color">#EAEAEA</color>
     <!--用户中心-->
 
 

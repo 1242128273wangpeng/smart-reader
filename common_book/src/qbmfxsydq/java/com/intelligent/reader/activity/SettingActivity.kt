@@ -29,6 +29,7 @@ import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.usercenter.UserProfileActivity
 import com.intelligent.reader.util.EventBookStore
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -445,7 +446,11 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                if (UserManager.isUserLogin) {
+                if (true) {
+                    val userProfileIntent = Intent(this, UserProfileActivity::class.java)
+                    startActivity(userProfileIntent)
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                            StartLogClickUtil.PROFILE)
 
                 } else {
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN)

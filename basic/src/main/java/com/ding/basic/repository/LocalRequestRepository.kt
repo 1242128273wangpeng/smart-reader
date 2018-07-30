@@ -15,10 +15,7 @@ import retrofit2.Call
 
 @SuppressLint("StaticFieldLeak")
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
-    override fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
 
-        return null
-    }
 
 
     companion object {
@@ -156,9 +153,6 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
-        return null
-    }
 
     override fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         return null

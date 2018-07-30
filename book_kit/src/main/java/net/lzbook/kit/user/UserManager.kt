@@ -165,8 +165,8 @@ object UserManager : IWXAPIEventHandler {
      */
     fun requestSmsCode(mobile: String, callback: ((Boolean, String) -> Unit)) {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                .requestSmsCode(mobile, object : RequestSubscriber<BasicResult<String>>() {
-                    override fun requestResult(result: BasicResult<String>?) {
+                .requestSmsCode(mobile, object : RequestSubscriber<BasicResultV4<String>>() {
+                    override fun requestResult(result: BasicResultV4<String>?) {
                         callback.invoke(true, result!!.data!!)
                     }
 

@@ -62,8 +62,6 @@ interface BasicRequestRepository {
 
 
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>?
-    fun requestSmsCode(mobile:String):Flowable<BasicResultV4<String>>?
-    fun requestSmsLogin(smsRequestBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>?
 
 
 
