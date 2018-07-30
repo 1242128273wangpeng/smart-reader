@@ -80,6 +80,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
+        ReaderStatus.startTime = System.currentTimeMillis()/1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()

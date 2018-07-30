@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import org.greenrobot.eventbus.EventBus
@@ -251,6 +252,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         if (mChapterLoadStat == CHAPTER_WAITING) {
             mChapterLoadStat = CHAPTER_LOADING
             loadChapterState {
+                AppLog.e("k111","shangfanye")
                 getChapterData(sequence, ReadViewEnums.PageIndex.previous, false)
                 if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
                     mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
@@ -270,6 +272,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         if (mChapterLoadStat == CHAPTER_WAITING) {
             mChapterLoadStat = CHAPTER_LOADING
             loadChapterState {
+                AppLog.e("k111","xiafanye")
                 getChapterData(sequence, ReadViewEnums.PageIndex.next, false)
                 if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
                     mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
