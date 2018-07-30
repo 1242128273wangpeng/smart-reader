@@ -6,6 +6,8 @@ import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Retrofit
@@ -144,6 +146,23 @@ object RequestAPI {
 
     fun requestUserInformation(token: String, appid: String, openid: String): Flowable<QQSimpleInfo>? {
         return requestService.requestUserInformation(token, appid, openid)
+    }
+
+    fun requestWXAccessToken(appid: String, secret: String, code: String, authorizationCode: String): Flowable<WXAccess> {
+        return requestService.requestWXAccessToken(appid, secret, code, authorizationCode)
+    }
+
+    fun requestWXUserInfo(token: String,openid: String):Flowable<WXSimpleInfo> {
+        return requestService.requestWXUserInfo(token,openid)
+    }
+
+
+    fun thirdLogin(thirdBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.thirdLogin(thirdBody)
+    }
+
+    fun bindThirdAccount(accountBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.bindThirdAccount(accountBody)
     }
 
 

@@ -52,7 +52,7 @@ object UserManager : IWXAPIEventHandler {
     /**
      * new 用户信息
      */
-    var user: LoginRespV4? = null
+    var userV4: LoginRespV4? = null
         private set
 
     /**
@@ -294,7 +294,7 @@ object UserManager : IWXAPIEventHandler {
 
     fun updateUser(user: LoginRespV4) {
         logi(user.toString())
-        this.user = user
+        this.userV4 = user
 //        UserDao.getInstance().loginUser = user
     }
 

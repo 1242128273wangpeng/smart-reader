@@ -83,7 +83,7 @@ class UserProfileActivity : BaseCacheableActivity() {
         }
 
         rl_phone.setOnClickListener {
-            val phoneNumber = UserManager.user?.phone_number
+            val phoneNumber = UserManager.userV4?.phone_number
             if (phoneNumber == null) {
 //                TODO 绑定手机号
 //                val bindingIntent = Intent(this, BindPhoneActivity::class.java)
@@ -95,10 +95,10 @@ class UserProfileActivity : BaseCacheableActivity() {
         rl_gender.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this,
                     StartLogClickUtil.PROFILE, StartLogClickUtil.SEX)
-            if (UserManager.user?.gender == getString(R.string.gender_male)) {
+            if (UserManager.userV4?.gender == getString(R.string.gender_male)) {
                 genderDialog.changeItemTextColor(genderSelectedColor, 0)
                 genderDialog.changeItemTextColor(Color.BLACK, 1)
-            } else if (UserManager.user?.gender == getString(R.string.gender_female)) {
+            } else if (UserManager.userV4?.gender == getString(R.string.gender_female)) {
                 genderDialog.changeItemTextColor(Color.BLACK, 0)
                 genderDialog.changeItemTextColor(genderSelectedColor, 1)
             }
@@ -106,8 +106,8 @@ class UserProfileActivity : BaseCacheableActivity() {
         }
 
         rl_platform.setOnClickListener {
-            val loginChannel = UserManager.user?.login_channel //第三方登录
-            val thirdBindingInfo = UserManager.user?.link_channel //绑定的第三方账户
+            val loginChannel = UserManager.userV4?.login_channel //第三方登录
+            val thirdBindingInfo = UserManager.userV4?.link_channel //绑定的第三方账户
             if (loginChannel == null && thirdBindingInfo == null) {
                 platformDialog.show()
             }
@@ -188,7 +188,7 @@ class UserProfileActivity : BaseCacheableActivity() {
         UserManager.uploadUserAvatar(bitmap) { success, result ->
             if (success) {
                 Glide.with(this@UserProfileActivity).load(outFile).into(img_head)
-                UserManager.user?.let {
+                UserManager.userV4?.let {
                     it.avatar_url = result?.data?.avatar_url
                     UserManager.updateUser(it)
                 }
@@ -220,7 +220,7 @@ class UserProfileActivity : BaseCacheableActivity() {
                     val gender = if (position == 1) getString(R.string.gender_male) else getString(R.string.gender_female)
                     UserManager.uploadUserGender(gender) { success, result ->
                         if (success) {
-                            UserManager.user?.let {
+                            UserManager.userV4?.let {
                                 it.gender = result!!.data!!.gender
                                 UserManager.updateUser(it)
                             }

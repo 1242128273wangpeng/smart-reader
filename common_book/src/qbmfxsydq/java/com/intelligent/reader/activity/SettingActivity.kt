@@ -446,7 +446,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                if (true) {
+                if (false) {
                     val userProfileIntent = Intent(this, UserProfileActivity::class.java)
                     startActivity(userProfileIntent)
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,

@@ -5,7 +5,10 @@ import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
+import org.intellij.lang.annotations.Flow
 import retrofit2.http.*
 
 interface RequestService {
@@ -94,7 +97,10 @@ interface RequestService {
         const val PATH_FETCH_USER_NAME_STATE = "/v4/user/get_update_name_count"
         // 修改用户性别
         const val PATH_UPDATE_USER_GENDER = "/v4/user/update_user_gender"
-
+        // 第三方登录
+        const val PATH_THIRD_LOGIN = "/v4/user/third_create_token"
+        // 绑定第三方账户
+        const val PATH_BIND_THIRD_ACCOUNT = "/v4/user/link_third"
         // 用户相关----------------------
 
 
@@ -245,11 +251,28 @@ interface RequestService {
     @POST(PATH_UPDATE_USER_GENDER)
     fun uploadUserGender(@Body genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_THIRD_LOGIN) //第三方登录
+    fun thirdLogin(@Body thirdLoginBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_BIND_THIRD_ACCOUNT) // 绑定第三方
+    fun bindThirdAccount(@Body thirdLoginBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
-    @GET("https://graph.qq.com/user/get_simple_userinfo")
-    fun requestUserInformation(@Query("access_token") token: String, @Query("oauth_consumer_key") appid: String, @Query("openid") openid: String): Flowable<QQSimpleInfo>
+    @GET("https://graph.qq.com/user/get_simple_userinfo")// 获取QQ用户信息
+    fun requestUserInformation(@Query("access_token") token: String,
+                               @Query("oauth_consumer_key") appid: String,
+                               @Query("openid") openid: String): Flowable<QQSimpleInfo>
 
+    @GET("https://api.weixin.qq.com/sns/oauth2/access_token")// 获取微信token
+    fun requestWXAccessToken(@Query("appid") appId: String,
+                           @Query("secret") secret: String,
+                           @Query("code") code: String,
+                           @Query("grant_type") authorizationCode: String): Flowable<WXAccess>
+
+    @GET("https://api.weixin.qq.com/sns/userinfo")// 获取微信用户信息
+    fun requestWXUserInfo(@Query("access_token") accessToken: String,
+                        @Query("openid") openid: String): Flowable<WXSimpleInfo>
 
     /************************************* 缓存相关 *************************************/
     @GET(DOWN_TASK_CONFIG)

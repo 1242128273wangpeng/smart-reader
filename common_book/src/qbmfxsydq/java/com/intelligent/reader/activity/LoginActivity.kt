@@ -12,8 +12,6 @@ import android.widget.EditText
 import com.dingyue.contract.util.debugToastShort
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.activity.DisclaimerActivity
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.intelligent.reader.R
 import com.intelligent.reader.view.login.LoadingDialog
 import com.intelligent.reader.view.login.MobileNumberEditText
@@ -23,9 +21,8 @@ import iyouqu.theme.statusbar.impl.MIUIHelper
 import kotlinx.android.synthetic.qbmfxsydq.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.user.Platform
-import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
 
@@ -43,14 +40,14 @@ class LoginActivity : FrameActivity() {
         setDarkStatusBar()
 
         setContentView(R.layout.act_login)
-        UserManager.initPlatform(this)
+        UserManagerV4.initPlatform(this)
 
         ll_wechat.setOnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.LOGIN,
                     StartLogClickUtil.OTHERLOGIN, data)
-            if (!UserManager.isPlatformEnable(Platform.WECHAT)) {
+            if (!UserManagerV4.isPlatformEnable(Platform.WECHAT)) {
                 showToastMessage("请安装微信后重试")
                 return@setOnClickListener
             }
@@ -59,20 +56,26 @@ class LoginActivity : FrameActivity() {
 
                 loadingDialog.show()
 
-                UserManager.login(this,
+                UserManagerV4.thirdLogin(this,
                         Platform.WECHAT,
                         onSuccess = { ret ->
+                            flagLoginEnd = true
+                            setLoginResult()
+                            showToastMessage(getString(R.string.login_success))
+                            loadingDialog.dismiss()
+//                            UserManagerV4.keepReadInfo { state, msg ->
+//                                uploadLoginSuccessLog("1")
+//                                showToastMessage(getString(R.string.login_success))
+//                                loadingDialog.dismiss()
+//                                finish()
+//                            }
+                        },
+                        onFailure = { t ->
+                            uploadLoginErrorLog("1", t)
                             loadingDialog.dismiss()
                             flagLoginEnd = true
-                            this.debugToastShort(ret.toString())
-                            setLoginResult()
-                            finish()
-
-                        }, onFailure = { t ->
-                    loadingDialog.dismiss()
-                    flagLoginEnd = true
-                    this.debugToastShort(t)
-                })
+                           showToastMessage(t)
+                        })
 
 
             }
@@ -88,20 +91,26 @@ class LoginActivity : FrameActivity() {
 
                 loadingDialog.show()
 
-                UserManager.login(this,
+                UserManagerV4.thirdLogin(this,
                         Platform.QQ,
                         onSuccess = { ret ->
+                            flagLoginEnd = true
+                            setLoginResult()
+                            showToastMessage(getString(R.string.login_success))
+                                loadingDialog.dismiss()
+//                            UserManager.keepReadInfo { state, msg ->
+//                                uploadLoginSuccessLog("2")
+//                                toastShort(getString(R.string.login_success), false)
+//                                loadingDialog.dismiss()
+//                                finish()
+//                            }
+                        },
+                        onFailure = { t ->
+                            uploadLoginErrorLog("2", t.toString())
                             loadingDialog.dismiss()
                             flagLoginEnd = true
-                            this.debugToastShort(ret.toString())
-                            setLoginResult()
-                            finish()
-
-                        }, onFailure = { t ->
-                    loadingDialog.dismiss()
-                    flagLoginEnd = true
-                    this.debugToastShort(t)
-                })
+                            showToastMessage(t)
+                        })
 
             }
         }
@@ -174,7 +183,7 @@ class LoginActivity : FrameActivity() {
             txt_fetch_code.startCountdown()
             etxt_verify_code.showKeyboard()
 
-            UserManager.requestSmsCode(number) { b, s ->
+            UserManagerV4.requestSmsCode(number) { b, s ->
                 if (b) {
                     showToastMessage(getString(R.string.fetch_sms_code_success))
                 } else {
@@ -221,7 +230,7 @@ class LoginActivity : FrameActivity() {
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8")
                 , json.toString())
         val data = HashMap<String, String>()
-        UserManager.requestSmsLogin(body) { success, result ->
+        UserManagerV4.requestSmsLogin(body) { success, result ->
 
             if (success) {
                 uploadLoginSuccessLog("3")
@@ -293,7 +302,7 @@ class LoginActivity : FrameActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        UserManager.onActivityResult(requestCode, resultCode, data)
+        UserManagerV4.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {
@@ -307,7 +316,7 @@ class LoginActivity : FrameActivity() {
     }
 
     private fun setLoginResult() {
-        if (UserManager.isUserLogin) {
+        if (UserManagerV4.isUserLogin) {
             setResult(Activity.RESULT_OK)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.user_login_succeed)
         } else
