@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/accent"
     android:fitsSystemWindows="true"
-    android:background="#CE3D3E"
     tools:ignore="SmallSp, RtlHardcoded, UselessParent">
 
     <RelativeLayout
@@ -21,14 +20,14 @@
             android:layout_below="@id/content_head"
             android:background="#FAFAFA"
             android:flipInterval="30"
-            android:persistentDrawingCache="animation"/>
+            android:persistentDrawingCache="animation" />
 
         <View
             android:id="@+id/view_bottom_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_above="@+id/ll_home_tab"
-            android:background="#E8E8E8"/>
+            android:background="#E8E8E8" />
 
         <LinearLayout
             android:id="@+id/ll_home_tab"
@@ -51,17 +50,17 @@
                     android:id="@+id/img_tab_bookshelf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
                     android:contentDescription="@string/module_name"
+                    android:focusable="false"
                     android:padding="1dp"
-                    android:src="@drawable/home_tab_select_bookshelf"/>
+                    android:src="@drawable/home_tab_select_bookshelf" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bookshelf"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -76,17 +75,17 @@
                     android:id="@+id/img_tab_recommend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
                     android:contentDescription="@string/module_name"
+                    android:focusable="false"
                     android:padding="1dp"
-                    android:src="@drawable/home_tab_select_recommend"/>
+                    android:src="@drawable/home_tab_select_recommend" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/recommend"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -101,17 +100,17 @@
                     android:id="@+id/img_tab_ranking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/module_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:contentDescription="@string/module_name"
-                    android:src="@drawable/home_tab_select_ranking"/>
+                    android:src="@drawable/home_tab_select_ranking" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ranking"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -126,17 +125,17 @@
                     android:id="@+id/img_tab_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/module_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:contentDescription="@string/module_name"
-                    android:src="@drawable/home_tab_select_category"/>
+                    android:src="@drawable/home_tab_select_category" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/category"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -153,10 +152,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/dimen_margin_63"
-                android:scaleType="fitXY"
                 android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_download"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/img_guide_remove"
@@ -164,10 +163,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_marginTop="314dp"
-                android:scaleType="fitXY"
                 android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_guide_remove"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </FrameLayout>
 
     </RelativeLayout>

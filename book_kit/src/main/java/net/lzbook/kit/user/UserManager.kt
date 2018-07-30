@@ -1,14 +1,15 @@
 package net.lzbook.kit.user
 
 import android.app.Activity
+import android.arch.persistence.room.Dao
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.util.Base64
 import com.alibaba.fastjson.JSON
-import com.ding.basic.bean.LoginResp
-import com.ding.basic.bean.QQSimpleInfo
-import com.ding.basic.bean.RefreshResp
+import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.google.gson.Gson
@@ -25,9 +26,15 @@ import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.user.bean.AvatarReq
 import net.lzbook.kit.user.bean.LoginReq
+import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.utils.log
+import net.lzbook.kit.utils.logi
 import net.lzbook.kit.utils.toMap
+import okhttp3.RequestBody
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -42,6 +49,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object UserManager : IWXAPIEventHandler {
 
+    /**
+     * new 用户信息
+     */
+    var userV4: LoginRespV4? = null
+        private set
 
     /**
      * 是否已经登录
@@ -160,6 +172,132 @@ object UserManager : IWXAPIEventHandler {
         println("${platform.name} $enable")
         return enable
     }
+
+    /**
+     * 获取短信验证码
+     */
+    fun requestSmsCode(mobile: String, callback: ((Boolean, String) -> Unit)) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestSmsCode(mobile, object : RequestSubscriber<BasicResultV4<String>>() {
+                    override fun requestResult(result: BasicResultV4<String>?) {
+                        callback.invoke(true, result!!.data!!)
+                    }
+
+                    override fun requestError(message: String) {
+                        callback.invoke(false, message)
+                    }
+
+                })
+    }
+
+    /**
+     * 短信验证码登录
+     */
+    fun requestSmsLogin(smsBody: RequestBody, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestSmsLogin(smsBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+
+    }
+
+    /**
+     * 上传用户头像
+     */
+
+    fun uploadUserAvatar(bitmap: Bitmap, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val avatar = bitmap.toBase64()
+        val avatarReq = AvatarReq("jpg", avatar)
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
+                Gson().toJson(avatarReq))
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .uploadUserAvatar(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+    /**
+     * 获取用户修改昵称剩余天数
+     */
+
+    fun requestUserNameState(callBack: ((Boolean, BasicResultV4<UserNameState>?) -> Unit)) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestUserNameState(object : RequestSubscriber<BasicResultV4<UserNameState>>() {
+                    override fun requestResult(result: BasicResultV4<UserNameState>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+    /**
+     * 修改性别
+     */
+    fun uploadUserGender(gender: String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val map = HashMap<String, String>()
+        map["gender"] = gender
+        val body = RequestBody.create(okhttp3.MediaType.parse("Content-Type, application/json"),
+                JSONObject(map).toString())
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .uploadUserGender(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+
+    fun updateUser(user: LoginRespV4) {
+        logi(user.toString())
+        this.userV4 = user
+//        UserDao.getInstance().loginUser = user
+    }
+
 
     /**
      * @param activity
@@ -421,6 +559,17 @@ object UserManager : IWXAPIEventHandler {
             }
         }
     }
+}
+
+
+fun Bitmap.toBase64(): String {
+    val bStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.JPEG, 50, bStream)
+    bStream.flush()
+    bStream.close()
+    val bytes = bStream.toByteArray()
+
+    return Base64.encodeToString(bytes, Base64.DEFAULT)
 }
 
 

@@ -29,6 +29,7 @@ import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.usercenter.UserProfileActivity
 import com.intelligent.reader.util.EventBookStore
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -179,8 +180,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         theme_name = findViewById(R.id.theme_name) as TextView
         clear_cache_size = findViewById(R.id.check_cache_size) as TextView
         check_update_message = findViewById(R.id.check_update_message) as TextView
-
-        //条目字
+//
+//        //条目字
         tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
         tv_style_change = findViewById(R.id.tv_style_change) as TextView
         tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
@@ -260,7 +261,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             btn_login!!.visibility = View.VISIBLE
             txt_nickname!!.visibility = View.GONE
             txt_userid!!.visibility = View.GONE
-            img_head!!.setImageResource(R.mipmap.my_top_pic)
+            img_head!!.setImageResource(R.drawable.default_head)
             rl_logout.visibility = View.GONE
 
             if (txt_login_des != null) {
@@ -445,10 +446,19 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN)
-                btn_login!!.isClickable = false
-                val loginIntent = Intent(this, LoginActivity::class.java)
-                startActivityForResult(loginIntent, CODE_REQ_LOGIN)
+                if (false) {
+                    val userProfileIntent = Intent(this, UserProfileActivity::class.java)
+                    startActivity(userProfileIntent)
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                            StartLogClickUtil.PROFILE)
+
+                } else {
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN)
+                    btn_login!!.isClickable = false
+                    val loginIntent = Intent(this, LoginActivity::class.java)
+                    startActivityForResult(loginIntent, CODE_REQ_LOGIN)
+                }
+
             }
             R.id.btn_logout, R.id.rl_logout -> {
                 logoutDialog()

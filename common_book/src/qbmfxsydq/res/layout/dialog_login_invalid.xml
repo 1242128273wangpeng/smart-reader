@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dimen_view_width_300"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/dialog_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="@dimen/padding_12"
+            android:text="提示"
+            android:textColor="@color/color_black_323232"
+            android:textSize="@dimen/text_size_18"/>
+
+        <include layout="@layout/dialog_divider"/>
+
+        <TextView
+            android:id="@+id/publish_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dimen_margin_10"
+            android:layout_marginTop="@dimen/dimen_margin_10"
+            android:gravity="center"
+            android:lineSpacingExtra="6dp"
+            android:padding="@dimen/dimen_margin_30"
+            android:text="@string/login_invalid_title"
+            android:textColor="@color/color_black_323232"
+            android:textSize="@dimen/text_size_16"/>
+
+        <RelativeLayout
+            android:id="@+id/change_source_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50"
+            android:background="@drawable/background_foot_dialog">
+
+            <View
+                android:id="@+id/change_source_bottom_divider"
+                android:layout_width="@dimen/dimen_view_width_0.5"
+                android:layout_height="@dimen/dimen_view_height_50"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="@color/color_gray_e8e8e8"/>
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/change_source_bottom_divider"
+                android:background="@drawable/dialog_btn_left_selector"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="@drawable/dialog_cancel_selector"
+                android:textSize="@dimen/dimen_text_16"/>
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/change_source_bottom_divider"
+                android:background="@drawable/dialog_btn_right_selector"
+                android:gravity="center"
+                android:text="@string/confirm"
+                android:textColor="@drawable/dialog_confirm_selector"
+                android:textSize="@dimen/dimen_text_16"/>
+
+            <include layout="@layout/dialog_divider"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/container"
+        android:layout_alignLeft="@+id/container"
+        android:layout_alignRight="@+id/container"
+        android:layout_alignTop="@+id/container"
+        android:visibility="gone"
+        app:cornerRadius="4dp"
+        />
+</RelativeLayout>

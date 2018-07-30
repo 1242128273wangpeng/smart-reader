@@ -23,6 +23,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
 import org.json.JSONException
 import java.io.IOException
@@ -31,6 +34,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
+
 
     companion object {
 
@@ -712,6 +716,147 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResultV4<String>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .requestSmsCode(mobile)
+                ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+                ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>(){
+            override fun onNext(result: BasicResultV4<String>) {
+                requestSubscriber.onNext(result)
+            }
+
+            override fun onError(throwable: Throwable) {
+                requestSubscriber.onError(throwable)
+            }
+
+            override fun onComplete() {
+                requestSubscriber.onComplete()
+            }
+        })
+
+    }
+    override fun requestSmsLogin(smsBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .requestSmsLogin(smsBody)
+                ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+    fun uploadUserAvatar(avatarBody: RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .uploadUserAvatar(avatarBody)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+
+    }
+
+    fun requestUserNameState(requestSubscriber: RequestSubscriber<BasicResultV4<UserNameState>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .requestUserNameState()
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<UserNameState>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<UserNameState>>(){
+                    override fun onNext(result: BasicResultV4<UserNameState>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+    fun uploadUserGender(genderBody: RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .uploadUserGender(genderBody)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+
+
+    }
+    fun thirdLogin(thirdBody: RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .thirdLogin(thirdBody)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+
+
+    }
+    fun bindThirdAccount(accountBody: RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .bindThirdAccount(accountBody)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+
+
+    }
+
+
+
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestLogoutAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<JsonObject>())?.subscribeWith(object : ResourceSubscriber<JsonObject>() {
@@ -728,6 +873,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 })
     }
+
+
 
     override fun requestRefreshToken(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<RefreshResp>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestRefreshToken(parameters)!!
@@ -764,6 +911,45 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 })
     }
+
+     fun requestWXAccessToken(token: String, appid: String, openid: String, authorizationCode: String,requestSubscriber: RequestSubscriber<WXAccess>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .requestWXAccessToken(token, appid, openid,authorizationCode)
+                .compose(SchedulerHelper.schedulerHelper<WXAccess>())
+                .subscribeWith(object : ResourceSubscriber<WXAccess>() {
+                    override fun onNext(result: WXAccess?) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+    fun requestWXUserInfo(token: String, openid: String,requestSubscriber: RequestSubscriber<WXSimpleInfo>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .requestWXUserInfo(token, openid)
+                .compose(SchedulerHelper.schedulerHelper<WXSimpleInfo>())
+                .subscribeWith(object : ResourceSubscriber<WXSimpleInfo>() {
+                    override fun onNext(result: WXSimpleInfo?) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
 
 
     override fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>) {

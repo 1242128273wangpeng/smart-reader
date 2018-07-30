@@ -7,7 +7,7 @@
         android:state_pressed="false"/>
 
     <item
-        android:color="#ce3d3e"
+        android:color="@color/accent"
         android:state_pressed="true"/>
 
     <item

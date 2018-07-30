@@ -1,1 +1,40 @@
-<resources></resources>
+<resources>
+
+    <!--用户中心-->
+    <string name="login_weixin">微信</string>
+    <string name="login_weixin_latest_used">微信（上次登录）</string>
+    <string name="login_qq">QQ</string>
+    <string name="login_qq_latest_used">QQ（上次登录）</string>
+    <string name="login_mobile_number_hint">请输入您的手机号</string>
+    <string name="login_verify_code_hint">6位验证码</string>
+    <string name="login_state_not_login">登录</string>
+    <string name="login_state_to_login">请登录</string>
+    <string name="login_state_in_login">正在登录&#8230;</string>
+    <string name="login_state_input_code">请输入验证码</string>
+    <string name="login_fetch_verify_code">获取验证码</string>
+    <string name="login_re_fetch">重新获取&#160;</string>
+    <string name="login_mobile_number_error">手机号格式错误</string>
+    <string name="login_login_btn">登录</string>
+    <string name="login_third_login">其他登录方式</string>
+    <string name="login_bottom_tips_1">登录即代表您已阅读并同意</string>
+    <string name="login_bottom_tips_2">&#032;<u>\"服务条款\"</u>&#032;</string>
+    <string name="login_service_policy">服务条款</string>
+    <string name="login_bottom_tips_3">和</string>
+    <string name="login_bottom_tips_4">&#032;<u>\"隐私条款\"</u>&#032;</string>
+    <string name="login_privacy_policy">隐私条款</string>
+    <string name="login_loading">登录中</string>
+    <string name="bind_btn">完成绑定</string>
+    <string name="bind_phone_title">绑定手机号</string>
+    <string name="fetch_sms_code_success">验证码已发送</string>
+    <string name="bind_third_account">绑定账户</string>
+    <string name="login_success">登录成功</string>
+    <string name="bind_success">绑定成功</string>
+    <string name="login_invalid_title">当前账户已在其他设备上登录，请重新登录</string>
+    <string name="uploading">上传中</string>
+    <string name="loading_dialog_title_loading">加载中</string>
+    <string name="net_work_error">网络不给力哦，请稍后再试</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
+    <string name="loading_dialog_title_editing">修改中</string>
+    <!--用户中心-->
+</resources>

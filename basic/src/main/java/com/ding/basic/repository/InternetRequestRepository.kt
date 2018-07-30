@@ -7,6 +7,9 @@ import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
 import retrofit2.Call
 
@@ -90,6 +93,27 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestLogoutAction(parameters)
     }
 
+    fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
+        return RequestAPI.requestSmsCode(mobile)
+    }
+
+    fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
+
+        return RequestAPI.requestSmsLogin(smsRequestBody)
+    }
+
+    fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.uploadUserAvatar(avatarBody)
+    }
+
+    fun requestUserNameState(): Flowable<BasicResultV4<UserNameState>> {
+        return RequestAPI.requestUserNameState()
+    }
+
+    fun uploadUserGender(genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.uploadUserGender(genderBody)
+    }
+
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return RequestAPI.requestRefreshToken(parameters)
     }
@@ -97,6 +121,23 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     override fun requestUserInformation(token: String, appid: String, openid: String): Flowable<QQSimpleInfo>? {
         return RequestAPI.requestUserInformation(token, appid, openid)
     }
+
+    fun requestWXAccessToken(appid: String, secret: String, code: String, authorizationCode: String): Flowable<WXAccess> {
+        return RequestAPI.requestWXAccessToken(appid, secret, code, authorizationCode)
+    }
+
+    fun requestWXUserInfo(token: String, openid: String): Flowable<WXSimpleInfo> {
+        return RequestAPI.requestWXUserInfo(token, openid)
+    }
+
+    fun thirdLogin(thirdBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.thirdLogin(thirdBody)
+    }
+
+    fun bindThirdAccount(accountBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.bindThirdAccount(accountBody)
+    }
+
 
     override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return RequestAPI.requestCoverRecommend(book_id, recommend)
@@ -120,7 +161,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
-        return RequestAPI.requestSubBook(bookName,bookAuthor)
+        return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
     /***************** 微服务 *****************/

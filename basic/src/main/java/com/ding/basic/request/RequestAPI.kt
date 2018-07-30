@@ -5,6 +5,9 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
+import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Retrofit
@@ -73,6 +76,7 @@ object RequestAPI {
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>? {
         return requestService.requestAutoComplete(word)
     }
+
     fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
         return requestService.requestAutoCompleteV4(word)
     }
@@ -81,12 +85,12 @@ object RequestAPI {
         return requestService.requestAutoCompleteV5(word)
     }
 
-    fun requestHotWordsV4(): Flowable<Result<SearchResult>>{
+    fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
         return requestService.requestHotWordV4()
     }
 
 
-    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>{
+    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook> {
         return requestService.requestSearchRecommend(bookIds)
     }
 
@@ -97,7 +101,6 @@ object RequestAPI {
     fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return requestService.requestBookShelfUpdate(requestBody)
     }
-
 
 
     fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
@@ -113,12 +116,53 @@ object RequestAPI {
         return requestService.requestLogoutAction(parameters)
     }
 
+    fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
+        return requestService.requestSmsCode(mobile)
+    }
+
+    fun requestSmsLogin(smsBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
+
+        return requestService.requestSmsLogin(smsBody)
+    }
+
+    fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.uploadUserAvatar(avatarBody)
+    }
+
+    fun requestUserNameState(): Flowable<BasicResultV4<UserNameState>> {
+        return requestService.requestUserNameState()
+
+    }
+
+    fun uploadUserGender(genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+
+        return requestService.uploadUserGender(genderBody)
+    }
+
+
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return requestService.requestRefreshToken(parameters)
     }
 
     fun requestUserInformation(token: String, appid: String, openid: String): Flowable<QQSimpleInfo>? {
         return requestService.requestUserInformation(token, appid, openid)
+    }
+
+    fun requestWXAccessToken(appid: String, secret: String, code: String, authorizationCode: String): Flowable<WXAccess> {
+        return requestService.requestWXAccessToken(appid, secret, code, authorizationCode)
+    }
+
+    fun requestWXUserInfo(token: String,openid: String):Flowable<WXSimpleInfo> {
+        return requestService.requestWXUserInfo(token,openid)
+    }
+
+
+    fun thirdLogin(thirdBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.thirdLogin(thirdBody)
+    }
+
+    fun bindThirdAccount(accountBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.bindThirdAccount(accountBody)
     }
 
 
@@ -135,8 +179,8 @@ object RequestAPI {
         return requestService.requestBookRecommend(book_id, shelfBooks)
     }
 
-    fun requestAuthorOtherBookRecommend(author: String,book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
-        return requestService.requestAuthorOtherBookRecommend(author,book_id)
+    fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return requestService.requestAuthorOtherBookRecommend(author, book_id)
     }
 
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {

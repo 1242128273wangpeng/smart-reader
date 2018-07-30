@@ -147,14 +147,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
      * 如果编辑书籍状态下，headerview不可点击
      */
     private fun changeHeaderViewState(edit: Boolean) {
-        if (edit) {
-
-            headerView.setViewClickEnable(false)
-        } else {
-            headerView.setViewClickEnable(true)
-            headerView.alpha = 1f
-            headerView.isEnabled = true
-        }
+        headerView.setViewClickEnable(!edit)
     }
 
     private val bookShelfDeleteDialog: BookShelfDeleteDialog by lazy {

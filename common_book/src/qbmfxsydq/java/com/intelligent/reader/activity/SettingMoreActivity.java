@@ -286,12 +286,12 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
 
     private void initBookShelfSort(int type) {
 
-        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? R.mipmap.bookshelf_delete_checked : R.mipmap.bookshelf_delete_unchecked);
-        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? R.mipmap.bookshelf_delete_checked : R.mipmap.bookshelf_delete_unchecked);
+        bookshelf_sort_time_checkbox.setImageResource(type != 1 ? R.drawable.readsetting_check : R.drawable.readsetting_uncheck);
+        bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? R.drawable.readsetting_check : R.drawable.readsetting_uncheck);
     }
 
     private void initPushTime() {
-        if(time_picker != null){
+        if (time_picker != null) {
             time_picker.setCurrentStartHour(settingItems.pushTimeStartH);
             time_picker.setCurrentStartMinute(settingItems.pushTimeStartMin);
             time_picker.setCurrentStopHour(settingItems.pushTimeStopH);

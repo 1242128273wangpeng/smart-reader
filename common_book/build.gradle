@@ -684,18 +684,18 @@ N多网	        blf1298_10885_001
             System.err.println("checkManifest ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
 //            System.err.println(variant.applicationId)
 
-            //修改微信回到的包名
+            //修改微信回到的包名 修改
 //=============================================================
-            def wxentry = new File("common_book/src/main/java/com/intelligent/reader/activity/WXEntryActivity.kt")
-//            System.err.println(wxentry.getAbsolutePath())
-            def lines = wxentry.readLines()
-            lines.set(0, "package ${variant.applicationId}.wxapi")
-            def writer = wxentry.newWriter()
-            lines.forEach {
-                line ->
-                    writer.writeLine(line)
-            }
-            writer.close()
+//            def wxentry = new File("common_book/src/main/java/com/intelligent/reader/activity/WXEntryActivity.kt")
+////            System.err.println(wxentry.getAbsolutePath())
+//            def lines = wxentry.readLines()
+//            lines.set(0, "package ${variant.applicationId}.wxapi")
+//            def writer = wxentry.newWriter()
+//            lines.forEach {
+//                line ->
+//                    writer.writeLine(line)
+//            }
+//            writer.close()
 //=============================================================
 
 //修改app_string.xml 中应用名称

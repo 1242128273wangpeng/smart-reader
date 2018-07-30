@@ -93,6 +93,13 @@ public class StartLogClickUtil {
      * **/
     //个人中心页
     public static final String PAGE_PERSONAL = "PEASONAL";
+    public static final String LOGINRESULT = "LOGINRESULT";//登录结果
+    public static final String PHONELOGIN = "PHONELOGIN";//点击输入手机号
+    public static final String OTHERLOGIN = "OTHERLOGIN";//点击第三方登录
+    public static final String PIN = "PIN";//点击获取验证码
+    public static final String PROFILE = "PROFILE";//登录后点击个人信息
+    public static final String SEX = "SEX";//点击性别
+    public static final String BINDOTHERLOGIN = "BINDOTHERLOGIN";//点击绑定第三方账户
     //个人中心页功能
     public static final String ACTION_PERSONAL_BACK = "BACK";//屏幕左上方点击返回按钮
     public static final String ACTION_PERSONAL_HELP = "HELP";//点击帮助与反馈
@@ -281,6 +288,7 @@ public class StartLogClickUtil {
     public static final String PROCTCOL = "PROCTCOL";//点击使用协议
     public static final String LOGOUT = "LOGOUT";//点击退出登录
     public static final String WIFI_AUTOCACHE = "WIFI_AUTOCACHE";//点击退出登录
+    public static final String PHOTO = "PHOTO";//点击头像
 
     //阅读页
     public static final String LABELEDIT = "LABELEDIT";//添加书签

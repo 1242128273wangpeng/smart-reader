@@ -58,7 +58,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         initializeIntent(intent)
 
         initializeListener()
-        initAD()
+//        initAD()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -182,14 +182,22 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
             }
 
-            if (book_cover_category2 != null && !TextUtils.isEmpty(book.label)) {
-                if (!TextUtils.isEmpty(book.sub_genre)) {
-                    book_cover_category2!!.text = book.sub_genre
-                    book_cover_category2!!.visibility = VISIBLE
-                } else {
-                    book_cover_category2!!.visibility = GONE
-                }
+
+            if (TextUtils.isEmpty(book.label)) {
+                book_cover_category2.text = book.genre
+            } else {
+                book_cover_category2.text = book.label
             }
+
+            if (!mThemeHelper.isNight) {
+                book_cover_category2.setBackgroundResource(R.drawable.book_cover_label_bg)
+                val background = book_cover_category2.background as GradientDrawable
+                background.setColor(resources.getColor(R.color.color_white_ffffff))
+                book_cover_category2.setTextColor(AppUtils.getRandomColor())
+            } else {
+                book_cover_category2.setTextColor(AppUtils.getRandomColor())
+            }
+
 
             if (book.status == "SERIALIZE") {
                 if (book_cover_category2!!.visibility != View.VISIBLE) {
@@ -405,16 +413,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         changeDownloadButtonStatus()
     }
 
-    private fun initAD() {
-        if (!Constants.isHideAD) {
-            MediaControl.loadBookCoverAd(this, { view ->
-                if (ad_view != null && !this.isFinishing()) {
-                    ad_view.visibility = View.VISIBLE
-                    ad_view.removeAllViews()
-                    ad_view.addView(view)
-                }
-            })
-        }
-    }
+//    private fun initAD() {
+//        if (!Constants.isHideAD) {
+//            MediaControl.loadBookCoverAd(this, { view ->
+//                if (ad_view != null && !this.isFinishing()) {
+//                    ad_view.visibility = View.VISIBLE
+//                    ad_view.removeAllViews()
+//                    ad_view.addView(view)
+//                }
+//            })
+//        }
+//    }
 
 }

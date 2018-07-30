@@ -6,16 +6,16 @@
     <color name="divider_line">#f0f0f0</color>
 
     <color name="colorPrimary">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="colorAccent">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="color_primary">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="theme_primary">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="base_bg">
         #ffffff
@@ -42,7 +42,7 @@
         #323232
     </color>
     <color name="color_red_point">
-        #ffffff
+        #ce3d3e
     </color>
     <color name="color_red_point_1">
         #ff0000
@@ -54,13 +54,13 @@
         #1d1d1c
     </color>
     <color name="switchbutton_checked_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="switchbutton_unchecked_color">
         #ffffff
     </color>
     <color name="switchbutton_bg_checked_color">
-        #f0c5c5
+        #63e4e1
     </color>
     <color name="switchbutton_bg_unchecked_color">
         #e3e1e1
@@ -68,6 +68,10 @@
     <color name="top_navigation_text_color">
         #ffffff
     </color>
+    <color name="top_navigation_bg_color">
+        #1dbfbb
+    </color>
+
     <color name="top_navigation_divider_color">
         #ffffff
     </color>
@@ -96,13 +100,13 @@
         #8e8d8d
     </color>
     <color name="cover_bottom_btn_add_text_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="cover_bottom_directory_text_color">
         #1c1c1c
     </color>
     <color name="cover_profile_bg2_pic">
-        #2d2d2d
+        #e4e4e4
     </color>
     <color name="home_title_background">
         #ffffff
@@ -195,7 +199,7 @@
         #777777
     </color>
     <color name="dialog_recommend">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="dialog_download_bg">
         #ffffff
@@ -237,7 +241,7 @@
         #e3e1e1
     </color>
     <color name="setting_login_font_color">
-        #FFFFFF
+        #000000
     </color>
     <color name="setting_nickname_font_color">
         #FFFFFF
@@ -246,7 +250,7 @@
         #FFFFFF
     </color>
     <color name="setting_logout_font_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="login_layout_background">
         #ffffff
@@ -294,7 +298,7 @@
         #7f000000
     </color>
     <color name="moresetting_push_text_color">
-        #ce3d3e
+        #1dbfbb
     </color>
     <color name="download_manager_bottom_menu_bg">
         #fafafa
@@ -353,4 +357,17 @@
 
     <color name="welfare_center_header_bg">#ce3d3e</color>
     <color name="welfare_center_header_title">#ffffff</color>
+
+    <!--用户中心-->
+    <color name="login_etxt_normal">#EEEEEE</color>
+    <color name="login_etxt_error">#F75266</color>
+    <color name="login_mobile_number">#000000</color>
+    <color name="user_profile_font_color">#80000000</color>
+    <color name="item_divider_color">#EAEAEA</color>
+    <color name="user_profile_grey76_txt_color">#767676</color>
+    <color name="bottom_dialog_btn_pressed_color">#FAFAFA</color>
+    <color name="dialog_item_divider_color">#EEEEEE</color>
+    <!--用户中心-->
+
+
 </resources>
