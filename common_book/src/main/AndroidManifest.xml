@@ -145,6 +145,9 @@
                 android:value="${WECHAT_APPID}"
                 />
         <meta-data
+            android:name="WECHAT_SECRET"
+            android:value="${WECHAT_SECRET}"/>
+        <meta-data
                 android:name="QQ_APPID"
                 android:value="${QQ_APPID}"
                 />
@@ -190,11 +193,17 @@
             </intent-filter>
         </activity>
         <activity
-                android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
-                android:screenOrientation="portrait"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                android:exported="true">
-        </activity>
+            android:name=".activity.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <!--微信Activity设置别名-->
+        <activity-alias
+            android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
+            android:enabled="true"
+            android:exported="true"
+            android:targetActivity=".activity.WXEntryActivity" />
+
         <!-- 书架页 发现页 -->
         <activity
                 android:name=".activity.HomeActivity"
