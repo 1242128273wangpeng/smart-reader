@@ -39,6 +39,7 @@ import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.util.PagerDesc
 import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbdzs.act_home.*
@@ -520,6 +521,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         })
 
         jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
+
+        if (recommendFragment.isNeedInterceptSlide()) {
+
+            jsInterfaceHelper.setOnH5PagerInfo (JSInterfaceHelper.OnH5PagerInfoListener { x, y, width, height ->
+                    recommendFragment.mPagerDesc = PagerDesc(y, x, x + width, y + height)
+            })
+        }
+
+
+
     }
 
     override fun startLoad(webView: WebView, url: String): String {
