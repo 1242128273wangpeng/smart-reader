@@ -98,6 +98,8 @@ public class StartLogClickUtil {
     public static final String OTHERLOGIN = "OTHERLOGIN";//点击第三方登录
     public static final String PIN = "PIN";//点击获取验证码
     public static final String PROFILE = "PROFILE";//登录后点击个人信息
+    public static final String SEX = "SEX";//点击性别
+    public static final String BINDOTHERLOGIN = "BINDOTHERLOGIN";//点击绑定第三方账户
     //个人中心页功能
     public static final String ACTION_PERSONAL_BACK = "BACK";//屏幕左上方点击返回按钮
     public static final String ACTION_PERSONAL_HELP = "HELP";//点击帮助与反馈

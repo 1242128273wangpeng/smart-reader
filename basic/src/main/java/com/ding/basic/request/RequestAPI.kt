@@ -5,6 +5,7 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
+import net.lzbook.kit.user.bean.UserNameState
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Retrofit
@@ -124,6 +125,16 @@ object RequestAPI {
 
     fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return requestService.uploadUserAvatar(avatarBody)
+    }
+
+    fun requestUserNameState(): Flowable<BasicResultV4<UserNameState>> {
+        return requestService.requestUserNameState()
+
+    }
+
+    fun uploadUserGender(genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+
+        return requestService.uploadUserGender(genderBody)
     }
 
 

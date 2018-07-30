@@ -23,6 +23,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import net.lzbook.kit.user.bean.UserNameState
 import okhttp3.RequestBody
 import org.json.JSONException
 import java.io.IOException
@@ -771,6 +772,47 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
 
     }
+
+    fun requestUserNameState(requestSubscriber: RequestSubscriber<BasicResultV4<UserNameState>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .requestUserNameState()
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<UserNameState>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<UserNameState>>(){
+                    override fun onNext(result: BasicResultV4<UserNameState>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+    fun uploadUserGender(genderBody: RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .uploadUserGender(genderBody)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+
+
+    }
+
 
 
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {

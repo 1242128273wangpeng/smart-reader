@@ -237,10 +237,10 @@ class LoginActivity : FrameActivity() {
                 data["reason"] = result?.message.toString()
                 StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
                         StartLogClickUtil.LOGIN, data)
-                if (result?.message.isNullOrEmpty()) {
-                    showToastMessage("网络不给力哦，请稍后再试")
-                } else {
+                if(result!=null){
                     showToastMessage(result?.message!!)
+                }else{
+                    showToastMessage("网络不给力哦，请稍后再试")
                 }
                 loadingDialog.dismiss()
             }

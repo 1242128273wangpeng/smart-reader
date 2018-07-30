@@ -4,6 +4,7 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import net.lzbook.kit.user.bean.UserNameState
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -88,6 +89,12 @@ interface RequestService {
 
         // 上传头像
         const val PATH_UPLOAD_USER_AVATAR = "/v4/user/update_user_Avatar"
+
+        // 获取昵称修改剩余天数
+        const val PATH_FETCH_USER_NAME_STATE = "/v4/user/get_update_name_count"
+        // 修改用户性别
+        const val PATH_UPDATE_USER_GENDER = "/v4/user/update_user_gender"
+
         // 用户相关----------------------
 
 
@@ -230,6 +237,14 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_UPLOAD_USER_AVATAR)// 上传用户头像
     fun uploadUserAvatar(@Body avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @GET(PATH_FETCH_USER_NAME_STATE) // 获取修改昵称剩余天数
+    fun requestUserNameState(): Flowable<BasicResultV4<UserNameState>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_UPDATE_USER_GENDER)
+    fun uploadUserGender(@Body genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
 
 
     @GET("https://graph.qq.com/user/get_simple_userinfo")

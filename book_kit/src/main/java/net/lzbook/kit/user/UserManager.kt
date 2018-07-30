@@ -28,10 +28,12 @@ import com.tencent.tauth.UiError
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.user.bean.AvatarReq
 import net.lzbook.kit.user.bean.LoginReq
+import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.logi
 import net.lzbook.kit.utils.toMap
 import okhttp3.RequestBody
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -195,9 +197,9 @@ object UserManager : IWXAPIEventHandler {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .requestSmsLogin(smsBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
-                        if(result?.checkResultAvailable()!!){
-                            callBack.invoke(true,result)
-                        }else{
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
                             callBack.invoke(false, result)
                         }
 
@@ -210,12 +212,13 @@ object UserManager : IWXAPIEventHandler {
                 })
 
     }
+
     /**
      * 上传用户头像
      */
 
-    fun uploadUserAvatar(bitmap: Bitmap,callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit) ){
-        val avatar=bitmap.toBase64()
+    fun uploadUserAvatar(bitmap: Bitmap, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val avatar = bitmap.toBase64()
         val avatarReq = AvatarReq("jpg", avatar)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
                 Gson().toJson(avatarReq))
@@ -223,9 +226,9 @@ object UserManager : IWXAPIEventHandler {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .uploadUserAvatar(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
-                        if(result?.checkResultAvailable()!!){
-                            callBack.invoke(true,result)
-                        }else{
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
                             callBack.invoke(false, result)
                         }
 
@@ -238,12 +241,62 @@ object UserManager : IWXAPIEventHandler {
                 })
     }
 
+    /**
+     * 获取用户修改昵称剩余天数
+     */
+
+    fun requestUserNameState(callBack: ((Boolean, BasicResultV4<UserNameState>?) -> Unit)) {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .requestUserNameState(object : RequestSubscriber<BasicResultV4<UserNameState>>() {
+                    override fun requestResult(result: BasicResultV4<UserNameState>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+    /**
+     * 修改性别
+     */
+    fun uploadUserGender(gender: String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val map = HashMap<String, String>()
+        map["gender"] = gender
+        val body = RequestBody.create(okhttp3.MediaType.parse("Content-Type, application/json"),
+                JSONObject(map).toString())
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .uploadUserGender(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+
     fun updateUser(user: LoginRespV4) {
         logi(user.toString())
         this.user = user
 //        UserDao.getInstance().loginUser = user
     }
-
 
 
     /**

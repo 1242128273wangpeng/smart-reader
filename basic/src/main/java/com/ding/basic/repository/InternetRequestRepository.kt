@@ -7,6 +7,7 @@ import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import net.lzbook.kit.user.bean.UserNameState
 import okhttp3.RequestBody
 import retrofit2.Call
 
@@ -101,6 +102,13 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return RequestAPI.uploadUserAvatar(avatarBody)
+    }
+    fun requestUserNameState():Flowable<BasicResultV4<UserNameState>>{
+        return RequestAPI.requestUserNameState()
+    }
+
+    fun uploadUserGender(genderBody: RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+        return RequestAPI.uploadUserGender(genderBody)
     }
 
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {

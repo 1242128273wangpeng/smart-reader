@@ -31,5 +31,10 @@
     <string name="bind_success">绑定成功</string>
     <string name="login_invalid_title">当前账户已在其他设备上登录，请重新登录</string>
     <string name="uploading">上传中</string>
+    <string name="loading_dialog_title_loading">加载中</string>
+    <string name="net_work_error">网络不给力哦，请稍后再试</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
+    <string name="loading_dialog_title_editing">修改中</string>
     <!--用户中心-->
 </resources>
