@@ -554,6 +554,29 @@ public class StartLogClickUtil {
     }
 
 
+    public static void sendPVData(String startReadTime , String bookId, String chapterId,  String sourceIds, String  channelCode,  String pageCount) {
+        long endReadTime = System.currentTimeMillis()/1000L ;
+        HashMap<String,String> params = new HashMap<String, String>();
+        params.put("book_id", bookId);
+        params.put("book_source_id", sourceIds);
+        params.put("chapter_id", chapterId.toString());
+        params.put("channel_code", channelCode);
+        params.put("chapter_read", "1");
+        params.put("chapter_pages", pageCount);
+        params.put("start_time", startReadTime);
+        params.put("end_time", endReadTime+"");
+        params.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+        params.put("app_package", AppUtils.getPackageName());
+        params.put("app_version", AppUtils.getVersionName());
+        params.put("app_version_code", AppUtils.getVersionCode()+"");
+        params.put("app_channel_id", AppUtils.getChannelId());
+
+        AppLog.e("zn_pv",params.toString());
+        LogEncapManager.getInstance().sendLog(params, "zn_pv");
+//        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
+    }
+
+
     public static void upLoadChapterError(ChapterErrorBean bean) {
         if (!Constants.dy_ad_new_statistics_switch) {
             return;

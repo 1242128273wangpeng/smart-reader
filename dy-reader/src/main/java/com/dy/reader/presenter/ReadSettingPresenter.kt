@@ -389,12 +389,13 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
         if (activity?.get()?.mThemeHelper!!.isNight) {
             //夜间模式只有一种背景， 不能存储
-            //            edit.putInt("current_night_mode", ReadConfig.readThemeMode);
+//            edit.putInt("current_night_mode", ReaderSettings.instance.readThemeMode)
             if (useLightMode) {
                 ReaderSettings.instance.readThemeMode = sharedPreferences.getInt("current_light_mode", 51)
             } else {
                 ReaderSettings.instance.readThemeMode = mode
             }
+
             activity?.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
             data.put("type", "2")
             StartLogClickUtil.upLoadEventLog(activity?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
