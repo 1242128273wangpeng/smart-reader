@@ -53,6 +53,13 @@
     "versionCode": 1,
     "versionName": "1.0",
     "hasAd": true
+  },
+
+  "mfxsqbyd": {
+    "applicationId": "cn.mfxsqbyd.reader",
+    "versionCode": 1,
+    "versionName": "1.0",
+    "hasAd": false
   }
 
 }

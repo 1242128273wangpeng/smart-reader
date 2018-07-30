@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_color_dark">#FF212832</color>
+    <color name="text_color_plain">#FF5D646E</color>
+    <color name="text_color_light">#FF9097A1</color>
+    <color name="text_color_weak">#FFADB4BE</color>
+
+
+    <color name="bookshelf_item_book_pressed">#1A000000</color>
+</resources>

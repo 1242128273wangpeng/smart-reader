@@ -30,6 +30,8 @@
 
     <string name="sort_for_update_time">按更新时间排序</string>
 
+    <string name="sort_for_read_time">按最近阅读排序</string>
+
     <string name="sort_for_reading_time">按最后阅读排序</string>
 
     <string name="download_manager">缓存管理</string>
