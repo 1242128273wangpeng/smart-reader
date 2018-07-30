@@ -313,8 +313,6 @@ class SearchViewHelper(activity: Activity,
 
         mHotWordAndRecommendView = View.inflate(mActivity, R.layout.search_hot_title_layout, null)
 
-//        hotWordAndRecommendLLayout = mHotWordAndRecommendView?.findViewById<View>(R.id.linear_root) as LinearLayout
-
         mGridView = mHotWordAndRecommendView?.findViewById<View>(R.id.grid) as ScrollForGridView
 
         mGridView?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
