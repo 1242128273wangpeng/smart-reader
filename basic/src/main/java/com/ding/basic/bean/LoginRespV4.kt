@@ -4,7 +4,7 @@ package com.ding.basic.bean
  * Date: 2018/7/27 16:51
  * Author: wanghuilin
  * Mail: huilin_wang@dingyuegroup.cn
- * Desc: 登录接口返回数据， v4 接口
+ * Desc: 登录接口返回数据，用户信息， v4 接口
  */
 class LoginRespV4 {
      var account_id: String? = null

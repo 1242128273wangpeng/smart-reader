@@ -30,6 +30,6 @@
     <string name="login_success">登录成功</string>
     <string name="bind_success">绑定成功</string>
     <string name="login_invalid_title">当前账户已在其他设备上登录，请重新登录</string>
-
+    <string name="uploading">上传中</string>
     <!--用户中心-->
 </resources>

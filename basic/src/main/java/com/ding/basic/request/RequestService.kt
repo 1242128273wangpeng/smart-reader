@@ -3,6 +3,7 @@ package com.ding.basic.request
 import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -84,6 +85,9 @@ interface RequestService {
         const val PATH_FETCH_SMS_CODE_V4 = "/v4/message/sms"
         // 短信登录
         const val PATH_SMS_LOGIN_V4 = "/v4/user/sms_create_token"
+
+        // 上传头像
+        const val PATH_UPLOAD_USER_AVATAR = "/v4/user/update_user_Avatar"
         // 用户相关----------------------
 
 
@@ -222,6 +226,11 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_SMS_LOGIN_V4) // 短信验证码登录
     fun requestSmsLogin(@Body smsLoginBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_UPLOAD_USER_AVATAR)// 上传用户头像
+    fun uploadUserAvatar(@Body avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
 
     @GET("https://graph.qq.com/user/get_simple_userinfo")
     fun requestUserInformation(@Query("access_token") token: String, @Query("oauth_consumer_key") appid: String, @Query("openid") openid: String): Flowable<QQSimpleInfo>

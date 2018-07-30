@@ -1,10 +1,13 @@
 package net.lzbook.kit.user
 
 import android.app.Activity
+import android.arch.persistence.room.Dao
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.util.Base64
 import com.alibaba.fastjson.JSON
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
@@ -23,10 +26,13 @@ import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.user.bean.AvatarReq
 import net.lzbook.kit.user.bean.LoginReq
 import net.lzbook.kit.utils.log
+import net.lzbook.kit.utils.logi
 import net.lzbook.kit.utils.toMap
 import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -41,6 +47,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object UserManager : IWXAPIEventHandler {
 
+    /**
+     * new 用户信息
+     */
+    var user: LoginRespV4? = null
+        private set
 
     /**
      * 是否已经登录
@@ -199,6 +210,40 @@ object UserManager : IWXAPIEventHandler {
                 })
 
     }
+    /**
+     * 上传用户头像
+     */
+
+    fun uploadUserAvatar(bitmap: Bitmap,callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit) ){
+        val avatar=bitmap.toBase64()
+        val avatarReq = AvatarReq("jpg", avatar)
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
+                Gson().toJson(avatarReq))
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .uploadUserAvatar(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if(result?.checkResultAvailable()!!){
+                            callBack.invoke(true,result)
+                        }else{
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+    fun updateUser(user: LoginRespV4) {
+        logi(user.toString())
+        this.user = user
+//        UserDao.getInstance().loginUser = user
+    }
+
 
 
     /**
@@ -461,6 +506,17 @@ object UserManager : IWXAPIEventHandler {
             }
         }
     }
+}
+
+
+fun Bitmap.toBase64(): String {
+    val bStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.JPEG, 50, bStream)
+    bStream.flush()
+    bStream.close()
+    val bytes = bStream.toByteArray()
+
+    return Base64.encodeToString(bytes, Base64.DEFAULT)
 }
 
 

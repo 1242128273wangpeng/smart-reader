@@ -90,13 +90,17 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestLogoutAction(parameters)
     }
 
-     fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
+    fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
         return RequestAPI.requestSmsCode(mobile)
     }
 
-     fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
+    fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
 
         return RequestAPI.requestSmsLogin(smsRequestBody)
+    }
+
+    fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.uploadUserAvatar(avatarBody)
     }
 
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {

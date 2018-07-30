@@ -73,6 +73,7 @@ object RequestAPI {
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>? {
         return requestService.requestAutoComplete(word)
     }
+
     fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
         return requestService.requestAutoCompleteV4(word)
     }
@@ -81,12 +82,12 @@ object RequestAPI {
         return requestService.requestAutoCompleteV5(word)
     }
 
-    fun requestHotWordsV4(): Flowable<Result<SearchResult>>{
+    fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
         return requestService.requestHotWordV4()
     }
 
 
-    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>{
+    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook> {
         return requestService.requestSearchRecommend(bookIds)
     }
 
@@ -97,7 +98,6 @@ object RequestAPI {
     fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return requestService.requestBookShelfUpdate(requestBody)
     }
-
 
 
     fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
@@ -112,14 +112,20 @@ object RequestAPI {
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         return requestService.requestLogoutAction(parameters)
     }
-    fun requestSmsCode(mobile:String):Flowable<BasicResultV4<String>>?{
+
+    fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
         return requestService.requestSmsCode(mobile)
     }
-    
-    fun requestSmsLogin(smsBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>?{
+
+    fun requestSmsLogin(smsBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
 
         return requestService.requestSmsLogin(smsBody)
     }
+
+    fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.uploadUserAvatar(avatarBody)
+    }
+
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return requestService.requestRefreshToken(parameters)
@@ -143,8 +149,8 @@ object RequestAPI {
         return requestService.requestBookRecommend(book_id, shelfBooks)
     }
 
-    fun requestAuthorOtherBookRecommend(author: String,book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
-        return requestService.requestAuthorOtherBookRecommend(author,book_id)
+    fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return requestService.requestAuthorOtherBookRecommend(author, book_id)
     }
 
     fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {

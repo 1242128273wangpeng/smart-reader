@@ -230,14 +230,18 @@ class LoginActivity : FrameActivity() {
                 data["status"] = "1"
                 StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
                         StartLogClickUtil.LOGIN, data)
-               setLoginResult()
+                setLoginResult()
             } else {
                 uploadLoginErrorLog("3", result?.message.toString())
                 data["status"] = "2"
                 data["reason"] = result?.message.toString()
                 StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
                         StartLogClickUtil.LOGIN, data)
-                result?.message?.let { showToastMessage(it) }
+                if (result?.message.isNullOrEmpty()) {
+                    showToastMessage("网络不给力哦，请稍后再试")
+                } else {
+                    showToastMessage(result?.message!!)
+                }
                 loadingDialog.dismiss()
             }
 

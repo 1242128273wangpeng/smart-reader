@@ -364,6 +364,9 @@
     <color name="login_mobile_number">#000000</color>
     <color name="user_profile_font_color">#80000000</color>
     <color name="item_divider_color">#EAEAEA</color>
+    <color name="user_profile_grey76_txt_color">#767676</color>
+    <color name="bottom_dialog_btn_pressed_color">#FAFAFA</color>
+    <color name="dialog_item_divider_color">#EEEEEE</color>
     <!--用户中心-->
 
 

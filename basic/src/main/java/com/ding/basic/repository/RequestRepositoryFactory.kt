@@ -752,6 +752,26 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    fun uploadUserAvatar(avatarBody: RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>){
+        InternetRequestRepository.loadInternetRequestRepository(context=context)
+                .uploadUserAvatar(avatarBody)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>(){
+                    override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                        requestSubscriber.onNext(result)
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+
+    }
+
 
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestLogoutAction(parameters)!!
