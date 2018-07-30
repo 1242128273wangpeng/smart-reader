@@ -3,6 +3,7 @@ package com.dingyue.downloadmanager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -27,8 +28,8 @@ class DownloadManagerMenuPopup(context: Context) {
 
     private val settingItemsHelper = SettingItemsHelper.getSettingHelper(context)
 
-    private val selectTextColor = Color.parseColor("#212832")
-    private val selectedTextColor = Color.parseColor("#19DD8B")
+    private val unSelectColor = ContextCompat.getColor(context, R.color.text_color_dark)
+    private val selectedColor = ContextCompat.getColor(context, R.color.primary)
 
     init {
         popupWindow.width = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -64,14 +65,22 @@ class DownloadManagerMenuPopup(context: Context) {
         onRecentReadSortingClickListener = listener
     }
 
+    /**
+     * 书架书籍排序
+     * 0 阅读时间
+     * 1 更新时间
+     */
     fun show(view: View) {
-        if (settingItemsHelper.values.booklist_sort_type == 0) {
-            contentView.txt_time_sorting.setTextColor(selectTextColor)
-            contentView.txt_recent_read_sorting.setTextColor(selectedTextColor)
-        } else {
-            contentView.txt_time_sorting.setTextColor(selectedTextColor)
-            contentView.txt_recent_read_sorting.setTextColor(selectTextColor)
+        when (settingItemsHelper.values.booklist_sort_type) {
+            0 -> setSortChecked(isReadSort = true)
+            1 -> setSortChecked(isTimeSort = true)
         }
-        popupWindow.showAsDropDown(view, 0, 0)
+        popupWindow.showAsDropDown(view, 0, -view.height)
     }
+
+    private fun setSortChecked(isTimeSort: Boolean = false, isReadSort: Boolean = false) {
+        contentView.txt_time_sorting.setTextColor(if (isTimeSort) selectedColor else unSelectColor)
+        contentView.txt_recent_read_sorting.setTextColor(if (isReadSort) selectedColor else unSelectColor)
+    }
+
 }

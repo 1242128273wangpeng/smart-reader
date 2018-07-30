@@ -153,17 +153,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             DownloadManagerLogger.uploadCacheManagerMore()
         }
 
-        txt_empty_find.setOnClickListener {
-
-            DownloadManagerLogger.uploadCacheManagerBookCity()
-
-            val bundle = Bundle()
-            bundle.putInt("position", 1)
-            RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle)
-
-            finish()
-        }
-
         recl_content.addItemDecoration(DownloadItemDecoration(object : DownloadItemDecoration.DownloadHeaderInterface {
             override fun requestItemCacheState(position: Int): Boolean? {
                 return if (position > -1 && downloadBooks.size > position) {
@@ -313,7 +302,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
         img_head_more.visibility = View.GONE
         img_head_back.visibility = View.GONE
-        txt_head_title.text = getString(R.string.edit_cache)
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.VISIBLE
 
