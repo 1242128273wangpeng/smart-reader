@@ -1,13 +1,6 @@
 package com.intelligent.reader.upush
 
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.text.TextUtils
-import com.dingyue.contract.router.BookRouter
-import com.intelligent.reader.activity.CoverPageActivity
-import com.intelligent.reader.activity.FindBookDetail
-import com.intelligent.reader.activity.SettingActivity
 import com.umeng.message.UmengNotificationClickHandler
 import com.umeng.message.entity.UMessage
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

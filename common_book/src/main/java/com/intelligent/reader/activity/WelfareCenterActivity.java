@@ -202,7 +202,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
         if (isNeedInterceptSlide()) {
             jsInterfaceHelper.setOnH5PagerInfo(new JSInterfaceHelper.OnH5PagerInfoListener() {
                 @Override
-                public void onH5PagerInfo(int x, int y, int width, int height) {
+                public void onH5PagerInfo(float x, float y, float width, float height) {
                     mPagerDesc = new PagerDesc(y, x, x + width, y + height);
                 }
             });
@@ -422,8 +422,8 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
                                 h5Margin = loction[1];
                             }
                             if (null != mPagerDesc) {
-                                int top = mPagerDesc.getTop();
-                                int bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                float top = mPagerDesc.getTop();
+                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
                                 DisplayMetrics metric = getResources().getDisplayMetrics();
                                 top = (int) (top * metric.density) + h5Margin;
                                 bottom = (int) (bottom * metric.density) + h5Margin;
