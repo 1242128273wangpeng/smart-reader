@@ -98,18 +98,34 @@ class SearchPresenter(private val mContext: SearchBookActivity,
                             val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.authors!![i].suggest
                             searchCommonBean.wordtype = result.data!!.authors!![i].wordtype
+                            searchCommonBean.image_url = ""
+                            searchCommonBean.isAuthor = result.data!!.authors!![i].isAuthor
                             resultSuggest.add(searchCommonBean)
                         }
                         for (i in 0 until result.data!!.label!!.size) {
                             val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.label!![i].suggest
                             searchCommonBean.wordtype = result.data!!.label!![i].wordtype
+                            searchCommonBean.image_url = ""
                             resultSuggest.add(searchCommonBean)
                         }
                         for (i in 0 until result.data!!.name!!.size) {
                             val searchCommonBean = SearchCommonBeanYouHua()
-                            searchCommonBean.suggest = result.data!!.name!![i].suggest
-                            searchCommonBean.wordtype = result.data!!.name!![i].wordtype
+                            val nameBean = result.data!!.name!![i]
+
+                            searchCommonBean.suggest = nameBean.suggest
+                            searchCommonBean.wordtype = nameBean.wordtype
+                            searchCommonBean.image_url = nameBean.imgUrl
+
+                            searchCommonBean.host = nameBean.host
+                            searchCommonBean.book_id = nameBean.bookid
+                            searchCommonBean.book_source_id = nameBean.bookSourceId
+                            searchCommonBean.name = nameBean.bookName
+                            searchCommonBean.author = nameBean.author
+                            searchCommonBean.parameter = nameBean.parameter
+                            searchCommonBean.extra_parameter = nameBean.extraParameter
+                            searchCommonBean.bookType = nameBean.vip.toString() + ""
+
                             resultSuggest.add(searchCommonBean)
                         }
 
