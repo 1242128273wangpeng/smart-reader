@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_reader_option_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix, RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/img_reader_night"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fl_reader_change_chapter"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/module_name"
+        android:src="@drawable/reader_option_day_icon"/>
+
+    <FrameLayout
+        android:id="@+id/fl_reader_change_chapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_reader_bottom_option">
+
+        <include layout="@layout/reader_option_chapter_change"/>
+
+
+        <include
+            android:visibility="gone"
+            layout="@layout/reader_option_mode"/>
+
+        <include
+            android:visibility="gone"
+            layout="@layout/reader_option_font"/>
+
+        <include
+            android:visibility="gone"
+            layout="@layout/reader_option_background"/>
+
+        <net.lzbook.kit.book.view.NightShadowView
+            android:id="@+id/fl_reader_change_chapter_shadowView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"/>
+    </FrameLayout>
+    <View
+        android:id="@+id/read_option_bottom_divi"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_above="@+id/ll_reader_bottom_option"
+        android:background="#405D646E"/>
+    <LinearLayout
+        android:id="@+id/ll_reader_bottom_option"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="#212223"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_reader_catalog"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:focusable="false"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reader_option_catalog_icon"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.6"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_reader_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageButton
+                android:id="@+id/ibtn_reader_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:focusable="false"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reader_option_mode_check_icon"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.6"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_reader_background"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+
+            <ImageButton
+                android:id="@+id/ibtn_reader_background"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:focusable="false"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reader_option_background_check_icon"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.6"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_reader_font"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageButton
+                android:id="@+id/ibtn_reader_font"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:focusable="false"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reader_option_font_check_icon"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+</RelativeLayout>

@@ -81,6 +81,9 @@
     <string name="accelerate">加速</string>
     <string name="decelerate">减速</string>
 
+    <string name="accelerate_plus">加速 +</string>
+    <string name="decelerate_des">减速 -</string>
+
     <string name="previous_chapter">上一章</string>
     <string name="next_chapter">下一章</string>
 

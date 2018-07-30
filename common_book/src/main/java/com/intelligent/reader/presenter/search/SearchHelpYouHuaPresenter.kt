@@ -14,6 +14,7 @@ import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.intelligent.reader.R
@@ -152,7 +153,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                BookApplication.getGlobalContext().showToastMessage("网络不给力哦！", 0L)
+               CommonUtil.showToastMessage("网络不给力哦！", 0L)
             }
             view?.showLinearParent(false)
         }

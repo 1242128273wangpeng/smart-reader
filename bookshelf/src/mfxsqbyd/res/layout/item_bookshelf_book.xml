@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_book_content"
+    android:layout_width="match_parent"
+    android:background="@drawable/bookshelf_item_sel"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="92dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/img_book_cover_shadow"
+            android:layout_width="92dp"
+            android:layout_height="140dp"
+            android:src="@drawable/bookshelf_book_cover_shadow_bg"/>
+
+
+        <!--书架封面暂时不加圆角，因为圆角在H5上面性能消耗比较大，为了配合H5的统一性，全局都不使用圆角-->
+        <com.dingyue.bookshelf.view.BorderImageView
+            android:id="@+id/img_book_cover"
+            android:layout_width="80dp"
+            android:layout_height="113dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/bookshelf_book_cover_default"/>
+
+        <ImageView
+            android:id="@+id/img_book_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:src="@drawable/bookshelf_item_book_finish_icon"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/img_book_state_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:src="@drawable/bookshelf_item_book_finish_icon"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/txt_book_name"
+            style="@style/style_text_small_plain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/img_book_cover"
+            android:layout_below="@+id/img_book_cover"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            tools:text="书名书名书名书名书名书名"/>
+
+        <TextView
+            android:id="@+id/tv_read_status"
+            style="@style/style_text_tiny_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/img_book_cover"
+            android:layout_below="@+id/txt_book_name"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="作者"/>
+
+        <ImageView
+            android:id="@+id/img_book_select_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/img_book_cover"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="@dimen/dimen_margin_2"
+            android:background="@drawable/bookshelf_item_check_icon"
+            android:visibility="visible"
+            tools:ignore="RtlHardcoded"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

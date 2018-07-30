@@ -39,7 +39,8 @@ android {
             txtqbmfyd : "TXT全本免费阅读",
             qbmfkdxs  : "全本免费快读小说",
             qbmfrmxs  : "全本免费热门小说",
-            qbmfkkydq : "全本免费快看阅读器"
+            qbmfkkydq : "全本免费快看阅读器",
+            mfxsqbyd  : "免费小说全本阅读"
     ]
 
     def appPackageIDConfig = [
@@ -55,7 +56,8 @@ android {
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
             qbmfrmxs  : "cn.qbmfrmxs.reader",
-            qbmfkkydq : "cn.qbmfrmxs.reader"
+            qbmfkkydq : "cn.qbmfrmxs.reader",
+            mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读
     ]
 
     def channel = "dev_channel"
@@ -641,6 +643,34 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://xiaoshuo.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
         }
+
+        mfxsqbyd {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            manifestPlaceholders = [
+
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_MFXSQBYD}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_MFXSQBYD}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_MFXSQBYD}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_MFXSQBYD}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_MFXSQBYD}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_MFXSQBYD}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/mfxsqbyd_book"
+            notOverrideResValue getOwner(), "string", "database_name", "mfxsqbydBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "aa301ab969"
+            notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"//待更换
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "24906354"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "1f41b3f2695c9bf2910102eb5c01b218"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.fengxianghuawu.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com:443"
+        }
     }
 
 
@@ -824,6 +854,8 @@ N多网	        blf1298_10885_001
                 outputFileName = "qbmfrmxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "qbmfkkydq") {
                 outputFileName = "qbmfkkydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+            }else if (variant.flavorName == "mfxsqbyd") {
+                outputFileName = "mfxsqbyd_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else {
                 outputFileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             }
