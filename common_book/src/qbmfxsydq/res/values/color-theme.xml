@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="search_title_hint">#666D77</color>
+    <color name="color_search_recommend_title">#303135</color>
+    <color name="divider_line">#f0f0f0</color>
+
     <color name="colorPrimary">
         #ce3d3e
     </color>
@@ -62,9 +67,6 @@
     </color>
     <color name="top_navigation_text_color">
         #ffffff
-    </color>
-    <color name="top_navigation_bg_color">
-        #ce3d3e
     </color>
     <color name="top_navigation_divider_color">
         #ffffff
