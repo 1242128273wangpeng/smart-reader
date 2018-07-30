@@ -5,17 +5,18 @@
                 android:background="@color/base_bg">
 
     <RelativeLayout
-            android:id="@+id/search_result_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusableInTouchMode="true"
-            android:fitsSystemWindows="true"
-            android:background="@color/top_navigation_bg_color">
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/top_bar_height">
+        android:id="@+id/search_result_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:fitsSystemWindows="true"
+        android:focusableInTouchMode="true">
 
-        <ImageView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
                 android:id="@+id/search_result_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -25,17 +26,17 @@
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:src="@mipmap/cover_top_back"/>
 
-        <ImageView
+            <ImageView
                 android:id="@+id/search_result_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
                 android:layout_marginLeft="5dp"
                 android:paddingLeft="@dimen/dimen_padding_7"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:layout_alignParentRight="true"
                 android:src="@mipmap/search_submit_btn"/>
 
-        <RelativeLayout
+            <RelativeLayout
                 android:id="@+id/search_result_outcome"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_view_height_35"
@@ -45,7 +46,7 @@
                 android:background="@drawable/search_input_bg"
                 android:visibility="visible">
 
-            <TextView
+                <TextView
                     android:id="@+id/search_result_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,7 +58,7 @@
                     android:textColor="@color/search_input_text_color"
                     android:textSize="@dimen/dimen_text_16"/>
 
-            <TextView
+                <TextView
                     android:id="@+id/search_result_keyword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,10 +70,10 @@
                     android:singleLine="true"
                     android:textColor="@color/search_input_text_color"
                     android:textSize="@dimen/dimen_text_16"/>
-        </RelativeLayout>
+            </RelativeLayout>
 
 
-        <RelativeLayout
+            <RelativeLayout
                 android:id="@+id/search_result_default"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_view_height_35"
@@ -82,7 +83,7 @@
                 android:background="@drawable/search_input_bg"
                 android:visibility="visible">
 
-            <ImageView
+                <ImageView
                     android:id="@+id/search_result_clear"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -96,7 +97,7 @@
                     android:src="@drawable/search_edit_clear"
                     android:visibility="visible"/>
 
-            <net.lzbook.kit.book.view.HWEditText
+                <net.lzbook.kit.book.view.HWEditText
                     android:id="@+id/search_result_input"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
@@ -104,50 +105,50 @@
                     android:layout_marginLeft="@dimen/dimen_margin_12"
                     android:layout_toLeftOf="@id/search_result_clear"
                     android:background="@color/transparent"
+                    android:cursorVisible="true"
                     android:gravity="center|left"
                     android:hint=" 输入书名、作者或关键词"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:cursorVisible="true"
-                    app:HWEditText_textCursorDrawable="@drawable/search_edit_text_cursor"
                     android:textColor="@color/search_input_text_color"
                     android:textColorHint="@color/search_input_text_color_hint"
-                    android:textSize="@dimen/dimen_text_16"/>
-        </RelativeLayout>
+                    android:textSize="@dimen/dimen_text_16"
+                    app:HWEditText_textCursorDrawable="@drawable/search_edit_text_cursor"/>
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/search_result_head">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_result_head">
 
         <RelativeLayout
-                android:id="@+id/search_result_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            android:id="@+id/search_result_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <WebView
-                    android:id="@+id/search_result_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:id="@+id/search_result_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             </WebView>
 
         </RelativeLayout>
 
         <FrameLayout
-                android:id="@+id/search_result_hint"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/base_bg">
+            android:id="@+id/search_result_hint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/base_bg">
         </FrameLayout>
     </RelativeLayout>
 
     <ImageView
-            android:id="@+id/title_shadow"
-            android:layout_below="@+id/search_result_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+        android:id="@+id/title_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_result_head"
+        android:scaleType="fitXY"
+        android:src="@mipmap/top_shadow"/>
 </RelativeLayout>

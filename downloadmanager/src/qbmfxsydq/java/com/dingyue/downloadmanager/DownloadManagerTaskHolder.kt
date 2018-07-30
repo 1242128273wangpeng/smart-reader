@@ -1,5 +1,6 @@
 package com.dingyue.downloadmanager
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
@@ -64,13 +65,13 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         pgbar_download.progress = task.progress
 
         val state = task.state
-        pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_second_bg)
+        pgbar_download.progressDrawable = ContextCompat.getDrawable(context,R.drawable.download_manager_item_pgbar_second_bg)
         img_download.setImageResource(R.drawable.download_manager_item_download_icon)
 
         if (state == DownloadState.DOWNLOADING) {
             txt_download_state.text = context.getString(R.string.status_downloading)
             img_download.setImageResource(R.drawable.download_manager_item_pause_icon)
-            pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_main_bg)
+            pgbar_download.progressDrawable = ContextCompat.getDrawable(context,R.drawable.download_manager_item_pgbar_main_bg)
         } else if (state == DownloadState.WAITTING) {
             txt_download_state.text = context.getString(R.string.status_wait)
             img_download.setImageResource(R.drawable.download_manager_item_wait_icon)
@@ -87,7 +88,6 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
             img_download.setImageResource(R.drawable.download_manager_item_finish_icon)
             pgbar_download.progress = 100
             txt_download_num.visibility = View.GONE
-            pgbar_download.progressDrawable = resources.getDrawable(R.drawable.download_manager_item_pgbar_third_bg)
         } else if (state == DownloadState.WAITTING_WIFI) {
             txt_download_state.text = context.getString(R.string.status_wifi_require)
             txt_download_num.visibility = View.GONE

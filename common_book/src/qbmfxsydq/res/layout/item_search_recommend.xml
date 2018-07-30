@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:layout_marginRight="9dp"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_margin_8"
+                android:paddingTop="@dimen/dimen_margin_13">
+
+    <FrameLayout
+        android:id="@+id/iv_card"
+        android:layout_width="@dimen/dimen_margin_88"
+        android:layout_height="@dimen/dimen_margin_124">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/book_shelf_rectangle"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/iv_url"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/tv_book_name"
+        android:layout_width="@dimen/dimen_margin_88"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_card"
+        android:layout_marginTop="@dimen/dimen_margin_8"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_search_recommend_title"
+        android:textSize="14sp"
+        tools:text="青果作家"/>
+
+
+</RelativeLayout>
+
