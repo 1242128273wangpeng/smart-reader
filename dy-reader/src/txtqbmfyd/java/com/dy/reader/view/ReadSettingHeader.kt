@@ -91,12 +91,14 @@ class ReadSettingHeader : FrameLayout{
                     isMarkPage = true
                     ibtn_reader_bookmark.isSelected = true
                     data["type"] = "1"
+                    ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_checked_icon)
                 }
                 2 -> {
                     v.context.applicationContext.showToastMessage("书签已删除")
                     isMarkPage = false
                     ibtn_reader_bookmark.isSelected = false
                     data["type"] = "2"
+                    ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_check_icon)
 
                 }
                 else -> {

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_body_dialog"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="19dp"
+            android:text="@string/prompt"
+            android:textColor="@color/text_color_dark"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/txt_dialog_information"
+            style="@style/style_text_normal_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="6dp"
+            android:paddingBottom="3.5dp"
+            android:paddingLeft="14.5dp"
+            android:paddingRight="14.5dp"
+            android:paddingTop="2.5dp"
+            android:text="@string/determine_clear_all_file_cache"/>
+
+        <View
+            android:id="@+id/view_divider"
+            style="@style/style_setting_line_view"
+            android:layout_above="@id/ll_btn"/>
+
+        <LinearLayout
+            android:id="@+id/ll_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_50"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/style_dialog_button"
+                android:text="@string/cancel"/>
+
+            <View
+                style="@style/style_setting_line_view"
+                android:layout_width="@dimen/dimen_line"
+                android:layout_height="match_parent"/>
+
+            <Button
+                android:id="@+id/btn_confirm"
+                style="@style/style_dialog_button"
+                android:text="@string/confirm"
+                android:textColor="@color/colorPrimary"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:id="@+id/nightShadowView"
+        android:layout_width="270dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        app:cornerRadius="4dp"/>
+</FrameLayout>

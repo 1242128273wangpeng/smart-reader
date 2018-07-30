@@ -11,6 +11,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
@@ -198,7 +199,7 @@ class CoverPagePresenter(private val book_id: String?,
                 //移除书架的打点
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_book_remove)
 
-                activity.applicationContext.showToastMessage("成功从书架移除！")
+                CommonUtil.showToastMessage("成功从书架移除！")
 
                 val data = HashMap<String, String>()
                 data["type"] = "2"
@@ -235,13 +236,13 @@ class CoverPagePresenter(private val book_id: String?,
                         }
 
             } else {
-                activity.applicationContext.showToastMessage("已在书架中！")
+                CommonUtil.showToastMessage("已在书架中！")
             }
         } else {
             Logger.v("书籍未订阅！")
 
             if (coverDetail == null) {
-                activity.applicationContext.showToastMessage("书籍信息异常，请稍后再试！")
+                CommonUtil.showToastMessage("书籍信息异常，请稍后再试！")
             }
 
             coverDetail?.last_update_success_time = System.currentTimeMillis()
@@ -250,7 +251,7 @@ class CoverPagePresenter(private val book_id: String?,
 
             if (result <= 0) {
                 Logger.v("加入书架失败！")
-                activity.applicationContext.showToastMessage("加入书架失败！")
+                CommonUtil.showToastMessage("加入书架失败！")
             } else {
                 Logger.v("加入书架成功！")
 
@@ -260,7 +261,7 @@ class CoverPagePresenter(private val book_id: String?,
 
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
-                activity.applicationContext.showToastMessage("成功添加到书架！")
+                CommonUtil.showToastMessage("成功添加到书架！")
 
                 coverPageContract.insertBookShelfResult(true)
             }
@@ -364,7 +365,7 @@ class CoverPagePresenter(private val book_id: String?,
         }
         val downloadState = CacheManager.getBookStatus(coverDetail!!)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            activity.applicationContext.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
+            CommonUtil.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
         }
 
         val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
@@ -376,7 +377,7 @@ class CoverPagePresenter(private val book_id: String?,
 
             if (result > 0) {
                 coverPageContract.insertBookShelfResult(true)
-                activity.applicationContext.showToastMessage("成功添加到书架！")
+                CommonUtil.showToastMessage("成功添加到书架！")
 
                 BaseBookHelper.startDownBookTask(activity, coverDetail, 0)
             }

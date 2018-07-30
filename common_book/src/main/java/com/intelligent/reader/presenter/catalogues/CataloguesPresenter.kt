@@ -24,6 +24,7 @@ import net.lzbook.kit.repair_books.RepairHelp
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
+import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -68,6 +69,40 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             }
         }
         viewModel
+    }
+
+
+    /**
+     * 转码阅读
+     */
+    private val transformReadDialog: TransformReadDialog by lazy {
+
+        val dialog = TransformReadDialog(activity)
+
+        dialog.insertContinueListener {
+            val data = HashMap<String, String>()
+            data["type"] = "1"
+
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+            intoReadingActivity()
+
+            if (!activity.isFinishing) {
+                dialog.dismiss()
+            }
+        }
+
+        dialog.insertCancelListener {
+            val data = HashMap<String, String>()
+            data["type"] = "2"
+
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+            if (!activity.isFinishing) {
+                dialog.dismiss()
+            }
+        }
+        dialog
     }
 
     fun requestCatalogList(changeSource: Boolean) {
@@ -124,6 +159,29 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_CASHEALL, data)
     }
+
+
+    /***
+     * 刷新底部按钮状态
+     * **/
+    fun refreshBottomState() {
+
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id)
+        if (book != null) {
+            cataloguesContract.successAddIntoShelf(true)
+        } else {
+            cataloguesContract.successAddIntoShelf(false)
+        }
+    }
+
+    fun showReadDialog(){
+        if (!activity.isFinishing) {
+            if (!transformReadDialog.isShow()) {
+                transformReadDialog.show()
+            }
+        }
+    }
+
 
     /**
      * 点击item 进入阅读页
