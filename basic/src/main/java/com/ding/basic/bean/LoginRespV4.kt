@@ -1,11 +1,14 @@
 package com.ding.basic.bean
 
+import android.arch.persistence.room.Entity
+
 /**
  * Date: 2018/7/27 16:51
  * Author: wanghuilin
  * Mail: huilin_wang@dingyuegroup.cn
  * Desc: 登录接口返回数据，用户信息， v4 接口
  */
+@Entity(tableName = "user")
 class LoginRespV4 {
      var account_id: String? = null
 

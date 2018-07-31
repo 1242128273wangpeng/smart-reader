@@ -3,7 +3,9 @@
     package="com.intelligent.reader">
 
     <application>
-
+        <meta-data
+            android:name="WECHAT_SECRET"
+            android:value="${WECHAT_SECRET}" />
         <activity
             android:name=".activity.usercenter.UserProfileActivity"
             android:launchMode="singleTop"
