@@ -124,6 +124,10 @@ class CoverPageActivity : BaseCacheableActivity(),
     }
 
     override fun onNewIntent(intent: Intent) {
+        if (book_cover_bookshelf != null) {
+            book_cover_bookshelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
         coverPagePresenter?.destroy()
         initIntent(intent)
     }
