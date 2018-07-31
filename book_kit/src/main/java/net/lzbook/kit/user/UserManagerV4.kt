@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import com.alibaba.fastjson.JSON
+import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
@@ -22,9 +23,6 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
@@ -93,7 +91,6 @@ object UserManagerV4 : IWXAPIEventHandler {
             log("registerApp", "cant init with null context")
             return
         }
-
 //        mDaoUtils = DaoUtils(HistoryInfo::class.java)
 
         if (!mInited) {
@@ -138,6 +135,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     if (user != null) {
                         logi(user.toString())
                         mUserState.set(true)
+                        Config.insertRequestParameter("loginToken", user!!.token!!)
                         mInitCallback?.invoke(true)
 //                mOriginBookShelfData = queryAllBook()
 //                mOriginBookMarksData = getBookMarkBody(user?.accountId ?: "", queryAllBook())
@@ -321,7 +319,7 @@ object UserManagerV4 : IWXAPIEventHandler {
         mUserState.set(true)
         this.user = user
         logi(user.toString())
-        repositoryFactory.insertLoginUser(user)
+        repositoryFactory.insertOrUpdate(user)
         if (lastLoginId != null && lastLoginId != user.account_id) {
             StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                     StartLogClickUtil.LOGIN, StartLogClickUtil.UIDDIFFUSER)
@@ -358,6 +356,12 @@ object UserManagerV4 : IWXAPIEventHandler {
         })
 
 
+    }
+
+    fun updateUser(user: LoginRespV4) {
+        logi(user.toString())
+        this.user = user
+        repositoryFactory.insertOrUpdate(user)
     }
 
     override fun onResp(resp: BaseResp?) {

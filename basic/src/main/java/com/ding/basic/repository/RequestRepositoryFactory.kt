@@ -1167,8 +1167,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return LocalRequestRepository.loadLocalRequestRepository(context = context).updateBookFix(bookFix)
     }
 
-    fun insertLoginUser(user: LoginRespV4) {
-        LocalRequestRepository.loadLocalRequestRepository(context = context).insertLoginUser(user)
+    fun insertOrUpdate(user: LoginRespV4) {
+        LocalRequestRepository.loadLocalRequestRepository(context = context).insertOrUpdate(user)
     }
 
     fun queryLoginUser(): LoginRespV4 {

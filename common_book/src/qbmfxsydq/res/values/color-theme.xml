@@ -244,10 +244,10 @@
         #000000
     </color>
     <color name="setting_nickname_font_color">
-        #FFFFFF
+        #000000
     </color>
     <color name="setting_userid_font_color">
-        #FFFFFF
+        #000000
     </color>
     <color name="setting_logout_font_color">
         #1dbfbb
