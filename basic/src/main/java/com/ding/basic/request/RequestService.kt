@@ -101,6 +101,11 @@ interface RequestService {
         const val PATH_FETCH_USER_NAME_STATE = "/v4/user/get_update_name_count"
         // 修改用户性别
         const val PATH_UPDATE_USER_GENDER = "/v4/user/update_user_gender"
+        // 绑定手机号
+        const val PATH_BIND_PHONE_NUMBER = "/v4/user/link_local"
+
+        // 修改用户昵称
+        const val PATH_UPDATE_USER_NAME = "/v4/user/update_user_name"
         // 第三方登录
         const val PATH_THIRD_LOGIN = "/v4/user/third_create_token"
         // 绑定第三方账户
@@ -260,6 +265,14 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_UPDATE_USER_GENDER)
     fun uploadUserGender(@Body genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_BIND_PHONE_NUMBER)
+    fun bindPhoneNumber(@Body phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_UPDATE_USER_NAME)
+    fun uploadUserName(@Body nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_THIRD_LOGIN) //第三方登录

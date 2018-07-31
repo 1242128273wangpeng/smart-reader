@@ -16,7 +16,7 @@ import com.intelligent.reader.view.BottomDialog
 import com.intelligent.reader.view.MenuItem
 import com.intelligent.reader.view.login.LoadingDialog
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.main.publish_hint_dialog.*
+import kotlinx.android.synthetic.qbmfxsydq.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_user_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
@@ -64,7 +64,9 @@ class UserProfileActivity : BaseCacheableActivity() {
             UserManagerV4.requestUserNameState { success, result ->
                 if (success) {
                     if (result?.data!!.isCanBeModified == 1) {
-//                        TODO 修改昵称
+                        var editIntent = Intent(this, EditUserProfileActivity::class.java)
+                        editIntent.putExtra("userName", txt_user_name.text)
+                        startActivity(editIntent)
                     } else {
                         showToastMessage("剩余 ${result!!.data!!.remainingDays} 天可修改昵称")
                     }
@@ -87,9 +89,8 @@ class UserProfileActivity : BaseCacheableActivity() {
         rl_phone.setOnClickListener {
             val phoneNumber = UserManagerV4.user?.phone_number
             if (phoneNumber == null) {
-//                TODO 绑定手机号
-//                val bindingIntent = Intent(this, BindPhoneActivity::class.java)
-//                startActivity(bindingIntent)
+                val bindingIntent = Intent(this, BindPhoneActivity::class.java)
+                startActivity(bindingIntent)
             }
         }
 
@@ -281,10 +282,10 @@ class UserProfileActivity : BaseCacheableActivity() {
         progressDialog.setCanceledOnTouchOutside(false)
         progressDialog.setCancelable(true)
 
-        publish_content.visibility = View.GONE
-        dialog_title.setText(R.string.tips_login)
-        change_source_bottom.visibility = View.GONE
-        progress_del.visibility = View.VISIBLE
+        progressDialog.publish_content.visibility = View.GONE
+        progressDialog.dialog_title.setText(R.string.tips_login)
+        progressDialog.change_source_bottom.visibility = View.GONE
+        progressDialog.progress_del.visibility = View.VISIBLE
         progressDialog.setOnDismissListener { }
         progressDialog
     }

@@ -91,7 +91,6 @@ object UserManagerV4 : IWXAPIEventHandler {
             log("registerApp", "cant init with null context")
             return
         }
-//        mDaoUtils = DaoUtils(HistoryInfo::class.java)
 
         if (!mInited) {
             mInited = true
@@ -260,43 +259,6 @@ object UserManagerV4 : IWXAPIEventHandler {
                     })
 
 
-//            NetService.userService.fetchQQUserInfo(accessToken, qqAppID, openid)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(Schedulers.io())
-//                    .flatMap { info ->
-//                        val avatarUrl: String = info.figureurl_qq_2
-//                                ?: info.figureurl_qq_1 ?: ""
-//                        val qqReq = ThirdLoginReq(openid, accessToken,
-//                                expiresIn, "", "", CHANNEL_QQ,
-//                                info.nickname, info.gender, avatarUrl)
-//                        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
-//                                Gson().toJson(qqReq))
-//                        logi("isBind: $isBind")
-//                        if (isBind) {
-//                            logi("绑定第三方")
-//                            NetService.userService.bindThirdAccount(body)
-//                        } else {
-//                            logi("登录第三方")
-//                            NetService.userService.thirdLogin(body)
-//                        }
-//                    }
-//                    .map(ResultMapper<User>())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribeBy(
-//                            onNext = {
-//                                onLogin(it)
-//                                sharedPreferences?.edit()
-//                                        ?.putString(LOGIN_METHOD, CHANNEL_QQ)
-//                                        ?.putString(LOGIN_ID, it.accountId)
-//                                        ?.apply()
-//                                successCallback?.invoke(it)
-//                            },
-//                            onError = { e ->
-//                                loge("fetchQQUserInfo", e)
-//                                e.printStackTrace()
-//                                failedCallback?.invoke(e)
-//                            }
-//                    )
         }
 
 
@@ -318,6 +280,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     private fun onLogin(user: LoginRespV4) {
         mUserState.set(true)
         this.user = user
+        Config.insertRequestParameter("loginToken", user!!.token!!)
         logi(user.toString())
         repositoryFactory.insertOrUpdate(user)
         if (lastLoginId != null && lastLoginId != user.account_id) {
@@ -358,6 +321,9 @@ object UserManagerV4 : IWXAPIEventHandler {
 
     }
 
+    /**
+     * 更新用户数据
+     */
     fun updateUser(user: LoginRespV4) {
         logi(user.toString())
         this.user = user
@@ -397,48 +363,6 @@ object UserManagerV4 : IWXAPIEventHandler {
 
                         })
 
-//                NetService.userService.fetchWXAccessToken(wxAppID, wxAppSecret, auth.code,
-//                        "authorization_code")
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(Schedulers.io())
-//                        .flatMap { access ->
-//                            wxReq.oauthId = access.openid
-//                            wxReq.accessToken = access.access_token
-//                            wxReq.accessTokenSeconds = access.expires_in
-//                            wxReq.refreshToken = access.refresh_token
-//                            wxReq.refreshTokenSeconds = "2592000"
-//                            NetService.userService.fetchWXUserInfo(access.access_token, access.openid)
-//                        }
-//                        .flatMap { info ->
-//                            wxReq.name = info.nickname
-//                            wxReq.sex = if (info.sex == 1) "男" else "女"
-//                            wxReq.avatarUrl = info.headimgurl
-//                            val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
-//                                    Gson().toJson(wxReq))
-//                            logi("isBind: $isBind")
-//                            if (isBind) {
-//                                logi("绑定第三方")
-//                                NetService.userService.bindThirdAccount(body)
-//                            } else {
-//                                logi("登录第三方")
-//                                NetService.userService.thirdLogin(body)
-//                            }
-//                        }
-//                        .map(ResultMapper<User>())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeBy(
-//                                onNext = {
-//                                    onLogin(it)
-//                                    sharedPreferences?.edit()
-//                                            ?.putString(LOGIN_METHOD, ThirdLoginReq.CHANNEL_WX)
-//                                            ?.putString(LOGIN_ID, it.accountId)
-//                                            ?.apply()
-//                                    successCallback?.invoke(it)
-//                                },
-//                                onError = {
-//                                    failedCallback?.invoke(it)
-//                                }
-//                        )
 
             }
             BaseResp.ErrCode.ERR_USER_CANCEL -> {
@@ -663,6 +587,64 @@ object UserManagerV4 : IWXAPIEventHandler {
 
                 })
     }
+    /**
+     *  修改昵称
+     */
+
+    fun uploadUserName(name: String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val map = HashMap<String, String>()
+        map["name"] = name
+        val body = RequestBody.create(okhttp3.MediaType.parse("Content-Type, application/json"),
+                JSONObject(map).toString())
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .uploadUserName(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+    /**
+     *  修改昵称
+     */
+
+    fun bindPhoneNumber(phone: String,code:String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val map = HashMap<String, String>()
+        map["phoneNumber"] = phone
+        map["code"]=code
+
+        val body = RequestBody.create(okhttp3.MediaType.parse("Content-Type, application/json"),
+                JSONObject(map).toString())
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .bindPhoneNumber(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
 
 
 }
