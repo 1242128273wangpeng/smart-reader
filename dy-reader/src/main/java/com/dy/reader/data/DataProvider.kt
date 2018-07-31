@@ -367,10 +367,6 @@ object DataProvider {
     fun loadGroupWithVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
         loadGroupForVertical(group) { success: Boolean, chapter: Chapter? ->
             if (success) {
-                //发送章节消费
-                StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                        if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.chapterCount.toString() )
-                ReaderStatus.startTime = System.currentTimeMillis()/1000L
                 callback?.invoke(true, chapter)
             } else {
                 callback?.invoke(false, null)
@@ -384,6 +380,14 @@ object DataProvider {
         if (position.index == 0 && position.group >= 0) {
             loadPre(position.group + 2, position.group + 6)
         }
+        if(curPosition.group == 1 && curPosition.index == 0 && position.group == curPosition.group && curPosition.index+1 == position.index ){
+            AppLog.e("kkk66","common")
+            //发送章节消费 第一章时 单独处理
+            StartLogClickUtil.sendPVData(ReaderStatus?.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
+                    if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.chapterCount.toString() )
+            ReaderStatus.startTime = System.currentTimeMillis()/1000L
+        }
+
 
         //在加载下一页
         if (position.group > curPosition.group ||
