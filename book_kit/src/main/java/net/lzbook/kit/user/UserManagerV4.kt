@@ -26,6 +26,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
 import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_QQ
 import net.lzbook.kit.user.bean.AvatarReq
@@ -79,6 +80,9 @@ object UserManagerV4 : IWXAPIEventHandler {
     var failedCallback: ((String) -> Unit)? = null
     var mInitCallback: ((Boolean) -> Unit)? = null
     private var mInited = false
+    val repositoryFactory: RequestRepositoryFactory by lazy {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+    }
 
     /**
      * 初始化登录平台
@@ -130,7 +134,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     sharedPreferences = context.getSharedPreferences(LAST_LOGIN, Context.MODE_PRIVATE)
                     lastLoginId = sharedPreferences?.getString(LOGIN_ID, null)
 
-//                    user = UserDao.getInstance().loginUser
+                    user = repositoryFactory.queryLoginUser()
                     if (user != null) {
                         logi(user.toString())
                         mUserState.set(true)
@@ -310,6 +314,51 @@ object UserManagerV4 : IWXAPIEventHandler {
 
     }
 
+    /**
+     * 保存登录用户信息
+     */
+    private fun onLogin(user: LoginRespV4) {
+        mUserState.set(true)
+        this.user = user
+        logi(user.toString())
+        repositoryFactory.insertLoginUser(user)
+        if (lastLoginId != null && lastLoginId != user.account_id) {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.LOGIN, StartLogClickUtil.UIDDIFFUSER)
+        }
+        lastLoginId = user.account_id
+    }
+
+
+    /**
+     * 退出登录
+     */
+    fun logout(onLogout: (() -> Unit)? = null) {
+        if (mUserState.get()) {
+            onLogout(onLogout)
+        }
+    }
+
+    private fun onLogout(onLogout: (() -> Unit)?) {
+        mUserState.set(false)
+        this.user = null
+        repositoryFactory.deleteLoginUser()
+//        if (onLogout == null) return@uploadReadInfo
+
+        repositoryFactory.requestLogout(object : RequestSubscriber<BasicResultV4<String>>() {
+            override fun requestResult(result: BasicResultV4<String>?) {
+                onLogout?.invoke()
+
+            }
+
+            override fun requestError(message: String) {
+                onLogout?.invoke()
+            }
+
+        })
+
+
+    }
 
     override fun onResp(resp: BaseResp?) {
         logi("onResp : ", resp.toString())
@@ -419,6 +468,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             successCallback!!.invoke(result)
+                            onLogin(result.data!!)
                         } else {
                             failedCallback?.invoke(result.message.toString())
                         }
@@ -441,6 +491,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             successCallback!!.invoke(result)
+                            onLogin(result.data!!)
 
                         } else {
                             failedCallback?.invoke(result.message.toString())
@@ -482,6 +533,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             callBack.invoke(true, result)
+                            onLogin(result.data!!)
                         } else {
                             callBack.invoke(false, result)
                         }
