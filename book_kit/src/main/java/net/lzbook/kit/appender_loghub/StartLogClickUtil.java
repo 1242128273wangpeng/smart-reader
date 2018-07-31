@@ -567,7 +567,7 @@ public class StartLogClickUtil {
         HashMap<String,String> params = new HashMap<String, String>();
         params.put("book_id", bookId);
         params.put("book_source_id", sourceIds);
-        params.put("chapter_id", chapterId.toString());
+        params.put("chapter_id", chapterId);
         params.put("channel_code", channelCode);
         params.put("chapter_read", "1");
         params.put("chapter_pages", pageCount);

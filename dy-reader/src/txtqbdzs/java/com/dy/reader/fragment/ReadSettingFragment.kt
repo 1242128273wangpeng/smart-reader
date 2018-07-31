@@ -152,7 +152,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog?.rl_read_setting_content?.setOnClickListener {
             if(dialog?.isShowing == true){
-                dismiss()
+                dialog?.dismiss()
             }
         }
 
