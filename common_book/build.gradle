@@ -56,7 +56,7 @@ android {
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
             qbmfrmxs  : "cn.qbmfrmxs.reader",
-            qbmfkkydq : "cn.qbmfrmxs.reader",
+            qbmfkkydq : "cn.qbmfkkydq.reader",
             mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读
     ]
 
