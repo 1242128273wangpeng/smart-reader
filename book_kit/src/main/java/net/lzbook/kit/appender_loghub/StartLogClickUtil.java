@@ -566,7 +566,7 @@ public class StartLogClickUtil {
 
     public static void sendPVData(String startReadTime , String bookId, String chapterId,  String sourceIds, String  channelCode,  String pageCount) {
         long endReadTime = System.currentTimeMillis()/1000L ;
-        HashMap<String,String> params = new HashMap<String, String>();
+        HashMap<String,String> params = new HashMap<>();
         params.put("book_id", bookId);
         params.put("book_source_id", sourceIds);
         params.put("chapter_id", chapterId);
@@ -583,7 +583,6 @@ public class StartLogClickUtil {
 
         AppLog.e("zn_pv",params.toString());
         LogEncapManager.getInstance().sendLog(params, "zn_pv");
-//        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
     }
 
 

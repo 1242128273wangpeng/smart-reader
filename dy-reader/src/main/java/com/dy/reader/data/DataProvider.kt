@@ -5,7 +5,6 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
-import com.ding.basic.util.DataCache
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
 import com.dy.reader.page.Position
@@ -21,21 +20,14 @@ import com.dy.reader.repository.ReaderRepository
 import com.dy.reader.repository.ReaderRepositoryFactory
 import com.intelligent.reader.read.mode.NovelChapter
 import com.intelligent.reader.read.mode.NovelPageBean
-import com.logcat.sdk.LogEncapManager
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.runOnMain
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -394,11 +386,6 @@ object DataProvider {
                 (position.group == curPosition.group && position.index > curPosition.index)) {
             if (curPosition.index == 0 && getPageData(curPosition.group + 1) == null) {
                 loadGroup(curPosition.group + 1, false)
-                AppLog.e("kkk","xiayiye")
-                //发送章节消费
-                StartLogClickUtil.sendPVData(ReaderStatus?.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                      if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.chapterCount.toString() )
-                ReaderStatus.startTime = System.currentTimeMillis()/1000L
             }
         }
         //在加载上一页
@@ -406,8 +393,6 @@ object DataProvider {
                 (position.group == curPosition.group && position.index < curPosition.index)) {
             if (curPosition.index == curPosition.groupChildCount - 1 && getPageData(curPosition.group - 1) == null) {
                 loadGroup(curPosition.group - 1, false)
-                AppLog.e("kkk222","shangyiye")
-                ReaderStatus.startTime = System.currentTimeMillis()/1000L
             }
         }
 

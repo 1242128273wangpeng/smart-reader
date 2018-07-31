@@ -11,7 +11,6 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.ding.basic.bean.Chapter
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
@@ -27,7 +26,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
 import com.intelligent.reader.read.mode.NovelPageBean
-import iyouqu.theme.FrameActivity
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -93,6 +92,11 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
 
     private var mIsJumpChapter = false
 
+    /***
+     * 打点使用
+     * **/
+    private var mStatisticChapterIndex = -1
+
     init {
         LayoutInflater.from(context).inflate(R.layout.reader_vertical_pager, this)
         mLayoutManager = WrapContentLinearLayoutManager(context)
@@ -124,12 +128,25 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                     } else if (mLastVisiblePosition > (mOriginDataList.size * NEXT_LOAD_CHAPTER_SCROLL_SCALE)) {
                         loadNextChapter(ReaderStatus.position.group + 1)
                     }
-//                } else if (mOriginDataList.size > 0 && mOriginDataList[linearLayoutManager.findFirstVisibleItemPosition()].lines[0].sequenceType == PagerScrollAdapter.HEADER_ITEM_TYPE) {
                 } else if (mOriginDataList.size > 0 &&
                         mOriginDataList[firstVisibleItemPosition].lines.size > 0 &&
                         mOriginDataList[firstVisibleItemPosition].lines[0].sequenceType == PagerScrollAdapter.HEADER_ITEM_TYPE) {
                     loadPreChapter(ReaderStatus.position.group - 1)
                 }
+
+                if (ReaderStatus.position.group != -1 && ReaderStatus.position.index == ReaderStatus.position.groupChildCount - 1) {
+                    if (mStatisticChapterIndex != ReaderStatus.position.group && mStatisticChapterIndex < ReaderStatus.position.group) {
+                        mStatisticChapterIndex = ReaderStatus.position.group
+
+                        Logger.e("打点统计PV: " + ReaderStatus.position.group + " : " + ReaderStatus.position.groupChildCount + " : " + ReaderStatus.position.index)
+
+                        StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id,  ReaderStatus.book.book_source_id, if("zn" == ReaderStatus.book.book_type){ "2" }else{ "1" }, ReaderStatus.position.groupChildCount.toString())
+                        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
+                    } else if (mStatisticChapterIndex != ReaderStatus.position.group) {
+                        mStatisticChapterIndex = ReaderStatus.position.group
+                    }
+                }
+
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
             }
         })
@@ -253,6 +270,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
         if (mChapterLoadStat == CHAPTER_WAITING) {
             mChapterLoadStat = CHAPTER_LOADING
             loadChapterState {
+                AppLog.e("k111","shangfanye")
                 getChapterData(sequence, ReadViewEnums.PageIndex.previous, false)
                 if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
                     mAdapter.setLoadViewState(PagerScrollAdapter.LOAD_VIEW_FAIL_STATE)
@@ -404,7 +422,6 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                 }
                 val nextChapterContent = DataProvider.chapterCache.get(chapter.sequence)
                 nextChapterContent?.apply {
-
                     setChapterPagePosition(chapter.sequence, chapter.name ?: "", nextChapterContent.separateList)
 
                     mAdapter.addNextChapter(chapter.sequence, nextChapterContent.separateList)
@@ -441,22 +458,12 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
 
-//                ReadState.chapterName = mOriginDataList[position].lines[0].chapterName
-                if(ReaderStatus.position.group < mOriginDataList[position].lines[0].sequence){
-                    //发送章节消费
-                    StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.chapterCount.toString() )
-                    ReaderStatus.startTime = System.currentTimeMillis()/1000L
-                }
                 ReaderStatus.position.index = getCurrentChapterPage(position)
                 ReaderStatus.position.offset = mOriginDataList[position].offset
                 ReaderStatus.position.group = mOriginDataList[position].lines[0].sequence
                 ReaderStatus.position.groupChildCount = getCurrentChapterPageCount(mOriginDataList[position].lines[0].sequence)
                 EventBus.getDefault().post(EventLoading(EventLoading.Type.PROGRESS_CHANGE))
-
-//                ReaderStatus.contentLength = mOriginDataList[position].contentLength todo
             }
-            //todo 打点统计
         }
     }
 
