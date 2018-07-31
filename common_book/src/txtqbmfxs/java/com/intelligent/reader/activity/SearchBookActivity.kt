@@ -493,7 +493,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
                 //判断当用户没有对editText进行操作时（即编辑框没有内容时），显示搜索历史
                 if (etxt_search_input.text.toString() == "") {
-                    mSearchViewHelper?.showHistoryList()
+                    /*mSearchViewHelper?.showHistoryList()*/
+                    mSearchViewHelper?.initVisibilityView(isHistoryListView = true)
                 }
             }
             ziyougb = true
