@@ -1,11 +1,8 @@
 package com.intelligent.reader.search
 
 import android.app.Activity
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
-import android.content.res.Resources
-import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.preference.PreferenceManager
@@ -121,8 +118,9 @@ class SearchViewHelper(activity: Activity,
         initSuggestListView()
         initHotTagView()
         setHotTagList()
-        /*initRecommendView()*/
         initVisibilityView(isHotAndRecommendView = true)
+
+//        initRecommendView()
     }
 
 
@@ -353,7 +351,7 @@ class SearchViewHelper(activity: Activity,
 
 
         if (NetWorkUtils.getNetWorkTypeNew(mActivity) == "无") {
-            mHotWordAndRecommendView?.visibility = View.GONE
+            initVisibilityView(isHotAndRecommendView = false)
         } else {
             parseGetHotWords()
             parseGetRecommendData()
@@ -362,26 +360,13 @@ class SearchViewHelper(activity: Activity,
     }
 
 
-/*
-    private fun initRecommendView() {
+    fun initVisibilityView(isHotAndRecommendView: Boolean = false,
+                           isSuggestListView: Boolean = false,
+                           isHistoryListView: Boolean = false) {
 
-        mRootLayout?.addView(mHotWordAndRecommendView)
-
-        mHotWordAndRecommendView?.visibility = View.VISIBLE
-        mSuggestListView?.visibility = View.GONE
-        mHistoryListView?.visibility = View.GONE
-
-    }
-*/
-
-
-     fun initVisibilityView(isHotAndRecommendView: Boolean = false,
-                                   isSuggestListView: Boolean = false,
-                                   isHistoryListView: Boolean = false) {
-
-        mHotWordAndRecommendView?.visibility = if(isHotAndRecommendView) View.VISIBLE else View.GONE
-        mSuggestListView?.visibility = if(isSuggestListView) View.VISIBLE else View.GONE
-        mHistoryListView?.visibility = if(isHistoryListView) View.VISIBLE else View.GONE
+        mHotWordAndRecommendView?.visibility = if (isHotAndRecommendView) View.VISIBLE else View.GONE
+        mSuggestListView?.visibility = if (isSuggestListView) View.VISIBLE else View.GONE
+        mHistoryListView?.visibility = if (isHistoryListView) View.VISIBLE else View.GONE
 
 
     }
@@ -392,9 +377,7 @@ class SearchViewHelper(activity: Activity,
      */
     private fun showSearchHistory() {
 
-        if (mHotWordAndRecommendView != null && mHotWordAndRecommendView?.visibility == View.VISIBLE) {
-            mHotWordAndRecommendView?.visibility = View.GONE
-        }
+        initVisibilityView(isHistoryListView = true)
 
         //初始化搜索历史的ListView
         initHistoryMain()
@@ -447,7 +430,6 @@ class SearchViewHelper(activity: Activity,
                     override fun requestResult(result: Result<SearchResult>?) {
                         result?.let {
                             val data = it.data
-                            mHotWordAndRecommendView?.visibility = View.VISIBLE
                             sharedPreferencesUtils?.putString(Constants.SERARCH_HOT_WORD_YOUHUA, gson?.toJson(data, SearchResult::class.java))
                             showHotWordsList(data)
                         }
@@ -480,7 +462,6 @@ class SearchViewHelper(activity: Activity,
                 if (result != null && result.data != null) {
                     recommendBooks?.clear()
                     recommendBooks = result.data
-                    mHotWordAndRecommendView?.visibility = View.VISIBLE
 
                     mRecommendBooksAdapter = RecommendBooksAdapter(mActivity, this@SearchViewHelper, recommendBooks)
                     mRecommendRecycleView?.adapter = mRecommendBooksAdapter
@@ -540,17 +521,16 @@ class SearchViewHelper(activity: Activity,
                     Constants.SERARCH_HOT_WORD_YOUHUA)
             val searchResult = gson?.fromJson(cacheHotWords, SearchResult::class.java)
             if (searchResult != null) {
-                mHotWordAndRecommendView?.visibility = View.VISIBLE
                 showHotWordsList(searchResult)
             } else {
-                mHotWordAndRecommendView?.visibility = View.GONE
+                initVisibilityView(isHotAndRecommendView = false)
             }
 
         } else {
             if (!hasNet) {
                 CommonUtil.showToastMessage("网络不给力哦")
             }
-            mHotWordAndRecommendView?.visibility = View.GONE
+            initVisibilityView(isHotAndRecommendView = false)
         }
     }
 
@@ -619,13 +599,7 @@ class SearchViewHelper(activity: Activity,
 
     private fun showSuggestList(searchWord: String) {
 
-       /* mRootLayout?.visibility = View.VISIBLE
-        mSuggestListView?.visibility = View.VISIBLE
-        mHistoryListView?.visibility = View.GONE
-        mHotWordAndRecommendView?.visibility = View.GONE*/
-
         initVisibilityView(isSuggestListView = true)
-
 
         // 清空上一个词的联想词结果
         mSuggestList?.clear()
@@ -706,12 +680,12 @@ class SearchViewHelper(activity: Activity,
         }
     }
 
-   /* fun showHistoryList() {
-        mHistoryListView?.visibility = View.VISIBLE
-        mSuggestListView?.visibility = View.GONE
-        mHotWordAndRecommendView?.visibility = View.GONE
-    }
-*/
+    /* fun showHistoryList() {
+         mHistoryListView?.visibility = View.VISIBLE
+         mSuggestListView?.visibility = View.GONE
+         mHotWordAndRecommendView?.visibility = View.GONE
+     }
+ */
     fun notifyListChanged() {
         if (mHistoryAdapter != null)
             mHistoryAdapter!!.notifyDataSetChanged()
