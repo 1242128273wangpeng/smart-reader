@@ -155,7 +155,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         dialog?.rsh_option_header?.isBookSubscribed()
         dialog?.rl_read_setting_content?.setOnClickListener {
             if(dialog?.isShowing == true){
-                dismiss()
+                dialog?.dismiss()
             }
         }
         if (!EventBus.getDefault().isRegistered(this)) {

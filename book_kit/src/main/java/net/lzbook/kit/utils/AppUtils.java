@@ -606,11 +606,16 @@ public class AppUtils {
      * 获得sd卡剩余容量，即可用大小
      */
     public static String getSDAvailableSize(Context context) {
-        File path = Environment.getExternalStorageDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long availableBlocks = stat.getAvailableBlocks();
-        return Formatter.formatFileSize(context, blockSize * availableBlocks);
+        try {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long availableBlocks = stat.getAvailableBlocks();
+            return Formatter.formatFileSize(context, blockSize * availableBlocks);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
