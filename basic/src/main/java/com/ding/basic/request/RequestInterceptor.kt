@@ -1,5 +1,6 @@
 package com.ding.basic.request
 
+import android.text.TextUtils
 import com.ding.basic.Config
 import com.ding.basic.token.Token
 import com.orhanobut.logger.Logger
@@ -30,6 +31,10 @@ class RequestInterceptor : Interceptor {
         requestParameters["latitude"] = Config.loadRequestParameter("latitude")
         requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
         requestParameters["longitude"] = Config.loadRequestParameter("longitude")
+
+        if(!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))){
+            requestParameters["loginToken"]=Config.loadRequestParameter("loginToken")
+        }
 
         return requestParameters
     }
