@@ -8,7 +8,7 @@ import com.dingyue.contract.router.RouterUtil
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.IntentUtils
+import net.lzbook.kit.constants.Constants
 import java.util.HashMap
 
 /**
@@ -20,21 +20,39 @@ import java.util.HashMap
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : iyouqu.theme.FrameActivity() {
 
-    private var isFromReading = false
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_disclaimer)
 
-        if (intent != null) {
+        // 使用协议
+        txt_title.text = resources.getString(R.string.disclaimer_statement)
+        txt_content.text = resources.getString(R.string.disclaimer_statement_description)
 
-            isFromReading = intent.getBooleanExtra("isFromReading", false)
-
-            if (isFromReading) {
-                txt_title.text = resources.getString(R.string.translate_code)
-                txt_content.text = resources.getString(R.string.translate_code_description)
-            }
+        // 阅读页转码声明
+        val isFromReading = intent.getBooleanExtra(Constants.FORM_READING_PAGE, false)
+        if (isFromReading) {
+            txt_title.text = resources.getString(R.string.translate_code)
+            txt_content.text = resources.getString(R.string.translate_code_description)
         }
+
+
+        // 登录页服务条款
+        val isServicePolicy = intent.getBooleanExtra(Constants.SERVICE_POLICY, false)
+        if (isServicePolicy) {
+            txt_title.text = resources.getString(R.string.login_service_policy)
+            txt_content.text = resources.getString(R.string.service_policy_description)
+
+        }
+
+        // 登录页隐私条款
+        val isPrivacyPolicy = intent.getBooleanExtra(Constants.PRIVACY_POLICY, false)
+        if (isPrivacyPolicy) {
+            txt_title.text = resources.getString(R.string.login_privacy_policy)
+            txt_content.text = resources.getString(R.string.privacy_policy_description)
+
+        }
+
 
         img_back.setOnClickListener {
             val data = HashMap<String, String>()
@@ -44,7 +62,8 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         }
 
         // 仅在使用协议页面进入可以打开调试模式
-        if (intent.getBooleanExtra(IntentUtils.isFormDisclaimerPage, false)) {
+        val isFormDisclaimerPage = intent.getBooleanExtra(Constants.FORM_DISCLAIMER_PAGE, false)
+        if (isFormDisclaimerPage) {
             txt_content.setOnClickListener {
                 displayEggs()
             }

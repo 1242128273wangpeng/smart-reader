@@ -30,18 +30,13 @@
     <string name="book_end_change_source">更换来源</string>
 
 
-
-
-
-
-
-
-
-
-
     <string name="module_name">阅读器</string>
 
     <string name="translate_code">转码声明</string>
+    <string name="disclaimer_statement">服务声明</string>
+    <string name="login_service_policy">服务条款</string>
+    <string name="login_privacy_policy">隐私条款</string>
+
 
     <string name="translate_code_description">
         "      "由于目前绝大多数WAP网页不能被智能移动终端正常浏览，因此，为提升用户体验，本软件有必要对WAP网页进行格式转换。\n
@@ -49,8 +44,12 @@
         "      "如您希望以传统方式查看网页内容或转码页面存在问题，请您直接点击本软件提示的来源地址访问原网站。本软件不保证被链接内容的安全性、合法性，您可以直接访问第三方网页获取相应的信息内容。\n
     </string>
 
-    <string name="disclaimer_statement">服务声明</string>
-
+    <string name="service_policy_description">
+        服务条款
+    </string>
+    <string name="privacy_policy_description">
+        隐私条款
+    </string>
 
     <string name="reader_slogan">全本小说免费看</string>
 
@@ -131,7 +130,6 @@
     <string name="cache_method">缓存方式</string>
     <string name="cache_all_chapter">全部缓存</string>
     <string name="cache_start_current">从当前章节缓存</string>
-
 
 
     <string name="source_recommend">[推荐]</string>

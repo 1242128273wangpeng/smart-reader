@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
@@ -27,7 +27,6 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.adapter.RecommendBooksAdapter
 import com.intelligent.reader.adapter.SearchHistoryAdapter
-import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.view.TagContainerLayout
 import com.intelligent.reader.view.TagView
@@ -47,9 +46,11 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private var mContext: Context? = null
     private var activity: Activity? = null
     private var mRootLayout: ViewGroup? = null
+
     private var mSearchEditText: EditText? = null
     private var mHistoryListView: ListView? = null
     private var mSuggestListView: ListView? = null
+
     private var relative_hot: RelativeLayout? = null
     private var search_line: View? = null
 
@@ -57,20 +58,14 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private var mRecommendBooksAdapter: RecommendBooksAdapter? = null
     private var mTagContainerLayout: TagContainerLayout? = null
     private var mHotWords: List<HotWordBean>? = null
-    private val mOperations: List<SearchOperations>? = null
 
     private var mSuggestAdapter: SearchSuggestAdapter? = null
     private var mSuggestList: MutableList<Any>? = ArrayList()
 
-    private var mResources: Resources? = null
-
-    private val mShouldShowHint = true
 
     var onHotWordClickListener: OnHotWordClickListener? = null
     private var mOnHistoryClickListener: OnHistoryClickListener? = null
     private val hotWords = ArrayList<SearchHotBean.DataBean>()
-    var context: Context
-    private val searchHotWordAdapter: SearchHotWordAdapter? = null
     private var suggest: String? = null
     private var searchType: String? = null
     private var sharedPreferencesUtils: SharedPreferencesUtils? = null
@@ -128,19 +123,16 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private val mSearchHandler = SearchHandler(this)
 
     init {
-        context = activity
-        init(context, activity, rootLayout, searchEditText)
+        init(activity, rootLayout, searchEditText)
     }
 
-    private fun init(context: Context, activity: Activity, rootLayout: ViewGroup, searchEditText: EditText) {
+    private fun init(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText) {
         gson = Gson()
-        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(context))
-        mContext = context
+        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(activity))
+        mContext = activity
         this.activity = activity
         mRootLayout = rootLayout
         mSearchEditText = searchEditText
-        if (mContext != null)
-            mResources = mContext!!.resources
 
         showSearchHistory()
         initSuggestListView()
@@ -213,11 +205,11 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
     }
 
-    private fun initHistoryMain(context: Context?) {
+    private fun initHistoryMain(context: Context) {
         mHistoryListView = ListView(context)
-        if (mHistoryListView != null && mResources != null) {
-            mHistoryListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
-            mHistoryListView!!.divider = mResources!!.getDrawable(R.color.transparent)
+        if (mHistoryListView != null) {
+            mHistoryListView!!.cacheColorHint = ContextCompat.getColor(context, R.color.transparent)
+            mHistoryListView!!.divider = ContextCompat.getDrawable(context, R.color.transparent)
             mHistoryListView!!.setSelector(R.drawable.item_selector_white)
         }
     }
@@ -243,14 +235,14 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     /**
      * 搜索历史单独抽离成一个页面
      */
-    fun showSearchHistory() {
+    private fun showSearchHistory() {
 
         if (searchHotTitleLayout != null && searchHotTitleLayout!!.visibility == View.VISIBLE) {
             searchHotTitleLayout!!.visibility = View.GONE
         }
 
         //初始化搜索历史的ListView
-        initHistoryMain(mContext)
+        initHistoryMain(mContext!!)
 
         historyDatas = Tools.getHistoryWord(mContext)
         historyAdapter = SearchHistoryAdapter(mContext, historyDatas!!)
@@ -262,11 +254,11 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
             mHistoryListView!!.adapter = historyAdapter
             mHistoryListView!!.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, position ->
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_word)
+                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.b_search_click_his_word)
                 if (historyDatas != null && !historyDatas!!.isEmpty() && position > -1 &&
                         position < historyDatas!!.size) {
                     val history = historyDatas!![position.toInt()]
-                    if (history != null && mSearchEditText != null) {
+                    if (mSearchEditText != null) {
                         mSearchEditText!!.setText(history)
                         //                            mSearchEditText.setSelection(history.length());
                         isFocus = false
@@ -289,37 +281,36 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     private fun initHotTagView() {
+
         searchHotTitleLayout = View.inflate(mContext, R.layout.search_hot_title_layout, null)
         tv_search_title = searchHotTitleLayout!!.findViewById<View>(R.id.tv_search_title) as TextView
         search_line = searchHotTitleLayout!!.findViewById(R.id.search_line)
         linear_root = searchHotTitleLayout!!.findViewById<View>(R.id.linear_root) as LinearLayout
-        mTagContainerLayout = searchHotTitleLayout!!.findViewById<View>(R.id.tag_container_layout) as TagContainerLayout
-        mTagContainerLayout!!.setOnTagClickListener(object : TagView.OnTagClickListener {
+
+        mTagContainerLayout = searchHotTitleLayout?.findViewById<View>(R.id.tag_container_layout) as TagContainerLayout
+        mTagContainerLayout?.setOnTagClickListener(object : TagView.OnTagClickListener {
 
             override fun onTagClick(position: Int, text: String) {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_allhotword)
+
+                StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.b_search_click_allhotword)
                 val hotWord = mHotWords!![position]
                 val data = HashMap<String, String>()
-                data.put("topicword", hotWord.keyword!!)
                 data.put("rank", hotWord.sort.toString())
-                data.put("type", hotWord.superscript!!)
+                hotWord.keyword?.let { data.put("topicword", it) }
+                hotWord.superscript?.let { data.put("type", it) }
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
 
-                if (mSearchEditText != null) {
-                    mSearchEditText!!.setText(text)
-                }
+                mSearchEditText?.setText(text)
 
                 isFocus = false
-                if (onHotWordClickListener != null) {
-                    onHotWordClickListener!!.hotWordClick(text, mHotWords!![position].keywordType.toString() + "")
-                }
+                onHotWordClickListener?.hotWordClick(text, mHotWords!![position].keywordType.toString() + "")
             }
 
             override fun onTagLongClick(position: Int, text: String) {}
 
             override fun onTagCrossClick(position: Int) {}
         })
-//        return searchHotTitleLayout
+
     }
 
 
@@ -337,42 +328,36 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HOTREADCHANGE)
             initRecycleView(count)
         }
-        //
 
+        mRecommendRecycleView?.let {
+            it.visibility = View.VISIBLE
 
-        if (mRecommendRecycleView != null) {
-            mRecommendRecycleView!!.visibility = View.VISIBLE
-
-            mRecommendRecycleView!!.recycledViewPool.setMaxRecycledViews(0, 12)
+            it.recycledViewPool.setMaxRecycledViews(0, 12)
             val layoutManager = ShelfGridLayoutManager(mContext, 3)
-
-            mRecommendRecycleView!!.layoutManager = layoutManager
-            mRecommendRecycleView!!.isNestedScrollingEnabled = false
-            mRecommendRecycleView!!.itemAnimator.addDuration = 0
-            mRecommendRecycleView!!.itemAnimator.changeDuration = 0
-            mRecommendRecycleView!!.itemAnimator.moveDuration = 0
-            mRecommendRecycleView!!.itemAnimator.removeDuration = 0
-            (mRecommendRecycleView!!.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
-
+            it.layoutManager = layoutManager
+            it.isNestedScrollingEnabled = false
+            it.itemAnimator.addDuration = 0
+            it.itemAnimator.changeDuration = 0
+            it.itemAnimator.moveDuration = 0
+            it.itemAnimator.removeDuration = 0
+            (it.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
+
         if (NetWorkUtils.getNetWorkTypeNew(mContext) == "无") {
-            //            getCacheDataFromShare(false);
-            //            getRecommendBooksFromCache();
             linear_root!!.visibility = View.GONE
         } else {
             if (loadingPage == null && mRootLayout != null && !activity!!.isFinishing) {
                 loadingPage = LoadingPage(activity, mRootLayout, LoadingPage.setting_result)
             }
-            getHotWords()
-            getRecommendData()
+            parseGetHotWords()
+            parseGetRecommendData()
         }
 
     }
 
     //获取热词
-    fun getHotWords() {
+    private fun parseGetHotWords() {
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestSearchOperationV4(
@@ -404,40 +389,30 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     //获取推荐书籍
-    private fun getRecommendData() {
+    private fun parseGetRecommendData() {
 
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestSearchRecommend(
 
                 bookOnLineIds, object : RequestSubscriber<SearchRecommendBook>() {
-            override fun requestResult(value: SearchRecommendBook?) {
-                if (value != null && value.data != null) {
+            override fun requestResult(result: SearchRecommendBook?) {
+                if (result != null && result.data != null) {
                     recommendBooks.clear()
-                    recommendBooks = value.data
+                    recommendBooks = result.data
                     relative_hot!!.visibility = View.VISIBLE
                     search_line!!.visibility = View.VISIBLE
                     initRecycleView(count)
-
-                    //                            if (mBookDaoHelper == null) {
-                    //                                mBookDaoHelper = BookDaoHelper.getInstance();
-                    //                            }
-                    //                            mBookDaoHelper.insertSearchBook(recommendBooks);
-
-
-                } else {
-                    //                            getRecommendBooksFromCache();
                 }
             }
 
             override fun requestError(message: String) {
-                //                        getRecommendBooksFromCache();
+
             }
         })
 
 
     }
-
 
     //    //获取本地存储的推荐书籍
     //    public void getRecommendBooksFromCache() {
@@ -474,7 +449,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     /**
-     * if hasn't net getHotWord from sharepreferenecs cache
+     * 从缓存中获取热词
      */
     fun getCacheDataFromShare(hasNet: Boolean) {
         if (!TextUtils.isEmpty(sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
@@ -523,9 +498,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSuggestListView = ListView(activity)
         if (mSuggestListView == null)
             return
-        mSuggestListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
-        mSuggestListView!!.divider = mResources!!.getDrawable(R.color.color_divider)
-        //        mSuggestListView.setDividerHeight(AppUtils.dip2px(mContext, 0.5f));
+        mSuggestListView!!.cacheColorHint = ContextCompat.getColor(mContext!!, R.color.transparent)
+        mSuggestListView!!.divider = ContextCompat.getDrawable(mContext!!, R.color.color_divider)
         mSuggestListView!!.setSelector(R.drawable.item_selector_white)
         mSuggestListView!!.visibility = View.GONE
         if (mRootLayout != null) {
@@ -557,60 +531,62 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             isAuthor = 0
             val data = HashMap<String, String>()
 
-            if (searchCommonBean!!.wordtype == "label") {
-                searchType = "1"
-                isAuthor = 0
-                isFocus = false
-            } else if (searchCommonBean!!.wordtype == "author") {
-                searchType = "2"
-                isAuthor = searchCommonBean!!.isAuthor
-                isBackSearch = false
-                isFocus = true
-                addHistoryWord(suggest)
-            } else if (searchCommonBean!!.wordtype == "name") {
-                searchType = "3"
+            when (searchCommonBean!!.wordtype) {
+                "label" -> {
+                    searchType = "1"
+                    isAuthor = 0
+                    isFocus = false
+                }
+                "author" -> {
+                    searchType = "2"
+                    isAuthor = searchCommonBean!!.isAuthor
+                    isBackSearch = false
+                    isFocus = true
+                    addHistoryWord(suggest)
+                }
+                "name" -> {
+                    searchType = "3"
 
-                isFocus = true
-                isBackSearch = false
-                isAuthor = 0
-                val searchCommonBeanYouHua = mSuggestList!![arg2] as SearchCommonBeanYouHua
-                data.put("bookid", searchCommonBeanYouHua.book_id)
+                    isFocus = true
+                    isBackSearch = false
+                    isAuthor = 0
+                    val searchCommonBeanYouHua = mSuggestList!![arg2] as SearchCommonBeanYouHua
+                    data.put("bookid", searchCommonBeanYouHua.book_id)
 
-                //统计进入到书籍封面页
-                val data1 = HashMap<String, String>()
-                data1.put("BOOKID", searchCommonBeanYouHua.book_id)
-                data1.put("source", "SEARCH")
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                        StartLogClickUtil.ENTER, data1)
+                    //统计进入到书籍封面页
+                    val data1 = HashMap<String, String>()
+                    data1.put("BOOKID", searchCommonBeanYouHua.book_id)
+                    data1.put("source", "SEARCH")
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                            StartLogClickUtil.ENTER, data1)
 
 
-                val intent = Intent()
-                intent.setClass(activity!!, CoverPageActivity::class.java)
-                val bundle = Bundle()
-                bundle.putString("author", searchCommonBeanYouHua.author)
-                bundle.putString("book_id", searchCommonBeanYouHua.book_id)
-                bundle.putString("book_source_id", searchCommonBeanYouHua.book_source_id)
+                    val intent = Intent()
+                    intent.setClass(activity!!, CoverPageActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putString("author", searchCommonBeanYouHua.author)
+                    bundle.putString("book_id", searchCommonBeanYouHua.book_id)
+                    bundle.putString("book_source_id", searchCommonBeanYouHua.book_source_id)
 
-                intent.putExtras(bundle)
-                mContext!!.startActivity(intent)
-                addHistoryWord(suggest)
-            } else {
-                searchType = "0"
-                isAuthor = 0
+                    intent.putExtras(bundle)
+                    mContext!!.startActivity(intent)
+                    addHistoryWord(suggest)
+                }
+                else -> {
+                    searchType = "0"
+                    isAuthor = 0
+                }
             }
             if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
 
                 data.put("keyword", suggest.toString())
                 data.put("type", searchType.toString())
                 data.put("enterword", mSearchEditText!!.text.toString().trim { it <= ' ' })
-                if (arg2 + 1 > 0 && arg2 + 1 <= 2) {
-                    data.put("rank", (arg2 + 1).toString() + "")
-                } else if (arg2 + 1 > 3 && arg2 + 1 <= 5) {
-                    data.put("rank", arg2.toString() + "")
-                } else if (arg2 + 1 > 6 && arg2 + 1 <= 8) {
-                    data.put("rank", (arg2 - 1).toString() + "")
-                } else if (arg2 + 1 > 9) {
-                    data.put("rank", (arg2 - 2).toString() + "")
+                when {
+                    arg2 + 1 in 1..2 -> data.put("rank", (arg2 + 1).toString() + "")
+                    arg2 + 1 in 4..5 -> data.put("rank", arg2.toString() + "")
+                    arg2 + 1 in 7..8 -> data.put("rank", (arg2 - 1).toString() + "")
+                    arg2 + 1 > 9 -> data.put("rank", (arg2 - 2).toString() + "")
                 }
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
             }
@@ -665,11 +641,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private fun startSearch(searchWord: String?, searchType: String?, isAuthor: Int) {
         if (searchWord != null && searchWord != "") {
             addHistoryWord(searchWord)
+            mOnHistoryClickListener?.onHistoryClick(searchWord, searchType, isAuthor)
 
-            if (mOnHistoryClickListener != null) {
-
-                mOnHistoryClickListener!!.OnHistoryClick(searchWord, searchType, isAuthor)
-            }
         }
     }
 
@@ -745,8 +718,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         for (item in suggestList) {
             mSuggestList!!.add(item)
         }
-        if (mSearchHandler == null)
-            return
+
         mSearchHandler.post {
             if (mSuggestAdapter != null) {
                 var inputString: String? = ""
@@ -785,13 +757,13 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HOTREADCLICK, data)
 
         val intent = Intent()
-        intent.setClass(context, CoverPageActivity::class.java)
+        intent.setClass(mContext, CoverPageActivity::class.java)
         val bundle = Bundle()
         bundle.putString("author", dataBean.authorName)
         bundle.putString("book_id", dataBean.bookId)
         bundle.putString("book_source_id", dataBean.id)
         intent.putExtras(bundle)
-        context.startActivity(intent)
+        mContext?.startActivity(intent)
 
         isBackSearch = true
         isFocus = true
@@ -822,7 +794,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     interface OnHistoryClickListener {
-        fun OnHistoryClick(history: String, searchType: String?, isAuthor: Int)
+        fun onHistoryClick(history: String, searchType: String?, isAuthor: Int)
     }
 
     fun clear() {
@@ -902,7 +874,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     companion object {
-        private val TAG = SearchViewHelper::class.java.simpleName
 
         private var mHistoryHeadersTitle: RelativeLayout? = null
         private var historyDatas: ArrayList<String>? = ArrayList()

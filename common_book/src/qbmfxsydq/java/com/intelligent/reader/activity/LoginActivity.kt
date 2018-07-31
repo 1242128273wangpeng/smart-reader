@@ -9,9 +9,9 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.dingyue.contract.util.debugToastShort
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dy.reader.activity.DisclaimerActivity
 import com.intelligent.reader.R
 import com.intelligent.reader.view.login.LoadingDialog
 import com.intelligent.reader.view.login.MobileNumberEditText
@@ -20,6 +20,7 @@ import iyouqu.theme.statusbar.impl.FlymeHelper
 import iyouqu.theme.statusbar.impl.MIUIHelper
 import kotlinx.android.synthetic.qbmfxsydq.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.Platform
 import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.StatServiceUtils
@@ -74,7 +75,7 @@ class LoginActivity : FrameActivity() {
                             uploadLoginErrorLog("1", t)
                             loadingDialog.dismiss()
                             flagLoginEnd = true
-                           showToastMessage(t)
+                            showToastMessage(t)
                         })
 
 
@@ -97,7 +98,7 @@ class LoginActivity : FrameActivity() {
                             flagLoginEnd = true
                             setLoginResult()
                             showToastMessage(getString(R.string.login_success))
-                                loadingDialog.dismiss()
+                            loadingDialog.dismiss()
 //                            UserManager.keepReadInfo { state, msg ->
 //                                uploadLoginSuccessLog("2")
 //                                toastShort(getString(R.string.login_success), false)
@@ -198,15 +199,15 @@ class LoginActivity : FrameActivity() {
         }
 
         txt_service_policy.setOnClickListener {
-            val intent = Intent(this, DisclaimerActivity::class.java)
-            intent.putExtra(IS_SERVICE_POLICY, true)
-            startActivity(intent)
+            val bundle = Bundle()
+            bundle.putBoolean(Constants.SERVICE_POLICY, true)
+            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
         txt_privacy_policy.setOnClickListener {
-            val intent = Intent(this, DisclaimerActivity::class.java)
-            intent.putExtra(IS_PRIVACY_POLICY, true)
-            startActivity(intent)
+            val bundle = Bundle()
+            bundle.putBoolean(Constants.PRIVACY_POLICY, true)
+            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
 //        // 上次登录的方式
@@ -246,9 +247,9 @@ class LoginActivity : FrameActivity() {
                 data["reason"] = result?.message.toString()
                 StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
                         StartLogClickUtil.LOGIN, data)
-                if(result!=null){
+                if (result != null) {
                     showToastMessage(result?.message!!)
-                }else{
+                } else {
                     showToastMessage("网络不给力哦，请稍后再试")
                 }
                 loadingDialog.dismiss()
@@ -362,11 +363,6 @@ class LoginActivity : FrameActivity() {
         data.put("type", type)
         StartLogClickUtil.upLoadEventLog(this@LoginActivity,
                 StartLogClickUtil.LOGIN, StartLogClickUtil.LOGINRESULT, data)
-    }
-
-    companion object {
-        const val IS_SERVICE_POLICY = "is_service_policy"
-        const val IS_PRIVACY_POLICY = "is_privacy_policy"
     }
 
     override fun supportSlideBack(): Boolean {
