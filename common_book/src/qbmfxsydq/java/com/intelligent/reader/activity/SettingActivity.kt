@@ -11,7 +11,6 @@ import android.os.Message
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
@@ -52,6 +51,7 @@ import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
+import net.lzbook.kit.constants.Constants
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -150,63 +150,63 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
         //用于判断是否显示Textview的Drawable
         is_show_drawable = findViewById(R.id.is_show_drawable)
-        top_navigation_bg = findViewById(R.id.top_navigation_bg) as RelativeLayout
-        icon_more_left = findViewById(R.id.icon_more_left) as ImageView
-        btnBack = findViewById(R.id.setting_back) as ImageView
-        top_setting_back = findViewById(R.id.top_setting_back) as ImageView
-        user_login_layout = findViewById(R.id.user_login_layout) as RelativeLayout
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image_left = findViewById(R.id.iv_mine_image_left) as ImageView
-        user_login_layout_left = findViewById(R.id.user_login_layout_left) as RelativeLayout
+        top_navigation_bg = findViewById(R.id.top_navigation_bg)
+        icon_more_left = findViewById(R.id.icon_more_left)
+        btnBack = findViewById(R.id.setting_back)
+        top_setting_back = findViewById(R.id.top_setting_back)
+        user_login_layout = findViewById(R.id.user_login_layout)
+        iv_mine_image = findViewById(R.id.iv_mine_image)
+        tv_login_info = findViewById(R.id.tv_login_info)
+        iv_mine_image = findViewById(R.id.iv_mine_image)
+        tv_login_info = findViewById(R.id.tv_login_info)
+        iv_mine_image_left = findViewById(R.id.iv_mine_image_left)
+        user_login_layout_left = findViewById(R.id.user_login_layout_left)
 
-        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs) as RelativeLayout
-        rl_style_change = findViewById(R.id.rl_style_change) as RelativeLayout
-        bt_night_shift = findViewById(R.id.bt_night_shift) as SwitchButton
-        bt_wifi_auto = findViewById(R.id.bt_wifi_auto) as SwitchButton
-        rl_history_setting = findViewById(R.id.rl_history_setting) as RelativeLayout
-        rl_welfare = findViewById(R.id.rl_welfare) as RelativeLayout
-        img_welfare = findViewById(R.id.img_welfare) as ImageView
-        rl_setting_more = findViewById(R.id.rl_setting_more) as RelativeLayout
-        rl_feedback = findViewById(R.id.rl_feedback) as RelativeLayout
-        rl_mark = findViewById(R.id.rl_mark) as RelativeLayout
-        checkUpdateGuideRL = findViewById(R.id.check_update_rl) as RelativeLayout
-        clear_cache_rl = findViewById(R.id.clear_cache_rl) as RelativeLayout
-        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl) as RelativeLayout
-        rl_setting_layout = findViewById(R.id.rl_setting_layout) as LinearLayout
+        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs)
+        rl_style_change = findViewById(R.id.rl_style_change)
+        bt_night_shift = findViewById(R.id.bt_night_shift)
+        bt_wifi_auto = findViewById(R.id.bt_wifi_auto)
+        rl_history_setting = findViewById(R.id.rl_history_setting)
+        rl_welfare = findViewById(R.id.rl_welfare)
+        img_welfare = findViewById(R.id.img_welfare)
+        rl_setting_more = findViewById(R.id.rl_setting_more)
+        rl_feedback = findViewById(R.id.rl_feedback)
+        rl_mark = findViewById(R.id.rl_mark)
+        checkUpdateGuideRL = findViewById(R.id.check_update_rl)
+        clear_cache_rl = findViewById(R.id.clear_cache_rl)
+        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl)
+        rl_setting_layout = findViewById(R.id.rl_setting_layout)
 
-        theme_name = findViewById(R.id.theme_name) as TextView
-        clear_cache_size = findViewById(R.id.check_cache_size) as TextView
-        check_update_message = findViewById(R.id.check_update_message) as TextView
+        theme_name = findViewById(R.id.theme_name)
+        clear_cache_size = findViewById(R.id.check_cache_size)
+        check_update_message = findViewById(R.id.check_update_message)
 //
 //        //条目字
-        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
-        tv_style_change = findViewById(R.id.tv_style_change) as TextView
-        tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
-        tv_history_setting = findViewById(R.id.tv_history_setting) as TextView
-        tv_setting_more = findViewById(R.id.tv_setting_more) as TextView
-        tv_feedback = findViewById(R.id.tv_feedback) as TextView
-        tv_mark = findViewById(R.id.tv_mark) as TextView
-        text_check_update = findViewById(R.id.text_check_update) as TextView
-        text_clear_cache = findViewById(R.id.text_clear_cache) as TextView
-        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement) as TextView
+        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs)
+        tv_style_change = findViewById(R.id.tv_style_change)
+        tv_night_shift = findViewById(R.id.tv_night_shift)
+        tv_history_setting = findViewById(R.id.tv_history_setting)
+        tv_setting_more = findViewById(R.id.tv_setting_more)
+        tv_feedback = findViewById(R.id.tv_feedback)
+        tv_mark = findViewById(R.id.tv_mark)
+        text_check_update = findViewById(R.id.text_check_update)
+        text_clear_cache = findViewById(R.id.text_clear_cache)
+        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement)
 
-        tv_login_info_left = findViewById(R.id.tv_login_info_left) as TextView
-        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left) as TextView
-        top_navigation_title = findViewById(R.id.top_navigation_title) as TextView
+        tv_login_info_left = findViewById(R.id.tv_login_info_left)
+        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left)
+        top_navigation_title = findViewById(R.id.top_navigation_title)
 
-        txt_nickname = findViewById(R.id.txt_nickname) as TextView
-        txt_userid = findViewById(R.id.txt_userid) as TextView
-        btn_login = findViewById(R.id.btn_login) as Button
-        btn_logout = findViewById(R.id.btn_logout) as Button
-        img_head = findViewById(R.id.img_head) as ImageView
-        img_head_background = findViewById(R.id.img_head_background) as ImageView
+        txt_nickname = findViewById(R.id.txt_nickname)
+        txt_userid = findViewById(R.id.txt_userid)
+        btn_login = findViewById(R.id.btn_login)
+        btn_logout = findViewById(R.id.btn_logout)
+        img_head = findViewById(R.id.img_head)
+        img_head_background = findViewById(R.id.img_head_background)
         val desid = resources.getIdentifier("txt_login_des", "id", packageName)
 
         if (desid != 0) {
-            txt_login_des = findViewById(desid) as TextView
+            txt_login_des = findViewById(desid)
         }
 
 
@@ -416,7 +416,10 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
             R.id.disclaimer_statement_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL)
-                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
+                val bundle = Bundle()
+                bundle.putBoolean(Constants.FORM_DISCLAIMER_PAGE, true)
+                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
+
             }
             R.id.rl_history_setting -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY)
