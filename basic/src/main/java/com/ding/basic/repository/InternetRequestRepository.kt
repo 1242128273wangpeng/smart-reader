@@ -117,6 +117,15 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.uploadUserGender(genderBody)
     }
 
+    fun uploadUserName(nameBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+
+        return RequestAPI.uploadUserName(nameBody)
+    }
+
+    fun bindPhoneNumber(phoneBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+        return  RequestAPI.bindPhoneNumber(phoneBody)
+    }
+
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return RequestAPI.requestRefreshToken(parameters)
     }

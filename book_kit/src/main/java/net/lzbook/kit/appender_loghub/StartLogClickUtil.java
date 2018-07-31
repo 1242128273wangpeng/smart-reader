@@ -101,6 +101,7 @@ public class StartLogClickUtil {
     public static final String SEX = "SEX";//点击性别
     public static final String BINDOTHERLOGIN = "BINDOTHERLOGIN";//点击绑定第三方账户
     public static final String UIDDIFFUSER = "UIDDIFFUSER";//不同用户在同设备登录
+    public static final String NICKNAME = "NICKNAME";//点击昵称
     //个人中心页功能
     public static final String ACTION_PERSONAL_BACK = "BACK";//屏幕左上方点击返回按钮
     public static final String ACTION_PERSONAL_HELP = "HELP";//点击帮助与反馈
@@ -290,6 +291,7 @@ public class StartLogClickUtil {
     public static final String LOGOUT = "LOGOUT";//点击退出登录
     public static final String WIFI_AUTOCACHE = "WIFI_AUTOCACHE";//点击退出登录
     public static final String PHOTO = "PHOTO";//点击头像
+    public static final String BINDPHONE = "BINDPHONE";//点击绑定手机号
 
     //阅读页
     public static final String LABELEDIT = "LABELEDIT";//添加书签

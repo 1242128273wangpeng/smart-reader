@@ -6,8 +6,19 @@
         <meta-data
             android:name="WECHAT_SECRET"
             android:value="${WECHAT_SECRET}" />
+
         <activity
             android:name=".activity.usercenter.UserProfileActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent" />
+        <activity
+            android:name=".activity.usercenter.EditUserProfileActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent" />
+        <activity
+            android:name=".activity.usercenter.BindPhoneActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent" />

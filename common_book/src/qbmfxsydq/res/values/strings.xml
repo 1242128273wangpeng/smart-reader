@@ -36,5 +36,13 @@
     <string name="gender_male">男</string>
     <string name="gender_female">女</string>
     <string name="loading_dialog_title_editing">修改中</string>
+    <string name="loading_dialog_title_saving">保存中</string>
+    <string name="loading_dialog_title_binding">绑定中</string>
+    <string name="edit_success">保存成功</string>
+    <string name="edit_user_info_tip">用户您好，每7天只允许修改一次昵称，请谨慎提交。</string>
+    <string name="user_binding_phone_tip">绑定即代表您已阅读并同意 “服务条款” 和 “隐私条款”</string>
+    <string name="edit_user_info_standard_tip">2-10个字符，支持中英文、数字</string>
+    <string name="edit_user_info_standard_fail_tip1">昵称包含特殊符号</string>
+    <string name="edit_user_info_standard_fail_tip2">昵称不符合要求</string>
     <!--用户中心-->
 </resources>
