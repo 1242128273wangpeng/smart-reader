@@ -126,8 +126,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!--搜索结果-->
+
             <WebView
-                android:id="@+id/wv_search_result"
+                android:id="@+id/search_result_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </WebView>
@@ -137,7 +139,7 @@
         <!--根布局-->
 
         <FrameLayout
-            android:id="@+id/fl_search_result_hint"
+            android:id="@+id/search_result_hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/base_bg">

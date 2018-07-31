@@ -86,8 +86,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
 
     override fun onJsSearch() {
-        if (wv_search_result != null) {
-            wv_search_result.clearCache(true)
+        if (search_result_content != null) {
+            search_result_content.clearCache(true)
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
@@ -97,8 +97,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onStartLoad(url: String) {
 
-        if (wv_search_result == null) return
-        search_result_main.visibility = View.VISIBLE
+        if (search_result_content == null) return
+        search_result_main!!.visibility = View.VISIBLE
         handler?.post { loadingData(url) }
 
         webViewCallback()
@@ -113,24 +113,24 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         if (mSearchViewHelper == null) {
-            mSearchViewHelper = SearchViewHelper(this, fl_search_result_hint, etxt_search_input, mSearchPresenter)
+            mSearchViewHelper = SearchViewHelper(this, search_result_hint, etxt_search_input, mSearchPresenter)
         }
 
         if (Build.VERSION.SDK_INT >= 14) {
-            wv_search_result.setLayerType(View.LAYER_TYPE_NONE, null)
+            search_result_content.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-        customWebClient = CustomWebClient(this, wv_search_result)
+        customWebClient = CustomWebClient(this, search_result_content)
         customWebClient?.setWebSettings()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            wv_search_result.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            search_result_content.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        wv_search_result.webViewClient = customWebClient
+        search_result_content.webViewClient = customWebClient
 
-        jsInterfaceHelper = JSInterfaceHelper(this, wv_search_result)
-        wv_search_result.addJavascriptInterface(jsInterfaceHelper, "J_search")
+        jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
+        search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
         mSearchPresenter?.initJSHelp(jsInterfaceHelper)
 
 
@@ -163,7 +163,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         mSearchViewHelper?.let {
             it.setOnHistoryClickListener(this)
-            it.onHotWordClickListener = object: SearchViewHelper.OnHotWordClickListener{
+            it.onHotWordClickListener = object : SearchViewHelper.OnHotWordClickListener {
                 override fun hotWordClick(tag: String, searchType: String) {
                     mSearchPresenter?.setHotWordType(tag, searchType)
                     loadDataFromNet(isNotAuthor)
@@ -227,9 +227,9 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             customWebClient!!.doClear()
         }
         Logger.e("LoadingData ==> " + url)
-        if (!TextUtils.isEmpty(url) && wv_search_result != null) {
+        if (!TextUtils.isEmpty(url) && search_result_content != null) {
             try {
-                wv_search_result.loadUrl(url)
+                search_result_content.loadUrl(url)
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 this.finish()
@@ -240,7 +240,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun webViewCallback() {
 
-        if (wv_search_result == null) {
+        if (search_result_content == null) {
             return
         }
 
@@ -278,7 +278,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
                 if (customWebClient != null) customWebClient?.doClear()
-                wv_search_result.reload()
+                search_result_content.reload()
             })
         }
     }
@@ -312,21 +312,21 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onDestroy() {
 
-        if (wv_search_result != null) {
-            wv_search_result.clearCache(true)
+        if (search_result_content != null) {
+            search_result_content.clearCache(true)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (search_result_main != null) {
-                    search_result_main.removeView(wv_search_result)
+                    search_result_main.removeView(search_result_content)
                 }
-                wv_search_result.stopLoading()
-                wv_search_result.removeAllViews()
-                wv_search_result.destroy()
+                search_result_content.stopLoading()
+                search_result_content.removeAllViews()
+                search_result_content.destroy()
             } else {
-                wv_search_result.stopLoading()
-                wv_search_result.removeAllViews()
-                wv_search_result.destroy()
+                search_result_content.stopLoading()
+                search_result_content.removeAllViews()
+                search_result_content.destroy()
                 if (search_result_main != null) {
-                    search_result_main.removeView(wv_search_result)
+                    search_result_main.removeView(search_result_content)
                 }
             }
         }
@@ -394,11 +394,11 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         search_result_default.visibility = View.VISIBLE
         search_result_outcome.visibility = View.GONE
-        wv_search_result.visibility = View.GONE
+        search_result_content.visibility = View.GONE
 
 
         if (!TextUtils.isEmpty(etxt_search_input.text)) {
-            fl_search_result_hint.visibility = View.GONE
+            search_result_hint.visibility = View.GONE
             mSearchViewHelper?.hideRecommendListView()
             mSearchViewHelper?.showHintList(mSearchPresenter?.word)
         } else {
@@ -418,8 +418,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         search_result_default.visibility = View.GONE
         search_result_outcome.visibility = View.VISIBLE
-        wv_search_result.visibility = View.VISIBLE
-        fl_search_result_hint.visibility = View.GONE
+        search_result_content.visibility = View.VISIBLE
+        search_result_hint.visibility = View.GONE
 
         etxt_search_input.clearFocus()
         mSearchViewHelper?.hideHintList()
@@ -474,7 +474,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BAR)
             showSoftKeyboard(etxt_search_input)
 
-            wv_search_result.visibility = View.GONE
+            search_result_content.visibility = View.GONE
 
             if (mSearchViewHelper != null) {
 
@@ -537,7 +537,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         } else {
             editable.clear()
             img_clear.visibility = View.GONE
-            search_result_main.visibility = View.GONE
+            search_result_main!!.visibility = View.GONE
         }
 
         //保存用户搜索词
@@ -604,8 +604,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             mSearchViewHelper?.hideHintList()
         }
 
-        if (wv_search_result != null) {
-            wv_search_result!!.clearView()
+        if (search_result_content != null) {
+            search_result_content!!.clearView()
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
