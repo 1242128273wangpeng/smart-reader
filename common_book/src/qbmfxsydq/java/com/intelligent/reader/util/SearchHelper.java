@@ -502,7 +502,7 @@ public class SearchHelper {
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                             "author").apply();//FindBookDetail 返回键时标识
-                    SearchBookActivity.Companion.setSatyHistory(true);
+                    SearchBookActivity.Companion.setStayHistory(true);
                     Intent intent = new Intent();
                     intent.setClass(mContext, FindBookDetail.class);
                     intent.putExtra("url", mUrl);
