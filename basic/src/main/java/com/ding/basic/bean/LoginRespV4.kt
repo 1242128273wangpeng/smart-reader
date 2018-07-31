@@ -1,6 +1,10 @@
 package com.ding.basic.bean
 
+import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+import android.support.annotation.NonNull
+import com.google.gson.annotations.SerializedName
 
 /**
  * Date: 2018/7/27 16:51
@@ -10,36 +14,52 @@ import android.arch.persistence.room.Entity
  */
 @Entity(tableName = "user")
 class LoginRespV4 {
-     var account_id: String? = null
+    @PrimaryKey
+    @ColumnInfo(name = "account_id")
+    var account_id: String = ""
 
-     var avatar_url: String? = null
+    @ColumnInfo(name = "avatar_url")
+    var avatar_url: String? = null
 
-     var global_number: String? = null
+    @ColumnInfo(name = "global_number")
+    var global_number: String? = null
 
-     var name: String? = null
+    @ColumnInfo(name = "name")
+    var name: String? = null
 
-     var gender: String? = null
+    @ColumnInfo(name = "sex")
+    var gender: String? = null
 
-     var phone_number: String? = null
+    @ColumnInfo(name = "phone")
+    var phone_number: String? = null
 
-     var link_channel: String? = null
+    @ColumnInfo(name = "platform_info")
+    var link_channel: String? = null
 
-     var login_channel: String? = null
+    @ColumnInfo(name = "login_channel")
+    var login_channel: String? = null
 
-     var pic: String? = null
+    @ColumnInfo(name = "pic")
+    var pic: String? = null
 
-     var token: String? = null
+    @ColumnInfo(name = "token")
+    var token: String? = null
 
-     var bookInfoVersion: Int = 0
+    @ColumnInfo(name = "book_info_version")
+    var bookInfoVersion: Int = 0
 
-     var bookBrowseVersion: Int = 0
+    @ColumnInfo(name = "book_browse_version")
+    var bookBrowseVersion: Int = 0
 
-     var active: Int = 0
+    @ColumnInfo(name = "active")
+    var active: Int = 0
 
-     var is_new: Int = 0
+    @ColumnInfo(name = "new")//Room 框架中字段不能以is开头
+    @SerializedName("is_new")
+    var new: Int = 0
 
     override fun toString(): String {
-        return "LoginRespV4(account_id=$account_id, avatar_url=$avatar_url, global_number=$global_number, name=$name, gender=$gender, phone_number=$phone_number, link_channel=$link_channel, login_channel=$login_channel, pic=$pic, token=$token, bookInfoVersion=$bookInfoVersion, bookBrowseVersion=$bookBrowseVersion, active=$active, is_new=$is_new)"
+        return "LoginRespV4(account_id=$account_id, avatar_url=$avatar_url, global_number=$global_number, name=$name, gender=$gender, phone_number=$phone_number, link_channel=$link_channel, login_channel=$login_channel, pic=$pic, token=$token, bookInfoVersion=$bookInfoVersion, bookBrowseVersion=$bookBrowseVersion, active=$active, is_new=$new)"
     }
 
 

@@ -125,6 +125,10 @@ object RequestAPI {
         return requestService.requestSmsLogin(smsBody)
     }
 
+    fun requestLogout():Flowable<BasicResultV4<String>>{
+        return requestService.logout()
+    }
+
     fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return requestService.uploadUserAvatar(avatarBody)
     }
