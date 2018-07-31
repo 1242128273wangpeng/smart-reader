@@ -101,6 +101,9 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
         return RequestAPI.requestSmsLogin(smsRequestBody)
     }
+    fun requestLogout():Flowable<BasicResultV4<String>>{
+        return RequestAPI.requestLogout()
+    }
 
     fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return RequestAPI.uploadUserAvatar(avatarBody)

@@ -39,7 +39,6 @@ import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.StatServiceUtils
@@ -52,6 +51,7 @@ import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
+import net.lzbook.kit.user.UserManagerV4
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -143,7 +143,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         initListener()
         initData()
         sInstance = this
-        UserManager.initPlatform(this, null)
+        UserManagerV4.initPlatform(this, null)
     }
 
     protected fun initView() {
@@ -240,10 +240,10 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             btn_login!!.visibility = View.GONE
             txt_nickname!!.visibility = View.VISIBLE
             txt_userid!!.visibility = View.VISIBLE
-            val userInfo = UserManager.mUserInfo
-            txt_nickname!!.text = userInfo!!.nickname
-            txt_userid!!.text = "ID:" + userInfo.uid
-            Glide.with(this).load(userInfo.head_portrait).into(img_head!!)
+            val userInfo = UserManagerV4.user
+            txt_nickname!!.text = userInfo!!.name
+            txt_userid!!.text = "ID:" + userInfo.account_id
+            Glide.with(this).load(userInfo.avatar_url).into(img_head!!)
             rl_logout.visibility = View.VISIBLE
 
             if (txt_login_des != null) {
@@ -352,7 +352,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun onResume() {
         super.onResume()
         isActivityPause = false
-        if (UserManager.isUserLogin) {
+        if (UserManagerV4.isUserLogin) {
             showUserInfo()
         } else {
             hideUserInfo()
@@ -496,8 +496,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         }
         cancel.setOnClickListener {
             dismissDialog()
-            if (UserManager.isUserLogin) {
-                UserManager.logout(null)
+            if (UserManagerV4.isUserLogin) {
+                UserManagerV4.logout(null)
 
                 hideUserInfo()
             }
@@ -628,7 +628,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == CODE_REQ_LOGIN) {
             btn_login!!.isClickable = true
-            if (resultCode == Activity.RESULT_OK && UserManager.isUserLogin) {
+            if (resultCode == Activity.RESULT_OK && UserManagerV4.isUserLogin) {
                 showUserInfo()
             }
             return

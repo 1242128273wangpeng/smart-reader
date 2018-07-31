@@ -89,6 +89,10 @@ interface RequestService {
         const val PATH_FETCH_SMS_CODE_V4 = "/v4/message/sms"
         // 短信登录
         const val PATH_SMS_LOGIN_V4 = "/v4/user/sms_create_token"
+        /**
+         * 注销用户信息
+         */
+        const val PATH_LOGOUT = "/v4/user/invalid_token"
 
         // 上传头像
         const val PATH_UPLOAD_USER_AVATAR = "/v4/user/update_user_Avatar"
@@ -239,6 +243,9 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_SMS_LOGIN_V4) // 短信验证码登录
     fun requestSmsLogin(@Body smsLoginBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @GET(PATH_LOGOUT)
+    fun logout(): Flowable<BasicResultV4<String>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_UPLOAD_USER_AVATAR)// 上传用户头像
