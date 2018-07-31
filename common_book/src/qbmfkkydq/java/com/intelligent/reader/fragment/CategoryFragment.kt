@@ -37,7 +37,6 @@ class CategoryFragment : Fragment() {
     private fun initView() {
         iv_search.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
-//            TODO 搜索点击打点
         }
         val adapter = VPAdapter(childFragmentManager)
         view_pager.adapter = adapter

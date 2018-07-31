@@ -37,7 +37,6 @@ class RankingFragment : Fragment() {
     private fun initView() {
         iv_search.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
-//            TODO 搜索点击打点
         }
 
         val webFragment = WebViewFragment();

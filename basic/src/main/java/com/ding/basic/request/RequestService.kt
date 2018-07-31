@@ -153,7 +153,10 @@ interface RequestService {
          */
         const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
         const val WEB_RECOMMEND_V3 = "/{packageName}/v3/recommend/index.do"
-        const val WEB_RECOMMEND_H5 = "/h5/{packageName}/recommend"
+        const val WEB_RECOMMEND_H5 = "/h5/{packageName}/recommend"// 精选
+        const val WEB_RECOMMEND_H5_BOY = "/h5/{packageName}/recommendBoy" //精选男频
+        const val WEB_RECOMMEND_H5_Girl = "/h5/{packageName}/recommendGirl" // 精选女频
+        const val WEB_RECOMMEND_H5_Finish = "/h5/{packageName}/recommendFinish" //精选完本
 
         /**
          * WebView排行 / 榜单排行页面（h5为前后端分离后的接口）
