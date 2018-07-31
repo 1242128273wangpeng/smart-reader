@@ -121,7 +121,8 @@ class SearchViewHelper(activity: Activity,
         initSuggestListView()
         initHotTagView()
         setHotTagList()
-        initRecommendView()
+        /*initRecommendView()*/
+        initVisibilityView(isHotAndRecommendView = true)
     }
 
 
@@ -313,6 +314,8 @@ class SearchViewHelper(activity: Activity,
 
         mHotWordAndRecommendView = View.inflate(mActivity, R.layout.search_hot_title_layout, null)
 
+        mRootLayout?.addView(mHotWordAndRecommendView)
+
         mGridView = mHotWordAndRecommendView?.findViewById<View>(R.id.grid) as ScrollForGridView
 
         mGridView?.onItemClickListener = OnItemClickListener { _, _, position, _ ->
@@ -359,6 +362,7 @@ class SearchViewHelper(activity: Activity,
     }
 
 
+/*
     private fun initRecommendView() {
 
         mRootLayout?.addView(mHotWordAndRecommendView)
@@ -366,6 +370,19 @@ class SearchViewHelper(activity: Activity,
         mHotWordAndRecommendView?.visibility = View.VISIBLE
         mSuggestListView?.visibility = View.GONE
         mHistoryListView?.visibility = View.GONE
+
+    }
+*/
+
+
+     fun initVisibilityView(isHotAndRecommendView: Boolean = false,
+                                   isSuggestListView: Boolean = false,
+                                   isHistoryListView: Boolean = false) {
+
+        mHotWordAndRecommendView?.visibility = if(isHotAndRecommendView) View.VISIBLE else View.GONE
+        mSuggestListView?.visibility = if(isSuggestListView) View.VISIBLE else View.GONE
+        mHistoryListView?.visibility = if(isHistoryListView) View.VISIBLE else View.GONE
+
 
     }
 
@@ -588,7 +605,8 @@ class SearchViewHelper(activity: Activity,
             mRootLayout!!.visibility = View.VISIBLE
 
         if (searchWord == null || TextUtils.isEmpty(searchWord)) {
-            showHistoryList()
+            /*showHistoryList()*/
+            initVisibilityView(isHistoryListView = true)
         } else {
             showSuggestList(searchWord)
         }
@@ -600,17 +618,23 @@ class SearchViewHelper(activity: Activity,
     }
 
     private fun showSuggestList(searchWord: String) {
-        mRootLayout?.visibility = View.VISIBLE
+
+       /* mRootLayout?.visibility = View.VISIBLE
         mSuggestListView?.visibility = View.VISIBLE
         mHistoryListView?.visibility = View.GONE
-        mHotWordAndRecommendView?.visibility = View.GONE
+        mHotWordAndRecommendView?.visibility = View.GONE*/
+
+        initVisibilityView(isSuggestListView = true)
+
+
         // 清空上一个词的联想词结果
         mSuggestList?.clear()
 
         mSuggestAdapter?.notifyDataSetChanged()
 
         if (TextUtils.isEmpty(searchWord)) {
-            showHistoryList()
+            /*showHistoryList()*/
+            initVisibilityView(isHistoryListView = true)
         }
 
         mSearchPresenter?.startSearchSuggestData(searchWord)
@@ -675,18 +699,19 @@ class SearchViewHelper(activity: Activity,
 
         //当搜索次为空是显示搜索历史界面
         if (searchWord != null && "" == searchWord || TextUtils.isEmpty(searchWord!!.trim { it <= ' ' })) {
-            showHistoryList()
+            /*showHistoryList()*/
+            initVisibilityView(isHistoryListView = true)
         } else {
             showSuggestList(searchWord)
         }
     }
 
-    fun showHistoryList() {
+   /* fun showHistoryList() {
         mHistoryListView?.visibility = View.VISIBLE
         mSuggestListView?.visibility = View.GONE
         mHotWordAndRecommendView?.visibility = View.GONE
     }
-
+*/
     fun notifyListChanged() {
         if (mHistoryAdapter != null)
             mHistoryAdapter!!.notifyDataSetChanged()
