@@ -15,8 +15,6 @@ import com.ding.basic.bean.LoginRespV4
 @Dao
 interface UserDao : BaseDao<LoginRespV4> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(t: LoginRespV4): Long
 
     @Query("SELECT * FROM user")
     fun queryUserInfo(): LoginRespV4
