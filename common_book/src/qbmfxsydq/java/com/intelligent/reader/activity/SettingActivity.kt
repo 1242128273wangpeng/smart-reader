@@ -11,6 +11,7 @@ import android.os.Message
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
@@ -22,7 +23,9 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
+import com.ding.basic.bean.LoginRespV4
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -38,7 +41,6 @@ import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.StatServiceUtils
@@ -51,7 +53,7 @@ import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
-import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.user.UserManagerV4
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -143,70 +145,70 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         initListener()
         initData()
         sInstance = this
-        UserManager.initPlatform(this, null)
+        UserManagerV4.initPlatform(this, null)
     }
 
     protected fun initView() {
 
         //用于判断是否显示Textview的Drawable
         is_show_drawable = findViewById(R.id.is_show_drawable)
-        top_navigation_bg = findViewById(R.id.top_navigation_bg)
-        icon_more_left = findViewById(R.id.icon_more_left)
-        btnBack = findViewById(R.id.setting_back)
-        top_setting_back = findViewById(R.id.top_setting_back)
-        user_login_layout = findViewById(R.id.user_login_layout)
-        iv_mine_image = findViewById(R.id.iv_mine_image)
-        tv_login_info = findViewById(R.id.tv_login_info)
-        iv_mine_image = findViewById(R.id.iv_mine_image)
-        tv_login_info = findViewById(R.id.tv_login_info)
-        iv_mine_image_left = findViewById(R.id.iv_mine_image_left)
-        user_login_layout_left = findViewById(R.id.user_login_layout_left)
+        top_navigation_bg = findViewById(R.id.top_navigation_bg) as RelativeLayout
+        icon_more_left = findViewById(R.id.icon_more_left) as ImageView
+        btnBack = findViewById(R.id.setting_back) as ImageView
+        top_setting_back = findViewById(R.id.top_setting_back) as ImageView
+        user_login_layout = findViewById(R.id.user_login_layout) as RelativeLayout
+        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
+        tv_login_info = findViewById(R.id.tv_login_info) as TextView
+        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
+        tv_login_info = findViewById(R.id.tv_login_info) as TextView
+        iv_mine_image_left = findViewById(R.id.iv_mine_image_left) as ImageView
+        user_login_layout_left = findViewById(R.id.user_login_layout_left) as RelativeLayout
 
-        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs)
-        rl_style_change = findViewById(R.id.rl_style_change)
-        bt_night_shift = findViewById(R.id.bt_night_shift)
-        bt_wifi_auto = findViewById(R.id.bt_wifi_auto)
-        rl_history_setting = findViewById(R.id.rl_history_setting)
-        rl_welfare = findViewById(R.id.rl_welfare)
-        img_welfare = findViewById(R.id.img_welfare)
-        rl_setting_more = findViewById(R.id.rl_setting_more)
-        rl_feedback = findViewById(R.id.rl_feedback)
-        rl_mark = findViewById(R.id.rl_mark)
-        checkUpdateGuideRL = findViewById(R.id.check_update_rl)
-        clear_cache_rl = findViewById(R.id.clear_cache_rl)
-        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl)
-        rl_setting_layout = findViewById(R.id.rl_setting_layout)
+        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs) as RelativeLayout
+        rl_style_change = findViewById(R.id.rl_style_change) as RelativeLayout
+        bt_night_shift = findViewById(R.id.bt_night_shift) as SwitchButton
+        bt_wifi_auto = findViewById(R.id.bt_wifi_auto) as SwitchButton
+        rl_history_setting = findViewById(R.id.rl_history_setting) as RelativeLayout
+        rl_welfare = findViewById(R.id.rl_welfare) as RelativeLayout
+        img_welfare = findViewById(R.id.img_welfare) as ImageView
+        rl_setting_more = findViewById(R.id.rl_setting_more) as RelativeLayout
+        rl_feedback = findViewById(R.id.rl_feedback) as RelativeLayout
+        rl_mark = findViewById(R.id.rl_mark) as RelativeLayout
+        checkUpdateGuideRL = findViewById(R.id.check_update_rl) as RelativeLayout
+        clear_cache_rl = findViewById(R.id.clear_cache_rl) as RelativeLayout
+        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl) as RelativeLayout
+        rl_setting_layout = findViewById(R.id.rl_setting_layout) as LinearLayout
 
-        theme_name = findViewById(R.id.theme_name)
-        clear_cache_size = findViewById(R.id.check_cache_size)
-        check_update_message = findViewById(R.id.check_update_message)
+        theme_name = findViewById(R.id.theme_name) as TextView
+        clear_cache_size = findViewById(R.id.check_cache_size) as TextView
+        check_update_message = findViewById(R.id.check_update_message) as TextView
 //
 //        //条目字
-        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs)
-        tv_style_change = findViewById(R.id.tv_style_change)
-        tv_night_shift = findViewById(R.id.tv_night_shift)
-        tv_history_setting = findViewById(R.id.tv_history_setting)
-        tv_setting_more = findViewById(R.id.tv_setting_more)
-        tv_feedback = findViewById(R.id.tv_feedback)
-        tv_mark = findViewById(R.id.tv_mark)
-        text_check_update = findViewById(R.id.text_check_update)
-        text_clear_cache = findViewById(R.id.text_clear_cache)
-        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement)
+        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
+        tv_style_change = findViewById(R.id.tv_style_change) as TextView
+        tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
+        tv_history_setting = findViewById(R.id.tv_history_setting) as TextView
+        tv_setting_more = findViewById(R.id.tv_setting_more) as TextView
+        tv_feedback = findViewById(R.id.tv_feedback) as TextView
+        tv_mark = findViewById(R.id.tv_mark) as TextView
+        text_check_update = findViewById(R.id.text_check_update) as TextView
+        text_clear_cache = findViewById(R.id.text_clear_cache) as TextView
+        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement) as TextView
 
-        tv_login_info_left = findViewById(R.id.tv_login_info_left)
-        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left)
-        top_navigation_title = findViewById(R.id.top_navigation_title)
+        tv_login_info_left = findViewById(R.id.tv_login_info_left) as TextView
+        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left) as TextView
+        top_navigation_title = findViewById(R.id.top_navigation_title) as TextView
 
-        txt_nickname = findViewById(R.id.txt_nickname)
-        txt_userid = findViewById(R.id.txt_userid)
-        btn_login = findViewById(R.id.btn_login)
-        btn_logout = findViewById(R.id.btn_logout)
-        img_head = findViewById(R.id.img_head)
-        img_head_background = findViewById(R.id.img_head_background)
+        txt_nickname = findViewById(R.id.txt_nickname) as TextView
+        txt_userid = findViewById(R.id.txt_userid) as TextView
+        btn_login = findViewById(R.id.btn_login) as Button
+        btn_logout = findViewById(R.id.btn_logout) as Button
+        img_head = findViewById(R.id.img_head) as ImageView
+        img_head_background = findViewById(R.id.img_head_background) as ImageView
         val desid = resources.getIdentifier("txt_login_des", "id", packageName)
 
         if (desid != 0) {
-            txt_login_des = findViewById(desid)
+            txt_login_des = findViewById(desid) as TextView
         }
 
 
@@ -235,19 +237,29 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
 
     private fun showUserInfo() {
-        if (btn_login != null) {
-            img_head!!.isClickable = false
-            btn_login!!.visibility = View.GONE
-            txt_nickname!!.visibility = View.VISIBLE
-            txt_userid!!.visibility = View.VISIBLE
-            val userInfo = UserManager.mUserInfo
-            txt_nickname!!.text = userInfo!!.nickname
-            txt_userid!!.text = "ID:" + userInfo.uid
-            Glide.with(this).load(userInfo.head_portrait).into(img_head!!)
+        val user=UserManagerV4.user
+        if (btn_login != null && user != null) {
+            btn_login!!.setVisibility(View.GONE)
+            txt_nickname!!.setVisibility(View.VISIBLE)
+            txt_userid!!.setVisibility(View.VISIBLE)
+            txt_nickname!!.setText(user.name)
+            val id = "ID:" + user.global_number
+            txt_userid!!.setText(id)
+            if (user.avatar_url.isNullOrEmpty()) {
+                img_head!!.setImageResource(R.drawable.default_head)
+            } else {
+                Glide.with(this)
+                        .load(user.avatar_url)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .placeholder(R.drawable.default_head)
+                        .error(R.drawable.default_head)
+                        .dontAnimate()
+                        .into(img_head)
+            }
             rl_logout.visibility = View.VISIBLE
 
             if (txt_login_des != null) {
-                txt_login_des!!.visibility = View.GONE
+                txt_login_des!!.setVisibility(View.GONE)
             }
         }
     }
@@ -352,7 +364,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun onResume() {
         super.onResume()
         isActivityPause = false
-        if (UserManager.isUserLogin) {
+        if (UserManagerV4.isUserLogin) {
             showUserInfo()
         } else {
             hideUserInfo()
@@ -416,10 +428,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
             R.id.disclaimer_statement_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL)
-                val bundle = Bundle()
-                bundle.putBoolean(Constants.FORM_DISCLAIMER_PAGE, true)
-                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
-
+                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
             }
             R.id.rl_history_setting -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY)
@@ -449,7 +458,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                if (false) {
+                if (UserManagerV4.isUserLogin ){
                     val userProfileIntent = Intent(this, UserProfileActivity::class.java)
                     startActivity(userProfileIntent)
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
@@ -499,8 +508,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         }
         cancel.setOnClickListener {
             dismissDialog()
-            if (UserManager.isUserLogin) {
-                UserManager.logout(null)
+            if (UserManagerV4.isUserLogin) {
+                UserManagerV4.logout(null)
 
                 hideUserInfo()
             }
@@ -631,7 +640,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == CODE_REQ_LOGIN) {
             btn_login!!.isClickable = true
-            if (resultCode == Activity.RESULT_OK && UserManager.isUserLogin) {
+            if (resultCode == Activity.RESULT_OK && UserManagerV4.isUserLogin) {
                 showUserInfo()
             }
             return

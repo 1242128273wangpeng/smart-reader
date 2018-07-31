@@ -51,7 +51,7 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
-import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -418,7 +418,7 @@ public class SplashActivity extends FrameActivity {
         new InstallShotCutTask().execute();
 
         StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
-        if (UserManager.INSTANCE.isUserLogin()) {
+        if (UserManagerV4.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
     }
@@ -746,7 +746,7 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
+            UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
 
             //请求广告
             initAdSwitch();

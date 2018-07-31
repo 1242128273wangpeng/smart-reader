@@ -24,7 +24,8 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                                                  private var bookFixDao: BookFixDao,
                                                  private var bookmarkDao: BookmarkDao,
                                                  private var historyDao: HistoryDao,
-                                                 private var searchDao: SearchDao) : BookDataProvider {
+                                                 private var searchDao: SearchDao,
+                                                 private var userDao: UserDao) : BookDataProvider {
 
     companion object {
         private var database: BookDatabase? = null
@@ -39,7 +40,8 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                         database!!.fixBookDao(),
                         database!!.bookmarkDao(),
                         database!!.historyDao(),
-                        database!!.searchDao())
+                        database!!.searchDao(),
+                        database!!.userDao())
 
             }
 
@@ -61,28 +63,28 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                     try {
                         migrateTable(oldDB, "tb_history_info", providerHelper.historyDao, HistoryInfo::class.java)
                         it.onNext(70)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     try {
                         migrateTable(oldDB, "book_fix", providerHelper.bookFixDao, BookFix::class.java)
                         it.onNext(80)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     try {
                         migrateTable(oldDB, "search_recommend", providerHelper.searchDao, SearchRecommendBook.DataBean::class.java)
                         it.onNext(90)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     try {
                         migrateTable(oldDB, "book_mark", providerHelper.bookmarkDao, Bookmark::class.java)
                         it.onNext(100)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
@@ -279,5 +281,18 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     override fun deleteSmallTimeHistory() {
         historyDao.deleteSmallTime()
     }
+
+    fun insertOrUpdate(user: LoginRespV4) {
+        userDao.insertOrUpdate(user)
+    }
+
+    fun queryLoginUser() :LoginRespV4{
+        return userDao.queryUserInfo()
+    }
+
+    fun deleteLoginUser() {
+        userDao.deleteUsers()
+    }
+
 
 }

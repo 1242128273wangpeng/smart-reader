@@ -10,6 +10,7 @@ import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import org.intellij.lang.annotations.Flow
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -125,6 +126,10 @@ object RequestAPI {
         return requestService.requestSmsLogin(smsBody)
     }
 
+    fun requestLogout():Flowable<BasicResultV4<String>>{
+        return requestService.logout()
+    }
+
     fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return requestService.uploadUserAvatar(avatarBody)
     }
@@ -137,6 +142,14 @@ object RequestAPI {
     fun uploadUserGender(genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
 
         return requestService.uploadUserGender(genderBody)
+    }
+
+    fun uploadUserName(nameBody: RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+        return requestService.uploadUserName(nameBody)
+    }
+
+    fun bindPhoneNumber(phoneBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+        return  requestService.bindPhoneNumber(phoneBody)
     }
 
 

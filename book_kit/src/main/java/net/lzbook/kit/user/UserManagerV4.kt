@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import com.alibaba.fastjson.JSON
+import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
@@ -22,10 +23,8 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
 import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_QQ
 import net.lzbook.kit.user.bean.AvatarReq
@@ -79,6 +78,9 @@ object UserManagerV4 : IWXAPIEventHandler {
     var failedCallback: ((String) -> Unit)? = null
     var mInitCallback: ((Boolean) -> Unit)? = null
     private var mInited = false
+    val repositoryFactory: RequestRepositoryFactory by lazy {
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+    }
 
     /**
      * 初始化登录平台
@@ -89,8 +91,6 @@ object UserManagerV4 : IWXAPIEventHandler {
             log("registerApp", "cant init with null context")
             return
         }
-
-//        mDaoUtils = DaoUtils(HistoryInfo::class.java)
 
         if (!mInited) {
             mInited = true
@@ -130,10 +130,11 @@ object UserManagerV4 : IWXAPIEventHandler {
                     sharedPreferences = context.getSharedPreferences(LAST_LOGIN, Context.MODE_PRIVATE)
                     lastLoginId = sharedPreferences?.getString(LOGIN_ID, null)
 
-//                    user = UserDao.getInstance().loginUser
+                    user = repositoryFactory.queryLoginUser()
                     if (user != null) {
                         logi(user.toString())
                         mUserState.set(true)
+                        Config.insertRequestParameter("loginToken", user!!.token!!)
                         mInitCallback?.invoke(true)
 //                mOriginBookShelfData = queryAllBook()
 //                mOriginBookMarksData = getBookMarkBody(user?.accountId ?: "", queryAllBook())
@@ -258,43 +259,6 @@ object UserManagerV4 : IWXAPIEventHandler {
                     })
 
 
-//            NetService.userService.fetchQQUserInfo(accessToken, qqAppID, openid)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(Schedulers.io())
-//                    .flatMap { info ->
-//                        val avatarUrl: String = info.figureurl_qq_2
-//                                ?: info.figureurl_qq_1 ?: ""
-//                        val qqReq = ThirdLoginReq(openid, accessToken,
-//                                expiresIn, "", "", CHANNEL_QQ,
-//                                info.nickname, info.gender, avatarUrl)
-//                        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
-//                                Gson().toJson(qqReq))
-//                        logi("isBind: $isBind")
-//                        if (isBind) {
-//                            logi("绑定第三方")
-//                            NetService.userService.bindThirdAccount(body)
-//                        } else {
-//                            logi("登录第三方")
-//                            NetService.userService.thirdLogin(body)
-//                        }
-//                    }
-//                    .map(ResultMapper<User>())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribeBy(
-//                            onNext = {
-//                                onLogin(it)
-//                                sharedPreferences?.edit()
-//                                        ?.putString(LOGIN_METHOD, CHANNEL_QQ)
-//                                        ?.putString(LOGIN_ID, it.accountId)
-//                                        ?.apply()
-//                                successCallback?.invoke(it)
-//                            },
-//                            onError = { e ->
-//                                loge("fetchQQUserInfo", e)
-//                                e.printStackTrace()
-//                                failedCallback?.invoke(e)
-//                            }
-//                    )
         }
 
 
@@ -310,6 +274,61 @@ object UserManagerV4 : IWXAPIEventHandler {
 
     }
 
+    /**
+     * 保存登录用户信息
+     */
+    private fun onLogin(user: LoginRespV4) {
+        mUserState.set(true)
+        this.user = user
+        Config.insertRequestParameter("loginToken", user!!.token!!)
+        logi(user.toString())
+        repositoryFactory.insertOrUpdate(user)
+        if (lastLoginId != null && lastLoginId != user.account_id) {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.LOGIN, StartLogClickUtil.UIDDIFFUSER)
+        }
+        lastLoginId = user.account_id
+    }
+
+
+    /**
+     * 退出登录
+     */
+    fun logout(onLogout: (() -> Unit)? = null) {
+        if (mUserState.get()) {
+            onLogout(onLogout)
+        }
+    }
+
+    private fun onLogout(onLogout: (() -> Unit)?) {
+        mUserState.set(false)
+        this.user = null
+        repositoryFactory.deleteLoginUser()
+//        if (onLogout == null) return@uploadReadInfo
+
+        repositoryFactory.requestLogout(object : RequestSubscriber<BasicResultV4<String>>() {
+            override fun requestResult(result: BasicResultV4<String>?) {
+                onLogout?.invoke()
+
+            }
+
+            override fun requestError(message: String) {
+                onLogout?.invoke()
+            }
+
+        })
+
+
+    }
+
+    /**
+     * 更新用户数据
+     */
+    fun updateUser(user: LoginRespV4) {
+        logi(user.toString())
+        this.user = user
+        repositoryFactory.insertOrUpdate(user)
+    }
 
     override fun onResp(resp: BaseResp?) {
         logi("onResp : ", resp.toString())
@@ -344,48 +363,6 @@ object UserManagerV4 : IWXAPIEventHandler {
 
                         })
 
-//                NetService.userService.fetchWXAccessToken(wxAppID, wxAppSecret, auth.code,
-//                        "authorization_code")
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(Schedulers.io())
-//                        .flatMap { access ->
-//                            wxReq.oauthId = access.openid
-//                            wxReq.accessToken = access.access_token
-//                            wxReq.accessTokenSeconds = access.expires_in
-//                            wxReq.refreshToken = access.refresh_token
-//                            wxReq.refreshTokenSeconds = "2592000"
-//                            NetService.userService.fetchWXUserInfo(access.access_token, access.openid)
-//                        }
-//                        .flatMap { info ->
-//                            wxReq.name = info.nickname
-//                            wxReq.sex = if (info.sex == 1) "男" else "女"
-//                            wxReq.avatarUrl = info.headimgurl
-//                            val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
-//                                    Gson().toJson(wxReq))
-//                            logi("isBind: $isBind")
-//                            if (isBind) {
-//                                logi("绑定第三方")
-//                                NetService.userService.bindThirdAccount(body)
-//                            } else {
-//                                logi("登录第三方")
-//                                NetService.userService.thirdLogin(body)
-//                            }
-//                        }
-//                        .map(ResultMapper<User>())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeBy(
-//                                onNext = {
-//                                    onLogin(it)
-//                                    sharedPreferences?.edit()
-//                                            ?.putString(LOGIN_METHOD, ThirdLoginReq.CHANNEL_WX)
-//                                            ?.putString(LOGIN_ID, it.accountId)
-//                                            ?.apply()
-//                                    successCallback?.invoke(it)
-//                                },
-//                                onError = {
-//                                    failedCallback?.invoke(it)
-//                                }
-//                        )
 
             }
             BaseResp.ErrCode.ERR_USER_CANCEL -> {
@@ -419,6 +396,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             successCallback!!.invoke(result)
+                            onLogin(result.data!!)
                         } else {
                             failedCallback?.invoke(result.message.toString())
                         }
@@ -441,6 +419,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             successCallback!!.invoke(result)
+                            onLogin(result.data!!)
 
                         } else {
                             failedCallback?.invoke(result.message.toString())
@@ -482,6 +461,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             callBack.invoke(true, result)
+                            onLogin(result.data!!)
                         } else {
                             callBack.invoke(false, result)
                         }
@@ -607,6 +587,64 @@ object UserManagerV4 : IWXAPIEventHandler {
 
                 })
     }
+    /**
+     *  修改昵称
+     */
+
+    fun uploadUserName(name: String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val map = HashMap<String, String>()
+        map["name"] = name
+        val body = RequestBody.create(okhttp3.MediaType.parse("Content-Type, application/json"),
+                JSONObject(map).toString())
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .uploadUserName(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
+    /**
+     *  修改昵称
+     */
+
+    fun bindPhoneNumber(phone: String,code:String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
+        val map = HashMap<String, String>()
+        map["phoneNumber"] = phone
+        map["code"]=code
+
+        val body = RequestBody.create(okhttp3.MediaType.parse("Content-Type, application/json"),
+                JSONObject(map).toString())
+
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .bindPhoneNumber(body, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            callBack.invoke(true, result)
+                        } else {
+                            callBack.invoke(false, result)
+                        }
+
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack.invoke(false, null)
+                    }
+
+                })
+    }
+
 
 
 }

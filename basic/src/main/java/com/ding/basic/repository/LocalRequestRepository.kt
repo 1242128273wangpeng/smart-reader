@@ -267,4 +267,16 @@ class LocalRequestRepository private constructor(private var context: Context) :
     override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
         return null
     }
+    fun insertOrUpdate(user:LoginRespV4){
+        BookDataProviderHelper.loadBookDataProviderHelper(context = context).insertOrUpdate(user)
+    }
+
+    fun queryLoginUser():LoginRespV4{
+        return BookDataProviderHelper.loadBookDataProviderHelper(context=context).queryLoginUser()
+    }
+
+    fun deleteLoginUser(){
+        BookDataProviderHelper.loadBookDataProviderHelper(context=context).deleteLoginUser()
+    }
+
 }

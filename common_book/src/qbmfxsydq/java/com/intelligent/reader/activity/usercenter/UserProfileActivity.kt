@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.util.TakePictureManager
@@ -15,12 +16,13 @@ import com.intelligent.reader.view.BottomDialog
 import com.intelligent.reader.view.MenuItem
 import com.intelligent.reader.view.login.LoadingDialog
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.main.publish_hint_dialog.*
+import kotlinx.android.synthetic.qbmfxsydq.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_user_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform
-import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.utils.logi
 import java.io.File
 
 /**
@@ -59,10 +61,12 @@ class UserProfileActivity : BaseCacheableActivity() {
 
         rl_user_name.setOnClickListener {
             loadingDialog.show(getString(R.string.loading_dialog_title_loading))
-            UserManager.requestUserNameState { success, result ->
+            UserManagerV4.requestUserNameState { success, result ->
                 if (success) {
                     if (result?.data!!.isCanBeModified == 1) {
-//                        TODO 修改昵称
+                        var editIntent = Intent(this, EditUserProfileActivity::class.java)
+                        editIntent.putExtra("userName", txt_user_name.text)
+                        startActivity(editIntent)
                     } else {
                         showToastMessage("剩余 ${result!!.data!!.remainingDays} 天可修改昵称")
                     }
@@ -83,11 +87,10 @@ class UserProfileActivity : BaseCacheableActivity() {
         }
 
         rl_phone.setOnClickListener {
-            val phoneNumber = UserManager.userV4?.phone_number
+            val phoneNumber = UserManagerV4.user?.phone_number
             if (phoneNumber == null) {
-//                TODO 绑定手机号
-//                val bindingIntent = Intent(this, BindPhoneActivity::class.java)
-//                startActivity(bindingIntent)
+                val bindingIntent = Intent(this, BindPhoneActivity::class.java)
+                startActivity(bindingIntent)
             }
         }
 
@@ -95,10 +98,10 @@ class UserProfileActivity : BaseCacheableActivity() {
         rl_gender.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this,
                     StartLogClickUtil.PROFILE, StartLogClickUtil.SEX)
-            if (UserManager.userV4?.gender == getString(R.string.gender_male)) {
+            if (UserManagerV4.user?.gender == getString(R.string.gender_male)) {
                 genderDialog.changeItemTextColor(genderSelectedColor, 0)
                 genderDialog.changeItemTextColor(Color.BLACK, 1)
-            } else if (UserManager.userV4?.gender == getString(R.string.gender_female)) {
+            } else if (UserManagerV4.user?.gender == getString(R.string.gender_female)) {
                 genderDialog.changeItemTextColor(Color.BLACK, 0)
                 genderDialog.changeItemTextColor(genderSelectedColor, 1)
             }
@@ -106,8 +109,8 @@ class UserProfileActivity : BaseCacheableActivity() {
         }
 
         rl_platform.setOnClickListener {
-            val loginChannel = UserManager.userV4?.login_channel //第三方登录
-            val thirdBindingInfo = UserManager.userV4?.link_channel //绑定的第三方账户
+            val loginChannel = UserManagerV4.user?.login_channel //第三方登录
+            val thirdBindingInfo = UserManagerV4.user?.link_channel //绑定的第三方账户
             if (loginChannel == null && thirdBindingInfo == null) {
                 platformDialog.show()
             }
@@ -185,12 +188,12 @@ class UserProfileActivity : BaseCacheableActivity() {
         if (outFile == null) return
         val bitmap = BitmapFactory.decodeFile(outFile.path)
         loadingDialog.show(getString(R.string.uploading))
-        UserManager.uploadUserAvatar(bitmap) { success, result ->
+        UserManagerV4.uploadUserAvatar(bitmap) { success, result ->
             if (success) {
                 Glide.with(this@UserProfileActivity).load(outFile).into(img_head)
-                UserManager.userV4?.let {
+                UserManagerV4.user?.let {
                     it.avatar_url = result?.data?.avatar_url
-                    UserManager.updateUser(it)
+                    UserManagerV4.updateUser(it)
                 }
                 loadingDialog.dismiss()
             } else {
@@ -218,11 +221,11 @@ class UserProfileActivity : BaseCacheableActivity() {
                     genderDialog.dismiss()
                     loadingDialog.show(getString(R.string.loading_dialog_title_editing))
                     val gender = if (position == 1) getString(R.string.gender_male) else getString(R.string.gender_female)
-                    UserManager.uploadUserGender(gender) { success, result ->
+                    UserManagerV4.uploadUserGender(gender) { success, result ->
                         if (success) {
-                            UserManager.userV4?.let {
+                            UserManagerV4.user?.let {
                                 it.gender = result!!.data!!.gender
-                                UserManager.updateUser(it)
+                                UserManagerV4.updateUser(it)
                             }
                             txt_gender.text = gender
                             loadingDialog.dismiss()
@@ -254,7 +257,7 @@ class UserProfileActivity : BaseCacheableActivity() {
                 .setOnMenuClickListener { position ->
                     when (position) {
                         1 -> {
-                            if (!UserManager.isPlatformEnable(Platform.WECHAT)) {
+                            if (!UserManagerV4.isPlatformEnable(Platform.WECHAT)) {
                                 showToastMessage("请安装微信后重试")
                                 return@setOnMenuClickListener
                             }
@@ -279,10 +282,10 @@ class UserProfileActivity : BaseCacheableActivity() {
         progressDialog.setCanceledOnTouchOutside(false)
         progressDialog.setCancelable(true)
 
-        publish_content.visibility = View.GONE
-        dialog_title.setText(R.string.tips_login)
-        change_source_bottom.visibility = View.GONE
-        progress_del.visibility = View.VISIBLE
+        progressDialog.publish_content.visibility = View.GONE
+        progressDialog.dialog_title.setText(R.string.tips_login)
+        progressDialog.change_source_bottom.visibility = View.GONE
+        progressDialog.progress_del.visibility = View.VISIBLE
         progressDialog.setOnDismissListener { }
         progressDialog
     }
@@ -303,22 +306,63 @@ class UserProfileActivity : BaseCacheableActivity() {
         data["type"] = if (platform == Platform.WECHAT) "1" else "2"
         StartLogClickUtil.upLoadEventLog(this,
                 StartLogClickUtil.PROFILE, StartLogClickUtil.BINDOTHERLOGIN, data)
-//        UserManager.thirdLogin(this, platform, true,
-//                onSuccess = { it ->
-//                    toastShort(getString(R.string.bind_success), false)
-//                    UserManager.updateUser(it)
-//                    dismissProgressDialog()
-//                },
-//                onFailure = { t ->
-//                    if (t is LoginError) {
-//                        toastShort(t.message.toString(), false)
-//                    } else {
-//                        toastShort("网络不给力哦，请稍后再试", false)
-//                    }
-//                    dismissProgressDialog()
-//                })
+        UserManagerV4.thirdLogin(this, platform, true,
+                onSuccess = { it ->
+                    showToastMessage(getString(R.string.bind_success))
+                    UserManagerV4.updateUser(it.data!!)
+                    dismissProgressDialog()
+                },
+                onFailure = { t ->
+                    showToastMessage(t)
+                    dismissProgressDialog()
+                })
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!UserManagerV4.isUserLogin) {
+            finish()
+            return
+        }
+
+        val userAvatarUrl = UserManagerV4.user?.avatar_url ?: ""
+        if (userAvatarUrl.isNotEmpty()) {
+            Glide.with(this)
+                    .load(userAvatarUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.default_head)
+                    .error(R.drawable.default_head)
+                    .dontAnimate()
+                    .into(img_head)
+        } else {
+            img_head.setImageResource(R.drawable.default_head)
+        }
+
+        txt_user_id.text = UserManagerV4.user?.global_number
+
+        txt_user_name.text = UserManagerV4.user?.name
+
+        txt_gender.text = UserManagerV4.user?.gender ?: "未知"
+
+        var phoneNumber = UserManagerV4.user?.phone_number
+        if (phoneNumber == null) {
+            img_phone_arrow.visibility = View.VISIBLE
+            txt_phone.text = getString(R.string.bind_phone_title)
+        } else {
+            phoneNumber = phoneNumber.substring(0, 3) + "****" + phoneNumber.substring(7, phoneNumber.length)
+            img_phone_arrow.visibility = View.GONE
+            txt_phone.text = phoneNumber
+        }
+
+        val loginChannel = UserManagerV4.user?.login_channel //第三方登录
+                ?.replace("qq", "QQ")
+                ?.replace("wechat", "微信")
+        val thirdBindingInfo = UserManagerV4.user?.link_channel //绑定的第三方账户
+                ?.replace("qq", "QQ")
+                ?.replace("wechat", "微信")
+        logi("loginChannel: $loginChannel", "thirdBindingInfo: $thirdBindingInfo")
+        txt_platform.text = loginChannel ?: thirdBindingInfo ?: getString(R.string.bind_third_account)
+    }
 
     //把本地的onActivityResult()方法回调绑定到对象
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -328,7 +372,7 @@ class UserProfileActivity : BaseCacheableActivity() {
                 || requestCode == TakePictureManager.CODE_TAILOR_PHOTO) {
             mTakePictureManager.attachToActivityForResult(requestCode, resultCode, data)
         } else {
-            UserManager.onActivityResult(requestCode, resultCode, data)
+            UserManagerV4.onActivityResult(requestCode, resultCode, data)
         }
     }
 

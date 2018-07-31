@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_title_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/top_navigation_bg_color"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="12dp"
+                android:paddingRight="10dp"
+                android:src="@drawable/top_back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:text="@string/bind_phone_title"
+                android:textColor="@color/top_navigation_text_color"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_head_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_title_login"
+        android:background="@color/edit_user_info_tip_color"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/user_binding_phone_tip"
+        android:textColor="@color/edit_user_info_tip_txt_color"
+        android:textSize="@dimen/text_size_12"/>
+
+    <com.intelligent.reader.view.login.MobileNumberEditText
+        android:id="@+id/etxt_mobile_number"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/txt_head_hint"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="95dp"
+        android:background="@drawable/login_etxt_normal_bg"
+        android:gravity="center_vertical"
+        android:hint="@string/login_mobile_number_hint"
+        android:inputType="number"
+        android:maxLength="13"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:textColor="#000000"
+        android:textColorHint="#767676"
+        android:textSize="14sp"/>
+
+    <ImageView
+        android:id="@+id/img_clear_number"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_mobile_number"
+        android:layout_marginRight="36dp"
+        android:layout_marginTop="-36dp"
+        android:padding="10dp"
+        android:src="@drawable/login_clear_icon"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/txt_number_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/etxt_mobile_number"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/login_mobile_number_error"
+        android:textColor="#F75266"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/img_number_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etxt_mobile_number"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/txt_number_error"
+        android:src="@drawable/login_number_error_icon"
+        android:visibility="gone"/>
+
+    <com.intelligent.reader.view.login.VerifyCodeEditText
+        android:id="@+id/etxt_verify_code"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/etxt_mobile_number"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="45.5dp"
+        android:background="@drawable/login_etxt_normal_bg"
+        android:gravity="center_vertical"
+        android:hint="@string/login_verify_code_hint"
+        android:inputType="number"
+        android:maxLength="6"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:textColor="#000000"
+        android:textColorHint="#767676"
+        android:textSize="14sp"/>
+
+    <com.intelligent.reader.view.login.FetchCodeTextView
+        android:id="@+id/txt_fetch_code"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/etxt_verify_code"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="24dp"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/login_fetch_verify_code"
+        android:textColor="#C4C4C4"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/txt_bind"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_below="@+id/etxt_verify_code"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="75.5dp"
+        android:background="@drawable/login_btn_bg"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/bind_btn"
+        android:textColor="@color/login_btn_text_color"
+        android:textSize="16sp"/>
+</RelativeLayout>

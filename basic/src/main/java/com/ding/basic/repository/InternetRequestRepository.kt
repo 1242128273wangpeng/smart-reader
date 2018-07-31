@@ -101,6 +101,9 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
         return RequestAPI.requestSmsLogin(smsRequestBody)
     }
+    fun requestLogout():Flowable<BasicResultV4<String>>{
+        return RequestAPI.requestLogout()
+    }
 
     fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return RequestAPI.uploadUserAvatar(avatarBody)
@@ -112,6 +115,15 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     fun uploadUserGender(genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return RequestAPI.uploadUserGender(genderBody)
+    }
+
+    fun uploadUserName(nameBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+
+        return RequestAPI.uploadUserName(nameBody)
+    }
+
+    fun bindPhoneNumber(phoneBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+        return  RequestAPI.bindPhoneNumber(phoneBody)
     }
 
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {

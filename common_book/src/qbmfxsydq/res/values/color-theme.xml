@@ -244,10 +244,10 @@
         #000000
     </color>
     <color name="setting_nickname_font_color">
-        #FFFFFF
+        #000000
     </color>
     <color name="setting_userid_font_color">
-        #FFFFFF
+        #000000
     </color>
     <color name="setting_logout_font_color">
         #1dbfbb
@@ -367,6 +367,13 @@
     <color name="user_profile_grey76_txt_color">#767676</color>
     <color name="bottom_dialog_btn_pressed_color">#FAFAFA</color>
     <color name="dialog_item_divider_color">#EEEEEE</color>
+    <color name="edit_divider_color">#DBDBDB</color>
+    <color name="edit_user_info_tip_color">#FEF5CC</color>
+    <color name="edit_user_info_tip_txt_color">#D0A559</color>
+    <color name="user_profile_disable_txt_color">#4DFFFFFF</color>
+    <color name="edir_user_profile_title_color">#767676</color>
+    <color name="edir_user_profile_fail_text_color">#F75266</color>
+    <color name="edir_user_profile_tip_text_color">#ADADAD</color>
     <!--用户中心-->
 
 

@@ -89,6 +89,10 @@ interface RequestService {
         const val PATH_FETCH_SMS_CODE_V4 = "/v4/message/sms"
         // 短信登录
         const val PATH_SMS_LOGIN_V4 = "/v4/user/sms_create_token"
+        /**
+         * 注销用户信息
+         */
+        const val PATH_LOGOUT = "/v4/user/invalid_token"
 
         // 上传头像
         const val PATH_UPLOAD_USER_AVATAR = "/v4/user/update_user_Avatar"
@@ -97,6 +101,11 @@ interface RequestService {
         const val PATH_FETCH_USER_NAME_STATE = "/v4/user/get_update_name_count"
         // 修改用户性别
         const val PATH_UPDATE_USER_GENDER = "/v4/user/update_user_gender"
+        // 绑定手机号
+        const val PATH_BIND_PHONE_NUMBER = "/v4/user/link_local"
+
+        // 修改用户昵称
+        const val PATH_UPDATE_USER_NAME = "/v4/user/update_user_name"
         // 第三方登录
         const val PATH_THIRD_LOGIN = "/v4/user/third_create_token"
         // 绑定第三方账户
@@ -149,7 +158,10 @@ interface RequestService {
          */
         const val WEB_RECOMMEND_V4 = "/v4/cn.dingyueWeb.reader/recommend/free/recommend"
         const val WEB_RECOMMEND_V3 = "/{packageName}/v3/recommend/index.do"
-        const val WEB_RECOMMEND_H5 = "/h5/{packageName}/recommend"
+        const val WEB_RECOMMEND_H5 = "/h5/{packageName}/recommend"// 精选
+        const val WEB_RECOMMEND_H5_BOY = "/h5/{packageName}/recommendBoy" //精选男频
+        const val WEB_RECOMMEND_H5_Girl = "/h5/{packageName}/recommendGirl" // 精选女频
+        const val WEB_RECOMMEND_H5_Finish = "/h5/{packageName}/recommendFinish" //精选完本
 
         /**
          * WebView排行 / 榜单排行页面（h5为前后端分离后的接口）
@@ -240,6 +252,9 @@ interface RequestService {
     @POST(PATH_SMS_LOGIN_V4) // 短信验证码登录
     fun requestSmsLogin(@Body smsLoginBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
+    @GET(PATH_LOGOUT)
+    fun logout(): Flowable<BasicResultV4<String>>
+
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_UPLOAD_USER_AVATAR)// 上传用户头像
     fun uploadUserAvatar(@Body avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
@@ -250,6 +265,14 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_UPDATE_USER_GENDER)
     fun uploadUserGender(@Body genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_BIND_PHONE_NUMBER)
+    fun bindPhoneNumber(@Body phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_UPDATE_USER_NAME)
+    fun uploadUserName(@Body nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_THIRD_LOGIN) //第三方登录
