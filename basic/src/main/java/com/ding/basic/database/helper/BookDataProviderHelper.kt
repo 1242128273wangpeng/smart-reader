@@ -282,8 +282,8 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
         historyDao.deleteSmallTime()
     }
 
-    fun insertOrUpdate(user: LoginRespV4) {
-        userDao.insertOrUpdate(user)
+    fun insertLoginUser(user: LoginRespV4) {
+        userDao.insertUser(user)
     }
 
     fun queryLoginUser() :LoginRespV4{

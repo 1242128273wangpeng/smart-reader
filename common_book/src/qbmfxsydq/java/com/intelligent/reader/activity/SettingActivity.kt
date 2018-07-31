@@ -23,9 +23,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
-import com.ding.basic.bean.LoginRespV4
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -237,29 +235,19 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
 
     private fun showUserInfo() {
-        val user=UserManagerV4.user
-        if (btn_login != null && user != null) {
-            btn_login!!.setVisibility(View.GONE)
-            txt_nickname!!.setVisibility(View.VISIBLE)
-            txt_userid!!.setVisibility(View.VISIBLE)
-            txt_nickname!!.setText(user.name)
-            val id = "ID:" + user.global_number
-            txt_userid!!.setText(id)
-            if (user.avatar_url.isNullOrEmpty()) {
-                img_head!!.setImageResource(R.drawable.default_head)
-            } else {
-                Glide.with(this)
-                        .load(user.avatar_url)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .placeholder(R.drawable.default_head)
-                        .error(R.drawable.default_head)
-                        .dontAnimate()
-                        .into(img_head)
-            }
+        if (btn_login != null) {
+            img_head!!.isClickable = false
+            btn_login!!.visibility = View.GONE
+            txt_nickname!!.visibility = View.VISIBLE
+            txt_userid!!.visibility = View.VISIBLE
+            val userInfo = UserManagerV4.user
+            txt_nickname!!.text = userInfo!!.name
+            txt_userid!!.text = "ID:" + userInfo.account_id
+            Glide.with(this).load(userInfo.avatar_url).into(img_head!!)
             rl_logout.visibility = View.VISIBLE
 
             if (txt_login_des != null) {
-                txt_login_des!!.setVisibility(View.GONE)
+                txt_login_des!!.visibility = View.GONE
             }
         }
     }
@@ -458,7 +446,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                if (UserManagerV4.isUserLogin ){
+                if (false) {
                     val userProfileIntent = Intent(this, UserProfileActivity::class.java)
                     startActivity(userProfileIntent)
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
