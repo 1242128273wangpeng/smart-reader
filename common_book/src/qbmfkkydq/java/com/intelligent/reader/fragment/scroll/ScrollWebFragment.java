@@ -130,7 +130,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         if (jsInterfaceHelper != null && contentView != null) {
             contentView.addJavascriptInterface(jsInterfaceHelper, "J_search");
-            contentView.addJavascriptInterface(new JsPositionInterface(), "J_search");
+            contentView.addJavascriptInterface(new JsPositionInterface(), "J_banner");
         }
 
 
