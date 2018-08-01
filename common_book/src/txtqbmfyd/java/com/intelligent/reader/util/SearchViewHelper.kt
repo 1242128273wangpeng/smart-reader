@@ -296,8 +296,11 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             if (mSearchEditText != null) {
                 mSearchHelpPresenter?.onSuggestItemClick(mContext, mSearchEditText!!.text.toString().trim { it <= ' ' }, arg2)
                 mShouldShowHint = false
-                mSearchEditText!!.setText(mSearchHelpPresenter?.getCurrSuggestData())
-                mSearchEditText!!.setSelection(mSearchHelpPresenter?.getCurrSuggestData()?.length!!)
+                mSearchEditText?.setText(mSearchHelpPresenter?.getCurrSuggestData())
+                if(mSearchHelpPresenter?.getCurrSuggestData() != null){
+                    mSearchEditText?.setSelection(mSearchHelpPresenter?.getCurrSuggestData()?.length!!)
+                }
+
             }
 
             if (mSearchPresenter != null) {

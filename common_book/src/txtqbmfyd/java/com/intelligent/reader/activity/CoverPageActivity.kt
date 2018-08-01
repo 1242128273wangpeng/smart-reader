@@ -338,6 +338,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     book_cover_category2!!.visibility = View.GONE
                 }
             }
+            if (!TextUtils.isEmpty(book.host)) {
+                book_cover_source_form.text = (if (book.fromQingoo()) "青果阅读" else book.host)
+            }
 
             if (book.status == "SERIALIZE") {
                 if (book_cover_category2.visibility != View.VISIBLE) {

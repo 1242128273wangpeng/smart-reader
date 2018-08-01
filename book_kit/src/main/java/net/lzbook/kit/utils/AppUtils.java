@@ -687,8 +687,6 @@ public class AppUtils {
      */
     public static String getChannelId() {
         initValues();
-        CommonUtil.showToastMessage("11"+CHANNEL_NAME);
-        CommonUtil.showToastMessage("22"+WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()));
         return CHANNEL_NAME;
     }
 
