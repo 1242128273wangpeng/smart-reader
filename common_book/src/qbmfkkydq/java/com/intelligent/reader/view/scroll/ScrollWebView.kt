@@ -1,6 +1,7 @@
 package com.intelligent.reader.view.scroll
 
 import android.content.Context
+import android.graphics.RectF
 import android.webkit.WebView
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -21,7 +22,7 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
     private var mLastX: Int = 0
     private var mLastY: Int = 0
     private var mViewGroup: ViewGroup? = null
-
+    private var bannerRect: RectF? = null
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         var x = ev.x.toInt()
@@ -34,11 +35,23 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
             MotionEvent.ACTION_MOVE -> {
                 val deltaX = x - mLastX
                 val deltaY = y - mLastY
+
+                if (bannerRect != null) {
+                    if (Math.abs(deltaY) < Math.abs(deltaX) && bannerRect!!.contains(ev.getX(), ev.getY() - scrollY)) {
+                        requestDisallowInterceptTouchEvent(true);
+                    } else {
+                        requestDisallowInterceptTouchEvent(false);
+                    }
+
+                }
+
                 if (RecommendFragment.canScroll || scrollY == 0) {// ScrollView 可以滑动，或者WebView已经滑动顶部，不拦截事件
                     mViewGroup?.requestDisallowInterceptTouchEvent(false)
                 } else {
                     mViewGroup?.requestDisallowInterceptTouchEvent(true)
                 }
+
+
             }
 
         }
@@ -51,6 +64,11 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
 
     fun setScrollViewGroup(viewGroup: ViewGroup) {
         mViewGroup = viewGroup;
+    }
+
+
+    fun setBannerRect(rect: RectF) {
+        bannerRect = rect;
     }
 
 

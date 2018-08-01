@@ -97,12 +97,26 @@ class RecommendFragment : Fragment() {
         titles.add("男频")
         titles.add("女频")
         titles.add("完本")
-
+        scrollview.currentFrag = fragmentSelection
         adapter.setData(fragments, titles)
         tab_layout.setupWithViewPager(view_pager)
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
+
+        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                scrollview.currentFrag = fragments.get(tab?.position!!)
+            }
+
+        })
 
 
     }

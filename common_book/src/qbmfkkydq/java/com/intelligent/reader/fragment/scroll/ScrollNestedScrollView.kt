@@ -5,6 +5,7 @@ import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.webkit.WebView
+import com.intelligent.reader.fragment.RecommendFragment
 
 /**
  * Date: 2018/7/24 12:47
@@ -15,6 +16,7 @@ import android.webkit.WebView
 class ScrollNestedScrollView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : NestedScrollView(context, attrs) {
     private var mLastXIntercept: Int = 0
     private var mLastYIntercept: Int = 0
+    var currentFrag: ScrollWebFragment? = null
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         super.onInterceptTouchEvent(ev)
@@ -29,7 +31,9 @@ class ScrollNestedScrollView @kotlin.jvm.JvmOverloads constructor(context: Conte
             MotionEvent.ACTION_MOVE -> {
                 val deltaX = x - mLastXIntercept
                 val deltaY = y - mLastYIntercept
-                if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                if (Math.abs(deltaY) > Math.abs(deltaX) && RecommendFragment.canScroll) {
+                    intercepted = true
+                } else if (currentFrag != null && deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX) && (currentFrag!!.webScorllDistance == 0)) {
                     intercepted = true
                 } else {
                     intercepted = false

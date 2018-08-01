@@ -4,16 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -126,13 +129,15 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         if (jsInterfaceHelper != null && contentView != null) {
             contentView.addJavascriptInterface(jsInterfaceHelper, "J_search");
+            contentView.addJavascriptInterface(new JsPositionInterface(), "J_search");
         }
+
 
         if (fragmentCallback != null && jsInterfaceHelper != null) {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
 
-        if (mScrollViewGroup!=null){
+        if (mScrollViewGroup != null) {
             contentView.setScrollViewGroup(mScrollViewGroup);
         }
     }
@@ -298,7 +303,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
     private SuperSwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar head_pb_view;
     private TextView head_text_view;
@@ -392,5 +396,34 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
                 }
             });
         }
+    }
+
+    /**
+     * 获取WebView的滑动距离
+     *
+     * @return
+     */
+    public int getWebScorllDistance() {
+        return contentView.getScrollY();
+    }
+
+    /**
+     * 获取web中banner的位置js回调
+     */
+    public class JsPositionInterface {
+
+        @JavascriptInterface
+        public void getH5ViewPagerInfo(String x, String y, String width, String height) {
+            AppLog.e("jsPosition" + x + y + width + height);
+            try {
+                contentView.setBannerRect(new RectF(
+                        Float.parseFloat(x)
+                        , Float.parseFloat(y)
+                        , Float.parseFloat(width),
+                        Float.parseFloat(height)));
+            }catch (Exception e){}
+
+        }
+
     }
 }
