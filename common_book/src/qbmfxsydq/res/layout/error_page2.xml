@@ -1,57 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/loading_error_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_white_ffffff"
-        android:gravity="center">
-    
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loading_error_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white_ffffff"
+    android:gravity="center">
+
     <ImageView
-            android:id="@+id/iv_network_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/icon_network_error"/>
-    
+        android:id="@+id/iv_network_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon_network_error"/>
+
     <TextView
-            android:id="@+id/tv_network_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="37dp"
-            android:gravity="center"
-            android:layout_below="@+id/iv_network_error"
-            android:text="@string/read_network_error"
-            android:textColor="@color/color_gray_9b9b9b"
-            android:textSize="@dimen/dimen_text_14"/>
-    
+        android:id="@+id/tv_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_network_error"
+        android:layout_marginTop="37dp"
+        android:gravity="center"
+        android:text="@string/read_network_error"
+        android:textColor="@color/color_gray_9b9b9b"
+        android:textSize="@dimen/dimen_text_14"/>
+
     <LinearLayout
-            android:id="@+id/loading_error_linear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="27dp"
-            android:layout_below="@+id/tv_network_error"
-            android:gravity="center">
-        
+        android:id="@+id/loading_error_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_network_error"
+        android:layout_marginTop="27dp"
+        android:gravity="center">
+
         <Button
-                android:id="@+id/loading_error_reload"
-                android:layout_width="131dp"
-                android:layout_height="31dp"
-                android:background="@drawable/bookshelf_delete_cancel_bg"
-                android:gravity="center"
-                android:text="@string/network_error_retry"
-                android:textColor="@drawable/bookshelf_delete_cancel_text_color"
-                android:textSize="@dimen/dimen_text_14"/>
-        
+            android:id="@+id/loading_error_reload"
+            android:layout_width="131dp"
+            android:layout_height="31dp"
+            android:background="@drawable/bookshelf_delete_cancel_bg"
+            android:gravity="center"
+            android:text="@string/network_error_retry"
+            android:textColor="@drawable/bookshelf_delete_cancel_text_color"
+            android:textSize="@dimen/dimen_text_14"/>
+
         <Button
-                android:id="@+id/loading_error_setting"
-                android:layout_width="@dimen/dimen_view_width_102"
-                android:layout_height="@dimen/dimen_view_height_41"
-                android:layout_margin="@dimen/dimen_margin_18"
-                android:background="@drawable/network_bg_left"
-                android:gravity="center"
-                android:text="@string/read_network_retry"
-                android:textColor="@color/theme_primary"
-                android:textSize="@dimen/dimen_text_15"/>
+            android:id="@+id/loading_error_setting"
+            android:layout_width="@dimen/dimen_view_width_102"
+            android:layout_height="@dimen/dimen_view_height_41"
+            android:layout_margin="@dimen/dimen_margin_18"
+            android:background="@drawable/network_bg_left"
+            android:gravity="center"
+            android:text="@string/read_network_retry"
+            android:textColor="@color/theme_primary"
+            android:textSize="@dimen/dimen_text_15"
+            android:visibility="gone"/>
     </LinearLayout>
 </RelativeLayout>
