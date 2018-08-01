@@ -130,7 +130,9 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         disclaimer_statement_rl.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                     StartLogClickUtil.PROCTCOL)
-            IntentUtils.start(this, DisclaimerActivity::class.java, IntentUtils.isFormDisclaimerPage, true, false)
+            val bundle = Bundle()
+            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 //当前版本
         check_update_rl.setOnClickListener {
