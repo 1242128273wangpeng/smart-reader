@@ -43,9 +43,9 @@ import net.lzbook.kit.utils.IntentUtils
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
-class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListener {
+open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListener {
 
-    var TAG = SettingActivity::class.java!!.getSimpleName()
+    var TAG = SettingActivity::class.java.simpleName
     protected var currentThemeMode: String? = null //是否切换了主题
 
     private var myDialog: MyDialog? = null//清除缓存对话框
@@ -80,43 +80,47 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         }
 
         // 获取CommunitySDK实例, 参数1为Context类型
-        currentThemeMode = mThemeHelper.getMode()
-        isStyleChanged = getIntent().getBooleanExtra("isStyleChanged", false)
+        currentThemeMode = mThemeHelper.mode
+        isStyleChanged = intent.getBooleanExtra("isStyleChanged", false)
         initView()
         initData()
     }
 
     protected fun initView() {
 
-//        返回箭头
+        // 返回箭头
         top_setting_back.setOnClickListener {
             goBackToHome()
         }
-//         夜间模式切换
+
+        // 夜间模式切换
         bt_night_shift.setOnCheckedChangeListener(this)
-//          wifi自动下载
+
+        // wifi自动下载
         bt_wifi_auto.setOnCheckedChangeListener(this)
 
-//        推送设置
+        //推送设置
         rl_setting_more.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more)
             startActivity(Intent(this@SettingActivity, SettingMoreActivity::class.java))
 
         }
-//      意见反馈
+
+        // 意见反馈
         rl_feedback.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HELP)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help)
             handler.removeCallbacks(feedbackRunnable)
             handler.postDelayed(feedbackRunnable, 500)
         }
-// 去评分
+
+        // 去评分
         rl_mark.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.COMMENT)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help)
             try {
-                val uri = Uri.parse("market://details?id=" + getPackageName())
+                val uri = Uri.parse("market://details?id=" + packageName)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
@@ -126,7 +130,7 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
 
         }
 
-//         法律声明
+        // 法律声明
         disclaimer_statement_rl.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                     StartLogClickUtil.PROCTCOL)
@@ -134,14 +138,15 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
             bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
-//当前版本
+
+        // 当前版本
         check_update_rl.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSION)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver)
             checkUpdate()
         }
 
-// 清除缓存
+        // 清除缓存
         clear_cache_rl.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache)
@@ -153,19 +158,17 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         }
 
 
-
-
-        if (mThemeHelper.isNight()) {
+        if (mThemeHelper.isNight) {
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_day_shift)
             tv_night_shift!!.setText(R.string.mode_day)
-            bt_night_shift!!.setChecked(true)
+            bt_night_shift!!.isChecked = true
         } else {
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_night_shift)
             tv_night_shift!!.setText(R.string.mode_night)
-            bt_night_shift!!.setChecked(false)
+            bt_night_shift!!.isChecked = false
         }
 
-        bt_wifi_auto!!.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true))
+        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
 
     }
 
@@ -211,21 +214,21 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
     }
 
     private fun clearCacheDialog() {
-        if (!isFinishing()) {
+        if (!isFinishing) {
             myDialog = MyDialog(this, R.layout.publish_hint_dialog)
             myDialog!!.setCanceledOnTouchOutside(false)
             myDialog!!.setCancelable(false)
             myDialog!!.setCanceledOnTouchOutside(true)//设置点击dialog外面对话框消失
-            myDialog!!.publish_content.setText("清除包括下载书籍在内的所有缓存")
+            myDialog!!.publish_content.text = "清除包括下载书籍在内的所有缓存"
             myDialog!!.publish_stay.setOnClickListener({
                 dismissDialog()
             })
             myDialog!!.publish_leave.setOnClickListener({
-                myDialog!!.publish_content.setVisibility(View.GONE)
+                myDialog!!.publish_content.visibility = View.GONE
                 myDialog!!.dialog_title.setText(R.string.tip_cleaning_cache)
-                myDialog!!.change_source_bottom.setVisibility(View.GONE)
+                myDialog!!.change_source_bottom.visibility = View.GONE
 
-                myDialog!!.progress_del.setVisibility(View.VISIBLE)
+                myDialog!!.progress_del.visibility = View.VISIBLE
                 //添加清除缓存的处理
                 object : Thread() {
                     override fun run() {
@@ -238,7 +241,7 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
                         DataCleanManager.clearAllCache(getApplicationContext())
                         runOnUiThread({
                             dismissDialog()
-                            clear_cache_size!!.setText("0B")
+                            clear_cache_size!!.text = "0B"
                             showToastMessage("缓存已清除")
                         })
                     }
@@ -261,14 +264,9 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
         goBackToHome()
     }
 
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(android.R.anim.slide_in_left, R.anim.slide_out_left)
-    }
-
-    fun goBackToHome() {
-        if (!currentThemeMode!!.equals(mThemeHelper.getMode()) || isStyleChanged) {
-            if (getSwipeBackHelper() == null || !getSwipeBackHelper().isSliding()) {//滑动返回已结束
+    private fun goBackToHome() {
+        if (currentThemeMode!! != mThemeHelper.mode || isStyleChanged) {
+            if (swipeBackHelper == null || !swipeBackHelper.isSliding) {//滑动返回已结束
                 onThemeSwitch()
             }
         } else {
@@ -278,7 +276,7 @@ class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeLis
 
     override fun onSlideFinishAnimEnd() {
         super.onSlideFinishAnimEnd()
-        if (!currentThemeMode!!.equals(mThemeHelper.getMode()) || isStyleChanged) {
+        if (currentThemeMode!! != mThemeHelper.mode || isStyleChanged) {
             onThemeSwitch()
         }
     }

@@ -227,8 +227,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         })
 
         img_head_personal.setOnClickListener {
-            RouterUtil.navigationWithTransition(requireActivity(), RouterConfig.SETTING_ACTIVITY
-                    , android.R.anim.slide_in_left, R.anim.slide_out_left)
+            RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
 
             BookShelfLogger.uploadBookShelfPersonal()
         }

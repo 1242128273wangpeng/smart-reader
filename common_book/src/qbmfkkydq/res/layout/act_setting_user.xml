@@ -27,10 +27,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/dimen_padding_16"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@drawable/icon_back_left" />
+                android:src="@drawable/icon_back_left"/>
 
             <TextView
                 android:id="@+id/top_navigation_title"
