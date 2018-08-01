@@ -88,6 +88,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
             e.printStackTrace();
         }
+        if(weakReference != null){
+            AppUtils.disableAccessibility(weakReference.get());
+        }
         initView();
 //        initRefresh();
         return rootView;
