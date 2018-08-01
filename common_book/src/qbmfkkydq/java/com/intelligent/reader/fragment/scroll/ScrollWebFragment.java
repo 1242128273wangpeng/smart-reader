@@ -90,7 +90,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        if(weakReference != null){
+        if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
         }
         initView();
@@ -141,7 +141,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         if (mScrollViewGroup != null) {
             contentView.setScrollViewGroup(mScrollViewGroup);
         }
-        if (mViewPagerViewGroup!=null){
+        if (mViewPagerViewGroup != null) {
             contentView.setViewPagerViewGroup(mViewPagerViewGroup);
         }
     }
@@ -385,8 +385,8 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         mScrollViewGroup = scrollViewGroup;
     }
 
-    public void setViewPagerViewGroup(ViewGroup viewpager){
-        mViewPagerViewGroup=viewpager;
+    public void setViewPagerViewGroup(ViewGroup viewpager) {
+        mViewPagerViewGroup = viewpager;
     }
 
     private void loadData(final String s) {
@@ -422,14 +422,22 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         @JavascriptInterface
         public void getH5ViewPagerInfo(String x, String y, String width, String height) {
-            AppLog.e("jsPosition" + x + y + width + height);
+            AppLog.e("jsPosition" + x + " " + y + " " +
+                    width + " " + height + " " + contentView.getScaleX() + "  " + contentView.getScaleY());
             try {
+                float bWidht = Float.parseFloat(width);
+                float bHeight = Float.parseFloat(height);
+                float scale = contentView.getResources().getDisplayMetrics().widthPixels / (bWidht + 1);
+
+
                 contentView.setBannerRect(new RectF(
                         Float.parseFloat(x)
                         , Float.parseFloat(y)
-                        , Float.parseFloat(width),
-                        Float.parseFloat(height)));
-            }catch (Exception e){}
+                        , bWidht * scale,
+                        bHeight * scale));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
 

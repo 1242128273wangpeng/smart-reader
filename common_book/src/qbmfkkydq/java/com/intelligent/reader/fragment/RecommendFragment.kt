@@ -60,9 +60,10 @@ class RecommendFragment : Fragment() {
 
         }
 
+        view_pager.offscreenPageLimit = 4
+
         ll_search_layout.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
-//            TODO 搜索点击打点
         }
         val adapter = VPAdapter(childFragmentManager)
         view_pager.adapter = adapter
