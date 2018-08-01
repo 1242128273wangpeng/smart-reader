@@ -82,7 +82,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 //    private var mBookmarkAdapter: BookmarkAdapter? = null
 
     private lateinit var mCataloguesAdapter: CataloguesAdapter // 目录列表适配器
-
     private lateinit var mBookmarkAdapter: BookmarkAdapter// 标签页列表适配器
 
     private var chapterList: ArrayList<Chapter> = ArrayList()
@@ -180,7 +179,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         recl_catalog_main.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
 
-               scrollState = newState
+                scrollState = newState
                 if (scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING) {
                     if (mCataloguesPresenter != null) {
                         mCataloguesPresenter!!.delayOverLayHandler()
@@ -194,8 +193,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (chapterList != null && !chapterList!!.isEmpty()) {
-                    var manager=recl_catalog_main.layoutManager
-                    if (manager is LinearLayoutManager){
+                    var manager = recl_catalog_main.layoutManager
+                    if (manager is LinearLayoutManager) {
 
                         char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
                     }
@@ -485,14 +484,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     private fun startDeleteBookmarks(currentView: View, list: ArrayList<Int>) {
         if (list.size > 0) {
             val mDialog = MyDialog(this@CataloguesActivity, R.layout.publish_hint_dialog, Gravity.CENTER, true)
-            val dialog_prompt = mDialog.findViewById(R.id.dialog_title) as TextView
+            val dialog_prompt = mDialog.findViewById<TextView>(R.id.dialog_title)
             dialog_prompt.setText(R.string.prompt)
-            val dialog_information = mDialog.findViewById(R.id.publish_content) as TextView
+            val dialog_information = mDialog.findViewById<TextView>(R.id.publish_content)
             dialog_information.setText(R.string.determine_remove_bookmark)
             dialog_information.gravity = Gravity.CENTER
-            val dialog_cancel = mDialog.findViewById(R.id.publish_stay) as Button
+            val dialog_cancel = mDialog.findViewById<Button>(R.id.publish_stay)
             dialog_cancel.setText(R.string.cancel)
-            val dialog_confirm = mDialog.findViewById(R.id.publish_leave) as Button
+            val dialog_confirm = mDialog.findViewById<Button>(R.id.publish_leave)
             dialog_confirm.setText(R.string.delete)
             dialog_confirm.setOnClickListener {
                 if (currentView === tab_bookmark) {
