@@ -26,9 +26,9 @@ ext {
     // 广告默认开启
     hasad = true
     // 无广告列表
-    noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader','cn.mfxsqbyd.reader',"cn.qbmfrmxs.reader"]
+    noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader','cn.mfxsqbyd.reader',"cn.qbmfkkydq.reader"]
     // 改完记得重新编译项目
-    applicationId = "cn.qbmfrmxs.reader"
+    applicationId = "cn.txtqbmfyd.reader"
     defaultPublishConfig = 'qbmfxsydq' + 'Debug'
 
     def appPackageIDConfig = [
@@ -44,7 +44,7 @@ ext {
             txtqbmfyd : "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
             qbmfkdxs  : "cc.quanbennovel", //今日多看
             qbmfrmxs  : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
-            qbmfkkydq  : "cn.qbmfrmxs.reader", //全本免费快看阅读器(新壳4)
+            qbmfkkydq  : "cn.qbmfkkydq.reader", //全本免费快看阅读器(新壳4)
             mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读 (新壳2)
     ]
 
