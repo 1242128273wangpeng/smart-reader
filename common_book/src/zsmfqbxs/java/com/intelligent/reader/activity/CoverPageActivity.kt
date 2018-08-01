@@ -32,10 +32,15 @@ import net.lzbook.kit.utils.*
 import java.util.*
 import java.util.concurrent.Callable
 import android.support.v4.content.ContextCompat.startActivity
+import com.ding.basic.bean.RecommendBean
+import kotlin.collections.ArrayList
 
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
+    override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+    }
+
     private var mBackground = 0
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
@@ -320,9 +325,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
-    override fun showRecommendSuccess(recommendBean: ArrayList<Book>) {
-
-    }
 
     override fun showRecommendFail() {
 
@@ -330,9 +332,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onClick(view: View) {
-        if (coverPagePresenter != null) {
-            coverPagePresenter!!.goToBookSearchActivity(view)
-        }
+//        if (coverPagePresenter != null) {
+//            coverPagePresenter!!.goToBookSearchActivity(view)
+//        }
 
         when (view.id) {
             R.id.book_cover_back -> {

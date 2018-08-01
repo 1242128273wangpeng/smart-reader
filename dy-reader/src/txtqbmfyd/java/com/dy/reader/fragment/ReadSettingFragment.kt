@@ -17,32 +17,30 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.txtqbmfyd.frag_read_setting.*
-import kotlinx.android.synthetic.txtqbmfyd.reader_option_chapter_change.*
+import kotlinx.android.synthetic.txtqbdzs.frag_read_setting.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
-import net.lzbook.kit.utils.loge
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
 /**
- * Created by yuchao on 2018/4/29 0029.
+ * Created by yuchao on 2018/4/29 0029
  */
 class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onTaskStatusChange(book_id: String?) {
-        if(dialog != null){
+      /*  if(dialog != null){
             dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }
+        }*/
 
     }
 
     override fun onTaskFinish(book_id: String?) {
-        if(dialog != null){
+       /* if(dialog != null){
             dialog.rsh_option_header.setBookDownLoadState(book_id)
         }
-
+*/
     }
 
     override fun onTaskFailed(book_id: String?, t: Throwable?) {
@@ -100,7 +98,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             }
         }
         if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
+//            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
             CacheManager.listeners.add(this)
         }
         return dialog
@@ -111,17 +109,17 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventReaderConfig) {
 
-        if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
+        /*if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
             if (ReaderStatus.position.group == -1) {
-                if (dialog.txt_current_chapter_name != null) {
-                    dialog.txt_current_chapter_name!!.text = "封面"
+                if (dialog.novel_hint_chapter != null) {
+                    dialog.novel_hint_chapter!!.text = "封面"
                 }
             } else {
-                if (dialog.txt_current_chapter_name != null) {
-                    dialog.txt_current_chapter_name!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
+                if (dialog.novel_hint_chapter != null) {
+                    dialog.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
                 }
             }
-        }
+        }*/
 
         if(ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
             when (event.type) {
@@ -146,7 +144,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     override fun onResume() {
         super.onResume()
-        loge("onResume() dialog")
+
         dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
         dialog?.rsh_option_header?.presenter = mPresenter
         dialog?.rsbd_option_bottom_detail?.presenter = mPresenter
@@ -157,6 +155,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 dialog?.dismiss()
             }
         }
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }

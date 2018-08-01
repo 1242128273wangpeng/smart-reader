@@ -42,6 +42,8 @@ import com.dingyue.contract.util.CommonUtil;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
+import com.intelligent.reader.adapter.RecommendBooksAdapter;
+import com.intelligent.reader.adapter.SearchHistoryAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
@@ -451,21 +453,11 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                             recommendBooks = value.getData();
                             relative_hot.setVisibility(View.VISIBLE);
                             initRecycleView(count);
-
-//                            if (mBookDaoHelper == null) {
-//                                mBookDaoHelper = BookDaoHelper.getInstance();
-//                            }
-//                            mBookDaoHelper.insertSearchBook(recommendBooks);
-
-
-                        } else {
-//                            getRecommendBooksFromCache();
                         }
                     }
 
                     @Override
                     public void requestError(@NotNull String message) {
-//                        getRecommendBooksFromCache();
                     }
                 });
 
@@ -492,23 +484,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         return "";
     }
 
-
-//    //获取本地存储的推荐书籍
-//    public void getRecommendBooksFromCache() {
-//        count = 0;
-//        recommendBooks.clear();
-//        if (mBookDaoHelper == null) {
-//            mBookDaoHelper = BookDaoHelper.getInstance();
-//        }
-//        recommendBooks = mBookDaoHelper.getSearchBooks();
-//        if (recommendBooks != null && recommendBooks.size() > 0) {
-//            relative_hot.setVisibility(View.VISIBLE);
-//            initRecycleView(count);
-//        } else {
-//            relative_hot.setVisibility(View.GONE);
-//        }
-//
-//    }
 
     public synchronized void initRecycleView(int bookCount) {
         finalRecommendBooks.clear();
@@ -884,9 +859,16 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
                 StartLogClickUtil.HOTREADCLICK, data);
 
-        CoverPageActivity.Companion.launcher(mContext, dataBean.getHost(), dataBean.getBookId(),
-                dataBean.getId(), dataBean.getBookName(),
-                dataBean.getAuthorName(), "", "");
+        Intent intent = new Intent();
+        intent.setClass(context, CoverPageActivity.class);
+        Bundle bundle = new Bundle();
+
+        bundle.putString("author", dataBean.getAuthorName());
+        bundle.putString("book_id", dataBean.getBookId());
+        bundle.putString("book_source_id", "");
+        bundle.putString("book_chapter_id", dataBean.getBookChapterId());
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
 
         isBackSearch = true;
         isFocus = true;

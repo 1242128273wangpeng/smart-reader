@@ -72,7 +72,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
 
     val bookShelfAdapter: BookShelfAdapter by lazy {
-        BookShelfAdapter(requireActivity(), object : BookShelfAdapter.BookShelfItemListener {
+        BookShelfAdapter(object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
                 if (position < 0 || position >= bookShelfPresenter.iBookList.size) return
                 if (isRemoveMenuShow()) {
@@ -316,7 +316,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (!requireActivity().isFinishing) {
+        if (isAdded && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
                 srl_refresh!!.onRefreshComplete()

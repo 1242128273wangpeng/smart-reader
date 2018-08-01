@@ -418,7 +418,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     protected void onDestroy() {
         if (mSearchHelper != null) {
             mSearchHelper.onDestroy();
-            mSearchPresenter = null
         }
         if (search_result_content != null) {
             search_result_content.clearCache(true); //清空缓存

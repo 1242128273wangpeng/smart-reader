@@ -25,6 +25,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -531,7 +532,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         recommendFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "recommend")
-                        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         recommendFragment!!.setArguments(bundle)
                     }
@@ -542,7 +543,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "rank")
-                        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment!!.arguments = bundle
                     }
@@ -553,7 +554,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         categoryFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "category")
-                        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         categoryFragment!!.arguments = bundle
                     }
@@ -616,6 +617,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
 //                setNightMode(true)
+            } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.intelligent.reader.adapter.holder;
+package com.intelligent.reader.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -44,8 +44,8 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
         if (!TextUtils.isEmpty(book.getName()))
             this.mName.setText(book.getName());
 
-        if (!TextUtils.isEmpty(book.getAuthorType())) {
-            mAuthor.setText("作者: " + book.getAuthorType());
+        if (!TextUtils.isEmpty(book.getAuthor())) {
+            mAuthor.setText("作者: " + book.getAuthor());
         }
 
         if (!TextUtils.isEmpty(book.getDesc())) {
