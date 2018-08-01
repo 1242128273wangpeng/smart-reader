@@ -350,7 +350,6 @@ public class SwipeBackHelper {
         AppLog.e(TAG, "MSG_SLIDE_FINISHED");
         viewManager.removeShadowView();
 
-        ActivityLifecycleHelper.build().finishActivity(curActivity);
         curActivity.finish();
         curActivity.overridePendingTransition(0, 0);
         isSlideAnimPlaying = false;
