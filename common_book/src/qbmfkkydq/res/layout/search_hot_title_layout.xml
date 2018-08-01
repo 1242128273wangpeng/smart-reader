@@ -58,6 +58,7 @@
         android:id="@+id/list_recommed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_margin_7"
         android:clipToPadding="false"/>
 
 </LinearLayout>

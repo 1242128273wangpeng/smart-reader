@@ -44,6 +44,7 @@
                 android:layout_centerInParent="true"
                 android:layout_toLeftOf="@id/search_result_button"
                 android:layout_toRightOf="@id/search_result_back"
+                android:background="@drawable/search_input_bg"
                 android:visibility="gone">
 
                 <TextView
@@ -93,8 +94,7 @@
                     android:paddingLeft="@dimen/dimen_padding_10"
                     android:paddingRight="@dimen/dimen_padding_10"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/search_edit_clear"
-                    android:visibility="visible"/>
+                    android:src="@drawable/search_edit_clear"/>
 
                 <net.lzbook.kit.book.view.HWEditText
                     android:id="@+id/search_result_input"
