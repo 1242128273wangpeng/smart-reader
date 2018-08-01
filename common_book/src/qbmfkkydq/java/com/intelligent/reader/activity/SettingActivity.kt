@@ -14,9 +14,9 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.util.EventBookStore
@@ -39,6 +39,7 @@ import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfkkydq.act_setting_user.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.IntentUtils
 
 
