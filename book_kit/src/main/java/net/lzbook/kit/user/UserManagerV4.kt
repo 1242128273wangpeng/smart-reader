@@ -649,8 +649,13 @@ object UserManagerV4 : IWXAPIEventHandler {
      * 同步书架--------
      */
 
-    private fun keepBookShelf(userId:String,onComplete:(() ->Unit)?=null){
+    public fun keepUserBookShelf(onComplete: (() -> Unit)? = null){
         loge("keepBookShelf")
+        user?.let {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                    .keepUserBookShelf(user!!.account_id,onComplete)
+        }
+
 
     }
 

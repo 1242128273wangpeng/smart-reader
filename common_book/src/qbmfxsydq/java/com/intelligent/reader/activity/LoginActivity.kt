@@ -62,14 +62,13 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             flagLoginEnd = true
                             setLoginResult()
-                            showToastMessage(getString(R.string.login_success))
-                            loadingDialog.dismiss()
-//                            UserManagerV4.keepReadInfo { state, msg ->
-//                                uploadLoginSuccessLog("1")
-//                                showToastMessage(getString(R.string.login_success))
-//                                loadingDialog.dismiss()
-//                                finish()
-//                            }
+
+                            UserManagerV4.keepUserBookShelf {
+                                uploadLoginSuccessLog("1")
+                                showToastMessage(getString(R.string.login_success))
+                                loadingDialog.dismiss()
+                                finish()
+                            }
                         },
                         onFailure = { t ->
                             uploadLoginErrorLog("1", t)
@@ -97,14 +96,12 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             flagLoginEnd = true
                             setLoginResult()
-                            showToastMessage(getString(R.string.login_success))
-                            loadingDialog.dismiss()
-//                            UserManager.keepReadInfo { state, msg ->
-//                                uploadLoginSuccessLog("2")
-//                                toastShort(getString(R.string.login_success), false)
-//                                loadingDialog.dismiss()
-//                                finish()
-//                            }
+                            UserManagerV4.keepUserBookShelf {
+                                uploadLoginSuccessLog("2")
+                                showToastMessage(getString(R.string.login_success))
+                                loadingDialog.dismiss()
+                                finish()
+                            }
                         },
                         onFailure = { t ->
                             uploadLoginErrorLog("2", t.toString())

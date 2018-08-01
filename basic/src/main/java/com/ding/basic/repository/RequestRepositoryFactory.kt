@@ -3,8 +3,11 @@ package com.ding.basic.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.dao.BookmarkDao
+import com.ding.basic.dao.BookmarkDao_Impl
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
@@ -16,13 +19,18 @@ import com.ding.basic.util.ParserUtil
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
+import io.reactivex.*
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
+import net.lzbook.kit.data.book.BookBody
+import net.lzbook.kit.data.book.BookMark
+import net.lzbook.kit.data.book.BookMarkBody
+import net.lzbook.kit.data.book.BookReqBody
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
@@ -834,7 +842,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     }
 
-    fun uploadUserName (nameBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+    fun uploadUserName(nameBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadUserName(nameBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
@@ -853,7 +861,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
 
     }
-    fun bindPhoneNumber (phoneBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+
+    fun bindPhoneNumber(phoneBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .bindPhoneNumber(phoneBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
@@ -872,6 +881,190 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
 
     }
+
+    /**
+     * 请求用户书架 ,同步书架-----------------------------------------------------------------开始
+     */
+    fun keepUserBookShelf(accountId: String, onComplete: (() -> Unit)? = null) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .requestBookShelf(accountId)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<UserBook>>>())
+                .doOnNext { remoteBookShelf ->
+                    if (remoteBookShelf.data != null && remoteBookShelf.data!!.isNotEmpty()) {
+                        mergeBookShelf(remoteBookShelf.data!!)
+                        Log.d("keepBookShelf", "thread : " + Thread.currentThread() + " 服务器已有数据 存入数据库 data : " + remoteBookShelf.data.toString())
+                    } else {
+                        Log.d("keepBookShelf", "thread : " + Thread.currentThread() + " 服务器无数据 上传数据")
+                    }
+                }
+                .flatMap {
+                    if (it.data != null && it.data!!.isNotEmpty()) {
+                        Flowable.create(object : FlowableOnSubscribe<BasicResultV4<String>> {
+                            override fun subscribe(emitter: FlowableEmitter<BasicResultV4<String>>) {
+                                emitter.onNext(BasicResultV4())
+                            }
+
+
+                        }, BackpressureStrategy.BUFFER)
+                    } else {
+                        getUploadBookShelfFlowable(accountId)
+                    }
+                }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
+            override fun onNext(it: BasicResultV4<String>?) {
+                onComplete?.invoke()
+                Log.d("keepBookShelf", "thread : " + Thread.currentThread() +
+                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+
+            }
+
+            override fun onError(t: Throwable?) {
+                onComplete?.invoke()
+                if (t != null) {
+                    Log.d("keepBookShelf", "fail : " + t.message)
+                }
+            }
+
+            override fun onComplete() {
+
+            }
+
+        })
+
+    }
+
+    /**
+     * 获取上传书架Flowable
+     */
+    private fun getUploadBookShelfFlowable(accountId: String): Flowable<BasicResultV4<String>> {
+        val bookList = queryAllBook()
+
+        val bookReqBody = getBookReqBody(accountId, bookList)
+        Log.d("keepBookShelf", "upload data : " + bookReqBody.toString())
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
+        return InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .uploadBookshelf(body)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+
+    }
+
+    /**
+     * 获取 BookReqBody
+     */
+    private fun getBookReqBody(userId: String, bookList: List<Book>): BookReqBody {
+        val userBookList = ArrayList<BookBody>()
+        for (book in bookList) {
+            val bookBody = BookBody(book.book_id, book.book_source_id, book.offset, book.sequence, book.host.toString(), book.img_url
+                    , book.name.toString(), book.author.toString(), book.last_read_time, book.chapter_count, book.last_chapter?.name.toString(), book.last_chapter?.update_time!!)
+            userBookList.add(bookBody)
+        }
+        return BookReqBody(userId, userBookList)
+    }
+
+
+    private fun queryAllBook(): List<Book> {
+        val repository = LocalRequestRepository.loadLocalRequestRepository(context = context)
+        val extendsBooks = java.util.ArrayList<Book>()
+        repository.loadBooks()?.let { extendsBooks.addAll(it) }
+
+        Collections.sort(extendsBooks)
+        return extendsBooks
+    }
+
+
+    /**
+     * 合并书架
+     */
+    private fun mergeBookShelf(data: List<UserBook>) {
+        val repository = LocalRequestRepository.loadLocalRequestRepository(context = context)
+        repository.deleteShelfBooks()
+
+        if (data.isEmpty()) {
+            return
+        }
+
+        for (book in data) {
+            val saveBook = book.transToBook()
+            repository.insertBook(saveBook)
+        }
+    }
+
+    /**
+     * 请求用户书架 ,同步书架-----------------------------------------------------------------结束
+     */
+
+
+    /**
+     *  同步书签-----------------------------------------------------------------开始
+     */
+
+    private fun keepBookMark(userId: String, onComplete: (() -> Unit)? = null) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .requestBookMarks(userId)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<Book>>>())
+                .doOnNext { remoteBookMarks ->
+                    if (remoteBookMarks.data != null && remoteBookMarks.data!!.isNotEmpty()) {
+                        mergeBookMark(remoteBookMarks.data!!)
+                        Log.d("keepBookMark", "thread : " + Thread.currentThread() + " 服务器已有数据 存入数据库 data : " + remoteBookMarks.data.toString())
+                    } else {
+                        Log.d("keepBookMark", "thread : " + Thread.currentThread() + " 服务器无数据 上传数据")
+                    }
+                }
+//                .flatMap {
+//                    Flowable.create(object :FlowableOnSubscribe<BasicResult<String>>{
+//                        override fun subscribe(emitter: FlowableEmitter<BasicResult<String>>) {
+//                            emitter.onNext(BasicResult())
+//
+//                        }
+//
+//                    })
+//                }
+
+    }
+
+    @Suppress("SENSELESS_COMPARISON")
+    private fun mergeBookMark(data: List<Book>) {
+//        TODO 合并书签
+    }
+
+    /**
+     * 获取上传书签Flowable
+     */
+//    private fun getUploadBookShelfFlowable(accountId: String): Flowable<BasicResultV4<String>> {
+//        val bookList = queryAllBook()
+//
+//        val bookMarkBody = getBookMarkBody(userId, bookList)
+//        Log.d("keepBookShelf", "upload data : " + bookReqBody.toString())
+//        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
+//        return InternetRequestRepository.loadInternetRequestRepository(context = context)
+//                .uploadBookshelf(body)
+//                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+//
+//    }
+
+
+//    /**
+//     * 获取 BookMarkBody
+//     */
+//    private fun getBookMarkBody(userId: String, bookList: List<Book>): BookMarkBody {
+//        val bookBodyList = ArrayList<Book>()
+//        for (book in bookList) {
+//            val bookmarkList = queryLatestBookMark(book.book_id)
+//            val bookMarkBodyList = ArrayList<BookMark>()
+//            for (bookmark in bookmarkList) {
+//                val bookMarkBody = BookMark.create(bookmark)
+//                bookMarkBodyList.add(bookMarkBody)
+//            }
+//            val bookBody = Book()
+//            bookBody.book_id=book.book_id
+//            bookBody.book_source_id=book.book_source_id
+//            bookBodyList.add(bookBody)
+//        }
+//        return BookMarkBody(userId, bookBodyList)
+//    }
+
+    /**
+     *  同步书签-----------------------------------------------------------------结束
+     */
 
 
     fun thirdLogin(thirdBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
@@ -917,13 +1110,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
 
-    fun keepBookShelf(){
-
-
+    fun keepBookShelf() {
+        val repository = LocalRequestRepository.loadLocalRequestRepository(context = context)
+        repository.loadBooks()
 
     }
-
-
 
 
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {

@@ -69,7 +69,6 @@ interface RequestService {
         const val AUTHOR_V4 = "/v4/author/homepage/page"
 
 
-
         //检查更新
         const val CHECK_UPDATE = "/v5/book/check"
 
@@ -115,6 +114,11 @@ interface RequestService {
         const val PATH_BOOKSHELF_UPLOAD = "/v4/bookshelf/add"
         // 获取书架
         const val PATH_BOOKSHELF_FETCH = "/v4/bookshelf/get"
+
+        //获取用户书签
+        const val PATH_BOOKMAEK_GET = "/v4/bookmark/get"
+        //上传书签
+        const val PATH_BOOKMAEK_ADD = "/v4/bookmark/add"
         // 用户相关----------------------
 
 
@@ -280,11 +284,18 @@ interface RequestService {
     fun uploadUserName(@Body nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
 
     @GET(PATH_BOOKSHELF_FETCH) // 获取书架
-    fun fetchBookshelf(@Query("accountId") accountId: String): Flowable<BasicResultV4<List<UserBook>>>
+    fun requestBookshelf(@Query("accountId") accountId: String): Flowable<BasicResultV4<List<UserBook>>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_BOOKSHELF_UPLOAD) //上传书架
-    fun uploadBookshelf(@Body bookshelf: RequestBody): Observable<Result<String>>
+    fun uploadBookshelf(@Body bookshelf: RequestBody): Flowable<BasicResultV4<String>>
+
+    @GET(PATH_BOOKMAEK_GET) // 获取用户书签
+    fun requestBookMarks(@Query("accountId") userId: String): Flowable<BasicResultV4<List<Book>>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_BOOKMAEK_ADD)// 上传书签
+    fun uploadBookMark(@Body bookMarkBody: RequestBody): Flowable<BasicResultV4<String>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_THIRD_LOGIN) //第三方登录
@@ -301,13 +312,13 @@ interface RequestService {
 
     @GET("https://api.weixin.qq.com/sns/oauth2/access_token")// 获取微信token
     fun requestWXAccessToken(@Query("appid") appId: String,
-                           @Query("secret") secret: String,
-                           @Query("code") code: String,
-                           @Query("grant_type") authorizationCode: String): Flowable<WXAccess>
+                             @Query("secret") secret: String,
+                             @Query("code") code: String,
+                             @Query("grant_type") authorizationCode: String): Flowable<WXAccess>
 
     @GET("https://api.weixin.qq.com/sns/userinfo")// 获取微信用户信息
     fun requestWXUserInfo(@Query("access_token") accessToken: String,
-                        @Query("openid") openid: String): Flowable<WXSimpleInfo>
+                          @Query("openid") openid: String): Flowable<WXSimpleInfo>
 
     /************************************* 缓存相关 *************************************/
     @GET(DOWN_TASK_CONFIG)

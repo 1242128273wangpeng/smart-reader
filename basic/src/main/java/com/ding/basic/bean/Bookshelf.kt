@@ -1,5 +1,7 @@
 package net.lzbook.kit.data.user
 
+import com.ding.basic.bean.Book
+
 /**
  * Desc 云书架
  * Author qiantao
@@ -11,26 +13,53 @@ data class Bookshelf(
         var list: List<UserBook>
 )
 
-data class UserBook(
-        var name: String,
-        var author: String,
-        var desc: String,
-        var labels: String,
-        var imgUrl: String,
-        var url: String,
-        var status: String,
-        var source: Source,
-        var bookId: String,
-        var bookSourceId: String,
-        var host: String,
-        var dex: Int,
-        var lastChapter: LastChapter,
-        var offset: Int,
-        var sequence: Int,
-        var chapterCount: Int,
-        var addTime: String,
-        var readTime: Long
-)
+class UserBook {
+    var name: String? = ""
+    var author: String? = ""
+    var desc: String? = ""
+    var labels: String? = ""
+    var imgUrl: String? = ""
+    var url: String? = ""
+    var status: String? = ""
+    var source: Source? = null
+    var bookId: String? = ""
+    var bookSourceId: String? = ""
+    var host: String? = ""
+    var dex: Int = 0
+    var lastChapter: LastChapter? = null
+    var offset: Int = 0
+    var sequence: Int = 0
+    var chapterCount: Int = 0
+    var addTime: String? = ""
+    var readTime: Long = 0
+
+    fun transToBook(): Book {
+        val book = Book()
+        book.name = name
+        book.author = author
+        book.desc = desc
+        book.sub_genre = labels
+        book.img_url = imgUrl
+        if ("FINISH" == status) {
+            book.status = "2"
+        } else {
+            book.status = "1"
+        }
+        book.book_id = bookId.toString()
+        book.book_source_id = bookSourceId.toString()
+        book.host = host
+        book.offset = offset
+        book.sequence = sequence
+        book.last_read_time = readTime
+        book.chapter_count = chapterCount
+        book.last_chapter?.name = lastChapter!!.name
+        book.last_check_update_time = lastChapter!!.update_time
+        book.last_chapter?.url = lastChapter!!.url
+        return book
+
+    }
+
+}
 
 data class LastChapter(
         var id: String,
