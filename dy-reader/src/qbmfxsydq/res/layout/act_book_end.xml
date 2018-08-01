@@ -13,13 +13,13 @@
         android:id="@+id/rl_title_book_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary"
         android:fitsSystemWindows="true">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:fitsSystemWindows="true">
+            android:layout_height="48dp">
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -29,7 +29,7 @@
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:src="@drawable/top_back_selector"/>
+                android:src="@drawable/icon_back_left"/>
 
             <TextView
                 android:id="@+id/txt_title"
@@ -38,7 +38,7 @@
                 android:layout_centerInParent="true"
                 android:singleLine="true"
                 android:text="@string/read_end_tip"
-                android:textColor="#000000"
+                android:textColor="@color/color_white"
                 android:textSize="18sp"/>
 
             <TextView
@@ -52,7 +52,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:text="@string/change_source"
-                android:textColor="#00C298"
+                android:textColor="@color/color_white"
                 android:textSize="14sp"/>
 
         </RelativeLayout>
@@ -101,7 +101,7 @@
                     android:background="@drawable/book_end_btn_selector_bookshelf"
                     android:gravity="center"
                     android:text="@string/end_to_bookshelf"
-                    android:textColor="#00C298"
+                    android:textColor="@color/primary"
                     android:textSize="14sp"/>
 
                 <TextView

@@ -238,6 +238,7 @@ public class LoadingPage extends FrameLayout {
         if (act == null) {
             return;
         }
+
         if (isFromReadingPage) {
             loadView = LayoutInflater.from(act).inflate(R.layout.loading_page_reading, null);
             tv_novel_source =  loadView.findViewById(R.id.tv_novel_source);
@@ -245,6 +246,8 @@ public class LoadingPage extends FrameLayout {
         } else {
             loadView = LayoutInflater.from(act).inflate(R.layout.loading_page, null);
         }
+
+
         errorView = LayoutInflater.from(act).inflate(R.layout.error_page2, null);
         errorView.setVisibility(View.GONE);
         addView(loadView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
