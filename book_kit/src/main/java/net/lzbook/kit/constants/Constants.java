@@ -14,11 +14,10 @@ import java.io.File;
 
 public class Constants {
 
-
     /**
      * 阅读页转码声明
      */
-    public static final String FORM_READING_PAGE = "form_reading_page";
+    public static final String FROM_READING_PAGE = "from_reading_page";
     /**
      * 登录页服务条款
      */
@@ -27,11 +26,10 @@ public class Constants {
      * 登录页隐秘条款
      */
     public static final String PRIVACY_POLICY = "privacy_policy";
-
     /**
      * 仅在使用协议页面进入可以打开调试模式
      */
-    public static final String FORM_DISCLAIMER_PAGE = "form_disclaimer_page";
+    public static final String FROM_DISCLAIMER_PAGE = "from_disclaimer_page";
 
     //开屏选男女
     public static int SBOY = 1;

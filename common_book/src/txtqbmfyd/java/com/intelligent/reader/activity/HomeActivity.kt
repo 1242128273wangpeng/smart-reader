@@ -357,9 +357,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
-            var bundle = Bundle()
-            bundle.putBoolean(RouterUtil.isFormDisclaimerPage, true)
-            RouterUtil.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY,bundle)
+            val bundle = Bundle()
+            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
         val versionName = "V${AppUtils.getVersionName()}"

@@ -30,8 +30,8 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         txt_content.text = resources.getString(R.string.disclaimer_statement_description)
 
         // 阅读页转码声明
-        val isFromReading = intent.getBooleanExtra(Constants.FORM_READING_PAGE, false)
-        if (isFromReading) {
+        val isFromReadingPage = intent.getBooleanExtra(Constants.FROM_READING_PAGE, false)
+        if (isFromReadingPage) {
             txt_title.text = resources.getString(R.string.translate_code)
             txt_content.text = resources.getString(R.string.translate_code_description)
         }
@@ -62,7 +62,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         }
 
         // 仅在使用协议页面进入可以打开调试模式
-        val isFormDisclaimerPage = intent.getBooleanExtra(Constants.FORM_DISCLAIMER_PAGE, false)
+        val isFormDisclaimerPage = intent.getBooleanExtra(Constants.FROM_DISCLAIMER_PAGE, false)
         if (isFormDisclaimerPage) {
             txt_content.setOnClickListener {
                 displayEggs()

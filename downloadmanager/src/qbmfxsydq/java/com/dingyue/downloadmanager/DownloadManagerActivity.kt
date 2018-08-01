@@ -174,9 +174,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                         view.txt_state.text = getString(R.string.not_cache)
                     }
 
-                    if (position == 0) {
+                   /* if (position == 0) {
                         view.view_divider.visibility = View.GONE
-                    }
+                    }*/
 
                     view
                 } else {

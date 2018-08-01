@@ -20,12 +20,10 @@ class BookmarkAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var bookmarkList: List<Bookmark> = ArrayList()
     private lateinit var bookMarkListener: BookmarkItemClickListener
+
     override fun getItemCount(): Int {
-        return if (bookmarkList == null) {
-            0
-        } else {
-            bookmarkList.size
-        }
+        return bookmarkList.size
+
     }
 
     fun insertBookMark(bookmarkList: List<Bookmark>) {
@@ -35,7 +33,7 @@ class BookmarkAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is BookMarkHolder) {
-            holder.bind(position,bookMarkListener,bookmarkList[position])
+            holder.bind(position, bookMarkListener, bookmarkList[position])
         }
     }
 

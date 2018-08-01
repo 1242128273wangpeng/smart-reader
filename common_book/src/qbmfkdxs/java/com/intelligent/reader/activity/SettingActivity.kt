@@ -339,7 +339,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             R.id.disclaimer_statement_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL)
-                IntentUtils.start(this, DisclaimerActivity::class.java, RouterUtil.isFormDisclaimerPage, true, false)
+                val bundle = Bundle()
+                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
             }
 //            R.id.rl_readpage_setting -> {
 //                //阅读页设置
