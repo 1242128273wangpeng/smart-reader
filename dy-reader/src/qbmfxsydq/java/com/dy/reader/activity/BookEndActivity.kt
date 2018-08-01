@@ -47,10 +47,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
     }
 
-    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
-
-    }
-
 
     private var book: Book? = null
     private var bookId: String? = null
