@@ -487,9 +487,11 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
             case R.id.disclaimer_statement_rl:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
-                val bundle = Bundle()
-                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
-                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle) break;
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
+                break;
             case R.id.rl_history_setting:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_setting_history));

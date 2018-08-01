@@ -189,7 +189,7 @@ public class SearchHelper {
                 filterWord = filter_word;
                 sortType = sort_type;
 
-                loadData(0);
+                startLoadData(0);
 
                 if (mJsCallSearchCall != null) {
                     mJsCallSearchCall.onJsSearch();
@@ -265,7 +265,7 @@ public class SearchHelper {
                 word = searchWord;
                 searchType = search_type;
 
-                loadData(0);
+                startLoadData(0);
 
                 if (jsNoneResultSearchCall != null) {
                     jsNoneResultSearchCall.onNoneResultSearch(searchWord);
