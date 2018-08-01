@@ -616,7 +616,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     }
 
     /**
-     *  修改昵称
+     *  绑定手机号
      */
 
     fun bindPhoneNumber(phone: String,code:String, callBack: ((Boolean, BasicResultV4<LoginRespV4>?) -> Unit)) {
@@ -644,6 +644,17 @@ object UserManagerV4 : IWXAPIEventHandler {
 
                 })
     }
+
+    /**
+     * 同步书架--------
+     */
+
+    private fun keepBookShelf(userId:String,onComplete:(() ->Unit)?=null){
+        loge("keepBookShelf")
+
+    }
+
+
 
 
 

@@ -917,6 +917,15 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
 
+    fun keepBookShelf(){
+
+
+
+    }
+
+
+
+
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestLogoutAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<JsonObject>())?.subscribeWith(object : ResourceSubscriber<JsonObject>() {

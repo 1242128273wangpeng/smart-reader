@@ -4,6 +4,7 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
@@ -110,6 +111,10 @@ interface RequestService {
         const val PATH_THIRD_LOGIN = "/v4/user/third_create_token"
         // 绑定第三方账户
         const val PATH_BIND_THIRD_ACCOUNT = "/v4/user/link_third"
+        // 上传书架
+        const val PATH_BOOKSHELF_UPLOAD = "/v4/bookshelf/add"
+        // 获取书架
+        const val PATH_BOOKSHELF_FETCH = "/v4/bookshelf/get"
         // 用户相关----------------------
 
 
@@ -273,6 +278,13 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_UPDATE_USER_NAME)
     fun uploadUserName(@Body nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>
+
+    @GET(PATH_BOOKSHELF_FETCH) // 获取书架
+    fun fetchBookshelf(@Query("accountId") accountId: String): Flowable<BasicResultV4<List<UserBook>>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_BOOKSHELF_UPLOAD) //上传书架
+    fun uploadBookshelf(@Body bookshelf: RequestBody): Observable<Result<String>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_THIRD_LOGIN) //第三方登录
