@@ -9,8 +9,7 @@
     <View
         android:id="@+id/view_divider"
         android:layout_width="wrap_content"
-        android:layout_height="14dp"
-        android:visibility="visible"/>
+        android:layout_height="14dp"/>
 
     <ImageView
         android:id="@+id/img_icon"
