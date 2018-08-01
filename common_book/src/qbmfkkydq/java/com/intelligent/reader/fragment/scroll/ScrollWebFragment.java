@@ -59,6 +59,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     private LoadingPage loadingpage;
     private Handler handler;
     private ViewGroup mScrollViewGroup;
+    private ViewGroup mViewPagerViewGroup;
 
     @Override
     public void onAttach(Activity activity) {
@@ -139,6 +140,9 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         if (mScrollViewGroup != null) {
             contentView.setScrollViewGroup(mScrollViewGroup);
+        }
+        if (mViewPagerViewGroup!=null){
+            contentView.setViewPagerViewGroup(mViewPagerViewGroup);
         }
     }
 
@@ -379,6 +383,10 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
     public void setScrollViewGroup(ViewGroup scrollViewGroup) {
         mScrollViewGroup = scrollViewGroup;
+    }
+
+    public void setViewPagerViewGroup(ViewGroup viewpager){
+        mViewPagerViewGroup=viewpager;
     }
 
     private void loadData(final String s) {

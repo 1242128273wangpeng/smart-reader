@@ -71,21 +71,25 @@ class RecommendFragment : Fragment() {
         fragmentSelection.arguments = getBundle(//精选
                 RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
         fragmentSelection.setScrollViewGroup(scrollview)
+        fragmentSelection.setViewPagerViewGroup(view_pager)
 
         val fragmentMale = ScrollWebFragment()
         fragmentMale.arguments = getBundle(//男频
                 RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName()))
         fragmentMale.setScrollViewGroup(scrollview)
+        fragmentMale.setViewPagerViewGroup(view_pager)
 
         val fragmentFemale = ScrollWebFragment()
         fragmentFemale.arguments = getBundle(//女频
                 RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName()))
         fragmentFemale.setScrollViewGroup(scrollview)
+        fragmentFemale.setViewPagerViewGroup(view_pager)
 
         val fragmentFinish = ScrollWebFragment()
         fragmentFinish.arguments = getBundle(//完本
                 RequestService.WEB_RECOMMEND_H5_Finish.replace("{packageName}", AppUtils.getPackageName()))
         fragmentFinish.setScrollViewGroup(scrollview)
+        fragmentFinish.setViewPagerViewGroup(view_pager)
 
         fragments.clear()
         fragments.add(fragmentSelection)
