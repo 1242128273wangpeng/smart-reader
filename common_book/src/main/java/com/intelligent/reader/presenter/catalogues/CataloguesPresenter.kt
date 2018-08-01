@@ -426,7 +426,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                 data["type"] = "2"
                 data["bookid"] = localBook.book_id
 
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.CATALOG, StartLogClickUtil.SHELFEDIT, data)
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.SHELFEDIT, data)
 
                 cataloguesContract.changeDownloadButtonStatus()
 
@@ -476,7 +476,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                 data["type"] = "1"
                 data["bookid"] = book.book_id
 
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.CATALOG, StartLogClickUtil.SHELFEDIT, data)
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.SHELFEDIT, data)
 
                 activity.applicationContext.showToastMessage("成功添加到书架！")
 
@@ -489,6 +489,11 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
      * 缓存书籍内容
      * **/
     fun handleDownloadAction() {
+        val dataDownload = HashMap<String, String>()
+        dataDownload["bookId"] = book.book_id
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG,
+                StartLogClickUtil.CASHEALL, dataDownload)
+
         if (TextUtils.isEmpty(book.book_id)) {
             return
         }

@@ -211,6 +211,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         txt_editor_finish.setOnClickListener {
             dismissRemoveMenu()
+            BookShelfLogger.uploadBookShelfEditBack()
         }
 
         txt_empty_add_book.setOnClickListener {
@@ -468,6 +469,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         bookShelfInterface?.changeHomeNavigationState(true)
 
+        bookShelfInterface?.lockDrawerLayout(true)
+
         fl_ad_float.visibility = View.GONE
 
         removeMenuPopup.show(ll_content)
@@ -485,6 +488,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfAdapter.insertRemoveState(false)
 
         bookShelfInterface?.changeHomeNavigationState(false)
+
+        bookShelfInterface?.lockDrawerLayout(false)
 
         removeMenuPopup.dismiss()
 

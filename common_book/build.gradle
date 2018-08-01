@@ -292,9 +292,9 @@ N多网	        blf1298_10885_001
             zipAlignEnabled true
             shrinkResources false
 
-//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
-
             fixChannelAppName(getOwner(), "${channel}")
+
+//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
 //            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
@@ -307,9 +307,9 @@ N多网	        blf1298_10885_001
 
             //便于执行monkey, 跑monkey时 这是为true
             buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
-
-            buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
             fixChannelAppName(getOwner(), "${channel}")
+//            buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
+
 //            addManifestPlaceholders([CHANNEL_NAME: 'DEBUG'])
         }
 
@@ -321,7 +321,6 @@ N多网	        blf1298_10885_001
             fixChannelAppName(getOwner(), "${channel}")
 
 //            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
-
 //            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 

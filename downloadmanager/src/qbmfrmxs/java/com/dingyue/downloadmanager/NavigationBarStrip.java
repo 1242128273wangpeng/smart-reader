@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
@@ -189,7 +190,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
                     Math.round(DEFAULT_INDICATOR_RADIUS * density));
 
             indicatorAnimationDuration = typedArray.getInteger(
-                    R.styleable.NavigationBarStrip_indicatorAnimationDuration, 350);
+                    R.styleable.NavigationBarStrip_indicatorAnimationDuration, 200);
 
             indicatorActiveColor = typedArray.getColor(
                     R.styleable.NavigationBarStrip_indicatorActiveColor,
@@ -216,7 +217,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
 
             indicatorRadius = Math.round(DEFAULT_INDICATOR_RADIUS * density);
 
-            indicatorAnimationDuration = 350;
+            indicatorAnimationDuration = 200;
 
             indicatorActiveColor = Color.parseColor("#191919");
             indicatorInactiveColor = Color.parseColor("#9B9B9B");
@@ -326,6 +327,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
     public void insertAnimationDuration(final int animationDuration) {
         this.indicatorAnimationDuration = animationDuration;
         valueAnimator.setDuration(animationDuration);
+        valueAnimator.setInterpolator(new AccelerateInterpolator());
         resetScroller();
     }
 

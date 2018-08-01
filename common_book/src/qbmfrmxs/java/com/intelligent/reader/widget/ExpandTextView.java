@@ -17,6 +17,10 @@ import android.widget.TextView;
 
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+
+import java.util.HashMap;
+
 public class ExpandTextView extends RelativeLayout implements View.OnClickListener {
 
     private static final int MAX_COLLAPSED_LINES = 4;
@@ -55,6 +59,8 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
 
     private int contentHeight;
 
+    private Context context;
+
 
     public ExpandTextView(Context context) {
         this(context, null);
@@ -67,6 +73,8 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
     @SuppressLint("CustomViewStyleable")
     public ExpandTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        this.context = context;
 
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs,
@@ -103,10 +111,18 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
         if (view.getId() == R.id.expand_prompt) {
             if (collapsed) {
                 handleClickListener();
+                HashMap<String, String> data = new HashMap<>();
+                data.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                        StartLogClickUtil.INTRODUCTION, data);
             }
         } else if (view.getId() == R.id.expand_view){
             if (!collapsed) {
                 handleClickListener();
+                HashMap<String, String> data = new HashMap<>();
+                data.put("type", "2");
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                        StartLogClickUtil.INTRODUCTION, data);
             }
         }
     }
