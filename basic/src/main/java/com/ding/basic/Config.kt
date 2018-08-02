@@ -122,7 +122,7 @@ object Config {
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
-                .tag("DingYue").methodCount(0).showThreadInfo(true).build()
+                .tag("DingYue").methodCount(0).showThreadInfo(false).build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
