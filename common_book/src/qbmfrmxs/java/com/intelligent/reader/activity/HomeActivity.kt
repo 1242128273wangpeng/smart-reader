@@ -298,7 +298,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FORM_DISCLAIMER_PAGE, true)
+            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
         }
 
