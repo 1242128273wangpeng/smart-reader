@@ -35,6 +35,7 @@ object RouterUtil {
     /**
      * 构建标准的路由请求
      */
+    @JvmStatic
     fun navigation(activity: Activity, path: String, bundle: Bundle) {
         ARouter.getInstance()
                 .build(path)

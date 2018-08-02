@@ -27,6 +27,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
 import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
 import com.dy.reader.activity.DisclaimerActivity;
 import com.dy.reader.setting.ReaderSettings;
@@ -39,6 +40,7 @@ import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
+import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.SPKeys;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppUtils;
@@ -484,9 +486,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
             case R.id.disclaimer_statement_rl:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
-                val bundle = Bundle()
-                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
-                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true);
+                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
                 break;
             case R.id.rl_history_setting:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
