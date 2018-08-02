@@ -361,7 +361,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             return
         }
 
-        val book: Book? = coverPagePresenter?.book
+        val book: Book? = coverPagePresenter?.coverDetail
 
         if (book != null && book_cover_download != null) {
 //            val isSub = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null

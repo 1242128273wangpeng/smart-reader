@@ -46,7 +46,7 @@ class CoverPagePresenter(private val book_id: String?,
                          private var author: String? = "")
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookCoverViewCallback {
 
-    var book: Book? = null
+    var coverDetail: Book? = null
     private var showMoreLabel: Boolean = false
 
     private var bookCoverUtil: BookCoverUtil? = null
@@ -131,18 +131,18 @@ class CoverPagePresenter(private val book_id: String?,
      * **/
     private fun handleCoverDetailSuccess(book: Book?) {
         if (book != null) {
-            this.book = book
+            this.coverDetail = book
 
             //获得数据后第一时间更新书架信息
             updateBookInformation()
 
-            if (this.book != null && bookCoverUtil != null) {
-                bookCoverUtil?.saveHistory(this.book)
+            if (coverDetail != null && bookCoverUtil != null) {
+                bookCoverUtil?.saveHistory(coverDetail)
             }
         }
 
         coverPageContract.showLoadingSuccess()
-        coverPageContract.showCoverDetail(this.book)
+        coverPageContract.showCoverDetail(coverDetail)
         coverPageContract.changeDownloadButtonStatus()
     }
 
@@ -150,7 +150,7 @@ class CoverPagePresenter(private val book_id: String?,
      * 跳转到目录页
      * **/
     fun startCatalogActivity(clickedCatalog: Boolean) {
-        if (book == null) {
+        if (coverDetail == null) {
             return
         }
 
@@ -159,9 +159,9 @@ class CoverPagePresenter(private val book_id: String?,
         if (clickedCatalog) {
             handleCatalogAction(intent, 0, false)
         } else {
-            if (book?.last_chapter != null) {
-                handleCatalogAction(intent, book?.last_chapter!!.serial_number - 1, true)
-            } else {
+            if(coverDetail?.last_chapter != null){
+                handleCatalogAction(intent, coverDetail?.last_chapter!!.serial_number - 1, true)
+            }else{
                 handleCatalogAction(intent, 0, false)
             }
         }
@@ -171,13 +171,13 @@ class CoverPagePresenter(private val book_id: String?,
      * 处理跳转目录操作
      * **/
     private fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean) {
-        if (book != null && bookCoverUtil != null) {
+        if (coverDetail != null && bookCoverUtil != null) {
 
             val bundle = Bundle()
             bundle.putInt("sequence", sequence)
             bundle.putBoolean("fromCover", true)
             bundle.putBoolean("is_last_chapter", indexLast)
-            bundle.putSerializable("cover", book)
+            bundle.putSerializable("cover", coverDetail)
 
             intent.setClass(activity, CataloguesActivity::class.java)
             intent.putExtras(bundle)
@@ -190,7 +190,7 @@ class CoverPagePresenter(private val book_id: String?,
      * 处理添加、移除书架操作
      * **/
     fun handleBookShelfAction(removeAble: Boolean) {
-        if (book == null || TextUtils.isEmpty(book!!.book_id)) {
+        if (coverDetail == null || TextUtils.isEmpty(coverDetail!!.book_id)) {
             return
         }
 
@@ -209,7 +209,7 @@ class CoverPagePresenter(private val book_id: String?,
 
                 val data = HashMap<String, String>()
                 data["type"] = "2"
-                data["bookid"] = this.book!!.book_id
+                data["bookid"] = coverDetail!!.book_id
 
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
@@ -224,11 +224,11 @@ class CoverPagePresenter(private val book_id: String?,
                 cleanDialog.show()
 
                 Observable.create(ObservableOnSubscribe<Boolean> { emitter ->
-                    CacheManager.remove(this.book!!.book_id)
+                    CacheManager.remove(coverDetail!!.book_id)
 
-                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(this.book!!.book_id)
+                    RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(coverDetail!!.book_id)
 
-                    BaseBookHelper.removeChapterCacheFile(this.book!!)
+                    BaseBookHelper.removeChapterCacheFile(coverDetail!!)
 
                     emitter.onNext(true)
                     emitter.onComplete()
@@ -247,13 +247,13 @@ class CoverPagePresenter(private val book_id: String?,
         } else {
             Logger.v("书籍未订阅！")
 
-            if (this.book == null) {
+            if (coverDetail == null) {
                 CommonUtil.showToastMessage("书籍信息异常，请稍后再试！")
             }
 
-            this.book?.last_update_success_time = System.currentTimeMillis()
+            coverDetail?.last_update_success_time = System.currentTimeMillis()
 
-            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(this.book!!)
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(coverDetail!!)
 
             if (result <= 0) {
                 Logger.v("加入书架失败！")
@@ -263,7 +263,7 @@ class CoverPagePresenter(private val book_id: String?,
 
                 val data = HashMap<String, String>()
                 data["type"] = "1"
-                data["bookid"] = this.book!!.book_id
+                data["bookid"] = coverDetail!!.book_id
 
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
@@ -295,19 +295,19 @@ class CoverPagePresenter(private val book_id: String?,
      * 进入阅读页
      * **/
     private fun intoReadingActivity() {
-        if (book == null || TextUtils.isEmpty(book!!.book_id)) {
+        if (coverDetail == null || TextUtils.isEmpty(coverDetail!!.book_id)) {
             return
         }
 
         val bundle = Bundle()
         val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
-        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book!!.book_id)
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
 
         if (book != null) {
 
-            if (this.book != null && this.book?.last_chapter != null) {
-                book.last_chapter = this.book?.last_chapter
+            if (coverDetail != null && coverDetail?.last_chapter != null) {
+                book.last_chapter = coverDetail?.last_chapter
             }
 
             if (book.sequence != -2) {
@@ -322,7 +322,7 @@ class CoverPagePresenter(private val book_id: String?,
 
             bundle.putSerializable("book", book)
         } else {
-            bundle.putSerializable("book", this.book)
+            bundle.putSerializable("book", coverDetail)
         }
 
         RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
@@ -332,29 +332,29 @@ class CoverPagePresenter(private val book_id: String?,
      * 更新本地书籍信息
      * **/
     private fun updateBookInformation() {
-        if (book != null) {
+        if (coverDetail != null) {
 
-            val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book!!.book_id)
+            val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
 
             if (book != null) {
 
 
                 //从H5页面直接添加书籍时部分字段补全
-                book.status = this.book!!.status   //更新书籍状态
-                book.book_chapter_id = this.book!!.book_chapter_id
-                book.name = this.book!!.name
-                book.desc = this.book!!.desc
-                book.book_type = this.book!!.book_type
-                book.book_id = this.book!!.book_id
-                book.host = this.book!!.host
-                book.author = this.book!!.author
-                book.book_source_id = this.book!!.book_source_id
-                book.img_url = this.book!!.img_url
-                book.label = this.book!!.label
-                book.sub_genre = this.book!!.sub_genre
-                book.chapters_update_index = this.book!!.chapters_update_index
-                book.genre = this.book!!.genre
-                book.score = this.book!!.score
+                book.status = coverDetail!!.status   //更新书籍状态
+                book.book_chapter_id = coverDetail!!.book_chapter_id
+                book.name = coverDetail!!.name
+                book.desc = coverDetail!!.desc
+                book.book_type = coverDetail!!.book_type
+                book.book_id = coverDetail!!.book_id
+                book.host = coverDetail!!.host
+                book.author = coverDetail!!.author
+                book.book_source_id = coverDetail!!.book_source_id
+                book.img_url = coverDetail!!.img_url
+                book.label = coverDetail!!.label
+                book.sub_genre = coverDetail!!.sub_genre
+                book.chapters_update_index = coverDetail!!.chapters_update_index
+                book.genre = coverDetail!!.genre
+                book.score = coverDetail!!.score
 
                 val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
                 AppLog.e("result", result.toString())
@@ -366,26 +366,26 @@ class CoverPagePresenter(private val book_id: String?,
      * 缓存书籍内容
      * **/
     fun handleDownloadAction() {
-        if (book == null || TextUtils.isEmpty(book?.book_id)) {
+        if (coverDetail == null || TextUtils.isEmpty(coverDetail?.book_id)) {
             return
         }
-        val downloadState = CacheManager.getBookStatus(book!!)
+        val downloadState = CacheManager.getBookStatus(coverDetail!!)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
             CommonUtil.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
         }
 
-        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book!!.book_id)
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
 
         if (book != null) {
-            BaseBookHelper.startDownBookTask(activity, this.book, 0)
+            BaseBookHelper.startDownBookTask(activity, coverDetail, 0)
         } else {
-            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(this.book!!)
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(coverDetail!!)
 
             if (result > 0) {
                 coverPageContract.insertBookShelfResult(true)
                 CommonUtil.showToastMessage("成功添加到书架！")
 
-                BaseBookHelper.startDownBookTask(activity, this.book, 0)
+                BaseBookHelper.startDownBookTask(activity, coverDetail, 0)
             }
         }
         coverPageContract.changeDownloadButtonStatus()
@@ -396,7 +396,7 @@ class CoverPagePresenter(private val book_id: String?,
      */
     fun handleDownloadContinueOrStop() {
 
-        book?.let {
+        coverDetail?.let {
             val downloadState = CacheManager.getBookStatus(it)
             if (downloadState == DownloadState.DOWNLOADING) {
                 CacheManager.stop(it.book_id)
@@ -442,7 +442,7 @@ class CoverPagePresenter(private val book_id: String?,
      * **/
     fun loadCoverBook(): Book? {
         return when {
-            book != null -> book
+            coverDetail != null -> coverDetail
             !TextUtils.isEmpty(book_id) -> RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id!!)
             else -> null
         }
