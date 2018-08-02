@@ -398,7 +398,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun changeDownloadButtonStatus() {
-        val book = coverPagePresenter?.loadCoverBook() ?: return
+        val book =coverPagePresenter?.coverDetail ?: return
         val status = CacheManager.getBookStatus(book)
         bookDownloadState = status
 
