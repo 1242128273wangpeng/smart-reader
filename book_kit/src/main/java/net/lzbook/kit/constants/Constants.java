@@ -15,19 +15,19 @@ import java.io.File;
 public class Constants {
 
     /**
-     * 阅读页转码声明
+     * 阅读页转码声明（Intent）
      */
     public static final String FROM_READING_PAGE = "from_reading_page";
     /**
-     * 登录页服务条款
+     * 登录页服务条款（Intent）
      */
     public static final String SERVICE_POLICY = "service_policy";
     /**
-     * 登录页隐秘条款
+     * 登录页隐秘条款（Intent）
      */
     public static final String PRIVACY_POLICY = "privacy_policy";
     /**
-     * 仅在使用协议页面进入可以打开调试模式
+     * 仅在使用协议页面进入可以打开调试模式（Intent）
      */
     public static final String FROM_DISCLAIMER_PAGE = "from_disclaimer_page";
 
