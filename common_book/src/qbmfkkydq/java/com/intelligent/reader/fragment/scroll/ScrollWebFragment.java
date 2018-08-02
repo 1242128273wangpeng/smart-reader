@@ -4,16 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -56,6 +59,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     private LoadingPage loadingpage;
     private Handler handler;
     private ViewGroup mScrollViewGroup;
+    private ViewGroup mViewPagerViewGroup;
 
     @Override
     public void onAttach(Activity activity) {
@@ -86,7 +90,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        if(weakReference != null){
+        if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
         }
         initView();
@@ -126,14 +130,19 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         if (jsInterfaceHelper != null && contentView != null) {
             contentView.addJavascriptInterface(jsInterfaceHelper, "J_search");
+            contentView.addJavascriptInterface(new JsPositionInterface(), "J_banner");
         }
+
 
         if (fragmentCallback != null && jsInterfaceHelper != null) {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
 
-        if (mScrollViewGroup!=null){
+        if (mScrollViewGroup != null) {
             contentView.setScrollViewGroup(mScrollViewGroup);
+        }
+        if (mViewPagerViewGroup != null) {
+            contentView.setViewPagerViewGroup(mViewPagerViewGroup);
         }
     }
 
@@ -298,7 +307,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
     private SuperSwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar head_pb_view;
     private TextView head_text_view;
@@ -377,6 +385,10 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         mScrollViewGroup = scrollViewGroup;
     }
 
+    public void setViewPagerViewGroup(ViewGroup viewpager) {
+        mViewPagerViewGroup = viewpager;
+    }
+
     private void loadData(final String s) {
         if (!TextUtils.isEmpty(s) && contentView != null) {
             contentView.post(new Runnable() {
@@ -392,5 +404,42 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
                 }
             });
         }
+    }
+
+    /**
+     * 获取WebView的滑动距离
+     *
+     * @return
+     */
+    public int getWebScorllDistance() {
+        return contentView.getScrollY();
+    }
+
+    /**
+     * 获取web中banner的位置js回调
+     */
+    public class JsPositionInterface {
+
+        @JavascriptInterface
+        public void getH5ViewPagerInfo(String x, String y, String width, String height) {
+            AppLog.e("jsPosition" + x + " " + y + " " +
+                    width + " " + height + " " + contentView.getScaleX() + "  " + contentView.getScaleY());
+            try {
+                float bWidht = Float.parseFloat(width);
+                float bHeight = Float.parseFloat(height);
+                float scale = contentView.getResources().getDisplayMetrics().widthPixels / (bWidht + 1);
+
+
+                contentView.setBannerRect(new RectF(
+                        Float.parseFloat(x)
+                        , Float.parseFloat(y)
+                        , bWidht * scale,
+                        bHeight * scale));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 }

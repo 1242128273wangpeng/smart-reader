@@ -60,9 +60,10 @@ class RecommendFragment : Fragment() {
 
         }
 
+        view_pager.offscreenPageLimit = 4
+
         ll_search_layout.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
-//            TODO 搜索点击打点
         }
         val adapter = VPAdapter(childFragmentManager)
         view_pager.adapter = adapter
@@ -71,21 +72,25 @@ class RecommendFragment : Fragment() {
         fragmentSelection.arguments = getBundle(//精选
                 RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
         fragmentSelection.setScrollViewGroup(scrollview)
+        fragmentSelection.setViewPagerViewGroup(view_pager)
 
         val fragmentMale = ScrollWebFragment()
         fragmentMale.arguments = getBundle(//男频
                 RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName()))
         fragmentMale.setScrollViewGroup(scrollview)
+        fragmentMale.setViewPagerViewGroup(view_pager)
 
         val fragmentFemale = ScrollWebFragment()
         fragmentFemale.arguments = getBundle(//女频
                 RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName()))
         fragmentFemale.setScrollViewGroup(scrollview)
+        fragmentFemale.setViewPagerViewGroup(view_pager)
 
         val fragmentFinish = ScrollWebFragment()
         fragmentFinish.arguments = getBundle(//完本
                 RequestService.WEB_RECOMMEND_H5_Finish.replace("{packageName}", AppUtils.getPackageName()))
         fragmentFinish.setScrollViewGroup(scrollview)
+        fragmentFinish.setViewPagerViewGroup(view_pager)
 
         fragments.clear()
         fragments.add(fragmentSelection)
@@ -97,12 +102,26 @@ class RecommendFragment : Fragment() {
         titles.add("男频")
         titles.add("女频")
         titles.add("完本")
-
+        scrollview.currentFrag = fragmentSelection
         adapter.setData(fragments, titles)
         tab_layout.setupWithViewPager(view_pager)
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
+
+        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                scrollview.currentFrag = fragments.get(tab?.position!!)
+            }
+
+        })
 
 
     }

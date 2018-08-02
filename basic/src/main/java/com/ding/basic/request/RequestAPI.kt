@@ -5,6 +5,7 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
+import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
@@ -126,7 +127,7 @@ object RequestAPI {
         return requestService.requestSmsLogin(smsBody)
     }
 
-    fun requestLogout():Flowable<BasicResultV4<String>>{
+    fun requestLogout(): Flowable<BasicResultV4<String>> {
         return requestService.logout()
     }
 
@@ -144,12 +145,29 @@ object RequestAPI {
         return requestService.uploadUserGender(genderBody)
     }
 
-    fun uploadUserName(nameBody: RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+    fun uploadUserName(nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return requestService.uploadUserName(nameBody)
     }
 
-    fun bindPhoneNumber(phoneBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
-        return  requestService.bindPhoneNumber(phoneBody)
+    fun requestBookshelf(accountId: String): Flowable<BasicResultV4<List<UserBook>>> {
+        return requestService.requestBookshelf(accountId)
+    }
+
+    fun uploadBookshelf(bookShelfBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return requestService.uploadBookshelf(bookShelfBody)
+    }
+
+    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<Book>>> {
+        return requestService.requestBookMarks(accountId)
+    }
+
+    fun uploadBookMarks(markBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return requestService.uploadBookMark(markBody)
+    }
+
+
+    fun bindPhoneNumber(phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.bindPhoneNumber(phoneBody)
     }
 
 
@@ -165,8 +183,8 @@ object RequestAPI {
         return requestService.requestWXAccessToken(appid, secret, code, authorizationCode)
     }
 
-    fun requestWXUserInfo(token: String,openid: String):Flowable<WXSimpleInfo> {
-        return requestService.requestWXUserInfo(token,openid)
+    fun requestWXUserInfo(token: String, openid: String): Flowable<WXSimpleInfo> {
+        return requestService.requestWXUserInfo(token, openid)
     }
 
 

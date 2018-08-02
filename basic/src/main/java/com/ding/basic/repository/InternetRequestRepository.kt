@@ -7,6 +7,7 @@ import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
@@ -101,7 +102,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
         return RequestAPI.requestSmsLogin(smsRequestBody)
     }
-    fun requestLogout():Flowable<BasicResultV4<String>>{
+
+    fun requestLogout(): Flowable<BasicResultV4<String>> {
         return RequestAPI.requestLogout()
     }
 
@@ -117,13 +119,29 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.uploadUserGender(genderBody)
     }
 
-    fun uploadUserName(nameBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
+    fun uploadUserName(nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
 
         return RequestAPI.uploadUserName(nameBody)
     }
 
-    fun bindPhoneNumber(phoneBody:RequestBody):Flowable<BasicResultV4<LoginRespV4>>{
-        return  RequestAPI.bindPhoneNumber(phoneBody)
+    fun requestBookShelf(accountId: String): Flowable<BasicResultV4<List<UserBook>>> {
+        return RequestAPI.requestBookshelf(accountId)
+    }
+
+    fun uploadBookshelf(bookShelfBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return RequestAPI.uploadBookshelf(bookShelfBody)
+    }
+
+    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<Book>>> {
+        return RequestAPI.requestBookMarks(accountId)
+    }
+
+    fun uploadBookMarks(markBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return RequestAPI.uploadBookMarks(markBody)
+    }
+
+    fun bindPhoneNumber(phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.bindPhoneNumber(phoneBody)
     }
 
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
