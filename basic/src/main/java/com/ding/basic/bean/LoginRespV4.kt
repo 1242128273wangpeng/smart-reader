@@ -55,9 +55,9 @@ class LoginRespV4 {
     @ColumnInfo(name = "active")
     var active: Int = 0
 
+    @SerializedName("is_new")
     @FieldMigration(oldName = "is_new")
     @ColumnInfo(name = "new")//Room 框架中字段不能以is开头
-    @SerializedName("is_new")
     var new: Int = 0
 
     override fun toString(): String {
