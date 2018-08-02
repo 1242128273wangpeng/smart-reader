@@ -44,7 +44,7 @@ ext {
             txtqbmfyd : "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
             qbmfkdxs  : "cc.quanbennovel", //今日多看
             qbmfrmxs  : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
-            qbmfkkydq  : "cn.qbmfrmxs.reader", //全本免费快看阅读器(新壳4)
+            qbmfkkydq  : "cn.qbmfkkydq.reader", //全本免费快看阅读器(新壳4)
             mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读 (新壳2)
     ]
 

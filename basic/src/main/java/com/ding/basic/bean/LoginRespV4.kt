@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import android.support.annotation.NonNull
+import com.ding.basic.database.migration.FieldMigration
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -54,6 +55,7 @@ class LoginRespV4 {
     @ColumnInfo(name = "active")
     var active: Int = 0
 
+    @FieldMigration(oldName = "is_new")
     @ColumnInfo(name = "new")//Room 框架中字段不能以is开头
     @SerializedName("is_new")
     var new: Int = 0

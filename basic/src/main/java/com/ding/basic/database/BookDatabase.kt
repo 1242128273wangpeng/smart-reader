@@ -11,7 +11,7 @@ import com.ding.basic.dao.*
  * Created on 2018/3/13.
  * Created by crazylei.
  */
-@Database(entities = [Book::class, BookFix::class, Bookmark::class, HistoryInfo::class, SearchRecommendBook.DataBean::class,LoginRespV4::class], version = 2)
+@Database(entities = [Book::class, BookFix::class, Bookmark::class, HistoryInfo::class, SearchRecommendBook.DataBean::class,LoginRespV4::class], version = 3)
 abstract class BookDatabase : RoomDatabase() {
 
     abstract fun bookDao(): BookDao
