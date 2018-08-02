@@ -607,8 +607,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "database_name", "qbmfkkydqBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "5dce6ca420"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"//待更换
-            notOverrideResValue getOwner(), "string", "alifeedback_key", "23731453"
-            notOverrideResValue getOwner(), "string", "alifeedback_secret", "9fd4a66d6d0db1af289ff64443fdab6e"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "25007608"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "637ef76b85f41fbf4ef38f950d45a116"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://api.muxinvideo.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://webview.muxinvideo.com"
         }
