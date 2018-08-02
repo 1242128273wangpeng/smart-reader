@@ -21,7 +21,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
@@ -34,7 +33,6 @@ import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkkydq.act_book_cover.*
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
@@ -363,7 +361,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             return
         }
 
-        val book: Book? = coverPagePresenter?.coverDetail
+        val book: Book? = coverPagePresenter?.book
 
         if (book != null && book_cover_download != null) {
 //            val isSub = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null
