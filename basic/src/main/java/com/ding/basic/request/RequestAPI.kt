@@ -5,6 +5,7 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
+import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
@@ -157,12 +158,20 @@ object RequestAPI {
         return requestService.uploadBookshelf(bookShelfBody)
     }
 
-    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<Book>>> {
+    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
         return requestService.requestBookMarks(accountId)
     }
 
     fun uploadBookMarks(markBody: RequestBody): Flowable<BasicResultV4<String>> {
         return requestService.uploadBookMark(markBody)
+    }
+
+    fun requestFootPrint(accountId: String): Flowable<BasicResultV4<List<UserBook>>> {
+        return requestService.requestFootPrintList(accountId)
+    }
+
+    fun uploadFootPrint(footBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return requestService.uploadFootPrint(footBody)
     }
 
 

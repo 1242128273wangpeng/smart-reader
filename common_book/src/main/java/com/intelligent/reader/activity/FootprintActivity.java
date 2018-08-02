@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 
 import com.ding.basic.bean.HistoryInfo;
@@ -23,7 +24,6 @@ import com.intelligent.reader.util.EventBookStore;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -55,7 +55,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         super.onCreate(savedInstanceState);
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.his_into);
         setContentView(R.layout.activity_footprint);
-        currLoginState = !UserManager.INSTANCE.isUserLogin();
+        currLoginState = !UserManagerV4.INSTANCE.isUserLogin();
         mBookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(
                 BaseBookApplication.getGlobalContext());
         initView();
@@ -67,7 +67,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         super.onResume();
 
         mLoginTV.setClickable(true);
-        checkInit(UserManager.INSTANCE.isUserLogin());
+        checkInit(UserManagerV4.INSTANCE.isUserLogin());
     }
 
     private void checkInit(boolean isLogin) {
@@ -317,7 +317,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (RESULT_OK == resultCode) {
-            checkInit(UserManager.INSTANCE.isUserLogin());
+            checkInit(UserManagerV4.INSTANCE.isUserLogin());
         }
     }
 

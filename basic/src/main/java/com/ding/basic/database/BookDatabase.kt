@@ -31,8 +31,7 @@ abstract class BookDatabase : RoomDatabase() {
                 if (bookDatabase?.isOpen != true) {
                     bookDatabase = Room.databaseBuilder(context, BookDatabase::class.java, "novel.db")
                             .allowMainThreadQueries()
-                            .addMigrations(migration1_2)
-                            .addMigrations(migration2_3)
+                            .addMigrations(migration1_2,migration2_3)
                             .build()
                 }
                 return this.bookDatabase!!

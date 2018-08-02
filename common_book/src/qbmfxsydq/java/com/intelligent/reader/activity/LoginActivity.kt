@@ -21,9 +21,12 @@ import iyouqu.theme.statusbar.impl.MIUIHelper
 import kotlinx.android.synthetic.qbmfxsydq.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_QQ
+import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_WX
 import net.lzbook.kit.user.Platform
 import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
 
@@ -63,7 +66,7 @@ class LoginActivity : FrameActivity() {
                             flagLoginEnd = true
                             setLoginResult()
 
-                            UserManagerV4.keepUserBookShelf {
+                            UserManagerV4.keepReadInfo {
                                 uploadLoginSuccessLog("1")
                                 showToastMessage(getString(R.string.login_success))
                                 loadingDialog.dismiss()
@@ -96,7 +99,7 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             flagLoginEnd = true
                             setLoginResult()
-                            UserManagerV4.keepUserBookShelf {
+                            UserManagerV4.keepReadInfo {
                                 uploadLoginSuccessLog("2")
                                 showToastMessage(getString(R.string.login_success))
                                 loadingDialog.dismiss()
@@ -207,14 +210,14 @@ class LoginActivity : FrameActivity() {
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
-//        // 上次登录的方式
-//        val lastLogin = UserManager.sharedPreferences?.getString(UserManager.LOGIN_METHOD, null)
-//        logi("lastLogin: $lastLogin")
-//        if (lastLogin == CHANNEL_WX) {
-//            txt_wx_login.text = getString(R.string.login_weixin_latest_used)
-//        } else if (lastLogin == CHANNEL_QQ) {
-//            txt_qq_login.text = getString(R.string.login_qq_latest_used)
-//        }
+        // 上次登录的方式
+        val lastLogin = UserManagerV4.sharedPreferences?.getString(UserManagerV4.LOGIN_METHOD, null)
+        logi("lastLogin: $lastLogin")
+        if (lastLogin == CHANNEL_WX) {
+            txt_wx_login.text = getString(R.string.login_weixin_latest_used)
+        } else if (lastLogin == CHANNEL_QQ) {
+            txt_qq_login.text = getString(R.string.login_qq_latest_used)
+        }
     }
 
     private fun smsLogin() {
@@ -231,16 +234,19 @@ class LoginActivity : FrameActivity() {
         UserManagerV4.requestSmsLogin(body) { success, result ->
 
             if (success) {
-                uploadLoginSuccessLog("3")
-                showToastMessage(getString(R.string.login_success))
-                loadingDialog.dismiss()
-                data["status"] = "1"
-                StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
-                        StartLogClickUtil.LOGIN, data)
                 setLoginResult()
+                UserManagerV4.keepReadInfo{
+                    uploadLoginSuccessLog("3")
+                    showToastMessage(getString(R.string.login_success))
+                    loadingDialog.dismiss()
+                    data["status"] = "3"
+                    StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
+                            StartLogClickUtil.LOGIN, data)
+                    finish()
+                }
             } else {
                 uploadLoginErrorLog("3", result?.message.toString())
-                data["status"] = "2"
+                data["status"] = "3"
                 data["reason"] = result?.message.toString()
                 StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
                         StartLogClickUtil.LOGIN, data)
@@ -255,35 +261,6 @@ class LoginActivity : FrameActivity() {
         }
 
 
-//        val data = HashMap<String, String>()
-//        UserManager.smsLogin(number, code, {
-//            onSuccess {
-//                UserManager.keepReadInfo { state, msg ->
-//                    uploadLoginSuccessLog("3")
-//                    showToastMessage(getString(R.string.login_success))
-//                    loadingDialog.dismiss()
-//                    data["status"] = "1"
-//                    StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
-//                            StartLogClickUtil.LOGIN, data)
-//                    finish()
-//                }
-//            }
-//            onFailed {
-//                uploadLoginErrorLog("3", it.message.toString())
-//
-//                data["status"] = "2"
-//                data["reason"] = it.message.toString()
-//                StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
-//                        StartLogClickUtil.LOGIN, data)
-//
-//                loadingDialog.dismiss()
-//                if (it is LoginError) {
-//                    showToastMessage(it.message.toString())
-//                } else {
-//                    showToastMessage("网络不给力哦，请稍后再试")
-//                }
-//            }
-//        })
     }
 
     private fun EditText.showKeyboard() {
