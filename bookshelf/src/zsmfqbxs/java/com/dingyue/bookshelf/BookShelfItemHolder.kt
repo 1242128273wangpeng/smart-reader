@@ -37,7 +37,11 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 txt_book_unread_chapters.visibility = View.GONE
             } else {
                 txt_book_unread_chapters.visibility = View.VISIBLE
-                txt_book_unread_chapters.text = (book.sequence + 2).toString() + "/" + book.last_chapter!!.serial_number + "章"
+                if(book.sequence >= 0){
+                    txt_book_unread_chapters.text = (book.sequence + 1).toString() + "/" + book.last_chapter!!.serial_number + "章"
+                }else{
+                    txt_book_unread_chapters.text = "0" + "/" + book.last_chapter!!.serial_number + "章"
+                }
             }
         }
 

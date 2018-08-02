@@ -27,7 +27,7 @@ class DownloadManagerMenuPopup(context: Context) {
 
     private val settingItemsHelper = SettingItemsHelper.getSettingHelper(context)
 
-    private val selectTextColor = Color.parseColor("#1FB7C3")
+    private val selectTextColor = Color.parseColor("#212832")
     private val selectedTextColor = Color.parseColor("#1FB7C3")
 
     init {

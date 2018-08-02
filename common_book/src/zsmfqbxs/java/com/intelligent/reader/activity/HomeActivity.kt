@@ -630,10 +630,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     override fun changeHomeNavigationState(state: Boolean) {
         if (state) {
-            content_tab_selection.visibility = View.GONE
+            content_tab_selection?.visibility = View.GONE
+            view_devider?.visibility = View.GONE
             AnimationHelper.smoothScrollTo(view_pager, 0)
         } else {
-            content_tab_selection.visibility = View.VISIBLE
+            content_tab_selection?.visibility = View.VISIBLE
+            view_devider?.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
         }
     }
