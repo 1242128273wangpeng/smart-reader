@@ -185,7 +185,7 @@ interface RequestService {
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
 
-        const val PUSH_TAG = "cn.dingyueWeb.reader/getUserTag"
+        const val PUSH_TAG = "/v4/cn.dingyueWeb.reader/getUserTag"
 
         /**
          * 搜索无结果页  点击订阅  searchEmpty/userSubscription
