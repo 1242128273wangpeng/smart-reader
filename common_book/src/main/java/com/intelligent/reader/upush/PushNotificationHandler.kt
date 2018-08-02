@@ -34,9 +34,21 @@ class PushNotificationHandler : UmengNotificationClickHandler() {
 
     override fun openActivity(context: Context?, msg: UMessage?) {
         loge("msg.extra: ${msg?.extra}")
+
+        val data = mapOf(Pair("type", "1"))
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
+                StartLogClickUtil.PUSHCLICK, data)
+
         if (msg?.activity?.trim()?.isNotEmpty() == true) {
             context?.openPushActivity(msg)
         }
     }
 
+    override fun openUrl(context: Context?, msg: UMessage?) {
+        super.openUrl(context, msg)
+
+        val data = mapOf(Pair("type", "1"))
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
+                StartLogClickUtil.PUSHCLICK, data)
+    }
 }
