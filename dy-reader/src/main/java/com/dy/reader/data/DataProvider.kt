@@ -27,6 +27,7 @@ import io.reactivex.functions.Function
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
 import org.greenrobot.eventbus.EventBus
