@@ -252,14 +252,14 @@ interface RequestService {
 
     /************************************* 用户相关 *************************************/
 
-    @GET(LOGIN_ACTION)
-    fun requestLoginAction(@QueryMap(encoded = false) parameters: Map<String, String>): Flowable<LoginResp>
+    @GET
+    fun requestLoginAction(@Url url: String, @QueryMap(encoded = false) parameters: Map<String, String>): Flowable<LoginResp>
 
-    @GET(LOGOUT_ACTION)
-    fun requestLogoutAction(@QueryMap(encoded = false) parameters: Map<String, String>): Flowable<JsonObject>
+    @GET
+    fun requestLogoutAction(@Url url: String, @QueryMap(encoded = false) parameters: Map<String, String>): Flowable<JsonObject>
 
-    @GET(REFRESH_TOKEN)
-    fun requestRefreshToken(@QueryMap(encoded = false) parameters: Map<String, String>): Flowable<RefreshResp>
+    @GET
+    fun requestRefreshToken(@Url url: String, @QueryMap(encoded = false) parameters: Map<String, String>): Flowable<RefreshResp>
 
     @GET(PATH_FETCH_SMS_CODE_V4)// 获取短信验证码
     fun requestSmsCode(@Query("phoneNumber") mobileNumber: String): Flowable<BasicResultV4<String>>
