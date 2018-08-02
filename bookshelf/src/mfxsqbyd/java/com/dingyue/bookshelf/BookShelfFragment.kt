@@ -250,6 +250,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     override fun onDestroy() {
         super.onDestroy()
+        bookShelfPresenter.iBookList.clear()
         bookShelfPresenter.clear()
     }
 
@@ -397,8 +398,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        updateService.setBookUpdateListener(requireActivity() as CheckNovelUpdateService.OnBookUpdateListener)
-        bookShelfPresenter.addUpdateTask(this)
+        if (!requireActivity().isFinishing) {
+            updateService.setBookUpdateListener(requireActivity() as CheckNovelUpdateService.OnBookUpdateListener)
+            bookShelfPresenter.addUpdateTask(this)
+        }
     }
 
     override fun onBookListQuery(books: List<Book>?) {
