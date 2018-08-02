@@ -32,6 +32,7 @@ abstract class BookDatabase : RoomDatabase() {
                     bookDatabase = Room.databaseBuilder(context, BookDatabase::class.java, "novel.db")
                             .allowMainThreadQueries()
                             .addMigrations(migration1_2)
+                            .addMigrations(migration2_3)
                             .build()
                 }
                 return this.bookDatabase!!
@@ -42,6 +43,12 @@ abstract class BookDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE `book` ADD COLUMN `uv` INTEGER NOT NULL DEFAULT 0")
                 database.execSQL("ALTER TABLE `book` ADD COLUMN `score` REAL NOT NULL DEFAULT 0")
+            }
+        }
+
+        private val migration2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+
             }
         }
     }

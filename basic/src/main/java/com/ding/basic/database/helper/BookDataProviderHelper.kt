@@ -82,11 +82,18 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                     }
 
                     try {
+                        migrateTable(oldDB, "user", providerHelper.userDao, LoginRespV4::class.java)
+                        it.onNext(95)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    try {
                         migrateTable(oldDB, "book_mark", providerHelper.bookmarkDao, Bookmark::class.java)
                         it.onNext(100)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+
 
                     //context.deleteDatabase(dbName)
 
@@ -286,7 +293,7 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
         userDao.insertOrUpdate(user)
     }
 
-    fun queryLoginUser() :LoginRespV4{
+    fun queryLoginUser(): LoginRespV4 {
         return userDao.queryUserInfo()
     }
 
