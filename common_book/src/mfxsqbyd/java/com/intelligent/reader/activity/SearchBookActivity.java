@@ -295,8 +295,8 @@ public class SearchBookActivity extends FrameActivity implements View.OnClickLis
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
 
-//            mSearchHelper.startLoadData(isAuthor);
-            mSearchHelper.startLoadData();
+            mSearchHelper.startLoadData(isAuthor);
+//            mSearchHelper.startLoadData();
 
         } else {
             showSearchViews();

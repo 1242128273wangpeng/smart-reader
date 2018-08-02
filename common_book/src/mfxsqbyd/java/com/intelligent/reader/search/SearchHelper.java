@@ -191,8 +191,7 @@ public class SearchHelper {
                 filterWord = filter_word;
                 sortType = sort_type;
 
-//                startLoadData(0);
-                startLoadData();
+                startLoadData(0);
 
                 if (mJsCallSearchCall != null) {
                     mJsCallSearchCall.onJsSearch();
@@ -269,8 +268,7 @@ public class SearchHelper {
                 word = searchWord;
                 searchType = search_type;
 
-//                startLoadData(0);
-                startLoadData();
+                startLoadData(0);
 
                 if (jsNoneResultSearchCall != null) {
                     jsNoneResultSearchCall.onNoneResultSearch(searchWord);
@@ -424,39 +422,6 @@ public class SearchHelper {
         return book;
     }
 
-    public void startLoadData() {
-        String searchWord;
-        if (word != null) {
-            searchWord = word;
-            String channelID = AppUtils.getChannelId();
-            if (channelID.equals("blp1298_10882_001") || channelID.equals("blp1298_10883_001")
-                    || channelID.equals("blp1298_10699_001")) {
-                if (Constants.isBaiduExamine
-                        && Constants.versionCode == AppUtils.getVersionCode()) {
-                    searchWord = getReplaceWord();
-                    AppLog.e(TAG, searchWord);
-                }
-            }
-
-            Map<String, String> params = new HashMap<>();
-
-            params.put("word", searchWord);
-            params.put("search_type", searchType);
-            params.put("filter_type", filterType);
-            params.put("filter_word", filterWord);
-            params.put("sort_type", sortType);
-//        params.put("wordType", searchType);
-            AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType");
-            mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params);
-
-        }
-
-        if (mStartLoadCall != null) {
-            mStartLoadCall.onStartLoad(mUrl);
-        }
-
-
-    }
 
     public void startLoadData(int isAuthor) {
         String searchWord;
@@ -502,14 +467,9 @@ public class SearchHelper {
                 params.put("sort_type", sortType);
                 params.put("wordType", searchType);
                 params.put("searchEmpty", "1");
-                AppLog.e("kk",
-                        searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
-                                + "===" + sortType);
                 mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
             }
-
         }
-
         if (mStartLoadCall != null) {
             mStartLoadCall.onStartLoad(mUrl);
         }
