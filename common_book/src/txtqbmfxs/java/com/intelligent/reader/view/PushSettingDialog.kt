@@ -25,7 +25,7 @@ class PushSettingDialog(val activity: Activity) : LifecycleObserver {
 
     init {
 
-        dialog.setCanceledOnTouchOutside(true)
+        dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(true)
 
         dialog.img_close.setOnClickListener {
