@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="#F2212020"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/cache_method"
+        android:textColor="#65FFFFFF"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/reader_cache_all"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/reader_cache_item_sel"
+        android:gravity="center"
+        android:text="@string/cache_all_chapter"
+        android:textColor="@color/reader_cache_item_txt_sel"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/reader_cache_current_start"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/reader_cache_item_sel"
+        android:gravity="center"
+        android:text="@string/cache_start_current"
+        android:textColor="@color/reader_cache_item_txt_sel"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/reader_cache_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/reader_cache_item_sel"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/reader_cache_item_txt_sel"
+        android:textSize="16sp"/>
+</LinearLayout>

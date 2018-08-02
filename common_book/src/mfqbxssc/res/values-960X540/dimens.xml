@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="search_hot_distance">9dp</dimen>
+    <dimen name="search_recommend_top">10dp</dimen>
+
+    <dimen name="book_height">120dp</dimen>
+    <dimen name="dimen_view_height_120">120dp</dimen>
+    <dimen name="dimen_width_38">65px</dimen>
+    <dimen name="dimen_expandText_comment_width">30px</dimen>
+
+
+</resources>

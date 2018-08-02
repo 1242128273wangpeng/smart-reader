@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_ad_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dimen_margin_15"
+    android:layout_marginRight="@dimen/dimen_margin_19"
+    android:layout_marginTop="@dimen/dimen_margin_10"
+    android:background="@drawable/bookshef_header_ad_bg">
+
+    <RelativeLayout
+        android:id="@+id/item_ad_image_rl"
+        android:layout_width="@dimen/dimen_view_width_64"
+        android:layout_height="@dimen/dimen_view_height_64"
+        android:layout_marginTop="@dimen/dimen_margin_10"
+        android:layout_marginLeft="@dimen/dimen_margin_10"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"></RelativeLayout>
+
+    <ImageView
+        android:id="@+id/item_ad_image"
+        android:layout_width="@dimen/dimen_view_width_64"
+        android:layout_height="@dimen/dimen_view_height_64"
+        android:layout_marginTop="@dimen/dimen_margin_10"
+        android:layout_marginLeft="@dimen/dimen_margin_10"
+        android:layout_marginRight="@dimen/dimen_margin_10"
+        android:contentDescription="@string/app_name"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/color_white"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/item_ad_image_rl"
+        android:layout_toRightOf="@id/item_ad_image_rl"
+        android:layout_marginLeft="@dimen/dimen_margin_15"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout">
+        <ImageView
+            android:layout_marginTop="@dimen/dimen_margin_3"
+            android:layout_alignParentRight="true"
+            android:id="@+id/item_ad_right_down"
+            android:layout_marginRight="@dimen/dimen_margin_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <TextView
+            android:id="@+id/item_ad_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/item_ad_image_rl"
+            android:layout_toRightOf="@id/item_ad_image_rl"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="@dimen/dimen_margin_12"
+            android:layout_marginTop="2dip"
+            android:layout_marginBottom="8dip"
+            android:text="@string/app_name"
+            android:textColor="@color/color_gray_b3b3b3"
+            android:textSize="@dimen/dimen_text_10"/>
+    <TextView
+        android:id="@+id/item_ad_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/item_ad_desc"
+        android:layout_toRightOf="@id/item_ad_image_rl"
+        android:layout_weight="3"
+        android:paddingRight="40dip"
+        android:layout_marginBottom="8dip"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/app_name"
+
+        android:textColor="@color/color_black_323232"
+        android:textSize="@dimen/dimen_text_14" />
+
+    <View
+            android:id="@+id/divider_line"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_view_height_0.5"
+            android:layout_marginTop="@dimen/dimen_margin_10"
+            android:layout_marginLeft="@dimen/dimen_margin_2"
+            android:layout_marginRight="@dimen/dimen_margin_2"
+            android:layout_below="@id/item_ad_image"
+            android:background="@color/color_gray_e8e8e8"/>
+</RelativeLayout>
