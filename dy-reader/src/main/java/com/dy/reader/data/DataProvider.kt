@@ -71,12 +71,12 @@ object DataProvider {
                     chapterCache.removeOther(position.group)
 
                     val forceReload = event.type == ReaderSettings.ConfigType.FONT_REFRESH
-                    if (forceReload){
+                    if (forceReload) {
                         chapterCache.clear()
                     }
 
                     if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
-                        if(forceReload || Math.abs(position.group - ReaderStatus.position.group) > 1 || chapterCache.get(position.group) == null){
+                        if (forceReload || Math.abs(position.group - ReaderStatus.position.group) > 1 || chapterCache.get(position.group) == null) {
                             EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
                         }
 
@@ -89,8 +89,8 @@ object DataProvider {
                     loadGroup(position.group, forceReload) {
                         if (it) {
 
-                            loadGroup(Math.max(position.group - 1, 0), forceReload){
-                                if(it){
+                            loadGroup(Math.max(position.group - 1, 0), forceReload) {
+                                if (it) {
                                     groupListeners.forEach {
                                         if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
                                             it.onGroupRefreshed(position) {
@@ -102,7 +102,7 @@ object DataProvider {
                                             }
                                         }
                                     }
-                                }else{
+                                } else {
                                     EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                         onNeedRefresh(event)
                                     })
@@ -116,7 +116,7 @@ object DataProvider {
                             })
                         }
                     }
-                }else{
+                } else {
                     EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                 }
             }
@@ -415,7 +415,7 @@ object DataProvider {
 
     private fun loadGroup(group: Int, force: Boolean = true, callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
-            if (group < 0  || (!force && chapterCache.get(group) != null)) {
+            if (group < 0 || (!force && chapterCache.get(group) != null)) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
                 callback?.invoke(true)
                 return
@@ -490,11 +490,10 @@ object DataProvider {
 
     fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
         val novelChapter = chapterCache.get(ReaderStatus.position.group)
-        if (novelChapter != null) {
-            val mNovelPageBean = novelChapter.separateList
-            return mNovelPageBean[ReaderStatus.position.index].lines
+        return if (novelChapter != null && ReaderStatus.position.index < novelChapter.separateList.size) {
+            novelChapter.separateList[ReaderStatus.position.index].lines
         } else {
-            return null
+            null
         }
     }
 }
