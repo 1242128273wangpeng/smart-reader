@@ -500,24 +500,39 @@ public class AppUtils {
      * 获取无线局域网 WLAN MAC Address
      */
     public static String getWLanMacAddress(Context context) {
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wm.getConnectionInfo().getMacAddress();
+        try {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            return wm.getConnectionInfo().getMacAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
      * 获取MAC地址
      */
     public static String getMacAddress(Context context) {
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wm.getConnectionInfo().getMacAddress();
+        try {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            return wm.getConnectionInfo().getMacAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
      * 获取在WiFi环境下，获取当前连接路由器的Mac地址
      */
     public static String getWifiMacAddress(Context context) {
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wm.getConnectionInfo().getBSSID();
+        try {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            return wm.getConnectionInfo().getBSSID();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 
