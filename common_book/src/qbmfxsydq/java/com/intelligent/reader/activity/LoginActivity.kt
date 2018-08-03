@@ -9,6 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -30,6 +31,7 @@ import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
 
+@Route(path = RouterConfig.LOGIN_ACTIVITY)
 class LoginActivity : FrameActivity() {
 
     private var flagLoginEnd = true

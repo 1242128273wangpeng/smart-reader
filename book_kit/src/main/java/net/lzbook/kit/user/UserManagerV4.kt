@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.util.Base64
 import com.alibaba.fastjson.JSON
 import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
@@ -36,6 +37,7 @@ import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -695,6 +697,17 @@ object UserManagerV4 : IWXAPIEventHandler {
         }
 
 
+    }
+
+
+    fun Bitmap.toBase64(): String {
+        val bStream = ByteArrayOutputStream()
+        this.compress(Bitmap.CompressFormat.JPEG, 50, bStream)
+        bStream.flush()
+        bStream.close()
+        val bytes = bStream.toByteArray()
+
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
     }
 
 

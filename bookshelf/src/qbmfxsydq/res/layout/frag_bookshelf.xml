@@ -150,24 +150,48 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/module_name"
-            android:src="@drawable/bookshelf_empty_bg" />
+            android:layout_marginTop="90dp"
+            android:src="@drawable/bookshelf_empty_icon"/>
 
         <TextView
+            android:id="@+id/bookshelf_empty_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="37dp"
-            android:text="@string/bookshelf_empty_prompt"
-            android:textColor="#282828"
-            android:textSize="16sp" />
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="#991D1C1C"
+            android:text="@string/mian_bookshelf_empty_hint"
+            android:textSize="@dimen/dimen_text_14"/>
 
-        <ImageView
-            android:id="@+id/img_empty_find"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/module_name"
-            android:src="@drawable/bookshelf_empty_btn_icon" />
+            android:orientation="horizontal"
+            android:layout_marginTop="59dp"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_log_in"
+                android:text="登录"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/blue_round_btn_bg"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:layout_marginRight="35dp"
+                android:layout_width="120dp"
+                android:layout_height="36dp"/>
+
+            <Button
+                android:id="@+id/btn_go_bookstore"
+                android:text="去书城"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/white_round_btn_bg"
+                android:textSize="14sp"
+                android:textColor="@color/accent"
+                android:layout_width="120dp"
+                android:layout_height="36dp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

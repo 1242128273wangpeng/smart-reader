@@ -21,6 +21,7 @@ import com.dy.media.MediaControl
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.qbmfxsydq.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.qbmfxsydq.frag_bookshelf.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.constants.Constants
@@ -30,6 +31,7 @@ import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
+import java.util.HashMap
 
 /**
  * 书架页Fragment
@@ -145,9 +147,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 refreshHeader.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
             }
         })
-        img_empty_find.setOnClickListener {
+        btn_go_bookstore.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
+        }
+        btn_log_in.setOnClickListener{
+            val data = HashMap<String, String>()
+            data.put("type", "1")
+            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LOGIN, data)
+            RouterUtil.navigation(requireActivity(), RouterConfig.LOGIN_ACTIVITY)
         }
 
         img_head_setting.setOnClickListener {

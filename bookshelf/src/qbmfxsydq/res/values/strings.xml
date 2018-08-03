@@ -4,4 +4,5 @@
 
     <string name="bookshelf_delete_dialog_loading_prompt">正在清理中...</string>
     <string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>
+    <string name="mian_bookshelf_empty_hint">当前书架内无书籍\n请登录或前往书城阅读</string>
 </resources>
