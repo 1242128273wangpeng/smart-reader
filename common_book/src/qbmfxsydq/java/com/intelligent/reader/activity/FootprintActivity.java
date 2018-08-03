@@ -9,10 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.user.UserManagerV4;
-import net.lzbook.kit.utils.AbsRecyclerViewHolder;
-
 import com.ding.basic.bean.HistoryInfo;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
@@ -21,9 +17,12 @@ import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
 import com.intelligent.reader.util.EventBookStore;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
+import net.lzbook.kit.user.UserManagerV4;
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
 

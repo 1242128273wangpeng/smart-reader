@@ -932,7 +932,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     /**
      * 获取上传书架Flowable
      */
-    private fun getUploadBookShelfFlowable(accountId: String): Flowable<BasicResultV4<String>> {
+     fun getUploadBookShelfFlowable(accountId: String): Flowable<BasicResultV4<String>> {
         val bookList = queryAllBook()
 
         val bookReqBody = getBookReqBody(accountId, bookList)
@@ -1085,7 +1085,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     /**
      * 获取上传书签Flowable
      */
-    private fun getUploadBookMarkFlowable(accountId: String): Flowable<BasicResultV4<String>> {
+     fun getUploadBookMarkFlowable(accountId: String): Flowable<BasicResultV4<String>> {
         val bookList = queryAllBook()
 
         val bookMarkBody = getBookMarkBody(accountId, bookList)
@@ -1205,7 +1205,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     /**
      *  获取上传本地足迹Flowable
      */
-    private fun getUploadBookBrowseFlowable(userId: String): Flowable<BasicResultV4<String>> {
+     fun getUploadBookBrowseFlowable(userId: String): Flowable<BasicResultV4<String>> {
         var mBookDataHelper: BookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
         val upLoadData = mBookDataHelper.queryHistoryPaging(0, 200)
         val bookInfoBodyList = ArrayList<BookBrowseReqBody.BookInfoBody>()

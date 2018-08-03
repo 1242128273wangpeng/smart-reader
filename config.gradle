@@ -30,7 +30,6 @@ ext {
     // 改完记得重新编译项目
     applicationId = "cn.qbmfkkydq.reader"
     defaultPublishConfig = 'qbmfkkydq' + 'Debug'
-
     def appPackageIDConfig = [
             kdzsydq   : "cn.txtzsydsq.reader",
             qbzsydq   : "cn.qbzsydsq.reader",

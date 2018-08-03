@@ -13,6 +13,7 @@ import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
@@ -22,6 +23,7 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
+import com.ding.basic.bean.UserEvent
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -43,10 +45,13 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
+import swipeback.ActivityLifecycleHelper
 import java.io.File
 import java.util.*
 
@@ -349,6 +354,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         intent.setDataAndType(Uri.fromFile(File(filePath)), type)
         startActivity(intent)
     }
+
+    fun onEvent(event: UserEvent) {
+        AppLog.e("onEvent", "event.getMsg " + event.getMsg())
+        if (event.getMsg().equals(UserEvent.LOGIN_OUT_DATE)) {
+            UserManagerV4.logout()
+            var instance = ActivityLifecycleHelper.getLatestActivity()
+            if (instance == null) {
+                instance = this
+            }
+            startActivity(Intent(instance, LoginActivity::class.java))
+        } else if (event.getMsg().equals(UserEvent.LOGIN_INVALID)) {
+            UserManagerV4.logout()
+            LocalBroadcastManager.getInstance(this)
+                    .sendBroadcast(Intent(ActionConstants.ACTION_USER_LOGIN_INVALID))
+        }
+    }
+
 
     /***
      * 两次返回键退出应用

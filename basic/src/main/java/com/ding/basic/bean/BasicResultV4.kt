@@ -1,6 +1,7 @@
 package com.ding.basic.bean
 
 import com.ding.basic.request.ResultCode
+import org.greenrobot.eventbus.EventBus
 import java.io.Serializable
 
 class BasicResultV4<T> : Serializable {
@@ -15,6 +16,12 @@ class BasicResultV4<T> : Serializable {
         return if (respCode == ResultCode.RESULT_SUCCESS && data != null) {
             true
         } else {
+            if (respCode.toString()=="40001"){
+                EventBus.getDefault().postSticky(UserEvent(UserEvent.LOGIN_INVALID))
+            }else if (respCode.toString()=="40003"){
+                EventBus.getDefault().postSticky(UserEvent(UserEvent.LOGIN_OUT_DATE))
+            }
+
             message = parseErrorMsg(respCode.toString())
             false
         }

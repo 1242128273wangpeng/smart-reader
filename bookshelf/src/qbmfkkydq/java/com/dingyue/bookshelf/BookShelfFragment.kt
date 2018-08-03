@@ -25,6 +25,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.qbmfkkydq.frag_bookshelf.*
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_refresh_header.view.*
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
@@ -184,13 +185,20 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //        设置默认排序方式为添加时间
+        Constants.book_list_sort_type = 2
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.frag_bookshelf, container, false)
     }
 
     var titleHeight = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        headerViewHeight=AppUtils.dip2px(view.context,144f)
+        headerViewHeight = AppUtils.dip2px(view.context, 144f)
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
@@ -357,7 +365,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             hfRecyclerControl.setAdapter(recl_content, bookShelfAdapter)
             hfRecyclerControl.addHeaderView(headerView)
             headerView.post {
-                if (headerView.height!=0){
+                if (headerView.height != 0) {
                     headerViewHeight = headerView.height
                 }
                 var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight

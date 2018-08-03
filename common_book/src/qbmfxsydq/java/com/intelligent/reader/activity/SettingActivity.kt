@@ -238,7 +238,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
 
     private fun showUserInfo() {
-        val user=UserManagerV4.user
+        val user = UserManagerV4.user
         if (btn_login != null && user != null) {
             btn_login!!.setVisibility(View.GONE)
             txt_nickname!!.setVisibility(View.VISIBLE)
@@ -462,7 +462,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.img_head, R.id.btn_login -> {
-                if (UserManagerV4.isUserLogin ){
+                if (UserManagerV4.isUserLogin) {
                     val userProfileIntent = Intent(this, UserProfileActivity::class.java)
                     startActivity(userProfileIntent)
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
@@ -513,9 +513,11 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         cancel.setOnClickListener {
             dismissDialog()
             if (UserManagerV4.isUserLogin) {
-                UserManagerV4.logout(null)
+                UserManagerV4.logout {
+                    hideUserInfo()
+                }
 
-                hideUserInfo()
+
             }
         }
         myDialog!!.show()

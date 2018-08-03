@@ -1,6 +1,7 @@
 package net.lzbook.kit.data.user
 
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.HistoryInfo
 
 /**
@@ -53,9 +54,15 @@ class UserBook {
         book.sequence = sequence
         book.last_read_time = readTime
         book.chapter_count = chapterCount
-        book.last_chapter?.name = lastChapter!!.name
+
+        var chapter=Chapter()
+        chapter.name= lastChapter?.name
+        chapter.update_time= lastChapter!!.update_time
+        chapter.url=lastChapter!!.url
+        book.last_chapter=chapter
+
         book.last_check_update_time = lastChapter!!.update_time
-        book.last_chapter?.url = lastChapter!!.url
+
         return book
 
     }

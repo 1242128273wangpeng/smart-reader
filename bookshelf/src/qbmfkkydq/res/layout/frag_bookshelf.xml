@@ -93,6 +93,7 @@
             android:visibility="gone">
 
             <TextView
+                android:layout_marginLeft="16dp"
                 android:id="@+id/txt_editor_select_all"
                 style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
