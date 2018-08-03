@@ -603,7 +603,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                     searchType = "1";
                     isAuthor = 0;
                     isFocus = false;
-                } else if (searchCommonBean.getWordtype().equals("authorType")) {
+                } else if (searchCommonBean.getWordtype().equals("author")) {
                     searchType = "2";
                     isAuthor = searchCommonBean.getIsAuthor();
                     isBackSearch = false;

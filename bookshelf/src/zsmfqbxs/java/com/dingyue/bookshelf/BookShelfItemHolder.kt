@@ -13,6 +13,9 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import kotlinx.android.synthetic.zsmfqbxs.item_bookshelf_book.view.*
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.repair_books.RepairHelp
 
 /**
  * Desc 书架Item
@@ -45,19 +48,29 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             }
         }
 
+        /**
+         * 书架检测到书籍有修复会在该书籍封面显示更新角标，
+         * 并且章节信息变更为：章节已修复至最新（列表书架显示，九宫格书架只显示更新角标）
+         * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
+         */
+        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
+            img_book_status_update.visibility = View.VISIBLE
+        }else{
+            when {
+                book.update_status == 1 -> { //更新
+                    img_book_status_update.visibility = View.VISIBLE
+                }
+                book.status == "FINISH" -> { //完结
+                    img_book_status.visibility = View.VISIBLE
+                    img_book_status.setImageResource(R.drawable.bookshelf_item_book_status_finish_icon)
+                }
+                else -> {
+                    img_book_status.visibility = View.GONE
+                    img_book_status_update.visibility = View.GONE
+                }
+            }
 
-        when {
-            book.update_status == 1 -> { //更新
-                img_book_status_update.visibility = View.VISIBLE
-            }
-            book.status == "FINISH" -> { //完结
-                img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_status_finish_icon)
-            }
-            else -> {
-                img_book_status.visibility = View.GONE
-                img_book_status_update.visibility = View.GONE
-            }
         }
 
         if (txt_book_last_update_time != null && book.last_chapter != null) {
