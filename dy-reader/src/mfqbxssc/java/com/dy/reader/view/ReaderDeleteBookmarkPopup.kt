@@ -5,7 +5,7 @@ import android.view.WindowManager
 import com.dingyue.contract.BasePopup
 import com.dy.reader.R
 
-import kotlinx.android.synthetic.qbzsydq.popup_catalog_mark_delete.view.*
+import kotlinx.android.synthetic.mfqbxssc.popup_catalog_mark_delete.view.*
 
 /**
  * Desc 请描述这个文件

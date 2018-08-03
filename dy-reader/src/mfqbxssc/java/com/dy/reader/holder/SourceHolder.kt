@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.ding.basic.bean.Source
 import com.dy.reader.R
 import com.dy.reader.listener.SourceClickListener
-import kotlinx.android.synthetic.qbzsydq.item_book_source.view.*
+import kotlinx.android.synthetic.mfqbxssc.item_book_source.view.*
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import java.text.MessageFormat

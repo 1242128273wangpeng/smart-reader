@@ -161,9 +161,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             BookShelfLogger.uploadBookShelfToBookCity()
         }
         img_head_setting!!.setOnClickListener(View.OnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@OnClickListener
-            }
             BookShelfLogger.uploadBookShelfPersonal()
             RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
             EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_setting))
