@@ -16,6 +16,7 @@ import net.lzbook.kit.appender_loghub.util.FormatUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -419,6 +420,23 @@ public class StartLogClickUtil {
         }
     }
 
+    private static void upLoadUserInfo(ServerLog log){
+       if (BaseBookApplication.getGlobalContext().getPackageName().equals("cc.quanben.novel")){//登录二期
+
+           if (UserManagerV4.INSTANCE.isUserLogin()) {
+               log.putContent("uid", UserManagerV4.INSTANCE.getUser().getAccount_id());//用户中心唯一标识
+           } else {
+               log.putContent("uid", "");
+           }
+       }else{
+           if (UserManager.INSTANCE.isUserLogin()) {
+               log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+           } else {
+               log.putContent("uid", "");
+           }
+       }
+    }
+
 
     @NonNull
     private static ServerLog getCommonLog() {
@@ -427,11 +445,7 @@ public class StartLogClickUtil {
         log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
         log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
 
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
 
         log.putContent("os", "android");//手机操作系统
         log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
@@ -456,11 +470,7 @@ public class StartLogClickUtil {
         log.putContent("code", identify);//点击事件唯一标识
         log.putContent("page_code", pageCode);
 
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
 
         log.putContent("os", "android");//手机操作系统
         log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
@@ -487,11 +497,7 @@ public class StartLogClickUtil {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_APPSTORE);
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
         log.putContent("apps", applist);
         log.putContent("time", System.currentTimeMillis() + "");
         AppLog.e("log", log.getContent().toString());
@@ -534,11 +540,7 @@ public class StartLogClickUtil {
             return;
         }
         ServerLog log = new ServerLog(PLItemKey.ZN_APP_READ_CONTENT);
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
         if (params != null) {
             log.putContent("book_id", params[0]);//书籍唯一字符串
             log.putContent("chapter_id", params[1]);//阅读章节唯一字符串
@@ -591,11 +593,7 @@ public class StartLogClickUtil {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_FEEDBACK);
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
         if (bean != null) {
             log.putContent("bookSourceId", bean.bookSourceId);
             log.putContent("bookName", decode(bean.bookName));

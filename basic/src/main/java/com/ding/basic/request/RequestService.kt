@@ -4,6 +4,8 @@ import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import net.lzbook.kit.data.book.BookMarkBody
+import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
@@ -119,6 +121,11 @@ interface RequestService {
         const val PATH_BOOKMAEK_GET = "/v4/bookmark/get"
         //上传书签
         const val PATH_BOOKMAEK_ADD = "/v4/bookmark/add"
+        // 根据用户Id获取浏览足迹
+        const val PATH_GET_FOOTPRINT = "/v4/footprint/get"
+        // 上传足迹
+        const val PATH_UPLOAD_FOOTPRINT = "/v4/footprint/add"
+
         // 用户相关----------------------
 
 
@@ -291,11 +298,18 @@ interface RequestService {
     fun uploadBookshelf(@Body bookshelf: RequestBody): Flowable<BasicResultV4<String>>
 
     @GET(PATH_BOOKMAEK_GET) // 获取用户书签
-    fun requestBookMarks(@Query("accountId") userId: String): Flowable<BasicResultV4<List<Book>>>
+    fun requestBookMarks(@Query("accountId") userId: String): Flowable<BasicResultV4<List<UserMarkBook>>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_BOOKMAEK_ADD)// 上传书签
     fun uploadBookMark(@Body bookMarkBody: RequestBody): Flowable<BasicResultV4<String>>
+
+    @GET(PATH_GET_FOOTPRINT)// 获取用户浏览记录
+    fun requestFootPrintList(@Query("accountId") userId: String): Flowable<BasicResultV4<List<UserBook>>>
+
+    @Headers("Content-Type: application/json", "Accept: application/json")
+    @POST(PATH_UPLOAD_FOOTPRINT)
+    fun uploadFootPrint(@Body bookBrowseReqBody: RequestBody): Flowable<BasicResultV4<String>>
 
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_THIRD_LOGIN) //第三方登录

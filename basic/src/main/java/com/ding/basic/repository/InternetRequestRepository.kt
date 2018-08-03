@@ -7,6 +7,7 @@ import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
@@ -132,12 +133,20 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.uploadBookshelf(bookShelfBody)
     }
 
-    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<Book>>> {
+    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
         return RequestAPI.requestBookMarks(accountId)
     }
 
     fun uploadBookMarks(markBody: RequestBody): Flowable<BasicResultV4<String>> {
         return RequestAPI.uploadBookMarks(markBody)
+    }
+
+    fun requestFootPrint(accountId: String): Flowable<BasicResultV4<List<UserBook>>> {
+        return RequestAPI.requestFootPrint(accountId)
+    }
+
+    fun uploadFootPrint(footBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return RequestAPI.uploadFootPrint(footBody)
     }
 
     fun bindPhoneNumber(phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {

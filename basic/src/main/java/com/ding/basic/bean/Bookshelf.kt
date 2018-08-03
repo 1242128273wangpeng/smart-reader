@@ -1,6 +1,7 @@
 package net.lzbook.kit.data.user
 
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.HistoryInfo
 
 /**
  * Desc 云书架
@@ -57,6 +58,23 @@ class UserBook {
         book.last_chapter?.url = lastChapter!!.url
         return book
 
+    }
+
+    fun transToHistoryInfo():HistoryInfo{
+        val historyInfo=HistoryInfo()
+        historyInfo.author=author
+        historyInfo.img_url=imgUrl
+        historyInfo.name=name
+        historyInfo.book_id=bookId.toString()
+        historyInfo.book_source_id=bookSourceId.toString()
+        historyInfo.label=labels
+        historyInfo.host=host
+        historyInfo.desc=desc
+        historyInfo.browse_time= addTime?.toLong() ?:0
+
+
+
+        return  historyInfo
     }
 
 }

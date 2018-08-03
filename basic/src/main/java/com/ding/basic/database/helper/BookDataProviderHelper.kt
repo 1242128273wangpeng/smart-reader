@@ -258,6 +258,10 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     override fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
         bookmarkDao.deleteByExatly(book_id, sequence, offset)
     }
+    @Synchronized
+    fun deleteAllBookMark(){
+        bookmarkDao.deleteAllMarks()
+    }
 
     @Synchronized
     override fun getBookMarks(book_id: String): ArrayList<Bookmark> {
@@ -277,6 +281,11 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     @Synchronized
     override fun deleteAllHistory() {
         historyDao.deleteAllHistory()
+    }
+
+    @Synchronized
+    fun insertHistoryInfo(hisInfo:HistoryInfo){
+        historyDao.insertHistoryInfo(hisInfo)
     }
 
     @Synchronized

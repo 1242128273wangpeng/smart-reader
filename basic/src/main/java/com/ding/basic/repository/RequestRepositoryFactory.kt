@@ -25,10 +25,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
-import net.lzbook.kit.data.book.BookBody
-import net.lzbook.kit.data.book.BookMark
-import net.lzbook.kit.data.book.BookMarkBody
-import net.lzbook.kit.data.book.BookReqBody
+import net.lzbook.kit.data.book.*
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
@@ -997,10 +994,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      *  同步书签-----------------------------------------------------------------开始
      */
 
-    private fun keepBookMark(userId: String, onComplete: (() -> Unit)? = null) {
+    fun keepBookMark(userId: String, onComplete: (() -> Unit)? = null) {
         InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .requestBookMarks(userId)
-                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<Book>>>())
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<UserMarkBook>>>())
                 .doOnNext { remoteBookMarks ->
                     if (remoteBookMarks.data != null && remoteBookMarks.data!!.isNotEmpty()) {
                         mergeBookMark(remoteBookMarks.data!!)
@@ -1009,61 +1006,228 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         Log.d("keepBookMark", "thread : " + Thread.currentThread() + " 服务器无数据 上传数据")
                     }
                 }
-//                .flatMap {
-//                    Flowable.create(object :FlowableOnSubscribe<BasicResult<String>>{
-//                        override fun subscribe(emitter: FlowableEmitter<BasicResult<String>>) {
-//                            emitter.onNext(BasicResult())
+                .flatMap { remoteBookMarks ->
+                    if (remoteBookMarks.data != null && remoteBookMarks.data!!.isNotEmpty()) {
+                        Flowable.create(object : FlowableOnSubscribe<BasicResultV4<String>> {
+                            override fun subscribe(emitter: FlowableEmitter<BasicResultV4<String>>) {
+                                emitter.onNext(BasicResultV4())
+
+                            }
+
+                        }, BackpressureStrategy.BUFFER)
+                    } else {
+                        getUploadBookMarkFlowable(userId);
+                    }
 //
-//                        }
-//
-//                    })
-//                }
+
+                }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
+            override fun onNext(it: BasicResultV4<String>?) {
+                onComplete?.invoke()
+                Log.d("keepBookMark", "thread : " + Thread.currentThread() +
+                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+
+            }
+
+            override fun onError(t: Throwable?) {
+                onComplete?.invoke()
+                if (t != null) {
+                    Log.d("keepBookMark", "fail : " + t.message)
+                }
+            }
+
+            override fun onComplete() {
+
+            }
+
+        })
 
     }
 
     @Suppress("SENSELESS_COMPARISON")
-    private fun mergeBookMark(data: List<Book>) {
-//        TODO 合并书签
+    private fun mergeBookMark(data: List<UserMarkBook>) {
+        val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+        bookDataProviderHelper.deleteAllBookMark()
+        if (data.isEmpty()) {
+            return
+        }
+        val bookMarkList = ArrayList<Bookmark>()
+        bookFor@ for (remoteData in data) {
+            val bookId = remoteData.bookId
+            val bookSourceId = remoteData.bookSourceId
+            val bookMarks = remoteData.marks
+
+            // 如果此本书没有书签，则跳过本书遍历
+            if (bookMarks == null) {
+                continue@bookFor
+            }
+            for (bookMark in bookMarks) {
+
+                var saveBookMark = Bookmark()
+                saveBookMark.book_id = bookId
+                saveBookMark.book_source_id = bookSourceId
+                saveBookMark.sequence = bookMark.sequence
+                saveBookMark.offset = bookMark.offset
+                saveBookMark.chapter_name = bookMark.chapterName
+                saveBookMark.chapter_content = bookMark.markContent
+                saveBookMark.insert_time = bookMark.addTimeStr.toLong()
+
+                bookMarkList.add(saveBookMark)
+            }
+        }
+        if (bookMarkList.isNotEmpty()) {
+            for (item in bookMarkList) {
+                bookDataProviderHelper.insertBookMark(item)
+            }
+        }
+
     }
 
     /**
      * 获取上传书签Flowable
      */
-//    private fun getUploadBookShelfFlowable(accountId: String): Flowable<BasicResultV4<String>> {
-//        val bookList = queryAllBook()
-//
-//        val bookMarkBody = getBookMarkBody(userId, bookList)
-//        Log.d("keepBookShelf", "upload data : " + bookReqBody.toString())
-//        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
-//        return InternetRequestRepository.loadInternetRequestRepository(context = context)
-//                .uploadBookshelf(body)
-//                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
-//
-//    }
+    private fun getUploadBookMarkFlowable(accountId: String): Flowable<BasicResultV4<String>> {
+        val bookList = queryAllBook()
+
+        val bookMarkBody = getBookMarkBody(accountId, bookList)
+        Log.d("keepBookMark", "upload data : " + bookMarkBody.toString())
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookMarkBody))
+        return InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .uploadBookMarks(body)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+
+    }
 
 
-//    /**
-//     * 获取 BookMarkBody
-//     */
-//    private fun getBookMarkBody(userId: String, bookList: List<Book>): BookMarkBody {
-//        val bookBodyList = ArrayList<Book>()
-//        for (book in bookList) {
-//            val bookmarkList = queryLatestBookMark(book.book_id)
-//            val bookMarkBodyList = ArrayList<BookMark>()
-//            for (bookmark in bookmarkList) {
-//                val bookMarkBody = BookMark.create(bookmark)
-//                bookMarkBodyList.add(bookMarkBody)
-//            }
-//            val bookBody = Book()
-//            bookBody.book_id=book.book_id
-//            bookBody.book_source_id=book.book_source_id
-//            bookBodyList.add(bookBody)
-//        }
-//        return BookMarkBody(userId, bookBodyList)
-//    }
+    /**
+     * 获取 BookMarkBody
+     */
+    private fun getBookMarkBody(userId: String, bookList: List<Book>): BookMarkBody {
+        val bookBodyList = ArrayList<UserMarkBook>()
+        for (book in bookList) {
+            val bookmarkList = queryLatestBookMark(book.book_id)
+            val bookMarkBodyList = ArrayList<UserMark>()
+            for (bookmark in bookmarkList) {
+                val bookMarkBody = UserMark.create(bookmark)
+                bookMarkBodyList.add(bookMarkBody)
+            }
+            val bookBody = UserMarkBook(book.book_id, book.book_source_id, bookMarkBodyList)
+            bookBodyList.add(bookBody)
+        }
+        return BookMarkBody(userId, bookBodyList)
+    }
+
+
+    /**
+     *  根据bookId获取书籍最近100条书签
+     */
+
+    fun queryLatestBookMark(bookId: String): ArrayList<Bookmark> {
+        val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+        return bookDataProviderHelper.getBookMarks(bookId)
+    }
 
     /**
      *  同步书签-----------------------------------------------------------------结束
+     */
+
+    /**
+     * 同步足迹-----------------------------------------------------------------开始
+     */
+    fun keepBookBrowse(userId: String, onComplete: (() -> Unit)? = null) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .requestFootPrint(userId)
+                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<UserBook>>>())
+                .doOnNext { remoteBookBrowses ->
+                    if (remoteBookBrowses.data != null && remoteBookBrowses.data!!.isNotEmpty()) {
+                        mergeBookBrowe(remoteBookBrowses.data!!)
+                        Log.d("keepBookBrowse", "thread : " + Thread.currentThread() + " 服务器已有数据 存入数据库 data : " + remoteBookBrowses.data.toString())
+
+                    } else {
+                        Log.d("keepBookBrowse", "thread : " + Thread.currentThread() + " 服务器无数据 上传数据")
+                    }
+                }
+                .flatMap { remoteBookBrowses ->
+                    if (remoteBookBrowses.data != null && remoteBookBrowses.data!!.isNotEmpty()) {
+                        Flowable.create(object : FlowableOnSubscribe<BasicResultV4<String>> {
+                            override fun subscribe(emitter: FlowableEmitter<BasicResultV4<String>>) {
+                                emitter.onNext(BasicResultV4())
+
+                            }
+
+                        }, BackpressureStrategy.BUFFER)
+                    } else {
+                        getUploadBookBrowseFlowable(userId);
+                    }
+
+                }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
+            override fun onNext(it: BasicResultV4<String>?) {
+                onComplete?.invoke()
+                Log.d("keepBookMark", "thread : " + Thread.currentThread() +
+                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+
+            }
+
+            override fun onError(t: Throwable?) {
+                onComplete?.invoke()
+                if (t != null) {
+                    Log.d("keepBookMark", "fail : " + t.message)
+                }
+            }
+
+            override fun onComplete() {
+
+            }
+
+        })
+    }
+
+    /**
+     * 合并本地足迹
+     */
+    private fun mergeBookBrowe(data: List<UserBook>) {
+
+        var mBookDataHelper: BookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+        mBookDataHelper.deleteAllHistory()
+
+        if (data.isEmpty()) {
+            return
+        }
+
+
+        for (remoteData in data) {
+            val historyInfo = remoteData.transToHistoryInfo()
+            mBookDataHelper.insertHistoryInfo(historyInfo)
+        }
+
+
+    }
+
+    /**
+     *  获取上传本地足迹Flowable
+     */
+    private fun getUploadBookBrowseFlowable(userId: String): Flowable<BasicResultV4<String>> {
+        var mBookDataHelper: BookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+        val upLoadData = mBookDataHelper.queryHistoryPaging(0, 200)
+        val bookInfoBodyList = ArrayList<BookBrowseReqBody.BookInfoBody>()
+        for (i in upLoadData.indices) {
+            val upData = upLoadData[i]
+            val bookInfoBody = BookBrowseReqBody.BookInfoBody(upData.book_id, upData.book_source_id, upData.browse_time.toString(),
+                    upData.host.toString(), upData.img_url.toString(), upData.name.toString(), upData.author.toString())
+            bookInfoBodyList.add(bookInfoBody)
+        }
+
+        val bookBrowseReqBody = BookBrowseReqBody(userId, bookInfoBodyList)
+
+        Log.d("keepBookBrowse", "upload data : " + bookBrowseReqBody.toString())
+        val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookBrowseReqBody))
+        return InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .uploadFootPrint(body)
+
+    }
+
+
+    /**
+     * 同步足迹-----------------------------------------------------------------结束
      */
 
 

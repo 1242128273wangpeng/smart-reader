@@ -11,29 +11,29 @@ import com.ding.basic.bean.Bookmark
  */
 data class BookMarkBody(
         var accountId: String,
-        var list: List<Book>
+        var list: List<UserMarkBook>
 )
 
-data class Book(
+data class UserMarkBook(
         var bookId: String,
         var bookSourceId: String,
-        var marks: List<BookMark>
+        var marks: List<UserMark>
 )
 
-data class BookMark(
+data class UserMark(
         var chapterName: String,
         var offset: Int,
         var sequence: Int,
         var markContent: String,
         var addTimeStr: String) {
 
-//    companion object {
-//        fun create(bookmark: Bookmark): BookMark =
-//                BookMark(bookmark.chapter_name.toString(),
-//                        bookmark.offset,
-//                        bookmark.sequence,
-//                        bookmark.chapter_content.toString(),
-//                        bookmark.last_time.toString()
-//                )
-//    }
+    companion object {
+        fun create(bookmark: Bookmark): UserMark =
+                UserMark(bookmark.chapter_name.toString(),
+                        bookmark.offset,
+                        bookmark.sequence,
+                        bookmark.chapter_content.toString(),
+                        bookmark.insert_time.toString()
+                )
+    }
 }

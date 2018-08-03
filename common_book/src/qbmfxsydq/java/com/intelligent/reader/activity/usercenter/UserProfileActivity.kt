@@ -338,7 +338,7 @@ class UserProfileActivity : BaseCacheableActivity() {
             img_head.setImageResource(R.drawable.default_head)
         }
 
-        txt_user_id.text = UserManagerV4.user?.global_number
+        txt_user_id.text = UserManagerV4.user?.global_number.toString()
 
         txt_user_name.text = UserManagerV4.user?.name
 

@@ -23,7 +23,7 @@ class LoginRespV4 {
     var avatar_url: String? = null
 
     @ColumnInfo(name = "global_number")
-    var global_number: String? = null
+    var global_number: Long = 0
 
     @ColumnInfo(name = "name")
     var name: String? = null

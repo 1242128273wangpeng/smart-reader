@@ -13,7 +13,6 @@ import com.intelligent.reader.view.login.LoadingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_edit_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.user.UserManagerV4
 import java.util.regex.Pattern
 
@@ -55,7 +54,7 @@ class EditUserProfileActivity : BaseCacheableActivity() {
                             StartLogClickUtil.PROFILE, StartLogClickUtil.NICKNAME, data)
                     UserManagerV4.user?.let {
                         it.name = result?.data?.name
-                        UserManager.updateUser(it)
+                        UserManagerV4.updateUser(it)
                     }
                     loadingDialog.dismiss()
                     showToastMessage(getString(R.string.edit_success))

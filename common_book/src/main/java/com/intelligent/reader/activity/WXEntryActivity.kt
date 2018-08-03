@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.user.UserManagerV4
 
 /**
  * Created by xian on 2017/6/20.
@@ -13,6 +14,7 @@ class WXEntryActivity : Activity() {
         super.onCreate(savedInstanceState)
         println("WXEntryActivity onCreate")
         UserManager.handleIntent(this.intent)
+        UserManagerV4.handleIntent(this.intent)
         finish()
     }
 
@@ -20,6 +22,7 @@ class WXEntryActivity : Activity() {
         super.onNewIntent(intent)
         println("WXEntryActivity onNewIntent")
         UserManager.handleIntent(intent)
+        UserManagerV4.handleIntent(this.intent)
         finish()
     }
 }
