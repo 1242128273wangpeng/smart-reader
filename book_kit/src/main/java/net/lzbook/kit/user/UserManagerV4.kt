@@ -398,8 +398,8 @@ object UserManagerV4 : IWXAPIEventHandler {
                 .bindThirdAccount(accountBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
-                            successCallback!!.invoke(result)
                             onLogin(result.data!!)
+                            successCallback!!.invoke(result)
                             if(Platform.QQ==platform){
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, CHANNEL_QQ)
@@ -434,8 +434,8 @@ object UserManagerV4 : IWXAPIEventHandler {
                 .thirdLogin(loginBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
-                            successCallback!!.invoke(result)
                             onLogin(result.data!!)
+                            successCallback!!.invoke(result)
                             if(Platform.QQ==platform){
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, CHANNEL_QQ)
@@ -487,8 +487,8 @@ object UserManagerV4 : IWXAPIEventHandler {
                 .requestSmsLogin(smsBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
-                            callBack.invoke(true, result)
                             onLogin(result.data!!)
+                            callBack.invoke(true, result)
                             sharedPreferences?.edit()
                                     ?.putString(LOGIN_METHOD, "phone")
                                     ?.putString(LOGIN_ID, result.data!!.account_id)
@@ -684,6 +684,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     fun keepReadInfo(onComplete: (() -> Unit)? = null) {
         loge("keepBookShelf")
         val requestFactory: RequestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+
         user?.let {
 
             requestFactory.keepUserBookShelf(user!!.account_id,
