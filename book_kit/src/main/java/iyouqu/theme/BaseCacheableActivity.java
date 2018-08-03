@@ -3,6 +3,7 @@ package iyouqu.theme;
 import com.ding.basic.bean.Book;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
+import com.intelligent.reader.receiver.LoginInvalidReceiver;
 
 import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;
 
@@ -23,15 +24,21 @@ import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.BookTask;
+import net.lzbook.kit.user.bean.UserEvent;
 import net.lzbook.kit.utils.AppLog;
 
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 public class BaseCacheableActivity extends FrameActivity {
 
     public static final String NEED_SPLASH = "NEED_SPLASH";
     protected BroadcastReceiver mCacheUpdateReceiver;
     private MyDialog netDialog;
+    private BroadcastReceiver loginInvalidReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,16 @@ public class BaseCacheableActivity extends FrameActivity {
 
         if (mCacheUpdateReceiver == null) {
             mCacheUpdateReceiver = new CacheUpdateReceiver();
+        }
+        if (loginInvalidReceiver == null) {
+            loginInvalidReceiver = new LoginInvalidReceiver(this, new Function0<Unit>() {
+                @Override
+                public Unit invoke() {
+                    EventBus.getDefault().postSticky(new UserEvent(UserEvent.REFRESH_BOOKSHELF));
+                    onResume();
+                    return null;
+                }
+            });
         }
 
     }
@@ -53,6 +70,13 @@ public class BaseCacheableActivity extends FrameActivity {
             }
             registerCacheReceiver(mCacheUpdateReceiver);
         }
+        registerLoginInvalidReceiver(loginInvalidReceiver);
+    }
+
+    public void registerLoginInvalidReceiver(BroadcastReceiver receiver) {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ActionConstants.ACTION_USER_LOGIN_INVALID);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter);
     }
 
     public boolean shouldReceiveCacheEvent() {

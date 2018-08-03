@@ -7,13 +7,17 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.util.Base64
+import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
+import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.repository.InternetRequestRepository
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.rx.SchedulerHelper
 import com.google.gson.Gson
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
@@ -24,19 +28,19 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
+import de.greenrobot.event.EventBus
+import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
 import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_QQ
-import net.lzbook.kit.user.bean.AvatarReq
-import net.lzbook.kit.user.bean.UserNameState
-import net.lzbook.kit.user.bean.WXAccess
-import net.lzbook.kit.user.bean.WXSimpleInfo
+import net.lzbook.kit.user.bean.*
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
+import swipeback.ActivityLifecycleHelper
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -244,11 +248,11 @@ object UserManagerV4 : IWXAPIEventHandler {
 
                                 if (isBind) {
                                     logi("绑定第三方")
-                                    bindThirdAccount(body,Platform.QQ)
+                                    bindThirdAccount(body, Platform.QQ)
 
                                 } else {
                                     logi("登录第三方")
-                                    thirdLogin(body,Platform.QQ)
+                                    thirdLogin(body, Platform.QQ)
                                 }
                             }
 
@@ -303,26 +307,80 @@ object UserManagerV4 : IWXAPIEventHandler {
         }
     }
 
+
+    fun onLoginOutDate(errorCode: String?) {
+        if (errorCode == "40001") {
+            UserManager.logout()
+            EventBus.getDefault().postSticky(UserEvent(UserEvent.LOGIN_INVALID))
+        } else if (errorCode == "40003") {
+            UserManager.logout()
+            EventBus.getDefault().postSticky(UserEvent(UserEvent.LOGIN_OUT_DATE))
+        }
+    }
+
     private fun onLogout(onLogout: (() -> Unit)?) {
-        mUserState.set(false)
-        this.user = null
-        repositoryFactory.deleteLoginUser()
-//        if (onLogout == null) return@uploadReadInfo
+        uploadReadInfo {
+            mUserState.set(false)
+            this.user = null
+            repositoryFactory.deleteLoginUser()//删除用户信息
+            repositoryFactory.deleteShelfBook()// 移除书架
+            val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+            bookDataProviderHelper.deleteAllBookMark() //移除书签
+            bookDataProviderHelper.deleteAllHistory() // 移除足迹
+            repositoryFactory.requestLogout(object : RequestSubscriber<BasicResultV4<String>>() {
+                override fun requestResult(result: BasicResultV4<String>?) {
+                    onLogout?.invoke()
 
-        repositoryFactory.requestLogout(object : RequestSubscriber<BasicResultV4<String>>() {
-            override fun requestResult(result: BasicResultV4<String>?) {
-                onLogout?.invoke()
+                }
 
-            }
+                override fun requestError(message: String) {
+                    onLogout?.invoke()
+                }
 
-            override fun requestError(message: String) {
-                onLogout?.invoke()
-            }
-
-        })
+            })
+        }
 
 
     }
+
+    /**
+     * 登出上传操作---------------------开始
+     */
+    private fun uploadReadInfo(onComplete: (() -> Unit)? = null) {
+        user?.let {
+            val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(context = context)
+            repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)
+                    .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+                    .flatMap {
+                        repositoryFactory.getUploadBookMarkFlowable(user!!.account_id)
+                    }
+                    .flatMap {
+                        repositoryFactory.getUploadBookBrowseFlowable(user!!.account_id)
+                    }
+                    .subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
+                        override fun onError(t: Throwable?) {
+                            onComplete?.invoke()
+
+                        }
+
+                        override fun onNext(t: BasicResultV4<String>?) {
+                            onComplete?.invoke()
+                        }
+
+                        override fun onComplete() {
+                        }
+
+                    })
+
+        }
+
+
+    }
+
+    /**
+     * 登出上传操作---------------------结束
+     */
+
 
     /**
      * 更新用户数据
@@ -393,19 +451,19 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 绑定第三方账号
      */
-    fun bindThirdAccount(accountBody: RequestBody,platform: Platform) {
+    fun bindThirdAccount(accountBody: RequestBody, platform: Platform) {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .bindThirdAccount(accountBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             onLogin(result.data!!)
                             successCallback!!.invoke(result)
-                            if(Platform.QQ==platform){
+                            if (Platform.QQ == platform) {
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, CHANNEL_QQ)
                                         ?.putString(LOGIN_ID, result.data!!.account_id)
                                         ?.apply()
-                            }else if (Platform.WECHAT==platform){
+                            } else if (Platform.WECHAT == platform) {
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, ThirdLoginReq.CHANNEL_WX)
                                         ?.putString(LOGIN_ID, result.data!!.account_id)
@@ -428,7 +486,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 第三方登录
      */
-    private fun thirdLogin(loginBody: RequestBody,platform: Platform) {
+    private fun thirdLogin(loginBody: RequestBody, platform: Platform) {
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .thirdLogin(loginBody, object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -436,12 +494,12 @@ object UserManagerV4 : IWXAPIEventHandler {
                         if (result?.checkResultAvailable()!!) {
                             onLogin(result.data!!)
                             successCallback!!.invoke(result)
-                            if(Platform.QQ==platform){
+                            if (Platform.QQ == platform) {
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, CHANNEL_QQ)
                                         ?.putString(LOGIN_ID, result.data!!.account_id)
                                         ?.apply()
-                            }else if (Platform.WECHAT==platform){
+                            } else if (Platform.WECHAT == platform) {
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, ThirdLoginReq.CHANNEL_WX)
                                         ?.putString(LOGIN_ID, result.data!!.account_id)
@@ -572,11 +630,11 @@ object UserManagerV4 : IWXAPIEventHandler {
                             logi("isBind: $isBind")
                             if (isBind) {
                                 logi("绑定第三方")
-                                bindThirdAccount(body,Platform.WECHAT)
+                                bindThirdAccount(body, Platform.WECHAT)
 
                             } else {
                                 logi("登录第三方")
-                                thirdLogin(body,Platform.WECHAT)
+                                thirdLogin(body, Platform.WECHAT)
                             }
 
                         }
