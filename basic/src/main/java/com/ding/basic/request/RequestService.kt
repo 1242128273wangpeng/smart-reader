@@ -196,6 +196,10 @@ interface RequestService {
     @GET(DEFAULT_BOOK)
     fun requestDefaultBooks(): Flowable<BasicResult<CoverList>>
 
+    // sex：0全部 1男 2女
+    @GET(DEFAULT_BOOK)
+    fun requestDefaultBooks(@Query("sex") type: Int): Flowable<BasicResult<CoverList>>
+
     @GET(CHECK_APPLICATION)
     fun requestApplicationUpdate(@QueryMap parameters: Map<String, String>): Flowable<JsonObject>
 

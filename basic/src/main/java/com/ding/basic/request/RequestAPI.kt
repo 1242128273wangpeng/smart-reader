@@ -51,6 +51,10 @@ object RequestAPI {
         return requestService.requestDefaultBooks()
     }
 
+    fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>?{
+        return requestService.requestDefaultBooks(sex)
+    }
+
     fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return requestService.requestApplicationUpdate(parameters)
     }

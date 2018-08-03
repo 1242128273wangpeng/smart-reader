@@ -38,6 +38,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
+    override fun requestDefaultBooks(type: Int): Flowable<BasicResult<CoverList>>? {
+        return null
+    }
+
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return null
     }

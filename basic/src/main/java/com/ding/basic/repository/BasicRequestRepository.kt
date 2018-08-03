@@ -16,6 +16,7 @@ import java.util.ArrayList
 interface BasicRequestRepository {
 
     fun requestDefaultBooks(): Flowable<BasicResult<CoverList>> ?
+    fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>?
 
     fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>?
 
