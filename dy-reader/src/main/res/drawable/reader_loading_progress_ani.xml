@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animated-rotate xmlns:android="http://schemas.android.com/apk/res/android"
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
     android:fromDegrees="0"
     android:pivotX="50%"
     android:pivotY="50%"
-    android:duration="100"
     android:toDegrees="360">
 
     <bitmap android:src="@drawable/icon_loading_page_read" />
 
-</animated-rotate>
+</rotate>

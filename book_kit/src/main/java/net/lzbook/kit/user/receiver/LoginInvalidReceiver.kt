@@ -4,7 +4,8 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.intelligent.reader.activity.LoginActivity
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.view.login.LoginInvalidDialog
 import net.lzbook.kit.utils.loge
 
@@ -29,7 +30,7 @@ class LoginInvalidReceiver(val activity: Activity, private val cancelListener: (
         }
         dialog = LoginInvalidDialog(activity)
         dialog?.setOnConfirmListener {
-            activity.startActivity(Intent(context, LoginActivity::class.java))
+            RouterUtil.navigation(activity, RouterConfig.LOGIN_ACTIVITY)
         }
         dialog?.setOnCancelListener {
             cancelListener.invoke()

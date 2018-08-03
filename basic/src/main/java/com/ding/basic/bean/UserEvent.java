@@ -1,4 +1,4 @@
-package net.lzbook.kit.user.bean;
+package com.ding.basic.bean;
 
 /**
  * 项目名称：xzq

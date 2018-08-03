@@ -308,15 +308,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     }
 
 
-    fun onLoginOutDate(errorCode: String?) {
-        if (errorCode == "40001") {
-            UserManager.logout()
-            EventBus.getDefault().postSticky(UserEvent(UserEvent.LOGIN_INVALID))
-        } else if (errorCode == "40003") {
-            UserManager.logout()
-            EventBus.getDefault().postSticky(UserEvent(UserEvent.LOGIN_OUT_DATE))
-        }
-    }
+
 
     private fun onLogout(onLogout: (() -> Unit)?) {
         uploadReadInfo {

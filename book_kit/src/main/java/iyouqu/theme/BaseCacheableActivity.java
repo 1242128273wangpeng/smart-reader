@@ -24,12 +24,10 @@ import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.BookTask;
-import net.lzbook.kit.user.bean.UserEvent;
 import net.lzbook.kit.utils.AppLog;
 
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
@@ -51,7 +49,6 @@ public class BaseCacheableActivity extends FrameActivity {
             loginInvalidReceiver = new LoginInvalidReceiver(this, new Function0<Unit>() {
                 @Override
                 public Unit invoke() {
-                    EventBus.getDefault().postSticky(new UserEvent(UserEvent.REFRESH_BOOKSHELF));
                     onResume();
                     return null;
                 }
