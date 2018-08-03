@@ -76,8 +76,8 @@
                         android:id="@+id/book_cover_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="5dp"
                         android:scaleType="fitXY"
                         android:src="@mipmap/bookshelf_book_cover_default" />
 
@@ -86,9 +86,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|right"
+                        android:layout_marginBottom="5dp"
                         android:background="@drawable/bg_bookcover_score"
                         android:paddingBottom="3dp"
-                        android:layout_marginBottom="5dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:paddingTop="2dp"
@@ -154,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl1"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="17dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
@@ -165,18 +165,22 @@
                     android:lineSpacingExtra="10dp"
                     android:maxLines="4"
                     android:textColor="#5D646E"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="一朝穿越，穆长安觉得自己简直是倒霉透顶，居然穿越成一滴挂在槐树上的眼泪。
+好不容易幻化成人形，虽然是个美人胚子，却成了睿王的第五任冲喜新娘。" />
 
                 <ImageView
                     android:id="@+id/iv_bookdes_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="16dp"
+                    android:layout_height="10dp"
                     android:layout_gravity="bottom|right"
-                    android:layout_marginBottom="13dp"
+                    android:layout_marginBottom="12dp"
                     android:layout_marginRight="3dp"
-                    android:background="@drawable/bg_bookdetail_tv_more"
+                    android:background="@drawable/book_cover_more_iconbg"
                     android:padding="3dp"
+                    android:scaleType="center"
                     android:src="@drawable/bookcover_icon_down" />
+
             </FrameLayout>
 
 
@@ -293,7 +297,6 @@
         android:id="@+id/img_bottom_shadow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@+id/ll_nav_layout"
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY"
         android:src="@drawable/bottom_shadow_bg" />
