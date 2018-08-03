@@ -231,175 +231,6 @@ public class SplashActivity extends FrameActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
-        File bookDBFile = getDatabasePath(bookDBName);
-
-        String[] databaseList = databaseList();
-        List<String> chapterDBList = new ArrayList<>();
-        for (String name : databaseList) {
-            if (name.startsWith("book_chapter_") && !name.contains("journal")) {
-                chapterDBList.add(name.replace("book_chapter_", ""));
-            }
-        }
-
-        if (bookDBFile.exists()) {
-            setContentView(R.layout.act_splash_upgradedb);
-            TextView txt_name = findViewById(R.id.txt_name);
-            txt_name.setText(R.string.app_name);
-            upgradeBookDB(bookDBName, chapterDBList);
-        } else {
-            doOnCreate();
-        }
-    }
-
-    private void onUpgradeProgress(int progress) {
-        if (txt_upgrade == null) {
-            txt_upgrade = findViewById(R.id.txt_upgrade);
-        }
-        if (progress_upgrade == null) {
-            progress_upgrade = findViewById(R.id.progress_upgrade);
-            progress_upgrade.setMax(100);
-        }
-
-        if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
-            txt_upgrade.setText(getString(R.string.db_upgrade_nonet, progress));
-        } else {
-            txt_upgrade.setText(getString(R.string.db_upgrade_hasnet, progress));
-        }
-        progress_upgrade.setProgress(progress);
-    }
-
-    private void upgradeBookDB(String bookDBName, final List<String> chapterDBList) {
-        float percent = 1;
-        if (!chapterDBList.isEmpty()) {
-            percent = 0.2F;
-        }
-
-        final float weight = percent;
-
-        BookDataProviderHelper.Companion.upgradeFromOld(this, bookDBName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) throws Exception {
-                        onUpgradeProgress((int) (integer * weight));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                        if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
-                            Toast.makeText(SplashActivity.this, "upgradeBookDB error \r\n"
-                                    + Log.getStackTraceString(throwable), Toast.LENGTH_LONG).show();
-                            for (int i = 0; i < 1000; i++) {
-                                Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                            //拷贝旧的数据到sdcard, 给开发小伙伴
-                            copyOldDB2SD();
-                        }
-
-                        Map<String, String> data = new HashMap<>();
-                        data.put("status", "2");
-                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
-
-                        deleteOldDB();
-                        doOnCreate();
-                    }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        upgradeChapterDB(chapterDBList, 1 - weight);
-                    }
-                });
-    }
-
-    private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
-        if (!chapterDBList.isEmpty()) {
-            ChapterDaoHelper.Companion.upgradeFromOld(this, chapterDBList)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) throws Exception {
-                            onUpgradeProgress((int) (100 * (1 - weight) + integer * weight));
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            throwable.printStackTrace();
-                            if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
-                                Toast.makeText(SplashActivity.this, "upgradeChapterDB error \r\n"
-                                                + Log.getStackTraceString(throwable),
-                                        Toast.LENGTH_LONG).show();
-                                for (int i = 0; i < 1000; i++) {
-                                    Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                                //拷贝旧的数据到sdcard, 给开发小伙伴
-                                copyOldDB2SD();
-                            }
-                            Map<String, String> data = new HashMap<>();
-                            data.put("status", "2");
-                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
-                                    data);
-                            //删除之前的数据库
-                            deleteOldDB();
-                            doOnCreate();
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            Map<String, String> data = new HashMap<>();
-                            data.put("status", "1");
-                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
-                                    data);
-                            //删除之前的数据库
-                            deleteOldDB();
-                            doOnCreate();
-                        }
-                    });
-        } else {
-            Map<String, String> data = new HashMap<>();
-            data.put("status", "1");
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
-            //删除之前的数据库
-            deleteOldDB();
-            doOnCreate();
-        }
-    }
-
-    private void copyOldDB2SD() {
-        String[] strings = databaseList();
-        new File("/sdcard/novel").mkdirs();
-        for (String db : strings) {
-            kotlin.io.FilesKt.copyTo(getDatabasePath(db)
-                    , new File("/sdcard/novel/" + db),
-                    true
-                    , 64 * 1024
-            );
-        }
-    }
-
-    private void deleteOldDB() {
-        //TODO 测试数据库升级时, 注释掉方法体
-        String[] strings = databaseList();
-
-        for (String name : strings) {
-            if (name.startsWith("book_chapter_")) {
-                deleteDatabase(name);
-            }
-        }
-
-        deleteDatabase(ReplaceConstants.getReplaceConstants().DATABASE_NAME);
-    }
-
-    private void doOnCreate() {
 
         try {
             setContentView(R.layout.act_splash);
@@ -411,10 +242,8 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-        updateBookLastChapter();
 
-        initializeDataFusion();
-
+        startInitTask();
         // 安装快捷方式
         new InstallShotCutTask().execute();
 
@@ -424,60 +253,7 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
-    private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
-
-        if (books != null) {
-
-            List<Book> upBooks = new ArrayList<>();
-
-
-            for (Book book : books) {
-                if (TextUtils.isEmpty(book.getBook_chapter_id())) {
-                    upBooks.add(book);
-                }
-            }
-
-            if (upBooks.isEmpty()) {
-                Logger.e("开屏页更新书籍book_chapter_id等信息的接口不执行,书架没有书籍要修复 ");
-
-                startInitTask();
-                return;
-            }
-
-            Gson gson = new Gson();
-
-            Logger.i("initializeDataFusion Json: " + gson.toJson(upBooks));
-
-            RequestBody checkBody = RequestBody.create(
-                    MediaType.parse("application/json; charset=utf-8")
-                    , gson.toJson(upBooks));
-
-            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext())
-                    .requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
-                        @Override
-                        public void requestResult(Boolean result) {
-                            if (result) {
-                                Logger.i("数据融合，书架信息升级成功！");
-                            } else {
-                                Logger.e("数据融合，书架信息升级异常！");
-                            }
-                            startInitTask();
-                        }
-
-                        @Override
-                        public void requestError(@NotNull String message) {
-                            Logger.e("数据融合，书架信息升级异常！");
-                            startInitTask();
-                        }
-                    });
-        } else {
-            startInitTask();
-        }
-    }
 
     private void startInitTask() {
         // 初始化任务
@@ -485,76 +261,41 @@ public class SplashActivity extends FrameActivity {
         initTask.execute();
     }
 
-    /***
-     * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
-     * **/
-    private void updateBookLastChapter() {
-        if (sharedPreUtil == null) {
-            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
-        }
 
-        boolean isDataBaseRemark = sharedPreUtil.getBoolean(
-                SharedPreUtil.Companion.getDATABASE_REMARK(), false);
-
-        if (!isDataBaseRemark) {
-
-            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBooks();
-
-            if (bookList != null && bookList.size() > 0) {
-
-                for (Book book : bookList) {
-                    ChapterDaoHelper chapterDaoHelper =
-                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
-
-                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
-
-                    if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
-                        book.setLast_chapter(lastChapter);
-
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).updateBook(book);
-                    }
-                }
-            }
-            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
-        }
-    }
 
     private boolean isGo = true;
 
     private void initSplashAd() {
-        if (ad_view == null) return;
-        if (Constants.isHideAD) {
-            AppLog.e(TAG, "Limited AD display!");
+//        if (ad_view == null) return;
+//        if (Constants.isHideAD) {
+//            AppLog.e(TAG, "Limited AD display!");
             handler.sendEmptyMessage(0);
-            return;
-        }
-        if (isGo) {
-            handler.sendEmptyMessageDelayed(1, 3000);
-        }
-        MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
-            @Override
-            public Unit invoke(Integer resultCode) {
-                switch (resultCode) {
-                    case MediaCode.MEDIA_SUCCESS: //广告请求成功
-                        isGo = false;
-                        AppLog.e(TAG, "time");
-                        break;
-                    case MediaCode.MEDIA_FAILED: //广告请求失败
-                        handler.sendEmptyMessage(0);
-                        break;
-                    case MediaCode.MEDIA_DISMISS: //开屏页面关闭
-                        handler.sendEmptyMessage(0);
-                        break;
-                    case MediaCode.MEDIA_DISABLE: //无开屏广告
-                        handler.sendEmptyMessage(0);
-                        break;
-                }
-                return null;
-            }
-        });
+//            return;
+//        }
+//        if (isGo) {
+//            handler.sendEmptyMessageDelayed(1, 3000);
+//        }
+//        MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
+//            @Override
+//            public Unit invoke(Integer resultCode) {
+//                switch (resultCode) {
+//                    case MediaCode.MEDIA_SUCCESS: //广告请求成功
+//                        isGo = false;
+//                        AppLog.e(TAG, "time");
+//                        break;
+//                    case MediaCode.MEDIA_FAILED: //广告请求失败
+//                        handler.sendEmptyMessage(0);
+//                        break;
+//                    case MediaCode.MEDIA_DISMISS: //开屏页面关闭
+//                        handler.sendEmptyMessage(0);
+//                        break;
+//                    case MediaCode.MEDIA_DISABLE: //无开屏广告
+//                        handler.sendEmptyMessage(0);
+//                        break;
+//                }
+//                return null;
+//            }
+//        });
     }
 
     //初始化广告开关
@@ -651,19 +392,19 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MediaLifecycle.INSTANCE.onResume();
+//        MediaLifecycle.INSTANCE.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MediaLifecycle.INSTANCE.onPause();
+//        MediaLifecycle.INSTANCE.onPause();
     }
 
     @Override
     protected void onDestroy() {
 
-        MediaLifecycle.INSTANCE.onDestroy();
+//        MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();
     }
@@ -747,7 +488,7 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
+//            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
 
             //请求广告
             initAdSwitch();
