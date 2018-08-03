@@ -203,6 +203,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                         } catch (e: OutOfMemoryError) {
                             e.printStackTrace()
                             Glide.get(Reader.context).clearMemory()
+                        } catch (e: Exception){
+                            e.printStackTrace()
+                            Glide.get(Reader.context).clearMemory()
                         }
                         this.destroyDrawingCache()
                         load(copy)
@@ -218,6 +221,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                                 this.buildDrawingCache()
                                 copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
                             } catch (e: OutOfMemoryError) {
+                                e.printStackTrace()
+                                Glide.get(Reader.context).clearMemory()
+                            } catch (e: Exception){
                                 e.printStackTrace()
                                 Glide.get(Reader.context).clearMemory()
                             }
