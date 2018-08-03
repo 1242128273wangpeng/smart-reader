@@ -13,7 +13,7 @@ interface RequestRepository {
     /************************* 网络请求 *************************/
     fun requestDefaultBooks(requestSubscriber: RequestSubscriber<Boolean>)
 
-    fun requestDefaultBooks(type: Int, requestSubscriber: RequestSubscriber<Boolean>)
+    fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>)
 
     fun requestApplicationUpdate(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<ApplicationUpdate>)
 
