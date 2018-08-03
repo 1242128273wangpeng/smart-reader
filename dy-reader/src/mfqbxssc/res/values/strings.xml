@@ -7,6 +7,11 @@
 
     <string name="source_recommend">[推荐]</string>
     <string name="source_new">最新</string>
+    <string name="read_end_tip">客官请留步...</string>
+    <string name="book_new_title">新锐好书抢先看 </string>
+    <string name="book_new_change">换一换 </string>
+    <string name="book_recommend_title">喜欢这本书的人还喜欢</string>
+    <string name="book_recommend_change">换一换</string>
 
 
     <string name="disclaimer_statement_description">
