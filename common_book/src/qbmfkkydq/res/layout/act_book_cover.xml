@@ -296,7 +296,8 @@
     <ImageView
         android:id="@+id/img_bottom_shadow"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="-10dp"
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY"
         android:src="@drawable/bottom_shadow_bg" />
