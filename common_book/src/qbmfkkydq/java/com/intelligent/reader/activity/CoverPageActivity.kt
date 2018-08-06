@@ -426,7 +426,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         val recommendBooks = mRecommendBooks[position]
 
         val data = HashMap<String, String>()
-        data.put("bookid", recommendBooks.bookId)
+        bookId?.let { data.put("bookid", it) }
         data.put("TbookID", recommendBooks.bookId)
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
                 StartLogClickUtil.RECOMMENDEDBOOK, data)
