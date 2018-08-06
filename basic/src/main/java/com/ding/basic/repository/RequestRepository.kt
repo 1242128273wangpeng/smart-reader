@@ -87,6 +87,8 @@ interface RequestRepository {
 
     fun deleteBooks(books: List<Book>)
 
+    fun deleteBooksById(books: List<Book>)
+
     fun deleteShelfBook()
 
     fun loadBook(book_id: String): Book?

@@ -206,6 +206,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBooks(books, context)
     }
 
+    fun deleteBooksById(books: List<Book>) {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBooksById(books)
+    }
+
     fun deleteShelfBooks() {
         return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteShelfBooks()
     }

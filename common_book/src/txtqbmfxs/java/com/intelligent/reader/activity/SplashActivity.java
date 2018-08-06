@@ -359,6 +359,24 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
         }
 
         deleteDatabase(ReplaceConstants.getReplaceConstants().DATABASE_NAME);
+
+        //新数据库去重
+        RequestRepositoryFactory factory = RequestRepositoryFactory.Companion
+                .loadRequestRepositoryFactory(this.getApplicationContext());
+        List<Book> books = factory.loadBooks();
+        if (books != null && books.size() > 0) {
+            List<String> bookIds = new ArrayList<>();
+            List<Book> duplicateBooks = new ArrayList<>();
+            for (int i = books.size() - 1; i >= 0; i--) {
+                Book book = books.get(i);
+                if (bookIds.contains(book.getBook_id())) { //重复书籍
+                    duplicateBooks.add(book);
+                } else {
+                    bookIds.add(book.getBook_id());
+                }
+            }
+            factory.deleteBooksById(duplicateBooks);
+        }
     }
 
     private void initializeDataFusion() {

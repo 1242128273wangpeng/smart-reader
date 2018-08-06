@@ -1520,6 +1520,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteBooks(books)
     }
 
+    override fun deleteBooksById(books: List<Book>) {
+        return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteBooksById(books)
+    }
+
     override fun deleteShelfBook() {
         return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteShelfBooks()
     }
