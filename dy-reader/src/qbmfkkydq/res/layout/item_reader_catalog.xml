@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:ellipsize="end"
-    android:gravity="center_vertical"
-    android:maxLines="1"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:textColor="#4C000000"
-    tools:text="@string/default_title"/>
+    android:layout_height="@dimen/dimen_margin_50"
+    android:paddingLeft="@dimen/dimen_margin_20"
+    android:paddingRight="@dimen/dimen_margin_20"
+    tools:ignore="RtlHardcoded">
+
+    <TextView
+        android:id="@+id/txt_chapter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/txt_chapter_cache_state"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="#99A0AA"
+        android:textSize="14sp"
+        tools:text="@string/default_title"/>
+
+    <TextView
+        android:id="@+id/txt_chapter_cache_state"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="@string/cached"
+        android:textColor="#FF9097A1"
+        android:textSize="12sp"/>
+</RelativeLayout>
