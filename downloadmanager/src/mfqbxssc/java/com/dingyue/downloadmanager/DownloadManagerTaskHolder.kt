@@ -4,12 +4,12 @@ import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
+import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import kotlinx.android.synthetic.mfqbxssc.item_download_manager_task.view.*
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.loge
 import java.text.MessageFormat
 
@@ -36,12 +36,6 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
 
         fl_content.setOnLongClickListener {
             downloadManagerItemListener.longClickedDownloadItem()
-        }
-
-        if (adapterPosition == 0) {
-            v_divider.visibility = View.GONE
-        } else {
-            v_divider.visibility = View.VISIBLE
         }
 
         val bookTask = CacheManager.getBookTask(book)
