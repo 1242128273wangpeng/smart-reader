@@ -17,37 +17,35 @@ import com.intelligent.reader.adapter.SearchSuggestAdapter
 import net.lzbook.kit.utils.StatServiceUtils
 
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Intent
 import android.preference.PreferenceManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.widget.*
 import com.ding.basic.bean.*
-import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
+import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.adapter.RecommendBooksAdapter
-import com.intelligent.reader.presenter.search.SearchSCPresenter
 import com.intelligent.reader.presenter.search.SearchSCView
 import com.intelligent.reader.presenter.search.SearchViewPresenter
+import com.intelligent.reader.search.SearchPresenter
 import kotlinx.android.synthetic.mfqbxssc.search_hot_title_layout.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.search.*
-import net.lzbook.kit.net.Result
-import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils
-import net.lzbook.kit.utils.ToastUtils
 import java.util.ArrayList
 import java.util.HashMap
 
-class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchSCPresenter?) : SearchSCPresenter.SearchSuggestCallBack, SearchHisAdapter.SearchClearCallBack, SearchSCView.View, RecommendBooksAdapter.RecommendItemClickListener {
+class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchHisAdapter.SearchClearCallBack, SearchSCView.View, RecommendBooksAdapter.RecommendItemClickListener {
 
     private var mContext: Context? = null
     private var activity: Activity? = null
@@ -117,15 +115,19 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.b_search_click_allhotword)
             val hotWord = mHotWords.get(position)
             val data = HashMap<String, String>()
-            data.put("topicword", hotWord.getKeyword())
-            data.put("rank", hotWord.getSort().toString())
-            data.put("type", hotWord.getSuperscript())
+            hotWord.keyword?.let {
+                data.put("topicword", it)
+            }
+            data.put("rank", hotWord.sort.toString())
+            hotWord.superscript?.let {
+                data.put("type", it)
+            }
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
             mShouldShowHint = false
-            mSearchEditText?.setText(hotWord.getKeyword())
+            mSearchEditText?.setText(hotWord.keyword)
 
             mSearchViewPresenter?.isFocus = false
-            mSearchViewPresenter?.startSearch(hotWord.getKeyword(), mHotWords.get(position).getKeywordType().toString(), 0)
+            mSearchViewPresenter?.startSearch(hotWord.keyword, mHotWords.get(position).keywordType.toString(), 0)
         })
 
         initRecycleType(searchHotTitleLayout.list_recommed)
@@ -235,8 +237,12 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HOTREADCLICK, data)
 
         mContext?.let {
-            CoverPageActivity.launcher(mContext!!, dataBean.host, dataBean.bookId, dataBean.id, dataBean.bookName,
-                    dataBean.authorName, "", "")
+            val intent = Intent(it, CoverPageActivity::class.java)
+            intent.putExtra(Constants.BOOK_ID, dataBean.bookId)
+            intent.putExtra(Constants.BOOK_SOURCE_ID, dataBean.id)
+            intent.putExtra(Constants.BOOK_CHAPTER_ID, dataBean.bookChapterId)
+
+            it.startActivity(intent)
         }
 
         mSearchViewPresenter?.isBackSearch = true
@@ -247,20 +253,23 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     /**
      * 获取书架上的书Id
      */
-    fun getBookOnLineIds(): String {
-        val bookDaoHelper = BookDaoHelper.getInstance()
-        if (bookDaoHelper != null) {
-            val books = bookDaoHelper.booksOnLineList
-            val sb = StringBuilder()
-            if (books != null && books.size > 0) {
-                for (i in books.indices) {
-                    val book = books.get(i)
+    private fun getBookOnLineIds(): String {
+//        books?.clear()
+        val books = RequestRepositoryFactory.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).loadBooks()
+
+        val sb = StringBuilder()
+        books?.let {
+            if (it.isNotEmpty()) {
+                for (i in it.indices) {
+                    val book = it[i]
                     sb.append(book.book_id)
-                    sb.append(if (i == books.size - 1) "" else ",")
+                    sb.append(if (i == it.size - 1) "" else ",")
                 }
                 return sb.toString()
             }
         }
+
         return ""
     }
 
@@ -280,7 +289,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
         } else {
             if (!hasNet) {
-                ToastUtils.showToastNoRepeat("网络不给力哦")
+                CommonUtil.showToastMessage("网络不给力哦")
             }
             searchHotTitleLayout.linear_root.setVisibility(View.GONE)
         }
@@ -576,19 +585,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
     }
 
-    override fun setHotWordAdapter(hotWords: MutableList<SearchHotBean.DataBean>?) {
-//        if(activity != null){
-//            mHotAdapter = SearchHotWordAdapter(activity, hotWords)
-//            if (mHotListView != null) {
-//
-//                mHotListView!!.adapter = mHotAdapter
-//                mHotListView!!.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, position ->
-//                    mSearchViewPresenter?.onHotItemClick(activity, arg0, arg1, arg2, position)
-//                }
-//            }
-//        }
-    }
-
     override fun onSuggestBack() {
         if (mSuggestAdapter != null) {
             var inputString: String? = ""
@@ -610,6 +606,9 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             mShouldShowHint = false
             mSearchEditText!!.setText(text)
         }
+    }
+
+    override fun setHotWordAdapter(hotWords: MutableList<HotWordBean>?) {
     }
 
     companion object {

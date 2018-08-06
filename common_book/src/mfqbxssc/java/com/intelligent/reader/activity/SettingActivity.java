@@ -1,7 +1,13 @@
 package com.intelligent.reader.activity;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
+import com.ding.basic.bean.LoginResp;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
+import com.dingyue.contract.util.CommonUtil;
+import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
@@ -19,7 +25,6 @@ import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.data.bean.ReadConfig;
 import net.lzbook.kit.user.Platform;
 import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.user.bean.LoginResp;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -51,11 +56,13 @@ import java.util.List;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
+import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
 
+@Route(path = RouterConfig.SETTING_ACTIVITY)
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 
     private static final int CODE_REQ_LOGIN = 100;
@@ -362,8 +369,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
             case R.id.rl_style_change:
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change);
-                startActivity(new Intent(SettingActivity.this, StyleChangeActivity.class));
+//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change);
+//                startActivity(new Intent(SettingActivity.this, StyleChangeActivity.class));
 //                finish();
                 break;
             case R.id.check_update_rl:
@@ -386,14 +393,13 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } catch (Exception e) {
-                    showToastShort(R.string.menu_no_market);
+                    CommonUtil.showToastMessage(R.string.menu_no_market);
                 }
                 break;
 
             case R.id.disclaimer_statement_rl:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
-                Intent intent = new Intent(this, DisclaimerActivity.class);
-                startActivity(intent);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY);
                 break;
             case R.id.rl_history_setting:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
@@ -410,8 +416,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
             case R.id.rl_readpage_setting:
                 //阅读页设置
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read);
-                startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
+//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read);
+//                startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
                 break;
             case R.id.clear_cache_rl://清除缓存的处理
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR);
@@ -523,7 +529,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             public void onClick(View v) {
                 dismissDialog();
                 if (!UserManager.INSTANCE.isPlatformEnable(Platform.WECHAT)) {
-                    showToastShort("请安装微信后重试");
+                    CommonUtil.showToastMessage("请安装微信后重试");
                     return;
                 }
                 if (flagLoginEnd) {
@@ -687,19 +693,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if (view.getId() == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
+            ReaderSettings.Companion.getInstance().initValues();
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day);
-                edit.putInt("current_light_mode", ReadConfig.INSTANCE.getMODE());
-                ReadConfig.INSTANCE.setMODE(61);
+                ReaderSettings.Companion.getInstance().setReadLightThemeMode(ReaderSettings.Companion.getInstance().getReadThemeMode());
+                ReaderSettings.Companion.getInstance().setReadThemeMode(61);
                 mThemeHelper.setMode(ThemeMode.NIGHT);
             } else {
                 tv_night_shift.setText(R.string.mode_night);
-                edit.putInt("current_night_mode", ReadConfig.INSTANCE.getMODE());
-                ReadConfig.INSTANCE.setMODE(sharedPreferences.getInt("current_light_mode", 51));
+                ReaderSettings.Companion.getInstance().setReadThemeMode(ReaderSettings.Companion.getInstance().getReadLightThemeMode());
                 mThemeHelper.setMode(ThemeMode.THEME1);
             }
-            edit.putInt("content_mode", ReadConfig.INSTANCE.getMODE());
-            edit.apply();
+            ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
         } else if (view.getId() == R.id.bt_wifi_auto) {
             edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);

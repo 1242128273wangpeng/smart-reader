@@ -413,8 +413,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "vig504s5U9vGM2Oa0NM7snMW8gbmR4lS"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730467"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "eab534147f294990578b4463958c33c3"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://kuai.0106636.cn"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://kdbc.0106636.cn:443"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://k.zhuishuwang.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuodq.zhuishuwang.com:443"
         }
 
 

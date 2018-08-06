@@ -8,20 +8,15 @@ import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.*
+import com.ding.basic.bean.*
+import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.activity.CoverPageActivity
-import com.intelligent.reader.presenter.IPresenter
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.RequestItem
 import net.lzbook.kit.data.search.*
-import net.lzbook.kit.net.Result
-import net.lzbook.kit.net.custom.service.NetService
 import net.lzbook.kit.utils.*
 import java.util.ArrayList
 import java.util.HashMap
@@ -126,48 +121,6 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
         view?.notifyHisData()
     }
 
-    fun resetHotWordList(context: Context?,relative_parent:RelativeLayout) {
-
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            relative_parent.visibility =  View.GONE
-        } else {
-            view?.showLoading()
-            val searchService = NetService.userService
-            searchService.getHotWord_V4()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<Result<SearchResult>> {
-                        override fun onSubscribe(d: Disposable) {
-
-                        }
-
-                        override fun onNext(value: Result<SearchResult>) {
-                            AppLog.e("result", value.toString())
-                            if (value != null && value.data != null && value.data.hotWords != null) {
-
-                                val result = value.data
-                                AppLog.d("SearchViewHelper", gson!!.toJson(result, SearchResult::class.java))
-
-                                sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, gson!!.toJson(result, SearchResult::class.java))
-                                parseResult(result)
-                            } else {
-                                getCacheDataFromShare(true)
-                            }
-                        }
-
-                        override fun onError(e: Throwable) {
-                            getCacheDataFromShare(true)
-                            AppLog.e("error", e.toString())
-                        }
-
-                        override fun onComplete() {
-                            AppLog.e("complete", "complete")
-                        }
-                    })
-
-        }
-    }
-
     /**
      * if hasn't net getData from sharepreferenecs cache
      */
@@ -184,7 +137,7 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                ToastUtils.showToastNoRepeat("网络不给力哦")
+                CommonUtil.showToastMessage("网络不给力哦")
             }
             view?.showLinearParent(false)
         }
@@ -234,17 +187,17 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
         authorsBean.clear()
         labelBean.clear()
         bookNameBean.clear()
-        if (transmitBean != null && transmitBean.data != null) {
-            if (transmitBean.data.authors != null) {
-                authorsBean = transmitBean.data.authors
-            }
-            if (transmitBean.data.label != null) {
-                labelBean = transmitBean.data.label
-            }
-            if (transmitBean.data.name != null) {
-                bookNameBean = transmitBean.data.name
-            }
-        }
+//        if (transmitBean != null && transmitBean.data != null) {
+//            if (transmitBean!!.data!!.authors != null) {
+//                authorsBean = transmitBean!!.data!!.authors
+//            }
+//            if (transmitBean.data!!.label != null) {
+//                labelBean = transmitBean.data.label
+//            }
+//            if (transmitBean.data!!.name != null) {
+//                bookNameBean = transmitBean.data.name
+//            }
+//        }
         for (item in suggestList) {
             mSuggestList!!.add(item)
         }
@@ -270,26 +223,6 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
             hotDatas!!.clear()
             hotDatas = null
         }
-    }
-
-    fun onHotItemClick(context: Context?, parent: AdapterView<*>, view1: View, arg2: Int, position: Long) {
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_word)
-
-        if (hotWords != null && !hotWords!!.isEmpty() && position > -1 && position < hotWords!!.size) {
-            val hotWord = hotWords!!.get(arg2 - 1)
-            if (hotWord != null && hotWord.keyword != null ) {
-                view?.hotItemClick(hotWord.keyword, hotWords!!.get(arg2 - 1).keywordType.toString() + "")
-
-                isFocus = false
-                startSearch(hotWord.keyword, hotWords!!.get(arg2 - 1).keywordType.toString() + "", 0)
-                val data = HashMap<String, String>()
-                data.put("topicword", hotWord.keyword)
-                data.put("rank", hotWord.sort.toString())
-                data.put("type", hotWord.superscript)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
-            }
-        }
-
     }
 
 
@@ -339,19 +272,17 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data1)
 
 
-                val requestItem = RequestItem()
-                requestItem.book_id = searchCommonBean?.getBook_id()
-                requestItem.book_source_id = searchCommonBean?.getBook_source_id()
-                requestItem.host = searchCommonBean?.getHost()
-                requestItem.name = searchCommonBean?.getName()
-                requestItem.author = searchCommonBean?.getAuthor()
-                requestItem.parameter = searchCommonBean?.getParameter()
-                requestItem.extra_parameter = searchCommonBean?.getExtra_parameter()
+                val book = Book()
+                book.book_id = searchCommonBean?.getBook_id() ?: ""
+                book.book_source_id = searchCommonBean?.getBook_source_id() ?: ""
+                book.host = searchCommonBean?.getHost()
+                book.name = searchCommonBean?.getName()
+                book.author = searchCommonBean?.getAuthor()
 
                 val intent = Intent()
                 intent.setClass(context, CoverPageActivity::class.java)
                 val bundle = Bundle()
-                bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
+                bundle.putSerializable(Constants.REQUEST_ITEM, book)
                 intent.putExtras(bundle)
                 context?.startActivity(intent)
                 addHistoryWord(suggest)

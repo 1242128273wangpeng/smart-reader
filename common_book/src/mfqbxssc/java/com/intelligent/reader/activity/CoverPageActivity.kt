@@ -5,8 +5,10 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
 import android.view.View.*
+import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
@@ -14,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
@@ -23,6 +26,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.view.MyScrollView
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.mfqbxssc.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -32,7 +36,9 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.utils.*
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -45,7 +51,7 @@ import kotlin.collections.ArrayList
  */
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(),
-        OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
+        OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener, MyScrollView.ScrollChangedListener {
     override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
 
     }
@@ -99,7 +105,6 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     }
 
-    private var mBackground = 0
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
@@ -127,14 +132,12 @@ class CoverPageActivity : BaseCacheableActivity(),
     private fun initListener() {
         book_cover_back.antiShakeClick(this)
         book_cover_author.antiShakeClick(this)
-        book_cover_chapter_view.antiShakeClick(this)
         book_cover_last_chapter.antiShakeClick(this)
+        cover_latest_section.antiShakeClick(this)
 
         book_cover_bookshelf.antiShakeClick(this)
         book_cover_reading.antiShakeClick(this)
         book_cover_download.antiShakeClick(this)
-        tv_catalog_book_cover.antiShakeClick(this)
-        tv_wonderful_comment.antiShakeClick(this)
         book_cover_content.setScrollChangedListener(this)
     }
 
@@ -219,13 +222,6 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             book_cover_author.text = book.author
 
-            if (!TextUtils.isEmpty(book.genre)) {
-                book_cover_category.text = book.genre
-                book_cover_category.visibility = VISIBLE
-            } else {
-                book_cover_category.visibility = GONE
-            }
-
 
             if (book.status == "SERIALIZE") {
                 book_cover_status.text = "连载中"
@@ -291,9 +287,9 @@ class CoverPageActivity : BaseCacheableActivity(),
                 flowlayout!!.rowSpacing = 17f
                 flowlayout!!.removeAllViews()
                 val dummyTexts = book.sub_genre!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                for (text in dummyTexts) {
-                    if (!TextUtils.isEmpty(text)) {
-                        val textView = buildLabel(text)
+                for (i in dummyTexts.indices) {
+                    if (!TextUtils.isEmpty(dummyTexts.get(i))) {
+                        val textView = buildLabel(dummyTexts.get(i), i, book)
                         flowlayout!!.addView(textView)
                     }
                 }
@@ -305,6 +301,44 @@ class CoverPageActivity : BaseCacheableActivity(),
                 finish()
             }
         }
+    }
+
+    /**
+     * 添加标签
+     */
+    private fun buildLabel(text: String,index :Int, book: Book): TextView {
+        val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_padding)
+        val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_padding_right)
+        val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_top)
+        val bottom = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_top)
+        val textView = TextView(this)
+        textView.text = text
+        textView.textSize = 11f
+        textView.setGravity(Gravity.CENTER);
+        textView.setTextColor(resources.getColor(R.color.cover_recommend_read))
+        textView.setBackgroundResource(R.drawable.cover_label_shape)
+        textView.setPadding(left, top, right, bottom)
+        textView.setOnClickListener(OnClickListener {
+
+            var data = HashMap<String,String>()
+            data.put("bookid",book?.book_id+"")
+            data.put("name",book?.name+"")
+            data.put("lablekey",text)
+            data.put("rank",index.toString())
+            StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.LABLECLICK,data)
+
+
+            val intent = Intent()
+            intent.setClass(this, LabelsDetailActivity::class.java)
+            intent.putExtra("url", RequestService.LABEL_SEARCH_V4+"?keyword=" + text)
+            intent.putExtra("title", text)
+            intent.putExtra("fromCover", true)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
+        })
+
+
+        return textView
     }
 
     override fun insertBookShelfResult(result: Boolean) {
@@ -418,32 +452,19 @@ class CoverPageActivity : BaseCacheableActivity(),
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
             }
-            R.id.tv_wonderful_comment ->{
-                if (mCoverPagePresenter != null) {
-                    val data3 = HashMap<String, String>()
-                    data3.put("bookId", requestItem?.book_id+"")
-                    data3.put("type", "2")
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CLICK, data3)
-                    mCoverPagePresenter!!.goToCommentAct()
-                }
-            }
         }
     }
 
     private fun initializeRemoveShelfButton() {
-        mBackground = R.drawable.cover_bottom_btn_remove_bg
         mTextColor = R.color.cover_bottom_btn_remove_text_color
 
         book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     private fun initializeInsertShelfButton() {
-        mBackground = R.drawable.cover_bottom_btn_add_bg
         mTextColor = R.color.cover_bottom_btn_add_text_color
 
         book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     override fun onTaskStatusChange() {
@@ -455,7 +476,7 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     override fun onScrollChanged(top: Int, oldTop: Int) {
         if (AppUtils.px2dip(this, top.toFloat()) > 34) {
-            if (tv_title != null && book != null && !TextUtils.isEmpty(book!!.name) && !isScrool) {
+            if (tv_title != null && book != null && !TextUtils.isEmpty(book!!.name)) {
                 tv_title!!.text = book!!.name
             }
         } else {

@@ -10,14 +10,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.data.search.SearchCommonBeanYouHua;
 import net.lzbook.kit.data.search.SearchSuggest;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
+import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.intelligent.reader.R;
 import com.intelligent.reader.search.SearchConstant;
 

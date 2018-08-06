@@ -36,8 +36,7 @@
                 android:layout_height="7dp"
                 android:layout_alignRight="@id/img_head_personal"
                 android:layout_alignTop="@id/img_head_personal"
-                android:background="#CE3D3E"
-                android:visibility="gone"/>
+                android:background="#CE3D3E"/>
 
             <ImageView
                 android:id="@+id/img_head_menu"

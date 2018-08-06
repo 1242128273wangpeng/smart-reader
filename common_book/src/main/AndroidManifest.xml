@@ -378,7 +378,6 @@
         <activity
             android:name=".activity.FindBookDetail"
             android:configChanges="keyboard"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
