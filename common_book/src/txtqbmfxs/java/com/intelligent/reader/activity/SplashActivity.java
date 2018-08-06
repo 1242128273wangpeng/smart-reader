@@ -232,12 +232,6 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
     }
 
     private void upgradeBookDB(String bookDBName, final List<String> chapterDBList) {
-
-        //删除错误的新书架（1.29版本由于失误未迁移旧的数据库）
-        BookDataProviderHelper.Companion
-                .loadBookDataProviderHelper(this.getApplicationContext())
-                .deleteShelfBooks();
-
         float percent = 1;
         if (!chapterDBList.isEmpty()) {
             percent = 0.2F;
