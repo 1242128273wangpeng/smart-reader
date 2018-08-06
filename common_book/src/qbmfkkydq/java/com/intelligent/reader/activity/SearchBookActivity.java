@@ -272,13 +272,9 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             if (search_result_keyword != null) {
                 if (isAuthor != 1) {
                     search_result_keyword.setText(mSearchHelper.getWord());
-                    search_result_keyword.setTextColor(
-                            getResources().getColor(R.color.search_title_hint));
                 } else {
                     mSearchHelper.setSearchType("2");
                     search_result_keyword.setText(Tools.getKeyWord());
-                    search_result_keyword.setTextColor(
-                            getResources().getColor(R.color.search_title_hint));
                 }
             }
 
