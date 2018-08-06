@@ -35,6 +35,7 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.media.MediaCode;
@@ -67,6 +68,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -365,17 +367,19 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                 .loadRequestRepositoryFactory(this.getApplicationContext());
         List<Book> books = factory.loadBooks();
         if (books != null && books.size() > 0) {
+            Collections.sort(books, new CommonContract.MultiComparator(2));
             List<String> bookIds = new ArrayList<>();
             List<Book> duplicateBooks = new ArrayList<>();
-            for (int i = books.size() - 1; i >= 0; i--) {
-                Book book = books.get(i);
+            for (Book book : books) {
                 if (bookIds.contains(book.getBook_id())) { //重复书籍
                     duplicateBooks.add(book);
                 } else {
                     bookIds.add(book.getBook_id());
                 }
             }
-            factory.deleteBooksById(duplicateBooks);
+            if (duplicateBooks.size() > 0) {
+                factory.deleteBooksById(duplicateBooks);
+            }
         }
     }
 
