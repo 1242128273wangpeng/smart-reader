@@ -159,9 +159,9 @@ class CoverPagePresenter(private val book_id: String?,
         if (clickedCatalog) {
             handleCatalogAction(intent, 0, false)
         } else {
-            if(coverDetail?.last_chapter != null){
+            if (coverDetail?.last_chapter != null) {
                 handleCatalogAction(intent, coverDetail?.last_chapter!!.serial_number - 1, true)
-            }else{
+            } else {
                 handleCatalogAction(intent, 0, false)
             }
         }
@@ -505,20 +505,19 @@ class CoverPagePresenter(private val book_id: String?,
      * 获取封面页推荐书籍，随机推荐
      */
 
-    fun requestCoverRecommendRandom(booksize: Int) {
+    fun requestCoverRecommendRandom(bookSize: Int) {
 
         if (book_id != null && !TextUtils.isEmpty(book_id)) {
             val bookIDs: String = loadBookShelfID()
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommend(book_id, bookIDs, object : RequestSubscriber<RecommendBooks>() {
                 override fun requestResult(result: RecommendBooks?) {
+
                     if (result?.znList != null) {
-                        if (result!!.znList!!.size <= booksize) {
-                            coverPageContract.showRecommendSuccess(result.znList!!)
+                        if (result.znList!!.size > bookSize) {
+                            coverPageContract.showRecommendSuccess(getRandomBooks(bookSize, result.znList!!))
                         } else {
-                            coverPageContract.showRecommendSuccess(getRandowmBooks(booksize, result.znList!!))
-
+                            coverPageContract.showRecommendSuccess(result.znList!!)
                         }
-
                     } else {
                         coverPageContract.showRecommendFail()
                     }
@@ -536,11 +535,11 @@ class CoverPagePresenter(private val book_id: String?,
      * 从数据源中随机获取定长度的书
      * 开始下标随机，后面书籍顺序累计添加
      */
-    fun getRandowmBooks(size: Int, books: ArrayList<RecommendBean>): ArrayList<RecommendBean> {
+    fun getRandomBooks(size: Int, books: ArrayList<RecommendBean>): ArrayList<RecommendBean> {
         var resultList = ArrayList<RecommendBean>()
         var randow = Random()
         var startIndex = randow.nextInt(books.size)
-        for (i in 0 until size) {
+        for (i in 1..size) {
             resultList.add(books[startIndex % books.size])
             startIndex++
         }

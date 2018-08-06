@@ -28,6 +28,7 @@ import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.view.ReaderDeleteBookmarkPopup
 import kotlinx.android.synthetic.qbmfkkydq.frag_catalog_mark.*
 import kotlinx.android.synthetic.qbmfkkydq.item_reader_bookmark.view.*
+import kotlinx.android.synthetic.qbmfkkydq.item_reader_catalog.view.*
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
@@ -71,11 +72,11 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 super.onLayoutChildren(recycler, state)
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != 0) {
-                    if (firstVisibleItemPosition == -1) {
+                   /* if (firstVisibleItemPosition == -1) {
                         ckb_catalog_order.visibility = View.GONE
                     }else{
                         ckb_catalog_order.visibility = View.VISIBLE
-                    }
+                    }*/
                     return
                 }
                 val lastVisibleItemPosition = findLastVisibleItemPosition()
@@ -270,24 +271,23 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                     onItemClick?.onClick(v)
                 }
 
-                val textView = (itemView as TextView)
-
-                textView.text = "${data.name}"
-
                 val chapterExist = DataCache.isChapterCached(data)
 
-                var color: Int
-
-                color = when {
-                    chapterExist -> Color.parseColor("#E5000000")
-                    else -> Color.parseColor("#4C000000")
+                if (chapterExist) {
+                    itemView.txt_chapter_cache_state.visibility = View.VISIBLE
+                } else {
+                    itemView.txt_chapter_cache_state.visibility = View.GONE
                 }
 
-                if (data.name?.equals(ReaderStatus.chapterName) == true) {
-                    color = Color.parseColor("#CCC2B282")
+                val color = if (data.name?.equals(ReaderStatus.chapterName) == true) {
+                    Color.parseColor("#CCC2B282")
+                }else{
+                    Color.parseColor("#99A0AA")
                 }
 
-                textView.setTextColor(color)
+                (itemView.txt_chapter_name as TextView).text = data.name
+
+                (itemView.txt_chapter_name as TextView).setTextColor(color)
             }
         }
     }

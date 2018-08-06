@@ -51,6 +51,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
+    private var mBook: Book? = null
+
     private var bookId: String? = null
     private var bookSourceId: String? = null
     private var bookChapterId: String = ""
@@ -193,6 +195,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showCoverDetail(book: Book?) {
+
+        mBook = book
+
         if (isFinishing) {
             // Monkey
             return
@@ -326,8 +331,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.setOnClickListener {
 
             var data = HashMap<String, String>()
-            data.put("bookid", bookId + "")
-            /*data.put("name", bookVo?.name + "")*/
+            data.put("bookid", mBook?.book_id + "")
+            data.put("name", mBook?.name + "")
             data.put("lablekey", text)
             data.put("rank", index.toString())
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
@@ -421,7 +426,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         val recommendBooks = mRecommendBooks[position]
 
         val data = HashMap<String, String>()
-        data.put("bookid", recommendBooks.bookId)
+        bookId?.let { data.put("bookid", it) }
         data.put("TbookID", recommendBooks.bookId)
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
                 StartLogClickUtil.RECOMMENDEDBOOK, data)

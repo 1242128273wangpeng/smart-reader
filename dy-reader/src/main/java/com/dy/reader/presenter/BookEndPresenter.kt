@@ -8,6 +8,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
@@ -266,7 +267,6 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
     }
 
 
-
     private fun subRecommendList(recommends: ArrayList<RecommendBean>, scale: Int): ArrayList<List<RecommendBean>> {
 
         val result = ArrayList<List<RecommendBean>>()
@@ -291,8 +291,12 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
 
         recommendList.clear()
 
+        if (recommendBookList.size <= 6) {
+            CommonUtil.showToastMessage("没有书籍可换了~")
+        }
+
         for (i in recommendIndex until recommendIndex + 6) {
-            recommendList.add(recommendBookList[i%recommendBookList.size])
+            recommendList.add(recommendBookList[i % recommendBookList.size])
         }
 
         recommendIndex += 6

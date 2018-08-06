@@ -80,7 +80,6 @@ public class SearchSuggestAdapter extends BaseAdapter {
                     if (convertView != null) {
                         hodler = new ViewHolder();
                         hodler.iv_icon = convertView.findViewById(R.id.iv_icon);
-                        hodler.iv_type = convertView.findViewById(R.id.iv_type);
                         hodler.tv_2 = convertView.findViewById(R.id.tv_search_item_2);
                         convertView.setTag(hodler);
                     }
@@ -93,15 +92,12 @@ public class SearchSuggestAdapter extends BaseAdapter {
                     switch (type) {
                         case "author":
                             hodler.iv_icon.setImageResource(R.drawable.search_icon_personal);
-                            hodler.iv_type.setImageResource(R.drawable.search_author);
                             break;
                         case "label":
                             hodler.iv_icon.setImageResource(R.drawable.search_icon_bookmark);
-                            hodler.iv_type.setImageResource(R.drawable.search_biaoqian);
                             break;
                         case "name":
                             hodler.iv_icon.setImageResource(R.drawable.search_icon_book);
-                            hodler.iv_type.setImageResource(R.drawable.search_book);
                             break;
                     }
 
@@ -139,7 +135,6 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         TextView tv_2;
-        ImageView iv_type;
         ImageView iv_icon;
     }
 

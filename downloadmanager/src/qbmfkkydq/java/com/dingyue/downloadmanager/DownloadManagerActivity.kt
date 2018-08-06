@@ -147,6 +147,9 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                 checkAll(false)
             }
         }
+        txt_head_finished.setOnClickListener {
+            dismissMenu()
+        }
         txt_head_title.setOnClickListener {
             finish()
         }
@@ -319,6 +322,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_title.text = getString(R.string.edit_cache)
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.VISIBLE
+        txt_head_finished.visibility = View.VISIBLE
 
         DownloadManagerLogger.uploadCacheManagerEdit()
     }
@@ -334,6 +338,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_title.text = getString(R.string.download_manager)
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.GONE
+        txt_head_finished.visibility = View.GONE
 
         DownloadManagerLogger.uploadCacheMangerEditCancel()
     }

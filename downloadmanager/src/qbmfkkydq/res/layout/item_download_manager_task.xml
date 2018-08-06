@@ -21,8 +21,8 @@
             android:layout_gravity="start|center"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/download_manager_item_uncheck_icon"
-            android:contentDescription="@string/module_name"/>
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/download_manager_item_uncheck_icon"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -81,13 +81,14 @@
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="14dp"
             android:layout_toEndOf="@id/img_cover"
             android:layout_toLeftOf="@id/img_download"
             android:layout_toRightOf="@id/img_cover"
             android:layout_toStartOf="@id/img_download"
             android:ellipsize="end"
             android:singleLine="true"
+            android:textSize="16sp"
             tools:text="凡人修仙传"/>
 
         <RelativeLayout
@@ -102,7 +103,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginRight="20dp"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="22dp"
             android:layout_toLeftOf="@id/img_download"
             android:layout_toStartOf="@id/img_download">
 
