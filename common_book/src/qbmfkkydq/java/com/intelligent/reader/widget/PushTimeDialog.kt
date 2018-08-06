@@ -28,7 +28,7 @@ class PushTimeDialog(val activity: Activity) {
         val params = window.attributes
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        window.setWindowAnimations(R.style.BottomPopupDialog)
+//        window.setWindowAnimations(R.style.BottomPopupDialog)
 
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)

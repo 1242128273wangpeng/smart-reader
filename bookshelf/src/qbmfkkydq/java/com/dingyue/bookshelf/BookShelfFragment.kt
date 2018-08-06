@@ -188,7 +188,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //        设置默认排序方式为添加时间
-        Constants.book_list_sort_type = 2
+        Constants.book_list_sort_type = CommonContract.queryBookSortingType()
 
     }
 
