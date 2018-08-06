@@ -30,6 +30,7 @@
             android:background="@drawable/background_dialog_button"
             android:gravity="center"
             android:minWidth="24dp"
+            android:visibility="gone"
             android:singleLine="true"
             android:text="@string/cancel"/>
 
