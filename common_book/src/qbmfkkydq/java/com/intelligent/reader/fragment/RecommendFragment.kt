@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.ding.basic.request.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -30,7 +31,12 @@ class RecommendFragment : Fragment() {
     companion object {
         var canScroll = true
     }
+    var statusBarHeight=0;
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        statusBarHeight=getResources().getDimensionPixelSize(getResources().getIdentifier("status_bar_height", "dimen", "android"));
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -51,12 +57,19 @@ class RecommendFragment : Fragment() {
             canScroll = scrollY <= 1
         })
 
-
+        ll_search_layout.post{
+            if(statusBarHeight==0){
+                statusBarHeight=AppUtils.dip2px(context,20f)
+            }
+            val params:LinearLayout.LayoutParams= ll_search_layout.layoutParams as LinearLayout.LayoutParams;
+            params.topMargin=params.topMargin+statusBarHeight;
+        }
         view_pager.post {
             val params = view_pager.layoutParams
             // ViewPager高度为屏幕高度减去TabLayout,导航栏和状态栏
+
             params.height = view_pager.context.resources.displayMetrics
-                    .heightPixels - AppUtils.dip2px(context, 34f + 50f + 20f)
+                    .heightPixels - AppUtils.dip2px(context, 34f + 50f + 13f)
 
         }
 
