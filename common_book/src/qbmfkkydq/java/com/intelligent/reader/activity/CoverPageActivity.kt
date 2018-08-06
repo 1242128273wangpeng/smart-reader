@@ -258,25 +258,41 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             if (flowLayout != null) {
+                val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
                 flowLayout!!.removeAllViews()
-                if (!TextUtils.isEmpty(book.label) && !book.fromQingoo()) {
-                    flowLayout.visibility = VISIBLE
-//                    左郁flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
-                    flowLayout!!.rowSpacing = 17f
-                    flowLayout!!.maxRows = 1
-                    if (book.label != null) {
-                        val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                        lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
-                        dummyTexts.indices
-                                .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
-                                .map { buildLabel(dummyTexts[it], it) }
-                                .forEach { flowLayout!!.addView(it, lp) }
 
-                    }
-                } else {
-                    flowLayout.visibility = GONE
+                if(book.status == "SERIALIZE"){
+                    flowLayout.addView(buildLabel("连载中", 0),lp)
+                }else if (book.update_status == 1 ) {
+                    flowLayout.addView(buildLabel("完结", 0),lp)
                 }
+                if (!TextUtils.isEmpty(book.sub_genre)){
+                    flowLayout.addView(buildLabel(book.sub_genre!!,1),lp)
+                }
+                if(!TextUtils.isEmpty(book.word_count)){
+                    flowLayout.addView(buildLabel(AppUtils.getWordNums(book.word_count!!.toLong()),2),lp)
+                }
+
+
+//                if (!TextUtils.isEmpty(book.label) && !book.fromQingoo()) {
+//                    flowLayout.visibility = VISIBLE
+////                    左郁flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
+//                    flowLayout!!.rowSpacing = 17f
+//                    flowLayout!!.maxRows = 1
+//                    if (book.label != null) {
+//                        val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+//                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                        lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
+//                        dummyTexts.indices
+//                                .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
+//                                .map { buildLabel(dummyTexts[it], it) }
+//                                .forEach { flowLayout!!.addView(it, lp) }
+//
+//                    }
+//                } else {
+//                    flowLayout.visibility = GONE
+//                }
             }
 
         } else {
@@ -328,24 +344,24 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
 
         textView.setPadding(left, top, right, bottom)
-        textView.setOnClickListener {
-
-            var data = HashMap<String, String>()
-            data.put("bookid", mBook?.book_id + "")
-            data.put("name", mBook?.name + "")
-            data.put("lablekey", text)
-            data.put("rank", index.toString())
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
-
-
-            val intent = Intent()
-            intent.setClass(this, LabelsDetailActivity::class.java)
-            intent.putExtra("url", RequestService.LABEL_SEARCH_V4 + "?keyword=" + text)
-            intent.putExtra("title", text)
-            intent.putExtra("fromCover", true)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            startActivity(intent)
-        }
+//        textView.setOnClickListener {
+//
+//            var data = HashMap<String, String>()
+//            data.put("bookid", bookId + "")
+//            /*data.put("name", bookVo?.name + "")*/
+//            data.put("lablekey", text)
+//            data.put("rank", index.toString())
+//            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
+//
+//
+//            val intent = Intent()
+//            intent.setClass(this, LabelsDetailActivity::class.java)
+//            intent.putExtra("url", RequestService.LABEL_SEARCH_V4 + "?keyword=" + text)
+//            intent.putExtra("title", text)
+//            intent.putExtra("fromCover", true)
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+//            startActivity(intent)
+//        }
 
 
         return textView

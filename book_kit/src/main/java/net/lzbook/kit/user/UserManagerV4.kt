@@ -7,14 +7,12 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.util.Base64
-import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
-import com.ding.basic.repository.InternetRequestRepository
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
@@ -85,7 +83,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     var failedCallback: ((String) -> Unit)? = null
     var mInitCallback: ((Boolean) -> Unit)? = null
     private var mInited = false
-    val repositoryFactory: RequestRepositoryFactory by lazy {
+    private val repositoryFactory: RequestRepositoryFactory by lazy {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
     }
 
@@ -308,15 +306,13 @@ object UserManagerV4 : IWXAPIEventHandler {
     }
 
 
-
-
-    private fun onLogout(onLogout: (() -> Unit)?) {
-        uploadReadInfo {
+    private fun onLogout(onLogout: (() -> Unit)? = null) {
+        upUserReadInfo { success ->
             mUserState.set(false)
             this.user = null
             repositoryFactory.deleteLoginUser()//删除用户信息
             repositoryFactory.deleteShelfBook()// 移除书架
-            val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+            val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
             bookDataProviderHelper.deleteAllBookMark() //移除书签
             bookDataProviderHelper.deleteAllHistory() // 移除足迹
             repositoryFactory.requestLogout(object : RequestSubscriber<BasicResultV4<String>>() {
@@ -338,9 +334,9 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 登出上传操作---------------------开始
      */
-    private fun uploadReadInfo(onComplete: (() -> Unit)? = null) {
+    private fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
         user?.let {
-            val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(context = context)
+            val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
             repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)
                     .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
                     .flatMap {
@@ -351,15 +347,16 @@ object UserManagerV4 : IWXAPIEventHandler {
                     }
                     .subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
                         override fun onError(t: Throwable?) {
-                            onComplete?.invoke()
+                            onComplete?.invoke(false)
 
                         }
 
                         override fun onNext(t: BasicResultV4<String>?) {
-                            onComplete?.invoke()
+                            onComplete?.invoke(true)
                         }
 
                         override fun onComplete() {
+
                         }
 
                     })

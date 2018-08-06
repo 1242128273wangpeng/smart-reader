@@ -23,7 +23,7 @@ import android.widget.TextView;
 public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
 
     private final ImageView mImage;
-    private final TextView mName, mBrowTime, mAuthor, mDesc;
+    private final TextView mName, mBrowTime, mAuthor;
 
     public HistoryHolder(View itemView,
             ShelfItemClickListener shelfItemClickListener,
@@ -35,7 +35,6 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
         mName = (TextView) itemView.findViewById(R.id.book_shelf_name);
         mBrowTime = (TextView) itemView.findViewById(R.id.book_shelf_update_time);
         mAuthor = (TextView) itemView.findViewById(R.id.book_shelf_author);
-        mDesc = (TextView) itemView.findViewById(R.id.footprint_item_desc);
     }
 
     @Override
@@ -48,9 +47,7 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
             mAuthor.setText("作者: " + book.getAuthor());
         }
 
-        if (!TextUtils.isEmpty(book.getDesc())) {
-            mDesc.setText(book.getDesc());
-        }
+
 
         if (this.mBrowTime != null) {
             this.mBrowTime.setText(Tools.logTime(AppUtils.min_formatter, book.getBrowse_time()));

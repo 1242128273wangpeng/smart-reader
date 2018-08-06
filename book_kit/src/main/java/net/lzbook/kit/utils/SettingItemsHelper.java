@@ -1,5 +1,6 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.data.bean.SettingItems;
 
 import android.content.Context;
@@ -56,7 +57,12 @@ public class SettingItemsHelper {
 
         settings.isFollowSystemBrightness = getBoolean(followSystemBrightness, true);
         settings.appBrightness = getInt(appBrightness, -1);
-        settings.booklist_sort_type = getInt(booklistSortType, 0);
+        if (BaseBookApplication.getGlobalContext().getPackageName().equals("cn.qbmfkkydq.reader")){
+            // 全本免费快看阅读器默认排序方式为添加顺序
+            settings.booklist_sort_type = getInt(booklistSortType, 2);
+        }else{
+            settings.booklist_sort_type = getInt(booklistSortType, 0);
+        }
         settings.isVolumeTurnover = getBoolean(volumeTurnover, true);
         AppLog.d("SettingItemsHelper", settings.toString());
         return settings;
