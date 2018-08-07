@@ -6,7 +6,6 @@ import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
 import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.read.mode.NovelPageBean
-import kotlinx.android.synthetic.qbmfxsydq.item_reader_cover.view.*
 
 /**
  * Desc 书籍封面Holder
@@ -18,14 +17,22 @@ class HomePagerHolder(private val parent: ViewGroup, private val textColor: Int)
         PagerScrollAdapter.ReaderPagerHolder(itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_reader_cover, parent, false)) {
 
+    init {
+        book_name_tv = itemView.findViewById(R.id.txt_reader_book)
+        book_auth_tv = itemView.findViewById(R.id.txt_reader_author)
+        slogan_tv = itemView.findViewById(R.id.txt_reader_slogan)
+        product_name_tv = itemView.findViewById(R.id.txt_reader_product)
+    }
+
     override fun bindHolder(pageLines: NovelPageBean) {
-        itemView.txt_reader_book.text = ReaderStatus.book.name
-        itemView.txt_reader_book.setTextColor(textColor)
+        book_name_tv.text = ReaderStatus.book.name
+        book_auth_tv.text = ReaderStatus.book.author
+        slogan_tv.setTextView(2f, parent.context.resources.getString(R.string.reader_slogan))
+        product_name_tv.setTextView(1f, parent.context.resources.getString(R.string.application_name))
 
-        itemView.txt_reader_author.text = ReaderStatus.book.author
-        itemView.txt_reader_author.setTextColor(textColor)
-
-        itemView.txt_reader_product.text = parent.context.resources.getString(R.string.application_name)
-        itemView.txt_reader_product.setTextColor(textColor)
+        book_name_tv.setTextColor(textColor)
+        book_auth_tv.setTextColor(textColor)
+        slogan_tv.setTextColor(textColor)
+        product_name_tv.setTextColor(textColor)
     }
 }

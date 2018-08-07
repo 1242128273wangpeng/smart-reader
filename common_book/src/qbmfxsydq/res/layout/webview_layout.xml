@@ -67,7 +67,7 @@
                 android:layout_marginRight="13.5dp"
                 android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
-                android:src="@drawable/bookshelf_head_download_manager_icon" />
+                android:src="@drawable/bookshelf_head_cache_icon" />
 
         </RelativeLayout>
 

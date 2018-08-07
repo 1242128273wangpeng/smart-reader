@@ -238,8 +238,8 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     private var loadingPage: LoadingPage? = null
 
     override fun setChangeAble(enable: Boolean) {
-        rbtn_bookmark.isClickable = enable
-        rbtn_catalog.isClickable = enable
+        rbtn_bookmark?.isClickable = enable
+        rbtn_catalog?.isClickable = enable
     }
 
     override fun onLoading() {

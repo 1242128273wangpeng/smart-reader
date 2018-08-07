@@ -18,18 +18,15 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.qbmfxsydq.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.qbmfxsydq.frag_bookshelf.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
 import java.util.HashMap
 
@@ -132,7 +129,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
-                refreshHeader.txt_refresh_title.text = getString(R.string.refresh_running)
+                refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_running)
                 refreshHeader.img_refresh_arrow.visibility = View.GONE
                 refreshHeader.pgbar_refresh_loading.visibility = View.VISIBLE
                 checkBookUpdate()
@@ -142,25 +139,24 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
             override fun onPullEnable(enable: Boolean) {
                 refreshHeader.pgbar_refresh_loading.visibility = View.GONE
-                refreshHeader.txt_refresh_title.text = if (enable) getString(R.string.refresh_release) else getString(R.string.refresh_start)
+                refreshHeader.txt_refresh_prompt.text = if (enable) getString(R.string.refresh_release) else getString(R.string.refresh_start)
                 refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
                 refreshHeader.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
             }
         })
-        btn_go_bookstore.setOnClickListener {
+        btn_find.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
         }
-        btn_log_in.setOnClickListener{
+        btn_login.setOnClickListener{
             val data = HashMap<String, String>()
-            data.put("type", "1")
+            data["type"] = "1"
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LOGIN, data)
             RouterUtil.navigation(requireActivity(), RouterConfig.LOGIN_ACTIVITY)
         }
 
         img_head_setting.setOnClickListener {
             BookShelfLogger.uploadBookShelfPersonal()
-            EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_personal))
             RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
         }
 
@@ -225,9 +221,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private fun initRecyclerView() {
         srl_refresh.setHeaderViewBackgroundColor(0x00000000)
-        srl_refresh.setHeaderView(refreshHeader)
+        srl_refresh.setHeaderView(createHeaderView())
         srl_refresh.isTargetScrollWithLayout = true
-
         recl_content.recycledViewPool.setMaxRecycledViews(0, 12)
 
         val layoutManager = ShelfGridLayoutManager(requireActivity(), 1)
@@ -243,6 +238,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         recl_content.adapter = bookShelfAdapter
     }
+
+    private fun createHeaderView(): View {
+        refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_start)
+        refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
+        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        refreshHeader.pgbar_refresh_loading.visibility = View.GONE
+        return refreshHeader
+    }
+
 
     /**
      * 查Book数据库更新界面

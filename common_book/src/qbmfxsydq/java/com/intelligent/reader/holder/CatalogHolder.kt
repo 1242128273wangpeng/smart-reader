@@ -1,16 +1,11 @@
 package com.intelligent.reader.holder
 
-import android.content.Context
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.ding.basic.bean.Chapter
-import com.dy.reader.Reader.context
 import com.intelligent.reader.adapter.CataloguesAdapter
-import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.view.*
 import kotlinx.android.synthetic.qbmfxsydq.content_catalog_item.view.*
-import kotlinx.android.synthetic.qbmfxsydq.item_book_catalog.view.*
 
 /**
  * Date: 2018/6/29 14:07
@@ -22,7 +17,7 @@ class CatalogHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(chapter: Chapter, selected: Boolean, cached: Boolean, chapterItemClickListener: CataloguesAdapter.ChapterItemClickListener?) {
         if (selected) {
-            itemView.catalog_chapter_name.setTextColor(Color.parseColor("#1dbfbb"))
+            itemView.catalog_chapter_name.setTextColor(Color.parseColor("#1DBFBB"))
         } else {
             if (cached) {
                 itemView.catalog_chapter_name.setTextColor(Color.parseColor("#616161"))

@@ -66,8 +66,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         popup.setOnDeletedClickListener {
             deleteCache(downloadManagerAdapter.checkedBooks)
         }
-        popup.setOnCancelClickListener {
-            dismissMenu()
+        popup.setOnSelectAllClickListener { isSelectAll ->
+            checkAll(isSelectAll)
         }
         popup
     }
@@ -132,17 +132,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             DownloadManagerLogger.uploadCacheManagerBack()
             finish()
         }
-        txt_head_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@setOnClickListener
-            }
-            if (txt_head_select_all.text == getString(R.string.select_all)) {
-                txt_head_select_all.text = getString(R.string.select_all_cancel)
-                checkAll(true)
-            } else {
-                txt_head_select_all.text = getString(R.string.select_all)
-                checkAll(false)
-            }
+        txt_head_cancel.setOnClickListener {
+            dismissMenu()
         }
         txt_head_title.setOnClickListener {
             finish()
@@ -156,7 +147,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         recl_content.addItemDecoration(DownloadItemDecoration(object : DownloadItemDecoration.DownloadHeaderInterface {
             override fun requestItemCacheState(position: Int): Boolean? {
                 return if (position > -1 && downloadBooks.size > position) {
-                    CacheManagerContract.loadBookDownloadState(downloadBooks[position]) != DownloadState.FINISH
+                    CacheManagerContract.loadBookDownloadState(downloadBooks[position]) == DownloadState.FINISH
                 } else {
                     null
                 }
@@ -173,10 +164,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                     } else {
                         view.txt_state.text = getString(R.string.not_cache)
                     }
-
-                   /* if (position == 0) {
-                        view.view_divider.visibility = View.GONE
-                    }*/
 
                     view
                 } else {
@@ -283,7 +270,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         } else {
             downloadManagerAdapter.insertCheckedPosition(position)
             removeMenuPopup.setSelectedNum(downloadManagerAdapter.checkedBooks.size)
-            txt_head_select_all.text = if (downloadManagerAdapter.isCheckAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
+            val allText = if (downloadManagerAdapter.isCheckAll()) getString(R.string.select_all_cancel) else getString(R.string.select_all)
+            removeMenuPopup.setSelectAllText(allText)
         }
     }
 
@@ -301,9 +289,11 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         recl_content.setPadding(0, recl_content.paddingTop, 0, popupHeight)
 
         img_head_more.visibility = View.GONE
-        img_head_back.visibility = View.GONE
-        txt_head_select_all.text = getString(R.string.select_all)
-        txt_head_select_all.visibility = View.VISIBLE
+
+        txt_head_title.text = getString(R.string.edit_cache)
+        txt_head_cancel.text = getString(R.string.cancel)
+
+        txt_head_cancel.visibility = View.VISIBLE
 
         DownloadManagerLogger.uploadCacheManagerEdit()
     }
@@ -317,9 +307,8 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         img_head_more.visibility = View.VISIBLE
         img_head_back.visibility = View.VISIBLE
         txt_head_title.text = getString(R.string.download_manager)
-        txt_head_select_all.text = getString(R.string.select_all)
-        txt_head_select_all.visibility = View.GONE
-
+        txt_head_cancel.visibility = View.GONE
+        img_head_more.visibility = View.VISIBLE
         DownloadManagerLogger.uploadCacheMangerEditCancel()
     }
 

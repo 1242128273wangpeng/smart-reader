@@ -25,7 +25,7 @@
             android:gravity="center"
             android:soundEffectsEnabled="true"
             android:text="@string/edit"
-            android:textColor="@color/text_color_dark"
+            android:textColor="#FF212832"
             android:textSize="13sp"/>
 
         <TextView
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:soundEffectsEnabled="true"
             android:text="@string/sort_for_update_time"
-            android:textColor="@color/text_color_dark"
+            android:textColor="#FF212832"
             android:textSize="13sp"/>
 
         <TextView
@@ -47,7 +47,7 @@
             android:gravity="center"
             android:soundEffectsEnabled="true"
             android:text="@string/sort_for_reading_time"
-            android:textColor="@color/text_color_dark"
+            android:textColor="#FF212832"
             android:textSize="13sp"/>
     </LinearLayout>
 

@@ -2,10 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white">
+    android:background="#FFFFFF"
+    tools:ignore="MissingPrefix">
 
     <RelativeLayout
         android:id="@+id/rl_head"
@@ -24,26 +26,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
                 android:paddingEnd="0dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="0dp"
                 android:paddingStart="16dp"
-                android:src="@drawable/icon_back_left"
+                android:src="@drawable/download_manager_head_back_icon"
                 app:onPressChangeAlpha="true"/>
 
             <TextView
                 android:id="@+id/txt_head_title"
-                style="@style/download_manager_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="@string/download_manager"
-                android:textColor="@color/color_white"/>
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"/>
 
             <TextView
-                android:id="@+id/txt_head_select_all"
-                style="@style/download_manager_select_all"
+                android:id="@+id/txt_head_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -54,9 +56,10 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="0dp"
                 android:gravity="center_vertical"
-                android:text="@string/select_all"
+                android:text="@string/cancel"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
                 android:visibility="gone"
-                android:textColor="@color/color_white"
                 app:onPressChangeAlpha="true"/>
 
             <ImageView
@@ -66,6 +69,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
                 android:paddingEnd="16dp"
                 android:paddingLeft="0dp"
                 android:paddingRight="16dp"
@@ -98,16 +102,17 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/download_manager_empty_icon"/>
 
         <TextView
             android:id="@+id/txt_empty_desc"
-            style="@style/download_manager_empty_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/download_manager_no_book_desc"
-            android:textColor="@color/text_color_plain"/>
+            android:textColor="#FF5D646E"
+            android:textSize="14sp"/>
 
     </LinearLayout>
 
@@ -116,6 +121,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_head"
+        android:contentDescription="@string/module_name"
         android:scaleType="fitXY"
         android:src="@drawable/download_manager_top_shadow_bg"
         android:visibility="gone"/>
