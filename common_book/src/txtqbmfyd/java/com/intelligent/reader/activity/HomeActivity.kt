@@ -31,6 +31,7 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.activity.DisclaimerActivity
@@ -45,6 +46,7 @@ import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
+import com.reyun.tracking.sdk.Tracking
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -181,7 +183,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         this.changeHomePagerIndex(currentIndex)
         this.setNightMode(false)
-
         StatService.onResume(this)
     }
 
@@ -384,6 +385,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
 
+        txt_qq_add.setOnClickListener {
+            if(!AppUtils.joinQQGroup(this,"7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F")){
+                CommonUtil.showToastMessage(R.string.setting_qq_add_fail)
+            }
+        }
         txt_clear_cache_message.text = applicationContext.getString(R.string.application_cache_size)
     }
 
@@ -523,6 +529,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             closed = true
             restoreSystemDisplayState()
             ATManager.exitClient()
+            Tracking.exitSdk();
             super.onBackPressed()
         }
 

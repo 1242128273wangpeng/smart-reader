@@ -101,6 +101,18 @@
         tools:ignore="RtlSymmetry"/>
 
     <TextView
+        android:id="@+id/txt_qq_add"
+        style="@style/style_text_normal_dark"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:drawableRight="@mipmap/board_more_nor_icon"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="20dp"
+        android:text="@string/setting_qq_add"
+        tools:ignore="RtlSymmetry"/>
+
+    <TextView
         android:id="@+id/txt_feedback"
         style="@style/style_text_normal_dark"
         android:layout_width="match_parent"
