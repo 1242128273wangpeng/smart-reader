@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_remove"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix">
 
     <ImageView
         android:id="@+id/img_bottom_shadow"
         android:layout_width="match_parent"
         android:layout_height="10dp"
+        android:contentDescription="@string/module_name"
         android:scaleType="fitXY"
         android:src="@drawable/download_manager_bottom_shadow_bg"/>
 
@@ -17,32 +19,31 @@
         android:id="@+id/ll_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/img_bottom_shadow"
+        android:layout_below="@id/img_bottom_shadow"
         android:background="@color/color_white"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="@dimen/dimen_margin_60"
+            android:layout_height="60dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/btn_select"
+                android:id="@+id/btn_select_all"
                 android:layout_width="140dp"
                 android:layout_height="38dp"
                 android:layout_centerInParent="true"
-                android:layout_weight="1"
-                android:background="@drawable/bookshelf_delete_cancel_bg"
+                android:background="@drawable/download_manager_remove_select_all_bg"
                 android:gravity="center"
                 android:text="@string/select_all"
-                android:textColor="@drawable/bookshelf_delete_cancel_text_color"
+                android:textColor="@drawable/download_manager_remove_select_all_text_sel"
                 android:textSize="16sp"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="@dimen/dimen_margin_60"
+            android:layout_height="60dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1">
 
@@ -51,19 +52,17 @@
                 android:layout_width="140dp"
                 android:layout_height="38dp"
                 android:layout_centerInParent="true"
-                android:layout_weight="1"
-                android:background="@drawable/bookshelf_delete_submit_bg"
+                android:background="@drawable/download_manager_remove_delete_bg"
                 android:gravity="center"
                 android:text="@string/delete_cache"
-                android:textColor="@drawable/bookshelf_delete_submit_text_color"
-                android:textSize="16sp"
-                app:onPressChangeAlpha="true"/>
+                android:textColor="@drawable/download_manager_remove_delete_text_sel"
+                android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_below="@+id/img_bottom_shadow"
+        android:layout_below="@id/img_bottom_shadow"
         android:visibility="gone"/>
 </RelativeLayout>
