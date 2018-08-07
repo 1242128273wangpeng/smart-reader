@@ -17,6 +17,7 @@ import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.upush.PushMessageHandler;
 import com.intelligent.reader.upush.PushNotificationHandler;
 import com.intelligent.reader.upush.PushRegisterCallback;
+import com.reyun.tracking.sdk.Tracking;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.umeng.commonsdk.UMConfigure;
@@ -100,13 +101,22 @@ public class BookApplication extends BaseBookApplication {
             setRxJavaErrorHandler();
         }
 
-        // 友盟推送初始化
-        if (!AppUtils.hasUPush()) return;
+
         try {
             ApplicationInfo appInfo = getPackageManager()
                     .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             String umengAppkey = appInfo.metaData.getString("UMENG_APPKEY");
             String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
+            if(AppUtils.hasReYun()){
+
+                String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
+                AppLog.e("reyun",reyunAppKey);
+                Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),reyunAppKey,"_default_");
+            }
+
+            // 友盟推送初始化
+            if (!AppUtils.hasUPush()) return;
+
             if (pushSecret != null) {
                 UMConfigure.init(this, umengAppkey, AppUtils.getChannelId(),
                         1, pushSecret);
