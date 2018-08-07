@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
@@ -60,6 +62,7 @@ import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import swipeback.ActivityLifecycleHelper;
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -134,6 +137,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView txt_login_des;
     private boolean flagLoginEnd = true;
     private View mNightShadowView;
+    private boolean isFromPush = false;
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -319,6 +323,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         cacheAsyncTask.execute();
         String versionName = AppUtils.getVersionName();
         check_update_message.setText("V" + versionName);
+        isFromPush = getIntent().getBooleanExtra(IS_FROM_PUSH, false);
     }
 
     @Override
@@ -732,6 +737,20 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         UserManager.INSTANCE.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size() <= 1) {
+            startActivity(new Intent(this, SplashActivity.class));
+        }
+    }
+
+    @Override
+    public boolean supportSlideBack() {
+        return ActivityLifecycleHelper.getActivities().size() > 1;
     }
 
     private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
