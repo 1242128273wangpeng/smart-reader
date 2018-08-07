@@ -257,46 +257,56 @@ fun View.antiShakeClick(listener: View.OnClickListener) {
 }
 
 fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> Unit) {
-    loge("更新用户 PUSH 标签")
-    tagManager.getTags { isGet, allTags ->
-        loge("isGet: $isGet", "allTags: $allTags, size: ${allTags.size}")
-        if (!isGet) return@getTags
-        if (allTags?.isNotEmpty() == true && allTags[0]?.isNotEmpty() == true) {
-            tagManager.deleteTags({ isDelete, deleteResult ->
-                loge("isDelete: $isDelete", "result: $deleteResult")
-                if (!isDelete) return@deleteTags
-                addTags(context, udid, callback)
-            }, allTags.toTypedArray())
-        } else {
-            addTags(context, udid, callback)
-        }
-    }
-}
-
-private fun PushAgent.addTags(context: Context, udid: String,
-                              callback: (isSuccess: Boolean) -> Unit) {
-    loge("addTags")
+    loge("更新用户标签")
     RequestRepositoryFactory.loadRequestRepositoryFactory(context)
-            .requestPushTags(udid, object :RequestSubscriber<ArrayList<String>>(){
+            .requestPushTags(udid, object : RequestSubscriber<ArrayList<String>>() {
                 override fun requestResult(result: ArrayList<String>?) {
-                    if (result?.isNotEmpty() == true) {
-                        val addTags = result.toTypedArray()
-                        loge("tags: $addTags")
-                        tagManager.addTags({ isAdd, addResult ->
-                            loge("更新用户标签结果: $isAdd",
-                                    "addResult: $addResult")
-                            callback.invoke(isAdd)
-                        }, addTags)
-                    } else {
-                        loge("用户标签为空")
-                        callback.invoke(true)
+                    loge("获取用户新标签成功")
+                    deleteOldTags { isDelete ->
+                        if (!isDelete){
+                            callback.invoke(false)
+                            return@deleteOldTags
+                        }
+                        if (result?.isNotEmpty() == true) {
+                            val addTags = result.toTypedArray()
+                            loge("tags: $addTags")
+                            tagManager.addTags({ isAdd, addResult ->
+                                loge("添加用户新标签: $isAdd",
+                                        "addResult: $addResult")
+                                callback.invoke(isAdd)
+                            }, addTags)
+                        } else {
+                            loge("添加用户新标签: 空")
+                            callback.invoke(true)
+                        }
                     }
                 }
 
                 override fun requestError(message: String) {
+                    loge("获取用户新标签失败: error: $message")
                     callback.invoke(false)
                 }
             })
+}
+
+private fun PushAgent.deleteOldTags(callback: (isDelete: Boolean) -> Unit) {
+    tagManager.getTags { isGet, allTags ->
+        if (!isGet) {
+            callback.invoke(false)
+            loge("获取用户旧标签失败")
+            return@getTags
+        }
+        loge("用户旧标签 $allTags, size: ${allTags.size}")
+        if (allTags?.isNotEmpty() == true && allTags[0]?.isNotEmpty() == true) {
+            tagManager.deleteTags({ isDelete, deleteResult ->
+                loge("删除用户旧标签: $isDelete", "result: $deleteResult")
+                callback.invoke(isDelete)
+            }, allTags.toTypedArray())
+        } else {
+            loge("用户旧标签为空")
+            callback.invoke(true)
+        }
+    }
 
 }
 

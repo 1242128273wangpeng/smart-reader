@@ -40,6 +40,7 @@ class PushRegisterCallback(private val context: Context)
         val isSameDay = AppUtils.isToday(latestUpdateTime, currentTime)
         if (!isSameDay) {
             pushAgent.updateTags(context, udid) { isSuccess ->
+                loge("更新用户标签完成: $isSuccess")
                 if (isSuccess) {
                     share.putLong(SharedPreUtil.PUSH_TAG_LATEST_UPDATE_TIME, currentTime)
                 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import com.intelligent.reader.activity.SplashActivity
 import com.umeng.message.UmengNotifyClickActivity
 import com.umeng.message.entity.UMessage
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.openPushActivity
 import org.android.agoo.common.AgooConstants
@@ -27,9 +28,18 @@ class OfflineNotifyActivity : UmengNotifyClickActivity() {
         //自定义参数解析
         val msg = UMessage(JSONObject(body))
         if (msg.activity?.trim()?.isNotEmpty() == true) {
+            val data = mapOf(Pair("type", "1"))
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
+                    StartLogClickUtil.PUSHCLICK, data)
+
             openPushActivity(msg)
         } else {
             loge("umsg.activity 为空")
+
+            val data = mapOf(Pair("type", "1"))
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
+                    StartLogClickUtil.PUSHCLICK, data)
+
             val activities = ActivityLifecycleHelper.getActivities()
             if (activities == null || activities.isEmpty()) {
                 startActivity(Intent(this, SplashActivity::class.java))

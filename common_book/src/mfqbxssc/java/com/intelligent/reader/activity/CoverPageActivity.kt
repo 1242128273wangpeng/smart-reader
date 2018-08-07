@@ -38,6 +38,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -114,6 +115,8 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     private var coverPagePresenter: CoverPagePresenter? = null
 
+    private var isFromPush = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.cover_into)
@@ -153,6 +156,8 @@ class CoverPageActivity : BaseCacheableActivity(),
             if (intent.hasExtra(Constants.BOOK_CHAPTER_ID)) {
                 bookChapterId = intent.getStringExtra(Constants.BOOK_CHAPTER_ID)
             }
+
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
@@ -484,6 +489,17 @@ class CoverPageActivity : BaseCacheableActivity(),
         }
     }
 
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
 
 /*    private fun initAD() {
         if (!Constants.isHideAD) {

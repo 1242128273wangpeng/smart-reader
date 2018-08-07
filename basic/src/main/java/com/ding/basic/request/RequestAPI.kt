@@ -2,6 +2,7 @@ package com.ding.basic.request
 
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.util.ReplaceConstants
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
@@ -111,12 +112,23 @@ object RequestAPI {
     }
 
 
+    // v3 的登陆接口强制走阿里云服务器，也就是默认的 host
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
-        return requestService.requestLoginAction(parameters)
+        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
+                RequestService.LOGIN_ACTION
+        return requestService.requestLoginAction(url, parameters)
     }
 
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
-        return requestService.requestLogoutAction(parameters)
+        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
+                RequestService.LOGOUT_ACTION
+        return requestService.requestLogoutAction(url, parameters)
+    }
+
+    fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
+        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
+                RequestService.REFRESH_TOKEN
+        return requestService.requestRefreshToken(url, parameters)
     }
 
     fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
@@ -177,11 +189,6 @@ object RequestAPI {
 
     fun bindPhoneNumber(phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
         return requestService.bindPhoneNumber(phoneBody)
-    }
-
-
-    fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
-        return requestService.requestRefreshToken(parameters)
     }
 
     fun requestUserInformation(token: String, appid: String, openid: String): Flowable<QQSimpleInfo>? {
