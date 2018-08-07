@@ -3,7 +3,7 @@
 
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/accent"/>
+            <solid android:color="@color/primary"/>
             <corners android:radius="5dp"/>
         </shape>
     </item>
@@ -12,8 +12,8 @@
         <shape>
             <stroke
                 android:width="1dip"
-                android:color="@color/accent"/>
-            <solid android:color="#ffffff"/>
+                android:color="@color/primary"/>
+            <solid android:color="#FFFFFF"/>
             <corners android:radius="5dp"/>
         </shape>
     </item>

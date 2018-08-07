@@ -6,7 +6,7 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    tools:ignore="RtlHardcoded">
+    tools:ignore="RtlHardcoded, RtlSymmetry">
 
     <RelativeLayout
         android:id="@+id/rl_delete_content"
@@ -17,7 +17,7 @@
             android:id="@+id/ll_delete_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bookshelf_delete_dialog_bg"
+            android:background="@drawable/bookshelf_delete_bg"
             android:orientation="vertical"
             android:visibility="visible">
 
@@ -56,13 +56,12 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="25dp"
                 android:layout_marginRight="10dp"
-                android:button="@drawable/bookshelf_delete_dialog_ckb_sel"
+                android:button="@drawable/bookshelf_delete_check_box_sel"
                 android:checked="false"
                 android:paddingLeft="10dp"
                 android:text="@string/bookshelf_delete_dialog_check"
                 android:textColor="#777777"
-                android:textSize="14sp"
-                tools:ignore="RtlSymmetry"/>
+                android:textSize="14sp"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -82,10 +81,10 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/view_center_divider"
-                    android:background="@drawable/bookshelf_delete_dialog_cancel_bg_sel"
+                    android:background="@drawable/bookshelf_delete_cancel_sel"
                     android:gravity="center"
                     android:text="@string/cancel"
-                    android:textColor="@drawable/bookshelf_delete_dialog_cancel_color_sel"
+                    android:textColor="@drawable/bookshelf_delete_cancel_text_sel"
                     android:textSize="16sp"/>
 
                 <Button
@@ -94,10 +93,10 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_toRightOf="@id/view_center_divider"
-                    android:background="@drawable/bookshelf_delete_dialog_confirm_bg_sel"
+                    android:background="@drawable/bookshelf_delete_confirm_sel"
                     android:gravity="center"
                     android:text="@string/confirm"
-                    android:textColor="@drawable/bookshelf_delete_dialog_confirm_color_sel"
+                    android:textColor="@drawable/bookshelf_delete_confirm_text_sel"
                     android:textSize="16sp"/>
 
                 <include layout="@layout/dialog_divider"/>
@@ -108,7 +107,7 @@
             android:id="@+id/ll_loading_content"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:background="@drawable/bookshelf_delete_dialog_bg"
+            android:background="@drawable/bookshelf_delete_bg"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone">

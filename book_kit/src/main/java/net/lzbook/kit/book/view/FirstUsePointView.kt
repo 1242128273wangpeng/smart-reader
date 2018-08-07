@@ -139,4 +139,3 @@ class FirstUseManager(val context: Context) {
 }
 
 data class ConsumeEvent(@IdRes val id: Int)
-

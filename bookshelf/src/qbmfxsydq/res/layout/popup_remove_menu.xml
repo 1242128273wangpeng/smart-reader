@@ -8,11 +8,6 @@
     android:background="#FAFAFA"
     tools:ignore="RtlHardcoded">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#e8e8e8"/>
-
     <LinearLayout
         android:id="@+id/ll_remove_content"
         android:layout_width="match_parent"

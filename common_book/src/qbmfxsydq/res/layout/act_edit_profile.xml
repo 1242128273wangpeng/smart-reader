@@ -124,7 +124,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"
-            android:background="@drawable/blue_round_btn_bg"
+            android:background="@drawable/bookshelf_empty_login_bg"
             android:textSize="@dimen/text_size_16"
             android:textColor="@drawable/user_profile_btn_txt_color_selector"
             android:layout_height="wrap_content"/>

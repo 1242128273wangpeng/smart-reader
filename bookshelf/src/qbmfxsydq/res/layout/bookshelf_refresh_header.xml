@@ -6,22 +6,22 @@
     android:layout_height="500dp">
 
     <TextView
-        android:id="@+id/txt_refresh_title"
+        android:id="@+id/txt_refresh_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/refresh_start"
-        android:textColor="#999c9e"/>
+        android:textColor="#999C9E"/>
 
     <ProgressBar
         android:id="@+id/pgbar_refresh_loading"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/txt_refresh_title"
-        android:layout_toStartOf="@id/txt_refresh_title"
+        android:layout_toLeftOf="@id/txt_refresh_prompt"
+        android:layout_toStartOf="@id/txt_refresh_prompt"
         android:visibility="gone"/>
 
     <ImageView
@@ -29,9 +29,9 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/txt_refresh_title"
-        android:layout_toStartOf="@id/txt_refresh_title"
+        android:layout_toLeftOf="@id/txt_refresh_prompt"
+        android:layout_toStartOf="@id/txt_refresh_prompt"
         android:contentDescription="@null"
-        android:src="@drawable/refresh_down_arrow_icon"/>
+        android:src="@drawable/bookshelf_refresh_arrow_icon"/>
 
 </RelativeLayout>

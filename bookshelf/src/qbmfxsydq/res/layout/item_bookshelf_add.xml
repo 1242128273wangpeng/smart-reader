@@ -10,6 +10,7 @@
         android:layout_height="113dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
+        android:contentDescription="@string/module_name"
         android:src="@drawable/bookshelf_add_icon"/>
 
 </RelativeLayout>

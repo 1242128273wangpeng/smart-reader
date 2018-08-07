@@ -4,6 +4,6 @@
           android:state_enabled="true"
           android:state_pressed="true"/>
     <item>
-        <color android:color="#ffffff"/>
+        <color android:color="#FFFFFF"/>
     </item>
 </selector>
