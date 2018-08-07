@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
@@ -175,11 +176,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             coverPagePresenter?.refreshNavigationState()
         }
         CacheManager.listeners.add(this)
+        StatService.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
         CacheManager.listeners.remove(this)
+        StatService.onPause(this)
     }
 
 

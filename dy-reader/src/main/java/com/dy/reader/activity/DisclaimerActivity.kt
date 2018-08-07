@@ -3,6 +3,7 @@ package com.dy.reader.activity
 import android.os.Bundle
 import android.os.SystemClock
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dy.reader.R
@@ -95,5 +96,15 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
                 RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
     }
 }
