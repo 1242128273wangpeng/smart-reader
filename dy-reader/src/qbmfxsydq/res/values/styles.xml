@@ -17,6 +17,7 @@
         <item name="android:button">@drawable/reader_feedback_checkbox_sel</item>
     </style>
 
+
     <style name="dialog_menu" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>

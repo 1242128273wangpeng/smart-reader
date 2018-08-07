@@ -5,7 +5,6 @@ import android.app.DialogFragment
 import android.app.FragmentManager
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
@@ -18,49 +17,28 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfxsydq.frag_read_setting.*
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.CallBackDownload
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 
 /**
- * Created by yuchao on 2018/4/29 0029
+ * Created by yuchao on 2018/4/29 0029.
  */
-class ReadSettingFragment : DialogFragment() , CallBackDownload {
-    override fun onTaskStatusChange(book_id: String?) {
-      /*  if(dialog != null){
-            dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }*/
-
-    }
-
-    override fun onTaskFinish(book_id: String?) {
-       /* if(dialog != null){
-            dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }
-*/
-    }
-
-    override fun onTaskFailed(book_id: String?, t: Throwable?) {
-    }
-
-    override fun onTaskProgressUpdate(book_id: String?) {
-
-    }
+class ReadSettingFragment : DialogFragment() {
 
     companion object {
         const val TAG = "menu"
     }
 
-    private var mPresenter: ReadSettingPresenter? = null
+    private var readSettingPresenter: ReadSettingPresenter? = null
 
     var fm: FragmentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mPresenter = ReadSettingPresenter(act = activity as ReaderActivity)
+        readSettingPresenter = ReadSettingPresenter(act = activity as ReaderActivity)
+
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -69,11 +47,11 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         dialog.setContentView(R.layout.frag_read_setting)
         val window = dialog.window
 
-        window.setGravity(Gravity.CENTER) //可设置dialog的位置
-        val lp = window.attributes
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT   //设置宽度充满屏幕
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT
-        window.attributes = lp
+        window.setGravity(Gravity.CENTER)
+        val layoutParams = window.attributes
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        window.attributes = layoutParams
 
         dialog.setCancelable(false)
         dialog.setOnShowListener {
@@ -81,26 +59,22 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             dialog.rsh_option_header.showMenu(true)
             dialog.rsbd_option_bottom_detail.showMenu(true)
 
-            //拦截连点
             dialog.rl_read_setting_content.canTouchCallbak = {
                 canTouch
             }
         }
-        dialog.setOnKeyListener { dialog, keyCode, event ->
+        dialog.setOnKeyListener { _, keyCode, event ->
 
             if (KeyEvent.KEYCODE_BACK == keyCode) {
                 if (event.action == MotionEvent.ACTION_UP) {
-                    activity?.onBackPressed()
+                    activity?.finish()
                 }
                 true
             } else {
                 false
             }
         }
-        if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-//            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
-            CacheManager.listeners.add(this)
-        }
+
         return dialog
     }
 
@@ -108,19 +82,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventReaderConfig) {
-
-        /*if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
-            if (ReaderStatus.position.group == -1) {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = "封面"
-                }
-            } else {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
-                }
-            }
-        }*/
-
         if(ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
             when (event.type) {
                 ReaderSettings.ConfigType.CHAPTER_REFRESH -> {
@@ -129,7 +90,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 ReaderSettings.ConfigType.FONT_REFRESH -> {
                     canTouch = false
                 }
-
             }
         }
     }
@@ -144,10 +104,9 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     override fun onResume() {
         super.onResume()
-
         dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog?.rsh_option_header?.presenter = mPresenter
-        dialog?.rsbd_option_bottom_detail?.presenter = mPresenter
+        dialog?.rsh_option_header?.presenter = readSettingPresenter
+        dialog?.rsbd_option_bottom_detail?.presenter = readSettingPresenter
         dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
         dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog?.rl_read_setting_content?.setOnClickListener {
@@ -155,7 +114,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 dialog?.dismiss()
             }
         }
-
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
@@ -206,7 +164,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
-        mPresenter?.clear()
+        readSettingPresenter?.clear()
     }
-
 }
