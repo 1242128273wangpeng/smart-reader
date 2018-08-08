@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.os.Bundle
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,16 +14,16 @@ import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
-import com.dingyue.bookshelf.BookShelfLogger
 import com.dingyue.bookshelf.R
 import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_header_view.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppUtils
-import java.text.MessageFormat
 
 /**
  * Date: 2018/7/17 19:55
@@ -40,20 +41,33 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun initView() {
-        txt_continue_read.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                BookRouter.navigateCoverOrRead(mContext!!, mBook!!, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
+        txt_continue_read.setOnClickListener {
+
+            mBook?.let {
+                val bundle = Bundle()
+                bundle.putInt("sequence", it.sequence)
+                bundle.putInt("offset", it.offset)
+
+                if (it.fromQingoo()) {
+                    it.channel_code = 1
+                } else {
+                    it.channel_code = 2
+                }
+
+                bundle.putSerializable("book", mBook)
+
+                RouterUtil.navigation(mActivity!!, RouterConfig.READER_ACTIVITY, bundle)
             }
 
-        })
+        }
         iv_book_icon.setOnClickListener {
-            BookRouter.navigateCoverOrRead(mContext!!, mBook!!, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
+            BookRouter.navigateCoverOrRead(mActivity!!, mBook!!, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
         }
 
     }
 
     private var mBook: Book? = null
-    private var mContext: Activity? = null
+    private var mActivity: Activity? = null
     fun setData(book: Book?, title: String?, context: Activity) {
 
         if (book == null) {
@@ -69,10 +83,10 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     fun setViewClickEnable(viewclick: Boolean) {
-        if (viewclick) {
-            alpha = 1f
+        alpha = if (viewclick) {
+            1f
         } else {
-            alpha = 0.3f
+            0.3f
         }
 
         iv_book_icon.isClickable = viewclick
@@ -80,8 +94,9 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun setBookData(book: Book, title: String?, context: Activity) {
+
         mBook = book
-        mContext = context
+        mActivity = context
         if (!TextUtils.isEmpty(book.name)) {
             txt_book_name.text = book.name
         }
@@ -92,14 +107,14 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
             book.sequence = book.chapter_count - 1
         }
 
+
         title?.let {
             txt_book_chapter_info.text = title
         }
 
 
         if (book.sequence >= 0) {
-            txt_book_chapter.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
-//            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
+            txt_book_chapter.text = ((book.sequence + 1).toString() + "/" + book.chapter_count + "章")
         } else {
             txt_book_chapter.text = "未读"
         }

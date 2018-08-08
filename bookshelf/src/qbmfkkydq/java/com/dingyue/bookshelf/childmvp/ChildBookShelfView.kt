@@ -8,8 +8,9 @@ import com.dingyue.bookshelf.BookShelfView
  * Author: wanghuilin
  * Mail: huilin_wang@dingyuegroup.cn
  * Desc: 书架view层，添加当前阅读书籍成功回调
+ * Desc: 书架view层，添加当前阅读书籍成功回调
  */
 interface ChildBookShelfView : BookShelfView {
 
-    fun onCurrentBookCommplete(book: Book?, title: String?)
+    fun onCurrentBookComplete(book: Book?, title: String?)
 }

@@ -2,9 +2,13 @@ package com.dingyue.contract.util
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import android.text.TextUtils
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
+import com.google.gson.Gson
+import net.lzbook.kit.appender_loghub.common.PLItemKey.getKey
+
 
 /**
  * Desc sharepre 工具类
@@ -18,6 +22,11 @@ class SharedPreUtil(val type: Int) {
 
         val SHARE_DEFAULT = 0  //sharePrefreences 保存的是默认地址
         val SHARE_ONLINE_CONFIG = 1  //sharePrefreences 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
+
+        /**
+         * 当前阅读的书籍
+         */
+        val CURRENT_READ_BOOK = "current_read_book"
 
         /**
          * DebugActivity
@@ -185,5 +194,26 @@ class SharedPreUtil(val type: Int) {
 
     fun getLong(key: String, defaultValue: Long): Long {
         return sp.getLong(key, defaultValue)
+    }
+
+
+    fun <T> getObject(key: String, clazz: Class<T>): T? {
+        val json = getString(key, "")
+        if (TextUtils.isEmpty(json)) {
+            return null
+        }
+        return try {
+            val gson = Gson()
+            gson.fromJson<T>(json, clazz)
+        } catch (e: Exception) {
+            null
+        }
+
+    }
+
+    fun putObject(key: String, obj: Any) {
+        val gson = Gson()
+        val json = gson.toJson(obj)
+        putString(key, json)
     }
 }
