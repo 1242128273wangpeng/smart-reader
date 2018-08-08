@@ -28,6 +28,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.CommonUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
@@ -82,7 +83,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_download_iv.setOnClickListener(this)
 //        book_cover_catalog_view_nobg.setOnClickListener(this)
         book_cover_content.topShadow = img_head_shadow
-        AppLog.e("jj",recommendList!!.get(1).authorName.toString())
+       CommonUtil.showToastMessage(recommendList!!.get(1).authorName.toString())
     }
 
     private fun initializeIntent(intent: Intent?) {
