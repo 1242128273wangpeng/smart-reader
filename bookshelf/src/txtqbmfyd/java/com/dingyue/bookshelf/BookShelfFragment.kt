@@ -165,6 +165,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         return inflater.inflate(R.layout.frag_bookshelf, container, false)
     }
 
+    fun dimissPersonRed(){
+        redpoint_home_setting?.visibility = View.GONE
+        sharePre.putBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,true)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         MediaControl.insertBookShelfMediaType(true)

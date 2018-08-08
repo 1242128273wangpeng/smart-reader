@@ -240,7 +240,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             if (state == DrawerLayout.MenuState.MENU_OPENED) {
                 showCacheMessage()
 
-                Glide.with(this).load(R.drawable.qq_icon).diskCacheStrategy(DiskCacheStrategy.ALL).into(img_qq)
+                Glide.with(this).load(R.drawable.qq_icon).asGif().into(img_qq)
+                bookShelfFragment?.dimissPersonRed()
                 if (bookShelfFragment?.isRemoveMenuShow() == true) {
                     bookShelfFragment?.dismissRemoveMenu()
                 }
