@@ -40,6 +40,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.baidu.mobstat.StatService;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
@@ -406,6 +408,13 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             Map<String, String> data = new HashMap<>();
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
+        }
+
+        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
+            if (isShowSwitchSplash) {
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SWITCH_AD_ACTIVITY);
+            }
         }
     }
 
