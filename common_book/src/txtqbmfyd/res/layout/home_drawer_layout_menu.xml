@@ -121,16 +121,16 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="3dp"
-            android:layout_toLeftOf="@+id/img_click_me"
+            android:layout_marginRight="40dp"
+            android:layout_alignParentRight="true"
             />
         <ImageView
             android:id="@+id/img_click_me"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="40dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/img_qq"
+            android:layout_centerVertical="true"
             android:src="@drawable/click_me_icon"/>
     </RelativeLayout>
 
