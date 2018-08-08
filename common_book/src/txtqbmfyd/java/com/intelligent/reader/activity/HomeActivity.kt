@@ -24,6 +24,8 @@ import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -34,8 +36,6 @@ import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dy.reader.activity.DisclaimerActivity
-import com.dy.reader.event.EventSetting
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
@@ -47,7 +47,6 @@ import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import com.reyun.tracking.sdk.Tracking
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
@@ -62,8 +61,6 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
@@ -243,6 +240,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             if (state == DrawerLayout.MenuState.MENU_OPENED) {
                 showCacheMessage()
 
+                Glide.with(this).load(R.drawable.qq_icon).diskCacheStrategy(DiskCacheStrategy.ALL).into(img_qq)
                 if (bookShelfFragment?.isRemoveMenuShow() == true) {
                     bookShelfFragment?.dismissRemoveMenu()
                 }

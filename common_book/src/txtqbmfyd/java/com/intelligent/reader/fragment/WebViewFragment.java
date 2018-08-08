@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.mobstat.StatService;
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;

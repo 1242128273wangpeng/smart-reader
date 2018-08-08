@@ -34,9 +34,9 @@
             android:id="@+id/redpoint_home_setting"
             android:layout_width="7dp"
             android:layout_height="7dp"
-            android:layout_marginBottom="13dp"
+            android:layout_marginTop="13dp"
             android:layout_marginRight="3dp"
-            android:layout_alignBottom="@+id/img_head_personal"
+            android:layout_alignTop="@+id/img_head_personal"
             android:layout_alignRight="@+id/img_head_personal"
             android:background="#ff0000"/>
 

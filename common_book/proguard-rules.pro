@@ -497,3 +497,8 @@ public protected *;
 -keep public class **.R$*{
    public static final int *;
 }
+
+#新版百度移动统计SDK
+-keep class com.baidu.bottom.** { *; }
+-keep class com.baidu.kirin.** { *; }
+-keep class com.baidu.mobstat.** { *; }
