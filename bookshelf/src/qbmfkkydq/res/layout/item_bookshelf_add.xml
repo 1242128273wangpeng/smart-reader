@@ -11,9 +11,9 @@
     tools:ignore="RtlHardcoded">
 
     <FrameLayout
+        android:id="@+id/fl_add_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bookshelf_bookitem_bg">
+        android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_marginTop="4dp"

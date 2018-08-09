@@ -41,9 +41,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             book.sequence = book.chapter_count - 1
         }
 
+        fl_book_chapter.setBackgroundResource(R.drawable.bookshelf_bookitem_tv_bg)
         if (book.sequence >= 0) {
-//            txt_book_chapter.text = MessageFormat.format("{0}/{1}章", book.sequence + 1, book.chapter_count)
-            txt_book_chapter.text = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
+            txt_book_chapter.text = ((book.sequence + 1).toString() + "/" + book.chapter_count + "章")
         } else {
             txt_book_chapter.text = "未读"
         }
@@ -128,7 +128,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     }
 
     private fun getLabelBg(color: String): GradientDrawable {
-        var drawable = GradientDrawable()
+        val drawable = GradientDrawable()
 
         drawable.shape = GradientDrawable.RECTANGLE
 

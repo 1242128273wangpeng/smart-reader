@@ -17,6 +17,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.MediaControl
 import com.dy.media.ReaderRestDialog
 import com.dy.reader.R
@@ -30,6 +31,7 @@ import com.dy.reader.page.BatteryView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -80,7 +82,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
-        ReaderStatus.startTime = System.currentTimeMillis()/1000L
+        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -173,6 +175,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         } else if (isSubed && ReaderStatus.book.sequence + 1 > ReaderStatus.book.chapter_count) {
             ReaderStatus.book.sequence = ReaderStatus.book.chapter_count - 1
         }
+
     }
 
     fun onConfigurationChanged() {
@@ -289,12 +292,14 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     override fun addBookShelf(isAddShelf: Boolean) {
+
         if (isAddShelf && ReaderStatus.book != null) {
             ReaderStatus.book.sequence = ReaderStatus.position.group
             ReaderStatus.book.offset = ReaderStatus.position.offset
             ReaderStatus.book.last_read_time = System.currentTimeMillis()
             ReaderStatus.book.last_update_success_time = System.currentTimeMillis()
             ReaderStatus.book.readed = 1
+
 
             if (ReaderStatus.chapterList != null) {
                 val helper = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
@@ -311,6 +316,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
                     Toast.LENGTH_SHORT).show()
         }
+
+
         val map1 = HashMap<String, String>()
         if (ReaderStatus.book != null) {
             map1.put("bookid", ReaderStatus.book.book_id!!)
@@ -380,6 +387,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
             return false
         }
+
+
         goBackToHome()
         return true
     }
@@ -420,6 +429,24 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                     .getDefaultSharedPreferences(readReference?.get()))
             spUtils.putInt("readed_count", Constants.readedCount)
         }
+
+
+        // 保存正在阅读的书
+        val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+
+        val book = ReaderStatus.book
+        book.sequence = ReaderStatus.position.group
+        book.offset = ReaderStatus.position.offset
+        book.chapter_count = ReaderStatus.chapterCount
+        book.last_read_time = System.currentTimeMillis()
+        book.readed = 1
+        RequestRepositoryFactory.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).updateBook(book)
+
+
+        val books = Gson().toJson(book)
+        sp.putString(SharedPreUtil.CURRENT_READ_BOOK, books)
+
     }
 
     fun onStop() {

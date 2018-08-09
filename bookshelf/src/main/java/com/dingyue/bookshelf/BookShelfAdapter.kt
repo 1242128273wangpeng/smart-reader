@@ -9,6 +9,7 @@ import com.dingyue.contract.HolderType.Type_AD
 import com.dingyue.contract.HolderType.Type_Add
 import com.dingyue.contract.HolderType.Type_Book
 import com.dingyue.contract.HolderType.Type_Header_AD
+import net.lzbook.kit.utils.AppUtils
 import java.util.*
 
 class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookShelfItemListener,
@@ -40,7 +41,7 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         if (position >= books.size) {
             if (viewHolder is BookShelfADDHolder) {
-                viewHolder.bind(books.size,bookShelfItemListener)
+                viewHolder.bind(books.size, bookShelfItemListener)
             }
             return
         }
@@ -76,6 +77,15 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     override fun getItemCount(): Int {
         if (hasAddView) {
             if (books.size > 0) {
+                /**
+                 * 新壳4书架背景优化
+                 * http://note.youdao.com/noteshare?id=7b6be9f7706849746a83d21a207d3ca5&sub=BB3CD2D7346043C59050C702C72D3FEB
+                 */
+                if ("cn.qbmfkkydq.reader" == AppUtils.getPackageName()) {
+                    if (books.size % 3 == 1) {
+                        return books.size + 2
+                    }
+                }
                 return books.size + 1
             }
         }

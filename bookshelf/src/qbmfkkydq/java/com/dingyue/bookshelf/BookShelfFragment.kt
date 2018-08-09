@@ -21,8 +21,10 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
+import com.google.gson.Gson
 import kotlinx.android.synthetic.qbmfkkydq.frag_bookshelf.*
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_refresh_header.view.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -40,7 +42,8 @@ import java.util.*
  */
 
 class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuManager {
-    override fun onCurrentBookCommplete(book: Book?, title: String?) {
+
+    override fun onCurrentBookComplete(book: Book?, title: String?) {
 
         addHeaderView(book, title)
     }
