@@ -347,7 +347,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (activity != null && !activity!!.isFinishing) {
+        if (isAdded && activity?.isFinishing == true) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -371,8 +371,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun doUpdateBook(updateService: CheckNovelUpdateService) {
-        updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
-        bookShelfPresenter.addUpdateTask(this)
+        if (activity != null) {
+            updateService.setBookUpdateListener(activity as CheckNovelUpdateService.OnBookUpdateListener)
+            bookShelfPresenter.addUpdateTask(this)
+        }
     }
 
     override fun onBookListQuery(books: List<Book>?) {
@@ -404,13 +406,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
-                if (updateCount == 1) {
+                if (updateCount == 1 && activity != null) {
                     if (isAdded) {
                         requireActivity().applicationContext.showToastMessage(
                                 "《$bookName${requireActivity().getString(R.string.bookshelf_book_update_chapter)}" + bookLastChapterName,
                                 2000L)
                     }
-                } else {
+                } else if (activity != null) {
                     if (isAdded) {
                         requireActivity().applicationContext.showToastMessage(
                                 "《$bookName${requireActivity().getString(R.string.bookshelf_books_update_more)}" + "$updateCount${requireActivity().getString(R.string.bookshelf_books_update_chapters)}",

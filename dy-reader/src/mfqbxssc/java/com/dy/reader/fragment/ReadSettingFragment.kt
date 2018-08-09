@@ -5,7 +5,10 @@ import android.app.DialogFragment
 import android.app.FragmentManager
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.WindowManager
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventLoading
@@ -23,6 +26,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 
 /**
+ * ReadSettingFragment
  * Created by yuchao on 2018/4/29 0029.
  */
 class ReadSettingFragment : DialogFragment() {
@@ -90,6 +94,8 @@ class ReadSettingFragment : DialogFragment() {
                 ReaderSettings.ConfigType.FONT_REFRESH -> {
                     canTouch = false
                 }
+                else -> {
+                }
             }
         }
     }
@@ -110,7 +116,7 @@ class ReadSettingFragment : DialogFragment() {
         dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
         dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog?.rl_read_setting_content?.setOnClickListener {
-            if(dialog.isShowing){
+            if(dialog?.isShowing == true){
                 dismiss()
             }
         }
@@ -140,6 +146,7 @@ class ReadSettingFragment : DialogFragment() {
     fun show(flag: Boolean) {
         try {
             if (flag && !this.isAdded && null == fm?.findFragmentByTag(TAG)) {
+                fm?.beginTransaction()?.remove(this)?.commit()
                 this.show(fm, TAG)
             } else {
                 dismiss()

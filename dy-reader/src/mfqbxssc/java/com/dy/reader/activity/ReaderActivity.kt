@@ -328,7 +328,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean("isFromReading", true)
+            bundle.putBoolean(Constants.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
