@@ -28,9 +28,7 @@ import net.lzbook.kit.utils.AppUtils
  */
 class RecommendFragment : Fragment() {
 
-    companion object {
-        var canScroll = true
-    }
+
     var statusBarHeight=0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,11 +49,7 @@ class RecommendFragment : Fragment() {
     val fragments: ArrayList<ScrollWebFragment> = ArrayList()
 
     private fun initView() {
-        canScroll = true
 
-        scrollview.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            canScroll = scrollY <= 1
-        })
 
         ll_search_layout.post{
             if(statusBarHeight==0){
@@ -63,14 +57,6 @@ class RecommendFragment : Fragment() {
             }
             val params:LinearLayout.LayoutParams= ll_search_layout.layoutParams as LinearLayout.LayoutParams;
             params.topMargin=params.topMargin+statusBarHeight;
-        }
-        view_pager.post {
-            val params = view_pager.layoutParams
-            // ViewPager高度为屏幕高度减去TabLayout,导航栏和状态栏
-
-            params.height = view_pager.context.resources.displayMetrics
-                    .heightPixels - AppUtils.dip2px(context, 34f + 50f + 13f)
-
         }
 
         view_pager.offscreenPageLimit = 4
@@ -84,25 +70,21 @@ class RecommendFragment : Fragment() {
         val fragmentSelection = ScrollWebFragment()
         fragmentSelection.arguments = getBundle(//精选
                 RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
-        fragmentSelection.setScrollViewGroup(scrollview)
         fragmentSelection.setViewPagerViewGroup(view_pager)
 
         val fragmentMale = ScrollWebFragment()
         fragmentMale.arguments = getBundle(//男频
                 RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName()))
-        fragmentMale.setScrollViewGroup(scrollview)
         fragmentMale.setViewPagerViewGroup(view_pager)
 
         val fragmentFemale = ScrollWebFragment()
         fragmentFemale.arguments = getBundle(//女频
                 RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName()))
-        fragmentFemale.setScrollViewGroup(scrollview)
         fragmentFemale.setViewPagerViewGroup(view_pager)
 
         val fragmentFinish = ScrollWebFragment()
         fragmentFinish.arguments = getBundle(//完本
                 RequestService.WEB_RECOMMEND_H5_Finish.replace("{packageName}", AppUtils.getPackageName()))
-        fragmentFinish.setScrollViewGroup(scrollview)
         fragmentFinish.setViewPagerViewGroup(view_pager)
 
         fragments.clear()
@@ -115,7 +97,6 @@ class RecommendFragment : Fragment() {
         titles.add("男频")
         titles.add("女频")
         titles.add("完本")
-        scrollview.currentFrag = fragmentSelection
         adapter.setData(fragments, titles)
         tab_layout.setupWithViewPager(view_pager)
 
@@ -131,7 +112,6 @@ class RecommendFragment : Fragment() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                scrollview.currentFrag = fragments.get(tab?.position!!)
             }
 
         })

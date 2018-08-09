@@ -270,7 +270,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 if (!TextUtils.isEmpty(book.sub_genre)){
                     flowLayout.addView(buildLabel(book.sub_genre!!,1),lp)
                 }
-                if(!TextUtils.isEmpty(book.word_count)){
+                if(!TextUtils.isEmpty(book.word_count)&& book.word_count!!.toLong()>0){
                     flowLayout.addView(buildLabel(AppUtils.getWordNums(book.word_count!!.toLong()),2),lp)
                 }
 

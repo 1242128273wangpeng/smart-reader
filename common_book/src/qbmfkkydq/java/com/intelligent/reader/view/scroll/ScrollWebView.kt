@@ -5,6 +5,7 @@ import android.graphics.RectF
 import android.webkit.WebView
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import com.intelligent.reader.fragment.RecommendFragment
 
@@ -23,6 +24,8 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
     private var mViewPager: ViewGroup? = null
     private var bannerRect: RectF? = null
 
+
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         var x = ev.x.toInt()
         var y = ev.y.toInt()
@@ -38,16 +41,18 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
 
                 if (Math.abs(deltaY) < Math.abs(deltaX)) {// 左右滑动
                     if (bannerRect != null && bannerRect!!.contains(ev.getX(), ev.getY() - scrollY)) {
+                        // 左右滑动且在banner的位置，滑动交给web本身处理，上层不拦截
                         mViewPager?.requestDisallowInterceptTouchEvent(true)
+                        mScrollView?.requestDisallowInterceptTouchEvent(true)
                     } else {
-                        mViewPager?.requestDisallowInterceptTouchEvent(false)
+//                        不在banner位置交给scrollview处理
+                        mScrollView?.requestDisallowInterceptTouchEvent(false)
                     }
 
-                } else { // 上下滑动
-                    if (RecommendFragment.canScroll || scrollY == 0) {// ScrollView 可以滑动，或者WebView已经滑动顶部，不拦截事件
+                }else{// 上下滑动
+
+                    if(Math.abs(deltaY)>ViewConfiguration.get(context).scaledTouchSlop){
                         mScrollView?.requestDisallowInterceptTouchEvent(false)
-                    } else {
-                        mScrollView?.requestDisallowInterceptTouchEvent(true)
                     }
                 }
 
@@ -63,7 +68,7 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
     }
 
     fun setScrollViewGroup(viewGroup: ViewGroup) {
-        mScrollView = viewGroup;
+        mScrollView = viewGroup
     }
 
     fun setViewPagerViewGroup(viewGroup: ViewGroup) {

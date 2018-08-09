@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.InflateException;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -51,14 +53,13 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
-    private RelativeLayout contentLayout;
+    private FrameLayout contentLayout;
     private ScrollWebView contentView;
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private WebViewFragment.FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
-    private ViewGroup mScrollViewGroup;
     private ViewGroup mViewPagerViewGroup;
 
     @Override
@@ -93,7 +94,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
         }
-        initView();
+
 //        initRefresh();
         return rootView;
     }
@@ -101,8 +102,8 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
-            contentLayout = rootView.findViewById(R.id.web_content_layout);
-            contentView = rootView.findViewById(R.id.web_content_view);
+            contentLayout = getView().findViewById(R.id.fl_content_layout);
+            contentView = getView().findViewById(R.id.web_content_view);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
@@ -110,6 +111,12 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         if (weakReference != null) {
             loadingpage = new LoadingPage(weakReference.get(), contentLayout);
+            //父布局为scroll时，loading视图高度为包裹内容，这里手动给它赋值，高度按照推荐页内容调整
+//            底部导航栏，顶部搜索栏、tab栏等高度和margin
+            loadingpage.getLayoutParams().height =
+                    getContext().getResources().getDisplayMetrics()
+                            .heightPixels - AppUtils.dip2px(context, 36f + 34f + 50f + 13f);
+
         }
 
         if (contentView != null && context != null) {
@@ -138,17 +145,18 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
 
-        if (mScrollViewGroup != null) {
-            contentView.setScrollViewGroup(mScrollViewGroup);
-        }
+
         if (mViewPagerViewGroup != null) {
             contentView.setViewPagerViewGroup(mViewPagerViewGroup);
         }
+        NestedScrollView scrollView = getView().findViewById(R.id.scroll_view);
+        contentView.setScrollViewGroup(scrollView);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initView();
         if (!TextUtils.isEmpty(url)) {
             loadWebData(url);
         }
@@ -381,10 +389,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         loadData("javascript:refreshNew()");
     }
 
-    public void setScrollViewGroup(ViewGroup scrollViewGroup) {
-        mScrollViewGroup = scrollViewGroup;
-    }
-
     public void setViewPagerViewGroup(ViewGroup viewpager) {
         mViewPagerViewGroup = viewpager;
     }
@@ -406,14 +410,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    /**
-     * 获取WebView的滑动距离
-     *
-     * @return
-     */
-    public int getWebScorllDistance() {
-        return contentView.getScrollY();
-    }
 
     /**
      * 获取web中banner的位置js回调
