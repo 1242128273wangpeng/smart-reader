@@ -410,7 +410,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-//        updateBookLastChapter();
+        updateBookLastChapter();
 
         initializeDataFusion();
 
