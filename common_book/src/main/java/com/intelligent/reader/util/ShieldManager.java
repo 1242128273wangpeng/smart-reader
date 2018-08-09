@@ -60,7 +60,7 @@ public class ShieldManager {
 
                     if (!Constants.isHideAD && MediaConfig.INSTANCE.getConfig() != null) {
                         if (!TextUtils.isEmpty(cityCode)) {
-                            MediaConfig.INSTANCE.setCityCode(cityCode);
+                            MediaConfig.INSTANCE.setCityCode(Integer.valueOf(cityCode));
                         }
 
                         MediaConfig.INSTANCE.setCityName(Constants.adCityInfo);
