@@ -42,6 +42,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestDefaultBooks()
     }
 
+    override fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
+        return RequestAPI.requestDefaultBooks(sex)
+    }
+
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }

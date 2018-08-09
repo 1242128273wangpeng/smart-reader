@@ -38,6 +38,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
+    override fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
+        return null
+    }
+
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return null
     }
@@ -200,6 +204,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
 
     fun deleteBooks(books: List<Book>) {
         return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBooks(books, context)
+    }
+
+    fun deleteBooksById(books: List<Book>) {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBooksById(books)
     }
 
     fun deleteShelfBooks() {

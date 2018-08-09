@@ -15,7 +15,7 @@
 
     <string name="push_setting_dialog_title">开启消息通知</string>
     <string name="push_setting_dialog_subtitle">更多热门好书，精选书单及运营活动等你来看！</string>
-    <string name="push_setting_dialog_action">现在开启</string>
+    <string name="push_setting_dialog_action">前往开启</string>
 
 
     <!--本地配置搜索热词-->

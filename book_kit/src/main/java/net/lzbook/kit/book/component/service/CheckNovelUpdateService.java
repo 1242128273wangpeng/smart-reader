@@ -16,18 +16,14 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 
-import com.ding.basic.Config;
-import com.ding.basic.bean.Access;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookUpdate;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
-import com.ding.basic.util.AESUtil;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
@@ -468,8 +464,20 @@ public class CheckNovelUpdateService extends Service {
                 nftmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             }
 
+            /**
+             * bug异常：
+             * android.app.RemoteServiceException:
+             *      Bad notification posted from package cc.lianzainovel:
+             *          Couldn't create icon: StatusBarIcon(pkg=cc.lianzainoveluser=0 id=0x7f020176 level=0 visible=true num=0 )
+             *
+             * 这个问题多数集中在setSmallIcon(R.drawable.icon)这句代码上，
+             * 在某些情况下，比如开启重启动系统就要发送通知，R.drawable.icon这个资源尚未准备好，导致了App异常
+             * android5.0的bug，在android4.4和6.0中都正常
+             * 解决方式：.setSmallIcon(getApplicationContext().getApplicationInfo().icon)
+             */
             Notification preNTF = new NotificationCompat.Builder(getApplicationContext())
-                    .setSmallIcon(R.drawable.icon)
+                    .setSmallIcon(getApplicationContext().getApplicationInfo().icon)
+//                    .setSmallIcon(R.drawable.icon)
                     .setContentTitle(tickerText)
                     .setContentText(content).build();
             if (shouldSound()) {

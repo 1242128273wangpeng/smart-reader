@@ -216,6 +216,9 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * 处理书架列表中广告请求结果。返回结果先保存到adBookMap中，再添加或更新到列表中
      * **/
     private fun handleADResult(views: List<ViewGroup>) {
+        val adViews = ArrayList<ViewGroup>()
+        adViews.addAll(views)
+
         var index = 0
 
         val iterator = adBookMap.entries.iterator()
@@ -225,8 +228,8 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         while (iterator.hasNext()) {
             val entry = iterator.next()
             if (entry.key < size && entry.value.item_view == null) {
-                if (index < views.size) {
-                    entry.value.item_view = views[index]
+                if (index < adViews.size) {
+                    entry.value.item_view = adViews[index]
 
                     if (iBookList[entry.key].item_type == 1) {
                         iBookList[entry.key].item_view = entry.value.item_view

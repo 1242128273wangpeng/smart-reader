@@ -491,7 +491,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
      */
     @Synchronized
     private fun checkLoadAdValid(sequence: Int): Int =
-            mAdapter.getAllData().filter { it.lines[0].sequenceType == sequence }.filter { it.adType != "" }.size
+            mAdapter.getAllData().filter { it.lines.size > 0 && it.lines[0].sequenceType == sequence }.filter { it.adType != "" }.size
 
     /**
      * 当前显示位置章节页数

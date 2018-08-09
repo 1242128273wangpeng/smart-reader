@@ -27,9 +27,9 @@ public class LoadDataManager {
     }
 
     //初始化书架，添加默认书籍
-    public void addDefaultBooks() {
+    public void addDefaultBooks(int sex) {
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDefaultBooks(new RequestSubscriber<Boolean>() {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDefaultBooks(sex,new RequestSubscriber<Boolean>() {
             @Override
             public void requestResult(Boolean result) {
                 if (result) {

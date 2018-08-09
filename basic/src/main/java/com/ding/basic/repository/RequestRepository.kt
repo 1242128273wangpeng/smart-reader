@@ -13,6 +13,8 @@ interface RequestRepository {
     /************************* 网络请求 *************************/
     fun requestDefaultBooks(requestSubscriber: RequestSubscriber<Boolean>)
 
+    fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>)
+
     fun requestApplicationUpdate(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<ApplicationUpdate>)
 
     fun requestDynamicParameters(requestSubscriber: RequestSubscriber<JsonObject>)
@@ -51,7 +53,7 @@ interface RequestRepository {
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>)
     fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResultV4<String>>)
-    fun requestSmsLogin(smsBody:RequestBody,requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>)
+    fun requestSmsLogin(smsBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>)
 
     fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>)
 
@@ -84,6 +86,8 @@ interface RequestRepository {
     fun deleteBook(book_id: String): Boolean
 
     fun deleteBooks(books: List<Book>)
+
+    fun deleteBooksById(books: List<Book>)
 
     fun deleteShelfBook()
 

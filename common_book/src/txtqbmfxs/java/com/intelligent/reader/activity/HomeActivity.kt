@@ -21,8 +21,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.baidu.mobstat.StatService
-import com.bumptech.glide.Glide
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract

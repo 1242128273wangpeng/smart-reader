@@ -82,7 +82,7 @@ class ReadSettingFragment : DialogFragment() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventReaderConfig) {
-        if(ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
+        if (ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
             when (event.type) {
                 ReaderSettings.ConfigType.CHAPTER_REFRESH -> {
                     canTouch = false
@@ -104,14 +104,16 @@ class ReadSettingFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
-        dialog?.rsh_option_header?.presenter = readSettingPresenter
-        dialog?.rsbd_option_bottom_detail?.presenter = readSettingPresenter
-        dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
-        dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
-        dialog?.rl_read_setting_content?.setOnClickListener {
-            if(dialog?.isShowing == true){
-                dialog?.dismiss()
+        if (dialog != null) {
+            dialog?.rsbd_option_bottom_detail?.readPresenter = (activity as ReaderActivity).mReadPresenter
+            dialog?.rsh_option_header?.presenter = readSettingPresenter
+            dialog?.rsbd_option_bottom_detail?.presenter = readSettingPresenter
+            dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
+            dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
+            dialog?.rl_read_setting_content?.setOnClickListener {
+                if (dialog?.isShowing == true) {
+                    dialog?.dismiss()
+                }
             }
         }
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -145,7 +147,7 @@ class ReadSettingFragment : DialogFragment() {
             } else {
                 dismiss()
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
         }
     }
 

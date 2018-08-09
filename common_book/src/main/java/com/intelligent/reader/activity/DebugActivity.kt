@@ -178,7 +178,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         if (isChecked) {
             val loadDataManager = LoadDataManager(this)
             // 首次安装新用户添加默认书籍
-            loadDataManager.addDefaultBooks()
+            loadDataManager.addDefaultBooks(Constants.SGENDER)
         }
 
     }

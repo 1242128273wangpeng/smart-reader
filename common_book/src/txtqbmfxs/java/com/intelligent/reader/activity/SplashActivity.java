@@ -17,6 +17,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,42 +25,63 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
+import com.google.gson.Gson;
+import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
 import com.intelligent.reader.util.GenderHelper;
 import com.intelligent.reader.util.ShieldManager;
+import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import iyouqu.theme.FrameActivity;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity implements GenderHelper.onGenderSelectedListener {
@@ -69,6 +91,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
     public int complete_count = 0;
     public ViewGroup ad_view;
     private boolean isIniting;
+
+    private TextView txt_upgrade;
+    private ProgressBar progress_upgrade;
+    private List<Book> books;
 
     // 开屏选男女
     private boolean mStepInFlag;
@@ -165,8 +191,300 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
         ad_view = findViewById(R.id.ad_view);
 
+        String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
+        File bookDBFile = getDatabasePath(bookDBName);
+
+        String[] databaseList = databaseList();
+        List<String> chapterDBList = new ArrayList<>();
+        for (String name : databaseList) {
+            if (name.startsWith("book_chapter_") && !name.contains("journal")) {
+                chapterDBList.add(name.replace("book_chapter_", ""));
+            }
+        }
+
+        setContentView(R.layout.act_splash);
+        if (bookDBFile.exists()) {
+            FrameLayout frameLayout = findViewById(R.id.content_frame);
+            View view = LayoutInflater.from(this).inflate(R.layout.act_splash_upgradedb, null);
+            if (view == null) return;
+            frameLayout.addView(view);
+            TextView txt_name = findViewById(R.id.txt_name);
+            txt_name.setText(R.string.app_name);
+            upgradeBookDB(bookDBName, chapterDBList);
+        } else {
+            initGenderOrData();
+        }
+    }
+
+    private void onUpgradeProgress(int progress) {
+        if (txt_upgrade == null) {
+            txt_upgrade = findViewById(R.id.txt_upgrade);
+        }
+        if (progress_upgrade == null) {
+            progress_upgrade = findViewById(R.id.progress_upgrade);
+            progress_upgrade.setMax(100);
+        }
+
+        if (NetWorkUtils.getNetWorkType(this) == NetWorkUtils.NETWORK_NONE) {
+            txt_upgrade.setText(getString(R.string.db_upgrade_nonet, progress));
+        } else {
+            txt_upgrade.setText(getString(R.string.db_upgrade_hasnet, progress));
+        }
+        progress_upgrade.setProgress(progress);
+    }
+
+    private void upgradeBookDB(String bookDBName, final List<String> chapterDBList) {
+        float percent = 1;
+        if (!chapterDBList.isEmpty()) {
+            percent = 0.2F;
+        }
+
+        final float weight = percent;
+
+        BookDataProviderHelper.Companion.upgradeFromOld(this, bookDBName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        onUpgradeProgress((int) (integer * weight));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
+                            Toast.makeText(SplashActivity.this, "upgradeBookDB error \r\n"
+                                    + Log.getStackTraceString(throwable), Toast.LENGTH_LONG).show();
+                            for (int i = 0; i < 1000; i++) {
+                                Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            //拷贝旧的数据到sdcard, 给开发小伙伴
+                            copyOldDB2SD();
+                        }
+
+                        Map<String, String> data = new HashMap<>();
+                        data.put("status", "2");
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+
+                        deleteOldDB();
+                        initGenderOrData();
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        upgradeChapterDB(chapterDBList, 1 - weight);
+                    }
+                });
+    }
+
+    private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
+        if (!chapterDBList.isEmpty()) {
+            ChapterDaoHelper.Companion.upgradeFromOld(this, chapterDBList)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) throws Exception {
+                            onUpgradeProgress((int) (100 * (1 - weight) + integer * weight));
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                            if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
+                                Toast.makeText(SplashActivity.this, "upgradeChapterDB error \r\n"
+                                                + Log.getStackTraceString(throwable),
+                                        Toast.LENGTH_LONG).show();
+                                for (int i = 0; i < 1000; i++) {
+                                    Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                //拷贝旧的数据到sdcard, 给开发小伙伴
+                                copyOldDB2SD();
+                            }
+                            Map<String, String> data = new HashMap<>();
+                            data.put("status", "2");
+                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
+                                    data);
+                            //删除之前的数据库
+                            deleteOldDB();
+                            initGenderOrData();
+                        }
+                    }, new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            Map<String, String> data = new HashMap<>();
+                            data.put("status", "1");
+                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
+                                    data);
+                            //删除之前的数据库
+                            deleteOldDB();
+                            initGenderOrData();
+                        }
+                    });
+        } else {
+            Map<String, String> data = new HashMap<>();
+            data.put("status", "1");
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+            //删除之前的数据库
+            deleteOldDB();
+            initGenderOrData();
+        }
+    }
+
+    private void copyOldDB2SD() {
+        String[] strings = databaseList();
+        new File("/sdcard/novel").mkdirs();
+        for (String db : strings) {
+            kotlin.io.FilesKt.copyTo(getDatabasePath(db)
+                    , new File("/sdcard/novel/" + db),
+                    true
+                    , 64 * 1024
+            );
+        }
+    }
+
+    private void deleteOldDB() {
+        //TODO 测试数据库升级时, 注释掉方法体
+        String[] strings = databaseList();
+
+        for (String name : strings) {
+            if (name.startsWith("book_chapter_")) {
+                deleteDatabase(name);
+            }
+        }
+
+        deleteDatabase(ReplaceConstants.getReplaceConstants().DATABASE_NAME);
+
+        //新数据库去重
+        RequestRepositoryFactory factory = RequestRepositoryFactory.Companion
+                .loadRequestRepositoryFactory(this.getApplicationContext());
+        List<Book> books = factory.loadBooks();
+        if (books != null && books.size() > 0) {
+            Collections.sort(books, new CommonContract.MultiComparator(2));
+            List<String> bookIds = new ArrayList<>();
+            List<Book> duplicateBooks = new ArrayList<>();
+            for (Book book : books) {
+                if (bookIds.contains(book.getBook_id())) { //重复书籍
+                    duplicateBooks.add(book);
+                } else {
+                    bookIds.add(book.getBook_id());
+                }
+            }
+            if (duplicateBooks.size() > 0) {
+                factory.deleteBooksById(duplicateBooks);
+            }
+        }
+    }
+
+    private void initializeDataFusion() {
+
+        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).loadBooks();
+
+        if (books != null) {
+
+            List<Book> upBooks = new ArrayList<>();
+
+
+            for (Book book : books) {
+                if (TextUtils.isEmpty(book.getBook_chapter_id())) {
+                    upBooks.add(book);
+                }
+            }
+
+            if (upBooks.isEmpty()) {
+                Logger.e("开屏页更新书籍book_chapter_id等信息的接口不执行,书架没有书籍要修复 ");
+
+                startInitTask();
+                return;
+            }
+
+            Gson gson = new Gson();
+
+            Logger.i("initializeDataFusion Json: " + gson.toJson(upBooks));
+
+            RequestBody checkBody = RequestBody.create(
+                    MediaType.parse("application/json; charset=utf-8")
+                    , gson.toJson(upBooks));
+
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext())
+                    .requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
+                        @Override
+                        public void requestResult(Boolean result) {
+                            if (result) {
+                                Logger.i("数据融合，书架信息升级成功！");
+                            } else {
+                                Logger.e("数据融合，书架信息升级异常！");
+                            }
+                            startInitTask();
+                        }
+
+                        @Override
+                        public void requestError(@NotNull String message) {
+                            Logger.e("数据融合，书架信息升级异常！");
+                            startInitTask();
+                        }
+                    });
+        } else {
+            startInitTask();
+        }
+    }
+
+    private void startInitTask() {
+        // 初始化任务
+        InitTask initTask = new InitTask();
+        initTask.execute();
+    }
+
+    /***
+     * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
+     * **/
+    private void updateBookLastChapter() {
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        }
+
+        boolean isDataBaseRemark = sharedPreUtil.getBoolean(
+                SharedPreUtil.Companion.getDATABASE_REMARK(), false);
+
+        if (!isDataBaseRemark) {
+
+            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBooks();
+
+            if (bookList != null && bookList.size() > 0) {
+
+                for (Book book : bookList) {
+                    ChapterDaoHelper chapterDaoHelper =
+                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
+
+                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
+
+                    if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
+                        book.setLast_chapter(lastChapter);
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
+        }
+    }
+
+    private void initGenderOrData() {
         if (initChooseGender()) {
             FrameLayout frameLayout = findViewById(R.id.content_frame);
+            frameLayout.removeAllViews();
             View view = LayoutInflater.from(this).inflate(R.layout.gender_splash, null);
             if (view != null) {
                 frameLayout.addView(view);
@@ -197,6 +515,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
         if (isIniting) {
             return;
         }
+        ad_view = findViewById(R.id.ad_view);
         isIniting = true;
         complete_count = 0;
         initialization_count = 0;
@@ -205,15 +524,16 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
         }
 
-        // 初始化任务
-        InitTask initTask = new InitTask();
-        initTask.execute();
+        updateBookLastChapter();
+
+        initializeDataFusion();
+
         // 安装快捷方式
         new InstallShotCutTask().execute();
 
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.app_start);
+        StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
         if (UserManager.INSTANCE.isUserLogin()) {
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.user_login_succeed);
+            StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
     }
 
@@ -319,6 +639,9 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
     }
 
     private void initShield() {
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        }
         ShieldManager shieldManager = new ShieldManager(getApplicationContext(), sharedPreUtil);
         shieldManager.startAchieveUserLocation();
     }

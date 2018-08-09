@@ -169,6 +169,12 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
         }
     }
 
+    override fun deleteBooksById(books: List<Book>) {
+        books.forEach {
+            bookdao.deleteBookById(it.id)
+        }
+    }
+
     override fun deleteShelfBooks() {
         return bookdao.deleteShelfBooks()
     }
