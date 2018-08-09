@@ -16,7 +16,10 @@ import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.StatServiceUtils
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.router.RouterConfig
 
+@Route(path = RouterConfig.LOGIN_ACTIVITY)
 class LoginActivity : FrameActivity() {
 
     var flagLoginEnd = true
