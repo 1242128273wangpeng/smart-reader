@@ -2,6 +2,7 @@ package com.intelligent.reader.activity
 
 import android.os.Bundle
 import com.baidu.mobstat.StatService
+import com.ding.basic.bean.Book
 import com.intelligent.reader.R
 import com.intelligent.reader.widget.PushTimeDialog
 import iyouqu.theme.BaseCacheableActivity
@@ -20,6 +21,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
     private lateinit var settingItemsHelper: SettingItemsHelper
     private lateinit var settingItems: SettingItems
 
+    val book:Book ? = null
     private val pushTimeDialog: PushTimeDialog by lazy {
         val dialog = PushTimeDialog(this)
         dialog.setOnConfirmListener { startHour, startMinute, stopHour, stopMinute ->
@@ -49,6 +51,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
         } else {
             txt_push_time_setting.text = "全天推送"
         }
+        txt_push_time_setting.text = book!!.genre
 
     }
 

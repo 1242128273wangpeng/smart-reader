@@ -24,7 +24,9 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_disclaimer)
+        val test = "test"
 
+        txt_title.text = Integer.valueOf(test).toString()
         // 使用协议
         txt_title.text = resources.getString(R.string.disclaimer_statement)
         txt_content.text = resources.getString(R.string.disclaimer_statement_description)
