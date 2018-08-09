@@ -8,25 +8,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/accent"
+        android:clipToPadding="true"
         android:orientation="vertical"
         android:paddingLeft="16dp"
-        app:elevation="0dp"
-        android:clipToPadding="true"
-        android:paddingRight="16dp">
+        android:paddingRight="16dp"
+        app:elevation="0dp">
 
         <LinearLayout
-            android:fitsSystemWindows="true"
-            android:layout_marginTop="4dp"
             android:id="@+id/ll_search_layout"
             android:layout_width="match_parent"
             android:layout_height="32dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/search_input_bg"
+            android:fitsSystemWindows="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingTop="5dp"
-            app:layout_scrollFlags="scroll">
+            app:layout_scrollFlags="scroll|enterAlways">
 
             <ImageView
                 android:layout_width="18dp"
@@ -45,10 +45,10 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
-            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_marginTop="13dp"
+            android:fitsSystemWindows="true"
             app:tabIndicatorColor="#FFFFFF"
             app:tabIndicatorHeight="0dp"
             app:tabSelectedTextColor="#FFFFFFFF"
@@ -65,20 +65,9 @@
             app:mindicatorWidth="15dp" />
     </android.support.design.widget.AppBarLayout>
 
-    <com.intelligent.reader.fragment.scroll.ScrollNestedScrollView
-        android:id="@+id/scrollview"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </com.intelligent.reader.fragment.scroll.ScrollNestedScrollView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </android.support.design.widget.CoordinatorLayout>
