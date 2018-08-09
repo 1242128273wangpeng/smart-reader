@@ -211,7 +211,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.handleReadingAction()
                 }
-                book_cover_status.text = recommendList!!.get(10000).authorName.toString()
             }
 
             R.id.book_cover_download_iv -> {
