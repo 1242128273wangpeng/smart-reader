@@ -21,9 +21,9 @@ class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
          * http://note.youdao.com/noteshare?id=7b6be9f7706849746a83d21a207d3ca5&sub=BB3CD2D7346043C59050C702C72D3FEB
          */
         if (size % 3 == 0) {
-            fl_add_layout.setBackgroundResource(R.color.color_white)
+            setBackgroundResource(R.color.color_white)
         } else {
-            fl_add_layout.setBackgroundResource(R.drawable.bookshelf_bookitem_bg)
+           setBackgroundResource(R.drawable.bookshelf_bookitem_bg)
         }
 
         itemView.setOnClickListener {

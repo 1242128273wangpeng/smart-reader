@@ -538,6 +538,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     override fun onBookDelete() {
         if (isAdded && !requireActivity().isFinishing) {
             updateUI()
+            isEditMode=false
             bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
             requireActivity().applicationContext.showToastMessage(R.string.bookshelf_delete_success)
