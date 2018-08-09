@@ -28,7 +28,7 @@ object RouterConfig {
 
     const val TABULATION_ACTIVITY = "/common_book/TabulationActivity"
 
-    const val SWITCH_AD_ACTIVITY = "/common_book/SwitchSplashAdActivity"
+    const val SWITCH_AD_ACTIVITY = "/common_book/SwitchADActivity"
 
     /**
      * dy_reader
