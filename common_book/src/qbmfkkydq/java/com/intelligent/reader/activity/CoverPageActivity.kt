@@ -155,7 +155,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             loadingPage!!.onSuccess()
         }
 
-        loadingPage = LoadingPage(this, rl1, LoadingPage.setting_result)
+        loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
         coverPagePresenter?.requestCoverRecommendRandom(8)
@@ -274,25 +274,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     flowLayout.addView(buildLabel(AppUtils.getWordNums(book.word_count!!.toLong()),2),lp)
                 }
 
-
-//                if (!TextUtils.isEmpty(book.label) && !book.fromQingoo()) {
-//                    flowLayout.visibility = VISIBLE
-////                    左郁flowLayout!!.childSpacing = resources.getDimensionPixelOffset(R.dimen.dimen_5)
-//                    flowLayout!!.rowSpacing = 17f
-//                    flowLayout!!.maxRows = 1
-//                    if (book.label != null) {
-//                        val dummyTexts = book.label!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-//                        val lp = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//                        lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
-//                        dummyTexts.indices
-//                                .filterNot { TextUtils.isEmpty(dummyTexts[it]) }
-//                                .map { buildLabel(dummyTexts[it], it) }
-//                                .forEach { flowLayout!!.addView(it, lp) }
-//
-//                    }
-//                } else {
-//                    flowLayout.visibility = GONE
-//                }
             }
 
         } else {
@@ -344,24 +325,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
 
         textView.setPadding(left, top, right, bottom)
-//        textView.setOnClickListener {
-//
-//            var data = HashMap<String, String>()
-//            data.put("bookid", bookId + "")
-//            /*data.put("name", bookVo?.name + "")*/
-//            data.put("lablekey", text)
-//            data.put("rank", index.toString())
-//            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
-//
-//
-//            val intent = Intent()
-//            intent.setClass(this, LabelsDetailActivity::class.java)
-//            intent.putExtra("url", RequestService.LABEL_SEARCH_V4 + "?keyword=" + text)
-//            intent.putExtra("title", text)
-//            intent.putExtra("fromCover", true)
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//            startActivity(intent)
-//        }
+
 
 
         return textView
@@ -429,7 +393,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (loadingPage != null) {
             loadingPage!!.onError()
         }
-        Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
     override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
