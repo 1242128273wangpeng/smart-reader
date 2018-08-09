@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.debugToastShort
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
@@ -17,7 +19,7 @@ import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.user.Platform
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.StatServiceUtils
-
+@Route(path = RouterConfig.LOGIN_ACTIVITY)
 class LoginActivity : FrameActivity() {
 
     var flagLoginEnd = true
