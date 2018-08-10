@@ -1,6 +1,5 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.input.MultiInputStreamHelper;
 
@@ -73,13 +72,13 @@ public class OpenUDID {
         if (_keyInPref == null) {
             _keyInPref = getUniqueId(context);
             Editor e = mPreferences.edit();
-            e.putString(PREF_KEY, _openUdid);
+            e.putString(PREF_KEY, _keyInPref);
             e.apply();
         }
 
         if (!new File(filePath).exists() && _keyInPref != null) {
-            FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(_openUdid.getBytes()));
-            AppLog.d("OpenUDID", "UDID = {" +_openUdid+ "}");
+            FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(_keyInPref.getBytes()));
+            AppLog.d("OpenUDID", "UDID = {" +_keyInPref+ "}");
         }
     }
 }
