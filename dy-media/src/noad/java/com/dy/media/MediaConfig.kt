@@ -28,7 +28,7 @@ object MediaConfig {
 
     fun setCityName(cityName: String) {}
 
-    fun setCityCode(cityCode: String) {}
+    fun setCityCode(cityCode: Int) {}
 
     fun setLatitude(latitude: Float) {}
 
