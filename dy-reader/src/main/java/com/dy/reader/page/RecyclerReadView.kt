@@ -134,19 +134,6 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                     loadPreChapter(ReaderStatus.position.group - 1)
                 }
 
-                if (ReaderStatus.position.group != -1 && ReaderStatus.position.index == ReaderStatus.position.groupChildCount - 1) {
-                    if (mStatisticChapterIndex != ReaderStatus.position.group && mStatisticChapterIndex < ReaderStatus.position.group) {
-                        mStatisticChapterIndex = ReaderStatus.position.group
-
-                        Logger.e("打点统计PV: " + ReaderStatus.position.group + " : " + ReaderStatus.position.groupChildCount + " : " + ReaderStatus.position.index)
-
-                        StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id,  ReaderStatus.book.book_source_id, if("zn" == ReaderStatus.book.book_type){ "2" }else{ "1" }, ReaderStatus.position.groupChildCount.toString())
-                        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
-                    } else if (mStatisticChapterIndex != ReaderStatus.position.group) {
-                        mStatisticChapterIndex = ReaderStatus.position.group
-                    }
-                }
-
                 mCanScrollVertically = recyclerView.canScrollVertically(1)
             }
         })
@@ -458,6 +445,13 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.FOOTER_ITEM_TYPE
                     && mOriginDataList[position].lines[0].sequence != PagerScrollAdapter.AD_ITEM_TYPE) {
 
+//                ReadState.chapterName = mOriginDataList[position].lines[0].chapterName
+                if(ReaderStatus.position.group < mOriginDataList[position].lines[0].sequence){
+                    //发送章节消费
+                    StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
+                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.chapterCount.toString() )
+                    ReaderStatus.startTime = System.currentTimeMillis()/1000L
+                }
                 ReaderStatus.position.index = getCurrentChapterPage(position)
                 ReaderStatus.position.offset = mOriginDataList[position].offset
                 ReaderStatus.position.group = mOriginDataList[position].lines[0].sequence
