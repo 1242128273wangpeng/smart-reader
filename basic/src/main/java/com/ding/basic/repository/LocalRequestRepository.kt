@@ -42,10 +42,6 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
-    override fun requestDynamicParameters(): Flowable<JsonObject>? {
-        return null
-    }
-
     override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
         return null
     }
