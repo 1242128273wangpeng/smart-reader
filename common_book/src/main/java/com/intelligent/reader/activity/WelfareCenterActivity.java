@@ -91,6 +91,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
             names.add(currentTitle);
         }
 
+        AppUtils.disableAccessibility(this);
         initView();
 
         initJSHelp();
