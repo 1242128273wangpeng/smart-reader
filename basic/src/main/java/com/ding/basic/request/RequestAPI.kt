@@ -13,11 +13,10 @@ import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import org.intellij.lang.annotations.Flow
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.ArrayList
+import java.util.*
 import kotlin.properties.Delegates
 
 /**
@@ -47,12 +46,16 @@ object RequestAPI {
         requestService = retrofit.create(RequestService::class.java)
     }
 
-    fun requestDefaultBooks(): Flowable<BasicResult<CoverList>>? {
-        return requestService.requestDefaultBooks()
-    }
 
-    fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>?{
-        return requestService.requestDefaultBooks(sex)
+    /**
+     * sex：0全部；1男； 2女； -1不传sex字段
+     */
+    fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
+        return if (sex == -1) {
+            requestService.requestDefaultBooks()
+        } else {
+            requestService.requestDefaultBooks(sex)
+        }
     }
 
     fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {

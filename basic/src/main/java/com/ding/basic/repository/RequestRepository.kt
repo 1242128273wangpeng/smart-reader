@@ -11,7 +11,6 @@ import java.util.HashMap
 interface RequestRepository {
 
     /************************* 网络请求 *************************/
-    fun requestDefaultBooks(requestSubscriber: RequestSubscriber<Boolean>)
 
     fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>)
 

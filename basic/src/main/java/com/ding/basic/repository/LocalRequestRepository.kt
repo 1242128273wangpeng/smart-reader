@@ -34,10 +34,6 @@ class LocalRequestRepository private constructor(private var context: Context) :
         }
     }
 
-    override fun requestDefaultBooks(): Flowable<BasicResult<CoverList>>? {
-        return null
-    }
-
     override fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
         return null
     }
