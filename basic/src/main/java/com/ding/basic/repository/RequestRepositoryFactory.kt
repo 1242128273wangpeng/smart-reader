@@ -40,10 +40,6 @@ import kotlin.collections.ArrayList
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
-    override fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>) {
-    }
-
-
     companion object {
 
         @Volatile
@@ -60,6 +56,40 @@ class RequestRepositoryFactory private constructor(private val context: Context)
             }
             return requestRepositoryFactory!!
         }
+    }
+
+    override fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestDefaultBooks(sex)!!
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
+                .doOnNext({
+                    if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
+                        for (book in it.data?.coverList!!) {
+                            if (!TextUtils.isEmpty(book.book_id)) {
+
+                                val localBook = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book.book_id)
+
+                                if (localBook == null) {
+                                    LocalRequestRepository.loadLocalRequestRepository(context).insertBook(book)
+                                }
+                            }
+                        }
+                    }
+                })
+                .subscribe({ result ->
+                    if (result != null) {
+                        if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
+                            requestSubscriber.onNext(true)
+                        } else {
+                            requestSubscriber.onError(Throwable("获取默认书籍异常！"))
+                        }
+                    } else {
+                        requestSubscriber.onError(Throwable("获取默认书籍异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求默认书籍完成！")
+                })
     }
 
     override fun requestDefaultBooks(requestSubscriber: RequestSubscriber<Boolean>) {
