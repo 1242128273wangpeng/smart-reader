@@ -38,7 +38,7 @@ object MediaConfig {
         PlatformSDK.config()?.setCityName(cityName)
     }
 
-    fun setCityCode(cityCode: String) {
+    fun setCityCode(cityCode: Int) {
         PlatformSDK.config()?.setCityCode(cityCode)
     }
 
