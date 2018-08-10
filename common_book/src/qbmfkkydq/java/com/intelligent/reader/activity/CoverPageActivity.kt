@@ -125,8 +125,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
         }
 
-        /*book_cover_catalog_view!!.antiShakeClick(this)*/
-        /*book_cover_catalog_view_nobg!!.antiShakeClick(this)*/
     }
 
     private fun initIntent(intent: Intent?) {
@@ -262,16 +260,16 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 lp.rightMargin = AppUtils.dp2px(resources, 4f).toInt()
                 flowLayout!!.removeAllViews()
 
-                if(book.status == "SERIALIZE"){
-                    flowLayout.addView(buildLabel("连载中", 0),lp)
-                }else if (book.update_status == 1 ) {
-                    flowLayout.addView(buildLabel("完结", 0),lp)
+                if (book.status == "SERIALIZE") {
+                    flowLayout.addView(buildLabel("连载中", 0), lp)
+                } else if (book.update_status == 1) {
+                    flowLayout.addView(buildLabel("完结", 0), lp)
                 }
-                if (!TextUtils.isEmpty(book.sub_genre)){
-                    flowLayout.addView(buildLabel(book.sub_genre!!,1),lp)
+                if (!TextUtils.isEmpty(book.sub_genre)) {
+                    flowLayout.addView(buildLabel(book.sub_genre!!, 1), lp)
                 }
-                if(!TextUtils.isEmpty(book.word_count)&& book.word_count!!.toLong()>0){
-                    flowLayout.addView(buildLabel(AppUtils.getWordNums(book.word_count!!.toLong()),2),lp)
+                if (!TextUtils.isEmpty(book.word_count) && book.word_count!!.toLong() > 0) {
+                    flowLayout.addView(buildLabel(AppUtils.getWordNums(book.word_count!!.toLong()), 2), lp)
                 }
 
             }
@@ -307,13 +305,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun buildLabel(text: String, index: Int): TextView {
 
         var position = index % labelColor.size
-        val left = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
-        val right = resources.getDimensionPixelOffset(R.dimen.dimen_margin_10)
-        val top = resources.getDimensionPixelOffset(R.dimen.dimen_margin_5)
-        val bottom = resources.getDimensionPixelOffset(R.dimen.dimen_margin_5)
+        val left = resources.getDimensionPixelOffset(R.dimen.dimen_margin_6)
+        val right = resources.getDimensionPixelOffset(R.dimen.dimen_margin_6)
+        val top = resources.getDimensionPixelOffset(R.dimen.dimen_margin_4)
+        val bottom = resources.getDimensionPixelOffset(R.dimen.dimen_margin_4)
         val textView = TextView(this)
         textView.text = text
-        textView.textSize = 12f
+        textView.textSize = 10f
         textView.gravity = Gravity.CENTER
 
         textView.setTextColor(ContextCompat.getColor(this, labelColor[position]))
