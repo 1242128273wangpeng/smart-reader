@@ -939,8 +939,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
         return InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadBookshelf(body)
-                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
-
     }
 
     /**
@@ -1092,8 +1090,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookMarkBody))
         return InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadBookMarks(body)
-                .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
-
     }
 
 
