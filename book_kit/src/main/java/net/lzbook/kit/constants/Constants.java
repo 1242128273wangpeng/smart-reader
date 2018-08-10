@@ -31,12 +31,12 @@ public class Constants {
      */
     public static final String FROM_DISCLAIMER_PAGE = "from_disclaimer_page";
 
-    //开屏选男女
+    //开屏选男女 0全部；1男； 2女； -1不传sex字段
     public static int SBOY = 1;
     public static int SGIRL = 2;
     public static int SDEFAULT = 0;
     public static int NONE = -1;
-    public static int SGENDER = SDEFAULT;
+    public static int SGENDER = NONE;
 
     // 反射resourceType
     public static final int DRAWABLE = 1;

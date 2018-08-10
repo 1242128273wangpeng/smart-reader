@@ -38,10 +38,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         }
     }
 
-    override fun requestDefaultBooks(): Flowable<BasicResult<CoverList>>? {
-        return RequestAPI.requestDefaultBooks()
-    }
-
     override fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
         return RequestAPI.requestDefaultBooks(sex)
     }
