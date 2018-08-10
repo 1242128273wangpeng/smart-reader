@@ -1,7 +1,7 @@
 package com.intelligent.reader.receiver;
 
 import com.dingyue.contract.util.SharedPreUtil;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.DynamicParameter;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -76,10 +76,10 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
 
                 //当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
                 if (nType == ConnectivityManager.TYPE_WIFI || nType == ConnectivityManager.TYPE_MOBILE) {
-                    if (DynamicParamter.isReloadDynamic) {
-                        DynamicParamter.isReloadDynamic = false;
-                        DynamicParamter dynamicParameter = new DynamicParamter(context);
-                        dynamicParameter.setDynamicParamter();
+                    if (DynamicParameter.isReloadDynamic()) {
+                        DynamicParameter.setReloadDynamic(false);
+                        DynamicParameter dynamicParameter = new DynamicParameter(context);
+                        dynamicParameter.setDynamicParameter();
                     }
                 }
             } else {

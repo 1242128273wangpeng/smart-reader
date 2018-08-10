@@ -62,11 +62,11 @@ object RequestAPI {
         return requestService.requestApplicationUpdate(parameters)
     }
 
-    fun requestDynamicParameters(): Flowable<JsonObject>? {
+    fun requestDynamicParameters(): Flowable<Parameter> {
         return requestService.requestDynamicParameters()
     }
 
-    fun requestCDNDynamicPar(url: String): Flowable<JsonObject> {
+    fun requestCDNDynamicPar(url: String): Flowable<Parameter> {
         return requestService.requestCDNDynamicPar(url)
     }
 

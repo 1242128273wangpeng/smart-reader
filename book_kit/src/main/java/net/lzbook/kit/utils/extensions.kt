@@ -30,6 +30,7 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.regex.Pattern
 
 /**
  * Created by xian on 2017/6/21.
@@ -370,3 +371,10 @@ private fun Intent.putPushExtra(msg: UMessage) {
 
 @JvmField
 val IS_FROM_PUSH = "is_from_push"
+
+fun String.isNumeric(): Boolean {
+    if (this.isEmpty()) return false
+    val pattern = Pattern.compile("[0-9]*")
+    val isNum = pattern.matcher(this)
+    return isNum.matches()
+}

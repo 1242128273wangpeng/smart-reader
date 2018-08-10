@@ -156,7 +156,7 @@ class SharedPreUtil(val type: Int) {
         sp.edit().putInt(key, value).apply()
     }
 
-    fun putString(key: String, value: String) {
+    fun putString(key: String, value: String?) {
         sp.edit().putString(key, value).apply()
     }
 
