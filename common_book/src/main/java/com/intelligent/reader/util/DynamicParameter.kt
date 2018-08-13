@@ -386,6 +386,12 @@ class DynamicParameter(private val context: Context) {
             Constants.dy_shelf_ad_switch = dyShelfAdSwitch.toBoolean()
         }
 
+        //书架悬浮广告开关
+        val dyShelfBoundarySwitch = shareUtil.getString(Constants.DY_SHELF_BOUNDARY_SWITCH)
+        if (dyShelfBoundarySwitch.isNotEmpty()) {
+            Constants.dy_shelf_boundary_switch = dyShelfBoundarySwitch.toBoolean()
+        }
+
         /*
           0-关闭书架页广告位；两种形式都不开启
           1-开启书架页广告位A样式:顶部横幅书架页广告
