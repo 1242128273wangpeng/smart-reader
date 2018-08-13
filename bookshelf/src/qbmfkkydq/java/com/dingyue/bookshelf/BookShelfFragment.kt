@@ -487,7 +487,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (isAdded && !requireActivity().isFinishing) {
+        if (isAdded && activity?.isFinishing == false) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
