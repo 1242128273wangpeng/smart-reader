@@ -8,8 +8,7 @@ import com.dingyue.contract.router.RouterUtil
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
-import java.util.HashMap
+import java.util.*
 
 /**
  * Function：使用协议 / 转码声明
@@ -30,7 +29,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         txt_content.text = resources.getString(R.string.disclaimer_statement_description)
 
         // 阅读页转码声明
-        val isFromReadingPage = intent.getBooleanExtra(Constants.FROM_READING_PAGE, false)
+        val isFromReadingPage = intent.getBooleanExtra(RouterUtil.FROM_READING_PAGE, false)
         if (isFromReadingPage) {
             txt_title.text = resources.getString(R.string.translate_code)
             txt_content.text = resources.getString(R.string.translate_code_description)
@@ -38,7 +37,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
 
 
         // 登录页服务条款
-        val isServicePolicy = intent.getBooleanExtra(Constants.SERVICE_POLICY, false)
+        val isServicePolicy = intent.getBooleanExtra(RouterUtil.SERVICE_POLICY, false)
         if (isServicePolicy) {
             txt_title.text = resources.getString(R.string.login_service_policy)
             txt_content.text = resources.getString(R.string.service_policy_description)
@@ -46,7 +45,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         }
 
         // 登录页隐私条款
-        val isPrivacyPolicy = intent.getBooleanExtra(Constants.PRIVACY_POLICY, false)
+        val isPrivacyPolicy = intent.getBooleanExtra(RouterUtil.PRIVACY_POLICY, false)
         if (isPrivacyPolicy) {
             txt_title.text = resources.getString(R.string.login_privacy_policy)
             txt_content.text = resources.getString(R.string.privacy_policy_description)
@@ -62,7 +61,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         }
 
         // 仅在使用协议页面进入可以打开调试模式
-        val isFormDisclaimerPage = intent.getBooleanExtra(Constants.FROM_DISCLAIMER_PAGE, false)
+        val isFormDisclaimerPage = intent.getBooleanExtra(RouterUtil.FROM_DISCLAIMER_PAGE, false)
         if (isFormDisclaimerPage) {
             txt_content.setOnClickListener {
                 displayEggs()
