@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_main"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bookshelf_bookitem_bg"
-    android:gravity="left"
-    android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="14dp"
-    android:paddingTop="20dp"
-    tools:ignore="RtlHardcoded">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/rl_main"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/bookshelf_bookitem_bg"
+              android:gravity="left"
+              android:orientation="vertical"
+              android:paddingLeft="20dp"
+              android:paddingRight="14dp"
+              android:paddingTop="20dp"
+              tools:ignore="RtlHardcoded">
 
 
     <FrameLayout
         android:layout_width="86dp"
-        android:layout_height="119dp"
-
-        >
+        android:layout_height="119dp">
 
         <ImageView
             android:id="@+id/img_book_cover"
@@ -25,7 +23,14 @@
             android:layout_height="113dp"
             android:layout_gravity="left|bottom"
             android:scaleType="fitXY"
-            tools:src="@drawable/common_book_cover_default_icon" />
+            tools:src="@drawable/common_book_cover_default_icon"/>
+
+        <!--按压效果-->
+        <View
+            android:layout_width="80dp"
+            android:layout_height="113dp"
+            android:layout_gravity="left|bottom"
+            android:background="@drawable/bookshelf_item_book_sel"/>
 
         <TextView
             android:id="@+id/txt_book_states_update"
@@ -36,7 +41,7 @@
             android:textColor="#fff"
             android:textSize="10sp"
             tools:background="#ff0000"
-            tools:text="更" />
+            tools:text="更"/>
 
         <TextView
             android:id="@+id/txt_book_states_finish"
@@ -47,7 +52,7 @@
             android:textColor="#fff"
             android:textSize="10sp"
             tools:background="#ff0000"
-            tools:text="完" />
+            tools:text="完"/>
 
         <FrameLayout
             android:id="@+id/fl_book_chapter"
@@ -68,7 +73,7 @@
                 android:padding="1dp"
                 android:textColor="#ffffff"
                 android:textSize="10sp"
-                tools:text="13/100章" />
+                tools:text="13/100章"/>
         </FrameLayout>
 
         <ImageView
@@ -76,9 +81,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_gravity="right"
-            tools:src="@drawable/bookshelf_item_book_checked_icon" />
-
-
+            tools:src="@drawable/bookshelf_item_book_checked_icon"/>
     </FrameLayout>
 
     <TextView
@@ -90,7 +93,7 @@
         android:maxLines="2"
         android:textColor="#FF5D646E"
         android:textSize="12sp"
-        tools:text="斗破苍穹" />
+        tools:text="斗破苍穹"/>
 
 
 </LinearLayout>
