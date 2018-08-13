@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -33,11 +32,10 @@ import net.lzbook.kit.utils.LoadDataManager
 @Route(path = RouterConfig.DEBUG_ACTIVITY)
 class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListener, View.OnClickListener {
 
-    private val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-    private val editor = sp.edit()
+    private val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
 
     //保存禁用动态参数前的host,用来还原动态参数
-    private val sharePreUtil = SharedPreUtil(0)
+    private val sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,28 +47,28 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     override fun onResume() {
         super.onResume()
 
-        tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${sp.getString(Constants.NOVEL_HOST, "")}】")
-        tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${sp.getString(Constants.WEBVIEW_HOST, "")}】")
-        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${sp.getString(Constants.UNION_HOST, "")}】")
-        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${sp.getString(Constants.CONTENT_HOST, "")}】")
+        tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${sp.getString(SharedPreUtil.NOVEL_HOST, "")}】")
+        tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${sp.getString(SharedPreUtil.WEBVIEW_HOST, "")}】")
+        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${sp.getString(SharedPreUtil.UNION_HOST, "")}】")
+        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${sp.getString(SharedPreUtil.CONTENT_HOST, "")}】")
 
-        btn_debug_start_params.isChecked = sp.getBoolean(Constants.START_PARAMS, true)
+        btn_debug_start_params.isChecked = sp.getBoolean(SharedPreUtil.START_PARAMS, true)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.iv_back -> finish()
             R.id.tv_api -> {
-                intentHostList(Constants.NOVEL_HOST)
+                intentHostList(SharedPreUtil.NOVEL_HOST)
             }
             R.id.tv_web -> {
-                intentHostList(Constants.WEBVIEW_HOST)
+                intentHostList(SharedPreUtil.WEBVIEW_HOST)
             }
             R.id.tv_micro -> {
-                intentHostList(Constants.UNION_HOST)
+                intentHostList(SharedPreUtil.UNION_HOST)
             }
             R.id.tv_micro_content -> {
-                intentHostList(Constants.CONTENT_HOST)
+                intentHostList(SharedPreUtil.CONTENT_HOST)
             }
 
         }
@@ -79,11 +77,11 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     override fun onCheckedChanged(v: SwitchButton, isChecked: Boolean) {
         when (v.id) {
             R.id.btn_debug_start_params -> {
-                editor.putBoolean(Constants.START_PARAMS, isChecked).apply()
+                sp.putBoolean(SharedPreUtil.START_PARAMS, isChecked)
                 startParams()
             }
             R.id.btn_debug_pre_show_ad -> {
-                editor.putBoolean(Constants.PRE_SHOW_AD, isChecked).apply()
+                sp.putBoolean(SharedPreUtil.PRE_SHOW_AD, isChecked)
                 preShowAd(isChecked)
             }
             R.id.btn_debug_reset_book_shelf -> {
@@ -93,7 +91,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                 updateChapter(isChecked)
             }
             R.id.btn_debug_show_toast -> {
-                editor.putBoolean(Constants.SHOW_TOAST_LOG, isChecked).apply()
+                sp.putBoolean(SharedPreUtil.SHOW_TOAST_LOG, isChecked)
             }
         }
 
@@ -104,11 +102,11 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
         //启用动态参数
         btn_debug_start_params.setOnCheckedChangeListener(this)
-        btn_debug_start_params.isChecked = sp.getBoolean(Constants.START_PARAMS, true)
+        btn_debug_start_params.isChecked = sp.getBoolean(SharedPreUtil.START_PARAMS, true)
 
         // 提前显示广告
         btn_debug_pre_show_ad.setOnCheckedChangeListener(this)
-        btn_debug_pre_show_ad.isChecked = sp.getBoolean(Constants.PRE_SHOW_AD, false)
+        btn_debug_pre_show_ad.isChecked = sp.getBoolean(SharedPreUtil.PRE_SHOW_AD, false)
 
         // 重新获取默认书架
         btn_debug_reset_book_shelf.setOnCheckedChangeListener(this)
@@ -117,7 +115,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
         // 打点Toast
         btn_debug_show_toast.setOnCheckedChangeListener(this)
-        btn_debug_show_toast.isChecked = sp.getBoolean(Constants.SHOW_TOAST_LOG, false)
+        btn_debug_show_toast.isChecked = sp.getBoolean(SharedPreUtil.SHOW_TOAST_LOG, false)
 
         iv_back.setOnClickListener(this)
 
@@ -134,19 +132,18 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 启用动态参数
      */
     private fun startParams() {
-        if (sp.getBoolean(Constants.START_PARAMS, true)) {
+        if (sp.getBoolean(SharedPreUtil.START_PARAMS, true)) {
 
             //还原动态参数
-            editor.putString(Constants.NOVEL_HOST, sharePreUtil.getString(Constants.NOVEL_PRE_HOST))
-            editor.putString(Constants.WEBVIEW_HOST, sharePreUtil.getString(Constants.WEBVIEW_PRE_HOST))
-            editor.putString(Constants.UNION_HOST, sharePreUtil.getString(Constants.UNION_PRE_HOST))
-            editor.putString(Constants.CONTENT_HOST, sharePreUtil.getString(Constants.CONTENT_PRE_HOST))
-            editor.apply()
+            sp.putString(SharedPreUtil.NOVEL_HOST, sharePreUtil.getString(SharedPreUtil.NOVEL_PRE_HOST))
+            sp.putString(SharedPreUtil.WEBVIEW_HOST, sharePreUtil.getString(SharedPreUtil.WEBVIEW_PRE_HOST))
+            sp.putString(SharedPreUtil.UNION_HOST, sharePreUtil.getString(SharedPreUtil.UNION_PRE_HOST))
+            sp.putString(SharedPreUtil.CONTENT_HOST, sharePreUtil.getString(SharedPreUtil.CONTENT_PRE_HOST))
 
-            Config.insertRequestAPIHost(sharePreUtil.getString(Constants.NOVEL_PRE_HOST))
-            Config.insertWebViewHost(sharePreUtil.getString(Constants.WEBVIEW_PRE_HOST))
-            Config.insertMicroAPIHost(sharePreUtil.getString(Constants.UNION_PRE_HOST))
-            Config.insertContentAPIHost(sharePreUtil.getString(Constants.CONTENT_PRE_HOST))
+            Config.insertRequestAPIHost(sharePreUtil.getString(SharedPreUtil.NOVEL_PRE_HOST))
+            Config.insertWebViewHost(sharePreUtil.getString(SharedPreUtil.WEBVIEW_PRE_HOST))
+            Config.insertMicroAPIHost(sharePreUtil.getString(SharedPreUtil.UNION_PRE_HOST))
+            Config.insertContentAPIHost(sharePreUtil.getString(SharedPreUtil.CONTENT_PRE_HOST))
 
             ContentAPI.initMicroService()
             MicroAPI.initMicroService()
@@ -154,10 +151,10 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
         } else { //禁用动态参数
             // 保留动态参数
-            sharePreUtil.putString(Constants.NOVEL_PRE_HOST, sp.getString(Constants.NOVEL_HOST, ""))
-            sharePreUtil.putString(Constants.WEBVIEW_PRE_HOST, sp.getString(Constants.WEBVIEW_HOST, ""))
-            sharePreUtil.putString(Constants.UNION_PRE_HOST, sp.getString(Constants.UNION_HOST, ""))
-            sharePreUtil.putString(Constants.CONTENT_PRE_HOST, sp.getString(Constants.CONTENT_HOST, ""))
+            sharePreUtil.putString(SharedPreUtil.NOVEL_PRE_HOST, sp.getString(SharedPreUtil.NOVEL_HOST, ""))
+            sharePreUtil.putString(SharedPreUtil.WEBVIEW_PRE_HOST, sp.getString(SharedPreUtil.WEBVIEW_HOST, ""))
+            sharePreUtil.putString(SharedPreUtil.UNION_PRE_HOST, sp.getString(SharedPreUtil.UNION_HOST, ""))
+            sharePreUtil.putString(SharedPreUtil.CONTENT_PRE_HOST, sp.getString(SharedPreUtil.CONTENT_HOST, ""))
         }
 
 
@@ -231,7 +228,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 跳转不同的界面
      */
     private fun intentHostList(type: String) {
-        if (sp.getBoolean(Constants.START_PARAMS, true)) {
+        if (sp.getBoolean(SharedPreUtil.START_PARAMS, true)) {
             this.showToastMessage("请先关闭动态参数")
             return
         }

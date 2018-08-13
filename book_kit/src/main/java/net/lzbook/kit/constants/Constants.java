@@ -15,23 +15,90 @@ import java.io.File;
 public class Constants {
 
     /**
-     * 阅读页转码声明（Intent）
+     * 阅读页转码声明（RouterUtil）
      */
+    @Deprecated
     public static final String FROM_READING_PAGE = "from_reading_page";
     /**
-     * 登录页服务条款（Intent）
+     * 登录页服务条款（RouterUtil）
      */
+    @Deprecated
     public static final String SERVICE_POLICY = "service_policy";
     /**
-     * 登录页隐秘条款（Intent）
+     * 登录页隐秘条款（RouterUtil）
      */
+    @Deprecated
     public static final String PRIVACY_POLICY = "privacy_policy";
     /**
-     * 仅在使用协议页面进入可以打开调试模式（Intent）
+     * 仅在使用协议页面进入可以打开调试模式（RouterUtil）
      */
+    @Deprecated
     public static final String FROM_DISCLAIMER_PAGE = "from_disclaimer_page";
 
-    //开屏选男女 0全部；1男； 2女； -1不传sex字段
+
+    /**
+     * SharedPreferences的key值
+     */
+    @Deprecated
+    public static String SHAREDPREFERENCES_KEY =
+            "onlineconfig_agent_online_setting_" + AppUtils.getPackageName();
+
+    /**
+     * HOST分类
+     */
+    @Deprecated
+    public static String NOVEL_HOST = "novel_host";//智能API接口
+    @Deprecated
+    public static String WEBVIEW_HOST = "httpsWebView_host";// WebView
+    @Deprecated
+    public static String UNION_HOST = "union_host";//微服务API接口
+    @Deprecated
+    public static String CONTENT_HOST = "content_host";//微服务内容接口
+
+    /**
+     * 禁用动态参数前保留一份动态HOST
+     */
+    @Deprecated
+    public static String NOVEL_PRE_HOST = "novel_pre_host";//
+    @Deprecated
+    public static String WEBVIEW_PRE_HOST = "httpsWebView_pre_host";//
+    @Deprecated
+    public static String UNION_PRE_HOST = "union_pre_host";//
+    @Deprecated
+    public static String CONTENT_PRE_HOST = "content_pre_host";//
+
+    /**
+     * SharePre字段名
+     */
+    @Deprecated
+    public static String START_PARAMS = "start_params";// 启动动态参数,默认是开启
+    @Deprecated
+    public static String PRE_SHOW_AD = "pre_show_ad";// 提前展示广告
+    @Deprecated
+    public static String RESET_BOOK_SHELF = "reset_book_shelf";//重置书架
+    @Deprecated
+    public static String UPDATE_CHAPTER = "update_chapter";// 更新章节
+    @Deprecated
+    public static String HOST_LIST = "host_list";// host列表
+    @Deprecated
+    public static String SHOW_TOAST_LOG = "show_toast_log";//打点Toast显示，方便h5查看打点
+
+    /**
+     * Intent传参
+     */
+    @Deprecated
+    public static String BOOK_ID = "book_id";
+    @Deprecated
+    public static String BOOK_SOURCE_ID = "book_source_id";
+    @Deprecated
+    public static String BOOK_CHAPTER_ID = "book_chapter_id";
+
+
+    /**
+     * 开屏选男女
+     * -1不传sex字段
+     * 0全部； 1男； 2女；
+     */
     public static int SBOY = 1;
     public static int SGIRL = 2;
     public static int SDEFAULT = 0;
@@ -222,7 +289,7 @@ public class Constants {
     public static int dy_adfree_new_user = 48;
     public static boolean dy_splash_ad_switch = true;
     public static boolean dy_shelf_ad_switch = true;
-    /*
+    /**
       0-关闭书架页广告位；两种形式都不开启
       1-开启书架页广告位A样式:顶部横幅书架页广告
       2-开启书架页广告位B样式：九宫格原生书架页广告
@@ -294,45 +361,6 @@ public class Constants {
     public static String FILTER_WORD = "easou";
     public static String STYLE_CHANGE = "style1";
 
-
-    /**
-     * SharedPreferences的key值
-     */
-    public static String SHAREDPREFERENCES_KEY =
-            "onlineconfig_agent_online_setting_" + AppUtils.getPackageName();
-
-    /**
-     * HOST分类
-     */
-    public static String NOVEL_HOST = "novel_host";//智能API接口
-    public static String WEBVIEW_HOST = "httpsWebView_host";// WebView
-    public static String UNION_HOST = "union_host";//微服务API接口
-    public static String CONTENT_HOST = "content_host";//微服务内容接口
-
-    /**
-     * 禁用动态参数前保留一份动态HOST
-     */
-    public static String NOVEL_PRE_HOST = "novel_pre_host";//
-    public static String WEBVIEW_PRE_HOST = "httpsWebView_pre_host";//
-    public static String UNION_PRE_HOST = "union_pre_host";//
-    public static String CONTENT_PRE_HOST = "content_pre_host";//
-
-    /**
-     * SharePre字段名
-     */
-    public static String START_PARAMS = "start_params";// 启动动态参数,默认是开启
-    public static String PRE_SHOW_AD = "pre_show_ad";// 提前展示广告
-    public static String RESET_BOOK_SHELF = "reset_book_shelf";//重置书架
-    public static String UPDATE_CHAPTER = "update_chapter";// 更新章节
-    public static String HOST_LIST = "host_list";// host列表
-    public static String SHOW_TOAST_LOG = "show_toast_log";//打点Toast显示，方便h5查看打点
-
-    /**
-     * Intent传参
-     */
-    public static String BOOK_ID = "book_id";
-    public static String BOOK_SOURCE_ID = "book_source_id";
-    public static String BOOK_CHAPTER_ID = "book_chapter_id";
 
     public static long startReadTime = 0;
     public static long endReadTime = 0;

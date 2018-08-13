@@ -20,24 +20,55 @@ class SharedPreUtil(val type: Int) {
 
     companion object {
 
-        val SHARE_DEFAULT = 0  //sharePrefreences 保存的是默认地址
-        val SHARE_ONLINE_CONFIG = 1  //sharePrefreences 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
+        val SHARE_DEFAULT = 0  // 保存的是默认地址
+        val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
+        val SHAREDPREFERENCES_KEY = "onlineconfig_agent_online_setting_" + AppUtils.getPackageName()
 
-        /**
-         * 当前阅读的书籍
-         */
+        // 当前阅读的书籍
         val CURRENT_READ_BOOK = "current_read_book"
+
 
         /**
          * DebugActivity
          */
+        @Deprecated("")
         val API_URL = "api_url"// api地址
+        @Deprecated("")
         val WEB_URL = "web_url"// web地址
-        val START_PARAMS = "start_params"// 启动动态参数,默认是开启
-        val PRE_SHOW_AD = "pre_show_ad"// 提前展示广告
-        val RESET_BOOK_SHELF = "reset_book_shelf"//重置书架
-        val UPDATE_CHAPTER = "update_chapter"// 更新章节
-        val HOST_LIST = "host_list"// host列表
+
+        // 启动动态参数,默认是开启
+        var START_PARAMS = "start_params"
+
+        // 提前展示广告
+        var PRE_SHOW_AD = "pre_show_ad"
+
+        //重置书架
+        var RESET_BOOK_SHELF = "reset_book_shelf"
+
+        // 更新章节
+        var UPDATE_CHAPTER = "update_chapter"
+
+        // host列表
+        var HOST_LIST = "host_list"
+
+        //打点Toast显示，方便h5查看打点
+        var SHOW_TOAST_LOG = "show_toast_log"
+
+        /**
+         * HOST分类
+         */
+        var NOVEL_HOST = "novel_host"//智能API接口
+        var WEBVIEW_HOST = "httpsWebView_host"// WebView
+        var UNION_HOST = "union_host"//微服务API接口
+        var CONTENT_HOST = "content_host"//微服务内容接口
+
+        /**
+         * 禁用动态参数前保留一份动态HOST
+         */
+        var NOVEL_PRE_HOST = "novel_pre_host"
+        var WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
+        var UNION_PRE_HOST = "union_pre_host"
+        var CONTENT_PRE_HOST = "content_pre_host"
 
 
         /**
@@ -129,9 +160,9 @@ class SharedPreUtil(val type: Int) {
     }
 
 
-    val shareList = listOf<SharedPreferences>(
+    private val shareList = listOf<SharedPreferences>(
             PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext()),
-            BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
+            BaseBookApplication.getGlobalContext().getSharedPreferences(SHAREDPREFERENCES_KEY, 0)
 
     )
 
