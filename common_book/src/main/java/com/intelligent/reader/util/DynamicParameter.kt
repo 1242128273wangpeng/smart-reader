@@ -128,12 +128,6 @@ class DynamicParameter(private val context: Context) {
         shareUtil.putString(Constants.DY_AD_NEW_REQUEST_DOMAIN_NAME, map.DY_ad_new_request_domain_name)
         shareUtil.putString(Constants.noNetReadNumber, map.noNetReadNumber)
 
-        var downloadLimit = 0
-        if (map.download_limit?.isNumeric() == true) {
-            downloadLimit = Integer.parseInt(map.download_limit)
-        }
-        shareUtil.putInt(Constants.DOWNLOAD_LIMIT, downloadLimit)
-
         shareUtil.putString(Constants.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
         if (shareUtil.getBoolean(Constants.START_PARAMS)) {
@@ -168,8 +162,6 @@ class DynamicParameter(private val context: Context) {
         insertRequestParams()
 
         initApi()
-
-        Constants.DOWNLOAD_LIMIT_NUMBER = shareUtil.getInt(Constants.DOWNLOAD_LIMIT)
 
         setBaidu()
 
@@ -484,6 +476,5 @@ class DynamicParameter(private val context: Context) {
         @JvmStatic
         var isReloadDynamic = false
 
-        private var mDynamicUrl = RequestService.DYNAMIC_PARAMETERS
     }
 }
