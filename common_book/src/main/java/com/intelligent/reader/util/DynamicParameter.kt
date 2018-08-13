@@ -1,11 +1,6 @@
 package com.intelligent.reader.util
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.content.SharedPreferences.Editor
-import android.preference.PreferenceManager
-import android.text.TextUtils
-
 import com.baidu.android.pushservice.PushConstants
 import com.baidu.android.pushservice.PushManager
 import com.baidu.mobstat.SendStrategyEnum
@@ -14,29 +9,19 @@ import com.ding.basic.Config
 import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.ContentAPI
-import com.ding.basic.request.MicroAPI
-import com.ding.basic.request.RequestAPI
-import com.ding.basic.request.RequestService
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.request.*
 import com.dingyue.contract.util.SharedPreUtil
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import org.json.JSONException
-import org.json.JSONObject
-
-import java.util.ArrayList
-import java.util.Arrays
-
-import io.reactivex.functions.Consumer
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.isNumeric
+import net.lzbook.kit.utils.loge
+import java.util.*
 
 class DynamicParameter(private val context: Context) {
 
@@ -150,10 +135,13 @@ class DynamicParameter(private val context: Context) {
         shareUtil.putInt(Constants.DOWNLOAD_LIMIT, downloadLimit)
 
         shareUtil.putString(Constants.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
-        shareUtil.putString(Constants.NOVEL_HOST, map.novel_host)
-        shareUtil.putString(Constants.WEBVIEW_HOST, map.httpsWebView_host)
-        shareUtil.putString(Constants.UNION_HOST, map.union_host)
-        shareUtil.putString(Constants.CONTENT_HOST, map.content_host)
+
+        if (shareUtil.getBoolean(Constants.START_PARAMS)) {
+            shareUtil.putString(Constants.NOVEL_HOST, map.novel_host)
+            shareUtil.putString(Constants.WEBVIEW_HOST, map.httpsWebView_host)
+            shareUtil.putString(Constants.UNION_HOST, map.union_host)
+            shareUtil.putString(Constants.CONTENT_HOST, map.content_host)
+        }
 
     }
 
