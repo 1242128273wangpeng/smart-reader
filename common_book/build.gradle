@@ -288,6 +288,7 @@ N多网	        blf1298_10885_001
 
         //自定义
         custom {
+            debuggable = true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
@@ -315,6 +316,7 @@ N多网	        blf1298_10885_001
 
         //调试和开发使用
         release {
+            debuggable = true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources false
