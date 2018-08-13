@@ -3,12 +3,10 @@ package com.dingyue.bookshelf
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,20 +19,19 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import com.google.gson.Gson
-import kotlinx.android.synthetic.qbmfkkydq.frag_bookshelf.*
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_refresh_header.view.*
-import net.lzbook.kit.app.BaseBookApplication
+import kotlinx.android.synthetic.qbmfkkydq.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.rvextension.HFRecyclerControl
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.uiThread
 import java.util.*
 
 /**
@@ -86,7 +83,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         popup.setOnDeletedClickListener {
             bookShelfDeleteDialog.show(bookShelfAdapter.selectedBooks)
         }
-
         popup
     }
 
@@ -107,7 +103,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     val bookShelfAdapter: BookShelfAdapter by lazy {
         BookShelfAdapter(object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
-                var realPosition = position - hfRecyclerControl.getHeaderCount()
+                val realPosition = position - hfRecyclerControl.getHeaderCount()
 
                 if (realPosition < 0 || realPosition > bookShelfPresenter.iBookList.size) {
                     return
@@ -340,8 +336,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 mScrollDistance += dy
-                var percent = mScrollDistance * 1f / headerViewHeight
-                var alpha = 255 * percent
+                val percent = mScrollDistance * 1f / headerViewHeight
+                val alpha = 255 * percent
                 setTitleLayoutAlpha(alpha.toInt(), percent)
             }
         })
