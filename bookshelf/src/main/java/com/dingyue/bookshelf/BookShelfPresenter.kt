@@ -277,6 +277,16 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * **/
     fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
         val size = deleteBooks.size
+
+        // 书架上书籍数量
+        val bookCount = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
+
+        // 清除当前阅读书籍状态
+        if (bookCount.toInt() == size) {
+            val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            sp.putString(SharedPreUtil.CURRENT_READ_BOOK, "")
+        }
+
         doAsync {
             val stringBuilder = StringBuilder()
             for (i in 0 until size) {
@@ -303,14 +313,6 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
             BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)
 
-
-            val bookCount = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
-
-            // 清除当前阅读书籍状态
-            if (bookCount.toInt() == size) {
-                val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-                sp.putString(SharedPreUtil.CURRENT_READ_BOOK, "")
-            }
         }
     }
 
