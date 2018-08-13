@@ -29,7 +29,7 @@ public class URLBuilder implements URLBuilderIntterface {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		return host+uriTag+(uriTag.contains("?")?"&":"?")+mapToUrlParams(params);
+		return host+uriTag+(uriTag.contains("?")?"&":"?")+mapToUrlParams(params)+"&token="+encode;
 	}
 
 	private String mapToUrlParams(Map<String,String> params){
