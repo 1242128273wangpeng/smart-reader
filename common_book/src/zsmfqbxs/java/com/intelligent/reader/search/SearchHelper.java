@@ -413,6 +413,7 @@ public class SearchHelper {
         Chapter chapter = new Chapter();
         chapter.setName(last_chapter);
         chapter.setUpdate_time(update_time);
+        chapter.setSerial_number(Integer.valueOf(chapter_count));
         book.setLast_chapter(chapter);
         book.setChapter_count(Integer.valueOf(chapter_count));
         book.setLast_update_success_time(System.currentTimeMillis());
