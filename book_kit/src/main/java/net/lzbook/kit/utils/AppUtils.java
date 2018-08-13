@@ -1,5 +1,6 @@
 package net.lzbook.kit.utils;
 
+import static android.content.Context.BATTERY_SERVICE;
 import static android.content.Context.TELEPHONY_SERVICE;
 
 import android.app.Activity;
@@ -22,6 +23,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -399,12 +401,19 @@ public class AppUtils {
      * X86架构
      */
     public static String getBatteryLevel() {
-        Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
-                .registerReceiver(null,
-                        new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-        int level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
-
+        int level = 0;
+        //API 21 之后用 BATTERY_SERVICE 主动去获取电量
+        if (Build.VERSION.SDK_INT  >= Build.VERSION_CODES.LOLLIPOP) {
+            BatteryManager batteryManager = (BatteryManager)BaseBookApplication.getGlobalContext().getSystemService(BATTERY_SERVICE);
+            if(batteryManager != null){
+                level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            }
+        }else{
+            Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
+                    .registerReceiver(null,
+                            new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+        }
         return level + "%";
     }
 
