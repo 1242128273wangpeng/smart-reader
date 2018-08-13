@@ -93,12 +93,12 @@
             android:visibility="gone">
 
             <TextView
-                android:layout_marginLeft="16dp"
                 android:id="@+id/txt_editor_select_all"
                 style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:paddingLeft="16dp"
                 android:text="@string/select_all"/>
 
             <TextView
@@ -112,13 +112,12 @@
 
             <TextView
                 android:id="@+id/txt_editor_finish"
-
                 style="@style/bookshelf_subtitle_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
+                android:paddingRight="16dp"
                 android:text="@string/finish"/>
 
         </RelativeLayout>

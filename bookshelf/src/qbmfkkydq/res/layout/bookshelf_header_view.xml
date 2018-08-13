@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="144dp">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="144dp">
+
+    <LinearLayout
+        android:id="@+id/ll_no_book"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bookshelf_empty_title"
+            android:textColor="#ffffff"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:text="@string/bookshelf_noreadingbook_title"
+            android:textColor="#c7ffffff"
+            android:textSize="14sp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_has_book"
@@ -21,7 +46,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/common_book_cover_default_icon"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"/>
+
+            <!--按压效果-->
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bookshelf_item_book_sel"/>
 
             <TextView
                 android:id="@+id/txt_book_states_update"
@@ -31,7 +63,7 @@
                 android:textColor="#fff"
                 android:textSize="10sp"
                 tools:background="#ff0000"
-                tools:text="更" />
+                tools:text="更"/>
 
         </FrameLayout>
 
@@ -53,7 +85,7 @@
                 android:singleLine="true"
                 android:textColor="#ffffff"
                 android:textSize="18sp"
-                tools:text="斗破苍穹" />
+                tools:text="斗破苍穹"/>
 
             <TextView
                 android:id="@+id/txt_book_chapter_info"
@@ -65,7 +97,7 @@
                 android:singleLine="true"
                 android:textColor="#ccffffff"
                 android:textSize="12sp"
-                tools:text="第1080章" />
+                tools:text="第1080章"/>
 
             <TextView
                 android:id="@+id/txt_book_chapter"
@@ -77,7 +109,7 @@
                 android:singleLine="true"
                 android:textColor="#ccffffff"
                 android:textSize="12sp"
-                tools:text="1080/1080章" />
+                tools:text="1080/1080章"/>
 
         </LinearLayout>
 
@@ -94,32 +126,10 @@
             android:paddingTop="4dp"
             android:text="继续阅读"
             android:textColor="#ffffff"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            app:onPressChangeAlpha="true"
+            tools:ignore="MissingPrefix"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/ll_no_book"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bookshelf_empty_title"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:text="@string/bookshelf_noreadingbook_title"
-            android:textColor="#c7ffffff"
-            android:textSize="14sp" />
-
-
-    </LinearLayout>
 </FrameLayout>

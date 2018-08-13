@@ -6,13 +6,10 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.bookshelf.BookShelfPresenter
-import com.dingyue.bookshelf.R
-import com.dingyue.contract.CommonContract
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.lzbook.kit.app.BaseBookApplication
-import java.util.*
 
 /**
  * Date: 2018/7/19 19:54
@@ -32,7 +29,11 @@ class ChildBookShelfPresenter(view: ChildBookShelfView) : BookShelfPresenter(vie
 
         val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         val json = sp.getString(SharedPreUtil.CURRENT_READ_BOOK)
-        currentReadBook = Gson().fromJson<Book>(json, object : TypeToken<Book>() {}.type)
+        currentReadBook = if (json.isEmpty()) {
+            null
+        } else {
+            Gson().fromJson<Book>(json, object : TypeToken<Book>() {}.type)
+        }
 
         if (currentReadBook == null) {
             (view as ChildBookShelfView).onCurrentBookComplete(currentReadBook, currentTitle)
