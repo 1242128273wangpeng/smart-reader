@@ -17,6 +17,7 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
@@ -467,7 +468,9 @@ public class SearchHelper {
                 params.put("sort_type", sortType);
                 params.put("wordType", searchType);
                 params.put("searchEmpty", "1");
-                mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
+//                mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
+                String uri = RequestService.SEARCH_VUE.replace("{packageName}", AppUtils.getPackageName());
+                mUrl = UrlUtils.buildWebUrl(uri, params);
             }
         }
         if (mStartLoadCall != null) {

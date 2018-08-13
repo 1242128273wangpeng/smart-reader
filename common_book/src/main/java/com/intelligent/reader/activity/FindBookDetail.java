@@ -256,7 +256,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         if (find_detail_content != null) {
-            find_detail_content.clearCache(true); //清空缓存
+            find_detail_content.clearCache(false); //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (find_detail_content.getParent() != null) {
                     ((ViewGroup) find_detail_content.getParent()).removeView(find_detail_content);
