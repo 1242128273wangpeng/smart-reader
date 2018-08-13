@@ -5,6 +5,7 @@ import com.ding.basic.bean.LocalLog
 import com.ding.basic.dao.LocalLogDao
 import com.ding.basic.database.LocalLogDataBase
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.ServerLog
 import net.lzbook.kit.constants.Constants
@@ -63,8 +64,8 @@ class AndroidLogStorage {
 
         }
 
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (sp.getBoolean(Constants.SHOW_TOAST_LOG, false)) { //打点Toast
+        val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+        if (sp.getBoolean(SharedPreUtil.SHOW_TOAST_LOG, false)) { //打点Toast
             CommonUtil.showToastMessage(serverLog.content.toString())
         }
 
