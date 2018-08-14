@@ -130,7 +130,7 @@ class DynamicParameter(private val context: Context) {
 
         shareUtil.putString(SharedPreUtil.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
-        if (shareUtil.getBoolean(SharedPreUtil.START_PARAMS)) {
+        if (shareUtil.getBoolean(SharedPreUtil.START_PARAMS, true)) {
             shareUtil.putString(SharedPreUtil.NOVEL_HOST, map.novel_host)
             shareUtil.putString(SharedPreUtil.WEBVIEW_HOST, map.httpsWebView_host)
             shareUtil.putString(SharedPreUtil.UNION_HOST, map.union_host)

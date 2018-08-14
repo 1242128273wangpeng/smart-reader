@@ -2,6 +2,7 @@ package net.lzbook.kit.utils;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 
@@ -44,7 +45,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     onSearchWordClick searchWordClick;
     OnSubSearchBook subSearchBook;
-
 
 
     public JSInterfaceHelper(Context context, WebView webView) {
@@ -133,6 +133,8 @@ public class JSInterfaceHelper implements WebViewJsInterface {
             if (array.length == 2) {
                 url = array[0];
                 url = UrlUtils.buildWebUrl(url, UrlUtils.getUrlParams(array[1]));
+            } else if (array.length == 1) {
+                url = UrlUtils.buildWebUrl(url, new HashMap<String, String>());
             }
         }
         return url;
@@ -333,7 +335,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         if (bookShelfList != null && bookShelfList.size() > 0) {
             for (int i = 0; i < bookShelfList.size(); i++) {
                 Book book = bookShelfList.get(i);
-                if(i > 0) bookIdList.append(",");
+                if (i > 0) bookIdList.append(",");
                 bookIdList.append(book.getBook_id());
             }
         }
@@ -349,7 +351,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
             @Override
             public void run() {
-                if(subSearchBook!=null){
+                if (subSearchBook != null) {
                     subSearchBook.showSubSearchBook(word);
                 }
             }
@@ -381,7 +383,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
                 this.pagerInfo.onH5PagerInfo(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(width), Float.parseFloat(height));
             } catch (Exception e) {
                 e.printStackTrace();
-                AppLog.e("kk",e.toString());
+                AppLog.e("kk", e.toString());
             }
         }
     }
@@ -470,29 +472,29 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     //搜索优化新增
 
-    public interface onSearchWordClick{
+    public interface onSearchWordClick {
         void sendSearchWord(final String searchWord, final String search_type);
     }
 
-    public void setSearchWordClick(onSearchWordClick searchWordClick){
+    public void setSearchWordClick(onSearchWordClick searchWordClick) {
         this.searchWordClick = searchWordClick;
     }
 
-    public interface onTurnRead{
-        void turnRead(String book_id, String book_source_id, String host, String name, String author, String parameter, String extra_parameter, String update_type, final String last_chapter_name, final int serial_number, final String img_url, final long update_time,final String desc,final String label,final String status,final String bookType);
+    public interface onTurnRead {
+        void turnRead(String book_id, String book_source_id, String host, String name, String author, String parameter, String extra_parameter, String update_type, final String last_chapter_name, final int serial_number, final String img_url, final long update_time, final String desc, final String label, final String status, final String bookType);
     }
 
-    public void setOnTurnRead(onTurnRead turnRead){
+    public void setOnTurnRead(onTurnRead turnRead) {
         this.toRead = turnRead;
     }
 
 
-
     //搜索无结果 点击订阅
-    public interface OnSubSearchBook{
+    public interface OnSubSearchBook {
         void showSubSearchBook(String word);
     }
-    public void setSubSearchBook(OnSubSearchBook subSearchBook){
+
+    public void setSubSearchBook(OnSubSearchBook subSearchBook) {
         this.subSearchBook = subSearchBook;
     }
 
@@ -500,13 +502,13 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     @Override
     @JavascriptInterface
     public void turnToRead(final String book_id, final String book_source_id, final String host, final String name, final String author, final String parameter, final String extra_parameter, final String update_type, final String last_chapter_name, final String serial_number, final String img_url, final String update_time, final String desc, final String label, final String status, final String bookType) {
-        if(!book_id.equals("") && !book_source_id.equals("")){
+        if (!book_id.equals("") && !book_source_id.equals("")) {
 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(toRead != null){
-                        toRead.turnRead(book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, Integer.valueOf(serial_number), img_url, Long.valueOf(update_time),desc,label,status,bookType);
+                    if (toRead != null) {
+                        toRead.turnRead(book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, Integer.valueOf(serial_number), img_url, Long.valueOf(update_time), desc, label, status, bookType);
                     }
                 }
             });
@@ -516,12 +518,12 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     @Override
     @JavascriptInterface
     public void sendSearchWord(final String searchWord, final String search_type) {
-        if(!searchWord.equals("")){
+        if (!searchWord.equals("")) {
 
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(searchWordClick != null){
+                    if (searchWordClick != null) {
                         searchWordClick.sendSearchWord(searchWord, search_type);
                     }
                 }
