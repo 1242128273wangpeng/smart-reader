@@ -106,7 +106,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     private void initData() {
         settingItemsHelper = SettingItemsHelper.getSettingHelper(getApplicationContext());
         settingItems = settingItemsHelper.getValues();
-        push_checkbox.setChecked(settingItems.isPush);
+        push_checkbox.setChecked(settingItems.isBookUpdatePush);
         push_sound_checkbox.setChecked(settingItems.isSoundOpen);
         push_time_checkbox.setChecked(settingItems.isSetPushTime);
         if (push_time_checkbox.isChecked()) {
@@ -242,7 +242,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
             push_time_checkbox.setEnabled(status);
         }
 
-        settingItemsHelper.putBoolean(settingItemsHelper.openPush, status);
+        settingItemsHelper.putBoolean(settingItemsHelper.openBookPush, status);
         setPushSound(status, status);
         setPushTime(status, status);
     }
@@ -454,7 +454,7 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         push_time_checkbox.setChecked(pushStatus);
         push_time_checkbox.setEnabled(pushStatus);
 
-        settingItemsHelper.putBoolean(settingItemsHelper.openPush, pushStatus);
+        settingItemsHelper.putBoolean(settingItemsHelper.openBookPush, pushStatus);
         if (pushStatus) {
             setPushSound(settingItems.isSoundOpen, pushStatus);
             setPushTime(settingItems.isSetPushTime, pushStatus);
