@@ -244,7 +244,7 @@ public class SearchHelper {
                 }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
-                    if (url.contains(RequestService.AUTHOR_h5)) {
+                    if (url.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
                         sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                                 "author").apply();//FindBookDetail 返回键时标识
                     }
