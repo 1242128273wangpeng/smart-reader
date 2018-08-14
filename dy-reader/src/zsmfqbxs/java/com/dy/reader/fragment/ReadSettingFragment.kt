@@ -182,6 +182,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
     fun show(flag: Boolean) {
         try {
             if (flag && !this.isAdded && null == fm?.findFragmentByTag(TAG)) {
+                fm?.beginTransaction()?.remove(this)?.commit()
                 this.show(fm, TAG)
             } else {
                 dismiss()
