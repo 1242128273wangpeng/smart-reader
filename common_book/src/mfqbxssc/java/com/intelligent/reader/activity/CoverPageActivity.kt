@@ -11,6 +11,7 @@ import android.view.View.*
 import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
@@ -192,7 +193,13 @@ class CoverPageActivity : BaseCacheableActivity(),
         if (coverPagePresenter != null) {
             coverPagePresenter!!.refreshNavigationState()
         }
+        StatService.onResume(this)
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
     }
 
     override fun onDestroy() {

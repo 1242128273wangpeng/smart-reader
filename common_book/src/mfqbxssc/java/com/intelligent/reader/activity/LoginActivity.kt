@@ -18,6 +18,7 @@ import net.lzbook.kit.user.Platform
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.StatServiceUtils
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.dingyue.contract.router.RouterConfig
 
 @Route(path = RouterConfig.LOGIN_ACTIVITY)
@@ -102,7 +103,7 @@ class LoginActivity : FrameActivity() {
         progressDialog!!.setCancelable(true)
 
         progressDialog!!.publish_content.visibility = View.GONE
-        (progressDialog!!.findViewById(R.id.dialog_title) as TextView).setText(R.string.tips_login)
+        (progressDialog!!.findViewById<TextView>(R.id.dialog_title)).setText(R.string.tips_login)
         progressDialog!!.change_source_bottom.visibility = View.GONE
         progressDialog!!.progress_del.visibility = View.VISIBLE
         progressDialog!!.setOnDismissListener {
@@ -139,4 +140,13 @@ class LoginActivity : FrameActivity() {
             setResult(Activity.RESULT_CANCELED)
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
 }
