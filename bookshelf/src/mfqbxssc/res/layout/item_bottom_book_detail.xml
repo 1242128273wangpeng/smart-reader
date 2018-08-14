@@ -8,6 +8,7 @@
     android:paddingBottom="15dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
+    android:gravity="center_vertical"
     android:paddingTop="20dp"
     tools:ignore="RtlHardcoded">
 
@@ -15,7 +16,7 @@
         android:id="@+id/img_book_cover"
         android:layout_width="86dp"
         android:layout_height="122dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:background="@drawable/common_book_cover_default_icon"
         android:contentDescription="@string/module_name"
