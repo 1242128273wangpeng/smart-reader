@@ -82,6 +82,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             }
             R.id.btn_debug_pre_show_ad -> {
                 sp.putBoolean(SharedPreUtil.PRE_SHOW_AD, isChecked)
+                sharePreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, if (isChecked) 2 else 1)
                 preShowAd(isChecked)
             }
             R.id.btn_debug_reset_book_shelf -> {

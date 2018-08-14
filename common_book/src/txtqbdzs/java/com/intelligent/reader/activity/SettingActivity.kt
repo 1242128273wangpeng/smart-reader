@@ -20,6 +20,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.setting.ReaderSettings
@@ -367,7 +368,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL)
                 val bundle = Bundle()
-                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+                bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
                 RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle) }
 //            R.id.rl_readpage_setting -> {
 //                //阅读页设置

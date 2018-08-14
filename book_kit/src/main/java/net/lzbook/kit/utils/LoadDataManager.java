@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.ActionConstants;
@@ -33,7 +34,7 @@ public class LoadDataManager {
             @Override
             public void requestResult(Boolean result) {
                 if (result) {
-                    sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
+                    sharedPreferencesUtils.putBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS, true);
 
                     try {
                         Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);
