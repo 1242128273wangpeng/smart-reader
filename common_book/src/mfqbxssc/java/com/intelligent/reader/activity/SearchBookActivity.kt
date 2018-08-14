@@ -26,6 +26,7 @@ import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.search.SearchPresenter
@@ -105,8 +106,13 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 showSearchViews()
             }
         }
+        StatService.onResume(this)
     }
 
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
 
     private fun initView() {
         search_result_outcome.visibility = View.VISIBLE

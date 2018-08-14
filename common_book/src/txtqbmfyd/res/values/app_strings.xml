@@ -36,6 +36,8 @@
     <string name="download_manager_item_head_not_cached">未缓存</string>
     <string name="download_manager_editor_title">编辑缓存</string>
 
+    <string name="setting_qq_add">一键加群</string>
+    <string name="setting_qq_add_fail">加群失败，请检查是否安装QQ</string>
     <string name="application_cache_size">0B</string>
 
 

@@ -153,7 +153,7 @@ class SharedPreUtil(val type: Int) {
         val BOOKSHELF_GUIDE_TAG = AppUtils.getVersionCode().toString() + "bookshelf_guide_tag" //书架引导  和versionCode拼接
         const val BOOKSHELF_ISSHOW_CHANGE_GUIDE = "isShowChangAnGuide" //判断是否显示长按删除书籍引导  快读替 新版引导页
         const val BOOKSHELF_BOOK_RACKUP_DATETIME = "bookRackUpdateTime"
-
+        const val BOOKSHELF_PERSON_RED = "bookshelf_preson_red" //用于书架页上的红点显示隐藏
 
         /**
          * SearchBookActivity

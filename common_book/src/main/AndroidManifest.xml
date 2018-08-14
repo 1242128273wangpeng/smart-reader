@@ -137,6 +137,10 @@
             android:name="QQ_APPID"
             android:value="${QQ_APPID}"/>
 
+        <meta-data
+            android:name="REYUN_APPKEY"
+            android:value="${REYUN_APPKEY}"/>
+
         <!-- 注册Service，应用下载所需 -->
         <service
             android:name="com.adsmogo.controller.service.UpdateService"

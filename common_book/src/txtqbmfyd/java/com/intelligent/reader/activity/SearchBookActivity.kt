@@ -20,6 +20,7 @@ import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.search.SearchPresenter
@@ -319,6 +320,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 }
             }
 
+        StatService.onResume(this)
     }
 
     /**
@@ -330,6 +332,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_input!!.clearFocus()
         }
 
+        StatService.onPause(this)
     }
 
     /**

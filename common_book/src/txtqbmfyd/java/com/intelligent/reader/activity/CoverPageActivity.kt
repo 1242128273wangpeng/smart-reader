@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
@@ -27,7 +28,9 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.CommonUtil
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -175,11 +178,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             coverPagePresenter?.refreshNavigationState()
         }
         CacheManager.listeners.add(this)
+        StatService.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
         CacheManager.listeners.remove(this)
+        StatService.onPause(this)
     }
 
 

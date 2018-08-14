@@ -1,6 +1,7 @@
 package com.intelligent.reader.activity
 
 import android.os.Bundle
+import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
 import com.intelligent.reader.widget.PushTimeDialog
 import iyouqu.theme.BaseCacheableActivity
@@ -49,6 +50,16 @@ class SettingMoreActivity : BaseCacheableActivity() {
             txt_push_time_setting.text = "全天推送"
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
     }
 
     private fun initListener() {
