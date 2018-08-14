@@ -1,12 +1,17 @@
 package com.intelligent.reader.receiver;
 
-import com.intelligent.reader.util.DynamicParamter;
+import com.dingyue.contract.util.SharedPreUtil;
+import com.intelligent.reader.util.DynamicParameter;
+import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.OpenUDID;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +19,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class ConnectionChangeReceiver extends BroadcastReceiver {
     private static final String TAG = "ConnectionChangeReceiver";
@@ -53,6 +61,10 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                 }
                 AppLog.d(TAG, "Network Type  = " + networkInfo.getTypeName());
                 AppLog.d(TAG, "Network State = " + networkInfo.getState());
+                if (networkInfo.isConnected()) {
+                    //更新标签
+                    updatePushTags(context);
+                }
                 if (networkInfo.isConnected() && canReload) {
                     canReload = false;
                     AppLog.i(TAG, "Network connected");
@@ -64,10 +76,10 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
 
                 //当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
                 if (nType == ConnectivityManager.TYPE_WIFI || nType == ConnectivityManager.TYPE_MOBILE) {
-                    if (DynamicParamter.isReloadDynamic) {
-                        DynamicParamter.isReloadDynamic = false;
-                        DynamicParamter dynamicParameter = new DynamicParamter(context);
-                        dynamicParameter.setDynamicParamter();
+                    if (DynamicParameter.isReloadDynamic()) {
+                        DynamicParameter.setReloadDynamic(false);
+                        DynamicParameter dynamicParameter = new DynamicParameter(context);
+                        dynamicParameter.setDynamicParameter();
                     }
                 }
             } else {
@@ -76,6 +88,27 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                 NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
                 mobileType = G0;
             }
+        }
+    }
+
+    private void updatePushTags(Context context) {
+        String udid = OpenUDID.getOpenUDIDInContext(context);
+        final SharedPreUtil share = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        Long latestUpdateTime = share.getLong(SharedPreUtil.PUSH_TAG_LATEST_UPDATE_TIME, 0);
+        final Long currentTime = System.currentTimeMillis();
+        boolean isSameDay = AppUtils.isToday(latestUpdateTime, currentTime);
+        if (!isSameDay) {
+            ExtensionsKt.updateTags(PushAgent.getInstance(context), context, udid,
+                    new Function1<Boolean, Unit>() {
+                        @Override
+                        public Unit invoke(Boolean isSuccess) {
+                            if (isSuccess) {
+                                share.putLong(SharedPreUtil.PUSH_TAG_LATEST_UPDATE_TIME,
+                                        currentTime);
+                            }
+                            return null;
+                        }
+                    });
         }
     }
 

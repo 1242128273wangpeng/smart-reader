@@ -84,7 +84,7 @@ open class DownloadItemDecoration internal constructor(private val downloadHeade
             val header: View = downloadHeaderInterface.requestItemHeaderView(position)
                     ?: return null
 
-            measureHeaderView(header, left, right)
+            measureHeaderView(header, left, right, if (position == 0) firstHeaderHeight else headerHeight)
 
             headerBitmap = Bitmap.createBitmap(header.drawingCache)
 
@@ -95,14 +95,14 @@ open class DownloadItemDecoration internal constructor(private val downloadHeade
         return headerBitmap
     }
 
-    private fun measureHeaderView(header: View, left: Int, right: Int) {
+    private fun measureHeaderView(header: View, left: Int, right: Int, height: Int) {
         header.isDrawingCacheEnabled = true
 
-        val layoutParams = ViewGroup.LayoutParams(right, headerHeight)
+        val layoutParams = ViewGroup.LayoutParams(right, height)
         header.layoutParams = layoutParams
 
-        header.measure(View.MeasureSpec.makeMeasureSpec(right, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(headerHeight, View.MeasureSpec.EXACTLY))
-        header.layout(left, 0 - headerHeight, right, 0)
+        header.measure(View.MeasureSpec.makeMeasureSpec(right, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+        header.layout(left, 0 - height, right, 0)
     }
 
 

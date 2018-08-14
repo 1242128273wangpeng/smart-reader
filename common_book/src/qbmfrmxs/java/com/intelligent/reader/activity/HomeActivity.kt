@@ -48,6 +48,7 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
@@ -148,6 +149,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         initView()
 
         initListener()
+
+        checkShowShelfGuide()
 
         homePresenter.initParameters()
 
@@ -294,6 +297,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
+            val bundle = Bundle()
+            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
         }
 
@@ -342,6 +347,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         ll_tab_search.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeSearchBook)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "search")
+            HomeLogger.uploadHomeSearch()
         }
 
         // 分类
@@ -360,11 +366,16 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         }
 
         dl_home_content.setOnMenuStateChangeListener { state ->
-            if (state == DrawerLayout.MenuState.MENU_OPENED) {
-                showCacheMessage()
-
-                if (bookShelfFragment?.isRemoveMenuShow() == true) {
-                    bookShelfFragment?.dismissRemoveMenu()
+            when (state) {
+                DrawerLayout.MenuState.MENU_OPENED -> {
+                    showCacheMessage()
+                    if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                        bookShelfFragment?.dismissRemoveMenu()
+                    }
+                }
+                DrawerLayout.MenuState.MENU_START_SCROLL,
+                DrawerLayout.MenuState.MENU_END_SCROLL -> {
+                    ll_home_tab.requestLayout()
                 }
             }
         }
@@ -380,7 +391,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
-                checkShowShelfGuide()
+
             }
         })
     }
@@ -401,6 +412,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     img_guide_download.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
                     dl_home_content.unlock()
+                    changeHomePagerIndex(1)//首次展示精选页
                 }
             }
         }
@@ -666,6 +678,15 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             dl_home_content.closeMenu()
         } else {
             dl_home_content.openMenu()
+            HomeLogger.uploadHomePersonal()
+        }
+    }
+
+    override fun lockDrawerLayout(isToLock: Boolean) {
+        if (isToLock) {
+            dl_home_content.lock()
+        } else {
+            dl_home_content.unlock()
         }
     }
 

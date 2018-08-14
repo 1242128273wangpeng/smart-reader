@@ -266,7 +266,7 @@ object CacheManager {
     }
 
     private fun restroeTaskInfo(book: Book): BookTask {
-        val count = ChapterDaoHelper.loadChapterDataProviderHelper(app, book.book_id!!).getCount()
+        val count = book.chapter_count
         val preferences = app.getSharedPreferences(DOWN_INDEX + book.book_id, 0)
         var start: Int = -1
         var state: DownloadState
@@ -284,7 +284,7 @@ object CacheManager {
                     state = DownloadState.NOSTART
                 }
                 var list: Array<String>? = null
-                if (Constants.QG_SOURCE.equals(book.host)) {
+                if (book.fromQingoo()) {
                     list = File(Constants.QG_CACHE_PATH + book.book_id).list()
                 } else {
                     list = File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book.book_id).list()
@@ -342,7 +342,7 @@ object CacheManager {
 
     fun hasOtherSourceStatus(book: Book): Boolean {
 
-        if (Constants.QG_SOURCE.equals(book.host)) {
+        if (book.fromQingoo()) {
             return false
         }
 
@@ -540,8 +540,7 @@ object CacheManager {
             if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
                 workMap.values.forEach {
 
-                    val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(app, it.book_id)
-                    val count = bookChapterDao.getCount()
+                    val count = it.book.chapter_count
 
                     if (it.state == DownloadState.WAITTING_WIFI) {
                         it.state = DownloadState.WAITTING

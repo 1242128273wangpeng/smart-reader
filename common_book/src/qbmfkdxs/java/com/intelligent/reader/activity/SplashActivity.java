@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,7 +42,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.DynamicParameter;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -410,8 +411,6 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-        updateBookLastChapter();
-
         initializeDataFusion();
 
         // 安装快捷方式
@@ -626,6 +625,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();
@@ -674,8 +678,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }

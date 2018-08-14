@@ -1,5 +1,6 @@
 package com.ding.basic.request
 
+import android.text.TextUtils
 import com.ding.basic.Config
 import com.ding.basic.token.Token
 import com.orhanobut.logger.Logger
@@ -32,6 +33,10 @@ class MicroRequestInterceptor : Interceptor {
         requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
         requestParameters["longitude"] = Config.loadRequestParameter("longitude")
 
+        if(!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))){
+            requestParameters["loginToken"]=Config.loadRequestParameter("loginToken")
+        }
+
         return requestParameters
     }
 
@@ -54,33 +59,7 @@ class MicroRequestInterceptor : Interceptor {
         var request = chain.request()
 
         if (request.url().host() == URL(Config.loadMicroAPIHost()).host || request.url().host() == URL(Config.loadContentAPIHost()).host) {
-            when (request.method().toUpperCase()) {
-                "GET" -> {
-                    request = buildRequest(request)
-                }
-
-                "POST" -> {
-                    if (request.body() != null && request.body() is FormBody) {
-                        val map = mutableMapOf<String, String>()
-
-                        val url = if (request.url().host() == URL(Config.loadMicroAPIHost()).host) {
-                            Config.buildUrl(request.url().toString().replace(Config.loadMicroAPIHost(), ""), map)
-                        } else {
-                            Config.buildUrl(request.url().toString().replace(Config.loadContentAPIHost(), ""), map)
-                        }
-
-                        if (url != null) {
-                            request = request.newBuilder().url(url).build()
-                        }
-                    } else {
-                        request = buildRequest(request)
-                    }
-                }
-
-                else -> {
-
-                }
-            }
+            request = buildRequest(request)
         } else {
             Logger.e("other host, not add token")
         }

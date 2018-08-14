@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.mobstat.StatService;
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
@@ -113,6 +114,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
             e.printStackTrace();
         }
+        if(weakReference != null){
+            AppUtils.disableAccessibility(weakReference.get());
+        }
         initView();
         initRefresh();
         return rootView;
@@ -131,7 +135,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             contentView = (TopShadowWebView) rootView.findViewById(R.id.web_content_view);
             contentView.setTopShadow(topShadowView);
             if (Build.VERSION.SDK_INT >= 11) {
-                contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
 
             if (type.equals("recommend")) {

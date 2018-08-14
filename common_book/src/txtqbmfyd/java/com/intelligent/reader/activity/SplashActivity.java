@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,7 +42,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.DynamicParameter;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -466,43 +467,6 @@ public class SplashActivity extends FrameActivity {
         initTask.execute();
     }
 
-    /***
-     * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
-     * **/
-    private void updateBookLastChapter() {
-        if (sharedPreUtil == null) {
-            sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
-        }
-
-        boolean isDataBaseRemark = sharedPreUtil.getBoolean(
-                SharedPreUtil.Companion.getDATABASE_REMARK(), false);
-
-        if (!isDataBaseRemark) {
-
-            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBooks();
-
-            if (bookList != null && bookList.size() > 0) {
-
-                for (Book book : bookList) {
-                    ChapterDaoHelper chapterDaoHelper =
-                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
-
-                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
-
-                    if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
-                        book.setLast_chapter(lastChapter);
-
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).updateBook(book);
-                    }
-                }
-            }
-            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
-        }
-    }
-
     private boolean isGo = true;
 
     private void initSplashAd() {
@@ -644,6 +608,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();
@@ -692,8 +661,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -728,16 +697,15 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
-
-            //请求广告
-            initAdSwitch();
+//            UserManager.INSTANCE.initPlatform(SplashActivity.this, null); //新壳没有登录
             // 5 初始化屏蔽
             try {
                 initShield();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            //请求广告
+            initAdSwitch();
 
             initSplashAd();
 

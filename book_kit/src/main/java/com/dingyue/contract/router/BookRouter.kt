@@ -60,7 +60,7 @@ object BookRouter {
             bundle.putInt("sequence", book.sequence)
             bundle.putInt("offset", book.offset)
 
-            if (Constants.QG_SOURCE == book.host) {
+            if (book.fromQingoo()) {
                 book.channel_code = 1
             } else {
                 book.channel_code = 2
@@ -93,6 +93,7 @@ object BookRouter {
 
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
 
+            bundle.putString("author", book.author)
             bundle.putString("book_id", book.book_id)
             bundle.putString("book_source_id", book.book_source_id)
             bundle.putString("book_chapter_id", book.book_chapter_id)
@@ -112,15 +113,17 @@ object BookRouter {
     }
 
     /**
-     * 针对非book类型的实体类，new一个book对象，传递三个值
+     * 针对非book类型的实体类，new一个book对象，传递4个值
      *     val book = Book()
+     *     book.author = recommendBooks.author
      *     book.book_id = recommendBooks.bookId
      *     book.book_source_id = recommendBooks.id
      *     book.book_chapter_id = recommendBooks.bookChapterId
-    BookRouter.navigateCover(this, book)
+     *     BookRouter.navigateCover(this, book)
      */
     fun navigateCover(activity: Activity, book: Book) {
         val bundle = Bundle()
+        bundle.putString("author", book.author)
         bundle.putString("book_id", book.book_id)
         bundle.putString("book_source_id", book.book_source_id)
         bundle.putString("book_chapter_id", book.book_chapter_id)

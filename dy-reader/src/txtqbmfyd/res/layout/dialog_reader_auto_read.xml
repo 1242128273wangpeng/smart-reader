@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
+    android:background="#ffffff"
     android:scrollbars="vertical"
     tools:ignore="RtlHardcoded, RtlSymmetry">
 
@@ -14,8 +15,6 @@
         android:id="@+id/ll_auto_read_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/dialog_bg"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +25,7 @@
             android:padding="12dp"
             android:text="@string/prompt"
             android:textColor="#323232"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
 
         <View
             android:layout_width="match_parent"
@@ -38,13 +37,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:gravity="center"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="25dp"
             android:lineSpacingExtra="6dp"
             android:text="@string/auto_read_prompt"
             android:textColor="#323232"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <CheckBox
             android:id="@+id/ckb_reader_auto_read"
@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="25dp"
+            android:gravity="center"
             android:layout_marginRight="10dp"
             android:button="@drawable/reader_feedback_checkbox_sel"
             android:checked="false"

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
     <color name="colorPrimary">
         #3ecc96
     </color>
@@ -13,7 +15,7 @@
         #fafafa
     </color>
     <color name="color_divider">
-        #e8e8e8
+        #F9F9F9
     </color>
     <color name="color_lv_gap">
         #F5F5F5
@@ -49,11 +51,9 @@
         #ffffff
     </color>
     <color name="cover_profile_title_color">
-        #323232
+        #282828
     </color>
-    <color name="cover_profile_des_color">
-        #444444
-    </color>
+    <color name="cover_profile_des_color">#CBCBCB</color>
     <color name="cover_profile_bg_color">
         #eae8e8
     </color>
@@ -270,7 +270,7 @@
     <color name="color_statusBar_read">
         #1d1d1c
     </color>
-    
+
     <color name="footprint_name_text_color">
         #1a1a1a
     </color>
@@ -315,5 +315,5 @@
     <color name="setting_font_color">#8cFFFFFF</color>
     <color name="color_search_recommend_title">#303135</color>
     <color name="color_search_divider">#f0f0f0</color>
-
+    <color name="search_no_sub_color">#563ECC96</color>
 </resources>

@@ -142,9 +142,12 @@
     <dimen name="dimen_margin_63">63dip</dimen>
     <dimen name="dimen_margin_70">70dip</dimen>
     <dimen name="dimen_margin_80">80dip</dimen>
+    <dimen name="dimen_margin_88">88dip</dimen>
     <dimen name="dimen_margin_90">90dip</dimen>
     <dimen name="dimen_margin_96">96dip</dimen>
+    <dimen name="dimen_margin_99">99dip</dimen>
     <dimen name="dimen_margin_120">120dip</dimen>
+    <dimen name="dimen_margin_124">124dip</dimen>
     <dimen name="dimen_margin_125">125dip</dimen>
     <dimen name="dimen_margin_160">160dip</dimen>
     <dimen name="dimen_margin_250">250dip</dimen>

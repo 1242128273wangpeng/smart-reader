@@ -255,7 +255,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             R.id.img_catalog_back -> {
                 val data = HashMap<String, String>()
                 data["type"] = "1"
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CATALOG, StartLogClickUtil.BACK, data)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.BACK, data)
                 if (!fromCover) {
                     if (cataloguesPresenter != null) {
                         sequence = Math.min(sequence, chapterList.size - 1)
@@ -286,7 +286,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
             R.id.txt_catalog_read -> {
                 //转码阅读点击的统计
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CATALOG, StartLogClickUtil.TRANSCODEREAD)
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG,
+                        StartLogClickUtil.TRANSCODEREAD)
                 if (cataloguesPresenter != null) {
                     cataloguesPresenter?.handleReadingAction()
                 }
@@ -295,8 +296,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             R.id.txt_catalog_cache -> {
                 if (book != null && !TextUtils.isEmpty(book?.book_id)) {
                     book?.book_id.let {
-                        val dataDownload = HashMap<String, String>()
-                        dataDownload["bookId"] = book?.book_id!!
 
                         if (cataloguesPresenter != null) {
                             requestBookDownloadState(book?.book_id)
@@ -305,7 +304,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                                 CacheManager.stop(book?.book_id!!)
                             } else {
                                 cataloguesPresenter?.handleDownloadAction()
-                                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CATALOG, StartLogClickUtil.CASHEALL, dataDownload)
                             }
                         }
                     }

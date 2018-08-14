@@ -18,13 +18,17 @@ class TopShadowScrollView @JvmOverloads constructor(context: Context, attrs: Att
 
     private var distance = 10
 
+    var scrollChanged : ((y :Int) -> Unit)? = null
+
     init {
         val density = resources.displayMetrics.density//屏幕密度
         distance = (distance * density + 0.5f).toInt()
     }
 
+
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
         super.onScrollChanged(l, t, oldl, oldt)
+        scrollChanged?.invoke(t)
         topShadow?.let {
             if (t > distance) {
                 it.visibility = View.VISIBLE

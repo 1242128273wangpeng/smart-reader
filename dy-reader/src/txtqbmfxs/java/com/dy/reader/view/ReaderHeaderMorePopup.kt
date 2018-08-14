@@ -41,6 +41,6 @@ class ReaderHeaderMorePopup(context: Context, layout: Int = R.layout.popup_reade
     }
 
     fun insertBookmarkContent(string: String) {
-        contentView.txt_reader_change_source.text = string
+        contentView.txt_reader_action_mark.text = string
     }
 }

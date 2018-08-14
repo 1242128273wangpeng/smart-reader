@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
     GuideAdapter guideAdapter;
     boolean isFromApp = false;
     boolean isLoop = true;
-    ImageView /*imageController,*/ imageCenter;
+    FrameLayout /*imageController,*/ flMain;
     private String[] PACKAGE_1 = {"cn.zsqbydq.reader", "cn.kkqbtxtxs.reader", "cn.qbzsydsq.reader", "cc.remennovel", "cc.quanbennovel", "cc.kdqbxs.reader", "cc.mianfeinovel", "cc.quanben.novel"};
     private String[] PACKAGE_2 = {"com.mianfeinovel"};
     private String[] PACKAGE_3 = {"com.lianzainovel", "cn.txtkdxsdq.reader", "cn.kdqbxs.reader", "com.quanben.novel", "cn.txtzsydsq.reader", "com.remennovel", "com.quanbennovel", "cc.lianzainovel"};
@@ -136,9 +137,9 @@ public class GuideActivity extends FrameActivity implements GuideFragment.Fragme
     }
 
     @Override
-    public void getImageCenter(ImageView imageCenter) {
-        this.imageCenter = imageCenter;
-        imageCenter.setOnClickListener(new View.OnClickListener() {
+    public void getImageCenter(FrameLayout flMain) {
+        this.flMain = flMain;
+        flMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (viewPager.getCurrentItem() == guideAdapter.getCount() - 1) {

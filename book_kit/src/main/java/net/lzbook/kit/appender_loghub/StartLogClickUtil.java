@@ -16,6 +16,7 @@ import net.lzbook.kit.appender_loghub.util.FormatUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.bean.ChapterErrorBean;
 import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -51,6 +52,10 @@ public class StartLogClickUtil {
     public static final String ACTION_HOME_SEARCH = "SEARCH";
     public static final String ACTION_HOME_CACHE_MANAGE = "CACHEMANAGE";
     public static final String PREFERENCE = "PREFERENCE";//开屏选男女
+    public static final String NORESULT_PAGE = "NORESULT";//搜索无结果页
+    public static final String FEEDBACK_PAGE = "FEEDBACK";//搜索无结果页订阅页面
+
+
 
     /***
      * 书架相关点位
@@ -88,7 +93,16 @@ public class StartLogClickUtil {
      * 个人中心相关点位
      * **/
     //个人中心页
-    public static final String PAGE_PERSONAL = "PEASONAL";
+    public static final String PAGE_PERSONAL = "PERSONAL";
+    public static final String LOGINRESULT = "LOGINRESULT";//登录结果
+    public static final String PHONELOGIN = "PHONELOGIN";//点击输入手机号
+    public static final String OTHERLOGIN = "OTHERLOGIN";//点击第三方登录
+    public static final String PIN = "PIN";//点击获取验证码
+    public static final String PROFILE = "PROFILE";//登录后点击个人信息
+    public static final String SEX = "SEX";//点击性别
+    public static final String BINDOTHERLOGIN = "BINDOTHERLOGIN";//点击绑定第三方账户
+    public static final String UIDDIFFUSER = "UIDDIFFUSER";//不同用户在同设备登录
+    public static final String NICKNAME = "NICKNAME";//点击昵称
     //个人中心页功能
     public static final String ACTION_PERSONAL_BACK = "BACK";//屏幕左上方点击返回按钮
     public static final String ACTION_PERSONAL_HELP = "HELP";//点击帮助与反馈
@@ -154,8 +168,6 @@ public class StartLogClickUtil {
     public static final String PERHELP_PAGE = "PERHELP";//帮助与反馈
     public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
     public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
-    public static final String TOSHELF = "TOSHELF"; //完结页点击去书架
-    public static final String TOBOOKSTORE = "TOBOOKSTORE"; //完结页点击去书城
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
 
     //PUSH
@@ -193,6 +205,9 @@ public class StartLogClickUtil {
     public static final String TOBOOKCITY = "TOBOOKCITY";//空白页点击跳转书城
     public static final String LONGTIMEBOOKSHELFEDIT = "LONGTIMEBOOKSHELFEDIT";//长按编辑书架
     public static final String VERSIONUPDATE2 = "VERSIONUPDATE";//点击更新
+    public static final String POPUPMESSAGE = "POPUPMESSAGE"; //弹出「开启消息通知」弹窗
+    public static final String POPUPNOWOPEN = "POPUPNOWOPEN"; //弹窗点击现在开启
+    public static final String POPUPCLOSE = "POPUPCLOSE"; //关闭弹窗
 
     //书架编辑页
     public static final String SELECTALL1 = "SELECTALL";//全选
@@ -227,6 +242,12 @@ public class StartLogClickUtil {
 
     public static final String BARLIST = "BARLIST"; //搜索框下拉历史词点击
 
+    //搜索无结果页
+    public static final String FEEDBACK = "FEEDBACK"; //点击找书反馈
+    public static final String SUBMIT = "SUBMIT"; //搜索无结果页 点击订阅书籍
+
+
+
     //书籍详情页
     public static final String SOURCECHANGE = "SOURCECHANGE";//点击切源弹出
     public static final String LATESTCHAPTER = "LATESTCHAPTER";//点击最新章节（目录）
@@ -237,8 +258,10 @@ public class StartLogClickUtil {
     public static final String ENTER = "ENTER";//进入书籍详情页
     public static final String SOURCECHANGEPOPUP = "SOURCECHANGEPOPUP";//换源弹窗
     public static final String INTRODUCTION = "INTRODUCTION";//简介点击展开/收起
-    public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
     public static final String TRANSCODEPOPUP = "TRANSCODEPOPUP";//点击转码阅读
+    public static final String LABLECLICK = "LABLECLICK";//点击标签
+    public static final String RECOMMENDEDBOOK = "RECOMMENDEDBOOK";//点击推荐的书籍
+    public static final String AUTHORBOOKROCOM = "AUTHORBOOKROCOM";//点击作者其他作品
 
 
     //书籍目录页
@@ -267,6 +290,8 @@ public class StartLogClickUtil {
     public static final String PROCTCOL = "PROCTCOL";//点击使用协议
     public static final String LOGOUT = "LOGOUT";//点击退出登录
     public static final String WIFI_AUTOCACHE = "WIFI_AUTOCACHE";//点击退出登录
+    public static final String PHOTO = "PHOTO";//点击头像
+    public static final String BINDPHONE = "BINDPHONE";//点击绑定手机号
 
     //阅读页
     public static final String LABELEDIT = "LABELEDIT";//添加书签
@@ -303,12 +328,14 @@ public class StartLogClickUtil {
     public static final String BOOKDETAIL = "BOOKDETAIL";//书籍详情
 
     //阅读完结页
+    public static final String READFINISH = "READFINISH";//阅读完结页
     public static final String REPLACE = "REPLACE";   //完结页点击换一换
-
+    public static final String TOSHELF = "TOSHELF";   //完结页点击去书架
+    public static final String TOBOOKSTORE = "TOBOOKSTORE";   //完结页点击去书城
 
     //搜索结果页
     public static final String SEARCHRESULT = "SEARCHRESULT";//某本书点击
-    public static final String SEARCHRESULT_BOOK = "BOOK";//某本书点击
+    public static final String SEARCHRESULT_BOOK = "BOOKCLICK";//某本书点击
 
     //Crash
     public static final String CRASH = "CRASH";
@@ -393,6 +420,23 @@ public class StartLogClickUtil {
         }
     }
 
+    private static void upLoadUserInfo(ServerLog log){
+       if (BaseBookApplication.getGlobalContext().getPackageName().equals("cc.quanben.novel")){//登录二期
+
+           if (UserManagerV4.INSTANCE.isUserLogin()) {
+               log.putContent("uid", UserManagerV4.INSTANCE.getUser().getAccount_id());//用户中心唯一标识
+           } else {
+               log.putContent("uid", "");
+           }
+       }else{
+           if (UserManager.INSTANCE.isUserLogin()) {
+               log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
+           } else {
+               log.putContent("uid", "");
+           }
+       }
+    }
+
 
     @NonNull
     private static ServerLog getCommonLog() {
@@ -401,11 +445,7 @@ public class StartLogClickUtil {
         log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
         log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
 
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
 
         log.putContent("os", "android");//手机操作系统
         log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
@@ -430,11 +470,7 @@ public class StartLogClickUtil {
         log.putContent("code", identify);//点击事件唯一标识
         log.putContent("page_code", pageCode);
 
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
 
         log.putContent("os", "android");//手机操作系统
         log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
@@ -461,11 +497,7 @@ public class StartLogClickUtil {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_APPSTORE);
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
         log.putContent("apps", applist);
         log.putContent("time", System.currentTimeMillis() + "");
         AppLog.e("log", log.getContent().toString());
@@ -508,11 +540,7 @@ public class StartLogClickUtil {
             return;
         }
         ServerLog log = new ServerLog(PLItemKey.ZN_APP_READ_CONTENT);
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
         if (params != null) {
             log.putContent("book_id", params[0]);//书籍唯一字符串
             log.putContent("chapter_id", params[1]);//阅读章节唯一字符串
@@ -538,16 +566,34 @@ public class StartLogClickUtil {
     }
 
 
+    public static void sendPVData(String startReadTime , String bookId, String chapterId,  String sourceIds, String  channelCode,  String pageCount) {
+        long endReadTime = System.currentTimeMillis()/1000L ;
+        HashMap<String,String> params = new HashMap<>();
+        params.put("book_id", bookId);
+        params.put("book_source_id", sourceIds);
+        params.put("chapter_id", chapterId);
+        params.put("channel_code", channelCode);
+        params.put("chapter_read", "1");
+        params.put("chapter_pages", pageCount);
+        params.put("start_time", startReadTime);
+        params.put("end_time", endReadTime+"");
+        params.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+        params.put("app_package", AppUtils.getPackageName());
+        params.put("app_version", AppUtils.getVersionName());
+        params.put("app_version_code", AppUtils.getVersionCode()+"");
+        params.put("app_channel_id", AppUtils.getChannelId());
+
+        AppLog.e("zn_pv",params.toString());
+        LogEncapManager.getInstance().sendLog(params, "zn_pv");
+    }
+
+
     public static void upLoadChapterError(ChapterErrorBean bean) {
         if (!Constants.dy_ad_new_statistics_switch) {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_FEEDBACK);
-        if (UserManager.INSTANCE.isUserLogin()) {
-            log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
-        } else {
-            log.putContent("uid", "");
-        }
+        upLoadUserInfo(log);
         if (bean != null) {
             log.putContent("bookSourceId", bean.bookSourceId);
             log.putContent("bookName", decode(bean.bookName));

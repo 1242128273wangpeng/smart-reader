@@ -49,6 +49,17 @@ interface CoverPageContract {
      * **/
     fun showRecommendSuccess(recommends: ArrayList<RecommendBean>)
 
+    /**
+     * 推荐该作者的其他作品
+     * 铺开的壳：智胜电子书替
+     */
+    fun showAuthorRecommendSuccess(recommends: ArrayList<RecommendBean>){}
+
+    /***
+     * 封面页推荐成功 使用v4接口, 例如 今日多看壳
+     * **/
+    fun showRecommendSuccessV4(recommends: ArrayList<Book>){}
+
     /***
      * 封面页推荐失败
      * **/

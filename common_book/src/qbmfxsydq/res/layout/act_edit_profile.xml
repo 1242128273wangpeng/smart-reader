@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+              android:layout_height="match_parent"
+              android:background="@color/color_lv_gap">
+
+    <RelativeLayout
+            android:id="@+id/rl_title_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:background="@color/top_navigation_bg_color">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
+                    android:id="@+id/img_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="12dp"
+                    android:layout_alignParentLeft="true"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/top_back"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="修改昵称"
+                    android:textColor="@color/top_navigation_text_color"
+                    android:textSize="16sp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:text="@string/edit_user_info_tip"
+            android:textSize="@dimen/text_size_12"
+            android:background="@color/edit_user_info_tip_color"
+            android:padding="8dp"
+            android:gravity="center"
+            android:textColor="@color/edit_user_info_tip_txt_color"
+            android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/user_name_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="昵称"
+                android:textColor="@color/edir_user_profile_title_color"
+                android:textSize="@dimen/text_size_14"/>
+
+        <EditText
+                android:id="@+id/user_name_et"
+                android:layout_width="match_parent"
+                android:background="@null"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:maxLength="30"
+                android:layout_toRightOf="@+id/user_name_title_tv"
+                android:layout_toLeftOf="@+id/content_delete_iv"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@drawable/user_profile_edit_txt_color_selector"
+                android:layout_height="wrap_content"/>
+
+        <ImageView
+                android:id="@+id/content_delete_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="24dp"
+                android:src="@drawable/icon_profile_content_delete"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/edir_user_profile_tip_text_color"
+                android:text="@string/edit_user_info_standard_tip"
+                android:textSize="@dimen/text_size_12"/>
+
+        <TextView
+                android:id="@+id/user_name_fail_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:drawableLeft="@drawable/icon_edit_user_profile_prompt"
+                android:textColor="@color/edir_user_profile_fail_text_color"
+                android:drawablePadding="4dp"
+                android:text="@string/edit_user_info_standard_fail_tip1"
+                android:visibility="invisible"
+                android:textSize="@dimen/text_size_12"/>
+    </RelativeLayout>
+
+
+    <Button
+            android:id="@+id/save_bt"
+            android:text="保存"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_marginTop="102dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:background="@drawable/bookshelf_empty_login_bg"
+            android:textSize="@dimen/text_size_16"
+            android:textColor="@drawable/user_profile_btn_txt_color_selector"
+            android:layout_height="wrap_content"/>
+</LinearLayout>

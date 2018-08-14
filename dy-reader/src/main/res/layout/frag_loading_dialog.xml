@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+    <LinearLayout
+        android:visibility="visible"
+        android:id="@+id/ll_loading_content"
+        android:layout_width="217dp"
+        android:layout_height="122dp"
+        android:background="@drawable/reader_loading_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:indeterminateDrawable="@drawable/reader_loading_progress_ani"
+            android:indeterminateDuration="1000" />
+
+        <TextView
+            android:id="@+id/txt_loading_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/reader_loading_prompt"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_reload_content"
+        android:layout_width="217dp"
+        android:layout_height="122dp"
+        android:background="@drawable/reader_loading_bg"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <ImageView
+            android:src="@drawable/reader_reload_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+             />
+
+        <TextView
+            android:id="@+id/txt_reload_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/reader_reload_prompt"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

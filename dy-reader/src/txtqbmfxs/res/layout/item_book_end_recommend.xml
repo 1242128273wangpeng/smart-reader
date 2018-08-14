@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+
+    <com.dy.reader.view.RecommendBookImageView
+        android:id="@+id/recommend_book"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_view_height_120"
+        android:clickable="false"
+        app:label_background="@drawable/shape_recommend_label"
+        app:label_height="@dimen/dimen_view_height_16"
+        app:label_margin_bottom="10dp"
+        app:label_text_color="@color/white"
+        app:label_text_size="4sp"
+        app:label_width="@dimen/dimen_view_width_60"
+        app:selector_isShown="false"/>
+
+    <TextView
+        android:id="@+id/recommend_book_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:singleLine="true"
+        android:textColor="@color/color_black"/>
+
+</LinearLayout>

@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.mfqbxssc.item_book_detail.view.*
-import net.lzbook.kit.data.bean.Book
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import java.util.*
@@ -42,13 +42,14 @@ class BookShelfDetailAdapter(private val context: Context) : PagerAdapter() {
         val bookAuthor = "作者：${book.author}"
         view.txt_book_author.text = bookAuthor
         view.txt_book_name.text = book.name
-        view.txt_book_update_time.text = Tools.compareTime(AppUtils.formatter, book
-                .last_updatetime_native)
+        book.last_chapter?.let {
+            view.txt_book_update_time.text = Tools.compareTime(AppUtils.formatter, it.update_time)
+            val latestChapter = "最新章节：${it.name}"
+            view.txt_book_chapter.text = latestChapter
+        }
 
-        val latestChapter = "最新章节：${book.last_chapter_name}"
-        view.txt_book_chapter.text = latestChapter
 
-        if (book.img_url.isNotEmpty()) {
+        if (book.img_url?.isNotEmpty() == true) {
             Glide.with(context)
                     .load(book.img_url)
                     .placeholder(R.drawable.icon_book_cover_default)
@@ -69,7 +70,7 @@ class BookShelfDetailAdapter(private val context: Context) : PagerAdapter() {
         container.removeView(`object` as View)
     }
 
-    override fun getItemPosition(`object`: Any?): Int {
+    override fun getItemPosition(`object`: Any): Int {
         return PagerAdapter.POSITION_NONE
     }
 }

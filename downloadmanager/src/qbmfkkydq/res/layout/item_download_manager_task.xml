@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
+
+    <RelativeLayout
+        android:id="@+id/rl_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/download_manager_item_uncheck_icon"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_cover_shadow"
+            android:layout_width="58dp"
+            android:layout_height="85dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="14dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/common_book_cover_shadow_icon"/>
+
+        <ImageView
+            android:id="@+id/img_cover"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/module_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/common_book_cover_default_icon"/>
+
+        <ImageView
+            android:id="@+id/img_download"
+            android:layout_width="51dp"
+            android:layout_height="85dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="14dp"
+            android:contentDescription="@string/module_name"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/download_manager_item_download_icon"/>
+
+        <TextView
+            android:id="@+id/txt_book_name"
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="14dp"
+            android:layout_toEndOf="@id/img_cover"
+            android:layout_toLeftOf="@id/img_download"
+            android:layout_toRightOf="@id/img_cover"
+            android:layout_toStartOf="@id/img_download"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="16sp"
+            tools:text="凡人修仙传"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_progress_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/txt_book_name"
+            android:layout_alignStart="@id/txt_book_name"
+            android:layout_below="@+id/txt_book_name"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="22dp"
+            android:layout_toLeftOf="@id/img_download"
+            android:layout_toStartOf="@id/img_download">
+
+            <TextView
+                android:id="@+id/txt_download_state"
+                style="@style/style_text_small_weak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                tools:text="正在缓存"/>
+
+            <TextView
+                android:id="@+id/txt_download_num"
+                style="@style/style_text_small_weak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txt_download_state"
+                android:layout_toRightOf="@id/txt_download_state"
+                tools:text=": 0%"/>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/pgbar_download"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@id/txt_book_name"
+            android:layout_alignStart="@id/txt_book_name"
+            android:layout_below="@id/rl_progress_info"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/img_cover"
+            android:layout_toLeftOf="@id/img_download"
+            android:layout_toRightOf="@id/img_cover"
+            android:layout_toStartOf="@id/img_download"
+            android:progressDrawable="@drawable/download_item_pgbar_not_cache_bg"/>
+    </RelativeLayout>
+</FrameLayout>

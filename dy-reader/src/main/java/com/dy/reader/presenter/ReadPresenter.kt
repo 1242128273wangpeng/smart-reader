@@ -13,10 +13,12 @@ import android.text.TextUtils
 import android.view.InflateException
 import android.view.View
 import android.widget.Toast
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.MediaControl
 import com.dy.media.ReaderRestDialog
 import com.dy.reader.R
@@ -30,6 +32,7 @@ import com.dy.reader.page.BatteryView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -80,6 +83,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
+        ReaderStatus.startTime = System.currentTimeMillis()/1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -387,6 +391,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
+        StatService.onResume(act)
     }
 
     fun setScreenBrightness(brightness: Int) {
@@ -419,6 +424,24 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                     .getDefaultSharedPreferences(readReference?.get()))
             spUtils.putInt("readed_count", Constants.readedCount)
         }
+
+
+        // 保存正在阅读的书
+        val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+
+        val book = ReaderStatus.book
+        book.sequence = ReaderStatus.position.group
+        book.offset = ReaderStatus.position.offset
+        book.chapter_count = ReaderStatus.chapterCount
+        book.last_read_time = System.currentTimeMillis()
+        book.readed = 1
+        RequestRepositoryFactory.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).updateBook(book)
+
+        val books = Gson().toJson(book)
+        sp.putString(SharedPreUtil.CURRENT_READ_BOOK, books)
+
+        StatService.onPause(act)
     }
 
     fun onStop() {

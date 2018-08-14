@@ -24,6 +24,8 @@ interface BookDataProvider {
 
     fun deleteBooks(books: List<Book>, context: Context)
 
+    fun deleteBooksById(books: List<Book>)
+
     fun deleteShelfBooks()
 
     fun loadBook(book_id: String): Book?

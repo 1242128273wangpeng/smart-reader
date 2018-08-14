@@ -1,7 +1,9 @@
 package com.ding.basic.request
 
+import android.text.TextUtils
 import com.ding.basic.Config
 import com.ding.basic.token.Token
+import com.ding.basic.util.ReplaceConstants
 import com.orhanobut.logger.Logger
 import okhttp3.FormBody
 import okhttp3.Interceptor
@@ -30,6 +32,10 @@ class RequestInterceptor : Interceptor {
         requestParameters["latitude"] = Config.loadRequestParameter("latitude")
         requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
         requestParameters["longitude"] = Config.loadRequestParameter("longitude")
+
+        if(!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))){
+            requestParameters["loginToken"]=Config.loadRequestParameter("loginToken")
+        }
 
         return requestParameters
     }
@@ -94,28 +100,12 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        if (request.url().host() == URL(Config.loadRequestAPIHost()).host || request.url().host() == Config.loadBookContent()) {
-            when (request.method().toUpperCase()) {
-                "GET" -> {
-                    request = buildRequest(request)
-                }
+        val defaultHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        if (request.url().host() == URL(Config.loadRequestAPIHost()).host
+                || request.url().host() == Config.loadBookContent()
+                || defaultHost.contains(request.url().host())) { // v3 登陆接口强制走阿里云服务器，也就是使用默认的 host
 
-                "POST" -> {
-                    if (request.body() != null && request.body() is FormBody) {
-                        val map = mutableMapOf<String, String>()
-                        val url = Config.buildUrl(request.url().toString().replace(Config.loadRequestAPIHost(), ""), map)
-                        if (url != null) {
-                            request = request.newBuilder().url(url).build()
-                        }
-                    } else {
-                        request = buildRequest(request)
-                    }
-                }
-
-                else -> {
-
-                }
-            }
+            request = buildRequest(request)
         } else {
             Logger.e("other host, not add token")
         }

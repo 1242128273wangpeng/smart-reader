@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/download_manager_item_uncheck_icon"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:paddingTop="12dp">
+
+        <ImageView
+            android:id="@+id/img_cover"
+            android:layout_width="55dp"
+            android:layout_height="75dp"
+            android:contentDescription="@string/module_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/common_book_cover_default_icon"/>
+
+        <ImageView
+            android:id="@+id/img_download"
+            android:layout_width="60dp"
+            android:layout_height="75dp"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/module_name"
+            android:paddingBottom="25dp"
+            android:paddingLeft="28dp"
+            android:paddingRight="8dp"
+            android:paddingTop="25dp"
+            android:src="@drawable/download_manager_item_download_icon"/>
+
+        <TextView
+            android:id="@+id/txt_book_name"
+            style="@style/style_text_huge_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/img_download"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/img_download"
+            android:layout_toRightOf="@id/img_cover"
+            android:ellipsize="end"
+            android:singleLine="true"
+            tools:text="@string/default_title"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_progress_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/txt_book_name"
+            android:layout_marginBottom="0dp"
+            android:layout_above="@+id/pgbar_download"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@id/img_download">
+
+            <TextView
+                android:id="@+id/txt_download_state"
+                style="@style/style_text_small_weak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                tools:text="正在缓存"/>
+
+            <TextView
+                android:id="@+id/txt_download_num"
+                style="@style/style_text_small_weak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txt_download_state"
+                android:layout_toRightOf="@id/txt_download_state"
+                tools:text=": 0%"/>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/pgbar_download"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignLeft="@id/txt_book_name"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@id/img_download"
+            android:layout_toRightOf="@id/img_cover"
+            android:layout_marginBottom="10dp"
+            android:layout_alignBottom="@id/img_cover"
+            android:progressDrawable="@drawable/download_manager_item_pgbar_second_bg"/>
+    </RelativeLayout>
+</FrameLayout>

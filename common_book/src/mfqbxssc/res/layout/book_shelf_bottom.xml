@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/remove_delete_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/home_title_background"
+            android:orientation="vertical">
+        
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_view_height_0.5"
+                android:background="@color/color_divider"/>
+    
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+        
+            <RelativeLayout
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_margin_60"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+            
+                <Button
+                        android:id="@+id/btn_left"
+                        android:layout_width="140dp"
+                        android:layout_height="38dp"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1"
+                        android:background="@drawable/bookshelf_delete_cancel_bg"
+                        android:gravity="center"
+                        android:text="全选"
+                        android:textColor="@drawable/bookshelf_delete_cancel_text_color"
+                        android:textSize="@dimen/text_size_16"/>
+            </RelativeLayout>
+        
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_margin_60"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+            
+                <Button
+                        android:id="@+id/btn_right"
+                        android:layout_width="140dp"
+                        android:layout_height="38dp"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:text="删除"
+                        android:textColor="@color/setting_login_font_color"
+                        android:textSize="@dimen/text_size_16"/>
+            </RelativeLayout>
+        
+            <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/color_divider"/>
+        
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_margin_60"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+            
+                <Button
+                        android:id="@+id/btn_detail"
+                        android:layout_width="140dp"
+                        android:layout_height="38dp"
+                        android:layout_centerInParent="true"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:text="查看更新详情"
+                        android:textColor="@color/setting_login_font_color"
+                        android:textSize="@dimen/text_size_16"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+    
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/remove_delete_layout"
+            android:layout_alignRight="@+id/remove_delete_layout"
+            android:layout_alignBottom="@+id/remove_delete_layout"
+            android:layout_alignLeft="@+id/remove_delete_layout"
+            />
+</RelativeLayout>

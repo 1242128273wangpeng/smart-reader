@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="application_name">全本免费快看阅读器</string>
+    <string name="bookshelf_empty_find">去书城</string>
+    <string name="bookshelf_empty_title">欢迎使用全本免费快看阅读器</string>
+    <string name="bookshelf_empty_subtitle">快去添加书籍尽情享用吧～</string>
+    <string name="bookshelf_noreadingbook_title">灵魂跟书籍一起跳舞</string>
+    <string name="sort_for_update_time">按更新时间排序</string>
+    <string name="sort_for_reading_time">按最近阅读排序</string>
+    <string name="sort_for_add_time">按添加书籍排序</string>
+
+</resources>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/ll_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:ignore="RtlHardcoded, MissingPrefix">
+
+    <FrameLayout
+        android:id="@+id/fl_bg_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bookshelf_top_bg"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/fl_bg_layout"
+        android:background="#fff"/>
+
+    <LinearLayout
+        android:id="@+id/ll_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="11dp"
+        android:paddingTop="31dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_head_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/img_head_personal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:paddingLeft="16dp"
+                android:src="@drawable/bookshelf_icon_personal"
+                app:onPressChangeAlpha="true"/>
+
+            <TextView
+                android:id="@+id/txt_head_title"
+                style="@style/bookshelf_title_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/bookshelf"/>
+
+            <ImageView
+                android:id="@+id/img_head_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:paddingRight="16dp"
+                android:src="@drawable/bookshelf_icon_more"
+                app:onPressChangeAlpha="true"/>
+
+            <ImageView
+                android:id="@+id/img_head_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/img_head_menu"
+                android:contentDescription="@string/module_name"
+                android:paddingRight="26dp"
+                android:src="@drawable/bookshelf_icon_search"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_head_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txt_editor_select_all"
+                style="@style/bookshelf_subtitle_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="16dp"
+                android:text="@string/select_all"/>
+
+            <TextView
+                style="@style/bookshelf_title_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/bookshelf_edit"/>
+
+            <TextView
+                android:id="@+id/txt_editor_finish"
+                style="@style/bookshelf_subtitle_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="16dp"
+                android:text="@string/finish"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_container">
+
+
+        <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+            android:id="@+id/srl_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recl_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_ad_float"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bookshelf_empty_title"
+                android:textColor="#ffffff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="@string/bookshelf_empty_subtitle"
+                android:textColor="#c7ffffff"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="148dp"
+                android:src="@drawable/bookshelf_nobook_icon"/>
+
+            <TextView
+                style="@style/style_text_normal_weak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/bookshelf_empty_prompt"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/txt_empty_add_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/bookshelf_tv_bg"
+                android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingLeft="38dp"
+                android:paddingRight="38dp"
+                android:paddingTop="10dp"
+                android:text="@string/bookshelf_empty_find"
+                android:textColor="#fff"
+                android:textSize="15sp"
+                app:onPressChangeAlpha="true"/>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

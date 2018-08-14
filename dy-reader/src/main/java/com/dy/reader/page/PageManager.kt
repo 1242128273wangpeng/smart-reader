@@ -5,6 +5,8 @@ import com.dy.reader.data.DataProvider
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.reader.v2.GLPage
+import com.orhanobut.logger.Logger
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 
 @SuppressLint("StaticFieldLeak")
 /**
@@ -106,6 +108,14 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
         rightPage = temp
         rightPage.position = currentPage.position.next()
         rightPage.loadTexture()
+
+        if (ReaderStatus.position.group != -1 && ReaderStatus.position.index == ReaderStatus.position.groupChildCount - 1) {
+            Logger.e("打点统计PV: " + ReaderStatus.position.group + " : " + ReaderStatus.position.groupChildCount + " : " + ReaderStatus.position.index)
+
+            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id,  ReaderStatus.book.book_source_id, if("zn" == ReaderStatus.book.book_type){ "2" }else{ "1" }, ReaderStatus.position.groupChildCount.toString())
+
+            ReaderStatus.startTime = System.currentTimeMillis() / 1000L
+        }
 
         ReaderStatus.position = currentPage.position
     }

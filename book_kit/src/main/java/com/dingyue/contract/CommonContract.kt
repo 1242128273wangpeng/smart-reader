@@ -24,13 +24,19 @@ object CommonContract {
      * **/
     class MultiComparator constructor(val type: Int) : Comparator<Book>, Serializable {
         override fun compare(book1: Book, book2: Book): Int {
-            return if (type != 1) {
+            return if (type == 0) {//阅读时间
                 when {
                     book1.last_read_time == book2.last_read_time -> 0
                     book1.last_read_time < book2.last_read_time -> 1
                     else -> -1
                 }
-            } else {
+            } else if (type == 2) {//添加时间
+                when {
+                    book1.insert_time == book2.insert_time -> 0
+                    book1.insert_time < book2.insert_time -> 1
+                    else -> -1
+                }
+            } else {//更新时间
                 val lastChapter1 = book1.last_chapter
                 val lastChapter2 = book2.last_chapter
 

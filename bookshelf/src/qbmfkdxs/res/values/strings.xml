@@ -10,4 +10,5 @@
     <string name="bookshelf_remove_head_confirm">完成</string>
 
     <string name="bookshelf_delete_dialog_loading_prompt">正在清理中...</string>
+    <string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>
 </resources>

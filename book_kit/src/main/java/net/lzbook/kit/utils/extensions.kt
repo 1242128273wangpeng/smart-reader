@@ -2,26 +2,39 @@ package net.lzbook.kit.utils
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.support.annotation.AttrRes
-import android.support.annotation.IdRes
-import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
+import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.widget.TextView
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestSubscriber
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.SharedPreUtil
+import com.umeng.message.PushAgent
+import com.umeng.message.entity.UMessage
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.data.bean.CoverPage
 import java.lang.ref.WeakReference
+import java.util.HashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.regex.Pattern
 
 /**
  * Created by xian on 2017/6/21.
@@ -94,8 +107,8 @@ fun Any.log(str: String, vararg param: Any?) {
 fun logWithLevel(obj: Any, level: LOG_LEVEL, param: List<Any?>) {
     if (msDebuggAble || level == LOG_LEVEL.ERR) {
         var builder = StringBuilder()
-        param?.forEach {
-            builder.append(it.toString() + " | ")
+        param.forEachIndexed { index, any ->
+            builder.append(any.toString() + if (index == param.size - 1) "" else " | ")
         }
 
         when (level) {
@@ -224,7 +237,7 @@ fun TextView.resolveTextColor(@AttrRes attr: Int) {
 
 fun View.antiShakeClick(callback: (View) -> Unit) {
     this.setOnClickListener {
-        if(isClickable) {
+        if (isClickable) {
             callback.invoke(it)
             postDelayed({
                 isClickable = true
@@ -235,9 +248,9 @@ fun View.antiShakeClick(callback: (View) -> Unit) {
     }
 }
 
-fun View.antiShakeClick(listener:View.OnClickListener) {
+fun View.antiShakeClick(listener: View.OnClickListener) {
     this.setOnClickListener {
-        if(isClickable) {
+        if (isClickable) {
             listener.onClick(it)
             postDelayed({
                 isClickable = true
@@ -246,4 +259,145 @@ fun View.antiShakeClick(listener:View.OnClickListener) {
 
         isClickable = false
     }
+}
+
+fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> Unit) {
+    loge("更新用户标签")
+    RequestRepositoryFactory.loadRequestRepositoryFactory(context)
+            .requestPushTags(udid, object : RequestSubscriber<ArrayList<String>>() {
+                override fun requestResult(result: ArrayList<String>?) {
+                    loge("获取用户新标签成功")
+                    deleteOldTags { isDelete ->
+                        if (!isDelete) {
+                            callback.invoke(false)
+                            return@deleteOldTags
+                        }
+                        if (result?.isNotEmpty() == true) {
+                            val addTags = result.toTypedArray()
+                            loge("tags: $addTags")
+                            tagManager.addTags({ isAdd, addResult ->
+                                loge("添加用户新标签: $isAdd",
+                                        "addResult: $addResult")
+                                callback.invoke(isAdd)
+                            }, addTags)
+                        } else {
+                            loge("添加用户新标签: 空")
+                            callback.invoke(true)
+                        }
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    loge("获取用户新标签失败: error: $message")
+                    callback.invoke(false)
+                }
+            })
+}
+
+private fun PushAgent.deleteOldTags(callback: (isDelete: Boolean) -> Unit) {
+    tagManager.getTags { isGet, allTags ->
+        if (!isGet) {
+            callback.invoke(false)
+            loge("获取用户旧标签失败")
+            return@getTags
+        }
+        loge("用户旧标签 $allTags, size: ${allTags.size}")
+        if (allTags?.isNotEmpty() == true && allTags[0]?.isNotEmpty() == true) {
+            tagManager.deleteTags({ isDelete, deleteResult ->
+                loge("删除用户旧标签: $isDelete", "result: $deleteResult")
+                callback.invoke(isDelete)
+            }, allTags.toTypedArray())
+        } else {
+            loge("用户旧标签为空")
+            callback.invoke(true)
+        }
+    }
+
+}
+
+fun Activity.openPushSetting() {
+    val intent = Intent()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+        intent.putExtra("app_package", packageName)
+        intent.putExtra("app_uid", applicationInfo.uid)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.putExtra("android.provider.extra.APP_PACKAGE", packageName)
+        }
+    } else {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+        intent.data = Uri.fromParts("package", packageName, null)
+    }
+    startActivity(intent)
+}
+
+fun Activity.isShouldShowPushSettingDialog(): Boolean {
+    val isNotifyEnable = NotificationManagerCompat.from(this)
+            .areNotificationsEnabled()
+    if (isNotifyEnable) return false
+    val shareKey = SharedPreUtil.PUSH_LATEST_SHOW_SETTING_DIALOG_TIME
+    val share = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+    val latestShowTime = share
+            .getLong(shareKey, 0)
+    val currentTime = System.currentTimeMillis()
+    val time = currentTime - latestShowTime
+    return if (time > 3 * 24 * 60 * 60 * 1000) {
+        share.putLong(shareKey, currentTime)
+        true
+    } else {
+        false
+    }
+}
+
+fun Context.openPushActivity(msg: UMessage) {
+    val intent = Intent()
+    intent.putPushExtra(msg)
+    loge("umsg.activity: ${msg.activity}")
+    intent.setClassName(this, msg.activity)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
+    uploadPushLog(msg)
+}
+
+private fun Context.uploadPushLog(msg: UMessage) {
+    val data = HashMap<String, String>()
+    if (msg.activity == "com.intelligent.reader.activity.CoverPageActivity") {
+        // 封面页打点
+        if (msg.extra?.containsKey("book_id") == true) {
+            data.put("BOOKID", msg.extra["book_id"] ?: "")
+        }
+        data.put("source", "PUSH")
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                StartLogClickUtil.ENTER, data)
+    } else if (msg.activity == "com.intelligent.reader.activity.FindBookDetail") {
+        //H5 页面打点
+        data.put("source", "PUSH")
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKLIST,
+                StartLogClickUtil.ENTER, data)
+    }
+}
+
+private fun Intent.putPushExtra(msg: UMessage) {
+    if (msg.extra != null) {
+        val it = msg.extra.entries.iterator()
+
+        while (it.hasNext()) {
+            val entry = it.next() as MutableMap.MutableEntry<*, *>
+            val key = entry.key as String
+            val value = entry.value as String
+            putExtra(key, value)
+        }
+    }
+    putExtra(IS_FROM_PUSH, true)
+}
+
+@JvmField
+val IS_FROM_PUSH = "is_from_push"
+
+fun String.isNumeric(): Boolean {
+    if (this.isEmpty()) return false
+    val pattern = Pattern.compile("[0-9]*")
+    val isNum = pattern.matcher(this)
+    return isNum.matches()
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_bg"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_setting_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FF2AD1BE"
+        android:fitsSystemWindows="true"
+        android:focusableInTouchMode="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
+                android:id="@+id/btn_left_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="@drawable/icon_back_light" />
+
+            <TextView
+                android:id="@+id/tv_title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="0dp"
+                android:gravity="center"
+                android:text="推送设置"
+                android:textColor="@color/top_navigation_text_color"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_push"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_setting_title"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/txt_night_shift"
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/push"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="#CC2AD1BE"
+            app:sb_checkedbtn_color="#FF2AD1BE "
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="#66ADB4BE"
+            app:sb_uncheckedbtn_color="#FFADB4BE"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_push_sound"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_push"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="@string/push_sound"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push_sound"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="#CC2AD1BE"
+            app:sb_checkedbtn_color="#FF2AD1BE "
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="#66ADB4BE"
+            app:sb_uncheckedbtn_color="#FFADB4BE"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_push_time"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_height_45"
+        android:layout_below="@+id/rl_push_sound"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/txt_push_time"
+            style="@style/style_text_normal_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/tv_push_time_tips_setting"/>
+
+        <TextView
+            android:id="@+id/txt_push_time_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_push_time"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="@string/tv_push_time_default_setting"
+            android:textColor="@color/color_primary"
+            android:textSize="12sp"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_push_time"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:sb_checked_color="#CC2AD1BE"
+            app:sb_checkedbtn_color="#FF2AD1BE "
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="#66ADB4BE"
+            app:sb_uncheckedbtn_color="#FFADB4BE"/>
+    </RelativeLayout>
+</RelativeLayout>

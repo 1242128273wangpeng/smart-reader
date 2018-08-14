@@ -267,7 +267,8 @@ public class NovelHelper {
      */
     public void saveBookmark(String book_id, int sequence, int offset) {
 
-        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book_id);
+        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).loadBook(book_id);
 
         if (book != null) {
             book.setBook_id(book_id);
@@ -281,6 +282,8 @@ public class NovelHelper {
                     BaseBookApplication.getGlobalContext()).updateBook(book);
 
         }
+
+
     }
 
 

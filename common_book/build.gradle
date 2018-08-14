@@ -25,105 +25,6 @@ android {
         javaMaxHeapSize rootProject.ext.javaMaxHeapSize
     }
 
-    def UMENG_APPKEY_KDZSYDQ = "561e2050e0f55a6106003f03"
-    def UMENG_APPKEY_KDQBXS = "562751de67e58e360e001711"
-    def UMENG_APPKEY_QBZSYDQ = "56274d42e0f55a6cd700077c"
-    def UMENG_APPKEY_TXTQBXSYDQ = "56163c77e0f55a09700007e4"
-    def UMENG_APPKEY_TXTKDXS = "56415dfde0f55aeed9001dd3"
-    def UMENG_APPKEY_KDQBDZS = "56415ddd67e58e7eec0060b1"
-    def UMENG_APPKEY_MFQBXSSC = "5881cc1d2ae85b11740002d9"
-    def UMENG_APPKEY_JRDKQBXS = "5881cc3582b63548be0001af"
-    def UMENG_APPKEY_TXTQBDZS = "5881cb504ad1562170001595"
-    def UMENG_APPKEY_ZSMFQBXS = "5881cbbb4ad1563f860008bd"
-    def UMENG_APPKEY_TXTQBMFXS = "5881cb0ec895762f9f00187f"
-    def UMENG_APPKEY_QBMFXSYDQ = "5881c9ec75ca35097f000a5a"
-    def UMENG_APPKEY_QBMFYDQ = "52e5d39956240ba08305cc0f"
-    def UMENG_APPKEY_QBXSXZQ = "53c3533f56240b83e81012a5"
-    def UMENG_APPKEY_HYCS = "54800fd1fd98c53cb000096c"
-    def UMENG_APPKEY_TXTMFQBYDQ = "5475a099fd98c5e733000c41"
-    def UMENG_APPKEY_TXTMFQBDZS = "539e59d856240b0520057ce7"
-    def UMENG_APPKEY_TXTQBMFYD = "539e59d856240b0520057ce7"
-    def UMENG_APPKEY_QBMFKDXS = "5881cc3582b63548be0001af"
-    def UMENG_APPKEY_QBMFRMXS = ""
-
-    def UMENG_PUSH_SECRET_TXTQBDZS = "c270ce04fcbd0321eb4898d0369ba8ce"
-    def UMENG_XIAOMI_ID_TXTQBDZS = "String2882303761517544305"
-    def UMENG_XIAOMI_KEY_TXTQBDZS = "String5921754434305"
-
-    def UMENG_PUSH_SECRET_TXTQBMFYD = ""
-    def UMENG_XIAOMI_ID_TXTQBMFYD = ""
-    def UMENG_XIAOMI_KEY_TXTQBMFYD = ""
-
-    def UMENG_PUSH_SECRET_QBMFRMXS = ""
-    def UMENG_XIAOMI_ID_QBMFRMXS = ""
-    def UMENG_XIAOMI_KEY_QBMFRMXS = ""
-
-    def UMENG_PUSH_SECRET_QBZSYDQ = ""
-    def UMENG_XIAOMI_ID_QBZSYDQ = ""
-    def UMENG_XIAOMI_KEY_QBZSYDQ = ""
-
-    def UMENG_PUSH_SECRET_ZSMFQBXS = ""
-    def UMENG_XIAOMI_ID_ZSMFQBXS = ""
-    def UMENG_XIAOMI_KEY_ZSMFQBXS = ""
-
-    def AMAP_APIKEY_KDZSYDQ = "1785d6e6115cd482d31ac4d8bc7c7c5a"
-    def AMAP_APIKEY_KDQBXS = "4abc3656c3dce890fbd05bfcc2e7a9ae"
-    def AMAP_APIKEY_QBZSYDQ = "1e0227f8d7bf906da1f4384771875bf7"
-    def AMAP_APIKEY_TXTQBXSYDQ = "5343e16a6ae3dbf70e5df020c9eba651"
-    def AMAP_APIKEY_TXTKDXS = "c46cd9e768ba8f053eb1ddcb65397d9f"
-    def AMAP_APIKEY_KDQBDZS = "e23a04ef3807c3020bc6dd0589a06592"
-    def AMAP_APIKEY_MFQBXSSC = "7ebcafd5513dc3cc42264325d6595eae"
-    def AMAP_APIKEY_JRDKQBXS = "7d78055ba72ccf291729432091f50eea"
-    def AMAP_APIKEY_TXTQBDZS = "db397c3ddbefd1890bd4667c381714b2"
-    def AMAP_APIKEY_ZSMFQBXS = "e28120099ca9784d5cf89a50542cb98f"
-    def AMAP_APIKEY_TXTQBMFXS = "b970335d9cde5088522c721b8e78d59d"
-    def AMAP_APIKEY_QBMFXSYDQ = "b2d452f5f2dd75ee39eead928a07cdc4"
-    def AMAP_APIKEY_QBMFYDQ = "7ebaefab2a96f794d86acb566f24b54d"
-    def AMAP_APIKEY_QBXSXZQ = "c32d86220989465ca70826c4bf366fb8"
-    def AMAP_APIKEY_HYCS = "dab5a066b2745ed848d76bf34d9f1038"
-    def AMAP_APIKEY_TXTMFQBYDQ = "df07c4696ee41b5075459b6d9a4d335f"
-    def AMAP_APIKEY_TXTMFQBDZS = "bbae57edf34620794d87545b18798e0e"
-    def AMAP_APIKEY_TXTQBMFYD = "2baf3d5d4f949e5189afbe37a8e1302e"
-    def AMAP_APIKEY_QBMFKDXS = "7d78055ba72ccf291729432091f50eea"
-    def AMAP_APIKEY_QBMFRMXS = "7d78055ba72ccf291729432091f50eea"
-
-
-    def BAIDU_STAT_ID_KDZSYDQ = "542233ee41"
-    def BAIDU_STAT_ID_KDQBXS = "0dd8386415"
-    def BAIDU_STAT_ID_QBZSYDQ = "c2543b8059"
-    def BAIDU_STAT_ID_TXTQBXSYDQ = "05c32565e4"
-    def BAIDU_STAT_ID_TXTKDXS = "c75208f64b"
-    def BAIDU_STAT_ID_KDQBDZS = "1b75898a50"
-    def BAIDU_STAT_ID_MFQBXSSC = "6dc230cbb1"
-    def BAIDU_STAT_ID_JRDKQBXS = "d936085832"
-    def BAIDU_STAT_ID_TXTQBDZS = "7e37d6eced"
-    def BAIDU_STAT_ID_ZSMFQBXS = "e4ed492234"
-    def BAIDU_STAT_ID_TXTQBMFXS = "0aeda7846c"
-    def BAIDU_STAT_ID_QBMFXSYDQ = "9368f00036"
-    def BAIDU_STAT_ID_QBMFYDQ = "881b217bad"
-    def BAIDU_STAT_ID_QBXSXZQ = "586365dae2"
-    def BAIDU_STAT_ID_HYCS = "3eebb5d9e8"
-    def BAIDU_STAT_ID_TXTMFQBYDQ = "a867478598"
-    def BAIDU_STAT_ID_TXTMFQBDZS = "04fe041fcd"
-    def BAIDU_STAT_ID_TXTQBMFYD = "0b1405d1df"
-    def BAIDU_STAT_ID_QBMFKDXS = "d936085832"
-    def BAIDU_STAT_ID_QBMFRMXS = "d936085832"
-
-
-    def IFLYTEK_APPID_QBZSYDQ = "5982c10f"
-    def IFLYTEK_APPID_KDZSYDQ = "5982c0d0"
-    def IFLYTEK_APPID_QBXSXZQ = "5982c078"
-    def IFLYTEK_APPID_TXTMFQBDZS = "5982c033"
-    def IFLYTEK_APPID_TXTMFQBYDQ = "5982bfe1"
-    def IFLYTEK_APPID_QBMFYDQ = "5982bfa5"
-    def IFLYTEK_APPID_KDQBXS = "5982bf45"
-    def IFLYTEK_APPID_QBMFXSYDQ = "5982be96"
-    def IFLYTEK_APPID_HYCS = "5982bdd0"
-
-    //科大讯飞ID 暂用 快读申请后替换
-    def IFLYTEK_APPID_MFQBXSSC = "59e707d4"
-    def IFLYTEK_APPID_ZSMFQBXS = "59e597c3"
-    def IFLYTEK_APPID_TXTQBMFXS = "59e70add"
 
     def appNameConfig = [
             kdzsydq   : "快读追书阅读器",
@@ -137,7 +38,9 @@ android {
             txtqbxsydq: "TXT全本小说阅读器",
             txtqbmfyd : "TXT全本免费阅读",
             qbmfkdxs  : "全本免费快读小说",
-            qbmfrmxs  : "全本免费热门小说"
+            qbmfrmxs  : "全本免费热门小说",
+            qbmfkkydq : "全本免费快看阅读器",
+            mfxsqbyd  : "免费小说全本阅读"
     ]
 
     def appPackageIDConfig = [
@@ -152,7 +55,9 @@ android {
             txtqbxsydq: "cn.zsqbydq.reader",
             txtqbmfyd : "cn.txtqbmfyd.reader",
             qbmfkdxs  : "cc.quanbennovel",
-            qbmfrmxs  : "cn.qbmfrmxs.reader"
+            qbmfrmxs  : "cn.qbmfrmxs.reader",
+            qbmfkkydq : "cn.qbmfkkydq.reader",
+            mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读
     ]
 
     def channel = "dev_channel"
@@ -338,6 +243,13 @@ android {
             keyPassword STORE_KEY_PASSWORD_1
         }
 
+        debug {
+            storeFile file(STORE_FILE_1)
+            storePassword STORE_PASSWORD_1
+            keyAlias STORE_KEY_ALIAS_1
+            keyPassword STORE_KEY_PASSWORD_1
+        }
+
     }
 
     buildTypes {
@@ -380,9 +292,9 @@ N多网	        blf1298_10885_001
             zipAlignEnabled true
             shrinkResources false
 
-//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
-
             fixChannelAppName(getOwner(), "${channel}")
+
+//            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
 //            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
@@ -395,9 +307,9 @@ N多网	        blf1298_10885_001
 
             //便于执行monkey, 跑monkey时 这是为true
             buildConfigField "boolean", "IS_LEAKCANARY_DISABLE", "false"
-
-            buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
             fixChannelAppName(getOwner(), "${channel}")
+//            buildConfigField "String", "CHANNEL_NAME", "\"DEBUG\""
+
 //            addManifestPlaceholders([CHANNEL_NAME: 'DEBUG'])
         }
 
@@ -409,7 +321,6 @@ N多网	        blf1298_10885_001
             fixChannelAppName(getOwner(), "${channel}")
 
 //            buildConfigField "String", "CHANNEL_NAME", "\"${channel}\""
-
 //            addManifestPlaceholders([CHANNEL_NAME: "${channel}"])
         }
 
@@ -421,53 +332,25 @@ N多网	        blf1298_10885_001
 
     flavorDimensions "default"
 
-//渠道Flavors
+    //渠道Flavors
     productFlavors {
-
-//        kdzsydq {
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.release
-//
-//            manifestPlaceholders = [
-//                    UMENG_APP_KEY: "${UMENG_APPKEY_KDZSYDQ}",
-//                    APP_NAME     : '快读追书阅读器',
-//                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_KDZSYDQ}",
-//                    AMAP_APIKEY  : "${AMAP_APIKEY_KDZSYDQ}",
-//                    WECHAT_APPID : "wx13973d52a1bb219b",
-//                    QQ_APPID     : "1104916456",
-////                    PACKAGE_NAME : "cn.txtzsydsq.reader"
-//                    IFLYTEK_APPID: "${IFLYTEK_APPID_KDZSYDQ}",
-//                    PACKAGE_NAME : defaultConfig.applicationId
-//            ]
-//
-//            notOverrideResValue getOwner(), "string", "app_path", "/txtzsydsq_book"
-////            notOverrideResValue getOwner(), "string", "app_name", "快读追书阅读器"
-//            notOverrideResValue getOwner(), "string", "database_name", "txtzsydsqBook.db"
-//            notOverrideResValue getOwner(), "string", "baidu_stat_id", "542233ee41"
-//            notOverrideResValue getOwner(), "string", "push_key", "aHSRXNEN6xUTi2QM455gvQC6"
-//            notOverrideResValue getOwner(), "string", "alifeedback_key", "23572755"
-//            notOverrideResValue getOwner(), "string", "alifeedback_secret", "ea0dfde6fc6241cd0aa7a4330bfcd8ad"
-//            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://yuedu.dushixiaoshuo.cn"
-//            notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
-//        }
-
 
         qbzsydq {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
 
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_QBZSYDQ}",
-                    UMENG_PUSH_SECRET:"${UMENG_PUSH_SECRET_QBZSYDQ}",
-                    UMENG_PUSH_XIAOMI_ID:"${UMENG_XIAOMI_ID_QBZSYDQ}",
-                    UMENG_PUSH_XIAOMI_KEY:"${UMENG_XIAOMI_KEY_QBZSYDQ}",
-                    APP_NAME     : '全本追书阅读器',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBZSYDQ}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_QBZSYDQ}",
-                    WECHAT_APPID : "wx1a93a804b313cef5",
-                    QQ_APPID     : "1104925088",
-                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBZSYDQ}",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_QBZSYDQ}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBZSYDQ}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBZSYDQ}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBZSYDQ}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_QBZSYDQ}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_QBZSYDQ}",
+                    WECHAT_APPID         : "${WECHAT_APPID_QBZSYDQ}",
+                    QQ_APPID             : "${QQ_APPID_QBZSYDQ}",
+                    IFLYTEK_APPID        : "${IFLYTEK_APPID_QBZSYDQ}",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_QBZSYDQ}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbzsydsq_book"
@@ -481,29 +364,60 @@ N多网	        blf1298_10885_001
         }
 
 
+        qbmfxsydq {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release1
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_QBMFXSYDQ}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBMFXSYDQ}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBMFXSYDQ}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBMFXSYDQ}",
+                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFXSYDQ}",
+                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFXSYDQ}",
+                    WECHAT_APPID : "${WECHAT_APPID_QBMFXSYDQ}",
+                    WECHAT_SECRET : "${WECHAT_SECRET_QBMFXSYDQ}",
+                    QQ_APPID     : "${QQ_APPID_QBMFXSYDQ}",
+                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBMFXSYDQ}",
+                    PACKAGE_NAME : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_QBMFXSYDQ}"
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
+            notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "9368f00036"
+            notOverrideResValue getOwner(), "string", "push_key", "wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c"
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "23731853"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "7be24d1f8f5196a4aa6d6d6788004d4b"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
+        }
+
         mfqbxssc {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_MFQBXSSC}",
-                    APP_NAME     : '免费全本小说书城',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_MFQBXSSC}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_MFQBXSSC}",
-                    WECHAT_APPID : "wx6a3fdf0169bb5e02",
-                    QQ_APPID     : "1105887983",
-                    IFLYTEK_APPID: "${IFLYTEK_APPID_MFQBXSSC}",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_MFQBXSSC}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_MFQBXSSC}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_MFQBXSSC}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_MFQBXSSC}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_MFQBXSSC}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_MFQBXSSC}",
+                    WECHAT_APPID         : "${WECHAT_APPID_MFQBXSSC}",
+                    QQ_APPID             : "${QQ_APPID_MFQBXSSC}",
+                    IFLYTEK_APPID        : "${IFLYTEK_APPID_MFQBXSSC}",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_MFQBXSSC}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/kdqbmfxs_book"
-//            notOverrideResValue getOwner(), "string", "app_name", "免费全本小说书城"
             notOverrideResValue getOwner(), "string", "database_name", "kdqbmfxsBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "6dc230cbb1"
             notOverrideResValue getOwner(), "string", "push_key", "vig504s5U9vGM2Oa0NM7snMW8gbmR4lS"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730467"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "eab534147f294990578b4463958c33c3"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://kuai.0106636.cn"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://kdbc.0106636.cn:443"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://k.zhuishuwang.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuodq.zhuishuwang.com:443"
         }
 
 
@@ -511,53 +425,49 @@ N多网	        blf1298_10885_001
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release1
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_ZSMFQBXS}",
-                    UMENG_PUSH_SECRET:"${UMENG_PUSH_SECRET_ZSMFQBXS}",
-                    UMENG_PUSH_XIAOMI_ID:"${UMENG_XIAOMI_ID_ZSMFQBXS}",
-                    UMENG_PUSH_XIAOMI_KEY:"${UMENG_XIAOMI_KEY_ZSMFQBXS}",
-//                    APP_NAME     : '追书免费全本小说',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_ZSMFQBXS}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_ZSMFQBXS}",
-                    WECHAT_APPID : "wxdf1bd911ebe48b00",
-                    QQ_APPID     : "1105964662",
-//                    PACKAGE_NAME : "cc.mianfeinovel"
-                    IFLYTEK_APPID: "${IFLYTEK_APPID_ZSMFQBXS}",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_ZSMFQBXS}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_ZSMFQBXS}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_ZSMFQBXS}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_ZSMFQBXS}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_ZSMFQBXS}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_ZSMFQBXS}",
+                    WECHAT_APPID         : "${WECHAT_APPID_ZSMFQBXS}",
+                    QQ_APPID             : "${QQ_APPID_ZSMFQBXS}",
+                    IFLYTEK_APPID        : "${IFLYTEK_APPID_ZSMFQBXS}",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_ZSMFQBXS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/mianfeinovel_new"
-//            notOverrideResValue getOwner(), "string", "app_name", "追书免费全本小说"
             notOverrideResValue getOwner(), "string", "database_name", "mianfeinovelnew.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "e4ed492234"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730466"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "77f2350e86dc8d19f644ba0cdf0efa70"
             notOverrideResValue getOwner(), "string", "push_key", "l1XQOTrS9hzzdTxSh2pMEobvgUhPoNeM"
-
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://yuedu.dushixiaoshuo.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://scpage.dushixiaoshuo.cn:443"
 
-//            System.err.println("zsmfqbxs: app_name => " + getResValues().get("app_name").value)
-//            System.err.println("${defaultConfig.applicationId} defaultConfig.getResValues ${defaultConfig.getResValues()}")
         }
-//
+
         txtqbmfxs {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release1
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTQBMFXS}",
-                    APP_NAME     : 'TXT全本免费小说',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTQBMFXS}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBMFXS}",
-                    WECHAT_APPID : "wx4dfa750e9f5f9389",
-                    QQ_APPID     : "1105888471",
-//                    PACKAGE_NAME : "cc.lianzainovel"
-                    IFLYTEK_APPID: "${IFLYTEK_APPID_TXTQBMFXS}",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_TXTQBMFXS}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_TXTQBMFXS}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_TXTQBMFXS}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_TXTQBMFXS}",
+                    APP_NAME             : 'TXT全本免费小说',
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_TXTQBMFXS}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_TXTQBMFXS}",
+                    WECHAT_APPID         : "${WECHAT_APPID_TXTQBMFXS}",
+                    QQ_APPID             : "${QQ_APPID_TXTQBMFXS}",
+                    IFLYTEK_APPID        : "${IFLYTEK_APPID_TXTQBMFXS}",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_TXTQBMFXS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
-//            notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费小说"
             notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0aeda7846c"
             notOverrideResValue getOwner(), "string", "push_key", "5IGK3hQjIasKH9P9thgBtqop5tTzjiuF"
@@ -567,119 +477,32 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://boyuelist.lzbook.net:443"
         }
 
-//        qbmfxsydq {
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.release1
-//            manifestPlaceholders = [
-//                    UMENG_APP_KEY: "${UMENG_APPKEY_QBMFXSYDQ}",
-//                    APP_NAME     : '全本免费小说阅读器',
-//                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFXSYDQ}",
-//                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFXSYDQ}",
-//                    WECHAT_APPID : "wx1adbbff037154040",
-//                    QQ_APPID     : "1105963470",
-////                    PACKAGE_NAME : "cc.quanben.novel"
-//                    IFLYTEK_APPID: "${IFLYTEK_APPID_QBMFXSYDQ}",
-//                    PACKAGE_NAME : defaultConfig.applicationId
-////                    QQ_APPID  : "222222"
-//            ]
-//
-//            notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
-////            notOverrideResValue getOwner(), "string", "app_name", "全本免费小说阅读器"
-//            notOverrideResValue getOwner(), "string", "database_name", "txtqbmfxsnew.db"
-//            notOverrideResValue getOwner(), "string", "baidu_stat_id", "9368f00036"
-//            notOverrideResValue getOwner(), "string", "push_key", "wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c"
-//            notOverrideResValue getOwner(), "string", "alifeedback_key", "23731853"
-//            notOverrideResValue getOwner(), "string", "alifeedback_secret", "7be24d1f8f5196a4aa6d6d6788004d4b"
-//            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://n.wubutianxia.com"
-//            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuo.wubutianxia.com:443"
-//        }
-
-
         txtqbdzs {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release1
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTQBDZS}",
-                    UMENG_PUSH_SECRET:"${UMENG_PUSH_SECRET_TXTQBDZS}",
-                    UMENG_PUSH_XIAOMI_ID:"${UMENG_XIAOMI_ID_TXTQBDZS}",
-                    UMENG_PUSH_XIAOMI_KEY:"${UMENG_XIAOMI_KEY_TXTQBDZS}",
-                    APP_NAME     : 'TXT全本免费电子书',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTQBDZS}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBDZS}",
-                    WECHAT_APPID : "",
-                    QQ_APPID     : "",
-                    IFLYTEK_APPID: "",
-//                    PACKAGE_NAME : "cc.lianzainovel"
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_TXTQBDZS}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_TXTQBDZS}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_TXTQBDZS}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_TXTQBDZS}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_TXTQBDZS}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_TXTQBDZS}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_TXTQBDZS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/quanben_new"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费电子书"
             notOverrideResValue getOwner(), "string", "database_name", "novelnew.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "7e37d6eced"
             notOverrideResValue getOwner(), "string", "push_key", "cxBc7MXYbhHQ2NAzkFBAfoM3KwPlGjr9"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731453"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "9fd4a66d6d0db1af289ff64443fdab6e"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://xiaoshuo.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
         }
-
-//        kdqbdzs {
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.release
-//            manifestPlaceholders = [
-//                    UMENG_APP_KEY: "${UMENG_APPKEY_KDQBDZS}",
-//                    APP_NAME     : '快读全本电子书',
-//                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_KDQBDZS}",
-//                    AMAP_APIKEY  : "${AMAP_APIKEY_KDQBDZS}",
-//                    WECHAT_APPID : "",
-//                    QQ_APPID     : "",
-//                    IFLYTEK_APPID: "",
-////                    PACKAGE_NAME : "cc.lianzainovel"
-//                    PACKAGE_NAME : defaultConfig.applicationId
-//            ]
-//
-//            notOverrideResValue getOwner(), "string", "app_path", "/kkqbtxtxs_book"
-//            // notOverrideResValue getOwner(), "string", "app_name", "快读全本电子书"
-//            notOverrideResValue getOwner(), "string", "database_name", "kkqbtxtxsBook.db"
-//            notOverrideResValue getOwner(), "string", "baidu_stat_id", "1b75898a50"
-//            notOverrideResValue getOwner(), "string", "push_key", "Hyu8ZPSKUltvAIuOkSAG94tb"
-//            notOverrideResValue getOwner(), "string", "alifeedback_key", "23571962"
-//            notOverrideResValue getOwner(), "string", "alifeedback_secret", "e2c84c86c1f6d0b193409c9d0bcb26b8"
-//
-//            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://k.zhuishuwang.com"
-//            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xiaoshuodq.zhuishuwang.com:443"
-//        }
-
-//        txtqbxsydq {
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.release
-//
-//
-//            manifestPlaceholders = [
-//                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTQBXSYDQ}",
-//                    APP_NAME     : 'TXT全本小说阅读器',
-//                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTQBXSYDQ}",
-//                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBXSYDQ}",
-//                    WECHAT_APPID : "",
-//                    QQ_APPID     : "",
-//                    IFLYTEK_APPID: "",
-//                    PACKAGE_NAME : defaultConfig.applicationId
-//
-//            ]
-//
-//            notOverrideResValue getOwner(), "string", "app_path", "/zsqbydq_book"
-//            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本小说阅读器"
-//            notOverrideResValue getOwner(), "string", "database_name", "zsqbydqBook.db"
-//            notOverrideResValue getOwner(), "string", "baidu_stat_id", "05c32565e4"
-//            notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
-//            notOverrideResValue getOwner(), "string", "alifeedback_key", "23571370"
-//            notOverrideResValue getOwner(), "string", "alifeedback_secret", "003658cd2cde6537a912eff2c171d0a7"
-//
-//            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://xiaoshuo.youshiit.com"
-//            notOverrideResValue getOwner(), "string", "book_webview_host", "https://bookrank.youshiit.com:443"
-//        }
 
         txtqbmfyd {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -687,22 +510,21 @@ N多网	        blf1298_10885_001
 
 
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_TXTQBMFYD}",
-                    UMENG_PUSH_SECRET:"${UMENG_PUSH_SECRET_TXTQBMFYD}",
-                    UMENG_PUSH_XIAOMI_ID:"${UMENG_XIAOMI_ID_TXTQBMFYD}",
-                    UMENG_PUSH_XIAOMI_KEY:"${UMENG_XIAOMI_KEY_TXTQBMFYD}",
-                    APP_NAME     : 'TXT全本免费阅读',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_TXTQBMFYD}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_TXTQBMFYD}",
-                    WECHAT_APPID : "",
-                    QQ_APPID     : "",
-                    IFLYTEK_APPID: "",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_TXTQBMFYD}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_TXTQBMFYD}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_TXTQBMFYD}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_TXTQBMFYD}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_TXTQBMFYD}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_TXTQBMFYD}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_TXTQBMFYD}"
 
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfyd_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
             notOverrideResValue getOwner(), "string", "database_name", "txtqbmfydBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
@@ -717,29 +539,28 @@ N多网	        blf1298_10885_001
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release1
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_QBMFKDXS}",
-                    APP_NAME     : '全本免费快读小说',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFKDXS}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFKDXS}",
-                    WECHAT_APPID : "",
-                    QQ_APPID     : "",
-                    IFLYTEK_APPID: "",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_QBMFKDXS}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBMFKDXS}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBMFKDXS}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBMFKDXS}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_QBMFKDXS}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_QBMFKDXS}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_QBMFKDXS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbmfxsxzq_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "今日多看免费小说"
             notOverrideResValue getOwner(), "string", "database_name", "qbmfxsxzq.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "d936085832"
             notOverrideResValue getOwner(), "string", "push_key", "mmpPNZqjHZz1ttpumE3PRouk9mHtN0pU"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731849"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "becf9b2d02e1caa350b0f9f8b84bb1bd"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
         }
-
-
 
 
         qbmfrmxs {
@@ -748,32 +569,88 @@ N多网	        blf1298_10885_001
 
 
             manifestPlaceholders = [
-                    UMENG_APP_KEY: "${UMENG_APPKEY_QBMFRMXS}",
-                    UMENG_PUSH_SECRET:"${UMENG_PUSH_SECRET_QBMFRMXS}",
-                    UMENG_PUSH_XIAOMI_ID:"${UMENG_XIAOMI_ID_QBMFRMXS}",
-                    UMENG_PUSH_XIAOMI_KEY:"${UMENG_XIAOMI_KEY_QBMFRMXS}",
-                    APP_NAME     : 'TXT全本免费阅读',
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFRMXS}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFRMXS}",
-                    WECHAT_APPID : "",
-                    QQ_APPID     : "",
-                    IFLYTEK_APPID: "",
-                    PACKAGE_NAME : defaultConfig.applicationId
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_QBMFRMXS}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBMFRMXS}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBMFRMXS}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBMFRMXS}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_QBMFRMXS}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_QBMFRMXS}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_QBMFRMXS}"
 
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbmfrmxs_book"
-            // notOverrideResValue getOwner(), "string", "app_name", "TXT全本免费阅读"
             notOverrideResValue getOwner(), "string", "database_name", "qbmfrmxsBook.db"
             notOverrideResValue getOwner(), "string", "baidu_stat_id", "0b1405d1df"
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24812888"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "2baf3d5d4f949e5189afbe37a8e1302e"
-
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.youshiit.com:443"
         }
 
+
+
+        qbmfkkydq {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            manifestPlaceholders = [
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_QBMFKKYDQ}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBMFKKYDQ}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBMFKKYDQ}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBMFKKYDQ}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_QBMFKKYDQ}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_QBMFKKYDQ}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_QBMFKKYDQ}"
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/qbmfkkydq_book"
+            notOverrideResValue getOwner(), "string", "database_name", "qbmfkkydqBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "5dce6ca420"
+            notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"//待更换
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "25007608"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "637ef76b85f41fbf4ef38f950d45a116"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://api.muxinvideo.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://webview.muxinvideo.com"
+        }
+
+        mfxsqbyd {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            manifestPlaceholders = [
+
+                    UMENG_APP_KEY        : "${UMENG_APPKEY_MFXSQBYD}",
+                    UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_MFXSQBYD}",
+                    UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_MFXSQBYD}",
+                    UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_MFXSQBYD}",
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_MFXSQBYD}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_MFXSQBYD}",
+                    WECHAT_APPID         : "",
+                    QQ_APPID             : "",
+                    IFLYTEK_APPID        : "",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         :"${REYUN_KEY_MFXSQBYD}"
+            ]
+
+            notOverrideResValue getOwner(), "string", "app_path", "/mfxsqbyd_book"
+            notOverrideResValue getOwner(), "string", "database_name", "mfxsqbydBook.db"
+            notOverrideResValue getOwner(), "string", "baidu_stat_id", "aa301ab969"
+            notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"//待更换
+            notOverrideResValue getOwner(), "string", "alifeedback_key", "24906354"
+            notOverrideResValue getOwner(), "string", "alifeedback_secret", "1f41b3f2695c9bf2910102eb5c01b218"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.fengxianghuawu.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com:443"
+        }
     }
 
 
@@ -787,18 +664,18 @@ N多网	        blf1298_10885_001
             System.err.println("checkManifest ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
 //            System.err.println(variant.applicationId)
 
-            //修改微信回到的包名
+            //修改微信回到的包名 修改
 //=============================================================
-            def wxentry = new File("common_book/src/main/java/com/intelligent/reader/activity/WXEntryActivity.kt")
-//            System.err.println(wxentry.getAbsolutePath())
-            def lines = wxentry.readLines()
-            lines.set(0, "package ${variant.applicationId}.wxapi")
-            def writer = wxentry.newWriter()
-            lines.forEach {
-                line ->
-                    writer.writeLine(line)
-            }
-            writer.close()
+//            def wxentry = new File("common_book/src/main/java/com/intelligent/reader/activity/WXEntryActivity.kt")
+////            System.err.println(wxentry.getAbsolutePath())
+//            def lines = wxentry.readLines()
+//            lines.set(0, "package ${variant.applicationId}.wxapi")
+//            def writer = wxentry.newWriter()
+//            lines.forEach {
+//                line ->
+//                    writer.writeLine(line)
+//            }
+//            writer.close()
 //=============================================================
 
 //修改app_string.xml 中应用名称
@@ -955,6 +832,10 @@ N多网	        blf1298_10885_001
                 outputFileName = "qbmfkdxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "qbmfrmxs") {
                 outputFileName = "qbmfrmxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+            } else if (variant.flavorName == "qbmfkkydq") {
+                outputFileName = "qbmfkkydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
+            }else if (variant.flavorName == "mfxsqbyd") {
+                outputFileName = "mfxsqbyd_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else {
                 outputFileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             }
@@ -1010,6 +891,6 @@ dependencies {
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
-
     compile 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
+    implementation files('libs/tracking1.3.0.jar')
 }

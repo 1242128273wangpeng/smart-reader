@@ -211,6 +211,9 @@ class ReaderSettings {
             }
         }
 
+    /**
+     * 0 滑动 1 仿真 2 平移 3 上下
+     */
     @SerializedName(value = "animation_mode")
     var animation_mode = 1
         set(value) {

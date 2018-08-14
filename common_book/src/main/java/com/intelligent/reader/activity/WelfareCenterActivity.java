@@ -16,12 +16,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mobstat.StatService;
+import com.ding.basic.request.RequestService;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.PagerDesc;
 
 import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
@@ -91,6 +91,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
             names.add(currentTitle);
         }
 
+        AppUtils.disableAccessibility(this);
         initView();
 
         initJSHelp();
@@ -101,15 +102,15 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
     }
 
     private void initView() {
-        welfare_center_main = (RelativeLayout) findViewById(R.id.welfare_center_main);
-        welfare_center_back = (ImageView) findViewById(R.id.welfare_center_back);
-        welfare_center_title = (TextView) findViewById(R.id.welfare_center_title);
-        welfare_center_search = (ImageView) findViewById(R.id.welfare_center_search);
-        welfare_center_content = (WebView) findViewById(R.id.welfare_center_content);
+        welfare_center_main =  findViewById(R.id.welfare_center_main);
+        welfare_center_back =  findViewById(R.id.welfare_center_back);
+        welfare_center_title =  findViewById(R.id.welfare_center_title);
+        welfare_center_search =  findViewById(R.id.welfare_center_search);
+        welfare_center_content =  findViewById(R.id.welfare_center_content);
 
         initListener();
 
-        if (currentUrl.contains(URLBuilderIntterface.AUTHOR_V4)) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4)) {
             welfare_center_search.setVisibility(View.GONE);
         } else {
             welfare_center_search.setVisibility(View.GONE);
@@ -202,7 +203,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
         if (isNeedInterceptSlide()) {
             jsInterfaceHelper.setOnH5PagerInfo(new JSInterfaceHelper.OnH5PagerInfoListener() {
                 @Override
-                public void onH5PagerInfo(int x, int y, int width, int height) {
+                public void onH5PagerInfo(float x, float y, float width, float height) {
                     mPagerDesc = new PagerDesc(y, x, x + width, y + height);
                 }
             });
@@ -243,7 +244,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
     protected void onDestroy() {
         super.onDestroy();
         if (welfare_center_content != null) {
-            welfare_center_content.clearCache(true);
+            welfare_center_content.clearCache(false);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (welfare_center_main != null) {
                     welfare_center_main.removeView(welfare_center_content);
@@ -422,8 +423,8 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
                                 h5Margin = loction[1];
                             }
                             if (null != mPagerDesc) {
-                                int top = mPagerDesc.getTop();
-                                int bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                float top = mPagerDesc.getTop();
+                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
                                 DisplayMetrics metric = getResources().getDisplayMetrics();
                                 top = (int) (top * metric.density) + h5Margin;
                                 bottom = (int) (bottom * metric.density) + h5Margin;

@@ -14,4 +14,5 @@
     <string name="bookshelf_remove_menu_detail">查看更新详情</string>
 
     <string name="bookshelf_detail_book_empty_prompt">请先选择书籍！</string>
+    <string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>
 </resources>

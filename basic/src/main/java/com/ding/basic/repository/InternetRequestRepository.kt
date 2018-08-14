@@ -7,6 +7,11 @@ import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import net.lzbook.kit.data.book.UserMarkBook
+import net.lzbook.kit.data.user.UserBook
+import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
 import retrofit2.Call
 
@@ -15,6 +20,7 @@ import retrofit2.Call
  * Created by crazylei.
  */
 class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
+
 
     companion object {
         private var internetRequestRepository: InternetRequestRepository? = null
@@ -32,15 +38,15 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         }
     }
 
-    override fun requestDefaultBooks(): Flowable<BasicResult<CoverList>>? {
-        return RequestAPI.requestDefaultBooks()
+    override fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
+        return RequestAPI.requestDefaultBooks(sex)
     }
 
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }
 
-    override fun requestDynamicParameters(): Flowable<JsonObject>? {
+    fun requestDynamicParameters(): Flowable<Parameter> {
         return RequestAPI.requestDynamicParameters()
     }
 
@@ -77,8 +83,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
 
-
-
     override fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return RequestAPI.requestFeedback(parameters)
     }
@@ -91,6 +95,64 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestLogoutAction(parameters)
     }
 
+    fun requestSmsCode(mobile: String): Flowable<BasicResultV4<String>>? {
+        return RequestAPI.requestSmsCode(mobile)
+    }
+
+    fun requestSmsLogin(smsRequestBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>>? {
+
+        return RequestAPI.requestSmsLogin(smsRequestBody)
+    }
+
+    fun requestLogout(): Flowable<BasicResultV4<String>> {
+        return RequestAPI.requestLogout()
+    }
+
+    fun uploadUserAvatar(avatarBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.uploadUserAvatar(avatarBody)
+    }
+
+    fun requestUserNameState(): Flowable<BasicResultV4<UserNameState>> {
+        return RequestAPI.requestUserNameState()
+    }
+
+    fun uploadUserGender(genderBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.uploadUserGender(genderBody)
+    }
+
+    fun uploadUserName(nameBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+
+        return RequestAPI.uploadUserName(nameBody)
+    }
+
+    fun requestBookShelf(accountId: String): Flowable<BasicResultV4<List<UserBook>>> {
+        return RequestAPI.requestBookshelf(accountId)
+    }
+
+    fun uploadBookshelf(bookShelfBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return RequestAPI.uploadBookshelf(bookShelfBody)
+    }
+
+    fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
+        return RequestAPI.requestBookMarks(accountId)
+    }
+
+    fun uploadBookMarks(markBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return RequestAPI.uploadBookMarks(markBody)
+    }
+
+    fun requestFootPrint(accountId: String): Flowable<BasicResultV4<List<UserBook>>> {
+        return RequestAPI.requestFootPrint(accountId)
+    }
+
+    fun uploadFootPrint(footBody: RequestBody): Flowable<BasicResultV4<String>> {
+        return RequestAPI.uploadFootPrint(footBody)
+    }
+
+    fun bindPhoneNumber(phoneBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.bindPhoneNumber(phoneBody)
+    }
+
     override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return RequestAPI.requestRefreshToken(parameters)
     }
@@ -99,10 +161,22 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestUserInformation(token, appid, openid)
     }
 
-    override fun requestDownTaskConfig(bookID: String, bookSourceID: String
-                                       , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
-        return RequestAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
+    fun requestWXAccessToken(appid: String, secret: String, code: String, authorizationCode: String): Flowable<WXAccess> {
+        return RequestAPI.requestWXAccessToken(appid, secret, code, authorizationCode)
     }
+
+    fun requestWXUserInfo(token: String, openid: String): Flowable<WXSimpleInfo> {
+        return RequestAPI.requestWXUserInfo(token, openid)
+    }
+
+    fun thirdLogin(thirdBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.thirdLogin(thirdBody)
+    }
+
+    fun bindThirdAccount(accountBody: RequestBody): Flowable<BasicResultV4<LoginRespV4>> {
+        return RequestAPI.bindThirdAccount(accountBody)
+    }
+
 
     override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return RequestAPI.requestCoverRecommend(book_id, recommend)
@@ -113,10 +187,32 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBookRecommend(book_id, shelfBooks)
     }
 
+    override fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+        return RequestAPI.requestAuthorOtherBookRecommend(author, book_id)
+    }
+
+    override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
+        return RequestAPI.requestBookRecommendV4(book_id, recommend)
+    }
+
+    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
+        return RequestAPI.requestPushTags(udid)
+    }
+
+    override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
+        return RequestAPI.requestSubBook(bookName, bookAuthor)
+    }
+
     /***************** 微服务 *****************/
 
     override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
         return MicroAPI.requestAuthAccess()
+    }
+
+    /***************** 微服务同步鉴权 *****************/
+
+    override fun requestAuthAccessSync(): Call<BasicResult<String>> {
+        return MicroAPI.requestAuthAccessSync()
     }
 
     override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
@@ -133,6 +229,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
         return MicroAPI.requestCoverBatch(requestBody)
+    }
+
+    override fun requestDownTaskConfig(bookID: String, bookSourceID: String
+                                       , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
+        return MicroAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 
     override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {

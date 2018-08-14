@@ -26,7 +26,7 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
         @Synchronized
         fun loadChapterDataProviderHelper(context: Context, book_id: String): ChapterDaoHelper {
             val daoHelper = helperMap[book_id]?.get()
-            if (daoHelper != null && dbMap[book_id]?.isOpen == true) {
+            if (daoHelper != null) {
                 Logger.d("use cached chapter helper")
                 return daoHelper
             }
@@ -34,10 +34,9 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
             helperMap.filter {
                 it.value.get() == null
             }.forEach {
-                if(dbMap[it.key]?.inTransaction() != true) {
-                    dbMap[it.key]?.close()
-                    dbMap.remove(it.key)
+                if(dbMap[it.key]?.isOpen == true && dbMap[it.key]?.inTransaction() != true) {
                     helperMap.remove(it.key)
+                    dbMap.remove(it.key)?.close()
                     Logger.d("release chapter helper -> ${it.key}")
                 }
             }

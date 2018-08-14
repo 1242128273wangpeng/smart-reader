@@ -40,6 +40,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.baidu.mobstat.StatService;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
@@ -148,8 +150,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         initTheme();
 
         //友盟推送
-        String packageName = AppUtils.getPackageName();
-        if("cc.remennovel".equals(packageName) ||"cc.kdqbxs.reader".equals(packageName) ){
+        if (AppUtils.hasUPush()) {
             PushAgent.getInstance(this).onAppStart();
         }
 
@@ -237,10 +238,14 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public void hasGetPackageName() {
         packageName = AppUtils.getPackageName();
         isFirst = false;
+
         if (!TextUtils.isEmpty(packageName) &&
                 (packageName.equals("cc.kdqbxs.reader")
                         || packageName.equals("cn.txtqbmfyd.reader")
-                        || packageName.equals("cn.qbmfrmxs.reader"))) {
+                        || packageName.equals("cn.qbmfrmxs.reader")
+                        || packageName.equals("cc.quanbennovel")// 今日多看
+                        || packageName.equals("cc.remennovel")// 智胜电子书替
+                        || packageName.equals("cn.mfxsqbyd.reader"))) {// 免费小说全本阅读
             isDarkStatusBarText = true;
         } else {
             isDarkStatusBarText = false;
@@ -331,7 +336,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         if (shouldShowNightShadow())
             nightShift(mThemeHelper.isNight(), false);
 
-        StatService.onResume(getApplicationContext());
         if (!isActive) {
             isActive = true;
             setDisplayState();// 得到系统亮度，设置应用亮度
@@ -404,6 +408,13 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
         }
+
+        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
+            if (isShowSwitchSplash) {
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SWITCH_AD_ACTIVITY);
+            }
+        }
     }
 
 
@@ -462,7 +473,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
 
-        StatService.onPause(getApplicationContext());
     }
 
     /**

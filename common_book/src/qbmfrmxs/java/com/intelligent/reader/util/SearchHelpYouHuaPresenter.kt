@@ -68,7 +68,8 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
                 val data = HashMap<String, String>()
                 data.put("keyword", history)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data)
+                data.put("rank", position.toString() + "")
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARLIST, data)
             }
         }
     }

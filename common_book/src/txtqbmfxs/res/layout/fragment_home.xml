@@ -209,7 +209,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/top_back"/>
+                android:src="@drawable/icon_back_left"/>
 
             <TextView
                 android:layout_width="wrap_content"
