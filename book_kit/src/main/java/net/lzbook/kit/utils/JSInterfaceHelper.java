@@ -132,8 +132,8 @@ public class JSInterfaceHelper implements WebViewJsInterface {
             String[] array = url.split("\\?");
             if (array.length == 2) {
                 url = array[0];
+                url = UrlUtils.buildWebUrl(url, UrlUtils.getUrlParams(array[1]));
             }
-            url = UrlUtils.buildWebUrl(url, UrlUtils.getUrlParams(array[1]));
         }
         return url;
     }

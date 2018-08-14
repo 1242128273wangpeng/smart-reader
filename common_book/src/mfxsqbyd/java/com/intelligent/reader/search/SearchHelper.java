@@ -244,7 +244,7 @@ public class SearchHelper {
                 }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
-                    if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
+                    if (url.contains(RequestService.AUTHOR_h5)) {
                         sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                                 "author").apply();//FindBookDetail 返回键时标识
                     }
@@ -442,7 +442,7 @@ public class SearchHelper {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("author", searchWord);
-                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord;
+                mUrl=RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName())+"?author="+searchWord;
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "author").apply
                             ();//FindBookDetail 返回键时标识
@@ -462,7 +462,7 @@ public class SearchHelper {
             } else {
                 Map<String, String> params = new HashMap<>();
                 params.put("keyword", searchWord);
-                params.put("search_type", searchType);
+                params.put("searchType", searchType);
                 params.put("filter_type", filterType);
                 params.put("filter_word", filterWord);
                 params.put("sort_type", sortType);
