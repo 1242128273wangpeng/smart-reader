@@ -386,7 +386,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
         AppLog.e("webviewFrag", "exit");
         if (contentView != null) {
-            contentView.clearCache(true); //清空缓存
+            contentView.clearCache(false); //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (contentLayout != null) {
                     contentLayout.removeView(contentView);

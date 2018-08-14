@@ -445,7 +445,7 @@ public class SearchBookActivity extends FrameActivity implements View.OnClickLis
             mSearchHelper.onDestroy();
         }
         if (search_result_content != null) {
-            search_result_content.clearCache(true); //清空缓存
+            search_result_content.clearCache(false); //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (search_result_main != null) {
                     search_result_main.removeView(search_result_content);

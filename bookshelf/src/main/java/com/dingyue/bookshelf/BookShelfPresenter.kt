@@ -5,29 +5,26 @@ import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.TextUtils
-import android.util.Log
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
-import me.eugeniomarletti.kotlin.metadata.shadow.incremental.components.Position
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.BaseBookHelper
+import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.runOnMain
+import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
@@ -111,7 +108,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         }
     }
 
-       /***
+    /***
      * 刷新书籍列表，并计算请求广告数量。 注：将adBookMap插入到列表中，主要是为了解决刷新列表时，广告抖动的问题。
      * **/
     private fun calculationShelfADCount(isShowAD: Boolean, isList: Boolean): Int {
@@ -280,6 +277,16 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * **/
     fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
         val size = deleteBooks.size
+
+        // 书架上书籍数量
+        val bookCount = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
+
+        // 清除当前阅读书籍状态
+        if (bookCount.toInt() == size) {
+            val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            sp.putString(SharedPreUtil.CURRENT_READ_BOOK, "")
+        }
+
         doAsync {
             val stringBuilder = StringBuilder()
             for (i in 0 until size) {
@@ -305,6 +312,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
             }
 
             BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)
+
         }
     }
 

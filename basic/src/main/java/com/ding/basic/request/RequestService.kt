@@ -3,20 +3,32 @@ package com.ding.basic.request
 import com.ding.basic.bean.*
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import net.lzbook.kit.data.book.BookMarkBody
 import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
-import org.intellij.lang.annotations.Flow
 import retrofit2.http.*
 
 interface RequestService {
 
     companion object {
+
+        // cdn智能
+        const val DYNAMIC_ZN = "https://public.lsread.cn/dpzn/{packageName}.json"
+
+        // cdn传媒
+        const val DYNAMIC_CM = "https://public.dingyueads.com/dpzn/{packageName}.json"
+
+        // cdn原创
+        const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
+
+        // 新的用户广告数据搜集接口
+        const val AD_DATA_COLLECT = "http://ad.dingyueads.com:8010/insertData"
+
+
+        /************************************ Host拼接 ***************************************/
 
         //应用更新
         const val CHECK_APPLICATION = "/v3/app/check"
@@ -132,14 +144,7 @@ interface RequestService {
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/v5/book/down"
 
-        // cdn智能
-        const val DYNAMIC_ZN = "https://public.lsread.cn/dpzn/{packageName}.json"
 
-        // cdn传媒
-        const val DYNAMIC_CM = "https://public.dingyueads.com/dpzn/{packageName}.json"
-
-        // cdn原创
-        const val DYNAMIC_YC = "https://public.qingoo.cn/dpzn/{packageName}.json"
 
 
         /**
@@ -185,12 +190,16 @@ interface RequestService {
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
 
+        /**
+         * PUSH标签
+         */
         const val PUSH_TAG = "/v4/cn.dingyueWeb.reader/getUserTag"
 
         /**
          * 搜索无结果页  点击订阅  searchEmpty/userSubscription
          */
         const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
+
     }
 
     @GET(DEFAULT_BOOK)
@@ -204,10 +213,10 @@ interface RequestService {
     fun requestApplicationUpdate(@QueryMap parameters: Map<String, String>): Flowable<JsonObject>
 
     @GET(DYNAMIC_PARAMETERS)
-    fun requestDynamicParameters(): Flowable<JsonObject>
+    fun requestDynamicParameters(): Flowable<Parameter>
 
     @GET
-    fun requestCDNDynamicPar(@Url url: String): Flowable<JsonObject>
+    fun requestCDNDynamicPar(@Url url: String): Flowable<Parameter>
 
     @GET(BOOK_DETAIL)
     fun requestBookDetail(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Book>>
@@ -231,7 +240,6 @@ interface RequestService {
     @GET(AUTO_COMPLETE_V5)
     fun requestAutoCompleteV5(@Query("keyword") word: String): Flowable<SearchAutoCompleteBeanYouHua>
 
-
     @GET(HOT_WORDS_V4)
     fun requestHotWordV4(): Flowable<Result<SearchResult>>
 
@@ -244,7 +252,6 @@ interface RequestService {
     @POST(CHECK_UPDATE)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestBookUpdate(@Body json: RequestBody): Flowable<BasicResult<UpdateBean>>
-
 
     @POST(BOOKSHELF_UPDATE)
     @Headers("Content-Type: application/json;charset=UTF-8")
@@ -360,7 +367,6 @@ interface RequestService {
 
     @GET(PUSH_TAG)
     fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
-
 
     //搜索无结果页  订阅
     @GET(SEARCH_SUB_BOOK)

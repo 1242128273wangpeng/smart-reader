@@ -3,6 +3,7 @@ package com.intelligent.reader.activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.View
@@ -17,13 +18,13 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
-import com.intelligent.reader.upush.OfflineNotifyActivity
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_book_cover.*
 import net.lzbook.kit.app.BaseBookApplication
@@ -48,9 +49,6 @@ import kotlin.collections.ArrayList
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(),
         OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
-    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
-
-    }
 
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
 
@@ -148,14 +146,14 @@ class CoverPageActivity : BaseCacheableActivity(),
     private fun initIntent(intent: Intent?) {
 
         if (intent != null) {
-            if (intent.hasExtra(Constants.BOOK_ID)) {
-                bookId = intent.getStringExtra(Constants.BOOK_ID)
+            if (intent.hasExtra(RouterUtil.BOOK_ID)) {
+                bookId = intent.getStringExtra(RouterUtil.BOOK_ID)
             }
-            if (intent.hasExtra(Constants.BOOK_SOURCE_ID)) {
-                bookSourceId = intent.getStringExtra(Constants.BOOK_SOURCE_ID)
+            if (intent.hasExtra(RouterUtil.BOOK_SOURCE_ID)) {
+                bookSourceId = intent.getStringExtra(RouterUtil.BOOK_SOURCE_ID)
             }
-            if (intent.hasExtra(Constants.BOOK_CHAPTER_ID)) {
-                bookChapterId = intent.getStringExtra(Constants.BOOK_CHAPTER_ID)
+            if (intent.hasExtra(RouterUtil.BOOK_CHAPTER_ID)) {
+                bookChapterId = intent.getStringExtra(RouterUtil.BOOK_CHAPTER_ID)
             }
 
             isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
@@ -240,7 +238,7 @@ class CoverPageActivity : BaseCacheableActivity(),
             if (book.status == "SERIALIZE") {
                 book_cover_status.text = "—连载中"
             } else {
-                book_cover_status.text = "—" + getString(R.string.book_cover_state_written)
+                book_cover_status.text = ("—" + getString(R.string.book_cover_state_written))
             }
 
 
@@ -402,7 +400,7 @@ class CoverPageActivity : BaseCacheableActivity(),
         mBackground = R.drawable.cover_bottom_btn_remove_bg
         mTextColor = R.color.cover_bottom_btn_remove_text_color
 
-        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
+        book_cover_bookshelf!!.setTextColor(ContextCompat.getColor(this, mTextColor))
         book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
@@ -410,7 +408,7 @@ class CoverPageActivity : BaseCacheableActivity(),
         mBackground = R.drawable.cover_bottom_btn_add_bg
         mTextColor = R.color.cover_bottom_btn_add_text_color
 
-        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
+        book_cover_bookshelf!!.setTextColor(ContextCompat.getColor(this, mTextColor))
         book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 

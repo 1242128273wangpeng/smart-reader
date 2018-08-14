@@ -172,17 +172,24 @@
                         tools:text="一朝穿越，穆长安觉得自己简直是倒霉透顶，居然穿越成一滴挂在槐树上的眼泪。
 好不容易幻化成人形，虽然是个美人胚子，却成了睿王的第五任冲喜新娘。"/>
 
-                    <ImageView
-                        android:id="@+id/iv_bookdes_icon"
-                        android:layout_width="16dp"
-                        android:layout_height="10dp"
+                    <RelativeLayout
+                        android:layout_width="@dimen/dimen_height_40"
+                        android:layout_height="@dimen/dimen_margin_20"
                         android:layout_gravity="bottom|right"
-                        android:layout_marginBottom="12dp"
-                        android:layout_marginRight="3dp"
-                        android:background="@drawable/book_cover_more_iconbg"
-                        android:padding="3dp"
-                        android:scaleType="center"
-                        android:src="@drawable/bookcover_icon_down"/>
+                        android:layout_marginBottom="@dimen/dimen_margin_12"
+                        android:background="@drawable/book_cover_more_bg">
+
+                        <ImageView
+                            android:id="@+id/iv_bookdes_icon"
+                            android:layout_width="16dp"
+                            android:layout_height="10dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="3dp"
+                            android:padding="3dp"
+                            android:scaleType="center"
+                            android:src="@drawable/bookcover_icon_down"/>
+                    </RelativeLayout>
 
                 </FrameLayout>
 
@@ -304,6 +311,7 @@
             android:layout_marginTop="-10dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
+            android:layout_above="@id/ll_nav_layout"
             android:src="@drawable/bottom_shadow_bg"/>
 
         <LinearLayout
@@ -347,4 +355,5 @@
                 android:textSize="16sp"/>
         </LinearLayout>
     </RelativeLayout>
+
 </RelativeLayout>

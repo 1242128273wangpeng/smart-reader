@@ -443,7 +443,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).updateBook(book)
 
-
         val books = Gson().toJson(book)
         sp.putString(SharedPreUtil.CURRENT_READ_BOOK, books)
 

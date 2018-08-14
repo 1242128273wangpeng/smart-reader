@@ -19,6 +19,7 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
@@ -151,9 +152,9 @@ class SearchViewHelper(activity: Activity,
                     StartLogClickUtil.HOTREADCLICK, data)
 
             val intent = Intent(mActivity, CoverPageActivity::class.java)
-            intent.putExtra(Constants.BOOK_ID, dataBean.bookId)
-            intent.putExtra(Constants.BOOK_SOURCE_ID, dataBean.id)
-            intent.putExtra(Constants.BOOK_CHAPTER_ID, dataBean.bookChapterId)
+            intent.putExtra(RouterUtil.BOOK_ID, dataBean.bookId)
+            intent.putExtra(RouterUtil.BOOK_SOURCE_ID, dataBean.id)
+            intent.putExtra(RouterUtil.BOOK_CHAPTER_ID, dataBean.bookChapterId)
 
             mActivity?.startActivity(intent)
 
@@ -211,8 +212,8 @@ class SearchViewHelper(activity: Activity,
                             StartLogClickUtil.ENTER, data1)
 
                     val intent = Intent(mActivity, CoverPageActivity::class.java)
-                    intent.putExtra(Constants.BOOK_ID, searchCommonBeanYouHua.book_id)
-                    intent.putExtra(Constants.BOOK_SOURCE_ID, searchCommonBeanYouHua.book_source_id)
+                    intent.putExtra(RouterUtil.BOOK_ID, searchCommonBeanYouHua.book_id)
+                    intent.putExtra(RouterUtil.BOOK_SOURCE_ID, searchCommonBeanYouHua.book_source_id)
                     mActivity?.startActivity(intent)
 
                     addHistoryWord(suggest)

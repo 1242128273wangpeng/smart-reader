@@ -5,10 +5,9 @@ import com.ding.basic.bean.LocalLog
 import com.ding.basic.dao.LocalLogDao
 import com.ding.basic.database.LocalLogDataBase
 import com.dingyue.contract.util.CommonUtil
-import com.umeng.message.common.Const
+import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.ServerLog
-import net.lzbook.kit.appender_loghub.common.PLItemKey
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
@@ -65,8 +64,8 @@ class AndroidLogStorage {
 
         }
 
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (sp.getBoolean(Constants.SHOW_TOAST_LOG, false)) { //打点Toast
+        val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+        if (sp.getBoolean(SharedPreUtil.SHOW_TOAST_LOG, false)) { //打点Toast
             CommonUtil.showToastMessage(serverLog.content.toString())
         }
 
@@ -206,8 +205,16 @@ class AndroidLogStorage {
             consumeSingleThread.execute {
                 AppLog.e(TAG, "consuming ${localLogList.size} $type logs")
                 val serverLogList: ArrayList<ServerLog> = ArrayList()
-                for (localLog in localLogList) {
-                    serverLogList.add(ServerLog(localLog.id, localLog.contentJson))
+                try {
+                    /*for (localLog in localLogList) {
+                        serverLogList.add(ServerLog(localLog.id, localLog.contentJson))
+                    }*/
+
+                    Integer.valueOf("10")
+                    Integer.parseInt("10")
+                    localLogList.mapTo(serverLogList) { ServerLog(it.id, it.contentJson) }
+                } catch (e: OutOfMemoryError) {
+                    e.printStackTrace()
                 }
                 AndroidLogClient.putLog(serverLogList)
             }

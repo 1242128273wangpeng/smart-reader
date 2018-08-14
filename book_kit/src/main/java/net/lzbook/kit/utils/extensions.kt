@@ -20,16 +20,21 @@ import android.view.animation.Animation
 import android.widget.TextView
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
+import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.data.bean.CoverPage
 import java.lang.ref.WeakReference
+import java.util.HashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.regex.Pattern
 
 /**
  * Created by xian on 2017/6/21.
@@ -263,7 +268,7 @@ fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> 
                 override fun requestResult(result: ArrayList<String>?) {
                     loge("获取用户新标签成功")
                     deleteOldTags { isDelete ->
-                        if (!isDelete){
+                        if (!isDelete) {
                             callback.invoke(false)
                             return@deleteOldTags
                         }
@@ -352,6 +357,25 @@ fun Context.openPushActivity(msg: UMessage) {
     intent.setClassName(this, msg.activity)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
+    uploadPushLog(msg)
+}
+
+private fun Context.uploadPushLog(msg: UMessage) {
+    val data = HashMap<String, String>()
+    if (msg.activity == "com.intelligent.reader.activity.CoverPageActivity") {
+        // 封面页打点
+        if (msg.extra?.containsKey("book_id") == true) {
+            data.put("BOOKID", msg.extra["book_id"] ?: "")
+        }
+        data.put("source", "PUSH")
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                StartLogClickUtil.ENTER, data)
+    } else if (msg.activity == "com.intelligent.reader.activity.FindBookDetail") {
+        //H5 页面打点
+        data.put("source", "PUSH")
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKLIST,
+                StartLogClickUtil.ENTER, data)
+    }
 }
 
 private fun Intent.putPushExtra(msg: UMessage) {
@@ -370,3 +394,10 @@ private fun Intent.putPushExtra(msg: UMessage) {
 
 @JvmField
 val IS_FROM_PUSH = "is_from_push"
+
+fun String.isNumeric(): Boolean {
+    if (this.isEmpty()) return false
+    val pattern = Pattern.compile("[0-9]*")
+    val isNum = pattern.matcher(this)
+    return isNum.matches()
+}

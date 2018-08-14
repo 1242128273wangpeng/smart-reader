@@ -244,7 +244,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
     protected void onDestroy() {
         super.onDestroy();
         if (welfare_center_content != null) {
-            welfare_center_content.clearCache(true);
+            welfare_center_content.clearCache(false);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (welfare_center_main != null) {
                     welfare_center_main.removeView(welfare_center_content);

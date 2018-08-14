@@ -72,9 +72,6 @@ public class BookApplication extends BaseBookApplication {
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
             StatService.setAppChannel(this, AppUtils.getChannelId(), true);
 
-            StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
-            StatService.setAppChannel(this, AppUtils.getChannelId(), true);
-
             // 自定义ErrorCallback
             FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
                 @Override

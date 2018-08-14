@@ -19,8 +19,6 @@ interface BasicRequestRepository {
 
     fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>?
 
-    fun requestDynamicParameters(): Flowable<JsonObject>?
-
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>?
 
     fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? //搜索V4接口

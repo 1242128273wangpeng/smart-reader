@@ -60,7 +60,7 @@ class BookShelfHeaderView @JvmOverloads constructor(context: Context, attrs: Att
             }
 
         }
-        iv_book_icon.setOnClickListener {
+        view.setOnClickListener {
             BookRouter.navigateCoverOrRead(mActivity!!, mBook!!, BookRouter.NAVIGATE_TYPE_BOOKSHELF)
         }
 

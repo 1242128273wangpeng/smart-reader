@@ -206,7 +206,7 @@ open class WebViewFragment : Fragment() {
         handler.removeCallbacksAndMessages(null)
 
         if (bwv_web_view_result != null) {
-            bwv_web_view_result?.clearCache(true)
+            bwv_web_view_result?.clearCache(false)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 

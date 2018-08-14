@@ -114,9 +114,9 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
-    override fun requestDynamicParameters(requestSubscriber: RequestSubscriber<JsonObject>) {
-        InternetRequestRepository.loadInternetRequestRepository(context = context).requestDynamicParameters()!!
-                .compose(SchedulerHelper.schedulerIOHelper<JsonObject>())
+    override fun requestDynamicParameters(requestSubscriber: RequestSubscriber<Parameter>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestDynamicParameters()
+                .compose(SchedulerHelper.schedulerIOHelper<Parameter>())
                 .subscribe({ result ->
                     if (result != null) {
                         requestSubscriber.onNext(result)
