@@ -12,6 +12,7 @@ import android.widget.TextView;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 
+import com.baidu.mobstat.StatService;
 import com.ding.basic.bean.HistoryInfo;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
@@ -68,6 +69,13 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
 
         mLoginTV.setClickable(true);
         checkInit(UserManager.INSTANCE.isUserLogin());
+        StatService.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        StatService.onPause(this);
     }
 
     private void checkInit(boolean isLogin) {

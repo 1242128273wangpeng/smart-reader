@@ -81,6 +81,7 @@ interface RequestService {
          * 搜索页作者
          */
         const val AUTHOR_V4 = "/v4/author/homepage/page"
+        const val AUTHOR_h5 = "/h5/{packageName}/author"
 
 
         //检查更新

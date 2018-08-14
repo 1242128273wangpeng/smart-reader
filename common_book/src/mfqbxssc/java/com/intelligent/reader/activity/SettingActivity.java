@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
+import com.baidu.mobstat.StatService;
 import com.bumptech.glide.Glide;
 import com.ding.basic.bean.LoginResp;
 import com.dingyue.contract.router.RouterConfig;
@@ -299,11 +300,13 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         } else {
             hideUserInfo();
         }
+        StatService.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        StatService.onPause(this);
     }
 
     @Override

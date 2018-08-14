@@ -209,6 +209,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
     }
 
+
     /***
      * 处理书架列表中广告请求结果。返回结果先保存到adBookMap中，再添加或更新到列表中
      * **/
@@ -241,7 +242,6 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
             }
         }
     }
-
 
     /***
      * 获取九宫格顶部广告

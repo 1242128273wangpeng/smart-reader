@@ -20,6 +20,7 @@ import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
@@ -40,6 +41,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     private val bookShelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
+    private val sharePre:SharedPreUtil by lazy { SharedPreUtil(SharedPreUtil.SHARE_DEFAULT) }
 
     private var latestLoadDataTime: Long = 0
 
@@ -163,12 +165,20 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         return inflater.inflate(R.layout.frag_bookshelf, container, false)
     }
 
+    fun dimissPersonRed(){
+        redpoint_home_setting?.visibility = View.GONE
+        sharePre.putBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,true)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
 
+        if(sharePre.getBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,false)){
+            redpoint_home_setting?.visibility = View.GONE
+        }
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
                 refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_running)
@@ -191,6 +201,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         img_head_personal.setOnClickListener {
             bookShelfInterface?.changeDrawerLayoutState()
             BookShelfLogger.uploadBookShelfPersonal()
+            sharePre.putBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,true)
+            redpoint_home_setting.visibility = View.GONE
         }
 
         img_head_search.setOnClickListener {

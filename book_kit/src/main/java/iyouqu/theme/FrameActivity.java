@@ -336,7 +336,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         if (shouldShowNightShadow())
             nightShift(mThemeHelper.isNight(), false);
 
-        StatService.onResume(getApplicationContext());
         if (!isActive) {
             isActive = true;
             setDisplayState();// 得到系统亮度，设置应用亮度
@@ -474,7 +473,6 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
 
-        StatService.onPause(getApplicationContext());
     }
 
     /**

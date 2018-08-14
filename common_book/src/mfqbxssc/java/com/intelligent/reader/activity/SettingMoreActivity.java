@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity;
 
+import com.baidu.mobstat.StatService;
 import com.intelligent.reader.R;
 import com.intelligent.reader.view.CustomDialog;
 
@@ -424,11 +425,13 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
     @Override
     protected void onResume() {
         super.onResume();
+        StatService.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        StatService.onPause(this);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.dy.reader.activity
 import android.os.Bundle
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
@@ -27,6 +28,7 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.BookRecommender
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -73,6 +75,15 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
     private fun initListener() {
 
         iv_back.setOnClickListener {

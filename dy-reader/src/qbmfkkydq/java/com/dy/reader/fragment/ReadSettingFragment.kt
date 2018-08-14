@@ -87,7 +87,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 canTouch
             }
         }
-        dialog.setOnKeyListener { dialog, keyCode, event ->
+        dialog.setOnKeyListener { _, keyCode, event ->
 
             if (KeyEvent.KEYCODE_BACK == keyCode) {
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -98,10 +98,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 false
             }
         }
-        /*if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-            dialog.rsh_option_header.setBookDownLoadState(ReaderStatus.book.book_id)
-            CacheManager.listeners.add(this)
-        }*/
+
         return dialog
     }
 
@@ -109,19 +106,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventReaderConfig) {
-
-        /*if(event.type == ReaderSettings.ConfigType.CHAPTER_SUCCESS ){
-            if (ReaderStatus.position.group == -1) {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = "封面"
-                }
-            } else {
-                if (dialog.novel_hint_chapter != null) {
-                    dialog.novel_hint_chapter!!.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
-                }
-            }
-        }*/
-
         if(ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
             when (event.type) {
                 ReaderSettings.ConfigType.CHAPTER_REFRESH -> {
@@ -130,7 +114,8 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 ReaderSettings.ConfigType.FONT_REFRESH -> {
                     canTouch = false
                 }
-
+                else -> {
+                }
             }
         }
     }
@@ -209,5 +194,4 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         EventBus.getDefault().unregister(this)
         mPresenter?.clear()
     }
-
 }

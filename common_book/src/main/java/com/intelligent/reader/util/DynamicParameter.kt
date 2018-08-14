@@ -199,7 +199,8 @@ class DynamicParameter(private val context: Context) {
         try {
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID)
             StatService.setAppChannel(AppUtils.getChannelId())
-            StatService.setSendLogStrategy(context, SendStrategyEnum.APP_START, 1, false)
+//            StatService.setSendLogStrategy(context, SendStrategyEnum.APP_START, 1, false)
+            StatService.start(context)
             StatService.setOn(context, StatService.EXCEPTION_LOG)
             StatService.setDebugOn(Constants.DEVELOPER_MODE)
         } catch (e: Exception) {

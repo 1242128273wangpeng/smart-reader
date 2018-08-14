@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.view.InflateException
 import android.view.View
 import android.widget.Toast
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
@@ -82,7 +83,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
-        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
+        ReaderStatus.startTime = System.currentTimeMillis()/1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -175,7 +176,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         } else if (isSubed && ReaderStatus.book.sequence + 1 > ReaderStatus.book.chapter_count) {
             ReaderStatus.book.sequence = ReaderStatus.book.chapter_count - 1
         }
-
     }
 
     fun onConfigurationChanged() {
@@ -292,14 +292,12 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     override fun addBookShelf(isAddShelf: Boolean) {
-
         if (isAddShelf && ReaderStatus.book != null) {
             ReaderStatus.book.sequence = ReaderStatus.position.group
             ReaderStatus.book.offset = ReaderStatus.position.offset
             ReaderStatus.book.last_read_time = System.currentTimeMillis()
             ReaderStatus.book.last_update_success_time = System.currentTimeMillis()
             ReaderStatus.book.readed = 1
-
 
             if (ReaderStatus.chapterList != null) {
                 val helper = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
@@ -316,8 +314,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
                     Toast.LENGTH_SHORT).show()
         }
-
-
         val map1 = HashMap<String, String>()
         if (ReaderStatus.book != null) {
             map1.put("bookid", ReaderStatus.book.book_id!!)
@@ -387,8 +383,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
             return false
         }
-
-
         goBackToHome()
         return true
     }
@@ -397,6 +391,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
+        StatService.onResume(act)
     }
 
     fun setScreenBrightness(brightness: Int) {
@@ -446,6 +441,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         val books = Gson().toJson(book)
         sp.putString(SharedPreUtil.CURRENT_READ_BOOK, books)
 
+        StatService.onPause(act)
     }
 
     fun onStop() {
