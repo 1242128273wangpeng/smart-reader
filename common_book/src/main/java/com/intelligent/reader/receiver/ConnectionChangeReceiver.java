@@ -93,7 +93,7 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
 
     private void updatePushTags(Context context) {
         String udid = OpenUDID.getOpenUDIDInContext(context);
-        final SharedPreUtil share = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        final SharedPreUtil share = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         Long latestUpdateTime = share.getLong(SharedPreUtil.PUSH_TAG_LATEST_UPDATE_TIME, 0);
         final Long currentTime = System.currentTimeMillis();
         boolean isSameDay = AppUtils.isToday(latestUpdateTime, currentTime);

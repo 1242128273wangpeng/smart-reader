@@ -34,33 +34,6 @@ public class UrlUtils {
             ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
             : sharedPreUtil.getString(SharedPreUtil.Companion.getWEB_URL());
 
-    /**
-     * 测试地址
-     */
-    public static void dynamic() {
-        if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getSTART_PARAMS())) {
-            BOOK_NOVEL_DEPLOY_HOST = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST;
-            BOOK_WEBVIEW_HOST = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST;
-            sharedPreUtil.putString(SharedPreUtil.Companion.getAPI_URL(),
-                    BOOK_NOVEL_DEPLOY_HOST);
-            sharedPreUtil.putString(SharedPreUtil.Companion.getWEB_URL(),
-                    BOOK_WEBVIEW_HOST);
-        } else {
-            BOOK_NOVEL_DEPLOY_HOST = "http://8086.zn.bookapi.cn";
-            BOOK_WEBVIEW_HOST = "http://8086.zn.bookapi.cn";
-            sharedPreUtil.putString(SharedPreUtil.Companion.getAPI_URL(),
-                    BOOK_NOVEL_DEPLOY_HOST);
-            sharedPreUtil.putString(SharedPreUtil.Companion.getWEB_URL(),
-                    BOOK_WEBVIEW_HOST);
-        }
-    }
-
-    public static void setApiUrl(String apiUrl) {
-        BOOK_NOVEL_DEPLOY_HOST = apiUrl;
-        BOOK_WEBVIEW_HOST = apiUrl;
-//        NetService.INSTANCE.initService();
-    }
-
 
     public static String getBookNovelDeployHost() {
         return BOOK_NOVEL_DEPLOY_HOST;
@@ -76,7 +49,7 @@ public class UrlUtils {
     public static void setBookNovelDeployHost(String bookNovelDeployHost) {
         if (!TextUtils.isEmpty(bookNovelDeployHost)) {
             if (!BOOK_NOVEL_DEPLOY_HOST.contains("test") && !bookNovelDeployHost.contains("test")) {
-                if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getSTART_PARAMS())) {
+                if (sharedPreUtil.getBoolean(SharedPreUtil.START_PARAMS)) {
                     BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
                 }
             }
@@ -87,7 +60,7 @@ public class UrlUtils {
 
         if (!TextUtils.isEmpty(bookWebViewHost)) {
 
-            if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getSTART_PARAMS())) {
+            if (sharedPreUtil.getBoolean(SharedPreUtil.START_PARAMS)) {
                 BOOK_WEBVIEW_HOST = bookWebViewHost;
             }
         }
