@@ -81,7 +81,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         AppLog.e(TAG, "----------->start");
         Bundle bundle = this.getArguments();
         if (bundle != null) {
