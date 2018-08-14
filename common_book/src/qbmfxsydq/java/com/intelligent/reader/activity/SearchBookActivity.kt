@@ -81,6 +81,7 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
 
     @SuppressLint("JavascriptInterface")
     private fun initView() {
+        search_result_clear.visibility = View.GONE
 
         mSearchHelper = SearchHelper(this)
 

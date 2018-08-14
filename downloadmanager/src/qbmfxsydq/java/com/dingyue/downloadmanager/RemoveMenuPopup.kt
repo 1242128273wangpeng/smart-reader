@@ -55,7 +55,7 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_download_ma
             contentView.btn_delete.text = context.getString(R.string.delete_cache)
             contentView.btn_delete.isEnabled = false
         } else {
-            val text = context.getString(R.string.delete) + "(" + num + ")"
+            val text = context.getString(R.string.delete_cache) + "(" + num + ")"
             contentView.btn_delete.text = text
             contentView.btn_delete.isEnabled = true
         }

@@ -12,10 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:contentDescription="@string/module_name"
-        android:src="@drawable/bookshelf_item_checked_icon"
+        android:background="@drawable/bookshelf_item_checked_icon"
         android:visibility="gone"/>
 
     <RelativeLayout
