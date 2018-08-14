@@ -589,7 +589,8 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
         Tools.setUserSearchWord(s.toString())
 
         //网络请求
-        if (mSearchViewHelper != null) {
+        //显示webview时不发送自动补全接口,避免自动补全页面覆盖webview
+        if (mSearchViewHelper != null && isSearch) {
             val finalContent = AppUtils.deleteAllIllegalChar(s.toString())
             mSearchViewHelper!!.showRemainWords(finalContent)
         }

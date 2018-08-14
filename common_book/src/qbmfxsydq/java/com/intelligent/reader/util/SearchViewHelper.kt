@@ -152,8 +152,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     fun hideHintList() {
-        if (mRootLayout != null)
-            mRootLayout!!.visibility = View.GONE
+        mRootLayout?.visibility = View.GONE
     }
 
     fun showHintList() {
@@ -273,7 +272,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             }
         }
 
-        setHistoryHeadersTitleView()
         if (mRootLayout != null) {
             mRootLayout!!.addView(mHistoryListView)
         }
@@ -669,14 +667,12 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         if (historyAdapter != null) {
             historyAdapter!!.notifyDataSetChanged()
         }
-        setHistoryHeadersTitleView()
     }
 
 
     private fun clearHistory(index: Int) {
         if (historyDatas != null && index < historyDatas!!.size)
             historyDatas!!.removeAt(index)
-        setHistoryHeadersTitleView()
         if (historyAdapter != null)
             historyAdapter!!.notifyDataSetChanged()
         Tools.saveHistoryWord(mContext, historyDatas)
@@ -835,11 +831,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             onHotWordClickListener = null
         }
 
-        if (mHistoryHeadersTitle != null) {
-            mHistoryHeadersTitle!!.removeAllViews()
-            mHistoryHeadersTitle = null
-        }
-
         if (historyAdapter != null) {
             historyAdapter = null
         }
@@ -875,18 +866,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
     companion object {
 
-        private var mHistoryHeadersTitle: RelativeLayout? = null
         private var historyDatas: ArrayList<String>? = ArrayList()
 
-        private fun setHistoryHeadersTitleView() {
-            if (mHistoryHeadersTitle == null) {
-                return
-            }
-            if (historyDatas != null && historyDatas!!.size != 0) {
-                mHistoryHeadersTitle!!.visibility = View.VISIBLE
-            } else {
-                mHistoryHeadersTitle!!.visibility = View.INVISIBLE
-            }
-        }
     }
 }
