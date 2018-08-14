@@ -43,7 +43,7 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
     private var customWebClient: CustomWebClient? = null
     private var jsInterfaceHelper: JSInterfaceHelper? = null
 
-    internal var isSearch = false
+    internal var isSearch = true
     //记录是否退出当前界面,for:修复退出界面时出现闪影
     internal var isBackPressed = false
 
