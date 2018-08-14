@@ -20,8 +20,10 @@ class SharedPreUtil(val type: Int) {
 
     companion object {
 
-        const val SHARE_DEFAULT = 0  // 保存的是默认地址
-        const val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
+        @JvmField
+        val SHARE_DEFAULT = 0  // 保存的是默认地址
+        @JvmField
+        val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
         val SHAREDPREFERENCES_KEY = "onlineconfig_agent_online_setting_" + AppUtils.getPackageName()
 
         // 当前阅读的书籍
