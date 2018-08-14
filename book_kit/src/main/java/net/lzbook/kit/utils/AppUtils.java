@@ -704,7 +704,8 @@ public class AppUtils {
         return packageName.equals("cc.remennovel") //智胜电子书
                 || packageName.equals("cc.kdqbxs.reader") //快读替
                 || packageName.equals("cc.quanbennovel") //今日多看
-                || packageName.equals("cc.lianzainovel"); //鸿雁替
+                || packageName.equals("cc.lianzainovel") //鸿雁替
+                || packageName.equals("cc.mianfeinovel"); //阅微替
     }
 
     public static boolean hasReYun() {
