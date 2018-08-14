@@ -580,6 +580,12 @@ public class SplashActivity extends FrameActivity {
             AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
             AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
+             /*
+             * FIXME  user_index
+             * 0: 新用户：无广告
+             * 1：新用户：两天内无广告
+             * 2：老用户：显示广告
+             */
             int user_index = sharedPreUtil.getInt(SharedPreUtil.USER_NEW_INDEX, 0);
             boolean init_ad = false;
 
