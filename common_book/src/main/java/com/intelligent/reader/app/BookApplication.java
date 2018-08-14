@@ -107,8 +107,7 @@ public class BookApplication extends BaseBookApplication {
                     .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             String umengAppkey = appInfo.metaData.getString("UMENG_APPKEY");
             String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
-            if(AppUtils.hasReYun()){
-
+            if(!AppUtils.hasReYun()){
                 String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
                 AppLog.e("reyun",reyunAppKey);
                 Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),reyunAppKey,"_default_");

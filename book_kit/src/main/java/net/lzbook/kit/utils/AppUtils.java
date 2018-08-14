@@ -709,7 +709,7 @@ public class AppUtils {
 
     public static boolean hasReYun() {
         String packageName = getPackageName();
-        return packageName.equals("cn.txtqbmfyd.reader");
+        return packageName.equals("cn.qbmfkkydq.reader");
     }
     /**
      * 获取渠道号
