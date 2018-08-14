@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -57,6 +59,7 @@ import java.util.Map;
 import de.greenrobot.event.EventBus;
 import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
+import swipeback.ActivityLifecycleHelper;
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
@@ -143,6 +146,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private Button btn_logout;
     private ImageView img_head_background;
     private TextView txt_login_des;
+    private boolean isFromPush = false;
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -405,6 +409,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         cacheAsyncTask.execute();
         String versionName = AppUtils.getVersionName();
         check_update_message.setText("V" + versionName);
+        isFromPush = getIntent().getBooleanExtra(IS_FROM_PUSH, false);
     }
 
     @Override
@@ -681,6 +686,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
         themIntent.putExtras(bundle);
         startActivity(themIntent);
+        finish();
     }
 
     private void dismissDialog() {
@@ -747,7 +753,20 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        //离线消息 跳转到主页
+        Boolean isThemeChange = !currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged;
+        if (!isThemeChange && isFromPush && ActivityLifecycleHelper.getActivities().size() <= 1) {
+            startActivity(new Intent(this, SplashActivity.class));
+        }
+    }
 
+    @Override
+    public boolean supportSlideBack() {
+        return ActivityLifecycleHelper.getActivities().size() > 1;
+    }
 
 
     private class CacheAsyncTask extends AsyncTask<Void, Void, String> {
