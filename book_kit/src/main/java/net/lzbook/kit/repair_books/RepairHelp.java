@@ -34,7 +34,7 @@ import java.util.Map;
 public class RepairHelp {
 
     private static SharedPreUtil sp =
-            new SharedPreUtil(SharedPreUtil.Companion.getSHARE_ONLINE_CONFIG());
+            new SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG);
 
 
 //    public static synchronized void parserData(UpdateBean repairData) {
