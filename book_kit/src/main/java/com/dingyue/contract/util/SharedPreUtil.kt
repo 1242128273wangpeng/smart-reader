@@ -34,9 +34,9 @@ class SharedPreUtil(val type: Int) {
          * DebugActivity
          */
         @Deprecated("")
-        const val API_URL = "api_url"// api地址
+        val API_URL = "api_url"// api地址
         @Deprecated("")
-        const val WEB_URL = "web_url"// web地址
+        val WEB_URL = "web_url"// web地址
         const val START_PARAMS = "start_params"           //启动动态参数,默认是开启
         const val PRE_SHOW_AD = "pre_show_ad"             //提前展示广告
         const val RESET_BOOK_SHELF = "reset_book_shelf"   //重置书架

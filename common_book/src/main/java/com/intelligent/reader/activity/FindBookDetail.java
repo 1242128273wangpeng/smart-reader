@@ -100,8 +100,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             onBackPressed();
             return;
         }
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
-        fromType = sharedPreUtil.getString(SharedPreUtil.Companion.getHOME_FINDBOOK_SEARCH(),
+        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        fromType = sharedPreUtil.getString(SharedPreUtil.HOME_FINDBOOK_SEARCH,
                 "other");
         AppUtils.disableAccessibility(this);
         initView();
