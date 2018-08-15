@@ -8,6 +8,7 @@ public interface URLBuilderIntterface {
     public static final String YS_SEARCH_SUGGEST = "http://api.easou.com/api/bookapp/input_hint.m?word={word}&ch=blp1298_10269_001&appverion=1034&version=002&cid=eef_easou_book";
 
     // 封面
+    @Deprecated
     public static final String COVER = "/v3/book/{book_id}/{book_source_id}/cover";
     // 章节列表
     public static final String CHAPTER_LIST = "/v3/book/{book_id}/{book_source_id}/chapter";
@@ -19,6 +20,7 @@ public interface URLBuilderIntterface {
     // 默认书籍
     public static final String DEFAULT_BOOK = "/v3/book/default";
     // 搜索
+    @Deprecated
     public static final String SEARCH = "/v3/search";
     // 日志
     public static final String LOG = "/v3/log";
@@ -31,8 +33,10 @@ public interface URLBuilderIntterface {
     // dex
     public static final String DEX_CHECK = "/v3/dynamic/check/encryption/{premVersion}";
 
+    @Deprecated
     public static final String AUTHOR_V4 = "/v4/author/homepage/page";
     // 搜索
+    @Deprecated
     public static final String SEARCH_V4 = "/v4/search/page";
 
     // webview精选页面
@@ -67,7 +71,7 @@ public interface URLBuilderIntterface {
     // 搜索
     public static final String SEARCH_V5 = "/v5/search/page";
 
-
+    @Deprecated
     public static final String SEARCH_VUE = "/h5/{packageName}/search";
 
 }

@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
+import com.dingyue.contract.HolderType
 
 class BookShelfItemDecoration constructor(private var dividerHeight: Int, private var dividerColor: Int, private var dividerType: Int) : RecyclerView.ItemDecoration() {
 
@@ -28,15 +29,18 @@ class BookShelfItemDecoration constructor(private var dividerHeight: Int, privat
         var childCount = parent.adapter.itemCount
 
         when (dividerType) {
+
             CROSS_DIVIDER -> {
                 val spans = this.loadLayoutSpanCount(parent)
 
                 when {
                     isLayoutLastRaw(parent, position, spans, childCount) -> {
+                        // 如果是最后一行，则不需要绘制底部
                         outRect.set(0, 0, dividerHeight, 0)
                     }
 
                     isLayoutLastColumn(parent, position, spans, childCount) -> {
+                        // 如果是最后一列，则不需要绘制右边
                         outRect.set(0, 0, 0, dividerHeight)
                     }
 
@@ -74,6 +78,7 @@ class BookShelfItemDecoration constructor(private var dividerHeight: Int, privat
             }
         }
     }
+
 
     /***
      * 绘制横向分割线
@@ -149,6 +154,17 @@ class BookShelfItemDecoration constructor(private var dividerHeight: Int, privat
         val childSize = parent.childCount
 
         val bottom = parent.measuredHeight - parent.paddingBottom
+//        val bottom = parent.measuredHeight
+
+//        var adHeight = 0
+//        var isAdview = 0
+//        if (parent.adapter.getItemViewType(0) == HolderType.Type_Header_AD) {
+//            adHeight = parent.getChildAt(0).height
+//            isAdview = 1
+//        }
+//
+//        val itemCount = parent.adapter.itemCount - 1 - isAdview
+//        val bottom = ((itemCount / 3) + 1) * parent.getChildAt(itemCount).height
 
         val spans = this.loadLayoutSpanCount(parent)
 
@@ -157,6 +173,7 @@ class BookShelfItemDecoration constructor(private var dividerHeight: Int, privat
                 val child = parent.getChildAt(i)
                 val layoutParams = child.layoutParams as RecyclerView.LayoutParams
 
+//                val top = child.top + adHeight
                 val top = child.top
                 var left = child.right + layoutParams.rightMargin
                 var right = left + dividerHeight
@@ -244,7 +261,7 @@ class BookShelfItemDecoration constructor(private var dividerHeight: Int, privat
         val layoutManager = parent.layoutManager
 
         if (layoutManager is GridLayoutManager) {
-             orientation = layoutManager.orientation
+            orientation = layoutManager.orientation
             if (orientation == StaggeredGridLayoutManager.VERTICAL) {
                 if ((position + 1) % spans == 0) {
                     return true
