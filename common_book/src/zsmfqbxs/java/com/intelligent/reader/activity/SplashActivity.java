@@ -486,9 +486,10 @@ public class SplashActivity extends FrameActivity {
 
     /***
      * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
+     * 只针对全本追书阅读器
      * **/
     private void updateBookLastChapter() {
-        if (sharedPreUtil == null) {
+        /*if (sharedPreUtil == null) {
             sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         }
 
@@ -518,7 +519,7 @@ public class SplashActivity extends FrameActivity {
                 }
             }
             sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
-        }
+        }*/
     }
 
     private boolean isGo = true;
