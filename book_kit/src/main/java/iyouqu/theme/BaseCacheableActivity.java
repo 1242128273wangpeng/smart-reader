@@ -54,6 +54,7 @@ public class BaseCacheableActivity extends FrameActivity {
                 }
             });
         }
+        registerLoginInvalidReceiver(loginInvalidReceiver);
 
     }
 
@@ -67,7 +68,6 @@ public class BaseCacheableActivity extends FrameActivity {
             }
             registerCacheReceiver(mCacheUpdateReceiver);
         }
-        registerLoginInvalidReceiver(loginInvalidReceiver);
     }
 
     public void registerLoginInvalidReceiver(BroadcastReceiver receiver) {
@@ -202,6 +202,14 @@ public class BaseCacheableActivity extends FrameActivity {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loginInvalidReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(loginInvalidReceiver);
         }
     }
 }

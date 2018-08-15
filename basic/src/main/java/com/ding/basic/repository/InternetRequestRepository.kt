@@ -46,7 +46,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }
 
-    fun requestDynamicParameters(): Flowable<Parameter> {
+    fun requestDynamicParameters(): Flowable<JsonObject> {
         return RequestAPI.requestDynamicParameters()
     }
 

@@ -16,7 +16,7 @@ interface RequestRepository {
 
     fun requestApplicationUpdate(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<ApplicationUpdate>)
 
-    fun requestDynamicParameters(requestSubscriber: RequestSubscriber<Parameter>)
+    fun requestDynamicParameters(requestSubscriber: RequestSubscriber<JsonObject>)
 
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>)
 
