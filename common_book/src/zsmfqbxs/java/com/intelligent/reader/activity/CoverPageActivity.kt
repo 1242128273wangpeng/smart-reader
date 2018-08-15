@@ -7,6 +7,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
@@ -15,6 +16,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
@@ -30,12 +32,9 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.util.*
 import java.util.concurrent.Callable
-import android.support.v4.content.ContextCompat.startActivity
-import com.ding.basic.bean.RecommendBean
-import swipeback.ActivityLifecycleHelper
-import kotlin.collections.ArrayList
 
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
@@ -196,8 +195,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_category2?.text = bookVo.genre
                 if (!mThemeHelper.isNight) {
                     book_cover_category2?.setBackgroundColor(Color.parseColor("#ffffff"))
-//                    val background = book_cover_category2!!.background as GradientDrawable
-//                    background.setColor(resources.getColor(R.color.color_white_ffffff))
                     book_cover_category2?.setTextColor(AppUtils.getRandomColor())
                 } else {
                     book_cover_category2?.setTextColor(AppUtils.getRandomColor())
@@ -206,34 +203,34 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if ("FINISH" != bookVo.status) {
                 if (book_cover_category2?.visibility != View.VISIBLE) {
-                    book_cover_status?.text = "—" + getString(R.string.book_cover_state_writing)
+                    book_cover_status?.text = ("—" + getString(R.string.book_cover_state_writing))
                 } else {
                     book_cover_status?.text = getString(R.string.book_cover_state_writing)
                     if (!mThemeHelper.isNight) {
                         book_cover_status?.setBackgroundResource(R.drawable.book_cover_label_bg)
                         val background = book_cover_status!!.background as GradientDrawable
-                        background.setColor(resources.getColor(R.color.color_white_ffffff))
+                        background.setColor(ContextCompat.getColor(this, R.color.color_white_ffffff))
                         book_cover_status?.setTextColor(
-                                resources.getColor(R.color.color_red_ff2d2d))
+                                ContextCompat.getColor(this, R.color.color_red_ff2d2d))
                     } else {
                         book_cover_status?.setTextColor(
-                                resources.getColor(R.color.color_red_ff5656))
+                                ContextCompat.getColor(this, R.color.color_red_ff5656))
                     }
                 }
             } else {
                 if (book_cover_category2?.visibility != View.VISIBLE) {
-                    book_cover_status?.text = "—" + getString(R.string.book_cover_state_written)
+                    book_cover_status?.text = ("—" + getString(R.string.book_cover_state_written))
                 } else {
                     book_cover_status?.text = getString(R.string.book_cover_state_written)
                     if (!mThemeHelper.isNight) {
                         book_cover_status?.setBackgroundResource(R.drawable.book_cover_label_bg)
                         val background = book_cover_status!!.background as GradientDrawable
-                        background.setColor(resources.getColor(R.color.color_white_ffffff))
+                        background.setColor(ContextCompat.getColor(this, R.color.color_white_ffffff))
                         book_cover_status?.setTextColor(
-                                resources.getColor(R.color.color_brown_e9cfae))
+                                ContextCompat.getColor(this, R.color.color_brown_e9cfae))
                     } else {
                         book_cover_status?.setTextColor(
-                                resources.getColor(R.color.color_brown_e2bd8d))
+                                ContextCompat.getColor(this, R.color.color_brown_e2bd8d))
                     }
 
                 }
@@ -244,7 +241,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                         .last_chapter!!.update_time)
             }
 
-            if ( bookVo.last_chapter != null && !TextUtils.isEmpty(bookVo.last_chapter!!.name)) {
+            if (bookVo.last_chapter != null && !TextUtils.isEmpty(bookVo.last_chapter!!.name)) {
                 book_cover_last_chapter?.text = bookVo.last_chapter!!.name
             }
 
@@ -399,7 +396,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun initializeRemoveShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_remove_bg
         mTextColor = R.color.cover_bottom_btn_remove_text_color
-        book_cover_bookshelf?.setTextColor(resources.getColor(mTextColor))
+        book_cover_bookshelf?.setTextColor(ContextCompat.getColor(this, mTextColor))
         if (book_cover_category2?.visibility != View.VISIBLE) {
             book_cover_bookshelf?.setBackgroundResource(mBackground)
         }
@@ -408,7 +405,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun initializeInsertShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_add_bg
         mTextColor = R.color.cover_bottom_btn_add_text_color
-        book_cover_bookshelf?.setTextColor(resources.getColor(mTextColor))
+        book_cover_bookshelf?.setTextColor(ContextCompat.getColor(this, mTextColor))
         if (book_cover_category2?.visibility != View.VISIBLE) {
             book_cover_bookshelf?.setBackgroundResource(mBackground)
         }
