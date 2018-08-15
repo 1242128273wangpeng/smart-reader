@@ -214,10 +214,10 @@ interface RequestService {
     fun requestApplicationUpdate(@QueryMap parameters: Map<String, String>): Flowable<JsonObject>
 
     @GET(DYNAMIC_PARAMETERS)
-    fun requestDynamicParameters(): Flowable<Parameter>
+    fun requestDynamicParameters(): Flowable<JsonObject>
 
     @GET
-    fun requestCDNDynamicPar(@Url url: String): Flowable<Parameter>
+    fun requestCDNDynamicPar(@Url url: String): Flowable<JsonObject>
 
     @GET(BOOK_DETAIL)
     fun requestBookDetail(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Book>>
