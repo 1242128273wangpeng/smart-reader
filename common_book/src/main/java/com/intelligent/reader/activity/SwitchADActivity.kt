@@ -39,6 +39,8 @@ class SwitchADActivity : Activity() {
 
         canHandleClickAction = false
 
+        fl_switch_ad_content.removeAllViews()
+
         updateContentView(fl_switch_ad_content, false)
 
         ll_switch_ad_close.setOnClickListener { finish() }

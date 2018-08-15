@@ -436,6 +436,7 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                    Logger.e("BookChapterId缺失: " + book.getBook_id());
                 }
             }
 

@@ -633,12 +633,32 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
                             val loadRepository = LocalRequestRepository.loadLocalRequestRepository(context)
                             val books: ArrayList<Book> = arrayListOf()
-                            result.data?.coverList!!.forEach {
+
+                            if (result.data?.fakeQingooBooks != null) {
+                                result.data?.fakeQingooBooks?.forEach {
+                                    if (it.checkValueValid()) {
+                                        val book = loadRepository.loadBook(it.from)
+                                        if (book != null) {
+                                            book.book_id = it.to
+
+                                            loadRepository.updateBook(book)
+
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, it.from).deleteAllChapters()
+                                        }
+                                    }
+                                }
+                            }
+
+                            result.data?.coverList?.forEach {
                                 if (loadRepository.checkBookSubscribe(it.book_id) != null) {
                                     val book = loadRepository.loadBook(it.book_id)
                                     if (book != null) {
                                         if (!TextUtils.isEmpty(it.book_chapter_id)) {
                                             book.book_chapter_id = it.book_chapter_id
+
+                                            book.host = it.host
+
+                                            book.book_type = it.book_type
 
                                             // 保存在chapter表中
                                             if (book.fromQingoo()) {
