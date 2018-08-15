@@ -100,7 +100,7 @@ class DynamicParameter(private val context: Context) {
         shareUtil.putString(SharedPreUtil.DAY_LIMIT, map.day_limit)
         shareUtil.putString(SharedPreUtil.DY_SHELF_BOUNDARY_SWITCH, map.DY_shelf_boundary_switch)
         shareUtil.putString(SharedPreUtil.BAIDU_STAT_ID, map.baidu_stat_id)
-        shareUtil.putString(SharedPreUtil.DY_AD_SWITCH, if (isShowAd) "true" else "false")
+        shareUtil.putString(SharedPreUtil.DY_AD_SWITCH, if (isShowAd) "true" else map.DY_ad_switch)
         shareUtil.putString(SharedPreUtil.DY_AD_NEW_STATISTICS_SWITCH, map.Dy_ad_new_statistics_switch)
         shareUtil.putString(SharedPreUtil.DY_READPAGE_STATISTICS_SWITCH, map.Dy_readPage_statistics_switch)
         shareUtil.putString(SharedPreUtil.DY_AD_READPAGE_SLIDE_SWITCH_NEW, map.Dy_ad_readPage_slide_switch_new)
