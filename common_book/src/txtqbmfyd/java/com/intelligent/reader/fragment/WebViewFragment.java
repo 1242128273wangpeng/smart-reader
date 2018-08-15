@@ -47,7 +47,7 @@ import kotlin.jvm.functions.Function1;
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
-    public String url;
+    public String url = "" ;
     private String type;
     private WeakReference<Activity> weakReference;
     private Context context;
