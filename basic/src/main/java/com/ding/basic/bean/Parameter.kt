@@ -65,6 +65,7 @@ data class Map(
     var DY_splash_ad_switch: String?,
     var limit_channelid: String?,
     var DY_page_end_ad_switch: String?,
+    var DY_ad_switch: String?,
     var DY_is_new_reading_end: String?,
     var DY_activited_switch_ad: String?,
     var DY_switch_ad_close_sec: String?,
