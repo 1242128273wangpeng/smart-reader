@@ -52,10 +52,10 @@ class RemoveMenuPopup(context: Context, layout: Int = R.layout.popup_download_ma
 
     fun setSelectedNum(num: Int) {
         if (num == 0) {
-            contentView.btn_delete.text = context.getString(R.string.delete)
+            contentView.btn_delete.text = context.getString(R.string.delete_cache)
             contentView.btn_delete.isEnabled = false
         } else {
-            val text = context.getString(R.string.delete) + "(" + num + ")"
+            val text = context.getString(R.string.delete_cache) + "(" + num + ")"
             contentView.btn_delete.text = text
             contentView.btn_delete.isEnabled = true
         }

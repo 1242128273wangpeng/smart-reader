@@ -50,7 +50,7 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/download_manager_remove_delete_bg_sel"
                 android:gravity="center"
-                android:text="@string/delete"
+                android:text="@string/delete_cache"
                 android:textColor="@drawable/download_manager_remove_delete_color_sel"
                 android:textSize="16sp"/>
         </RelativeLayout>
