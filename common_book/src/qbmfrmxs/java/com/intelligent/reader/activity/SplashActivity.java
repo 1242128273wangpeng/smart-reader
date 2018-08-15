@@ -41,7 +41,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParameter;
+import com.intelligent.reader.util.DynamicParamter;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
@@ -433,8 +433,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
-                dynamicParameter.setDynamicParameter();
+                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
+                dynamicParameter.setDynamicParamter();
             } catch (Exception e) {
                 e.printStackTrace();
             }
