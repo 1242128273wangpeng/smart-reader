@@ -55,7 +55,7 @@ class SearchHistoryAdapter() : BaseAdapter() {
             holder = historyView.tag as ViewHolder
         }
 
-        holder.tv_history.text = searchDate!![position]
+        holder.tv_history.text = searchDate?.get(position)
 
         holder.clearIv.setOnClickListener {
             positionClick!!.onItemClickListener(position)
