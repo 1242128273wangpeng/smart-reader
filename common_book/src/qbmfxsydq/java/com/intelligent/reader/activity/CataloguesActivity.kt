@@ -53,11 +53,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     }
 
     override fun changeShelfButtonClickable(clickable: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun bookSubscribeState(subscribe: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     var type = 2
@@ -574,7 +572,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     }
 
     override fun handOverLay() {
-        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING && char_hint != null) {
+        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && char_hint != null) {
             char_hint!!.visibility = View.INVISIBLE
         }
     }
