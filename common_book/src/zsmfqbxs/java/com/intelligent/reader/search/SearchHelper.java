@@ -18,6 +18,7 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
@@ -31,7 +32,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.statistic.model.Search;
 import net.lzbook.kit.utils.AppLog;
@@ -55,10 +55,9 @@ import java.util.Set;
 import io.reactivex.disposables.Disposable;
 
 /**
+ * SearchHelper
  * Created by yuchao on 2017/8/2 0002.
  */
-
-
 public class SearchHelper {
     private static final String TAG = SearchHelper.class.getSimpleName();
     private Map<String, WordInfo> wordInfoMap = new HashMap<>();
@@ -243,7 +242,7 @@ public class SearchHelper {
                 }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
-                    if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
+                    if (url.contains(RequestService.AUTHOR_V4)) {
                         sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                                 "authorType").apply();//FindBookDetail 返回键时标识
                     }
@@ -438,7 +437,7 @@ public class SearchHelper {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("authorType", searchWord);
-                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?authorType=" + searchWord;
+                mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord;
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                             "authorType").apply();//FindBookDetail 返回键时标识
@@ -467,7 +466,7 @@ public class SearchHelper {
                 AppLog.e("kk",
                         searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
                                 + "===" + sortType);
-                mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
+                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
             }
 
         }
