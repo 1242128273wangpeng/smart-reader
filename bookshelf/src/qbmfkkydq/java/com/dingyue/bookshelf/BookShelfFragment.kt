@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,6 +64,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
     private val refreshHeader: View by lazy {
         LayoutInflater.from(srl_refresh.context).inflate(R.layout.bookshelf_refresh_header, null)
+    }
+
+    private val   bookshelfLayoutManager :ShelfGridLayoutManager by lazy{
+        ShelfGridLayoutManager(activity, 3)
     }
 
     private val headMenuPopup: HeadMenuPopup by lazy {
@@ -316,7 +321,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         srl_refresh.isTargetScrollWithLayout = true
         recl_content.recycledViewPool.setMaxRecycledViews(0, 12)
 
-        val bookshelfLayoutManager = ShelfGridLayoutManager(activity, 3)
+
 
         val bookshelfShelfSpanSizeLookup = BookShelfSpanSizeLookup(bookShelfAdapter)
         bookshelfLayoutManager.spanSizeLookup = bookshelfShelfSpanSizeLookup
@@ -335,10 +340,20 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         recl_content.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
                 mScrollDistance += dy
+                if(mScrollDistance>headerViewHeight){
+                    mScrollDistance=headerViewHeight
+                }else if(mScrollDistance<0){
+                    mScrollDistance=0
+                }
+                if(bookshelfLayoutManager.findFirstCompletelyVisibleItemPosition()==0){
+                    mScrollDistance=0
+                }
                 val percent = mScrollDistance * 1f / headerViewHeight
-                val alpha = 255 * percent
-                setTitleLayoutAlpha(alpha.toInt(), percent)
+
+                setTitleLayoutAlpha( percent)
+
             }
         })
 
@@ -379,9 +394,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     /**
      * 改变头部headerview的透明度
      */
-    private fun setTitleLayoutAlpha(alpha: Int, percent: Float) {
+    private fun setTitleLayoutAlpha(percent: Float) {
         if (!isEditMode) {
-            var rAlpha = alpha
+            var rAlpha = (255 * percent).toInt()
             if (rAlpha > 255) {
                 rAlpha = 255
             }
