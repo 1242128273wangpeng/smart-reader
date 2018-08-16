@@ -18,6 +18,7 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var selectedBooks: ArrayList<Book> = ArrayList()
+    var booksNoAd: ArrayList<Book> = ArrayList()
 
     var isRemove = false
 
@@ -143,13 +144,19 @@ class BookShelfAdapter(private val bookShelfItemListener: BookShelfAdapter.BookS
     }
 
     fun isSelectedAll(): Boolean {
-        return books.size == selectedBooks.size
+        booksNoAd.clear()
+        books.forEach {
+            if(it.item_type == 0){
+                booksNoAd.add(it)
+            }
+        }
+        return booksNoAd.size == selectedBooks.size
     }
 
     fun insertSelectAllState(all: Boolean) {
         if (all) {
             books.forEach {
-                if (!this.selectedBooks.contains(it)) {
+                if (it.item_type == 0 && !this.selectedBooks.contains(it)) {
                     this.selectedBooks.add(it)
                 }
             }
