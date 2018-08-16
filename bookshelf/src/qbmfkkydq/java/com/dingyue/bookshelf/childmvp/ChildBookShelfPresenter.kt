@@ -39,6 +39,10 @@ class ChildBookShelfPresenter(view: ChildBookShelfView) : BookShelfPresenter(vie
             (view as ChildBookShelfView).onCurrentBookComplete(currentReadBook, currentTitle)
             return
         }
+        /**
+         * 如果正在阅读书籍不为空这先显示书籍内容，章节标题查询成功后再刷新显示
+         */
+        (view as ChildBookShelfView).onCurrentBookComplete(currentReadBook, currentTitle)
         val requestSubscriber = object : RequestSubscriber<List<Chapter>>() {
             override fun requestResult(result: List<Chapter>?) {
 
