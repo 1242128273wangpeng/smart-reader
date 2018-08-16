@@ -8,7 +8,6 @@ import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
