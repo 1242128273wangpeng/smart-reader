@@ -382,8 +382,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 if (headerView.height != 0) {
                     headerViewHeight = headerView.height
                 }
-                var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
-                headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
+//                var paddingTop = iconBgViewHeight - titleHeight - headerViewHeight
+//                headerView.setPadding(headerView.paddingLeft, paddingTop, headerView.paddingRight, headerView.paddingBottom)
 
             }
         }
