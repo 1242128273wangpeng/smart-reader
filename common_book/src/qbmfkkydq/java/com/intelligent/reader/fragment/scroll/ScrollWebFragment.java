@@ -60,7 +60,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     private WebViewFragment.FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
-    private ViewGroup mViewPagerViewGroup;
 
     @Override
     public void onAttach(Activity activity) {
@@ -111,11 +110,11 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
 
         if (weakReference != null) {
             loadingpage = new LoadingPage(weakReference.get(), contentLayout);
-            //父布局为scroll时，loading视图高度为包裹内容，这里手动给它赋值，高度按照推荐页内容调整
-//            底部导航栏，顶部搜索栏、tab栏等高度和margin
-            loadingpage.getLayoutParams().height =
-                    getContext().getResources().getDisplayMetrics()
-                            .heightPixels - AppUtils.dip2px(context, 36f + 34f + 50f + 13f);
+//            //父布局为scroll时，loading视图高度为包裹内容，这里手动给它赋值，高度按照推荐页内容调整
+////            底部导航栏，顶部搜索栏、tab栏等高度和margin
+//            loadingpage.getLayoutParams().height =
+//                    getContext().getResources().getDisplayMetrics()
+//                            .heightPixels - AppUtils.dip2px(context, 36f + 34f + 50f + 13f);
 
         }
 
@@ -146,11 +145,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         }
 
 
-        if (mViewPagerViewGroup != null) {
-            contentView.setViewPagerViewGroup(mViewPagerViewGroup);
-        }
-        NestedScrollView scrollView = getView().findViewById(R.id.scroll_view);
-        contentView.setScrollViewGroup(scrollView);
     }
 
     @Override
@@ -389,9 +383,6 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
         loadData("javascript:refreshNew()");
     }
 
-    public void setViewPagerViewGroup(ViewGroup viewpager) {
-        mViewPagerViewGroup = viewpager;
-    }
 
     private void loadData(final String s) {
         if (!TextUtils.isEmpty(s) && contentView != null) {
