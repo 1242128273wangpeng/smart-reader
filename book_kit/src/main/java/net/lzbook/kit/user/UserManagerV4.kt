@@ -15,8 +15,8 @@ import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
 import com.tencent.mm.opensdk.modelmsg.SendAuth
@@ -26,8 +26,8 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import de.greenrobot.event.EventBus
-import io.reactivex.subscribers.ResourceSubscriber
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
@@ -38,7 +38,6 @@ import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
-import swipeback.ActivityLifecycleHelper
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -338,32 +337,22 @@ object UserManagerV4 : IWXAPIEventHandler {
         user?.let {
             val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
             repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)
-                    .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+                    .subscribeOn(Schedulers.io())
                     .flatMap {
                         repositoryFactory.getUploadBookMarkFlowable(user!!.account_id)
                     }
                     .flatMap {
                         repositoryFactory.getUploadBookBrowseFlowable(user!!.account_id)
                     }
-                    .subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-                        override fun onError(t: Throwable?) {
-                            onComplete?.invoke(false)
-
-                        }
-
-                        override fun onNext(t: BasicResultV4<String>?) {
-                            onComplete?.invoke(true)
-                        }
-
-                        override fun onComplete() {
-
-                        }
-
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        onComplete?.invoke(true)
+                    }, {
+                        onComplete?.invoke(false)
+                    }, {
+                        Logger.e("UpUserReadInfo: onComplete")
                     })
-
         }
-
-
     }
 
     /**
