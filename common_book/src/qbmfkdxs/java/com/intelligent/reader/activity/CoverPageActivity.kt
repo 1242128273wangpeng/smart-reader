@@ -44,6 +44,7 @@ import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkdxs.act_book_cover.*
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener, MyScrollView.ScrollChangedListener {
@@ -80,6 +81,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private var coverPagePresenter: CoverPagePresenter? = null
 
+    private var isFromPush = false
+
     private fun initIntent(intent: Intent?) {
         if (intent == null) return
 
@@ -92,6 +95,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (intent.hasExtra("book_chapter_id")) {
             bookChapterId = intent.getStringExtra("book_chapter_id")
         }
+
+        isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
@@ -457,6 +462,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             tv_title!!.text = "书籍详情"
         }
 
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
     }
 
 }
