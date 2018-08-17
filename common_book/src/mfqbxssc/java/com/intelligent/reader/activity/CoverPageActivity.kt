@@ -166,6 +166,11 @@ class CoverPageActivity : BaseCacheableActivity(),
             isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
+        if (TextUtils.isEmpty(bookId)) {
+            finish()
+            return
+        }
+
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
