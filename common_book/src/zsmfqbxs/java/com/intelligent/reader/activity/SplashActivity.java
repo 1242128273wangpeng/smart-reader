@@ -410,7 +410,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-//        updateBookLastChapter();
+        updateBookLastChapter();
 
         initializeDataFusion();
 
@@ -489,7 +489,7 @@ public class SplashActivity extends FrameActivity {
      * 只针对全本追书阅读器
      * **/
     private void updateBookLastChapter() {
-        /*if (sharedPreUtil == null) {
+        if (sharedPreUtil == null) {
             sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         }
 
@@ -519,7 +519,7 @@ public class SplashActivity extends FrameActivity {
                 }
             }
             sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
-        }*/
+        }
     }
 
     private boolean isGo = true;
