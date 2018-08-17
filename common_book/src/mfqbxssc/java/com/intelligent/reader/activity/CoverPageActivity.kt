@@ -454,10 +454,13 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             R.id.book_cover_download -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
-                val dataDownload = HashMap<String, String>()
-                dataDownload["bookId"] = bookId!!
 
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                bookId?.let {
+                    val dataDownload = HashMap<String, String>()
+                    dataDownload["bookId"] = it
+
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                }
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.handleDownloadAction()
