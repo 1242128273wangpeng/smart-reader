@@ -35,9 +35,6 @@ import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.UIHelper
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
@@ -45,7 +42,8 @@ import java.util.HashMap
 import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
-import net.lzbook.kit.utils.IntentUtils
+import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -119,6 +117,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     // 福利中心
     private var rl_welfare: RelativeLayout? = null
     private var img_welfare: ImageView? = null
+
+    private var isFromPush = false
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -251,6 +251,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         cacheAsyncTask!!.execute()
         val versionName = AppUtils.getVersionName()
         check_update_message!!.text = "V$versionName"
+        isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
     }
 
     override fun onResume() {
@@ -449,6 +450,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME)
         themIntent.putExtras(bundle)
         startActivity(themIntent)
+        finish()
     }
 
     private fun dismissDialog() {
@@ -489,6 +491,19 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             data.put("type", if (isChecked) "1" else "0")
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        val isThemeChange = currentThemeMode != mThemeHelper.mode || isStyleChanged
+        if (!isThemeChange && isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
     }
 
     private inner class CacheAsyncTask : AsyncTask<Void, Void, String>() {

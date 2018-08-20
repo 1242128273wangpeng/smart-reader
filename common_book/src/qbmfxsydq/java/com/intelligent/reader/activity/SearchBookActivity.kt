@@ -43,7 +43,7 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
     private var customWebClient: CustomWebClient? = null
     private var jsInterfaceHelper: JSInterfaceHelper? = null
 
-    internal var isSearch = false
+    internal var isSearch = true
     //记录是否退出当前界面,for:修复退出界面时出现闪影
     internal var isBackPressed = false
 
@@ -589,7 +589,8 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
         Tools.setUserSearchWord(s.toString())
 
         //网络请求
-        if (mSearchViewHelper != null) {
+        //显示webview时不发送自动补全接口,避免自动补全页面覆盖webview
+        if (mSearchViewHelper != null && isSearch) {
             val finalContent = AppUtils.deleteAllIllegalChar(s.toString())
             mSearchViewHelper!!.showRemainWords(finalContent)
         }

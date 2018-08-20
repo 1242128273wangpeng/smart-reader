@@ -25,7 +25,7 @@ class ChildBookShelfPresenter(view: ChildBookShelfView) : BookShelfPresenter(vie
     fun queryCurrentReadBook() {
 
         val currentReadBook: Book?
-        var currentTitle: String? = ""
+        var currentTitle: String? = "灵魂跟书籍一起跳舞"
 
         val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         val json = sp.getString(SharedPreUtil.CURRENT_READ_BOOK)
@@ -39,6 +39,10 @@ class ChildBookShelfPresenter(view: ChildBookShelfView) : BookShelfPresenter(vie
             (view as ChildBookShelfView).onCurrentBookComplete(currentReadBook, currentTitle)
             return
         }
+        /**
+         * 如果正在阅读书籍不为空这先显示书籍内容，章节标题查询成功后再刷新显示
+         */
+//        (view as ChildBookShelfView).onCurrentBookComplete(currentReadBook, currentTitle)
         val requestSubscriber = object : RequestSubscriber<List<Chapter>>() {
             override fun requestResult(result: List<Chapter>?) {
 

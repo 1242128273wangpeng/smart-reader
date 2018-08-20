@@ -166,6 +166,11 @@ class CoverPageActivity : BaseCacheableActivity(),
             isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
+        if (TextUtils.isEmpty(bookId)) {
+            finish()
+            return
+        }
+
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
@@ -454,10 +459,13 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             R.id.book_cover_download -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
-                val dataDownload = HashMap<String, String>()
-                dataDownload["bookId"] = bookId!!
 
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                bookId?.let {
+                    val dataDownload = HashMap<String, String>()
+                    dataDownload["bookId"] = it
+
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                }
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.handleDownloadAction()
