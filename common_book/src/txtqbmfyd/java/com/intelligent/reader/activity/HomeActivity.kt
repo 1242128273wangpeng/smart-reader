@@ -237,13 +237,20 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun initView() {
         dl_home_content.setOnMenuStateChangeListener { state ->
-            if (state == DrawerLayout.MenuState.MENU_OPENED) {
-                showCacheMessage()
+            when (state) {
+                DrawerLayout.MenuState.MENU_OPENED -> {
+                    showCacheMessage()
 
-                Glide.with(this).load(R.drawable.qq_icon).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(img_qq)
-                bookShelfFragment?.dimissPersonRed()
-                if (bookShelfFragment?.isRemoveMenuShow() == true) {
-                    bookShelfFragment?.dismissRemoveMenu()
+                    Glide.with(this).load(R.drawable.qq_icon).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).into(img_qq)
+                    bookShelfFragment?.dimissPersonRed()
+
+                    if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                        bookShelfFragment?.dismissRemoveMenu()
+                    }
+                }
+                DrawerLayout.MenuState.MENU_START_SCROLL,
+                DrawerLayout.MenuState.MENU_END_SCROLL -> {
+                    ll_home_tab.requestLayout()
                 }
             }
         }
@@ -319,7 +326,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             nightShift(isChecked, true)
         }
 
-        val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE,true)
+        val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
 
         btn_auto_download.isChecked = isAutoDownload
 
@@ -385,7 +392,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         txt_qq_add.setOnClickListener {
-            if(!AppUtils.joinQQGroup(this,"7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F")){
+            if (!AppUtils.joinQQGroup(this, "7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F")) {
                 CommonUtil.showToastMessage(R.string.setting_qq_add_fail)
             }
         }
@@ -665,7 +672,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
 
-
     /***
      * 是否夜间模式
      * **/
@@ -757,7 +763,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
                 setNightMode(true)
-            } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
+            } else if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }
