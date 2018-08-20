@@ -473,8 +473,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "5IGK3hQjIasKH9P9thgBtqop5tTzjiuF"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730670"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "8b015dab3f63bdb0f98c03e35bc885ab"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://book.lzbook.net"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://boyuelist.lzbook.net:443"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://txt.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://xsbangdan.bookapi.cn:443"
         }
 
         txtqbdzs {
@@ -589,8 +589,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24812888"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "2baf3d5d4f949e5189afbe37a8e1302e"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.youshiit.com"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.youshiit.com:443"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.fengxianghuawu.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com"
         }
 
 
@@ -649,7 +649,7 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24906354"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "1f41b3f2695c9bf2910102eb5c01b218"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.fengxianghuawu.com"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com:443"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com"
         }
     }
 
