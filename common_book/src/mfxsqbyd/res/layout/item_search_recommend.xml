@@ -53,6 +53,7 @@
         android:layout_width="@dimen/dimen_height_70"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_book_name"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="@dimen/dimen_margin_10"
         android:ellipsize="end"
         android:singleLine="true"

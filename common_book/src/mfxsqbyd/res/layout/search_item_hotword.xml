@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,14 +13,16 @@
 
         <TextView
             android:id="@+id/tv_hot_word"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:ellipsize="end"
             android:gravity="center"
-            android:singleLine="true"
-            android:text="热词"
+            android:layout_centerHorizontal="true"
+            android:maxEms="5"
+            android:maxLines="1"
             android:textColor="#5D646E"
             android:textSize="14sp"
-            />
+            tools:text="热词热词热词热词"/>
 
         <ImageView
             android:id="@+id/iv_type"
