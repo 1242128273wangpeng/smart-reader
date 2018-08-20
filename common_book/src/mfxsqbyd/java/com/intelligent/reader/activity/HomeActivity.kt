@@ -232,11 +232,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun initView() {
         dl_home_content.setOnMenuStateChangeListener { state ->
-            if (state == DrawerLayout.MenuState.MENU_OPENED) {
-                showCacheMessage()
-
-                if (bookShelfFragment?.isRemoveMenuShow() == true) {
-                    bookShelfFragment?.dismissRemoveMenu()
+            when (state) {
+                DrawerLayout.MenuState.MENU_OPENED -> {
+                    showCacheMessage()
+                    if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                        bookShelfFragment?.dismissRemoveMenu()
+                    }
+                }
+                DrawerLayout.MenuState.MENU_START_SCROLL,
+                DrawerLayout.MenuState.MENU_END_SCROLL -> {
+                    ll_home_tab.requestLayout()
                 }
             }
         }
