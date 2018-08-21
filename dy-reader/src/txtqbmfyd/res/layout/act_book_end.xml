@@ -11,7 +11,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FF19DD8B"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
@@ -31,13 +30,12 @@
 
             <TextView
                 android:id="@+id/txt_title"
+                style="@style/style_text_huge_dark"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:singleLine="true"
-                android:textColor="#FFFFFFFF"
-                android:textSize="18sp"
                 tools:text="@string/default_title"/>
         </RelativeLayout>
     </RelativeLayout>
@@ -117,7 +115,7 @@
                             android:background="@drawable/book_end_bookshelf_bg_sel"
                             android:gravity="center"
                             android:text="@string/book_end_bookshelf"
-                            android:textColor="@drawable/book_end_bookshelf_txt_sel"
+                            android:textColor="@drawable/common_confirm_btn_sel"
                             android:textSize="14sp"/>
                     </LinearLayout>
 
