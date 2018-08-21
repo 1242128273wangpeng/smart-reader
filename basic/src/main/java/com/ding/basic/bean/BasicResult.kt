@@ -16,7 +16,7 @@ class BasicResult<T> : Serializable {
     }
 
     fun checkPrivateKeyExpire(): Boolean {
-        return code == ResultCode.PRIVATE_KEY_EXPIRE
+        return code == ResultCode.PRIVATE_KEY_EXPIRE || code == ResultCode.PUBLIC_KEY_EMPTY
     }
 
     override fun toString(): String {
