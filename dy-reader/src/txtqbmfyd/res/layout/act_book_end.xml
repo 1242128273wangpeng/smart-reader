@@ -132,7 +132,7 @@
                             android:background="@drawable/book_end_bookstore_bg_sel"
                             android:gravity="center"
                             android:text="@string/book_end_bookstore"
-                            android:textColor="@drawable/book_end_bookstore_txt_sel"
+                            android:textColor="@color/color_white_fafafa"
                             android:textSize="14sp"/>
                     </LinearLayout>
                 </LinearLayout>
