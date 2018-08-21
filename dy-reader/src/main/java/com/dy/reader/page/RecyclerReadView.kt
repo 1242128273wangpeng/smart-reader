@@ -449,7 +449,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                 if(ReaderStatus.position.group < mOriginDataList[position].lines[0].sequence){
                     //发送章节消费
                     StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.chapterCount.toString() )
+                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )
                     ReaderStatus.startTime = System.currentTimeMillis()/1000L
                 }
                 ReaderStatus.position.index = getCurrentChapterPage(position)
