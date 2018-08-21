@@ -7,7 +7,7 @@
           android:drawableLeft="@drawable/icon_search_history"
           android:gravity="center_vertical"
           android:drawablePadding="8dp"
-          android:background="@drawable/bookshelf__item_press_bg"
+          android:background="@drawable/bookshelf_item_press_bg"
           android:singleLine="true"
           android:ellipsize="end"
           android:padding="16dp">
