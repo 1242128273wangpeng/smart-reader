@@ -28,7 +28,6 @@ dependencies {
     compile 'com.aliyun.ams:alicloud-android-ut:5.1.0'
 
     //    compile 'com.aliyun.ams:alicloud-android-utils:1.0.3'
-    compile "org.greenrobot:greendao:$greendao_version"
     compile "com.alibaba:arouter-api:$arouter_api_version"
     compile "android.arch.lifecycle:extensions:$arch_version"
     compile "android.arch.lifecycle:runtime:$arch_version"
