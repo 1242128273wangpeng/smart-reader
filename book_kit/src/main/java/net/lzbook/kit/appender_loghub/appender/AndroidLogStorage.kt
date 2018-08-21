@@ -206,12 +206,6 @@ class AndroidLogStorage {
                 AppLog.e(TAG, "consuming ${localLogList.size} $type logs")
                 val serverLogList: ArrayList<ServerLog> = ArrayList()
                 try {
-                    /*for (localLog in localLogList) {
-                        serverLogList.add(ServerLog(localLog.id, localLog.contentJson))
-                    }*/
-
-                    Integer.valueOf("10")
-                    Integer.parseInt("10")
                     localLogList.mapTo(serverLogList) { ServerLog(it.id, it.contentJson) }
                 } catch (e: OutOfMemoryError) {
                     e.printStackTrace()
