@@ -329,7 +329,11 @@ fun Activity.openPushSetting() {
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
         intent.data = Uri.fromParts("package", packageName, null)
     }
-    startActivity(intent)
+    //百度移动统计 部分机型 No Activity found to handle Intent
+    try {
+        startActivity(intent)
+    } catch (e: Exception) {
+    }
 }
 
 fun Activity.isShouldShowPushSettingDialog(): Boolean {
