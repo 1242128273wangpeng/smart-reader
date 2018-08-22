@@ -16,7 +16,6 @@ import com.dy.reader.setting.ReaderStatus;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.ReadConstants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -234,31 +233,6 @@ public class NovelHelper {
         });
 
         readerChangeSourceDialog.show();
-    }
-
-
-    private boolean checkIsPunct(char ch) {
-        boolean isInclude = false;
-        for (char c : ReadConstants.puncts) {
-            if (ch == c) {
-                isInclude = true;
-                break;
-            }
-        }
-        return isInclude;
-    }
-
-    private boolean lastIsPunct(String text, int i) {
-        if (i > 0) {
-            char ch = text.charAt(i - 1);
-            if (ch == '”') {
-                return false;
-            }
-            if (checkIsPunct(ch)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 

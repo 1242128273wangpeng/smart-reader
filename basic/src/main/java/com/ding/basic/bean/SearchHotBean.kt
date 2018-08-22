@@ -2,8 +2,13 @@ package com.ding.basic.bean
 
 import java.io.Serializable
 
+/**
+ * Function：搜索热词(一期)
+ *
+ * Created by JoannChen on 2018/7/19 0019 16:20
+ * E-mail:yongzuo_chen@dingyuegroup.cn
+ */
 class SearchHotBean : Serializable {
-
 
     /**
      * suc : 200
@@ -21,7 +26,6 @@ class SearchHotBean : Serializable {
              * word : 异界大陆
              * sort : 0
              */
-
 
             var wordType: Int, var word: String?, var sort: Int) {
 

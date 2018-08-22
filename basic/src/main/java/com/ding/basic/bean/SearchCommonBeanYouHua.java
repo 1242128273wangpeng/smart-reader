@@ -1,12 +1,10 @@
 package com.ding.basic.bean;
 
-import java.io.Serializable;
-
 /**
+ * SearchCommonBeanYouHua
  * Created by Administrator on 2017\9\5 0005.
  */
-
-public class SearchCommonBeanYouHua implements Serializable {
+public class SearchCommonBeanYouHua {
 
     private String suggest;
     private String wordtype;

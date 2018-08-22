@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
+import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
@@ -30,7 +31,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -138,7 +138,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
             customWebClient = new CustomWebClient(this, find_detail_content);
         }
 
-        if (find_detail_content != null && customWebClient != null) {
+        if (find_detail_content != null) {
             customWebClient.setWebSettings();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 find_detail_content.getSettings().setMixedContentMode(
@@ -583,11 +583,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
     }
 
     private void setPullImageVisible(boolean visible) {
-        if (visible) {
-//            bangdan_pull.setVisibility(View.VISIBLE);
-        } else {
-//            bangdan_pull.setVisibility(View.GONE);
-        }
+
     }
 
     private void setSearchBtnVisibel(boolean visibel) {
@@ -638,11 +634,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
         }
 
         url = UrlUtils.buildUrl(url, map);
-        if (url.contains(UrlUtils.getBookNovelDeployHost())) {
-            int start = url.lastIndexOf(UrlUtils.getBookNovelDeployHost())
-                    + UrlUtils.getBookNovelDeployHost().length();
-            String tempUrl = url.substring(start, url.length());
-            this.currentUrl = tempUrl;
+        if (url.contains(Config.INSTANCE.loadRequestAPIHost())) {
+            int start = url.lastIndexOf(Config.INSTANCE.loadRequestAPIHost())
+                    + Config.INSTANCE.loadRequestAPIHost().length();
+            this.currentUrl = url.substring(start, url.length());
         }
 
         //如果可以切换周榜和月榜总榜
@@ -675,7 +670,6 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
 
         }
 
-        return;
     }
 
     private void addCheckSlide(WebView find_detail_content) {
@@ -685,15 +679,14 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
     }
 
     private boolean isNeedInterceptSlide() {
-        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(currentTitle)
-                && (currentTitle.contains("男频") || currentTitle.contains("女频"))) {
-            return true;
-        }
-        return false;
+        return "cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(
+                currentTitle)
+                && (currentTitle.contains("男频") || currentTitle.contains("女频"));
     }
 
     private void addTouchListener() {
         if (find_detail_content != null && isNeedInterceptSlide()) {
+
             find_detail_content.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {

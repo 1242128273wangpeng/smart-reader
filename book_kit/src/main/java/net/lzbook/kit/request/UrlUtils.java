@@ -1,76 +1,25 @@
 package net.lzbook.kit.request;
 
+import android.util.Log;
+
 import com.ding.basic.Config;
-import com.dingyue.contract.util.SharedPreUtil;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-
-import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class UrlUtils {
 
-
-    private static SharedPreUtil sharedPreUtil = new SharedPreUtil(0);
-
-
-    /**
-     * 正式地址
-     */
-    private static String BOOK_NOVEL_DEPLOY_HOST = sharedPreUtil.getString(
-            SharedPreUtil.Companion.getAPI_URL()).isEmpty() ?
-            ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-            : sharedPreUtil.getString(SharedPreUtil.Companion.getAPI_URL());
-    private static String BOOK_WEBVIEW_HOST = sharedPreUtil.getString(
-            SharedPreUtil.Companion.getWEB_URL()).isEmpty() ?
-            ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-            : sharedPreUtil.getString(SharedPreUtil.Companion.getWEB_URL());
-
-
-    public static String getBookNovelDeployHost() {
-        return BOOK_NOVEL_DEPLOY_HOST;
-    }
-
-    public static String getBookWebViewHost() {
-        return BOOK_WEBVIEW_HOST;
-    }
-
-    /**
-     * 测试~注掉赋值部分代码
-     */
-    public static void setBookNovelDeployHost(String bookNovelDeployHost) {
-        if (!TextUtils.isEmpty(bookNovelDeployHost)) {
-            if (!BOOK_NOVEL_DEPLOY_HOST.contains("test") && !bookNovelDeployHost.contains("test")) {
-                if (sharedPreUtil.getBoolean(SharedPreUtil.START_PARAMS)) {
-                    BOOK_NOVEL_DEPLOY_HOST = bookNovelDeployHost;
-                }
-            }
-        }
-    }
-
-    public static void setBookWebViewHost(String bookWebViewHost) {
-
-        if (!TextUtils.isEmpty(bookWebViewHost)) {
-
-            if (sharedPreUtil.getBoolean(SharedPreUtil.START_PARAMS)) {
-                BOOK_WEBVIEW_HOST = bookWebViewHost;
-            }
-        }
-    }
-
     public static String buildUrl(String uriTag, Map<String, String> params) {
         if (uriTag == null) {
             return null;
         }
-        String novel_host = BOOK_NOVEL_DEPLOY_HOST;
+        String novel_host = Config.INSTANCE.loadRequestAPIHost();
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -94,8 +43,7 @@ public class UrlUtils {
         if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
             if (urlBuilderIntterface != null) {
-                String url = urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
-                return url;
+                return urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
             }
         }
         return null;
@@ -141,7 +89,7 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        String dynamicHost = BOOK_NOVEL_DEPLOY_HOST;
+        String dynamicHost = Config.INSTANCE.loadRequestAPIHost();
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -189,8 +137,7 @@ public class UrlUtils {
         if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
             if (urlBuilderIntterface != null) {
-                String urls = urlBuilderIntterface.buildContentUrl(url, params);
-                return urls;
+                return urlBuilderIntterface.buildContentUrl(url, params);
             }
         }
         return null;
@@ -200,7 +147,7 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-        String novel_host = BOOK_NOVEL_DEPLOY_HOST;
+        String novel_host = Config.INSTANCE.loadRequestAPIHost();
 
         String channelId = AppUtils.getChannelId();
         String version = String.valueOf(AppUtils.getVersionCode());
@@ -218,8 +165,7 @@ public class UrlUtils {
         if (globalContext != null) {
             URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
             if (urlBuilderIntterface != null) {
-                String urls = urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
-                return urls;
+                return urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
             }
         }
         return null;
@@ -231,8 +177,8 @@ public class UrlUtils {
             return map;
         }
         String[] params = param.split("&");
-        for (int i = 0; i < params.length; i++) {
-            String[] p = params[i].split("=");
+        for (String param1 : params) {
+            String[] p = param1.split("=");
             if (p.length == 2) {
                 map.put(p[0], p[1]);
             } else if (p.length == 1) {
@@ -243,15 +189,15 @@ public class UrlUtils {
     }
 
     public static Map<String, String> getDataParams(String param) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         if ("".equals(param) || null == param) {
             return map;
         }
         String[] params = param.split("#");
-        for (int i = 0; i < params.length; i++) {
+        for (String param1 : params) {
 
-            int index = params[i].indexOf("=");
-            String[] p = params[i].split(String.valueOf(params[i].charAt(index)));
+            int index = param1.indexOf("=");
+            String[] p = param1.split(String.valueOf(param1.charAt(index)));
 
             if (p.length >= 2) {
                 map.put(p[0], p[1]);

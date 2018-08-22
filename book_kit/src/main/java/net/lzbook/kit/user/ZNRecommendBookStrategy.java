@@ -1,7 +1,6 @@
 package net.lzbook.kit.user;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.bean.RecommendBean;
 import com.ding.basic.bean.RecommendBooksEndResp;
 import com.ding.basic.bean.RecommendBooksResp;
 import com.ding.basic.bean.ZNBook;
@@ -15,7 +14,7 @@ import java.util.List;
  * 创建人：Zach
  * 创建时间：2017/11/2 0002
  */
-
+@Deprecated
 public class ZNRecommendBookStrategy extends RecommendBookStrategy {
 
     //智能推荐书籍集合
