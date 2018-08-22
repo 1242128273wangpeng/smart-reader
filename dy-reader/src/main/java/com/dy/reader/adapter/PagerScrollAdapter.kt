@@ -267,7 +267,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     fl_reader_content_ad.visibility = View.VISIBLE
                     val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     if (this.parent != null) {
-                        (this.tag as ViewGroup).removeAllViews()
+                        (this.tag as ViewGroup?)?.removeAllViews()
                     }
                     this.tag = fl_reader_content_ad
                     fl_reader_content_ad.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
