@@ -45,7 +45,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.DynamicParameter;
 import com.intelligent.reader.util.GenderHelper;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
@@ -658,8 +658,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }
