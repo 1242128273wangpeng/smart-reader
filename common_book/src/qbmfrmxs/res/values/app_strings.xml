@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="mian_click_tiwce_exit">再按一次退出全本免费热门小说</string>
-    <string name="bookshelf">书架</string>
-    <string name="recommend">精选</string>
-    <string name="ranking">榜单</string>
-    <string name="category">分类</string>
 
     <string name="enter_community">社区更新中，Coming Soon！</string>
     <string name="style_change_1">朱砂红</string>

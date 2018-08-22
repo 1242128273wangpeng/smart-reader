@@ -1,6 +1,7 @@
 <resources>
 
     <string name="application_name">全本免费快看阅读器</string>
+    <string name="mian_click_tiwce_exit">再按一次退出全本免费快看阅读器</string>
 
     <string name="bookshelf_empty_find">去书城</string>
     <string name="bookshelf_empty_title">欢迎使用全本免费快看阅读器</string>
