@@ -5,44 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/head_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="Loading"
-        android:textColor="@color/text_color_plain"
-        android:visibility="gone"/>
-
-    <!--    <ProgressBar
-            android:id="@+id/head_pb_view"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/head_text_view"
-            android:layout_toStartOf="@id/head_text_view"
-            android:visibility="visible"/>-->
-
-
     <ImageView
-        android:id="@+id/head_pb_view2"
+        android:id="@+id/img_anim"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerInParent="true"
         android:contentDescription="@null"
         android:src="@drawable/anim_pull_light"
-        android:visibility="gone"
-        />
+        android:visibility="gone"/>
 
     <ImageView
-        android:id="@+id/head_image_view"
+        android:id="@+id/img_head"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerInParent="true"
         android:contentDescription="@null"
-        android:src="@drawable/pull_light_0"
-        />
+        android:src="@drawable/pull_light_0"/>
 
 </RelativeLayout>
