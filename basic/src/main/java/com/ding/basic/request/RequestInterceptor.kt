@@ -100,16 +100,16 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        val defaultHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-        if (request.url().host() == URL(Config.loadRequestAPIHost()).host
-                || request.url().host() == Config.loadBookContent()
-                || defaultHost.contains(request.url().host())) { // v3 登陆接口强制走阿里云服务器，也就是使用默认的 host
-
-            request = buildRequest(request)
+        if (request.url().host() == URL("https://api.weixin.qq.com").host
+                || request.url().host() == URL("https://graph.qq.com").host
+                || request.url().toString().contains("https://public.lsread.cn/dpzn")
+                || request.url().toString().contains("https://public.dingyueads.com/dpzn")
+                || request.url().toString().contains("https://public.qingoo.cn/dpzn")
+                || request.url().toString().contains("http://ad.dingyueads.com:8010/insertData")) {
+            Logger.e("请求微信或者QQ的接口: " + request.url().toString())
         } else {
-            Logger.e("other host, not add token")
+            request = buildRequest(request)
         }
-
         return chain.proceed(request)
     }
 
