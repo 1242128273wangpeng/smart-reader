@@ -27,37 +27,33 @@ android {
 
 
     def appNameConfig = [
-            kdzsydq   : "快读追书阅读器",
-            qbzsydq   : "全本追书阅读器",
-            mfqbxssc  : "免费全本小说书城", //快读替
-            zsmfqbxs  : "追书免费全本小说", //阅微替
-            txtqbmfxs : "TXT全本免费小说", //鸿雁替
-            qbmfxsydq : "全本免费小说阅读器", //五步替
-            txtqbdzs  : "TXT全本免费电子书",
-            kdqbdzs   : "快读全本电子书",
-            txtqbxsydq: "TXT全本小说阅读器",
-            txtqbmfyd : "TXT全本免费阅读",
-            qbmfkdxs  : "全本免费快读小说",
-            qbmfrmxs  : "全本免费热门小说",
-            qbmfkkydq : "全本免费快看阅读器",
-            mfxsqbyd  : "免费小说全本阅读"
+            qbmfxsydq: "全本免费小说阅读器",//五步替
+            mfqbxssc : "免费全本小说书城", //快读替
+            zsmfqbxs : "追书免费全本小说", //阅微替
+            qbzsydq  : "全本追书阅读器",
+            txtqbmfxs: "TXT全本免费小说", //鸿雁替
+            qbmfkdxs : "全本免费快读小说",//今日多看
+            txtqbdzs : "TXT全本免费电子书",//智胜电子书替
+            txtqbmfyd: "TXT全本免费阅读",
+            mfxsqbyd : "免费小说全本阅读",
+            qbmfrmxs : "全本免费热门小说",
+            qbmfkkydq: "全本免费快看阅读器"
     ]
 
+
     def appPackageIDConfig = [
-            kdzsydq   : "cn.txtzsydsq.reader",
-            qbzsydq   : "cn.qbzsydsq.reader",
-            mfqbxssc  : "cc.kdqbxs.reader",
-            zsmfqbxs  : "cc.mianfeinovel",
-            txtqbmfxs : "cc.lianzainovel",
-            qbmfxsydq : "cc.quanben.novel",
-            txtqbdzs  : "cc.remennovel",
-            kdqbdzs   : "cn.kkqbtxtxs.reader",
-            txtqbxsydq: "cn.zsqbydq.reader",
-            txtqbmfyd : "cn.txtqbmfyd.reader",
-            qbmfkdxs  : "cc.quanbennovel",
-            qbmfrmxs  : "cn.qbmfrmxs.reader",
-            qbmfkkydq : "cn.qbmfkkydq.reader",
-            mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读
+            qbmfxsydq: "cc.quanben.novel",//五步替
+            mfqbxssc : "cc.kdqbxs.reader", //快读替
+            zsmfqbxs : "cc.mianfeinovel", //阅微替
+            qbzsydq  : "cn.qbzsydsq.reader",//全本追书阅读器
+            txtqbmfxs: "cc.lianzainovel", //鸿雁替
+            qbmfkdxs : "cc.quanbennovel", //今日多看
+            txtqbdzs : "cc.remennovel",   //智胜电子书替
+            txtqbmfyd: "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
+            mfxsqbyd : "cn.mfxsqbyd.reader",//免费小说全本阅读 (新壳2)
+            qbmfrmxs : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
+            qbmfkkydq: "cn.qbmfkkydq.reader" //全本免费快看阅读器(新壳4)
+
     ]
 
     def channel = "dev_channel"
@@ -161,9 +157,9 @@ android {
         manifestPlaceholders = [
                 CHANNEL_NAME : 'blf1298_11974_001',
                 APP_NAME     : '全本免费小说阅读器',
-                UMENG_APP_KEY: "${UMENG_APPKEY_KDZSYDQ}",
-                BAIDU_STAT_ID: "${BAIDU_STAT_ID_KDZSYDQ}",
-                AMAP_APIKEY  : "${AMAP_APIKEY_KDZSYDQ}"
+                UMENG_APP_KEY: "${UMENG_APPKEY_QBMFXSYDQ}",
+                BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFXSYDQ}",
+                AMAP_APIKEY  : "${AMAP_APIKEY_QBMFXSYDQ}"
         ]
 
         if (!getResValues().containsKey("app_name")) {
@@ -256,37 +252,37 @@ android {
 
     buildTypes {
 
-/*
-百度应用中心	blp1298_10882_001
-360手机助手	blp1298_10890_001
-腾讯应用中心	blp1298_10891_001
-小米软件商店	blf1298_10928_001
-豌豆荚	        blp1298_10269_001
-安卓市场	blp1298_10883_001
-91助手	        blp1298_10699_001
-联想乐商店	blp1298_10610_001
-优亿市场	blf1298_10461_001
-华为市场	blf1298_12243_001
-搜狗市场	blf1298_12340_001
-魅族开发者	blf1298_12237_001
-木蚂蚁	        blf1298_10887_001
-可可应用商店	blf1298_12242_001
-搜狗手机助手	blf1298_12247_001
-乐视应用中心	blf1298_13316_001
-VIVO应用商店	blf1298_12923_001
-默认升级渠道	blf1298_11974_001
-N多网	        blf1298_10885_001
-猎豹联盟        dyp1024_20001_001
-		blf1298_13096_001
-		blf1298_10930_001
-		blf1298_10000_001
-		blf1298_10001_001
-安智市场渠道号  blp1298_10894_001
-猎豹联盟        dyp1024_20001_001
-三星   blf1298_10929_001
+    /*
+        百度应用中心	blp1298_10882_001
+        360手机助手	blp1298_10890_001
+        腾讯应用中心	blp1298_10891_001
+        小米软件商店	blf1298_10928_001
+        豌豆荚	    blp1298_10269_001
+        安卓市场	    blp1298_10883_001
+        91助手	    blp1298_10699_001
+        联想乐商店	blp1298_10610_001
+        优亿市场    	blf1298_10461_001
+        华为市场	    blf1298_12243_001
+        搜狗市场	    blf1298_12340_001
+        魅族开发者	blf1298_12237_001
+        木蚂蚁	    blf1298_10887_001
+        可可应用商店	blf1298_12242_001
+        搜狗手机助手	blf1298_12247_001
+        乐视应用中心	blf1298_13316_001
+        VIVO应用商店	blf1298_12923_001
+        默认升级渠道	blf1298_11974_001
+        N多网	    blf1298_10885_001
+        猎豹联盟     dyp1024_20001_001
+		            blf1298_13096_001
+		            blf1298_10930_001
+		            blf1298_10000_001
+		            blf1298_10001_001
+        安智市场渠道号  blp1298_10894_001
+        猎豹联盟     dyp1024_20001_001
+        三星         blf1298_10929_001
 
-升级渠道	blf1298_11974_001
- */
+        升级渠道	blf1298_11974_001
+    */
 
         //自定义
         custom {
@@ -352,7 +348,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "${QQ_APPID_QBZSYDQ}",
                     IFLYTEK_APPID        : "${IFLYTEK_APPID_QBZSYDQ}",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_QBZSYDQ}"
+                    REYUN_APPKEY         : "${REYUN_KEY_QBZSYDQ}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbzsydsq_book"
@@ -380,14 +376,14 @@ N多网	        blf1298_10885_001
                     UMENG_PUSH_SECRET    : "${UMENG_PUSH_SECRET_QBMFXSYDQ}",
                     UMENG_PUSH_XIAOMI_ID : "${UMENG_XIAOMI_ID_QBMFXSYDQ}",
                     UMENG_PUSH_XIAOMI_KEY: "${UMENG_XIAOMI_KEY_QBMFXSYDQ}",
-                    BAIDU_STAT_ID: "${BAIDU_STAT_ID_QBMFXSYDQ}",
-                    AMAP_APIKEY  : "${AMAP_APIKEY_QBMFXSYDQ}",
-                    WECHAT_APPID : "${WECHAT_APPID_QBMFXSYDQ}",
-                    WECHAT_SECRET : "${WECHAT_SECRET_QBMFXSYDQ}",
-                    QQ_APPID     : "${QQ_APPID_QBMFXSYDQ}",
-                    IFLYTEK_APPID : "${IFLYTEK_APPID_QBMFXSYDQ}",
-                    PACKAGE_NAME : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_QBMFXSYDQ}"
+                    BAIDU_STAT_ID        : "${BAIDU_STAT_ID_QBMFXSYDQ}",
+                    AMAP_APIKEY          : "${AMAP_APIKEY_QBMFXSYDQ}",
+                    WECHAT_APPID         : "${WECHAT_APPID_QBMFXSYDQ}",
+                    WECHAT_SECRET        : "${WECHAT_SECRET_QBMFXSYDQ}",
+                    QQ_APPID             : "${QQ_APPID_QBMFXSYDQ}",
+                    IFLYTEK_APPID        : "${IFLYTEK_APPID_QBMFXSYDQ}",
+                    PACKAGE_NAME         : defaultConfig.applicationId,
+                    REYUN_APPKEY         : "${REYUN_KEY_QBMFXSYDQ}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
@@ -418,7 +414,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "${QQ_APPID_MFQBXSSC}",
                     IFLYTEK_APPID        : "${IFLYTEK_APPID_MFQBXSSC}",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_MFQBXSSC}"
+                    REYUN_APPKEY         : "${REYUN_KEY_MFQBXSSC}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/kdqbmfxs_book"
@@ -451,7 +447,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "${QQ_APPID_ZSMFQBXS}",
                     IFLYTEK_APPID        : "${IFLYTEK_APPID_ZSMFQBXS}",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_ZSMFQBXS}"
+                    REYUN_APPKEY         : "${REYUN_KEY_ZSMFQBXS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/mianfeinovel_new"
@@ -484,7 +480,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "${QQ_APPID_TXTQBMFXS}",
                     IFLYTEK_APPID        : "${IFLYTEK_APPID_TXTQBMFXS}",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_TXTQBMFXS}"
+                    REYUN_APPKEY         : "${REYUN_KEY_TXTQBMFXS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/txtqbmfxs_new"
@@ -516,7 +512,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "",
                     IFLYTEK_APPID        : "",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_TXTQBDZS}"
+                    REYUN_APPKEY         : "${REYUN_KEY_TXTQBDZS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/quanben_new"
@@ -549,7 +545,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "",
                     IFLYTEK_APPID        : "",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_TXTQBMFYD}"
+                    REYUN_APPKEY         : "${REYUN_KEY_TXTQBMFYD}"
 
             ]
 
@@ -582,7 +578,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "",
                     IFLYTEK_APPID        : "",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_QBMFKDXS}"
+                    REYUN_APPKEY         : "${REYUN_KEY_QBMFKDXS}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbmfxsxzq_book"
@@ -616,7 +612,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "",
                     IFLYTEK_APPID        : "",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_QBMFRMXS}"
+                    REYUN_APPKEY         : "${REYUN_KEY_QBMFRMXS}"
 
             ]
 
@@ -647,7 +643,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "",
                     IFLYTEK_APPID        : "",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_QBMFKKYDQ}"
+                    REYUN_APPKEY         : "${REYUN_KEY_QBMFKKYDQ}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/qbmfkkydq_book"
@@ -676,7 +672,7 @@ N多网	        blf1298_10885_001
                     QQ_APPID             : "",
                     IFLYTEK_APPID        : "",
                     PACKAGE_NAME         : defaultConfig.applicationId,
-                    REYUN_APPKEY         :"${REYUN_KEY_MFXSQBYD}"
+                    REYUN_APPKEY         : "${REYUN_KEY_MFXSQBYD}"
             ]
 
             notOverrideResValue getOwner(), "string", "app_path", "/mfxsqbyd_book"
@@ -831,22 +827,10 @@ N多网	        blf1298_10885_001
                 channel_flag = channel
             }
 
-            if (variant.flavorName == "kdzsydq") {
-                outputFileName = "txtzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "kdqbxs") {
-                outputFileName = "kdqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "qbzsydq") {
+            if (variant.flavorName == "qbzsydq") {
                 outputFileName = "qbzsydsq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "txtqbxsydq") {
-                outputFileName = "zsqbydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "txtkdxs") {
-                outputFileName = "txtkdxsdq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "kdqbdzs") {
-                outputFileName = "kkqbtxtxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "mfqbxssc") {
                 outputFileName = "mfqbxssc_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "jrdkqbxs") {
-                outputFileName = "jrdkqbxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "txtqbdzs") {
                 outputFileName = "txtqbdzs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "zsmfqbxs") {
@@ -855,14 +839,6 @@ N多网	        blf1298_10885_001
                 outputFileName = "txtqbmfxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "qbmfxsydq") {
                 outputFileName = "qbmfxsydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "qbmfydq") {
-                outputFileName = "qbmfydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "qbxsxzq") {
-                outputFileName = "quanbennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "hycs") {
-                outputFileName = "lianzainovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else if (variant.flavorName == "txtmfqbydq") {
-                outputFileName = "mianfeinovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "txtqbmfyd") {
                 outputFileName = "txtqbmfyd_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "qbmfkdxs") {
@@ -871,10 +847,8 @@ N多网	        blf1298_10885_001
                 outputFileName = "qbmfrmxs_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             } else if (variant.flavorName == "qbmfkkydq") {
                 outputFileName = "qbmfkkydq_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            }else if (variant.flavorName == "mfxsqbyd") {
+            } else if (variant.flavorName == "mfxsqbyd") {
                 outputFileName = "mfxsqbyd_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
-            } else {
-                outputFileName = "remennovel_v${defaultConfig.versionName}-${defaultConfig.versionCode}_${releaseTime()}_${channel_flag}.apk"
             }
 
             outputFileName = "../../" + outputFileName
@@ -924,7 +898,6 @@ dependencies {
     debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
-    debugCompile 'com.amitshekhar.android:debug-db:1.0.1'
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')

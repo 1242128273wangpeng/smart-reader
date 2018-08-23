@@ -30,20 +30,17 @@ ext {
     applicationId = "cn.txtqbmfyd.reader"
     defaultPublishConfig = 'txtqbmfyd' + 'Debug'
     def appPackageIDConfig = [
-            kdzsydq   : "cn.txtzsydsq.reader",
-            qbzsydq   : "cn.qbzsydsq.reader",
+            qbmfxsydq : "cc.quanben.novel",//五步替
             mfqbxssc  : "cc.kdqbxs.reader", //快读替
             zsmfqbxs  : "cc.mianfeinovel", //阅微替
+            qbzsydq   : "cn.qbzsydsq.reader",//全本追书阅读器
             txtqbmfxs : "cc.lianzainovel", //鸿雁替
-            qbmfxsydq : "cc.quanben.novel",//五步替(已移交)
-            txtqbdzs  : "cc.remennovel",   //智胜电子书替
-            kdqbdzs   : "cn.kkqbtxtxs.reader",
-            txtqbxsydq: "cn.zsqbydq.reader",
-            txtqbmfyd : "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
             qbmfkdxs  : "cc.quanbennovel", //今日多看
+            txtqbdzs  : "cc.remennovel",   //智胜电子书替
+            txtqbmfyd : "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
+            mfxsqbyd  : "cn.mfxsqbyd.reader",//免费小说全本阅读 (新壳2)
             qbmfrmxs  : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
-            qbmfkkydq  : "cn.qbmfkkydq.reader", //全本免费快看阅读器(新壳4)
-            mfxsqbyd  : "cn.mfxsqbyd.reader"//免费小说全本阅读 (新壳2)
+            qbmfkkydq  : "cn.qbmfkkydq.reader" //全本免费快看阅读器(新壳4)
     ]
 
 

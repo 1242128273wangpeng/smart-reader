@@ -8,9 +8,6 @@ dependencies {
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.0.9'
     compile 'com.amap:AMap_Location:2.4.1'
 
-    //    compile 'com.baidu:mobstat:3.7.4.2'
-
-    //    compile 'com.baidu.mobstat:mtj-sdk-circle:latest.integration'
     compile 'info.monitorenter:cpdetector:1.0.10'
     compile "com.android.support:support-v4:$support_version"
     compile "com.android.support:design:$support_version"
@@ -32,16 +29,8 @@ dependencies {
     compile "android.arch.lifecycle:extensions:$arch_version"
     compile "android.arch.lifecycle:runtime:$arch_version"
 
-    //    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
-
-    //友盟推送
-
-    //PushSDK必须依赖基础组件库，所以需要加入对应依赖
+    //友盟推送 PushSDK必须依赖基础组件库，所以需要加入对应依赖
     compile 'com.umeng.sdk:common:1.5.3'
-
-    //PushSDK必须依赖utdid库，所以需要加入对应依赖
-
-    //    compile 'com.umeng.sdk:utdid:1.1.5.3'
 
     //PushSDK
     compile 'com.umeng.sdk:push:4.2.0'
@@ -56,6 +45,8 @@ dependencies {
     //美团打包
     compile 'com.meituan.android.walle:library:1.1.6'
     api project(':basic')
+
+    // 百度移动统计SDK
     implementation files('libs/Baidu_Mtj_3.9.1.0.jar')
 }
 
