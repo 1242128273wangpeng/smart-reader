@@ -398,8 +398,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.bookapi.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.bookapi.cn"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uwbtxunionapi.bookapi.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://uwbtxunioncontent.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
         }
 
         mfqbxssc {

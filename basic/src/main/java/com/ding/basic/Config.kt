@@ -22,22 +22,22 @@ object Config {
     /***
      * WebView地址
      * **/
-    private var webViewHost: String? = ""
+    private var webViewHost: String = ""
 
     /***
      * 智能API接口
      * **/
-    private var requestAPIHost: String? = ""
+    private var requestAPIHost: String = ""
 
     /***
      * 微服务API接口
      * **/
-    private var microAPIHost: String = "https://unionapi.bookapi.cn"
+    private var microAPIHost: String = ""
 
     /***
      * 微服务内容接口
      * **/
-    private var contentAPIHost: String = "https://unioncontent.bookapi.cn"
+    private var contentAPIHost: String = ""
 
 
     /***
@@ -93,7 +93,7 @@ object Config {
     }
 
     fun loadWebViewHost(): String {
-        return webViewHost!!
+        return webViewHost
     }
 
     fun insertRequestAPIHost(requestAPIHost: String) {
@@ -103,7 +103,7 @@ object Config {
     }
 
     fun loadRequestAPIHost(): String {
-        return requestAPIHost!!
+        return requestAPIHost
     }
 
     fun insertRequestParameter(@NotNull key: String, @NotNull value: String) {
