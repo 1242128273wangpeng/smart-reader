@@ -165,6 +165,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         }
 
+
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
             if(lastOrientation != newConfig.orientation) {
