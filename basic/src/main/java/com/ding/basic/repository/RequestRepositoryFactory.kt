@@ -966,8 +966,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     private fun getBookReqBody(userId: String, bookList: List<Book>): BookReqBody {
         val userBookList = ArrayList<BookBody>()
         for (book in bookList) {
-            val bookBody = BookBody(book.book_id, book.book_source_id, book.offset, book.sequence, book.host.toString(), book.img_url
-                    , book.name.toString(), book.author.toString(), book.last_read_time, book.chapter_count, book.last_chapter?.name.toString(), book.last_chapter?.update_time!!)
+            val bookBody = BookBody(book.book_id, book.book_source_id, book.offset, book.sequence, book.host, book.img_url
+                    , book.name, book.author, book.last_read_time, book.chapter_count, book.last_chapter?.name, book.last_chapter?.update_time)
             userBookList.add(bookBody)
         }
         return BookReqBody(userId, userBookList)

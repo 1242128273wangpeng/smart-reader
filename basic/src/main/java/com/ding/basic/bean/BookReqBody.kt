@@ -14,14 +14,14 @@ data class BookReqBody(var accountId: String,
 
 data class BookBody(var bookId: String,
                     var bookSourceId: String,
-                    var offset: Int,
-                    var sequence: Int,
-                    var host: String,
+                    var offset: Int?,
+                    var sequence: Int?,
+                    var host: String?,
                     var imgUrl: String?,
-                    var name: String,
-                    var author: String,
-                    var readTime: Long,
-                    var chapterCount: Int,
-                    var lastChapterName: String,
-                    var lastChapterUpdateTime: Long
+                    var name: String?,
+                    var author: String?,
+                    var readTime: Long?,
+                    var chapterCount: Int?,
+                    var lastChapterName: String?,
+                    var lastChapterUpdateTime: Long?
 ): Serializable
