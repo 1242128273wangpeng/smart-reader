@@ -21,7 +21,7 @@
             android:layout_height="22dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
-            android:src="@mipmap/nbar_back_icon"/>
+            android:src="@drawable/nbar_back_icon"/>
 
         <TextView
             android:id="@+id/tv_head_title"

@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:paddingLeft="16dp"
-            android:src="@mipmap/nbar_back_icon"
+            android:src="@drawable/nbar_back_icon"
             expandableTextView:onPressChangeAlpha="true"/>
 
         <ImageView
@@ -345,7 +345,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="70dp"
-                        android:drawableRight="@mipmap/board_more_nor_icon"
+                        android:drawableRight="@drawable/board_more_nor_icon"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:text="更新至：123章"/>
