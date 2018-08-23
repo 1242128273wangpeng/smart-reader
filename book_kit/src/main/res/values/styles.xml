@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="promotion"
-           parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/extension_small_item</item>
-        <item name="android:indeterminateOnly">false</item>
-        <item name="android:thumb">@null</item>
-        <item name="android:indeterminateDrawable">@drawable/extension_small_item</item>
-        <item name="android:minHeight">@dimen/dimen_view_height_16</item>
-        <item name="android:maxHeight">@dimen/dimen_view_height_16</item>
-    </style>
-
     <style name="CircleProgressBar">
         <item name="android:indeterminateOnly">true</item>
         <item name="android:indeterminateDrawable">@drawable/progress_circle</item>
