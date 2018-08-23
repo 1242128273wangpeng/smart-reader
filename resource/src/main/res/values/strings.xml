@@ -7,10 +7,12 @@
     <string name="ranking">榜单</string>
     <string name="category">分类</string>
 
+    <string name="my_bookshelf">我的书架</string>
     <string name="goto_bookstore">去书城</string>
-    <string name="book_end_bookstore">去书城看看</string>
-    <string name="book_end_bookshelf">我的书架</string>
+    <string name="goto_bookstore_look">去书城看看</string>
     <string name="download_manager_no_book_desc">暂无缓存书籍，去书城逛逛吧~</string>
+
+    <string name="no_net">网络不给力，请稍后重试</string>
 
     <string name="login">登陆</string>
     <string name="submit">提交</string>
