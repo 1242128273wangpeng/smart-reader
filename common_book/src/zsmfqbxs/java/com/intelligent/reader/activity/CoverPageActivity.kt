@@ -35,10 +35,6 @@ import net.lzbook.kit.utils.*
 import swipeback.ActivityLifecycleHelper
 import java.util.*
 import java.util.concurrent.Callable
-import android.support.v4.content.ContextCompat.startActivity
-import com.ding.basic.bean.RecommendBean
-import swipeback.ActivityLifecycleHelper
-import kotlin.collections.ArrayList
 
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
