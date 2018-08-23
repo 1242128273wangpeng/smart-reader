@@ -1,5 +1,7 @@
 package net.lzbook.kit.user.bean
 
+import java.io.Serializable
+
 /**
  * Desc 微信登录token实体
  * Author qiantao
@@ -13,4 +15,4 @@ data class WXAccess(
         var openid: String,
         var scope: String,
         var unionid: String
-)
+): Serializable

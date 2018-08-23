@@ -955,7 +955,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val bookList = queryAllBook()
 
         val bookReqBody = getBookReqBody(accountId, bookList)
-        Log.d("keepBookShelf", "upload data : " + bookReqBody.toString())
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
         return InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadBookshelf(body)
@@ -1025,13 +1024,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 }
                 .flatMap { remoteBookMarks ->
                     if (remoteBookMarks.data != null && remoteBookMarks.data!!.isNotEmpty()) {
-                        Flowable.create(object : FlowableOnSubscribe<BasicResultV4<String>> {
-                            override fun subscribe(emitter: FlowableEmitter<BasicResultV4<String>>) {
-                                emitter.onNext(BasicResultV4())
-
-                            }
-
-                        }, BackpressureStrategy.BUFFER)
+                        Flowable.create({ emitter -> emitter.onNext(BasicResultV4()) }, BackpressureStrategy.BUFFER)
                     } else {
                         getUploadBookMarkFlowable(userId);
                     }

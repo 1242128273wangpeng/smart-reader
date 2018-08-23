@@ -10,12 +10,18 @@
     <string name="app_path_log">/log/</string>
     <string name="default_image_url">http://image.book.easou.com/i/default/cover.jpg</string>
 
-    <string name="book_novel_deploy_host">http://mWXApi.wubutianxia.com:8090</string>
-    <string name="book_webview_host">http://bookwebview.wubutianxia.com:8090</string>
     <string name="database_name">novel.db</string>
 
     <string name="baidu_stat_id">542233ee41</string>
     <string name="push_key">aHSRXNEN6xUTi2QM455gvQC6</string>
     <string name="alifeedback_key">23572755</string>
     <string name="alifeedback_secret">23572755</string>
+
+
+    <string name="book_novel_deploy_host">http://mWXApi.wubutianxia.com:8090</string>
+    <string name="book_webview_host">http://bookwebview.wubutianxia.com:8090</string>
+
+    <string name="micro_api_host">https://unionapi.bookapi.cn</string>
+    <string name="content_api_host">https://unioncontent.bookapi.cn</string>
+
 </resources>

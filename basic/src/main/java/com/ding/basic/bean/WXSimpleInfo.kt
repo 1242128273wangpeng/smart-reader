@@ -1,5 +1,7 @@
 package net.lzbook.kit.user.bean
 
+import java.io.Serializable
+
 /**
  * Desc 微信登录用户信息
  * Author qiantao
@@ -16,4 +18,4 @@ data class WXSimpleInfo(
         val nickname: String,
         val headimgurl: String,
         val privilege: List<String>
-)
+): Serializable

@@ -3,9 +3,7 @@ package com.ding.basic.request
 import android.text.TextUtils
 import com.ding.basic.Config
 import com.ding.basic.token.Token
-import com.ding.basic.util.ReplaceConstants
 import com.orhanobut.logger.Logger
-import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -100,14 +98,10 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        val defaultHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-        if (request.url().host() == URL(Config.loadRequestAPIHost()).host
-                || request.url().host() == Config.loadBookContent()
-                || defaultHost.contains(request.url().host())) { // v3 登陆接口强制走阿里云服务器，也就是使用默认的 host
-
-            request = buildRequest(request)
+        if (request.url().host() == URL("https://api.weixin.qq.com").host || request.url().host() == URL("https://graph.qq.com").host) {
+            Logger.e("请求微信或者QQ的接口: " + request.url().toString())
         } else {
-            Logger.e("other host, not add token")
+            request = buildRequest(request)
         }
 
         return chain.proceed(request)

@@ -1,9 +1,11 @@
 package com.ding.basic.bean
 
+import java.io.Serializable
+
 /**
  * Created by Xian on 2017/12/19.
  */
-class PackageInfo(val startIndex: Int, val endIndex: Int) {
+class PackageInfo(val startIndex: Int, val endIndex: Int): Serializable {
 
     companion object {
         fun parse(path: String): PackageInfo? {

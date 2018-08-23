@@ -70,6 +70,7 @@ public class BookApplication extends BaseBookApplication {
             //防止定位不回掉导致缺失id
             MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
+
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
             StatService.setAppChannel(this, AppUtils.getChannelId(), true);
 
@@ -88,8 +89,10 @@ public class BookApplication extends BaseBookApplication {
                     return null;
                 }
             });
+
             FeedbackAPI.init(this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
                     ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
+
             if (BuildConfig.DEBUG) {
                 if (!BuildConfig.IS_LEAKCANARY_DISABLE) {
                     sRefWatcher = LeakCanary.install(this);

@@ -1,12 +1,13 @@
 package com.ding.basic.bean
 
+import java.io.Serializable
 import java.util.ArrayList
 
 /**
  * Created by yuchao on 2017/11/2 0002.
  */
 
-class ContextFixState {
+class ContextFixState : Serializable {
 
     private val chapterMsgFixStates: ArrayList<Boolean>?
     private val chapterContFixStates: ArrayList<Boolean>?

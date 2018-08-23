@@ -1,5 +1,7 @@
 package net.lzbook.kit.data.book
 
+import java.io.Serializable
+
 /**
  * @desc 书架请求 Body
  * @author lijun Lee
@@ -8,7 +10,7 @@ package net.lzbook.kit.data.book
  */
 
 data class BookReqBody(var accountId: String,
-                       var list: List<BookBody>)
+                       var list: List<BookBody>): Serializable
 
 data class BookBody(var bookId: String,
                     var bookSourceId: String,
@@ -22,7 +24,4 @@ data class BookBody(var bookId: String,
                     var chapterCount: Int,
                     var lastChapterName: String,
                     var lastChapterUpdateTime: Long
-)
-
-
-
+): Serializable

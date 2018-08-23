@@ -14,6 +14,8 @@ import retrofit2.http.*
 interface RequestService {
 
     companion object {
+        //五步替默认接口请求地址：登陆二期必须用阿里的地址
+        const val QBMFXSYDQ_DEFAULT_HOST = "https://zhuishu.lsread.cn"
 
         // cdn智能
         const val DYNAMIC_ZN = "https://public.lsread.cn/dpzn/{packageName}.json"

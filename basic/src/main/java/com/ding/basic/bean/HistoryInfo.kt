@@ -5,13 +5,14 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import com.ding.basic.database.migration.FieldMigration
 import com.ding.basic.database.migration.StatusConverter
+import java.io.Serializable
 
 /**
  * Created by yuchao on 2018/3/15 0015.
  */
 
 @Entity(tableName = "history_info")
-class HistoryInfo {
+class HistoryInfo: Serializable {
 
     @PrimaryKey
     @ColumnInfo(name = "book_id")

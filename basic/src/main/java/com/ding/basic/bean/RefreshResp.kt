@@ -1,9 +1,10 @@
 package com.ding.basic.bean
 
 import com.ding.basic.util.NotProguard
+import java.io.Serializable
 
 @NotProguard
-class RefreshResp {
+class RefreshResp: Serializable {
     var state: String? = null
     var uid: String? = null
     var uid_third: String? = null

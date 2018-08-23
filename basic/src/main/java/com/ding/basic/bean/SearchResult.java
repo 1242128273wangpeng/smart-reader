@@ -1,5 +1,6 @@
 package com.ding.basic.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * @data 2017/12/5 11:54
  */
 
-public class SearchResult {
+public class SearchResult implements Serializable {
 
     private List<HotWordBean> hotWords;
 
