@@ -71,6 +71,9 @@ android {
 
         resConfigs "zh"
 
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
 //        System.err.println("project.properties = ${project.getProperties()}")
 
 
