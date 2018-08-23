@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/dimen_padding_5"
-                android:src="@mipmap/directory_delete_icon"/>
+                android:src="@drawable/directory_delete_icon"/>
     </RelativeLayout>
     
     <include

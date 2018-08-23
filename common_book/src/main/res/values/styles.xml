@@ -85,16 +85,6 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="package_radiobutton">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1.0</item>
-        <item name="android:gravity">center</item>
-        <item name="android:button">@null</item>
-        <item name="android:background">@drawable/read_packagebuy_selector</item>
-        <item name="android:textColor">@drawable/read_packagebuy_color_selector</item>
-    </style>
-
     <style name="CatalogDialog"
            parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
@@ -220,14 +210,6 @@
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
-    <style name="download_manager_checkbox">
-        <item name="android:button">@drawable/checkbox_selector</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
     </style>
 
     <!-- 标题字体style -->

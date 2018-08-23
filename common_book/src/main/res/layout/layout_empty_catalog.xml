@@ -13,7 +13,7 @@
             android:paddingTop="@dimen/padding_10"
             android:gravity="center"
             android:layout_marginTop="115dp"
-            android:drawableTop="@mipmap/bookmark_default_page"
+            android:drawableTop="@drawable/bookmark_default_page"
             android:textColor="@color/color_black_323232"
             android:textSize="@dimen/text_size_16"/>
     
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"/>
         
         <ImageView
-                android:background="@mipmap/read_bookmark"
+                android:background="@drawable/read_bookmark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         

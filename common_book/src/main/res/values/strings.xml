@@ -69,15 +69,62 @@
     <string name="title_activity_act_book_over">ActBookOver</string>
 
     <string name="net_error">网络异常，请检查网络</string>
+
+
+
+
+    <string name="catalog_positive">正序</string>
+    <string name="catalog_negative">倒序</string>
+    <string name="bookmark_start">在阅读时点击  “</string>
+    <string name="bookmark_end">”  按钮添加书签</string>
+
+    <string name="read_setting">阅读页设置</string>
+    <string name="push_setting">推送设置</string>
+    <string name="push_sound">推送声音</string>
+
+
+    <string name="determine_clear_all_file_cache">确定清除包括下载书籍在内的所有 \n 缓存吗？</string>
+
+    <!-- 封面页 -->
+
+    <string name="book_cover_source">来源：</string>
+    <string name="book_cover_no_source">暂无来源</string>
+    <string name="book_cover_last_chapter">最新章节：</string>
+    <string name="book_cover_update_time">更新：</string>
+    <string name="book_cover_reading">转码阅读</string>
+    <string name="book_cover_introduction">内容简介</string>
+    <string name="book_cover_no_description">无简介</string>
+    <string name="book_cover_catalog">查看目录</string>
+    <string name="book_cover_recommend">看过本书的人还看了</string>
+    <string name="book_cover_author_recommend">作者的其他作品</string>
+    <string name="book_cover_no_resource">暂时找不到此本书的资源</string>
+
+
     <!-- cover -->
+    <string name="book_cover_state_writing">连载中</string>
+    <string name="book_cover_state_written">已完结</string>
     <string name="state_writting">-连载中</string>
     <string name="state_written">-已完结</string>
     <string name="no_des">无简介</string>
     <string name="resource_text">来源：</string>
     <string name="resource_count">本书全部%d个来源</string>
-    <string name="succeed_add">成功添加到书架！</string>
     <string name="have_add">已在书架中！</string>
+
+    <string name="succeed_add">成功添加到书架！</string>
+    <string name="search_sub_success">成功添加到书架！</string>
+    <string name="bookshelf_insert_success">成功添加到书架！</string>
     <string name="succeed_remove">成功从书架移除！</string>
+    <string name="bookshelf_delete_success">成功从书架中移除！</string>
+    <string name="search_sub_remove_success">成功从书架中移除！</string>
+
+    <string name="book_cover_add_bookshelf">加入书架</string>
+    <string name="book_cover_remove_bookshelf">移出书架</string>
+    <string name="book_cover_havein_bookshelf">已在书架</string>
+
+    <string name="read_catalog_error">抱歉，目录加载异常！</string>
+    <string name="read_network_retry">设置</string>
+    <string name="network_error_retry">刷新</string>
+
     <!-- 推荐页 -->
     <string name="over_chapter_count">共%d章</string>
     <string name="ask">询问</string>
@@ -178,8 +225,6 @@
     <string name="search_sorry_no_result">抱歉，暂无搜索结果</string>
     <string name="search_guess_favorite">也许你还喜欢这些</string>
     <string name="search_click_check_isright">请看看输入文字是否有误</string>
-    <string name="search_sub_success">成功添加到书架！</string>
-    <string name="search_sub_remove_success">成功从书架中移除！</string>
 
     <string name="book_last_chapter_nama_local_no">该书籍还未智能分章</string>
     <string name="auto_download_wifi">wifi下自动缓存</string>
