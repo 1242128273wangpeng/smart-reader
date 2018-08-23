@@ -60,7 +60,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:maxLines="1"
-                android:text="共600章"
+                tools:text="共600章"
                 android:gravity="center"
                 android:layout_marginLeft="16dp"/>
 
