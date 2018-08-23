@@ -411,6 +411,13 @@ public protected *;
 
 #科大讯飞广告混淆
 -keep class com.iflytek.voiceads.** {*;}
+#鼎阅广告混淆
+-keep class com.dycm_adsdk.** {*;}
+
+#inmobi ali混淆
+-keep class com.alibaba.sdk.android.feedback.impl.** {*;}
+-keep class com.inmobi.commons.core.utilities.uid.** {*;}
+-keep class com.dingyueads.sdk.receiver.** {*;}
 
 #mongo ad
 #-keep public class com.adsmogo.** {*;}
