@@ -1,5 +1,7 @@
 package com.ding.basic.bean
 
+import java.io.Serializable
+
 /**
  * Desc 动态参数
  * Author qiantao
@@ -12,7 +14,7 @@ data class Parameter(
     var error_log: String?,
     var params: Any?,
     var map: Map?
-)
+): Serializable
 
 data class Map(
     var DY_in_chapter_frequence: String?,
@@ -73,4 +75,4 @@ data class Map(
     var baidu_stat_id: String?,
     var DY_page_middle_ad_switch: String?,
     var DY_ad_old_request_switch: String?
-)
+): Serializable

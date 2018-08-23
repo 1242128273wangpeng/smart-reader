@@ -26,6 +26,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.uiThread
 import java.util.HashMap
@@ -148,7 +149,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
         }
-        btn_login.setOnClickListener{
+        btn_login.setOnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.LOGIN, data)
@@ -333,6 +334,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (books == null || books.isEmpty()) {
                 srl_refresh.setPullToRefreshEnabled(false)
                 ll_empty.visibility = View.VISIBLE
+
+                if (UserManagerV4.isUserLogin) {
+                    btn_login?.visibility = View.GONE
+                } else {
+                    btn_login?.visibility = View.VISIBLE
+                }
+
             } else {
                 srl_refresh.setPullToRefreshEnabled(true)
                 ll_empty.visibility = View.GONE

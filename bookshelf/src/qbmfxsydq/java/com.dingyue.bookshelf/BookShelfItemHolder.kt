@@ -41,9 +41,8 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             txt_read_progress.text = "未读"
         }
 
-
         // 是否连载
-        if (!book.status.equals("FINISH")) {
+        if (book.status.equals("FINISH")) {
             img_book_status.visibility = View.VISIBLE
         } else {
             img_book_status.visibility = View.GONE
@@ -55,8 +54,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             img_book_update.visibility = View.VISIBLE
             img_book_status.visibility = View.GONE
         }
-        if (txt_book_update_time != null) {
-            txt_book_update_time.text = Tools.compareTime(AppUtils.formatter, book.last_chapter?.update_time!!) + "更新: "
+
+        if (txt_book_update_time != null && book.last_chapter != null) {
+            txt_book_update_time.text = MessageFormat.format("{0}更新:", Tools.compareTime(AppUtils.formatter, book.last_chapter!!.update_time))
         }
 
         if (!TextUtils.isEmpty(book.img_url) && !book.img_url.equals(

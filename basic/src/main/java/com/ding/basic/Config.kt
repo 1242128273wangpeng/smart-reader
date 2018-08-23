@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
 import com.ding.basic.util.ReplaceConstants
-import com.ding.basic.util.URLBuilder
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -20,16 +19,30 @@ object Config {
 
     const val Develop: Boolean = true
 
-    //WebView地址
+    /***
+     * WebView地址
+     * **/
     private var webViewHost: String? = ""
-    //智能API接口
+
+    /***
+     * 智能API接口
+     * **/
     private var requestAPIHost: String? = ""
-    //微服务API接口
+
+    /***
+     * 微服务API接口
+     * **/
     private var microAPIHost: String = "https://unionapi.bookapi.cn"
-    //微服务内容接口
+
+    /***
+     * 微服务内容接口
+     * **/
     private var contentAPIHost: String = "https://unioncontent.bookapi.cn"
 
-    //设置页福利中心地址
+
+    /***
+     * 设置页福利中心地址
+     * **/
     const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html"
 
     /***
@@ -37,38 +50,41 @@ object Config {
      * **/
     private var accessKey: String = "wangpeng12345678"
 
+    /***
+     * 请求公钥
+     * **/
+    private var publicKey: String = ""
+
+    /***
+     * 请求私钥
+     * **/
     private var privateKey: String = ""
 
-    private var bookContent: String? = null
-
+    /***
+     * 请求公共参数
+     * **/
     private var requestParameters: HashMap<String, String> = HashMap()
 
 
     var SDCARD_PATH = Environment.getExternalStorageDirectory().absolutePath
 
 
-    const val DRAWABLE = 1
-    const val COLOR = 2
-    const val STYLE = 3
-
     private var context: Context? = null
 
-    private var publicKey: String = ""
 
     fun beginInit(context: Context) {
         Config.context = context
 
-//        webViewHost = "http://20.20.23.216:8082"
-//        requestAPIHost = "http://20.20.23.216:8082"
-
         webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+
+        microAPIHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+        contentAPIHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
     }
 
     fun getContext(): Context? {
         return Config.context
     }
-
 
     fun insertWebViewHost(webViewHost: String) {
         if (!TextUtils.isEmpty(webViewHost)) {
@@ -90,14 +106,6 @@ object Config {
         return requestAPIHost!!
     }
 
-    fun insertBookContent(bookContent: String) {
-        Config.bookContent = bookContent
-    }
-
-    fun loadBookContent(): String? {
-        return bookContent
-    }
-
     fun insertRequestParameter(@NotNull key: String, @NotNull value: String) {
         requestParameters[key] = value
     }
@@ -114,11 +122,6 @@ object Config {
         requestParameters.putAll(parameters)
     }
 
-    fun loadRequestParameters(): HashMap<String, String> {
-        return requestParameters
-    }
-
-
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
@@ -130,15 +133,6 @@ object Config {
             }
         })
     }
-
-    fun buildUrl(request: String?, parameters: MutableMap<String, String>): String? {
-
-        if (request == null) {
-            return null
-        }
-        return URLBuilder.buildUrl(requestAPIHost, request, parameters)
-    }
-
 
     fun insertMicroAPIHost(microAPIHost: String) {
         if (!TextUtils.isEmpty(microAPIHost)) {
@@ -158,12 +152,6 @@ object Config {
 
     fun loadContentAPIHost(): String {
         return contentAPIHost
-    }
-
-    fun insertAccessKey(accessKey: String) {
-        if (!TextUtils.isEmpty(accessKey)) {
-            Config.accessKey = accessKey
-        }
     }
 
     fun loadAccessKey(): String {

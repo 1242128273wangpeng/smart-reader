@@ -5,9 +5,10 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
+import java.io.Serializable
 
 @Entity(tableName = "book_fix")
-class BookFix {
+class BookFix: Serializable {
 
     @Ignore
     var id: Int = 0

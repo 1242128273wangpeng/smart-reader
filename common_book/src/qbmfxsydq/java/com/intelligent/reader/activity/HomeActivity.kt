@@ -524,7 +524,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         bundle.putString("type", "recommend")
                         val uri = WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        recommendFragment!!.setArguments(bundle)
+                        recommendFragment?.arguments = bundle
                     }
                     recommendFragment
                 }
@@ -535,7 +535,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         bundle.putString("type", "rank")
                         val uri = WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        rankingFragment!!.arguments = bundle
+                        rankingFragment?.arguments = bundle
                     }
                     rankingFragment
                 }
@@ -546,7 +546,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         bundle.putString("type", "category")
                         val uri = WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        categoryFragment!!.arguments = bundle
+                        categoryFragment?.arguments = bundle
                     }
                     categoryFragment
                 }

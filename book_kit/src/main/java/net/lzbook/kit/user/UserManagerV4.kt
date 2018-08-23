@@ -126,7 +126,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     log("registerApp", registerApp)
 
                     try {
-                        mTencent = Tencent.createInstance(qqAppID, context.getApplicationContext())
+                        mTencent = Tencent.createInstance(qqAppID, context.applicationContext)
                     } catch (exception: ExceptionInInitializerError) {
                         exception.printStackTrace()
                     }
@@ -140,8 +140,6 @@ object UserManagerV4 : IWXAPIEventHandler {
                         mUserState.set(true)
                         Config.insertRequestParameter("loginToken", user!!.token!!)
                         mInitCallback?.invoke(true)
-//                mOriginBookShelfData = queryAllBook()
-//                mOriginBookMarksData = getBookMarkBody(user?.accountId ?: "", queryAllBook())
                     } else {
                         mInitCallback?.invoke(false)
                     }
@@ -435,7 +433,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             onLogin(result.data!!)
-                            successCallback!!.invoke(result)
+                            successCallback?.invoke(result)
                             if (Platform.QQ == platform) {
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, CHANNEL_QQ)
@@ -723,17 +721,15 @@ object UserManagerV4 : IWXAPIEventHandler {
 
         user?.let {
 
-            requestFactory.keepUserBookShelf(user!!.account_id,
-                    {
-                        requestFactory.keepBookMark(user!!.account_id, {
+            requestFactory.keepUserBookShelf(user!!.account_id, {
 
-                            requestFactory.keepBookBrowse(user!!.account_id, onComplete)
+                requestFactory.keepBookMark(user!!.account_id, {
 
-                        })
-                    })
+                    requestFactory.keepBookBrowse(user!!.account_id, onComplete)
+
+                })
+            })
         }
-
-
     }
 
 

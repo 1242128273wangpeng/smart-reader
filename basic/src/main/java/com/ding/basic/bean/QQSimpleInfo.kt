@@ -1,9 +1,10 @@
 package com.ding.basic.bean
 
 import com.ding.basic.util.NotProguard
+import java.io.Serializable
 
 @NotProguard
-class QQSimpleInfo {
+class QQSimpleInfo : Serializable {
 
 
     var ret: Int = -1

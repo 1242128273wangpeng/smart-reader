@@ -1,8 +1,9 @@
 package com.ding.basic.bean
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class CacheTaskConfig {
+class CacheTaskConfig: Serializable {
 
     companion object {
         val USE_CHAPTER_BY_CHAPTER = 60001

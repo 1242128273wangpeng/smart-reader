@@ -3,6 +3,7 @@ package net.lzbook.kit.data.user
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.HistoryInfo
+import java.io.Serializable
 
 /**
  * Desc 云书架
@@ -13,9 +14,9 @@ import com.ding.basic.bean.HistoryInfo
 data class Bookshelf(
         var userId: String,
         var list: List<UserBook>
-)
+) : Serializable
 
-class UserBook {
+class UserBook: Serializable {
     var name: String? = ""
     var author: String? = ""
     var desc: String? = ""
@@ -37,51 +38,58 @@ class UserBook {
 
     fun transToBook(): Book {
         val book = Book()
-        book.name = name
-        book.author = author
-        book.desc = desc
-        book.sub_genre = labels
-        book.img_url = imgUrl
-        if ("FINISH" == status) {
-            book.status = "2"
-        } else {
-            book.status = "1"
+        try {
+            book.name = name
+            book.author = author
+            book.desc = desc
+            book.sub_genre = labels
+            book.img_url = imgUrl
+            book.status = status
+            book.book_id = bookId.toString()
+            book.book_source_id = bookSourceId.toString()
+            book.host = host
+            book.offset = offset
+            book.sequence = sequence
+            book.last_read_time = readTime
+            book.chapter_count = chapterCount
+
+            val chapter = Chapter()
+            if (lastChapter != null) {
+                chapter.name = lastChapter?.name
+                chapter.update_time = lastChapter!!.update_time
+                chapter.url = lastChapter!!.url
+            }
+
+            book.last_chapter = chapter
+
+            book.last_check_update_time = lastChapter!!.update_time
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        book.book_id = bookId.toString()
-        book.book_source_id = bookSourceId.toString()
-        book.host = host
-        book.offset = offset
-        book.sequence = sequence
-        book.last_read_time = readTime
-        book.chapter_count = chapterCount
-
-        var chapter=Chapter()
-        chapter.name= lastChapter?.name
-        chapter.update_time= lastChapter!!.update_time
-        chapter.url=lastChapter!!.url
-        book.last_chapter=chapter
-
-        book.last_check_update_time = lastChapter!!.update_time
-
         return book
-
     }
 
-    fun transToHistoryInfo():HistoryInfo{
-        val historyInfo=HistoryInfo()
-        historyInfo.author=author
-        historyInfo.img_url=imgUrl
-        historyInfo.name=name
-        historyInfo.book_id=bookId.toString()
-        historyInfo.book_source_id=bookSourceId.toString()
-        historyInfo.label=labels
-        historyInfo.host=host
-        historyInfo.desc=desc
-        historyInfo.browse_time= addTime?.toLong() ?:0
+
+
+    fun transToHistoryInfo(): HistoryInfo {
+        val historyInfo = HistoryInfo()
+        historyInfo.author = author
+        historyInfo.img_url = imgUrl
+        historyInfo.name = name
+        historyInfo.book_id = bookId.toString()
+        historyInfo.book_source_id = bookSourceId.toString()
+        historyInfo.label = labels
+        historyInfo.host = host
+        historyInfo.desc = desc
+        historyInfo.browse_time = addTime?.toLong() ?: 0
 
 
 
-        return  historyInfo
+        return historyInfo
+    }
+
+    override fun toString(): String {
+        return "UserBook(name=$name, author=$author, desc=$desc, labels=$labels, imgUrl=$imgUrl, url=$url, status=$status, source=$source, bookId=$bookId, bookSourceId=$bookSourceId, host=$host, dex=$dex, lastChapter=$lastChapter, offset=$offset, sequence=$sequence, chapterCount=$chapterCount, addTime=$addTime, readTime=$readTime)"
     }
 
 }
@@ -100,9 +108,9 @@ data class LastChapter(
         var word_count: Int,
         var vip: Int,
         var price: Double
-)
+) : Serializable
 
 data class Source(
         var gid: String,
         var nid: String
-)
+) : Serializable

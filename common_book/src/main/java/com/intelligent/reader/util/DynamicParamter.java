@@ -719,10 +719,11 @@ public class DynamicParamter {
         Config.INSTANCE.insertWebViewHost(sp.getString(Constants.WEBVIEW_HOST, ""));
         Config.INSTANCE.insertMicroAPIHost(sp.getString(Constants.UNION_HOST, ""));
         Config.INSTANCE.insertContentAPIHost(sp.getString(Constants.CONTENT_HOST, ""));
-        ContentAPI.INSTANCE.initMicroService();
-        MicroAPI.INSTANCE.initMicroService();
-        RequestAPI.INSTANCE.initializeDataRequestService();
 
+        MicroAPI.INSTANCE.initMicroService();
+        ContentAPI.INSTANCE.initMicroService();
+
+        RequestAPI.INSTANCE.initializeDataRequestService();
 
         setDownLoadLimitNumber();
 

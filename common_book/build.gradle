@@ -389,8 +389,12 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "push_key", "wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23731853"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "7be24d1f8f5196a4aa6d6d6788004d4b"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://zhuishu.lsread.cn"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://ctbookcity.lsread.cn:443"
+
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.bookapi.cn"
+
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uwbtxunionapi.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://uwbtxunioncontent.bookapi.cn"
         }
 
         mfqbxssc {

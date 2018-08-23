@@ -1,9 +1,10 @@
 package com.ding.basic.bean
 
 import com.ding.basic.util.NotProguard
+import java.io.Serializable
 
 @NotProguard
-class LoginResp {
+class LoginResp: Serializable {
     var state: String = ""
     var nickname: String = ""
     var head_portrait: String = ""

@@ -121,20 +121,17 @@ object RequestAPI {
 
     // v3 的登陆接口强制走阿里云服务器，也就是默认的 host
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
-        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.LOGIN_ACTION
+        val url = RequestService.QBMFXSYDQ_DEFAULT_HOST + RequestService.LOGIN_ACTION
         return requestService.requestLoginAction(url, parameters)
     }
 
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
-        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.LOGOUT_ACTION
+        val url = RequestService.QBMFXSYDQ_DEFAULT_HOST + RequestService.LOGOUT_ACTION
         return requestService.requestLogoutAction(url, parameters)
     }
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
-        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.REFRESH_TOKEN
+        val url = RequestService.QBMFXSYDQ_DEFAULT_HOST + RequestService.REFRESH_TOKEN
         return requestService.requestRefreshToken(url, parameters)
     }
 

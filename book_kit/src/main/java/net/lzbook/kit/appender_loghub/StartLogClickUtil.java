@@ -428,7 +428,7 @@ public class StartLogClickUtil {
            } else {
                log.putContent("uid", "");
            }
-       }else{
+       } else {
            if (UserManager.INSTANCE.isUserLogin()) {
                log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
            } else {

@@ -14,13 +14,19 @@ public class ReplaceConstants {
     public String APP_PATH_IMAGE;
     public String APP_PATH_LOG;
     public String DEFAULT_IMAGE_URL;
-    public String BOOK_NOVEL_DEPLOY_HOST;
-    public String BOOK_WEBVIEW_HOST;
     public String DATABASE_NAME;
     public String BAIDU_STAT_ID;
     public String PUSH_KEY;
     public String ALIFEEDBACK_KEY;
     public String ALIFEEDBACK_SECRET;
+
+
+
+    public String BOOK_NOVEL_DEPLOY_HOST;
+    public String BOOK_WEBVIEW_HOST;
+
+    public String MICRO_API_HOST;
+    public String CONTENT_API_HOST;
 
     private ReplaceConstants() {
         APP_PATH = Config.INSTANCE.getSDCARD_PATH() + ResourceUtil.getStringById(R.string.app_path);
@@ -31,15 +37,19 @@ public class ReplaceConstants {
         APP_PATH_LOG = APP_PATH + ResourceUtil.getStringById(R.string.app_path_log);
         DEFAULT_IMAGE_URL = ResourceUtil.getStringById(R.string.default_image_url);
 
-        BOOK_NOVEL_DEPLOY_HOST = ResourceUtil.getStringById(R.string.book_novel_deploy_host);
-        BOOK_WEBVIEW_HOST = ResourceUtil.getStringById(R.string.book_webview_host);
-
         DATABASE_NAME = ResourceUtil.getStringById(R.string.database_name);
 
         BAIDU_STAT_ID = ResourceUtil.getStringById(R.string.baidu_stat_id);
         PUSH_KEY = ResourceUtil.getStringById(R.string.push_key);
         ALIFEEDBACK_KEY = ResourceUtil.getStringById(R.string.alifeedback_key);
         ALIFEEDBACK_SECRET = ResourceUtil.getStringById(R.string.alifeedback_secret);
+
+
+        BOOK_NOVEL_DEPLOY_HOST = ResourceUtil.getStringById(R.string.book_novel_deploy_host);
+        BOOK_WEBVIEW_HOST = ResourceUtil.getStringById(R.string.book_webview_host);
+
+        MICRO_API_HOST = ResourceUtil.getStringById(R.string.micro_api_host);
+        CONTENT_API_HOST = ResourceUtil.getStringById(R.string.content_api_host);
     }
 
     public static ReplaceConstants getReplaceConstants() {

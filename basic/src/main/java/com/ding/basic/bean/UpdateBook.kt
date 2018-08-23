@@ -1,10 +1,12 @@
 package com.ding.basic.bean
 
+import java.io.Serializable
+
 /**
  * Created on 2018/3/20.
  * Created by crazylei.
  */
-class UpdateBook {
+class UpdateBook : Serializable {
     var book_id: String = ""
 
     var book_source_id: String = ""

@@ -26,13 +26,11 @@ abstract class IAliLogModel {
     /*用户id*/
     var uid: String? = null
         get () {
-            if (BaseBookApplication.getGlobalContext().packageName == "cc.quanben.novel") {
-                return if (UserManagerV4.isUserLogin) UserManagerV4.user?.account_id else ""
+            return if ("cc.quanben.novel" == BaseBookApplication.getGlobalContext().packageName) {
+                if (UserManagerV4.isUserLogin) UserManagerV4.user?.account_id else ""
             }else{
-                return if (UserManager.isUserLogin) UserManager.mUserInfo?.uid else ""
-
+                if (UserManager.isUserLogin) UserManager.mUserInfo?.uid else ""
             }
-
         }
 
     /*app包名*/
