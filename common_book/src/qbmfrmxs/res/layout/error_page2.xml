@@ -40,7 +40,7 @@
                 android:layout_height="38dp"
                 android:background="@drawable/bookshelf_no_book_btn_bg"
                 android:gravity="center"
-                android:text="@string/network_error_refresh"
+                android:text="@string/reader_reload_prompt"
                 android:textColor="@drawable/bookshelf_delete_cancel_text_color"
                 android:textSize="@dimen/dimen_text_15"/>
 
