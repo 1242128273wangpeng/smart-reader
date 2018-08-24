@@ -307,6 +307,10 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                     BaseBookHelper.removeChapterCacheFile(it)
                 }
             } else {
+                deleteBooks.forEach {
+                    CacheManager.remove(it.book_id)
+                    BaseBookHelper.removeChapterCacheFile(it)
+                }
                 RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBooks(deleteBooks)
             }
 
