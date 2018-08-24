@@ -686,6 +686,8 @@ android {
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "1f41b3f2695c9bf2910102eb5c01b218"
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.fengxianghuawu.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
         }
     }
 
