@@ -65,6 +65,20 @@ class DynamicService : Service() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+
+        @JvmStatic
+        fun keepService(ctt: Context) {
+            try {
+                if (!DynamicUtil.isDynServiceWork()) {
+                    DynamicParameter(ctt).requestCheck()
+                    val intent = Intent()
+                    intent.setClass(ctt, DynamicService::class.java)
+                    ctt.startService(intent)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
         }
 
