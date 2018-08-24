@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,26 +8,22 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
-
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.request.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.BridgeObject
 import com.dingyue.contract.util.SharedPreUtil
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.encrypt.URLBuilderIntterface
-import net.lzbook.kit.request.UrlUtils
-
-import java.util.ArrayList
-import java.util.HashMap
-
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfrmxs.act_tabulation.*
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.CustomWebClient
+import net.lzbook.kit.utils.uiThread
+import java.util.*
 
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
 class TabulationActivity : FrameActivity(), View.OnClickListener {
@@ -112,7 +107,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
         initListener()
 
         //判断是否是作者主页
-        if (currentUrl != null && currentUrl!!.contains(URLBuilderIntterface.AUTHOR_V4)) {
+        if (currentUrl != null && currentUrl!!.contains(RequestService.AUTHOR_V4)) {
             img_tabulation_search?.visibility = View.GONE
         } else {
             img_tabulation_search?.visibility = View.VISIBLE

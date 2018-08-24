@@ -20,6 +20,8 @@ import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
+import com.ding.basic.Config
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.logger.HomeLogger
@@ -30,7 +32,9 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.fragment.*
+import com.intelligent.reader.fragment.ClassifyFragment
+import com.intelligent.reader.fragment.SearchBookFragment
+import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
@@ -48,8 +52,6 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.update.ApkUpdateUtils
@@ -92,7 +94,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = URLBuilderIntterface.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -102,7 +104,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
-        val uri = URLBuilderIntterface.WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -298,7 +300,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
         }
 
@@ -486,7 +488,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
+        if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
