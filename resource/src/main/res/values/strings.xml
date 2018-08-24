@@ -7,6 +7,10 @@
     <string name="ranking">榜单</string>
     <string name="category">分类</string>
 
+    <string name="add_bookshelf">加入书架</string>
+    <string name="remove_bookshelf">移出书架</string>
+    <string name="have_in_bookshelf">已在书架</string>
+
     <string name="my_bookshelf">我的书架</string>
     <string name="goto_bookstore">去书城</string>
     <string name="goto_bookstore_look">去书城看看</string>

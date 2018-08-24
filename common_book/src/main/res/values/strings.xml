@@ -117,9 +117,7 @@
     <string name="bookshelf_delete_success">成功从书架中移除！</string>
     <string name="search_sub_remove_success">成功从书架中移除！</string>
 
-    <string name="book_cover_add_bookshelf">加入书架</string>
-    <string name="book_cover_remove_bookshelf">移出书架</string>
-    <string name="book_cover_havein_bookshelf">已在书架</string>
+
 
     <string name="read_catalog_error">抱歉，目录加载异常！</string>
     <string name="read_network_retry">设置</string>
