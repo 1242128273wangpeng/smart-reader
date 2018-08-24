@@ -58,11 +58,7 @@ class MicroRequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        if (request.url().host() == URL(Config.loadMicroAPIHost()).host || request.url().host() == URL(Config.loadContentAPIHost()).host) {
-            request = buildRequest(request)
-        } else {
-            Logger.e("other host, not add token")
-        }
+        request = buildRequest(request)
 
         return chain.proceed(request)
     }

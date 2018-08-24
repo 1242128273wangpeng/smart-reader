@@ -77,6 +77,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     //记录切换出去的时间
     private static long outTime;
     private static long inTime;
+    private static long checkDynamicParameterTime;
     public ThemeHelper mThemeHelper;
     protected String TAG = "FrameActivity";
     protected View mNightShadowView;
@@ -383,6 +384,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
 
         if (!isAppOnForeground()) {
+            checkDynamicParameterTime = System.currentTimeMillis();
             isActive = false;
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
             isCurrentRunningForeground = false;
@@ -407,6 +409,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             Map<String, String> data = new HashMap<>();
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
+            if(inTime - checkDynamicParameterTime > Constants.checkDynamicTime){
+                AppLog.e("runtime","enter");
+            }
         }
 
         if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
