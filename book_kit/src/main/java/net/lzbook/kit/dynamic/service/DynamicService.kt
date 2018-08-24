@@ -1,13 +1,13 @@
-package com.intelligent.reader.dynamic.service
+package net.lzbook.kit.dynamic.service
 
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.intelligent.reader.dynamic.DynConstants
-import com.intelligent.reader.dynamic.DynamicParameter
-import com.intelligent.reader.dynamic.utils.DynamicUtil
-import com.intelligent.reader.dynamic.utils.RxTimerUtil
+import net.lzbook.kit.dynamic.DynConstants
+import net.lzbook.kit.dynamic.DynamicParameter
+import net.lzbook.kit.dynamic.utils.DynamicUtil
+import net.lzbook.kit.dynamic.utils.RxTimerUtil
 import net.lzbook.kit.utils.AppLog
 
 

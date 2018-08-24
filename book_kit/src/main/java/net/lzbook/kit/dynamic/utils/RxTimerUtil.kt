@@ -1,4 +1,4 @@
-package com.intelligent.reader.dynamic.utils
+package net.lzbook.kit.dynamic.utils
 
 import io.reactivex.Observable
 import io.reactivex.Observer

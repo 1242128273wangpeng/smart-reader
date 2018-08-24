@@ -1,8 +1,6 @@
-package com.intelligent.reader.dynamic
+package net.lzbook.kit.dynamic
 
 import android.content.Context
-import com.baidu.android.pushservice.PushConstants
-import com.baidu.android.pushservice.PushManager
 import com.baidu.mobstat.StatService
 import com.ding.basic.Config
 import com.ding.basic.bean.BasicResult
@@ -11,7 +9,7 @@ import com.ding.basic.bean.Parameter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.*
 import com.dingyue.contract.util.SharedPreUtil
-import com.intelligent.reader.dynamic.service.DynamicService
+import net.lzbook.kit.dynamic.service.DynamicService
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -111,7 +109,6 @@ class DynamicParameter(private val context: Context) {
         } else {
             if (isSuccess) {
                 if (map != null) {
-                    isReloadDynamic = false
                     saveParams(map)
                     installParams()
                 } else {
@@ -188,7 +185,6 @@ class DynamicParameter(private val context: Context) {
     private fun startRequestCDNDynamic() {
         var url = dynamicUrl
         if (url.isEmpty()) {
-            isReloadDynamic = false
         } else {
             url = url.replace("{packageName}", AppUtils.getPackageName())
             AppLog.d("startRequestCDNDynamic", url)
@@ -257,12 +253,6 @@ class DynamicParameter(private val context: Context) {
         val pushKey = mShareUtilConfig.getString(SharedPreUtil.PUSH_KEY)
         if (pushKey.isNotEmpty()) {
             ReplaceConstants.getReplaceConstants().PUSH_KEY = pushKey
-        }
-        try {
-            PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY,
-                    ReplaceConstants.getReplaceConstants().PUSH_KEY)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
         val baiduExamine = mShareUtilConfig.getString(SharedPreUtil.BAIDU_EXAMINE)
@@ -519,9 +509,6 @@ class DynamicParameter(private val context: Context) {
     companion object {
 
         var TAG = DynamicParameter::class.java.simpleName
-
-        @JvmStatic
-        var isReloadDynamic = false
 
     }
 }

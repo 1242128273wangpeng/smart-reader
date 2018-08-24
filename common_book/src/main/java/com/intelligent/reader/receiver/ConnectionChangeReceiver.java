@@ -1,11 +1,14 @@
 package com.intelligent.reader.receiver;
 
 import com.dingyue.contract.util.SharedPreUtil;
-import com.intelligent.reader.dynamic.DynamicParameter;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.dynamic.service.DynamicService;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ExtensionsKt;
@@ -75,11 +78,8 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
 
                 //当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
                 if (nType == ConnectivityManager.TYPE_WIFI || nType == ConnectivityManager.TYPE_MOBILE) {
-                    if (DynamicParameter.isReloadDynamic()) {
-                        DynamicParameter.setReloadDynamic(false);
-                        DynamicParameter dynamicParameter = new DynamicParameter(context);
-                        dynamicParameter.setDynamicParameter();
-                    }
+                    new DynamicParameter(context).requestCheck();
+                    DynamicService.startDynaService(BaseBookApplication.getGlobalContext());
                 }
             } else {
                 canReload = true;

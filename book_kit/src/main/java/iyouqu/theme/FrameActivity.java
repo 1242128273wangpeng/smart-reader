@@ -39,14 +39,15 @@ import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.baidu.mobstat.StatService;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.dynamic.service.DynamicService;
 import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -410,7 +411,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
             if(inTime - checkDynamicParameterTime > Constants.checkDynamicTime){
-                AppLog.e("runtime","enter");
+                DynamicService.keepService(BaseBookApplication.getGlobalContext());
             }
         }
 

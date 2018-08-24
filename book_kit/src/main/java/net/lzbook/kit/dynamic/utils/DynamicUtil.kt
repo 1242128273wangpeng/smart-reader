@@ -1,8 +1,8 @@
-package com.intelligent.reader.dynamic.utils
+package net.lzbook.kit.dynamic.utils
 
 import android.app.ActivityManager
 import android.content.Context
-import com.intelligent.reader.dynamic.service.DynamicService
+import net.lzbook.kit.dynamic.service.DynamicService
 import net.lzbook.kit.app.BaseBookApplication
 
 

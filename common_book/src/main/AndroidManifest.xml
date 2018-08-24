@@ -486,7 +486,7 @@
             android:exported="true"/>
 
         <service
-                android:name=".dynamic.service.DynamicService"
+                android:name="net.lzbook.kit.dynamic.service.DynamicService"
                 android:label="dynamicparameter"/>
 
         <!-- 科大讯飞 -->

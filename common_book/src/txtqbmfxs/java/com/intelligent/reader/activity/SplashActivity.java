@@ -45,7 +45,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.dynamic.DynamicParameter;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import com.intelligent.reader.util.GenderHelper;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;

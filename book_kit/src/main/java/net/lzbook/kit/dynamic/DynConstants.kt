@@ -1,4 +1,4 @@
-package com.intelligent.reader.dynamic
+package net.lzbook.kit.dynamic
 
 /**
  * Created by yuchao on 2018/8/22 0022.
