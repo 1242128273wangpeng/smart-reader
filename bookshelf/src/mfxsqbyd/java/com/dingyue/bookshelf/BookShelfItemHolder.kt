@@ -32,6 +32,13 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             this.txt_book_name.text = book.name
         }
 
+        if (book.sequence >= 0) {
+            val progress = (book.sequence + 1).toString() + "/" + book.chapter_count + "章"
+            tv_read_status.text = progress
+        } else {
+            tv_read_status.text = "未读"
+        }
+
         if (book.sequence + 1 > book.chapter_count) {
             book.sequence = book.chapter_count - 1
         }
