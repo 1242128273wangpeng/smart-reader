@@ -142,7 +142,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     private fun initListener() {
         img_fix_book.setOnClickListener {
             RepairHelp.fixBook(requireActivity(), presenter.getBook(), {
-                if (!requireActivity().isFinishing) {
+                if (isAdded && !requireActivity().isFinishing) {
                     RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 }
             })
