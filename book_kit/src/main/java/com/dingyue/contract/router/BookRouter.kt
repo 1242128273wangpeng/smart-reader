@@ -52,7 +52,7 @@ object BookRouter {
             val path = RouterConfig.CATALOGUES_ACTIVITY
             return RouterUtil.navigation(activity, path, bundle)
 
-        } else if ((book.sequence > -1 || book.readed == 1 || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && isCached(book)) && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null) {
+        } else if ((book.sequence > -1 || book.readed == 1 || NetWorkUtils.getNetWorkType(activity) == NetWorkUtils.NETWORK_NONE && isCached(book)) && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null) {
             FootprintUtils.saveHistoryShelf(book)
 
             book.fromType = 0

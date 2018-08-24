@@ -33,6 +33,9 @@ interface RequestService {
         //应用更新
         const val CHECK_APPLICATION = "/v3/app/check"
 
+        //动态参数校验
+        const val DYNAMIC_CHECK = "/v3/dynamic/dynamicCheck"
+
         //动态参数
         const val DYNAMIC_PARAMETERS = "/v3/dynamic/dynamicParameter"
 
@@ -212,6 +215,9 @@ interface RequestService {
 
     @GET(CHECK_APPLICATION)
     fun requestApplicationUpdate(@QueryMap parameters: Map<String, String>): Flowable<JsonObject>
+
+    @GET(DYNAMIC_CHECK)
+    fun requestDynamicCheck(): Flowable<BasicResult<Int>>
 
     @GET(DYNAMIC_PARAMETERS)
     fun requestDynamicParameters(): Flowable<Parameter>

@@ -114,6 +114,22 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestDynamicCheck(requestSubscriber: RequestSubscriber<BasicResult<Int>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestDynamicCheck()
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<Int>>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.onNext(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取动态参数校验接口异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("获取动态参数校验接口完成！")
+                })
+    }
+
     override fun requestDynamicParameters(requestSubscriber: RequestSubscriber<Parameter>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestDynamicParameters()
                 .compose(SchedulerHelper.schedulerIOHelper<Parameter>())

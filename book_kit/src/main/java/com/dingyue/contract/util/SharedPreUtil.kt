@@ -65,6 +65,7 @@ class SharedPreUtil(val type: Int) {
         /**
          * DynamicParameter
          */
+        const val DYNAMIC_VERSION = "dynamic_version"
         const val CHANNEL_LIMIT = "channel_limit"
         const val DAY_LIMIT = "day_limit"
         const val RECOMMEND_BOOKCOVER = "recommend_bookcover" //书籍封面页推荐位智能，青果书籍配比

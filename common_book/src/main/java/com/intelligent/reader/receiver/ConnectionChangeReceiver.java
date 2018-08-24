@@ -1,10 +1,9 @@
 package com.intelligent.reader.receiver;
 
 import com.dingyue.contract.util.SharedPreUtil;
-import com.intelligent.reader.util.DynamicParameter;
+import com.intelligent.reader.dynamic.DynamicParameter;
 import com.umeng.message.PushAgent;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.utils.AppLog;
