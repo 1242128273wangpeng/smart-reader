@@ -47,6 +47,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
         if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
             img_book_update.visibility = View.VISIBLE
+            txt_read_progress.text = "章节已修复至最新"
         } else {
             img_book_update.visibility = View.GONE
 
