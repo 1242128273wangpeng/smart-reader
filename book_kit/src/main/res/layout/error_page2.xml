@@ -54,7 +54,7 @@
                 android:layout_marginLeft="18dp"
                 android:gravity="center"
                 android:text="@string/read_network_retry"
-                android:textColor="@color/theme_primary"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/dimen_text_15"/>
     </LinearLayout>
 
