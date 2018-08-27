@@ -270,6 +270,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                         (this.tag as ViewGroup?)?.removeAllViews()
                     }
                     this.tag = fl_reader_content_ad
+                    fl_reader_content_ad.removeAllViews()
                     fl_reader_content_ad.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
                     fl_reader_content_ad.addView(this, adViewLayoutParams)
                     itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT

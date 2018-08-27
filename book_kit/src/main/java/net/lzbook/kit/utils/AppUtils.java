@@ -803,7 +803,11 @@ public class AppUtils {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point();
-        display.getSize(point);
+
+        if (null != display) {
+            display.getSize(point);
+        }
+
         int width = point.x;
         int height = point.y;
         metric = width + height + "";
