@@ -2,7 +2,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/base_bg">
+                android:background="@color/white">
 
     <RelativeLayout
             android:id="@+id/search_result_head"
@@ -23,7 +23,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_16"
-                android:src="@mipmap/nbar_back_icon"/>
+                android:src="@drawable/nbar_back_icon"/>
 
             <RelativeLayout
                 android:id="@+id/search_result_outcome"
@@ -45,7 +45,7 @@
                     android:layout_marginRight="@dimen/dimen_margin_10"
                     android:gravity="center|right"
                     android:singleLine="true"
-                    android:textColor="@color/search_input_text_color"
+                    android:textColor="@color/color_text_most"
                     android:textSize="@dimen/dimen_text_16"/>
 
                 <TextView
@@ -58,7 +58,7 @@
                     android:drawableLeft="@drawable/recommend_title_search_icon"
                     android:drawablePadding="5dp"
                     android:singleLine="true"
-                    android:textColor="@color/search_input_text_color"
+                    android:textColor="@color/color_text_most"
                     android:textSize="14sp"/>
             </RelativeLayout>
 
@@ -142,7 +142,7 @@
             android:id="@+id/search_result_hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/base_bg">
+            android:background="@color/white">
         </FrameLayout>
     </RelativeLayout>
     <!--<ImageView-->

@@ -41,7 +41,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         TypedValue typeColor = new TypedValue();
         Resources.Theme theme = mContext.getTheme();
 //        theme.resolveAttribute(R.attr.dialog_recommend, typeColor, true);
-        int color = mContext.getResources().getColor(R.color.colorPrimary);
+        int color = mContext.getResources().getColor(R.color.primary);
         mColorTag = String.format("<font color='%s'>", AppUtils.colorHoHex(color));
     }
 
