@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
+import android.support.v4.content.ContextCompat
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
@@ -56,7 +58,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND,CHAPTER_SUCCESS,
+        GO_TO_BOOKEND, CHAPTER_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 
@@ -185,7 +187,7 @@ class ReaderSettings {
     fun clear() {
         save()
         needNotify = false
-        backgroundBitmap = null
+        backgroundDrawable = null
     }
 
     @SerializedName(value = "animation")
@@ -282,22 +284,14 @@ class ReaderSettings {
         private set
 
     @Transient
-    var backgroundBitmap: Bitmap? = null
+    var backgroundDrawable: Drawable? = null
         private set
         get() {
             if (field == null) {
-                var inputStream: InputStream? = null
                 try {
-                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
-                    field = BitmapFactory.decodeStream(inputStream)
+                    field = ContextCompat.getDrawable(Reader.context, R.drawable.read_page_bg_default)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                } finally {
-                    try {
-                        inputStream?.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
                 }
             }
             return field
@@ -337,24 +331,17 @@ class ReaderSettings {
 
     private fun refreshModeParams() {
         if (readThemeMode == 51) {
-            if (backgroundBitmap == null) {
-                var inputStream: InputStream? = null
+            if (backgroundDrawable == null) {
                 try {
-                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
-                    backgroundBitmap = BitmapFactory.decodeStream(inputStream)
+                    backgroundDrawable = ContextCompat.getDrawable(Reader.context,
+                            R.drawable.read_page_bg_default)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                } finally {
-                    try {
-                        inputStream?.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
                 }
             }
             backgroundColor = Reader.context.resources.getColor(R.color.reading_backdrop_first)
         } else {
-            backgroundBitmap = null
+            backgroundDrawable = null
             backgroundColor = ThemeUtil.getBackgroundColor(Reader.context.resources)
         }
 

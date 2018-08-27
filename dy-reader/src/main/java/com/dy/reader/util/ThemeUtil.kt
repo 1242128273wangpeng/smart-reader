@@ -96,7 +96,7 @@ object ThemeUtil {
 
     fun getModePrimaryBackground(resources: Resources, view: View?) {
         if (readerSettings.readThemeMode == 51) {// 牛皮纸
-            view?.setBackgroundDrawable(BitmapDrawable(ReaderSettings.instance.backgroundBitmap))
+            view?.setBackgroundResource(R.drawable.read_page_bg_default)
         } else {
             // 通过新的画布，将矩形画新的bitmap上去
             var color_int = R.color.reading_backdrop_first

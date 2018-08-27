@@ -11,10 +11,14 @@ import android.view.animation.LinearInterpolator
 import android.widget.Scroller
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
+import com.dy.reader.helper.INDEX_TEXTURE_ID
+import com.dy.reader.helper.glCheckErr
+import com.dy.reader.helper.loadShader
+import com.dy.reader.helper.loadTexture
+import com.dy.reader.page.GLPage
 import com.dy.reader.page.PageManager
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.reader.v2.*
 import org.greenrobot.eventbus.EventBus
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

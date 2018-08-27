@@ -15,7 +15,6 @@ import com.ding.basic.bean.Chapter
 import com.dy.media.MediaConfig
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
-import com.dy.reader.Reader
 import com.dy.reader.helper.ReadSeparateHelper
 import com.dy.reader.holder.HomePagerHolder
 import com.dy.reader.mode.NovelLineBean
@@ -23,7 +22,7 @@ import com.dy.reader.page.PageContentView
 import com.dy.reader.page.SpacingTextView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.*

@@ -24,7 +24,6 @@ import android.util.Log
 import android.widget.Scroller
 import com.dy.reader.Reader
 import com.dy.reader.setting.ReaderSettings
-import com.intelligent.reader.reader.v2.flip.CurlInterpolator
 
 
 /**
