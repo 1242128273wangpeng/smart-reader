@@ -15,7 +15,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:drawablePadding">@dimen/padding_14</item>
+        <item name="android:drawablePadding">@dimen/dimen_margin_14</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:textColor">@color/color_text_most</item>
@@ -473,10 +473,10 @@
         <item name="android:paddingRight">@dimen/padding_10</item>
         <item name="android:paddingTop">@dimen/padding_4</item>
         <item name="android:paddingBottom">@dimen/padding_4</item>
-        <item name="android:layout_marginTop">@dimen/margin_7</item>
-        <item name="android:layout_marginBottom">@dimen/margin_7</item>
-        <item name="android:layout_marginLeft">@dimen/margin_3</item>
-        <item name="android:layout_marginRight">@dimen/margin_3</item>
+        <item name="android:layout_marginTop">@dimen/dimen_margin_7</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_margin_7</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_3</item>
+        <item name="android:layout_marginRight">@dimen/dimen_margin_3</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:text">热词</item>
         <item name="android:gravity">center</item>

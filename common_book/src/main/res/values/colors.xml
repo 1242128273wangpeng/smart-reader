@@ -7,8 +7,13 @@
     <color name="debug_switch_bg_checked_color">#565656</color>
     <color name="debug_switch_bg_unchecked_color">#e3e1e1</color>
 
+    <color name="color_text_most">#323232</color>
+    <color name="search_hot_word_title_text_color">#737575</color>
+    <color name="search_history_clear_text_color">#ce3d3e</color>
+
     <!--标签聚合页-->
     <color name="cover_label">#C6CCD6</color>
+    <color name="dialog_recommend">#1CA66E</color>
 
     <!--阅读页相关-->
     <color name="reading_default_pageback_color">#D0BD9C</color>
@@ -165,7 +170,7 @@
     <color name="reading_bg_soft_other">#4b4743</color>
     <color name="check_read_setting">#ff7d1a</color>
 
-    <color name="theme_primary">#EF4C3B</color>
+    <color name="primary">#EF4C3B</color>
     <color name="theme_primary_darker">#6D4C41</color>
     <color name="theme_primary_dark">#1F1F1F</color>
     <color name="color_gray_d2d2d2">#D2D2D2</color>
