@@ -29,8 +29,8 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
                 && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
             Glide.with(itemView.context.applicationContext)
                     .load(book.img_url)
-                    .placeholder(R.drawable.common_book_cover_default_icon)
-                    .error(R.drawable.common_book_cover_default_icon)
+                    .placeholder(R.drawable.icon_book_cover_default)
+                    .error(R.drawable.icon_book_cover_default)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img_book_cover)
         } else {

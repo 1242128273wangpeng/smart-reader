@@ -57,8 +57,8 @@ class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
 
         Glide.with(parent?.context?.applicationContext)
                 .load(book.img_url)
-                .placeholder(R.drawable.common_book_cover_default_icon)
-                .error(R.drawable.common_book_cover_default_icon)
+                .placeholder(R.drawable.icon_book_cover_default)
+                .error(R.drawable.icon_book_cover_default)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(viewHolder.imgCover?.getBackGroundImage())
 
