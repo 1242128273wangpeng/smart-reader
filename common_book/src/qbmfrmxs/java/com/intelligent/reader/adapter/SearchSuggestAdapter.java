@@ -88,11 +88,11 @@ public class SearchSuggestAdapter extends BaseAdapter {
                     }
                     if (convertView != null) {
                         hodler = new ViewHolder();
-                        hodler.img_book_cover = (ImageView) convertView.findViewById(
+                        hodler.img_book_cover = convertView.findViewById(
                                 R.id.img_book_cover);
-                        hodler.img_type = (ImageView) convertView.findViewById(R.id.img_type);
-                        hodler.txt_name = (TextView) convertView.findViewById(R.id.txt_name);
-                        hodler.img_shadow = (ImageView) convertView.findViewById(R.id.img_shadow);
+                        hodler.img_type = convertView.findViewById(R.id.img_type);
+                        hodler.txt_name = convertView.findViewById(R.id.txt_name);
+                        hodler.img_shadow = convertView.findViewById(R.id.img_shadow);
                         convertView.setTag(hodler);
                     }
                 } else {

@@ -10,7 +10,7 @@
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
             android:fitsSystemWindows="true"
-            android:background="@color/top_navigation_bg_color">
+            android:background="@color/white">
 
         <RelativeLayout
             android:layout_width="match_parent"
