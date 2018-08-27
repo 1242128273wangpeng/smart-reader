@@ -192,8 +192,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         if (recommender != null) {
             val recommendBookendBooks1 = recommender!!.recommendBookendBooks1
             if (recommendBookendBooks1 != null) {
-                mRecommendBookAdapter!!.setBooks(recommendBookendBooks1)
-                mRecommendBookAdapter!!.notifyDataSetChanged()
+                mRecommendBookAdapter?.setBooks(recommendBookendBooks1)
+                mRecommendBookAdapter?.notifyDataSetChanged()
             } else {
                 AppLog.e("test", "书籍已拿完，重新从后端获取")
                 bookEndPresenter.requestRecommendV4(true, false, bookId!!)
@@ -205,8 +205,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         if (recommender != null) {
             val recommendBookendBooks2 = recommender!!.recommendBookendBooks2
             if (recommendBookendBooks2 != null) {
-                mNewBookAdapter!!.setBooks(recommendBookendBooks2)
-                mNewBookAdapter!!.notifyDataSetChanged()
+                mNewBookAdapter?.setBooks(recommendBookendBooks2)
+                mNewBookAdapter?.notifyDataSetChanged()
             } else {
                 bookEndPresenter.requestRecommendV4(false, true, bookId!!)
             }
