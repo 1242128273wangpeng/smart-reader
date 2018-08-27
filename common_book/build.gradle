@@ -714,7 +714,7 @@ android {
 //            writer.close()
 //=============================================================
 
-//修改app_string.xml 中应用名称
+            //修改app_string.xml 中应用名称
             def defaultAppName = android.defaultConfig.getResValues().get("app_name").value
 
 
@@ -741,10 +741,10 @@ android {
 
             System.err.println("Change App Name : $defaultAppName => $channelAppName")
 
-            def appString = new File("common_book/src/${targetFlavor.name}/res/values/app_strings.xml")
+            def appString = new File("resource/src/${targetFlavor.name}/res/values/app_strings.xml")
 
 
-            def bakFile = new File("common_book/${defaultAppName}.bak")
+            def bakFile = new File("resource/${defaultAppName}.bak")
             //上次构建失败，还原状态
             if (bakFile.exists()) {
                 appString.delete()
@@ -809,9 +809,9 @@ android {
 
             def defaultAppName = android.defaultConfig.getResValues().get("app_name").value
             System.err.println("assemble.doLast ${variant.applicationId}_${variant.buildType.name}_${variant.flavorName}")
-            def bakFile = new File("common_book/${defaultAppName}.bak")
+            def bakFile = new File("resource/${defaultAppName}.bak")
             if (bakFile.exists()) {
-                def file = new File("common_book/src/${targetFlavor.name}/res/values/app_strings.xml")
+                def file = new File("resource/src/${targetFlavor.name}/res/values/app_strings.xml")
                 file.delete()
                 bakFile.renameTo(file)
             }
