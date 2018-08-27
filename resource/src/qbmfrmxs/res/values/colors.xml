@@ -30,4 +30,6 @@
     <color name="footprint_title_clear_color">#ffffff</color>
     <color name="footprint_title_clear_unusable_color">#4Cffffff</color>
 
+    <color name="bookshelf_item_book_pressed">#1A000000</color>
+
 </resources>
