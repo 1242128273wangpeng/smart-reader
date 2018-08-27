@@ -282,7 +282,7 @@ object ReadMediaManager {
                 adCache.put(adType, AdBean(height, views[0], true, mark))
                 loadAdComplete?.invoke(adType)
             } else {
-                if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
+                if (adCache.get(adType) == null || adCache.get(adType)?.loaded == false) {
                     adCache.put(adType, AdBean(height, null, false, mark))
                 }
             }
