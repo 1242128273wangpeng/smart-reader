@@ -475,25 +475,28 @@ public class CheckNovelUpdateService extends Service {
              * android5.0的bug，在android4.4和6.0中都正常
              * 解决方式：.setSmallIcon(getApplicationContext().getApplicationInfo().icon)
              */
-            Notification preNTF = new NotificationCompat.Builder(getApplicationContext())
-                    .setSmallIcon(getApplicationContext().getApplicationInfo().icon)
+            try {
+                Notification preNTF = new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(getApplicationContext().getApplicationInfo().icon)
 //                    .setSmallIcon(R.drawable.icon)
-                    .setContentTitle(tickerText)
-                    .setContentText(content).build();
-            if (shouldSound()) {
-                preNTF.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-            }
+                        .setContentTitle(tickerText)
+                        .setContentText(content).build();
+                if (shouldSound()) {
+                    preNTF.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+                }
 
-            preNTF.when = System.currentTimeMillis();
-            preNTF.flags = Notification.FLAG_AUTO_CANCEL;
-            if (onBookUpdateListenerWef != null && onBookUpdateListenerWef.get() != null) {
-                onBookUpdateListenerWef.get().receiveUpdateCallBack(preNTF);
-            } else {
-                PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0,
-                        new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-                preNTF.contentIntent = pendingintent;
+                preNTF.when = System.currentTimeMillis();
+                preNTF.flags = Notification.FLAG_AUTO_CANCEL;
+                if (onBookUpdateListenerWef != null && onBookUpdateListenerWef.get() != null) {
+                    onBookUpdateListenerWef.get().receiveUpdateCallBack(preNTF);
+                } else {
+                    preNTF.contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                            new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+                }
+                nftmgr.notify(novel_upd_notify_id, preNTF);
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
-            nftmgr.notify(novel_upd_notify_id, preNTF);
         }
     }
 
