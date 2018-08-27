@@ -5,13 +5,11 @@ import android.app.DialogFragment
 import android.app.FragmentManager
 import android.content.DialogInterface
 import android.graphics.Color
-import android.os.Bundle
 import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
 import android.view.*
 import com.dy.reader.R
-import com.dy.reader.Reader
 import com.dy.reader.helper.AppHelper
-import com.dy.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.frag_loading_dialog.*
 
 class LoadingDialogFragment : DialogFragment() {
@@ -33,8 +31,10 @@ class LoadingDialogFragment : DialogFragment() {
         if (fm?.findFragmentByTag(ReadSettingFragment.TAG) == null) {
             dialog.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
-        dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+
         dialog.setContentView(R.layout.frag_loading_dialog)
+
         val window = dialog.window
         window.setGravity(Gravity.CENTER) //可设置dialog的位置
 //        window.decorView.setPadding(0, 0, 0, 0) //消除边距
