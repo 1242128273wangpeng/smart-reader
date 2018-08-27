@@ -301,7 +301,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             PersonalLogger.uploadPersonalDisclaimer()
             val bundle = Bundle()
             bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
-            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY)
+            RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
         val versionName = "V${AppUtils.getVersionName()}"
