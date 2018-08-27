@@ -196,7 +196,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun changeHomePagerIndex(index: Int) {
         // 去书城
-        view_pager.currentItem = 1
+        view_pager.currentItem = index
     }
 
     override fun changeDrawerLayoutState() {
@@ -225,12 +225,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            doubleClickFinish()
+//            doubleClickFinish()
+            when {
+                view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
+                bookShelfFragment?.isRemoveMenuShow() == true -> bookShelfFragment?.dismissRemoveMenu()
+                else -> doubleClickFinish()
+            }
             return true
 
         }
         return super.onKeyDown(keyCode, event)
     }
+
 
     /**
      * 两次返回键退出
@@ -429,6 +435,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun supportSlideBack(): Boolean {
         return false
     }
+
 
     companion object {
         private val BACK = 12

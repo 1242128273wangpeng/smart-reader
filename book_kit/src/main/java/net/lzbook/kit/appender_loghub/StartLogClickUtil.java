@@ -529,7 +529,7 @@ public class StartLogClickUtil {
         parameters.put("city_info", Constants.adCityInfo);
         parameters.put("location_detail", Constants.adLocationDetail);
         parameters.put("logstore", "zn_user");
-
+        AppLog.e("zn_user", parameters.toString());
         LogEncapManager.getInstance().sendLog(parameters, "zn_user");
     }
 
