@@ -904,6 +904,5 @@ dependencies {
     implementation project(':bookshelf')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
-    compile 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
     implementation files('libs/tracking1.3.0.jar')
 }
