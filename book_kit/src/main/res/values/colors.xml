@@ -248,11 +248,11 @@
    <!-- <color name="color_red_e0664e">#E0664E</color>
     <color name="color_red_fe5e49">#fe5e49</color>
     <color name="color_red_ff1010">#ff1010</color>
-    <color name="color_red_f04c3b">#F04C3B</color>
-    <color name="color_gray_b3b3b3">#b3b3b3</color>-->
+    <color name="color_red_f04c3b">#F04C3B</color>-->
+    <color name="color_gray_b3b3b3">#b3b3b3</color>
 
-<!--    <color name="color_blue_1dbfbb">#1dbfbb</color>
-    <color name="color_blue_1dbfbb_with_alp">#561dbfbb</color>-->
+    <color name="color_blue_1dbfbb">#1dbfbb</color>
+    <color name="color_blue_1dbfbb_with_alp">#561dbfbb</color>
 
 
 </resources>
