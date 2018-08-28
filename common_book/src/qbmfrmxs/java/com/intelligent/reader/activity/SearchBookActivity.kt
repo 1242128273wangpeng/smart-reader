@@ -111,9 +111,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
         search_result_content?.webViewClient = customWebClient
 
-        if (search_result_content != null) {
-            customWebClient = CustomWebClient(this, search_result_content)
-        }
 
         if (search_result_content != null) {
             jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
@@ -121,9 +118,9 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         if (jsInterfaceHelper != null && search_result_content != null) {
             search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
+            mSearchPresenter?.initJSHelp(jsInterfaceHelper)
         }
 
-        mSearchPresenter?.initJSHelp(jsInterfaceHelper)
     }
 
 

@@ -107,13 +107,8 @@ class DebugHostActivity : BaseCacheableActivity() {
         } else {
 
             list.add("http://8086.zn.bookapi.cn")
-            list.add("https://test.lumanman.cc")
-            list.add("http://test5.api.bookapi.cn:8888")
-            list.add("http://test5.api.bookapi.cn:8880")
-            list.add("http://test5.api.bookapi.cn:8080")
-            list.add("http://test5.api.bookapi.cn:8090")
-            list.add("http://test5.api.bookapi.cn:8088")
-            list.add("https://txt.bookapi.cn")
+            list.add("https://unionapi.bookapi.cn")
+            list.add("https://unioncontent.bookapi.cn")
 
             sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(list))
         }
