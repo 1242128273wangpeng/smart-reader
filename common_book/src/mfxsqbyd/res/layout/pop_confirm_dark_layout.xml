@@ -12,10 +12,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="提示"
-            android:paddingTop="@dimen/padding_24"
+            android:paddingTop="24dp"
             android:gravity="center"
             android:textColor="@color/reading_setting_text_color"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="16sp"/>
 
     <TextView
             android:id="@+id/publish_content"
@@ -26,16 +26,16 @@
             android:gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:textSize="@dimen/text_size_14"
-            android:padding="@dimen/dimen_margin_30"
+            android:textSize="14sp"
+            android:padding="30dp"
             android:lineSpacingExtra="6dp"/>
 
     <ProgressBar
             android:id="@+id/progress_del"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dimen_margin_10"
-            android:layout_marginBottom="@dimen/dimen_margin_10"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:visibility="gone"
             style="@style/Widget.AppCompat.ProgressBar"/>
 
@@ -61,7 +61,7 @@
                 android:textColor="@color/reading_setting_text_color"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textSize="@dimen/dimen_text_16"/>
+                android:textSize="16sp"/>
 
         <!--<View-->
                 <!--android:id="@+id/bottom_divider"-->
@@ -83,7 +83,7 @@
                 android:textColor="@color/theme_primary"
                 android:gravity="center"
                 android:text="@string/confirm"
-                android:textSize="@dimen/dimen_text_16"/>
+                android:textSize="16sp"/>
 
     </LinearLayout>
 </LinearLayout>

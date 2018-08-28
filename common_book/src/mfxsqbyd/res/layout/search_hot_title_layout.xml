@@ -39,7 +39,7 @@
             android:layout_height="42dp"
             android:layout_marginLeft="@dimen/dimen_margin_16"
             android:layout_marginRight="@dimen/dimen_margin_16"
-            android:layout_marginTop="@dimen/dimen_height_40"
+            android:layout_marginTop="40dp"
             android:visibility="visible">
             <TextView
                 android:id="@+id/textView1"

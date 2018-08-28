@@ -3,9 +3,9 @@
  */
 package com.intelligent.reader.adapter;
 
+import com.ding.basic.bean.Source;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.data.bean.Source;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.Tools;
 
@@ -59,14 +59,14 @@ public class BookEndSourceAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.book_source_name.setText("来源" + (position + 1) + ": " + source.host);
+        viewHolder.book_source_name.setText("来源" + (position + 1) + ": " + source.getHost());
         if (position == 0) {
             viewHolder.bestSource_text.setVisibility(View.VISIBLE);
         } else {
             viewHolder.bestSource_text.setVisibility(View.GONE);
         }
-        viewHolder.book_source_chapter_name.setText(source.last_chapter_name);
-        viewHolder.book_source_update_time.setText(Tools.compareTime(AppUtils.formatter, source.update_time));
+        viewHolder.book_source_chapter_name.setText(source.getLast_chapter_name());
+        viewHolder.book_source_update_time.setText(Tools.compareTime(AppUtils.formatter, source.getUpdate_time()));
         return convertView;
     }
 

@@ -22,7 +22,6 @@ import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
 import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.mfxsqbyd.act_book_cover.*
 import kotlinx.android.synthetic.mfxsqbyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
@@ -391,7 +390,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             val textCsl = getResources().getColor(R.color.cover_bottom_add)
             txt_catalog_bookshelf.setTextColor(textCsl)
         } else {
-            txt_catalog_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            txt_catalog_bookshelf!!.setText(R.string.add_bookshelf)
             val textCsl = getResources().getColor(R.color.text_color_dark)
             txt_catalog_bookshelf.setTextColor(textCsl)
         }

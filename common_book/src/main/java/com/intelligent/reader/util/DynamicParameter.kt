@@ -1,9 +1,6 @@
 package com.intelligent.reader.util
 
 import android.content.Context
-import com.baidu.android.pushservice.PushConstants
-import com.baidu.android.pushservice.PushManager
-import com.baidu.mobstat.SendStrategyEnum
 import com.baidu.mobstat.StatService
 import com.ding.basic.Config
 import com.ding.basic.bean.Map
@@ -211,12 +208,6 @@ class DynamicParameter(private val context: Context) {
         val pushKey = shareUtil.getString(SharedPreUtil.PUSH_KEY)
         if (pushKey.isNotEmpty()) {
             ReplaceConstants.getReplaceConstants().PUSH_KEY = pushKey
-        }
-        try {
-            PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY,
-                    ReplaceConstants.getReplaceConstants().PUSH_KEY)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
         val baiduExamine = shareUtil.getString(SharedPreUtil.BAIDU_EXAMINE)

@@ -1,11 +1,11 @@
 package com.intelligent.reader.widget;
 
+import com.ding.basic.bean.Source;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SourceAdapter;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.NightShadowView;
-import net.lzbook.kit.data.bean.Source;
 
 import android.app.Dialog;
 import android.content.Context;
