@@ -162,8 +162,8 @@
 
                 <ImageView
                     android:id="@+id/iv_mine_image_left"
-                    android:layout_width="@dimen/umeng_comm_dimen_100px"
-                    android:layout_height="@dimen/umeng_comm_dimen_100px"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dimen_margin_15"
                     android:layout_toEndOf="@+id/setting_back_left"
@@ -239,8 +239,8 @@
 
                 <ImageView
                     android:id="@+id/iv_mine_image"
-                    android:layout_width="@dimen/umeng_comm_dimen_100px"
-                    android:layout_height="@dimen/umeng_comm_dimen_100px"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="25dp"
                     android:background="@mipmap/read_bookmark"
@@ -265,7 +265,7 @@
             <View
                 android:id="@+id/v_divider"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:layout_alignParentTop="true"
                 android:background="@color/color_divider"
                 android:visibility="gone"/>
@@ -286,7 +286,7 @@
                 <View
                     android:id="@+id/v_divider1"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -304,7 +304,7 @@
                 <View
                     android:id="@+id/v_divider2"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"/>
             </RelativeLayout>
@@ -326,7 +326,7 @@
                 <View
                     android:id="@+id/v_divider3"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -355,7 +355,7 @@
                 <View
                     android:id="@+id/v_divider4"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"/>
             </RelativeLayout>
@@ -363,7 +363,7 @@
             <View
                 android:id="@+id/v_divider16"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:layout_alignParentTop="true"
                 android:background="@color/color_divider"/>
 
@@ -409,7 +409,7 @@
                 <View
                     android:id="@+id/v_divider6"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"
                     android:visibility="gone"/>
@@ -431,7 +431,7 @@
                 <View
                     android:id="@+id/v_divider7"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -449,7 +449,7 @@
                 <View
                     android:id="@+id/v_divider8"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -498,7 +498,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -512,7 +512,7 @@
                 <View
                     android:id="@+id/v_divider9"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"
                     android:visibility="gone"/>
@@ -532,7 +532,7 @@
                 <View
                     android:id="@+id/v_divider10"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
@@ -580,7 +580,7 @@
                 <View
                     android:id="@+id/v_divider20"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -607,7 +607,7 @@
                 <View
                     android:id="@+id/v_divider11"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"
                     android:visibility="gone"/>
@@ -629,7 +629,7 @@
                 <View
                     android:id="@+id/v_divider12"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -647,7 +647,7 @@
                 <View
                     android:id="@+id/v_divider13"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"/>
             </RelativeLayout>
@@ -671,7 +671,7 @@
                 <View
                     android:id="@+id/v_divider14"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -708,7 +708,7 @@
                 <View
                     android:id="@+id/v_divider15"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -746,7 +746,7 @@
                 <View
                     android:id="@+id/v_divider17"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -771,7 +771,7 @@
                 <View
                     android:id="@+id/v_divider18"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
