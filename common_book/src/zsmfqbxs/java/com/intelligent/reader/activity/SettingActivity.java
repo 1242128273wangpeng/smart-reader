@@ -30,21 +30,18 @@ import com.ding.basic.bean.LoginResp;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.component.service.DownloadService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.SPKeys;
-import net.lzbook.kit.data.bean.BookTask;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -62,11 +59,10 @@ import iyouqu.theme.ThemeMode;
 import swipeback.ActivityLifecycleHelper;
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
-public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
+public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener,
+        SwitchButton.OnCheckedChangeListener {
 
     private static final int CODE_REQ_LOGIN = 100;
-    private final static int PUSH_TIME_SETTING = 1;
-    private static final int LOGIN_SUCCESS = 0x20;
     public static SettingActivity sInstance;
     public static long cacheSize;
     public String TAG = SettingActivity.class.getSimpleName();
@@ -86,8 +82,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private ImageView top_setting_back;
     private MyDialog myDialog;//清除缓存对话框
     private RelativeLayout user_login_layout;
-    private View is_show_drawable;
-    private List<RelativeLayout> mRelativeLayoutList;
     private List<TextView> mTextViewList;
     private List<View> mDivider;
     private List<View> mGap;
@@ -101,15 +95,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private TextView text_check_update;
     private TextView text_clear_cache;
     private TextView text_disclaimer_statement;
-    //第二种布局 登录在左侧
-    private RelativeLayout top_navigation_bg;
-    private ImageView icon_more_left;
-    private TextView tv_login_info_detail_left;
-    private TextView tv_login_info_left;
-    private TextView top_navigation_title;
-    private ImageView iv_mine_image_left;
+
     private RelativeLayout user_login_layout_left;
-    private LinearLayout rl_setting_layout;//背景
     private RelativeLayout rl_readpage_bbs;//论坛
     private RelativeLayout rl_style_change;//主题切换
     private ImageView iv_mine_image;
@@ -169,85 +156,85 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     protected void initView() {
 
         //用于判断是否显示Textview的Drawable
-        is_show_drawable = findViewById(R.id.is_show_drawable);
-        top_navigation_bg = (RelativeLayout) findViewById(R.id.top_navigation_bg);
-        icon_more_left = (ImageView) findViewById(R.id.icon_more_left);
-        btnBack = (ImageView) findViewById(R.id.setting_back);
-        top_setting_back = (ImageView) findViewById(R.id.top_setting_back);
-        user_login_layout = (RelativeLayout) findViewById(R.id.user_login_layout);
-        iv_mine_image = (ImageView) findViewById(R.id.iv_mine_image);
-        tv_login_info = (TextView) findViewById(R.id.tv_login_info);
-        iv_mine_image = (ImageView) findViewById(R.id.iv_mine_image);
-        tv_login_info = (TextView) findViewById(R.id.tv_login_info);
-        iv_mine_image_left = (ImageView) findViewById(R.id.iv_mine_image_left);
-        user_login_layout_left = (RelativeLayout) findViewById(R.id.user_login_layout_left);
+        btnBack = findViewById(R.id.setting_back);
+        top_setting_back = findViewById(R.id.top_setting_back);
+        user_login_layout = findViewById(R.id.user_login_layout);
+        iv_mine_image = findViewById(R.id.iv_mine_image);
+        tv_login_info = findViewById(R.id.tv_login_info);
+        iv_mine_image = findViewById(R.id.iv_mine_image);
+        tv_login_info = findViewById(R.id.tv_login_info);
+        user_login_layout_left = findViewById(R.id.user_login_layout_left);
 
-        rl_readpage_bbs = (RelativeLayout) findViewById(R.id.rl_readpage_bbs);
-        rl_style_change = (RelativeLayout) findViewById(R.id.rl_style_change);
-        bt_night_shift = (SwitchButton) findViewById(R.id.bt_night_shift);
-        bt_wifi_auto = (SwitchButton) findViewById(R.id.bt_wifi_auto);
-        rl_readpage_setting = (RelativeLayout) findViewById(R.id.rl_readpage_setting);
-        rl_history_setting = (RelativeLayout) findViewById(R.id.rl_history_setting);
-        rl_welfare = (RelativeLayout) findViewById(R.id.rl_welfare);
-        img_welfare = (ImageView) findViewById(R.id.img_welfare);
-        rl_setting_more = (RelativeLayout) findViewById(R.id.rl_setting_more);
-        rl_feedback = (RelativeLayout) findViewById(R.id.rl_feedback);
-        rl_mark = (RelativeLayout) findViewById(R.id.rl_mark);
-        checkUpdateGuideRL = (RelativeLayout) findViewById(R.id.check_update_rl);
-        clear_cache_rl = (RelativeLayout) findViewById(R.id.clear_cache_rl);
-        disclaimer_statement_rl = (RelativeLayout) findViewById(R.id.disclaimer_statement_rl);
-        rl_setting_layout = (LinearLayout) findViewById(R.id.rl_setting_layout);
+        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs);
+        rl_style_change = findViewById(R.id.rl_style_change);
+        bt_night_shift = findViewById(R.id.bt_night_shift);
+        bt_wifi_auto = findViewById(R.id.bt_wifi_auto);
+        rl_readpage_setting = findViewById(R.id.rl_readpage_setting);
+        rl_history_setting = findViewById(R.id.rl_history_setting);
+        rl_welfare = findViewById(R.id.rl_welfare);
+        img_welfare = findViewById(R.id.img_welfare);
+        rl_setting_more = findViewById(R.id.rl_setting_more);
+        rl_feedback = findViewById(R.id.rl_feedback);
+        rl_mark = findViewById(R.id.rl_mark);
+        checkUpdateGuideRL = findViewById(R.id.check_update_rl);
+        clear_cache_rl = findViewById(R.id.clear_cache_rl);
+        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl);
 
-        theme_name = (TextView) findViewById(R.id.theme_name);
-        clear_cache_size = (TextView) findViewById(R.id.check_cache_size);
-        check_update_message = (TextView) findViewById(R.id.check_update_message);
+        theme_name = findViewById(R.id.theme_name);
+        clear_cache_size = findViewById(R.id.check_cache_size);
+        check_update_message = findViewById(R.id.check_update_message);
 
         //条目字
-        tv_readpage_bbs = (TextView) findViewById(R.id.tv_readpage_bbs);
-        tv_style_change = (TextView) findViewById(R.id.tv_style_change);
-        tv_night_shift = (TextView) findViewById(R.id.tv_night_shift);
-        tv_readpage_setting = (TextView) findViewById(R.id.tv_readpage_setting);
-        tv_history_setting = (TextView) findViewById(R.id.tv_history_setting);
-        tv_setting_more = (TextView) findViewById(R.id.tv_setting_more);
-        tv_feedback = (TextView) findViewById(R.id.tv_feedback);
-        tv_mark = (TextView) findViewById(R.id.tv_mark);
-        text_check_update = (TextView) findViewById(R.id.text_check_update);
-        text_clear_cache = (TextView) findViewById(R.id.text_clear_cache);
-        text_disclaimer_statement = (TextView) findViewById(R.id.text_disclaimer_statement);
+        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs);
+        tv_style_change = findViewById(R.id.tv_style_change);
+        tv_night_shift = findViewById(R.id.tv_night_shift);
+        tv_readpage_setting = findViewById(R.id.tv_readpage_setting);
+        tv_history_setting = findViewById(R.id.tv_history_setting);
+        tv_setting_more = findViewById(R.id.tv_setting_more);
+        tv_feedback = findViewById(R.id.tv_feedback);
+        tv_mark = findViewById(R.id.tv_mark);
+        text_check_update = findViewById(R.id.text_check_update);
+        text_clear_cache = findViewById(R.id.text_clear_cache);
+        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement);
 
-        tv_login_info_left = (TextView) findViewById(R.id.tv_login_info_left);
-        tv_login_info_detail_left = (TextView) findViewById(R.id.tv_login_info_detail_left);
-        top_navigation_title = (TextView) findViewById(R.id.top_navigation_title);
+        TextView tv_login_info_left = findViewById(R.id.tv_login_info_left);
 
-        txt_nickname = (TextView) findViewById(R.id.txt_nickname);
-        txt_userid = (TextView) findViewById(R.id.txt_userid);
-        btn_login = (Button) findViewById(R.id.btn_login);
-        btn_logout = (Button) findViewById(R.id.btn_logout);
-        img_head = (ImageView) findViewById(R.id.img_head);
-        img_head_background = (ImageView) findViewById(R.id.img_head_background);
+        txt_nickname = findViewById(R.id.txt_nickname);
+        txt_userid = findViewById(R.id.txt_userid);
+        btn_login = findViewById(R.id.btn_login);
+        btn_logout = findViewById(R.id.btn_logout);
+        img_head = findViewById(R.id.img_head);
+        img_head_background = findViewById(R.id.img_head_background);
         int desid = getResources().getIdentifier("txt_login_des", "id", getPackageName());
 
         if (desid != 0) {
-            txt_login_des = (TextView) findViewById(desid);
+            txt_login_des = findViewById(desid);
         }
 
         //字体颜色
         mTextViewList = new ArrayList<>();
-        TextView[] tvNum = new TextView[]{tv_readpage_bbs, tv_style_change, tv_night_shift, tv_history_setting, tv_readpage_setting, tv_setting_more,
-                tv_feedback, tv_mark, text_check_update, text_clear_cache, text_disclaimer_statement, tv_login_info_left};
+        TextView[] tvNum =
+                new TextView[]{tv_readpage_bbs, tv_style_change, tv_night_shift, tv_history_setting,
+                        tv_readpage_setting, tv_setting_more,
+                        tv_feedback, tv_mark, text_check_update, text_clear_cache,
+                        text_disclaimer_statement, tv_login_info_left};
 
         for (TextView textView : tvNum) {
             mTextViewList.add(textView);
         }
 
-        if (txt_login_des != null)
+        if (txt_login_des != null) {
             mTextViewList.add(txt_login_des);
+        }
 
 
         //条目背景
-        mRelativeLayoutList = new ArrayList<>();
-        RelativeLayout[] rlNum = new RelativeLayout[]{rl_readpage_bbs, rl_style_change, rl_history_setting, rl_readpage_setting, rl_setting_more,
-                rl_feedback, rl_mark, checkUpdateGuideRL, clear_cache_rl, disclaimer_statement_rl};
+        List<RelativeLayout> mRelativeLayoutList = new ArrayList<>();
+        RelativeLayout[] rlNum =
+                new RelativeLayout[]{rl_readpage_bbs, rl_style_change, rl_history_setting,
+                        rl_readpage_setting, rl_setting_more,
+                        rl_feedback, rl_mark, checkUpdateGuideRL, clear_cache_rl,
+                        disclaimer_statement_rl};
 
         for (RelativeLayout relativeLayout : rlNum) {
             mRelativeLayoutList.add(relativeLayout);
@@ -256,9 +243,14 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         //15条分割线 和 3个gap
         mDivider = new ArrayList<>();
-        View[] viewNum = new View[]{findViewById(R.id.v_divider), findViewById(R.id.v_divider1), findViewById(R.id.v_divider2), findViewById(R.id.v_divider3), findViewById(R.id.v_divider4), findViewById(R.id.v_divider5), findViewById(R.id.v_divider6),
-                findViewById(R.id.v_divider7), findViewById(R.id.v_divider8), findViewById(R.id.v_divider9), findViewById(R.id.v_divider10), findViewById(R.id.v_divider11), findViewById(R.id.v_divider12), findViewById(R.id.v_divider13),
-                findViewById(R.id.v_divider14), findViewById(R.id.v_divider15), findViewById(R.id.v_divider16), findViewById(R.id.v_divider17), findViewById(R.id.v_divider18)};
+        View[] viewNum = new View[]{findViewById(R.id.v_divider), findViewById(R.id.v_divider1),
+                findViewById(R.id.v_divider2), findViewById(R.id.v_divider3), findViewById(
+                R.id.v_divider4), findViewById(R.id.v_divider5), findViewById(R.id.v_divider6),
+                findViewById(R.id.v_divider7), findViewById(R.id.v_divider8), findViewById(
+                R.id.v_divider9), findViewById(R.id.v_divider10), findViewById(R.id.v_divider11),
+                findViewById(R.id.v_divider12), findViewById(R.id.v_divider13),
+                findViewById(R.id.v_divider14), findViewById(R.id.v_divider15), findViewById(
+                R.id.v_divider16), findViewById(R.id.v_divider17), findViewById(R.id.v_divider18)};
 
         for (View view : viewNum) {
             mDivider.add(view);
@@ -281,7 +273,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             bt_night_shift.setChecked(false);
         }
 
-        bt_wifi_auto.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true));
+        bt_wifi_auto.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+                SharedPreUtil.AUTO_UPDATE_CAHCE, true));
 
         startWelfareCenterAnim();
     }
@@ -382,7 +375,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         if (bt_night_shift != null) {
             bt_night_shift.setOnCheckedChangeListener(this);
         }
-        if(bt_wifi_auto != null){
+        if (bt_wifi_auto != null) {
             bt_wifi_auto.setOnCheckedChangeListener(this);
         }
         if (tv_login_info != null) {
@@ -451,7 +444,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         switch (paramView.getId()) {
             case R.id.rl_setting_more:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.MORESET);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more);
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
@@ -461,25 +455,30 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 ////                finish();
 //                break;
             case R.id.tv_login_info:
-                Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.enter_community,
+                        Toast.LENGTH_SHORT).show();
                 break;
             case R.id.iv_mine_image:
             case R.id.user_login_layout_left:
-                Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.enter_community,
+                        Toast.LENGTH_SHORT).show();
                 break;
             case R.id.check_update_rl:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSION);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.VERSION);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver);
                 checkUpdate();
                 break;
             case R.id.rl_feedback:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HELP);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.HELP);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 handler.removeCallbacks(feedbackRunnable);
                 handler.postDelayed(feedbackRunnable, 500);
                 break;
             case R.id.rl_mark:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.COMMENT);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.COMMENT);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 try {
                     Uri uri = Uri.parse("market://details?id=" + getPackageName());
@@ -492,21 +491,25 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 break;
 
             case R.id.disclaimer_statement_rl:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.PROCTCOL);
 
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true);
                 RouterUtil.INSTANCE.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
                 break;
             case R.id.rl_history_setting:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.PERSON_HISTORY);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_setting_history));
                 startActivity(new Intent(SettingActivity.this, FootprintActivity.class));
                 break;
             case R.id.rl_welfare:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.ADPAGE);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.ADPAGE);
                 Intent welfareIntent = new Intent();
-                welfareIntent.putExtra("url", "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html");
+                welfareIntent.putExtra("url",
+                        "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html");
                 welfareIntent.putExtra("title", "福利中心");
                 welfareIntent.setClass(SettingActivity.this, WelfareCenterActivity.class);
                 startActivity(welfareIntent);
@@ -517,10 +520,12 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 //                startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
 //                break;
             case R.id.rl_readpage_bbs:
-                Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.enter_community,
+                        Toast.LENGTH_SHORT).show();
                 break;
             case R.id.clear_cache_rl://清除缓存的处理
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.CACHECLEAR);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache);
                 clearCacheDialog();
                 break;
@@ -529,7 +534,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.setting_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.BACK, data);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.BACK, data);
                 goBackToHome();
                 break;
             case R.id.img_head:
@@ -537,13 +543,15 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 btn_login.setClickable(false);
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, CODE_REQ_LOGIN);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGIN);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.LOGIN);
 
                 break;
             case R.id.btn_logout:
             case R.id.rl_logout:
                 logoutDialog();
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGOUT);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.LOGOUT);
                 break;
             default:
                 break;
@@ -566,9 +574,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         myDialog.setCanceledOnTouchOutside(false);
         myDialog.setCancelable(false);
         myDialog.setCanceledOnTouchOutside(true);//设置点击dialog外面对话框消失
-        final Button sure = (Button) myDialog.findViewById(R.id.publish_stay);
-        final Button cancel = (Button) myDialog.findViewById(R.id.publish_leave);
-        final TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
+        final Button sure = myDialog.findViewById(R.id.publish_stay);
+        final Button cancel = myDialog.findViewById(R.id.publish_leave);
+        final TextView publish_content = myDialog.findViewById(R.id.publish_content);
 
         publish_content.setText(R.string.tips_logout);
         sure.setOnClickListener(new Button.OnClickListener() {
@@ -597,8 +605,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             myDialog.setCanceledOnTouchOutside(false);
             myDialog.setCancelable(false);
             myDialog.setCanceledOnTouchOutside(true);//设置点击dialog外面对话框消失
-            final Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
-            final Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
+            final Button btn_cancle_clear_cache = myDialog.findViewById(R.id.publish_stay);
+            final Button btn_confirm_clear_cache = myDialog.findViewById(R.id.publish_leave);
             final TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
             final TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
             publish_content.setText(R.string.tip_clear_cache);
@@ -699,31 +707,36 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
         SharedPreferences.Editor edit = sharedPreferences.edit();
-        if(view.getId() == R.id.bt_night_shift) {
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
+        if (view.getId() == R.id.bt_night_shift) {
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                    StartLogClickUtil.NIGHTMODE);
             ReaderSettings.Companion.getInstance().initValues();
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day);
-                ReaderSettings.Companion.getInstance().setReadLightThemeMode( ReaderSettings.Companion.getInstance().getReadThemeMode());
+                ReaderSettings.Companion.getInstance().setReadLightThemeMode(
+                        ReaderSettings.Companion.getInstance().getReadThemeMode());
                 ReaderSettings.Companion.getInstance().setReadThemeMode(61);
                 mThemeHelper.setMode(ThemeMode.NIGHT);
             } else {
                 tv_night_shift.setText(R.string.mode_night);
-                ReaderSettings.Companion.getInstance().setReadThemeMode(ReaderSettings.Companion.getInstance().getReadLightThemeMode());
+                ReaderSettings.Companion.getInstance().setReadThemeMode(
+                        ReaderSettings.Companion.getInstance().getReadLightThemeMode());
                 mThemeHelper.setMode(ThemeMode.THEME1);
             }
             edit.putInt("content_mode", Constants.MODE);
             edit.apply();
             ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
-        }else if(view.getId() == R.id.bt_wifi_auto){
-            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);
+        } else if (view.getId() == R.id.bt_wifi_auto) {
+            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked);
             edit.apply();
             Map<String, String> data = new HashMap<>();
             data.put("type", isChecked ? "1" : "0");
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data);
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                    StartLogClickUtil.WIFI_AUTOCACHE, data);
         }
     }
 
