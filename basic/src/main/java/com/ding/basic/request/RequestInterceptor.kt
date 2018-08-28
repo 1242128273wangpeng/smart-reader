@@ -108,7 +108,6 @@ class RequestInterceptor : Interceptor {
         } else {
             request = buildRequest(request)
         }
-
         return chain.proceed(request)
     }
 

@@ -39,14 +39,15 @@ import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.baidu.mobstat.StatService;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.dynamic.service.DynamicService;
 import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -77,6 +78,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     //记录切换出去的时间
     private static long outTime;
     private static long inTime;
+    private static long checkDynamicParameterTime;
     public ThemeHelper mThemeHelper;
     protected String TAG = "FrameActivity";
     protected View mNightShadowView;
@@ -383,6 +385,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
 
         if (!isAppOnForeground()) {
+            checkDynamicParameterTime = System.currentTimeMillis();
             isActive = false;
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
             isCurrentRunningForeground = false;
@@ -407,6 +410,9 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             Map<String, String> data = new HashMap<>();
             data.put("time", String.valueOf(inTime - outTime));
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
+            if(inTime - checkDynamicParameterTime > Constants.checkDynamicTime){
+                DynamicService.keepService(BaseBookApplication.getGlobalContext());
+            }
         }
 
         if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
