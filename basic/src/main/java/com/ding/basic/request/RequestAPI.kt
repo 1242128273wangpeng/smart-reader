@@ -62,6 +62,10 @@ object RequestAPI {
         return requestService.requestApplicationUpdate(parameters)
     }
 
+    fun requestDynamicCheck(): Flowable<BasicResult<Int>> {
+        return requestService.requestDynamicCheck()
+    }
+
     fun requestDynamicParameters(): Flowable<Parameter> {
         return requestService.requestDynamicParameters()
     }

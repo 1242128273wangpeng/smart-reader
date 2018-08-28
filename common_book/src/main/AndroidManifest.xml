@@ -472,6 +472,10 @@
             android:enabled="true"
             android:exported="true"/>
 
+        <service
+                android:name="net.lzbook.kit.dynamic.service.DynamicService"
+                android:label="dynamicparameter"/>
+
         <!-- 科大讯飞 -->
         <service android:name="com.iflytek.voiceads.update.DownloadService"/>
         <activity

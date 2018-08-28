@@ -313,6 +313,7 @@ public class Constants {
 
     public static int authAccessRefreshTime = 30 * 60 * 1000;
 
+    public static int checkDynamicTime =  2 * 60 * 1000;
 
     /**
      * 书架书籍排序
