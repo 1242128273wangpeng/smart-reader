@@ -594,8 +594,8 @@ android {
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.zhuishuwang.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.zhuishuwang.com"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uqbmfkdxsunionapi.zhuishuwang.com"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://uqbmfkdxsunioncontent.zhuishuwang.com"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
         }
 
 
