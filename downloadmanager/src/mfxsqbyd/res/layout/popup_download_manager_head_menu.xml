@@ -5,49 +5,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/download_manager_head_menu_bg"
-    tools:ignore="RtlHardcoded,RtlSymmetry">
+    tools:ignore="RtlHardcoded">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="10dp"
+        android:id="@+id/ll_container"
+        android:layout_width="124dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/background_body_dialog"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/txt_edit"
-            android:layout_width="125dp"
-            android:layout_height="50dp"
-            android:background="@drawable/download_manager_head_menu_first_sel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:soundEffectsEnabled="true"
-            android:text="@string/edit_cache"
-            android:textColor="@color/text_color_dark"
-            android:textSize="13sp"/>
+            android:text="@string/download_edit"
+            android:textColor="#5D646E"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/txt_sorting"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/download_manager_head_menu_second_sel"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:soundEffectsEnabled="true"
-            android:text="@string/sort_for_select"
-            android:textColor="@color/text_color_dark"
-            android:textSize="13sp"/>
-
+            android:paddingBottom="10dp"
+            android:text="@string/download_sort"
+            android:textColor="#5D646E"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
-        android:layout_width="125dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="124dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
         android:visibility="gone"
-        app:cornerRadius="5dp"/>
+        app:cornerRadius="4dp"/>
 
 </FrameLayout>

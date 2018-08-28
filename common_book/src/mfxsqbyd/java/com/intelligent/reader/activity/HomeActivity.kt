@@ -295,8 +295,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             HomeLogger.uploadHomeCategorySelected()
         }
 
-        setMenuTitleMargin()
-
         setNightMode(false)
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
@@ -635,27 +633,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun supportSlideBack(): Boolean {
         return false
     }
-
-    /***
-     * 设置抽屉布局中标题的Margin
-     * **/
-    private fun setMenuTitleMargin() {
-        val density = resources.displayMetrics.density
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val left = (12 * density + 0.5f).toInt()
-        var top = 20
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || isMIUISupport || isFlymeSupport) {
-            top += 20
-        }
-        top = (top * density + 0.5f).toInt()
-
-        params.topMargin = top
-        params.leftMargin = left
-
-        txt_menu_title.layoutParams = params
-    }
-
 
 
     /***

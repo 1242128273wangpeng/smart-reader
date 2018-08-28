@@ -3,6 +3,7 @@ package com.dingyue.downloadmanager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -53,6 +54,8 @@ class DownloadManagerMenuPopup(context: Context) {
 
 
     fun show(view: View) {
-        popupWindow.showAsDropDown(view, 0, 0)
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        popupWindow.showAtLocation(view, Gravity.TOP, location[0], location[1])
     }
 }
