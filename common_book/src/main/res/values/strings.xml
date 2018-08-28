@@ -73,8 +73,7 @@
 
 
 
-    <string name="catalog_positive">正序</string>
-    <string name="catalog_negative">倒序</string>
+
     <string name="bookmark_start">在阅读时点击  “</string>
     <string name="bookmark_end">”  按钮添加书签</string>
 

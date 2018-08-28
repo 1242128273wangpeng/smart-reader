@@ -7,8 +7,3 @@
         android:pivotY="50%"
         android:toDegrees="360">
 </rotate>
-        <!--
-        rotate_view_loading_big
-        spinner_20_inner_holo
-            android:drawable="@drawable/spinner_white_48"
-         -->
