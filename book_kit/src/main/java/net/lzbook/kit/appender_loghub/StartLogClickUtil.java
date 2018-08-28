@@ -500,7 +500,7 @@ public class StartLogClickUtil {
         upLoadUserInfo(log);
         log.putContent("apps", applist);
         log.putContent("time", System.currentTimeMillis() + "");
-        AppLog.e("log", log.getContent().toString());
+        AppLog.e("app_list", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
     }
 
@@ -530,6 +530,7 @@ public class StartLogClickUtil {
         parameters.put("location_detail", Constants.adLocationDetail);
         parameters.put("logstore", "zn_user");
 
+        AppLog.e("zn_user", parameters.toString());
         LogEncapManager.getInstance().sendLog(parameters, "zn_user");
     }
 

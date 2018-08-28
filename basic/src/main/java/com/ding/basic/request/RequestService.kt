@@ -145,9 +145,8 @@ interface RequestService {
 
 
         //获得缓存方式和package 列表
+        @Deprecated("已切换到union,MicroService.DOWN_TASK_CONFIG")
         const val DOWN_TASK_CONFIG = "/v5/book/down"
-
-
 
 
         /**

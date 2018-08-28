@@ -23,7 +23,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_16"
-                    android:src="@mipmap/nbar_back_icon"/>
+                    android:src="@drawable/nbar_back_icon"/>
 
             <RelativeLayout
                     android:id="@+id/search_result_outcome"
@@ -111,7 +111,7 @@
                     android:paddingLeft="@dimen/dimen_padding_7"
                     android:paddingRight="@dimen/dimen_padding_12"
                     android:layout_alignParentRight="true"
-                    android:src="@mipmap/nbar_search_nor_icon"/>
+                    android:src="@drawable/nbar_search_nor_icon"/>
         </RelativeLayout>
     </RelativeLayout>
 

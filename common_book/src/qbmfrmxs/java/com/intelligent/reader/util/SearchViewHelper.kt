@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.text.TextUtils
-import android.view.InflateException
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -21,7 +20,6 @@ import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools

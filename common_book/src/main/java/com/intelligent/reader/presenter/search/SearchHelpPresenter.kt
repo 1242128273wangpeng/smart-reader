@@ -10,30 +10,30 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import com.ding.basic.bean.SearchAutoCompleteBean
+import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.google.gson.Gson
-import com.intelligent.reader.R
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.showToastMessage
+import com.google.gson.Gson
+import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.*
 
 /**
+ * SearchHelpPresenter
  * Created by yuchao on 2017/12/1 0001.
  */
 class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<SearchView.HelpView> {
-    private var mSuggestList: MutableList<SearchCommonBean>? = ArrayList()
+    private var mSuggestList: MutableList<SearchCommonBeanYouHua>? = ArrayList()
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
@@ -62,15 +62,12 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         if (mHistoryDatas != null && !mHistoryDatas!!.isEmpty() && position > -1 &&
                 position < mHistoryDatas!!.size) {
             val history = mHistoryDatas!![position.toInt()]
-            if (history != null) {
-                view?.setEditText(history)
-                //                            mSearchEditText.setSelection(history.length());
-                startSearch(history, "0")
+            view?.setEditText(history)
+            startSearch(history, "0")
 
-                val data = HashMap<String, String>()
-                data.put("keyword", history)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data)
-            }
+            val data = HashMap<String, String>()
+            data.put("keyword", history)
+            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data)
         }
     }
 
@@ -112,33 +109,6 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             getCacheDataFromShare(false)
         } else {
             view?.showLoading()
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-//            val searchService = NetService.userService
-//            searchService.hotWord
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(object : Observer<SearchHotBean> {
-//                        override fun onSubscribe(d: Disposable) {
-//
-//                        }
-//
-//                        override fun onNext(value: SearchHotBean) {
-//                            AppLog.e("result", value.toString())
-//                            parseResult(value, true)
-//                        }
-//
-//                        override fun onError(e: Throwable) {
-//                            getCacheDataFromShare(true)
-//                            AppLog.e("error", e.toString())
-//                        }
-//
-//                        override fun onComplete() {
-//                            AppLog.e("complete", "complete")
-//                            view?.dimissLoading()
-//                        }
-//                    })
-
-
 
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<com.ding.basic.bean.SearchHotBean>() {
                 override fun requestResult(result: SearchHotBean?) {
@@ -157,8 +127,6 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
                 }
             })
 
-
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
         }
     }
 
@@ -203,7 +171,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
 
     fun showDialog(activity: Activity?) {
-        if (activity != null && !activity!!.isFinishing) {
+        if (activity != null && !activity.isFinishing) {
             val dialog = ConfirmDialog(activity)
             dialog.setTitle(activity.getString(R.string.prompt))
             dialog.setContent(activity.getString(R.string.determine_clear_serach_history))
@@ -211,7 +179,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
-                mSearchHandler?.sendEmptyMessage(10)
+                mSearchHandler.sendEmptyMessage(10)
                 view?.onHistoryClear()
                 dialog.dismiss()
             }
@@ -233,7 +201,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), mHistoryDatas)
     }
 
-    fun result(result: List<SearchCommonBean>) {
+    fun result(result: List<SearchCommonBeanYouHua>) {
         if (mSuggestList == null)
             return
         mSuggestList!!.clear()
@@ -250,7 +218,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     }
 
-    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBean) {
+    fun onSearchResult(suggestList: List<SearchCommonBeanYouHua>, transmitBean: SearchAutoCompleteBean) {
         if (mSuggestList == null) {
             return
         }
@@ -258,7 +226,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         authorsBean.clear()
         labelBean.clear()
         bookNameBean.clear()
-        if (transmitBean != null && transmitBean.data != null) {
+        if (transmitBean.data != null) {
             if (transmitBean.data!!.authors != null) {
                 authorsBean = transmitBean.data!!.authors as MutableList<SearchAutoCompleteBean.DataBean.AuthorsBean>
             }
@@ -272,8 +240,6 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         for (item in suggestList) {
             mSuggestList!!.add(item)
         }
-        if (mSearchHandler == null)
-            return
         mSearchHandler.post {
             view?.onSuggestBack()
         }
@@ -293,7 +259,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
                     helper.clearHistory()
                 }
 
-                20 -> helper.result(msg.obj as ArrayList<SearchCommonBean>)
+                20 -> helper.result(msg.obj as ArrayList<SearchCommonBeanYouHua>)
                 else -> {
                 }
             }
@@ -353,7 +319,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         return searchType
     }
 
-    fun getSuggestData(): MutableList<SearchCommonBean>? {
+    fun getSuggestData(): MutableList<SearchCommonBeanYouHua>? {
         return mSuggestList
     }
 
@@ -392,7 +358,6 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.SEARCHRESULT_BOOK, data)
 
-            //                    mSearchEditText.setSelection(suggest.length());
             startSearch(suggest, searchType ?: "")
         }
 

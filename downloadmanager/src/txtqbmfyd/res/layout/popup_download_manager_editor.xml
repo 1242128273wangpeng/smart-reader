@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_remove"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:scaleType="fitXY"
-        android:src="@drawable/download_manager_bottom_shadow_bg"/>
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/bookshelf_common_shadow_bg"/>
 
     <LinearLayout
         android:id="@+id/ll_btn"
@@ -51,7 +53,8 @@
             android:text="@string/delete"
             android:textColor="#FF19DD8B"
             android:textSize="14sp"
-            app:onPressChangeAlpha="true"/>
+            app:onPressChangeAlpha="true"
+            tools:ignore="MissingPrefix"/>
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView

@@ -171,7 +171,7 @@
             android:minWidth="@dimen/dimen_view_width_24"
             android:singleLine="true"
             android:text="@string/confirm"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="14sp"/>
     </LinearLayout>
 

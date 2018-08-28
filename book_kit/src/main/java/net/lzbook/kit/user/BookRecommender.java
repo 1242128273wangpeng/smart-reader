@@ -3,7 +3,6 @@ package net.lzbook.kit.user;
 import android.util.Log;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.bean.RecommendBean;
 import com.ding.basic.bean.RecommendBooksEndResp;
 import com.ding.basic.bean.RecommendBooksResp;
 
@@ -15,6 +14,7 @@ import java.util.Arrays;
  * 创建时间：2017/11/4 0004
  * 推荐书籍管理者：负责书架和书末页的推荐书籍管理
  */
+@Deprecated
 public class BookRecommender {
 
     //智能书籍推荐策略

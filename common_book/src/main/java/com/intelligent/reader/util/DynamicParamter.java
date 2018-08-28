@@ -6,8 +6,6 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
 import com.ding.basic.Config;
@@ -1220,12 +1218,12 @@ public class DynamicParamter {
         if (!TextUtils.isEmpty(push_key)) {
             ReplaceConstants.getReplaceConstants().PUSH_KEY = push_key;
         }
-        try {
-            PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY,
-                    ReplaceConstants.getReplaceConstants().PUSH_KEY);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            PushManager.startWork(context, PushConstants.LOGIN_TYPE_API_KEY,
+//                    ReplaceConstants.getReplaceConstants().PUSH_KEY);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void setBanGids() {

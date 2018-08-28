@@ -26,7 +26,7 @@
             android:layout_below="@id/txt_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:indeterminateDrawable="@drawable/download_manager_clear_loading_pgbar_bg"
+            android:indeterminateDrawable="@drawable/bookshelf_delete_loading_bg"
             android:indeterminateDuration="1000"
             android:visibility="visible"/>
 

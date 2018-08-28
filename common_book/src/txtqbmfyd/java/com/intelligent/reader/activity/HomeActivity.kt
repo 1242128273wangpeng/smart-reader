@@ -26,6 +26,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.Config
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -60,7 +61,6 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
@@ -365,7 +365,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
@@ -485,7 +485,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
+
+        if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
@@ -535,7 +536,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             closed = true
             restoreSystemDisplayState()
             ATManager.exitClient()
-            Tracking.exitSdk();
+            Tracking.exitSdk()
             super.onBackPressed()
         }
 
@@ -608,11 +609,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                     return@onWebGameClick
                 }
-                var title = ""
-                if (TextUtils.isEmpty(name)) {
-                    title = AppUtils.getPackageName()
+                var title = if (TextUtils.isEmpty(name)) {
+                    AppUtils.getPackageName()
                 } else {
-                    title = name
+                    name
                 }
                 val welfareIntent = Intent()
                 welfareIntent.putExtra("url", url)

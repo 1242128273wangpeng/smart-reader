@@ -2,7 +2,6 @@ package net.lzbook.kit.user;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.QGBook;
-import com.ding.basic.bean.RecommendBean;
 import com.ding.basic.bean.RecommendBooksEndResp;
 import com.ding.basic.bean.RecommendBooksResp;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * 创建人：Zach
  * 创建时间：2017/11/3 0003
  */
-
+@Deprecated
 public class QGRecommendBookStrategy extends RecommendBookStrategy {
 
     //书架页青果推荐书籍集合

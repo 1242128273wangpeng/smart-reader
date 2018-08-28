@@ -18,7 +18,7 @@
 
     <style name="download_manager_empty_find">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/theme_primary</item>
+        <item name="android:textColor">@color/primary</item>
     </style>
 
     <style name="download_manager_clear_title">

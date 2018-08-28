@@ -10,32 +10,29 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
+ * SearchCommonBean和SearchCommonBeanYouHua合并
  * Created by yuchao on 2017/12/1 0001.
  */
 class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPresenter<SearchView.HelpView> {
-    private var mSuggestList: MutableList<SearchCommonBean>? = ArrayList()
+    private var mSuggestList: MutableList<SearchCommonBeanYouHua>? = ArrayList()
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
@@ -114,9 +111,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             getCacheDataFromShare(false)
         } else {
             view?.showLoading()
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-
-
 
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<SearchHotBean>() {
                 override fun requestResult(result: SearchHotBean?) {
@@ -135,8 +129,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
                 }
             })
 
-
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
         }
     }
 
@@ -153,7 +145,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-               CommonUtil.showToastMessage("网络不给力哦！", 0L)
+                CommonUtil.showToastMessage("网络不给力哦！", 0L)
             }
             view?.showLinearParent(false)
         }
@@ -211,7 +203,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), mHistoryDatas)
     }
 
-    private fun result(result: List<SearchCommonBean>) {
+    private fun result(result: List<SearchCommonBeanYouHua>) {
         if (mSuggestList == null)
             return
         mSuggestList!!.clear()
@@ -228,7 +220,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
     }
 
-    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    fun onSearchResult(suggestList: List<SearchCommonBeanYouHua>, transmitBean: SearchAutoCompleteBeanYouHua) {
         if (mSuggestList == null) {
             return
         }
@@ -271,7 +263,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
                     helper.clearHistory()
                 }
 
-                20 -> helper.result(msg.obj as ArrayList<SearchCommonBean>)
+                20 -> helper.result(msg.obj as ArrayList<SearchCommonBeanYouHua>)
                 else -> {
                 }
             }
@@ -331,7 +323,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         return searchType
     }
 
-    fun getSuggestData(): MutableList<SearchCommonBean>? {
+    fun getSuggestData(): MutableList<SearchCommonBeanYouHua>? {
         return mSuggestList
     }
 

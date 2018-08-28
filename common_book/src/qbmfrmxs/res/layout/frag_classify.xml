@@ -33,7 +33,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/nbar_search_nor_icon"
+            android:src="@drawable/nbar_search_nor_icon"
             android:visibility="gone"
             app:onPressChangeAlpha="true"
             tools:ignore="MissingPrefix"/>

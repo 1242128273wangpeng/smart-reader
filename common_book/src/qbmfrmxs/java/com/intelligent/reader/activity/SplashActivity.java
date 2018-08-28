@@ -6,7 +6,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,79 +15,46 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;
-import com.dy.media.MediaCode;
-import com.dy.media.MediaControl;
-import com.dy.media.MediaLifecycle;
-import com.google.gson.Gson;
-import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.DynamicParamter;
 import com.intelligent.reader.util.ShieldManager;
-import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import iyouqu.theme.FrameActivity;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
-    private static String TAG = "SplashActivity";
     private final MHandler handler = new MHandler(this);
     public int initialization_count = 0;
     public int complete_count = 0;
     public ViewGroup ad_view;
     private SharedPreUtil sharedPreUtil;
 
-    private TextView txt_upgrade;
-    private ProgressBar progress_upgrade;
-    private List<Book> books;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -127,26 +93,37 @@ public class SplashActivity extends FrameActivity {
 
     public static boolean queryShortCut(Context ctt) {
         boolean isInstallShortcut = false;
+
         try {
             final ContentResolver cr = ctt.getContentResolver();
             final String AUTHORITY = "com.android.launcher2.settings";
             final String AUTHORITY2 = "com.android.launcher.settings";
             Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/favorites?notify=true");
+
             Cursor c = cr.query(CONTENT_URI, new String[]{"title", "iconResource"}, "title=?",
                     new String[]{"kdqbxs"}, null);// title表示应用名称。
-            if (c != null && c.getCount() > 0) {
+
+            if (c == null) return false;
+
+            if (c.getCount() > 0) {
                 isInstallShortcut = true;
             } else {
                 CONTENT_URI = Uri.parse("content://" + AUTHORITY2 + "/favorites?notify=true");
                 Cursor c2 = cr.query(CONTENT_URI, new String[]{"title", "iconResource"}, "title=?",
                         new String[]{ctt.getString(R.string.app_name)},
                         null);// title表示应用名称。
-                if (c2 != null && c2.getCount() > 0) {
+
+                if (c2 == null) return false;
+
+                if (c2.getCount() > 0) {
                     isInstallShortcut = true;
                 }
+
+                c2.close();
             }
+            c.close();
         } catch (Exception e) {
-            AppLog.d(TAG, "queryShortCut error " + e);
+            AppLog.d( "queryShortCut error " + e);
             e.printStackTrace();
         }
         return isInstallShortcut;
@@ -158,7 +135,7 @@ public class SplashActivity extends FrameActivity {
                 getApplicationContext()).getBoolean(versionCode + "first_guide",
                 true);
 
-        AppLog.e(TAG, "initGuide: " + firstGuide);
+        AppLog.e("initGuide: " + firstGuide);
         Constants.is_wifi_auto_download = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getBoolean("auto_download_wifi",
                 false);
@@ -169,16 +146,16 @@ public class SplashActivity extends FrameActivity {
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
 
-            Intent intent = new Intent();
-            intent.setClass(SplashActivity.this, HomeActivity.class);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-            finish();
+        Intent intent = new Intent();
+        intent.setClass(SplashActivity.this, HomeActivity.class);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+        finish();
 
     }
 
@@ -235,13 +212,11 @@ public class SplashActivity extends FrameActivity {
     }
 
 
-
     private void startInitTask() {
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
     }
-
 
 
     private boolean isGo = true;
@@ -250,7 +225,7 @@ public class SplashActivity extends FrameActivity {
 //        if (ad_view == null) return;
 //        if (Constants.isHideAD) {
 //            AppLog.e(TAG, "Limited AD display!");
-            handler.sendEmptyMessage(0);
+        handler.sendEmptyMessage(0);
 //            return;
 //        }
 //        if (isGo) {
@@ -289,11 +264,11 @@ public class SplashActivity extends FrameActivity {
         //判断是否展示广告
         if (sharedPreUtil != null) {
             long limited_time = sharedPreUtil.getLong(
-                    SharedPreUtil.Companion.getAD_LIMIT_TIME_DAY(), 0L);
+                    SharedPreUtil.AD_LIMIT_TIME_DAY, 0L);
             if (limited_time == 0) {
                 limited_time = System.currentTimeMillis();
                 try {
-                    sharedPreUtil.putLong(SharedPreUtil.Companion.getAD_LIMIT_TIME_DAY(),
+                    sharedPreUtil.putLong(SharedPreUtil.AD_LIMIT_TIME_DAY,
                             limited_time);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -303,13 +278,13 @@ public class SplashActivity extends FrameActivity {
             AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
             AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
-            int user_index = sharedPreUtil.getInt(SharedPreUtil.Companion.getUSER_NEW_INDEX(), 0);
+            int user_index = sharedPreUtil.getInt(SharedPreUtil.USER_NEW_INDEX, 0);
             boolean init_ad = false;
 
             if (user_index == 0) {
-                if (!sharedPreUtil.getBoolean(SharedPreUtil.Companion.getADD_DEFAULT_BOOKS(),
+                if (!sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
                         false)) {
-                    sharedPreUtil.putInt(SharedPreUtil.Companion.getUSER_NEW_INDEX(), 1);
+                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, 1);
                     init_ad = true;
                 } else {
                     init_ad = false;
@@ -321,7 +296,7 @@ public class SplashActivity extends FrameActivity {
                     }
                 }
             } else if (user_index == 1) {
-                if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getADD_DEFAULT_BOOKS(),
+                if (sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
                         false)) {
                     init_ad = true;
                 }
@@ -337,10 +312,10 @@ public class SplashActivity extends FrameActivity {
 
             if (init_ad) {
                 int ad_limit_time_day = sharedPreUtil.getInt(
-                        SharedPreUtil.Companion.getUSER_NEW_AD_LIMIT_DAY(), 0);
+                        SharedPreUtil.USER_NEW_AD_LIMIT_DAY, 0);
                 if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
                     ad_limit_time_day = Constants.ad_limit_time_day;
-                    sharedPreUtil.putInt(SharedPreUtil.Companion.getUSER_NEW_AD_LIMIT_DAY(),
+                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_AD_LIMIT_DAY,
                             ad_limit_time_day);
                 }
 
@@ -349,7 +324,7 @@ public class SplashActivity extends FrameActivity {
                         .currentTimeMillis()) {
                     Constants.isHideAD = true;
                 } else {
-                    sharedPreUtil.putInt(SharedPreUtil.Companion.getUSER_NEW_INDEX(), 2);
+                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, 2);
                     //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
                     if (Constants.new_app_ad_switch) {
                         Constants.isHideAD = false;
@@ -440,7 +415,7 @@ public class SplashActivity extends FrameActivity {
             }
 
             if (sharedPreUtil == null) {
-                sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+                sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
             }
 
             boolean b = sharedPreUtil.getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
@@ -487,19 +462,19 @@ public class SplashActivity extends FrameActivity {
                 // 统计阅读章节数
                 if (Constants.readedCount == 0) {
                     Constants.readedCount = sharedPreUtil.getInt(
-                            SharedPreUtil.Companion.getREADED_CONT());
+                            SharedPreUtil.READED_CONT);
                 }
 
                 //
                 DisplayMetrics dm = new DisplayMetrics();
                 SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                sharedPreUtil.putInt(SharedPreUtil.Companion.getSCREEN_WIDTH(), dm.widthPixels);
-                sharedPreUtil.putInt(SharedPreUtil.Companion.getSCREEN_HEIGHT(), dm.heightPixels);
+                sharedPreUtil.putInt(SharedPreUtil.SCREEN_WIDTH, dm.widthPixels);
+                sharedPreUtil.putInt(SharedPreUtil.SCREEN_HEIGHT, dm.heightPixels);
                 AppUtils.initDensity(getApplicationContext());
 
                 // 判断是否小说推送，检查小说是否更新
                 boolean isStarPush = sharedPreUtil.getBoolean(
-                        SharedPreUtil.Companion.getSETTINGS_PUSH(), true);
+                        SharedPreUtil.SETTINGS_PUSH, true);
                 if (isStarPush) {
                     CheckNovelUpdateService.startChkUpdService(getApplicationContext());
                 }
@@ -520,13 +495,13 @@ public class SplashActivity extends FrameActivity {
         @Override
         protected Void doInBackground(Void... params) {
             if (sharedPreUtil == null) {
-                sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+                sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
             }
-            boolean create = sharedPreUtil.getBoolean(SharedPreUtil.Companion.getCREATE_SHOTCUT(),
+            boolean create = sharedPreUtil.getBoolean(SharedPreUtil.CREATE_SHOTCUT,
                     false);
             if (!create) {
                 checkAndInstallShotCut(SplashActivity.this);
-                sharedPreUtil.putBoolean(SharedPreUtil.Companion.getCREATE_SHOTCUT(), true);
+                sharedPreUtil.putBoolean(SharedPreUtil.CREATE_SHOTCUT, true);
             }
             return null;
         }

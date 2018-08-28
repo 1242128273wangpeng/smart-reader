@@ -816,9 +816,9 @@ class CoverPagePresenter(private val book_id: String?,
 
         recommendList.clear()
 
-        for (i in recommendIndex until recommendIndex + recommendCount) {
-            recommendList.add(recommendBookList[i])
-        }
+        (recommendIndex until recommendIndex + recommendCount)
+                .filter { recommendBookList.size > it }
+                .forEach { recommendList.add(recommendBookList[it]) }
 
         recommendIndex += recommendCount
 

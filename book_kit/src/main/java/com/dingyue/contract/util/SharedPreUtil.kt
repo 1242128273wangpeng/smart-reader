@@ -3,11 +3,9 @@ package com.dingyue.contract.util
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.text.TextUtils
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.AppUtils
 import com.google.gson.Gson
-import net.lzbook.kit.appender_loghub.common.PLItemKey.getKey
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.AppUtils
 
 
 /**
@@ -142,7 +140,6 @@ class SharedPreUtil(val type: Int) {
         /**
          * SettingActivity
          */
-
         const val CURRENT_NIGHT_MODE = "current_night_mode" //当前是否是夜间模式
         const val AUTO_UPDATE_CAHCE = "AUTO_UPDATE_CAHCE" //wifi下是否自动追更书籍 开关
 

@@ -15,7 +15,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:drawablePadding">@dimen/padding_14</item>
+        <item name="android:drawablePadding">@dimen/dimen_margin_14</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:textColor">@color/color_text_most</item>
@@ -83,16 +83,6 @@
         <item name="android:paddingLeft">11dp</item>
         <item name="android:paddingRight">11dp</item>
         <item name="android:orientation">horizontal</item>
-    </style>
-
-    <style name="package_radiobutton">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1.0</item>
-        <item name="android:gravity">center</item>
-        <item name="android:button">@null</item>
-        <item name="android:background">@drawable/read_packagebuy_selector</item>
-        <item name="android:textColor">@drawable/read_packagebuy_color_selector</item>
     </style>
 
     <style name="CatalogDialog"
@@ -220,14 +210,6 @@
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
-    <style name="download_manager_checkbox">
-        <item name="android:button">@drawable/checkbox_selector</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
     </style>
 
     <!-- 标题字体style -->
@@ -491,10 +473,10 @@
         <item name="android:paddingRight">@dimen/padding_10</item>
         <item name="android:paddingTop">@dimen/padding_4</item>
         <item name="android:paddingBottom">@dimen/padding_4</item>
-        <item name="android:layout_marginTop">@dimen/margin_7</item>
-        <item name="android:layout_marginBottom">@dimen/margin_7</item>
-        <item name="android:layout_marginLeft">@dimen/margin_3</item>
-        <item name="android:layout_marginRight">@dimen/margin_3</item>
+        <item name="android:layout_marginTop">@dimen/dimen_margin_7</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_margin_7</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_margin_3</item>
+        <item name="android:layout_marginRight">@dimen/dimen_margin_3</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:text">热词</item>
         <item name="android:gravity">center</item>

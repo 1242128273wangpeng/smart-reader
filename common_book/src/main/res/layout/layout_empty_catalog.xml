@@ -13,14 +13,14 @@
             android:paddingTop="@dimen/padding_10"
             android:gravity="center"
             android:layout_marginTop="115dp"
-            android:drawableTop="@mipmap/bookmark_default_page"
+            android:drawableTop="@drawable/bookmark_default_page"
             android:textColor="@color/color_black_323232"
             android:textSize="@dimen/text_size_16"/>
     
     <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/padding_24"
+            android:paddingTop="@dimen/dimen_margin_24"
             android:gravity="center_horizontal"
             android:layout_height="wrap_content">
         
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"/>
         
         <ImageView
-                android:background="@mipmap/read_bookmark"
+                android:background="@drawable/read_bookmark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         

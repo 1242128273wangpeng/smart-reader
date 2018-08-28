@@ -29,7 +29,7 @@
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:background="@android:color/transparent"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/cover_top_back"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
         <ImageButton
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@mipmap/login_btn_qq"
+                android:src="@drawable/login_btn_qq"
                 android:id="@+id/ibtn_qq"
                 app:layout_constraintRight_toLeftOf="@+id/gl_center"
                 android:layout_marginRight="24dp"
@@ -71,7 +71,7 @@
         <ImageButton
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@mipmap/login_btn_wechat"
+                android:src="@drawable/login_btn_wechat"
                 android:id="@+id/ibtn_wechat"
                 android:scaleType="centerCrop"
                 android:background="#00000000"

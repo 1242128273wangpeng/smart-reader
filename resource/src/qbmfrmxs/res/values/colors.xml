@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="accent">#FF42BE54</color>
-    <color name="primary">#FFE8554E</color>
+    <color name="accent">#19DD8B</color>
+    <color name="primary">#19DD8B</color>
 
-    <color name="text_color_dark">#FF282828</color>
-    <color name="text_color_plain">#FF616161</color>
-    <color name="text_color_light">#FF989898</color>
-    <color name="text_color_weak">#FF9B9B9B</color>
-    <color name="text_color_thin">#FFCBCBCB</color>
+    <color name="text_color_dark">#282828</color>
+    <color name="text_color_plain">#616161</color>
+    <color name="text_color_light">#989898</color>
+    <color name="text_color_weak">#9B9B9B</color>
+    <color name="text_color_thin">#CBCBCB</color>
+
+
+
+    <color name="switch_button_checked_btn">#ffffff</color>
+    <color name="switch_button_checked_bg">#19DD8B</color>
+    <color name="switch_button_unchecked_btn">#FFFFFF</color>
+    <color name="switch_button_unchecked_bg">#E5E5E5</color>
+
+
+    <color name="search_history_divider">#f4f4f4</color>
+    <color name="search_input_text_color_hint">#ADB4BE</color>
+    <color name="footprint_name_text_color">#1a1a1a</color>
+    <color name="footprint_author_text_color">#9a9a9a</color>
+    <color name="footprint_brow_time_text_color">#989797</color>
+    <color name="footprint_item_divider_color">#eaeaea</color>
+    <color name="footprint_item_divider1_color">#F5F5F5</color>
+    <color name="footprint_empty_hint_color">#9B9B9B</color>
+    <color name="footprint_empty_find_color">#ffffff</color>
+    <color name="footprint_title_clear_color">#ffffff</color>
+    <color name="footprint_title_clear_unusable_color">#4Cffffff</color>
+
+    <color name="bookshelf_item_book_pressed">#1A000000</color>
 
 </resources>
