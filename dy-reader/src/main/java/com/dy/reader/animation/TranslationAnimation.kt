@@ -1,10 +1,13 @@
-package com.intelligent.reader.reader.v2
+package com.dy.reader.animation
 
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import com.dy.reader.R
 import com.dy.reader.flip.Status
+import com.dy.reader.page.GLPage
+import com.dy.reader.helper.glCheckErr
+import com.dy.reader.helper.loadShader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.properties.Delegates

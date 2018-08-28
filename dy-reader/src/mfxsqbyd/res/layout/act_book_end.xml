@@ -37,7 +37,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:singleLine="true"
-                android:textColor="#FFFFFFFF"
+                android:textColor="#FF212832"
                 android:textSize="18sp"
                 tools:text="@string/default_title"/>
         </RelativeLayout>

@@ -24,6 +24,7 @@ import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
+import com.ding.basic.Config
 import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
@@ -295,8 +296,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             HomeLogger.uploadHomeCategorySelected()
         }
 
-        setMenuTitleMargin()
-
         setNightMode(false)
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
@@ -471,7 +470,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
+        if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
@@ -635,27 +634,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun supportSlideBack(): Boolean {
         return false
     }
-
-    /***
-     * 设置抽屉布局中标题的Margin
-     * **/
-    private fun setMenuTitleMargin() {
-        val density = resources.displayMetrics.density
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val left = (12 * density + 0.5f).toInt()
-        var top = 20
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || isMIUISupport || isFlymeSupport) {
-            top += 20
-        }
-        top = (top * density + 0.5f).toInt()
-
-        params.topMargin = top
-        params.leftMargin = left
-
-        txt_menu_title.layoutParams = params
-    }
-
 
 
     /***

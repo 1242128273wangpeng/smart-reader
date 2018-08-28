@@ -19,11 +19,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:text="@string/change_source"
-                android:paddingTop="@dimen/padding_24"
-                android:paddingBottom="@dimen/padding_12"
+                android:paddingTop="24dp"
+                android:paddingBottom="12dp"
                 android:gravity="center"
                 android:textColor="@color/reading_setting_text_color"
-                android:textSize="@dimen/text_size_16"/>
+                android:textSize="16sp"/>
 
         <ListView
                 android:id="@+id/change_source_list"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/change_source_bottom_divider"
                 android:layout_below="@+id/dialog_top_title"
-                android:minHeight="@dimen/dimen_view_height_60"
+                android:minHeight="60dp"
                 android:cacheColorHint="@android:color/transparent"
                 android:fadingEdge="none"
                 android:scrollbars="@null"
@@ -54,7 +54,7 @@
                 android:padding="22dp"
                 android:background="@drawable/read_setting_background_press"
                 android:textColor="@color/reading_setting_text_color"
-                android:textSize="@dimen/dimen_text_16"/>
+                android:textSize="16sp"/>
 
     </RelativeLayout>
 

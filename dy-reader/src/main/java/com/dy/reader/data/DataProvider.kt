@@ -18,8 +18,8 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.PageManager
 import com.dy.reader.repository.ReaderRepository
 import com.dy.reader.repository.ReaderRepositoryFactory
-import com.intelligent.reader.read.mode.NovelChapter
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelChapter
+import com.dy.reader.mode.NovelPageBean
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -27,7 +27,6 @@ import io.reactivex.functions.Function
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
 import org.greenrobot.eventbus.EventBus

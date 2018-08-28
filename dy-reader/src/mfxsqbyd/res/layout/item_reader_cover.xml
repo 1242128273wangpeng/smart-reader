@@ -11,7 +11,8 @@
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="8dp"
-        android:text="@string/reader_slogan"/>
+        android:text="@string/reader_slogan"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,7 +48,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/module_name"
-        android:src="@drawable/reader_application_icon"/>
+        android:src="@drawable/reader_application_icon"
+        android:visibility="gone"/>
 
     <com.dy.reader.page.SpacingTextView
         android:id="@+id/txt_reader_product"
@@ -55,5 +57,6 @@
         android:layout_height="20dp"
         android:layout_alignParentBottom="true"
         android:text="@string/application_name"
-        android:textColor="#000000"/>
+        android:textColor="#000000"
+        android:visibility="gone"/>
 </RelativeLayout>

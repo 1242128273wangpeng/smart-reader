@@ -12,7 +12,7 @@ import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.NetWorkUtils
 import org.json.JSONException

@@ -1,15 +1,12 @@
 package com.intelligent.reader.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -31,9 +28,7 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.data.bean.CoverPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -427,7 +422,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         } else {
             val textCsl = getResources().getColor(R.color.text_color_dark)
             book_cover_bookshelf.setTextColor(textCsl)
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.add_bookshelf)
         }
     }
 

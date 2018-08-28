@@ -1,6 +1,5 @@
 package com.dy.reader.presenter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,7 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.StringRes
 import android.text.TextUtils
-import android.widget.*
+import android.widget.Toast
 import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
@@ -32,7 +31,6 @@ import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils

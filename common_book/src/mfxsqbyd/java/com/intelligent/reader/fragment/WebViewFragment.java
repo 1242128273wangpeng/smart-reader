@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,13 +62,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private boolean isFirstVisible = true;
 
     private SuperSwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar pgbar_head_loading;
-    private TextView txt_head_prompt;
-    private ImageView img_head_arrow;
+    private ImageView img_head;
+    private ImageView img_anim;
 
     private ImageView topShadowView;
-
-    private boolean hasRefreshHead = false;
 
 
     private RelativeLayout rl_recommend_head;
@@ -94,10 +92,6 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             AppLog.e(TAG, "url---->" + url);
             type = bundle.getString("type");
         }
-
-        String packageName = AppUtils.getPackageName();
-        hasRefreshHead = "cc.kdqbxs.reader".equals(packageName)
-                || "cn.txtqbmfyd.reader".equals(packageName);
     }
 
     @Nullable
@@ -110,7 +104,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        if(weakReference != null){
+        if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
         }
         initView();
@@ -426,7 +420,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private void initRefresh() {
 
         // 免费全本小说书城 推荐页添加下拉刷新
-        if (hasRefreshHead && !TextUtils.isEmpty(url) && rootView != null) {
+        if (!TextUtils.isEmpty(url) && rootView != null) {
             swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(
                     R.id.bookshelf_refresh_view);
             swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
@@ -437,26 +431,24 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onRefresh() {
-                            txt_head_prompt.setText("正在刷新");
-                            img_head_arrow.setVisibility(View.GONE);
-                            pgbar_head_loading.setVisibility(View.VISIBLE);
+                            img_head.setVisibility(View.GONE);
+                            img_anim.setVisibility(View.VISIBLE);
+                            ((AnimationDrawable) img_anim.getDrawable()).start();
                             checkUpdate();
                         }
 
                         @Override
-                        public void onPullDistance(int distance) {
-                            // pull distance
-                        }
+                        public void onPullDistance(int distance) {}
 
                         @Override
                         public void onPullEnable(boolean enable) {
-                            pgbar_head_loading.setVisibility(View.GONE);
-                            txt_head_prompt.setText(enable ? "松开刷新" : "下拉刷新");
-                            img_head_arrow.setVisibility(View.VISIBLE);
-                            img_head_arrow.setRotation(enable ? 180 : 0);
+                            img_anim.setVisibility(View.GONE);
+                            img_head.setVisibility(View.VISIBLE);
+                            img_head.setImageResource((enable ? R.drawable.refresh_head_pull_light_1
+                                    : R.drawable.pull_light_0));
                         }
                     });
-            if (url.contains("recommend")) {
+            if (type != null && type.equals("recommend")) {
                 swipeRefreshLayout.setPullToRefreshEnabled(true);
             } else {
                 swipeRefreshLayout.setPullToRefreshEnabled(false);
@@ -466,14 +458,12 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private View createHeaderView() {
         View headerView = LayoutInflater.from(swipeRefreshLayout.getContext()).inflate(
-                R.layout.bookstore_refresh_header, null);
-        pgbar_head_loading = (ProgressBar) headerView.findViewById(R.id.pgbar_refresh_loading);
-        txt_head_prompt = (TextView) headerView.findViewById(R.id.txt_refresh_prompt);
-        txt_head_prompt.setText("下拉刷新");
-        img_head_arrow = (ImageView) headerView.findViewById(R.id.img_refresh_arrow);
-        img_head_arrow.setVisibility(View.VISIBLE);
-        img_head_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow);
-        pgbar_head_loading.setVisibility(View.GONE);
+                R.layout.bookshelf_refresh_header, null);
+        img_head = headerView.findViewById(R.id.img_head);
+        img_anim = headerView.findViewById(R.id.img_anim);
+        img_head.setVisibility(View.VISIBLE);
+        img_anim.setVisibility(View.GONE);
+        img_head.setImageResource(R.drawable.pull_light_0);
         return headerView;
     }
 

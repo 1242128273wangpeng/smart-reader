@@ -617,8 +617,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     fun setFontSize() {
-        txt_setting_text_size.setText(readerSettings.fontSize.toString())
-//        skbar_reader_font_size.setProgress(readerSettings.fontSize.toFloat())
+        txt_setting_text_size.text = readerSettings.fontSize.toString()
     }
 
     fun changeChapter(sequence: Int) {

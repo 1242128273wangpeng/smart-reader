@@ -1,8 +1,7 @@
-package com.intelligent.reader.reader.v2
+package com.dy.reader.animation
 
 import android.graphics.PointF
 import android.opengl.GLSurfaceView
-import android.view.SoundEffectConstants
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Scroller
 import com.dy.reader.data.DataProvider
@@ -10,6 +9,7 @@ import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.flip.Status
 import com.dy.reader.helper.AppHelper
+import com.dy.reader.page.GLPage
 import com.dy.reader.page.PageManager
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus

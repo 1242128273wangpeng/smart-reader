@@ -25,8 +25,7 @@ import com.dy.reader.mode.NovelLineBean
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
-import com.intelligent.reader.read.mode.NovelPageBean
-import com.orhanobut.logger.Logger
+import com.dy.reader.mode.NovelPageBean
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
