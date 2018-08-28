@@ -4,7 +4,7 @@
     android:id="@+id/remove_delete_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fafafa">
+    >
 
     <View
         android:id="@+id/view_devider"
@@ -16,8 +16,8 @@
         android:id="@+id/ll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fafafa"
         android:layout_below="@+id/view_devider"
+        android:background="#fafafa"
         android:orientation="horizontal">
 
         <RelativeLayout

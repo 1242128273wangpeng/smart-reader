@@ -6,6 +6,7 @@
     <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
     <string name="debug_reset_book_shelf">重置获取默认书架</string>
     <string name="debug_update_chapter">更新章节</string>
+    <string name="debug_show_toast">打点Toast</string>
 
     <string name="debug_api_host">智能API接口:</string>
     <string name="debug_web_host">WebView接口:</string>
@@ -36,6 +37,15 @@
     <string name="market_go">去评分</string>
     <string name="about">关于</string>
     <string name="slogan">全本小说免费看</string>
+    <string name="book_update_push_subtitle">更新推送</string>
+    <string name="book_update_push">书籍更新</string>
+    <string name="umeng_push_subtitle">消息推送</string>
+    <string name="umeng_push">消息通知</string>
+    <string name="push_voice_subtitle">推送设置</string>
+    <string name="push_voice">推送声音</string>
+    <string name="push_time_dialog_title">时间设置</string>
+    <string name="push_time_dialog_confirm">设置</string>
+    <string name="push_time_dialog_cancel">取消</string>
 
     <!--Reader Page Operation-->
     <string name="origin_text">原网页</string>

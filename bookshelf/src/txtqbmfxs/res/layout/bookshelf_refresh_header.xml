@@ -32,6 +32,7 @@
         android:layout_toLeftOf="@id/txt_refresh_prompt"
         android:layout_toStartOf="@id/txt_refresh_prompt"
         android:contentDescription="@string/module_name"
+        android:src="@drawable/refresh_down_arrow_icon"
         android:textColor="#FF999C9E"/>
 
 </RelativeLayout>

@@ -24,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/top_back"/>
+                android:src="@drawable/icon_back_left"/>
 
             <ImageView
                 android:id="@+id/img_search"
@@ -126,18 +126,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!--搜索结果-->
+
             <WebView
-                android:id="@+id/wv_search_result"
+                android:id="@+id/search_result_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </WebView>
 
         </RelativeLayout>
 
-        <!--自动补全布局-->
+        <!--根布局-->
 
         <FrameLayout
-            android:id="@+id/fl_search_auto_hint"
+            android:id="@+id/search_result_hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/base_bg">

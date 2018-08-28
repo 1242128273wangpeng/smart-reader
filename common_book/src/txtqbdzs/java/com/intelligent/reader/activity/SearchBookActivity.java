@@ -6,6 +6,7 @@ import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.util.SearchViewHelper;
+import com.intelligent.reader.view.SearchSubBookDialog;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.HWEditText;

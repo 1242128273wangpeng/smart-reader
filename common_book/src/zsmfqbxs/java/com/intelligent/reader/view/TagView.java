@@ -178,13 +178,13 @@ public class TagView extends View {
 
         if (!TextUtils.isEmpty(tag.getSuperscript())) {
             switch (tag.getSuperscript()) {
-                case HotWordBean.HOT_TAG:
+                case "热":
                     mCornerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_search_hot);
                     break;
-                case HotWordBean.RECOMMEND_TAG:
+                case "荐":
                     mCornerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_search_recommend);
                     break;
-                case HotWordBean.NEW_TAG:
+                case "新":
                     mCornerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_search_new);
                     break;
                 default:

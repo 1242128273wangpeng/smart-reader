@@ -24,7 +24,8 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                                                  private var bookFixDao: BookFixDao,
                                                  private var bookmarkDao: BookmarkDao,
                                                  private var historyDao: HistoryDao,
-                                                 private var searchDao: SearchDao) : BookDataProvider {
+                                                 private var searchDao: SearchDao,
+                                                 private var userDao: UserDao) : BookDataProvider {
 
     companion object {
         private var database: BookDatabase? = null
@@ -39,7 +40,8 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                         database!!.fixBookDao(),
                         database!!.bookmarkDao(),
                         database!!.historyDao(),
-                        database!!.searchDao())
+                        database!!.searchDao(),
+                        database!!.userDao())
 
             }
 
@@ -61,30 +63,37 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
                     try {
                         migrateTable(oldDB, "tb_history_info", providerHelper.historyDao, HistoryInfo::class.java)
                         it.onNext(70)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     try {
                         migrateTable(oldDB, "book_fix", providerHelper.bookFixDao, BookFix::class.java)
                         it.onNext(80)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     try {
                         migrateTable(oldDB, "search_recommend", providerHelper.searchDao, SearchRecommendBook.DataBean::class.java)
                         it.onNext(90)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
 
                     try {
-                        migrateTable(oldDB, "book_mark", providerHelper.bookmarkDao, Bookmark::class.java)
-                        it.onNext(100)
-                    }catch (e:Exception){
+                        migrateTable(oldDB, "user", providerHelper.userDao, LoginRespV4::class.java)
+                        it.onNext(95)
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
+                    try {
+                        migrateTable(oldDB, "book_mark", providerHelper.bookmarkDao, Bookmark::class.java)
+                        it.onNext(100)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
 
                     //context.deleteDatabase(dbName)
 
@@ -157,6 +166,12 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     override fun deleteBooks(books: List<Book>, context: Context) {
         books.forEach {
             deleteBook(it.book_id, context)
+        }
+    }
+
+    override fun deleteBooksById(books: List<Book>) {
+        books.forEach {
+            bookdao.deleteBookById(it.id)
         }
     }
 
@@ -249,6 +264,10 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     override fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
         bookmarkDao.deleteByExatly(book_id, sequence, offset)
     }
+    @Synchronized
+    fun deleteAllBookMark(){
+        bookmarkDao.deleteAllMarks()
+    }
 
     @Synchronized
     override fun getBookMarks(book_id: String): ArrayList<Bookmark> {
@@ -271,6 +290,11 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     }
 
     @Synchronized
+    fun insertHistoryInfo(hisInfo:HistoryInfo){
+        historyDao.insertHistoryInfo(hisInfo)
+    }
+
+    @Synchronized
     override fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
         return historyDao.insertHistoryInfo(historyInfo) > 0
     }
@@ -279,5 +303,18 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     override fun deleteSmallTimeHistory() {
         historyDao.deleteSmallTime()
     }
+
+    fun insertOrUpdate(user: LoginRespV4) {
+        userDao.insertOrUpdate(user)
+    }
+
+    fun queryLoginUser(): LoginRespV4 {
+        return userDao.queryUserInfo()
+    }
+
+    fun deleteLoginUser() {
+        userDao.deleteUsers()
+    }
+
 
 }

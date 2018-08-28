@@ -4,6 +4,8 @@ import android.support.annotation.StringRes;
 import android.widget.Toast;
 
 import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.topsnackbar.TopSnackBarUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +27,11 @@ public class CommonUtil {
      * 展示Toast
      * **/
     public static void showToastMessage(@StringRes int id) {
+        if ("cn.mfxsqbyd.reader".equals(AppUtils.getPackageName())) {
+            TopSnackBarUtils.INSTANCE.show(id);
+            return;
+        }
+
         if (mToast == null) {
             mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), id, Toast.LENGTH_SHORT);
             mToast.show();
@@ -39,6 +46,10 @@ public class CommonUtil {
      * 展示Toast
      * **/
     public static void showToastMessage(String message) {
+        if ("cn.mfxsqbyd.reader".equals(AppUtils.getPackageName())) {
+            TopSnackBarUtils.INSTANCE.show(message);
+            return;
+        }
         if (mToast == null) {
             mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), message, Toast.LENGTH_SHORT);
             mToast.show();

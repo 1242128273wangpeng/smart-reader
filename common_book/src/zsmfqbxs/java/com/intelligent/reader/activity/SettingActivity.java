@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +30,7 @@ import com.ding.basic.bean.LoginResp;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
+import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
@@ -56,6 +59,7 @@ import java.util.Map;
 import de.greenrobot.event.EventBus;
 import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
+import swipeback.ActivityLifecycleHelper;
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
@@ -142,6 +146,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     private Button btn_logout;
     private ImageView img_head_background;
     private TextView txt_login_des;
+    private boolean isFromPush = false;
 
     @Override
     public void onCreate(Bundle paramBundle) {
@@ -404,6 +409,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         cacheAsyncTask.execute();
         String versionName = AppUtils.getVersionName();
         check_update_message.setText("V" + versionName);
+        isFromPush = getIntent().getBooleanExtra(IS_FROM_PUSH, false);
     }
 
     @Override
@@ -487,8 +493,10 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
             case R.id.disclaimer_statement_rl:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PROCTCOL);
-                RouterUtil.INSTANCE.navigation(this,RouterConfig.DISCLAIMER_ACTIVITY);
-//                IntentUtils.INSTANCE.start(this, DisclaimerActivity.class,IntentUtils.INSTANCE.isFormDisclaimerPage(),true,false);
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
                 break;
             case R.id.rl_history_setting:
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.PERSON_HISTORY);
@@ -678,6 +686,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME);
         themIntent.putExtras(bundle);
         startActivity(themIntent);
+        finish();
     }
 
     private void dismissDialog() {
@@ -694,19 +703,20 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         SharedPreferences.Editor edit = sharedPreferences.edit();
         if(view.getId() == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE);
+            ReaderSettings.Companion.getInstance().initValues();
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day);
-                edit.putInt("current_light_mode", Constants.MODE);
-                Constants.MODE = 61;
+                ReaderSettings.Companion.getInstance().setReadLightThemeMode( ReaderSettings.Companion.getInstance().getReadThemeMode());
+                ReaderSettings.Companion.getInstance().setReadThemeMode(61);
                 mThemeHelper.setMode(ThemeMode.NIGHT);
             } else {
                 tv_night_shift.setText(R.string.mode_night);
-                edit.putInt("current_night_mode", Constants.MODE);
-                Constants.MODE = sharedPreferences.getInt("current_light_mode", 51);
+                ReaderSettings.Companion.getInstance().setReadThemeMode(ReaderSettings.Companion.getInstance().getReadLightThemeMode());
                 mThemeHelper.setMode(ThemeMode.THEME1);
             }
             edit.putInt("content_mode", Constants.MODE);
             edit.apply();
+            ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
         }else if(view.getId() == R.id.bt_wifi_auto){
             edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);
@@ -743,7 +753,20 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        //离线消息 跳转到主页
+        Boolean isThemeChange = !currentThemeMode.equals(mThemeHelper.getMode()) || isStyleChanged;
+        if (!isThemeChange && isFromPush && ActivityLifecycleHelper.getActivities().size() <= 1) {
+            startActivity(new Intent(this, SplashActivity.class));
+        }
+    }
 
+    @Override
+    public boolean supportSlideBack() {
+        return ActivityLifecycleHelper.getActivities().size() > 1;
+    }
 
 
     private class CacheAsyncTask extends AsyncTask<Void, Void, String> {

@@ -535,8 +535,11 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 showChapterInfo(lastProgress)
 
+                val data = HashMap<String, String>()
+                data["bookid"] = ReaderStatus.book.book_id
+                data["chapterid"] = ReaderStatus.book.book_chapter_id
                 StartLogClickUtil.upLoadEventLog(context.applicationContext,
-                        StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.PROGRESSCANCLE)
+                        StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.PROGRESSCANCLE, data)
 
             }
             else -> {
@@ -940,8 +943,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun View.setMarginRight(rightMargin: Int) {
         val params = layoutParams
         if (params is MarginLayoutParams) {
-            params.rightMargin = rightMargin
-            requestLayout()
+            if(params.rightMargin != rightMargin) {
+                params.rightMargin = rightMargin
+                requestLayout()
+            }
         }
     }
 

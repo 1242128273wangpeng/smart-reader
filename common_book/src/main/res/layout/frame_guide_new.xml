@@ -1,57 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/fl_main"
+    android:layout_height="match_parent">
+
+    <ViewStub
+        android:id="@+id/stub_login"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    
+        android:layout_height="match_parent"/>
     <RelativeLayout
-            android:id="@+id/guide_root"
+        android:id="@+id/guide_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/guide_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_white_f2f3f7">
-        
-        <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:scaleType="center"-->
-        <!--android:id="@+id/guide_bg"-->
-        <!--android:layout_centerInParent="true"/>-->
-        
-        
-        <ImageView
-                android:id="@+id/guide_img"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:scaleType="fitXY"/>
-        
-        <!--<TextView-->
-        <!--android:id="@+id/guide_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:paddingBottom="24dp"-->
-        <!--android:paddingRight="21dp"-->
-        <!--android:text="进入 >>"-->
-        <!--android:textSize="14sp"-->
-        <!--android:textColor="@color/color_black_353535"/>-->
-        
-        <!--<ImageView-->
-        <!--android:id="@+id/guide_controller"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:src="@drawable/pagecontroller_1"-->
-        <!--android:scaleType="center"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:paddingBottom="25dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content" />-->
-    
-    
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            />
+
     </RelativeLayout>
-    
-    <ViewStub
-            android:id="@+id/stub_login"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 </FrameLayout>

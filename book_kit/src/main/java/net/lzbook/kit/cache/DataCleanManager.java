@@ -1,6 +1,7 @@
 package net.lzbook.kit.cache;
 
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.utils.OpenUDID;
 
 import android.content.Context;
 import android.os.Environment;
@@ -60,9 +61,6 @@ public class DataCleanManager {
     }
 
     public static void clearAllCache(final Context context) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
         File cache;
 
         cache = new File(ReplaceConstants.getReplaceConstants().APP_PATH);
@@ -76,8 +74,10 @@ public class DataCleanManager {
                 }
             }
         }
-//            }
-//        }).start();
+
+        //清除SD卡缓存后重新将UDID备份到SD卡中
+        //注意!这一步是必要的,保证清除缓存后立刻御卸应用UDID不会重复生成
+        OpenUDID.saveUDIDToSD(context);
 
     }
 

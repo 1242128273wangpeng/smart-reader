@@ -46,6 +46,8 @@ import java.util.concurrent.Callable
  */
 @Route(path = RouterConfig.CATALOGUES_ACTIVITY)
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, OnItemClickListener, CataloguesContract {
+
+
     var type = 2
     internal var colorSelected: Int = 0
     internal var colorNormal: Int = 0
@@ -423,14 +425,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private fun startDeleteBookmarks(currentView: View, list: ArrayList<Int>) {
         if (list.size > 0) {
             val mDialog = MyDialog(this@CataloguesActivity, R.layout.publish_hint_dialog, Gravity.CENTER, true)
-            val dialog_prompt = mDialog.findViewById(R.id.dialog_title) as TextView
+            val dialog_prompt = mDialog.findViewById<TextView>(R.id.dialog_title)
             dialog_prompt.setText(R.string.prompt)
-            val dialog_information = mDialog.findViewById(R.id.publish_content) as TextView
+            val dialog_information = mDialog.findViewById<TextView>(R.id.publish_content)
             dialog_information.setText(R.string.determine_remove_bookmark)
             dialog_information.gravity = Gravity.CENTER
-            val dialog_cancel = mDialog.findViewById(R.id.publish_stay) as Button
+            val dialog_cancel = mDialog.findViewById<Button>(R.id.publish_stay)
             dialog_cancel.setText(R.string.cancel)
-            val dialog_confirm = mDialog.findViewById(R.id.publish_leave) as Button
+            val dialog_confirm = mDialog.findViewById<Button>(R.id.publish_leave)
             dialog_confirm.setText(R.string.delete)
             dialog_confirm.setOnClickListener {
                 if (currentView === tab_bookmark) {
@@ -564,7 +566,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun changeDownloadButtonStatus() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun insertBookShelfResult(result: Boolean) {
+    }
+
+    override fun changeShelfButtonClickable(clickable: Boolean) {
+    }
+
+    override fun bookSubscribeState(subscribe: Boolean) {
+    }
 }

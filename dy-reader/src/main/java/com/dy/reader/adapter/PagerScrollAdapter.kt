@@ -15,6 +15,7 @@ import com.ding.basic.bean.Chapter
 import com.dy.media.MediaConfig
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
+import com.dy.reader.Reader
 import com.dy.reader.helper.ReadSeparateHelper
 import com.dy.reader.holder.HomePagerHolder
 import com.dy.reader.mode.NovelLineBean
@@ -266,7 +267,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     fl_reader_content_ad.visibility = View.VISIBLE
                     val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     if (this.parent != null) {
-                        (this.tag as ViewGroup).removeAllViews()
+                        (this.tag as ViewGroup?)?.removeAllViews()
                     }
                     this.tag = fl_reader_content_ad
                     fl_reader_content_ad.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
@@ -338,11 +339,13 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
             txt_reader_loading_chapter.setTextColor(textColor)
             txt_reader_loading_sequence.setTextColor(textColor)
 
-            val loadSequence = if (type == HEADER_ITEM_TYPE) {
+            var loadSequence = if (type == HEADER_ITEM_TYPE) {
                 ReaderStatus.position.group - 1
             } else {
                 ReaderStatus.position.group + 1
             }
+
+            loadSequence = Math.max(0, loadSequence)
 
             if (allChapterList?.size ?: 0 > loadSequence) {
                 allChapterList?.let {

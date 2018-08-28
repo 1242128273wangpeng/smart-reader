@@ -15,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.dingyue.contract.router.RouterConfig;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -24,6 +26,7 @@ import com.intelligent.reader.R;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
+@Route(path = RouterConfig.SWITCH_AD_ACTIVITY)
 public class SwitchSplashAdActivity extends Activity {
 
     private boolean canBack = false;

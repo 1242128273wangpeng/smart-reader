@@ -15,7 +15,7 @@
         <LinearLayout
                 android:id="@+id/book_cover_bottom_btns"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_alignParentBottom="true"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -172,7 +172,7 @@
                                         android:id="@+id/book_cover_category2"
                                         android:layout_width="@dimen/dimen_height_50"
                                         android:layout_height="@dimen/dimen_height_20"
-                                        android:text="玄幻"
+                                        android:text="其他"
                                         android:gravity="center"
                                         android:singleLine="true"
                                         android:textColor="@color/base_bg"
@@ -212,7 +212,7 @@
                             android:textColor="@color/cover_profile_title_color"
                             android:textSize="14sp"/>
 
-                    <com.intelligent.reader.view.ExpandableTextView2
+                    <com.intelligent.reader.view.ExpandableTextView
                             android:id="@+id/book_cover_description"
                             android:layout_width="match_parent"
                             android:layout_marginTop="@dimen/margin_10"
@@ -246,7 +246,7 @@
                                 android:layout_marginTop="@dimen/dimen_radius_10"
                                 android:text="展开"
                                 android:background="@android:color/transparent"/>
-                    </com.intelligent.reader.view.ExpandableTextView2>
+                    </com.intelligent.reader.view.ExpandableTextView>
                 </RelativeLayout>
 
                 <View
@@ -404,7 +404,7 @@
                             android:id="@+id/book_cover_category"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="玄幻"
+                            android:text="其他"
                             android:singleLine="true"
                             android:layout_marginLeft="@dimen/margin_10"
                             android:layout_toRightOf="@id/book_cover_category_title"

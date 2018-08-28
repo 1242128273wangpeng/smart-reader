@@ -29,23 +29,26 @@
             android:textSize="18sp"
             android:textStyle="bold"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#F1F1F1"/>
         <RelativeLayout
             android:id="@+id/rl_change_source_statement"
             android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txt_transform_read_content"
                 android:layout_width="match_parent"
+                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="5dp"
                 android:ellipsize="end"
-                android:gravity="left|center"
+                android:gravity="center"
                 android:lineSpacingMultiplier="1.5"
                 android:maxLines="4"
+                android:layout_margin="10dp"
                 android:padding="@dimen/padding_4"
                 android:text="@string/translate_code_read"
                 android:textColor="#282828"

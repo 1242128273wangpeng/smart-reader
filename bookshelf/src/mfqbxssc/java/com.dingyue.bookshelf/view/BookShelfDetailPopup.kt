@@ -4,11 +4,11 @@ import android.app.Activity
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.WindowManager
+import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.BookShelfDetailAdapter
 import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
 import kotlinx.android.synthetic.mfqbxssc.popup_book_detail.view.*
-import net.lzbook.kit.data.bean.Book
 
 /**
  * Desc 书籍详情弹窗

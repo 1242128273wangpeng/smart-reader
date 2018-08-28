@@ -60,6 +60,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun onNewIntent(intent: Intent) {
+        if (txt_book_detail_shelf != null) {
+            txt_book_detail_shelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
+        coverPagePresenter?.destroy()
         initializeIntent(intent)
     }
 

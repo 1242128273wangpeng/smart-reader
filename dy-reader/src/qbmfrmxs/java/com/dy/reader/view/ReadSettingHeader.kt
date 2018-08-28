@@ -143,8 +143,11 @@ class ReadSettingHeader : FrameLayout {
                 ll_add_bookshelf.visibility = View.GONE
                 context.showToastMessage(R.string.add_bookshelf_success)
             }
+            val data = HashMap<String, String>()
+            data["bookid"] = ReaderStatus.book.book_id
+            data["chapterid"] = ReaderStatus.book.book_chapter_id
             StartLogClickUtil.upLoadEventLog(context.applicationContext,
-                    StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SHELFADD)
+                    StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SHELFADD, data)
         }
 
         // 初始化动画

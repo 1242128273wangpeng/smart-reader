@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_gravity="center"
+        android:focusable="true"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:id="@id/container"
+            android:background="@drawable/dialog_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+        <TextView
+                android:textSize="18sp"
+                android:textColor="@color/color_black_323232"
+                android:gravity="center"
+                android:id="@+id/dialog_top_title"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/dialog_title_tip"/>
+
+        <View
+                android:background="@color/color_gray_e8e8e8"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
+
+        <TextView
+                android:textSize="15sp"
+                android:textColor="@color/color_black_323232"
+                android:gravity="center"
+                android:id="@+id/dialog_book_name"
+                android:padding="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginRight="20dp"
+                android:text="《霸占新妻：总裁大人太用力》缓存任务已完成, 但部分章节无法缓存"
+                android:lineSpacingExtra="6dp"/>
+
+        <RelativeLayout
+                android:id="@id/change_source_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+            <TextView
+                    android:textSize="@dimen/dimen_text_16"
+                    android:textColor="@drawable/dialog_confirm_selector"
+                    android:gravity="center"
+                    android:id="@+id/cache_gotosee"
+                    android:background="@drawable/dialog_bottom_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="我知道了"/>
+
+            <View
+                    android:background="@color/color_gray_e8e8e8"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/container"
+            android:layout_alignTop="@id/container"
+            android:layout_alignRight="@id/container"
+            android:layout_alignBottom="@id/container"
+            app:cornerRadius="4dp"/>
+</RelativeLayout>

@@ -85,21 +85,23 @@ object ReadMediaManager {
         }
         val last = page.last()
         val contentHeight = if (last.lines.isNotEmpty()) last.height.toInt() else 0
-        if (readerSettings.animation != GLReaderView.AnimationType.LIST) {//check 8-1 adView
-            val leftSpace = AppHelper.screenHeight - contentHeight - (AppHelper.screenDensity.times(15)).toInt()
-            if (leftSpace >= 200 && small) {
-                last.adType = generateAdType(group, page.size - 1)
-                requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
-            }
-        } else if (!readerSettings.isLandscape) {//6-3 adView
-            mActivity?.get()?.apply {
-                last.adType = generateAdType(group, page.size - 1)
+        if (small) {
+            if (readerSettings.animation != GLReaderView.AnimationType.LIST) {//check 8-1 adView
+                val leftSpace = AppHelper.screenHeight - contentHeight - (AppHelper.screenDensity.times(15)).toInt()
+                if (leftSpace >= 200) {
+                    last.adType = generateAdType(group, page.size - 1)
+                    requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
+                }
+            } else if (!readerSettings.isLandscape) {//6-3 adView
+                mActivity?.get()?.apply {
+                    last.adType = generateAdType(group, page.size - 1)
 //            requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
-                val adMark = generateAdMark(8, 10)
-                MediaControl.dycmNativeAd(this, adMark, null, { switch, view, jsonResult ->
-                    this@ReadMediaManager.mediaAction(last.adType, adMark,
-                            (AppHelper.screenHeight - last.height).toInt(), tonken, switch, view, jsonResult)
-                })
+                    val adMark = generateAdMark(8, 10)
+                    MediaControl.dycmNativeAd(this, adMark, null, { switch, view, jsonResult ->
+                        this@ReadMediaManager.mediaAction(last.adType, adMark,
+                                (AppHelper.screenHeight - last.height).toInt(), tonken, switch, view, jsonResult)
+                    })
+                }
             }
         }
 

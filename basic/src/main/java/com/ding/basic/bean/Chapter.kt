@@ -89,6 +89,20 @@ open class Chapter : Serializable {
 
     constructor()
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        } else {
+            if (other is Chapter) {
+                if ("" != other.chapter_id) {
+                    return other.chapter_id == this.chapter_id
+                }
+            }
+        }
+
+        return false
+    }
+
     override fun toString(): String {
         return "Chapter(book_id='$book_id', book_source_id='$book_source_id', book_chapter_id='$book_chapter_id', chapter_id='$chapter_id', serial_number=$serial_number, name=$name, url=$url, update_time=$update_time, word_count=$word_count, vip=$vip, content=$content, price=$price, sequence=$sequence, host=$host, chapter_status=$chapter_status, status=$status, chargeChapter=$chargeChapter, purchase=$purchase, gold=$gold, autoFlag=$autoFlag, exContent=$exContent)"
     }

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFFFF"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:id="@+id/rl_head_normal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <ImageView
+                android:id="@+id/img_head_setting"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dp"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_setting_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/bookshelf"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/img_download_manager"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="14dp"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_cache_icon" />
+
+            <ImageView
+                android:id="@+id/img_head_search"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="22dp"
+                android:layout_toLeftOf="@id/img_download_manager"
+                android:contentDescription="@string/module_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_head_search_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_head_remove"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentTop="true"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/img_remove_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:src="@drawable/bookshelf_head_back_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="@string/bookshelf_edit"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_remove_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:text="@string/cancel"
+                android:textColor="#FFFFFFFF"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+        android:id="@+id/srl_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_head">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recl_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alwaysDrawnWithCache="false"
+            android:clipToPadding="false"
+            android:paddingTop="10dp" />
+    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_ad_float"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="10dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/bookshelf_empty_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="#991D1C1C"
+            android:text="@string/bookshelf_empty_prompt"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="59dp"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_login"
+                android:text="@string/login"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/bookshelf_empty_login_bg"
+                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginRight="35dp"
+                android:layout_width="120dp"
+                android:layout_height="36dp"/>
+
+            <Button
+                android:id="@+id/btn_find"
+                android:text="@string/bookshelf_empty_find"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@drawable/bookshelf_empty_find_bg"
+                android:textSize="14sp"
+                android:textColor="@color/primary"
+                android:layout_width="120dp"
+                android:layout_height="36dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

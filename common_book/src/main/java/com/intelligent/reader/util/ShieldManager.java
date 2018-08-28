@@ -103,9 +103,9 @@ public class ShieldManager {
 
     private void initBook() {
         LoadDataManager loadDataManager = new LoadDataManager(context);
-        if (!sharedPreUtil.getBoolean(SharedPreUtil.Companion.getADD_DEFAULT_BOOKS())) {
+        if (!sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS)) {
             // 首次安装新用户添加默认书籍
-            loadDataManager.addDefaultBooks();
+            loadDataManager.addDefaultBooks(Constants.SGENDER);
         }
     }
 

@@ -41,6 +41,7 @@
 
     <color name="whole_bg">#faf9f7</color>
     <color name="white">#ffffffff</color>
+    <color name="white_alpha">#4DFFFFFF</color>
     <color name="whole_text">#A8978D</color>
 
     <color name="reading_text_color_seventh">#21495B</color>

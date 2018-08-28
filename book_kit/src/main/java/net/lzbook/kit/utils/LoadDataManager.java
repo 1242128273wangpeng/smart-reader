@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.ActionConstants;
@@ -27,13 +28,13 @@ public class LoadDataManager {
     }
 
     //初始化书架，添加默认书籍
-    public void addDefaultBooks() {
+    public void addDefaultBooks(int sex) {
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDefaultBooks(new RequestSubscriber<Boolean>() {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestDefaultBooks(sex,new RequestSubscriber<Boolean>() {
             @Override
             public void requestResult(Boolean result) {
                 if (result) {
-                    sharedPreferencesUtils.putBoolean(Constants.ADD_DEFAULT_BOOKS, true);
+                    sharedPreferencesUtils.putBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS, true);
 
                     try {
                         Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);

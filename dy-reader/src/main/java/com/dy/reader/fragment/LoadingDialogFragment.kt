@@ -12,7 +12,7 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.util.ThemeUtil
-import kotlinx.android.synthetic.qbmfrmxs.frag_loading_dialog.*
+import kotlinx.android.synthetic.main.frag_loading_dialog.*
 
 class LoadingDialogFragment : DialogFragment() {
 
@@ -45,10 +45,10 @@ class LoadingDialogFragment : DialogFragment() {
         dialog.setCanceledOnTouchOutside(true)
 
 
-        dialog.txt_loading_prompt?.setTextColor(Reader.context.resources.getColor(ThemeUtil.modeLoadTextColor))
+//        dialog.txt_loading_prompt?.setTextColor(Reader.context.resources.getColor(ThemeUtil.modeLoadTextColor))
 
-        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.rl_loading_content)
-        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.rl_loading_error)
+//        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.rl_loading_content)
+//        ThemeUtil.getModePrimaryBackground(activity.resources, dialog.rl_loading_error)
 
 
         dialog.setCancelable(false)
@@ -65,18 +65,9 @@ class LoadingDialogFragment : DialogFragment() {
         })
         dialog.setOnShowListener({
             if (DialogType.LOADING == dialogType) {
-                dialog.rl_loading_error?.visibility = View.GONE
-                dialog.rl_loading_content?.visibility = View.VISIBLE
+                showLoading()
             } else {
-                dialog.rl_loading_error?.visibility = View.VISIBLE
-                dialog.rl_loading_content?.visibility = View.GONE
-                dialog.txt_loading_error_reload?.setOnClickListener({
-                    dialog.rl_loading_error?.visibility = View.GONE
-                    dialog.rl_loading_content?.visibility = View.VISIBLE
-                    AppHelper.mainHandler.postDelayed({
-                        callback?.invoke()
-                    }, 500)
-                })
+                showReload()
             }
         })
 
@@ -88,7 +79,7 @@ class LoadingDialogFragment : DialogFragment() {
     @Volatile
     var isShowing = false
 
-    var fm: FragmentManager ?= null
+    var fm: FragmentManager? = null
 
     fun show(type: DialogType, retry: (() -> Unit)? = null) {
         try {
@@ -102,22 +93,37 @@ class LoadingDialogFragment : DialogFragment() {
                 }
             } else if (isDialogShowing()) {
                 if (DialogType.LOADING == dialogType) {
-                    dialog?.rl_loading_error?.visibility = View.GONE
-                    dialog?.rl_loading_content?.visibility = View.VISIBLE
+                    showLoading()
                 } else {
-                    dialog?.rl_loading_error?.visibility = View.VISIBLE
-                    dialog?.rl_loading_content?.visibility = View.GONE
-                    dialog?.txt_loading_error_reload?.setOnClickListener({
-                        dialog?.rl_loading_error?.visibility = View.GONE
-                        dialog?.rl_loading_content?.visibility = View.VISIBLE
-                        AppHelper.mainHandler.postDelayed({
-                            retry?.invoke()
-                        }, 500)
-                    })
+                    showReload()
                 }
             }
         } catch (e: Exception) {
         }
+    }
+
+    /**
+     * 显示加载布局
+     */
+    fun showLoading() {
+        dialog?.ll_loading_content?.visibility = View.VISIBLE
+        dialog?.ll_reload_content?.visibility = View.GONE
+    }
+
+    /**
+     * 显示重新加载布局
+     */
+    fun showReload() {
+        dialog?.ll_loading_content?.visibility = View.GONE
+        dialog?.ll_reload_content?.visibility = View.VISIBLE
+        dialog?.ll_reload_content?.setOnClickListener({
+            showLoading()
+            AppHelper.mainHandler.postDelayed({
+                callback?.invoke()
+            }, 500)
+        })
+
+
     }
 
     override fun onDismiss(dialog: DialogInterface?) {

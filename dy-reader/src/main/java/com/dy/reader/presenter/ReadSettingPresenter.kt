@@ -220,7 +220,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             showToastShort(R.string.read_changesource_tip)
             return
         }
-        if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+        if (ReaderStatus.book.fromQingoo()) {
             showToastShort("该小说暂无其他来源！")
             return
         }
@@ -340,6 +340,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 //            (activity.get() as ReaderActivity).showMenu(false)
         }
         val bundle = Bundle()
+        bundle.putString("author", ReaderStatus.book.author)
         bundle.putString("book_id", ReaderStatus.book.book_id)
         bundle.putString("book_source_id", ReaderStatus.book.book_source_id)
         bundle.putString("book_chapter_id", ReaderStatus.book.book_chapter_id)
@@ -388,12 +389,13 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
         if (activity?.get()?.mThemeHelper!!.isNight) {
             //夜间模式只有一种背景， 不能存储
-            //            edit.putInt("current_night_mode", ReadConfig.readThemeMode);
+//            edit.putInt("current_night_mode", ReaderSettings.instance.readThemeMode)
             if (useLightMode) {
                 ReaderSettings.instance.readThemeMode = sharedPreferences.getInt("current_light_mode", 51)
             } else {
                 ReaderSettings.instance.readThemeMode = mode
             }
+
             activity?.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
             data.put("type", "2")
             StartLogClickUtil.upLoadEventLog(activity?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
@@ -464,7 +466,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         val book = ReaderStatus.book
         chapterErrorBean.bookName = getEncode(book.name!!)
         chapterErrorBean.author = getEncode(book.author!!)
-        chapterErrorBean.channelCode = if (Constants.QG_SOURCE == book.host) "1" else "2"
+        chapterErrorBean.channelCode = if (book.fromQingoo()) "1" else "2"
         var currChapter: Chapter? = null
         if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {
             val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id!!)

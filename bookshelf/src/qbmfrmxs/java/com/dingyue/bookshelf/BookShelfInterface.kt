@@ -12,7 +12,9 @@ interface BookShelfInterface {
 
     fun changeHomePagerIndex(index: Int)
 
-    fun changeDrawerLayoutState()
+    fun changeDrawerLayoutState() {}
+
+    fun lockDrawerLayout(isToLock: Boolean){}
 
     fun checkShowShelfGuide()
 }

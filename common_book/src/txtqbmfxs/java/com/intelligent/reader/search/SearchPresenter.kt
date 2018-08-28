@@ -1,19 +1,23 @@
 package com.intelligent.reader.search
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
-import android.widget.Toast
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestService
 import com.ding.basic.request.RequestSubscriber
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
+import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.FindBookDetail
@@ -22,7 +26,6 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.statistic.alilog
@@ -30,18 +33,14 @@ import net.lzbook.kit.statistic.buildSearch
 import net.lzbook.kit.statistic.model.Search
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.JSInterfaceHelper
-import net.lzbook.kit.utils.SharedPreferencesUtils
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
 
-/**
- * Created by yuchao on 2017/8/2 0002.
- */
 
-class SearchPresenter(private val activity: SearchBookActivity,
-                      private val mContext: Context,
+class SearchPresenter(private val mContext: SearchBookActivity,
                       override var view: SearchView.AvtView?) : IPresenter<SearchView.AvtView> {
 
     private val wordInfoMap = HashMap<String, WordInfo>()
@@ -56,6 +55,11 @@ class SearchPresenter(private val activity: SearchBookActivity,
 
     private var searchSuggestCallBack: SearchSuggestCallBack? = null
     private var transmitBean: SearchAutoCompleteBeanYouHua? = null
+    private var shareUtil: SharedPreUtil? = null
+
+    init {
+        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+    }
 
     private inner class WordInfo {
         internal var actioned = false
@@ -94,18 +98,34 @@ class SearchPresenter(private val activity: SearchBookActivity,
                             val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.authors!![i].suggest
                             searchCommonBean.wordtype = result.data!!.authors!![i].wordtype
+                            searchCommonBean.image_url = ""
+                            searchCommonBean.isAuthor = result.data!!.authors!![i].isAuthor
                             resultSuggest.add(searchCommonBean)
                         }
                         for (i in 0 until result.data!!.label!!.size) {
                             val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.label!![i].suggest
                             searchCommonBean.wordtype = result.data!!.label!![i].wordtype
+                            searchCommonBean.image_url = ""
                             resultSuggest.add(searchCommonBean)
                         }
                         for (i in 0 until result.data!!.name!!.size) {
                             val searchCommonBean = SearchCommonBeanYouHua()
-                            searchCommonBean.suggest = result.data!!.name!![i].suggest
-                            searchCommonBean.wordtype = result.data!!.name!![i].wordtype
+                            val nameBean = result.data!!.name!![i]
+
+                            searchCommonBean.suggest = nameBean.suggest
+                            searchCommonBean.wordtype = nameBean.wordtype
+                            searchCommonBean.image_url = nameBean.imgUrl
+
+                            searchCommonBean.host = nameBean.host
+                            searchCommonBean.book_id = nameBean.bookid
+                            searchCommonBean.book_source_id = nameBean.bookSourceId
+                            searchCommonBean.name = nameBean.bookName
+                            searchCommonBean.author = nameBean.author
+                            searchCommonBean.parameter = nameBean.parameter
+                            searchCommonBean.extra_parameter = nameBean.extraParameter
+                            searchCommonBean.bookType = nameBean.vip.toString() + ""
+
                             resultSuggest.add(searchCommonBean)
                         }
 
@@ -194,7 +214,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
         wordInfo?.computeUseTime()
     }
 
-    fun initJsInterfaceHelper(jsInterfaceHelper: JSInterfaceHelper?) {
+    fun initJSHelp(jsInterfaceHelper: JSInterfaceHelper?) {
 
         if (jsInterfaceHelper == null) {
             return
@@ -208,7 +228,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
             filterWord = filter_word
             sortType = sort_type
 
-            startLoadData()
+            startLoadData(0) //0代表不是作者
 
             view?.onJsSearch()
         }
@@ -230,16 +250,81 @@ class SearchPresenter(private val activity: SearchBookActivity,
             val intent = Intent()
             intent.setClass(mContext, CoverPageActivity::class.java)
             val bundle = Bundle()
+            bundle.putString("author", author)
             bundle.putString("book_id", book_id)
             bundle.putString("book_source_id", book_source_id)
             intent.putExtras(bundle)
             mContext.startActivity(intent)
         }
 
+        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return@onAnotherWebClick
+            }
+            try {
+                if (url.contains(RequestService.AUTHOR_V4)) {
+                    shareUtil!!.putString(Constants.FINDBOOK_SEARCH,
+                            "author")//FindBookDetail 返回键时标识
+                }
+                val intent = Intent()
+                intent.setClass(mContext, FindBookDetail::class.java)
+                intent.putExtra("url", url)
+                intent.putExtra("title", name)
+                mContext.startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
+
+        jsInterfaceHelper.setSearchWordClick(JSInterfaceHelper.onSearchWordClick { searchWord, search_type ->
+            word = searchWord
+            searchType = search_type
+
+            startLoadData(0)
+
+            view?.onNoneResultSearch(searchWord)
+        })
+
+        jsInterfaceHelper.setOnTurnRead(JSInterfaceHelper.onTurnRead { book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, serial_number, img_url, update_time, desc, label, status, bookType ->
+
+
+            val book = Book()
+            book.book_id = book_id
+            book.book_source_id = book_source_id
+            book.host = host
+            book.author = author
+            book.name = name
+            book.last_chapter?.name = last_chapter_name
+            book.chapter_count = serial_number
+            book.img_url = img_url
+            book.last_chapter?.update_time = update_time
+            book.sequence = -1
+            book.desc = desc
+            book.label = label
+
+            book.status = status
+
+            //bookType为是否付费书籍标签 除快读外不加
+
+            FootprintUtils.saveHistoryShelf(book)
+            val bundle = Bundle()
+
+            bundle.putInt("sequence", 0)
+            bundle.putInt("offset", 0)
+            bundle.putSerializable("book", book)
+            RouterUtil.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle)
+        })
+
         jsInterfaceHelper.setOnEnterRead { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
             val coverBook = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
                     updateTime, parameter, extra_parameter, dex)
-            BookRouter.navigateCoverOrRead(activity, coverBook, 0)
+
+            val bundle = Bundle()
+            bundle.putInt("sequence", 0)
+            bundle.putInt("offset", 0)
+            bundle.putSerializable("book", coverBook)
+
+            RouterUtil.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle)
         }
 
         val booksOnLine = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
@@ -268,7 +353,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
             if (succeed > 0) {
-                Toast.makeText(mContext.applicationContext, R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show()
+                mContext.showToastMessage(R.string.bookshelf_insert_success)
             }
         }
 
@@ -276,7 +361,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
             CacheManager.stop(book_id)
             CacheManager.resetTask(book_id)
-            Toast.makeText(mContext.applicationContext, R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show()
+            mContext.showToastMessage(R.string.bookshelf_delete_success)
         }
     }
 
@@ -317,7 +402,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
 
             val params = HashMap<String, String>()
             params.put("author", searchWord!!)
-            mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord
+            mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord
             try {
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                 sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH, "author").apply()//FindBookDetail 返回键时标识
@@ -343,7 +428,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
             params.put("wordType", searchType ?: "")
             params.put("searchEmpty", "1")
             AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType")
-            mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params)
+            mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params)
         }
 
         mUrl?.let {
@@ -373,7 +458,7 @@ class SearchPresenter(private val activity: SearchBookActivity,
         params.put("sort_type", sortType ?: "")
         Logger.e("$searchWord==$searchType==$filterType==$filterWord===$sortType")
 
-        mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params)
+        mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params)
 
         mUrl?.let {
             view?.onStartLoad(it)

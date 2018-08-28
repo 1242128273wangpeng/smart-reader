@@ -7,25 +7,23 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ding.basic.bean.Book
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.router.BookRouter
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.mfqbxssc.act_download_manager.*
 import kotlinx.android.synthetic.mfqbxssc.item_download_manager_task_header.view.*
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.Book
-import net.lzbook.kit.router.BookRouter
-import net.lzbook.kit.router.RouterConfig
-import net.lzbook.kit.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 
@@ -192,12 +190,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                         view.txt_state.text = "未缓存"
                     }
 
-                    if (position == 0) {
-                        view.v_divider.visibility = View.GONE
-                    } else {
-                        view.v_divider.visibility = View.VISIBLE
-                    }
-
                     view
                 } else {
                     null
@@ -256,18 +248,21 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
     }
 
     override fun onTaskFinish(book_id: String?) {
-        val book = BookHelperContract.loadLocalBook(book_id)
 
-        if (CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
-            val data = downloadBooks
-            for (b in data) {
-                if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
-                    data.remove(b)
-                    break
+        book_id?.let {
+            val book = BookHelperContract.loadLocalBook(book_id)
+
+            if (book != null && CacheManagerContract.loadBookDownloadState(book) == DownloadState.FINISH) {
+                val data = downloadBooks
+                for (b in data) {
+                    if (b.book_id != null && book.book_id != null && b.book_id == book.book_id) {
+                        data.remove(b)
+                        break
+                    }
                 }
             }
+            downloadManagerViewModel.refreshBooks()
         }
-        downloadManagerViewModel.refreshBooks()
     }
 
     override fun onTaskFailed(book_id: String?, t: Throwable?) {

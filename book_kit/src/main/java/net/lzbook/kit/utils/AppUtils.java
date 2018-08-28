@@ -1,9 +1,9 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.constants.ReplaceConstants;
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.TELEPHONY_SERVICE;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
@@ -20,19 +20,31 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
+
+import com.meituan.android.walle.WalleChannelReader;
+
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.constants.ReplaceConstants;
+
+import org.apache.http.conn.util.InetAddressUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -42,6 +54,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -57,12 +70,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.content.Context.TELEPHONY_SERVICE;
-
-import com.meituan.android.walle.WalleChannelReader;
-
-import org.apache.http.conn.util.InetAddressUtils;
 
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
@@ -394,12 +401,19 @@ public class AppUtils {
      * X86架构
      */
     public static String getBatteryLevel() {
-        Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
-                .registerReceiver(null,
-                        new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-        int level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
-
+        int level = 0;
+        //API 21 之后用 BATTERY_SERVICE 主动去获取电量
+        if (Build.VERSION.SDK_INT  >= Build.VERSION_CODES.LOLLIPOP) {
+            BatteryManager batteryManager = (BatteryManager)BaseBookApplication.getGlobalContext().getSystemService(BATTERY_SERVICE);
+            if(batteryManager != null){
+                level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            }
+        }else{
+            Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
+                    .registerReceiver(null,
+                            new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+        }
         return level + "%";
     }
 
@@ -496,24 +510,39 @@ public class AppUtils {
      * 获取无线局域网 WLAN MAC Address
      */
     public static String getWLanMacAddress(Context context) {
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wm.getConnectionInfo().getMacAddress();
+        try {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            return wm.getConnectionInfo().getMacAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
      * 获取MAC地址
      */
     public static String getMacAddress(Context context) {
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wm.getConnectionInfo().getMacAddress();
+        try {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            return wm.getConnectionInfo().getMacAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
      * 获取在WiFi环境下，获取当前连接路由器的Mac地址
      */
     public static String getWifiMacAddress(Context context) {
-        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        return wm.getConnectionInfo().getBSSID();
+        try {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            return wm.getConnectionInfo().getBSSID();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 
@@ -527,9 +556,9 @@ public class AppUtils {
         NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mobileNetworkInfo.isConnected()) {//移动网络
+        if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
             ip = getLocalIpAddress();
-        } else if (wifiNetworkInfo.isConnected()) {//wifi网络
+        } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             int ipAddress = wifiInfo.getIpAddress();
@@ -587,22 +616,32 @@ public class AppUtils {
      * 获得SD卡总大小
      */
     public static String getSDTotalSize(Context context) {
-        File path = Environment.getExternalStorageDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long totalBlocks = stat.getBlockCount();
-        return Formatter.formatFileSize(context, blockSize * totalBlocks);
+        try {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long totalBlocks = stat.getBlockCount();
+            return Formatter.formatFileSize(context, blockSize * totalBlocks);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
      * 获得sd卡剩余容量，即可用大小
      */
     public static String getSDAvailableSize(Context context) {
-        File path = Environment.getExternalStorageDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long availableBlocks = stat.getAvailableBlocks();
-        return Formatter.formatFileSize(context, blockSize * availableBlocks);
+        try {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long availableBlocks = stat.getAvailableBlocks();
+            return Formatter.formatFileSize(context, blockSize * availableBlocks);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
@@ -660,6 +699,19 @@ public class AppUtils {
         return APPLICATION_ID;
     }
 
+    public static boolean hasUPush() {
+        String packageName = getPackageName();
+        return packageName.equals("cc.remennovel") //智胜电子书
+                || packageName.equals("cc.kdqbxs.reader") //快读替
+                || packageName.equals("cc.quanbennovel") //今日多看
+                || packageName.equals("cc.lianzainovel") //鸿雁替
+                || packageName.equals("cc.mianfeinovel"); //阅微替
+    }
+
+    public static boolean hasReYun() {
+        String packageName = getPackageName();
+        return packageName.equals("cn.qbmfkkydq.reader");
+    }
     /**
      * 获取渠道号
      */
@@ -760,18 +812,20 @@ public class AppUtils {
 
 
     private static void initValues() {
-        if (CHANNEL_NAME == null) {
+        if (TextUtils.isEmpty(CHANNEL_NAME) || CHANNEL_NAME.equals("DEBUG")) {
             try {
                 Class<?> buildConfig = Class.forName("com.intelligent.reader.BuildConfig");
                 APPLICATION_ID = getStringField("APPLICATION_ID", buildConfig);
                 VERSION_NAME = getStringField("VERSION_NAME", buildConfig);
                 VERSION_CODE = getIntField("VERSION_CODE", buildConfig);
-                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
-//                CHANNEL_NAME = "blf1298_11974_001";
-                if(WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()) != null){
-                    CHANNEL_NAME= WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext());
+//                CHANNEL_NAME = getStringField("CHANNEL_NAME", buildConfig);
+                if (!TextUtils.isEmpty(
+                        WalleChannelReader.getChannel(BaseBookApplication.getGlobalContext()))) {
+                    CHANNEL_NAME = WalleChannelReader.getChannel(
+                            BaseBookApplication.getGlobalContext());
+                } else {
+                    CHANNEL_NAME = "DEBUG";
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -925,7 +979,9 @@ public class AppUtils {
      * 书籍封面页字数显示
      */
     public static String getWordNums(long num) {
-        if (num < 10000) {
+        if (num == 0) {
+            return "暂无";
+        } else if (num < 10000) {
             return num + "字";
         } else {
             return num / 10000 + "." + (num - (num / 10000) * 10000) / 1000 + "万字";
@@ -1057,5 +1113,74 @@ public class AppUtils {
                 t.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 关闭辅助功能，针对4.2.1和4.2.2 崩溃问题  百度移动统计平台上的bug  webview
+     *
+     * https://blog.csdn.net/qq_22393017/article/details/72782801
+     *
+     * java.lang.NullPointerException
+     * at android.webkit.AccessibilityInjector$TextToSpeechWrapper$1.onInit(AccessibilityInjector
+     * .java:753)
+     * ... ...
+     * at android.webkit.CallbackProxy.handleMessage(CallbackProxy.java:321)
+     */
+    public static void disableAccessibility(Context context) {
+        if (Build.VERSION.SDK_INT == 17/*4.2 (Build.VERSION_CODES.JELLY_BEAN_MR1)*/) {
+            if (context != null) {
+                try {
+                    AccessibilityManager am = (AccessibilityManager) context.getSystemService(
+                            Context.ACCESSIBILITY_SERVICE);
+                    if (!am.isEnabled()) {
+                        //Not need to disable accessibility
+                        return;
+                    }
+
+                    Method setState = am.getClass().getDeclaredMethod("setState", int.class);
+                    setState.setAccessible(true);
+                    setState.invoke(am,
+                            0);/**{@link AccessibilityManager#STATE_FLAG_ACCESSIBILITY_ENABLED}*/
+                } catch (Exception ignored) {
+
+                } catch (Error ignored) {
+
+                }
+            }
+        }
+    }
+
+    /****************
+
+     * 发起添加群流程。群号：正清瑞德(857212322) 的 key 为： 7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F
+
+     * 调用 joinQQGroup(7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F) 即可发起手Q客户端申请加群 正清瑞德(857212322)
+
+     * @param key 由官网生成的key
+
+     * @return 返回true表示呼起手Q成功，返回fals表示呼起失败
+
+     ******************/
+
+    public static boolean joinQQGroup(Activity activity,String key) {
+
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(
+                "mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq"
+                        + ".com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D"
+                        + key));
+
+            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
+            // .FLAG_ACTIVITY_NEW_TASK)
+        try {
+            activity.startActivity(intent);
+            return true;
+
+        } catch (Exception e) {
+            // 未安装手Q或安装的版本不支持
+            return false;
+
+        }
+
     }
 }

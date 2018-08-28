@@ -6,6 +6,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.statistic.alilog.Log
 import net.lzbook.kit.user.DeviceID
 import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 
@@ -25,7 +26,13 @@ abstract class IAliLogModel {
     /*用户id*/
     var uid: String? = null
         get () {
-            return if (UserManager.isUserLogin) UserManager.mUserInfo?.uid else ""
+            if (BaseBookApplication.getGlobalContext().packageName == "cc.quanben.novel") {
+                return if (UserManagerV4.isUserLogin) UserManagerV4.user?.account_id else ""
+            }else{
+                return if (UserManager.isUserLogin) UserManager.mUserInfo?.uid else ""
+
+            }
+
         }
 
     /*app包名*/

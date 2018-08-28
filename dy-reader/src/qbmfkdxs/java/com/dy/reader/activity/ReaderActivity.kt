@@ -159,6 +159,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        //横向阅读 最后一章到完结页 点击返回 dialog不显示
+        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+        }
+
+
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
             if(lastOrientation != newConfig.orientation) {
@@ -200,7 +207,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
                 ReaderStatus.book.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+                if (ReaderStatus.book.fromQingoo()) {
                     ReaderStatus.book.channel_code = 1
                 } else {
                     ReaderStatus.book.channel_code = 2
@@ -249,8 +256,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus && !ReaderStatus.isMenuShow) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        } else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -324,7 +329,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean("isFromReading", true)
+            bundle.putBoolean(Constants.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -447,7 +452,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 txt_reader_page.setTextColor(titleColor)
                 txt_reader_progress.setTextColor(titleColor)
                 txt_reader_chapter_name.setTextColor(titleColor)
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
                 BatteryView.update()
+            }
+            ReaderSettings.ConfigType.TITLE_COCLOR_REFRESH -> {
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
             }
             else -> Unit
         }

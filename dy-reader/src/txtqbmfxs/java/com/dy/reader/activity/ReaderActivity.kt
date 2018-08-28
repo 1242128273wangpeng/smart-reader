@@ -21,10 +21,10 @@ import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
+import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -141,7 +141,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable  = {
+    val orientaionRunnable = {
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -159,9 +159,15 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        //横向阅读 最后一章到完结页 点击返回 dialog不显示
+        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+        }
+
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            if(lastOrientation != newConfig.orientation) {
+            if (lastOrientation != newConfig.orientation) {
                 lastOrientation = newConfig.orientation
                 AppHelper.mainHandler.removeCallbacks(orientaionRunnable)
                 AppHelper.mainHandler.postDelayed(orientaionRunnable, 500)
@@ -200,7 +206,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
                 ReaderStatus.book.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+                if (ReaderStatus.book.fromQingoo()) {
                     ReaderStatus.book.channel_code = 1
                 } else {
                     ReaderStatus.book.channel_code = 2
@@ -249,8 +255,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus && !ReaderStatus.isMenuShow) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        } else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -324,7 +328,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean("isFromReading", true)
+            bundle.putBoolean(RouterUtil.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -341,7 +345,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 val uri = Uri.parse(url!!.trim { it <= ' ' })
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -352,42 +356,31 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
     }
 
-    fun full(isFull: Boolean) {
-//        if (!Constants.isFullWindowRead) {
-//            return
-//        }
-//        if (isFull) {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        } else {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventLoading) {
-        if (event.type == EventLoading.Type.START) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
-        } else if (event.type == EventLoading.Type.PROGRESS_CHANGE) {
-            if (ReaderStatus.position.group > -1) {
-                rl_reader_bottom.visibility = View.VISIBLE
-                rl_reader_header.visibility = View.VISIBLE
-                txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
-                if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
-                    txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+        when {
+            event.type == EventLoading.Type.START -> showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+            event.type == EventLoading.Type.PROGRESS_CHANGE -> {
+                if (ReaderStatus.position.group > -1) {
+                    rl_reader_bottom.visibility = View.VISIBLE
+                    rl_reader_header.visibility = View.VISIBLE
+                    txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
+                    txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
+                    if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
+                        txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+                    }
+                } else {
+                    rl_reader_bottom.visibility = View.GONE
+                    rl_reader_header.visibility = View.GONE
                 }
-            } else {
-                rl_reader_bottom.visibility = View.GONE
-                rl_reader_header.visibility = View.GONE
+                mReadPresenter.checkManualDialogShow()
             }
-            mReadPresenter?.checkManualDialogShow()
-        } else if (event.type == EventLoading.Type.RETRY) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
-        } else if (event.type == EventLoading.Type.SUCCESS) {
+            event.type == EventLoading.Type.RETRY -> showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
+            event.type == EventLoading.Type.SUCCESS -> {
 
-            showAd()
-            mLoadingFragment.dismissDiaslog(isResume)
+                showAd()
+                mLoadingFragment.dismissDiaslog(isResume)
+            }
         }
     }
 
@@ -447,7 +440,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 txt_reader_page.setTextColor(titleColor)
                 txt_reader_progress.setTextColor(titleColor)
                 txt_reader_chapter_name.setTextColor(titleColor)
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
                 BatteryView.update()
+            }
+            ReaderSettings.ConfigType.TITLE_COCLOR_REFRESH -> {
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
             }
             else -> Unit
         }
@@ -491,7 +488,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
+//            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
             EventSetting.Type.HIDE_AD -> hideAd()
             EventSetting.Type.SHOW_AD -> showAd()
 

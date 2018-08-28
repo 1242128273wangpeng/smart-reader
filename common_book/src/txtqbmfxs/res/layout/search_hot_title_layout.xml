@@ -5,58 +5,50 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/linear_root"
+    <!--热词-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="13dp"
+        android:text="大家都在搜"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+    <com.intelligent.reader.view.ScrollForGridView
+        android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="7dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:scrollbars="none"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="13dp"
-            android:text="大家都在搜"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-        <!--android:textColor="@color/color_search_recommend_title"-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/dialog_line"
+        android:layout_marginTop="12dp"/>
 
-        <com.intelligent.reader.view.ScrollForGridView
-            android:id="@+id/grid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="13dp"
-            android:layout_marginRight="13dp"
-            android:layout_marginTop="7dp"
-            android:listSelector="@android:color/transparent"
-            android:numColumns="3"
-            android:scrollbars="none"/>
+    <!--推荐-->
 
-        <View
-            android:id="@+id/search_line"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="12dp"/>
-        <!--android:background="@color/color_search_divider"-->
-        <TextView
-            android:id="@+id/tv_recommend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:gravity="center"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:text="热门阅读"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:visibility="gone"/>
-        <!--android:textColor="@color/color_search_recommend_title"-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="热门阅读"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_recommed"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_recommed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

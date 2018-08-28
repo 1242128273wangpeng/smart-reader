@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.txtqbmfxs.item_bookshelf_add.view.*
 class BookShelfADDHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_add, parent, false)) {
 
-    fun bind(size: Int, itemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
+    fun bind(size: Int,itemListener: BookShelfAdapter.BookShelfItemListener) = with(itemView) {
 
         if (size >= 50) {
             itemView.rl_content.visibility = View.VISIBLE

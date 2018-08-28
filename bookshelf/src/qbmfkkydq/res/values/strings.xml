@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="bookshelf_empty_prompt">书架上暂时没有书籍哦~</string>
+
+    <string name="bookshelf_delete_dialog_loading_prompt">清理中…</string>
+    <string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>
+
+    <string name="bookshelf_item_book_update">更新</string>
+    <string name="bookshelf_item_book_finish">完结</string>
+</resources>

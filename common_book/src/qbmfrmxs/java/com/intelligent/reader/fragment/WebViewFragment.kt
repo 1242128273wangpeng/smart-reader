@@ -17,6 +17,7 @@ import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.webview_layout.*
 import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.CustomWebClient
 import wendu.dsbridge.OnReturnValue
 
@@ -78,6 +79,8 @@ open class WebViewFragment : Fragment() {
             }
             else -> rl_web_view_header.visibility = View.GONE
         }
+
+        AppUtils.disableAccessibility(requireActivity())
 
         loadingPage = LoadingPage(requireActivity(), rl_web_view_content)
 
@@ -203,7 +206,7 @@ open class WebViewFragment : Fragment() {
         handler.removeCallbacksAndMessages(null)
 
         if (bwv_web_view_result != null) {
-            bwv_web_view_result?.clearCache(true)
+            bwv_web_view_result?.clearCache(false)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 

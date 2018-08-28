@@ -3,4 +3,7 @@
     <item android:drawable="@color/bookshelf_item_book_pressed"
           android:state_enabled="true"
           android:state_pressed="true"/>
+    <item>
+        <color android:color="#FFFFFF"/>
+    </item>
 </selector>

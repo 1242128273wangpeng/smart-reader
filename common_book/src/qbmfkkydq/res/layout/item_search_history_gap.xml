@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_list_view_space"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:background="@color/color_gray_edeef0"
+    android:clickable="false"
+    android:orientation="vertical" >
+
+    <!--自动补全分割线-->
+
+</LinearLayout>

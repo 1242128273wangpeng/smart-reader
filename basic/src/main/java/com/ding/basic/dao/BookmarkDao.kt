@@ -28,6 +28,9 @@ interface BookmarkDao : BaseDao<Bookmark> {
     @Query("DELETE FROM book_mark WHERE book_id = :book_id AND sequence = :sequence AND offset = :offset")
     fun deleteByExatly(book_id: String, sequence: Int, offset: Int)
 
+    @Query("DELETE FROM book_mark")
+    fun deleteAllMarks()
+
     /**************************改****************************/
 
 

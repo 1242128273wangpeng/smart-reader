@@ -189,7 +189,7 @@ public class SearchHelper {
                 filterWord = filter_word;
                 sortType = sort_type;
 
-                loadData(0);
+                startLoadData(0);
 
                 if (mJsCallSearchCall != null) {
                     mJsCallSearchCall.onJsSearch();
@@ -265,7 +265,7 @@ public class SearchHelper {
                 word = searchWord;
                 searchType = search_type;
 
-                loadData(0);
+                startLoadData(0);
 
                 if (jsNoneResultSearchCall != null) {
                     jsNoneResultSearchCall.onNoneResultSearch(searchWord);
@@ -413,6 +413,7 @@ public class SearchHelper {
         Chapter chapter = new Chapter();
         chapter.setName(last_chapter);
         chapter.setUpdate_time(update_time);
+        chapter.setSerial_number(Integer.valueOf(chapter_count));
         book.setLast_chapter(chapter);
         book.setChapter_count(Integer.valueOf(chapter_count));
         book.setLast_update_success_time(System.currentTimeMillis());

@@ -4,10 +4,6 @@
 
     <string name="bookshelf">书架</string>
 
-    <string name="default_title">正义的秘密</string>
-
-    <string name="default_message">有人说过,衡量一个作家是否优秀,就看他能不能担负起社会责任.东野吾做到了.</string>
-
     <string name="slash">/</string>
 
     <string name="cancel">取消</string>
@@ -30,9 +26,11 @@
 
     <string name="sort_for_update_time">按更新时间排序</string>
 
+    <string name="sort_for_read_time">按最近阅读排序</string>
+
     <string name="sort_for_reading_time">按最后阅读排序</string>
 
-    <string name="download_manager">下载管理</string>
+    <string name="download_manager">缓存管理</string>
 
     <string name="book_sort">书架排序</string>
 

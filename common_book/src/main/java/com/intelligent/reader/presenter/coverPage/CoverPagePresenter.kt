@@ -6,15 +6,13 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.*
-import com.ding.basic.bean.Book
-import com.ding.basic.bean.RecommendBean
-import com.ding.basic.bean.RecommendBooks
+import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.SearchBookActivity
@@ -35,23 +33,36 @@ import net.lzbook.kit.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CoverPagePresenter(private val book_id: String?, private var book_source_id: String?, private var book_chapter_id: String?, val coverPageContract: CoverPageContract, val activity: Activity, onClickListener: View.OnClickListener)
+/**
+ * author:推荐该作者的其他作品
+ * 目前铺开的壳：智胜电子书替
+ */
+class CoverPagePresenter(private val book_id: String?,
+                         private var book_source_id: String?,
+                         private var book_chapter_id: String?,
+                         val coverPageContract: CoverPageContract,
+                         val activity: Activity,
+                         onClickListener: View.OnClickListener,
+                         private var author: String? = "")
     : BookCoverUtil.OnDownloadState, BookCoverViewModel.BookCoverViewCallback {
 
     var coverDetail: Book? = null
     private var showMoreLabel: Boolean = false
 
-    var bookCoverUtil: BookCoverUtil? = null
-    var sharePreUtil: SharedPreUtil? = null
+    private var bookCoverUtil: BookCoverUtil? = null
+    private var sharePreUtil: SharedPreUtil? = null
     var bookCoverViewModel: BookCoverViewModel? = null
 
     var recommendList = ArrayList<RecommendBean>()
 
-    var recommendBookList = ArrayList<RecommendBean>()
+    private var recommendBookList = ArrayList<RecommendBean>()
 
     var recommendIndex = 0
+    var recommendCount = 6 //标识推荐书籍的数量，txt全本免费阅读只有4个书籍
+    var mRandom: Random? = null
 
     init {
+        mRandom = Random()
         sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
         bookCoverViewModel = BookCoverViewModel()
         bookCoverViewModel?.setBookCoverViewCallback(this)
@@ -122,6 +133,9 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         if (book != null) {
             this.coverDetail = book
 
+            //获得数据后第一时间更新书架信息
+            updateBookInformation()
+
             if (coverDetail != null && bookCoverUtil != null) {
                 bookCoverUtil?.saveHistory(coverDetail)
             }
@@ -145,7 +159,11 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         if (clickedCatalog) {
             handleCatalogAction(intent, 0, false)
         } else {
-            handleCatalogAction(intent, coverDetail?.last_chapter!!.serial_number - 1, true)
+            if (coverDetail?.last_chapter != null) {
+                handleCatalogAction(intent, coverDetail?.last_chapter!!.serial_number - 1, true)
+            } else {
+                handleCatalogAction(intent, 0, false)
+            }
         }
     }
 
@@ -187,13 +205,13 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 //移除书架的打点
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_book_remove)
 
-                activity.applicationContext.showToastMessage("成功从书架移除！")
+                CommonUtil.showToastMessage("成功从书架移除！")
 
                 val data = HashMap<String, String>()
                 data["type"] = "2"
                 data["bookid"] = coverDetail!!.book_id
 
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data)
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
                 coverPageContract.changeDownloadButtonStatus()
 
@@ -224,13 +242,13 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                         }
 
             } else {
-                activity.applicationContext.showToastMessage("已在书架中！")
+                CommonUtil.showToastMessage("已在书架中！")
             }
         } else {
             Logger.v("书籍未订阅！")
 
             if (coverDetail == null) {
-                activity.applicationContext.showToastMessage("书籍信息异常，请稍后再试！")
+                CommonUtil.showToastMessage("书籍信息异常，请稍后再试！")
             }
 
             coverDetail?.last_update_success_time = System.currentTimeMillis()
@@ -239,7 +257,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
 
             if (result <= 0) {
                 Logger.v("加入书架失败！")
-                activity.applicationContext.showToastMessage("加入书架失败！")
+                CommonUtil.showToastMessage("加入书架失败！")
             } else {
                 Logger.v("加入书架成功！")
 
@@ -247,9 +265,9 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 data["type"] = "1"
                 data["bookid"] = coverDetail!!.book_id
 
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFEDIT, data)
+                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
-                activity.applicationContext.showToastMessage("成功添加到书架！")
+                CommonUtil.showToastMessage("成功添加到书架！")
 
                 coverPageContract.insertBookShelfResult(true)
             }
@@ -300,7 +318,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                 bundle.putInt("offset", 0)
             }
 
-            updateBookInformation()
+//            updateBookInformation()
 
             bundle.putSerializable("book", book)
         } else {
@@ -353,7 +371,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         }
         val downloadState = CacheManager.getBookStatus(coverDetail!!)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            activity.applicationContext.showToastMessage("正在缓存中...")
+            CommonUtil.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
         }
 
         val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
@@ -365,12 +383,29 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
 
             if (result > 0) {
                 coverPageContract.insertBookShelfResult(true)
-                activity.applicationContext.showToastMessage("成功添加到书架！")
+                CommonUtil.showToastMessage("成功添加到书架！")
 
                 BaseBookHelper.startDownBookTask(activity, coverDetail, 0)
             }
         }
         coverPageContract.changeDownloadButtonStatus()
+    }
+
+    /**
+     * 暂停下载书籍
+     */
+    fun handleDownloadContinueOrStop() {
+
+        coverDetail?.let {
+            val downloadState = CacheManager.getBookStatus(it)
+            if (downloadState == DownloadState.DOWNLOADING) {
+                CacheManager.stop(it.book_id)
+                coverPageContract.changeDownloadButtonStatus()
+            } else {
+                handleDownloadAction()
+            }
+        }
+
     }
 
     /***
@@ -466,6 +501,208 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
         }
     }
 
+    /**
+     * 获取封面页推荐书籍，随机推荐
+     */
+
+    fun requestCoverRecommendRandom(bookSize: Int) {
+
+        if (book_id != null && !TextUtils.isEmpty(book_id)) {
+            val bookIDs: String = loadBookShelfID()
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookRecommend(book_id, bookIDs, object : RequestSubscriber<RecommendBooks>() {
+                override fun requestResult(result: RecommendBooks?) {
+
+                    if (result?.znList != null) {
+                        if (result.znList!!.size > bookSize) {
+                            coverPageContract.showRecommendSuccess(getRandomBooks(bookSize, result.znList!!))
+                        } else {
+                            coverPageContract.showRecommendSuccess(result.znList!!)
+                        }
+                    } else {
+                        coverPageContract.showRecommendFail()
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("获取封面推荐异常！")
+                    coverPageContract.showRecommendFail()
+                }
+            })
+        }
+    }
+
+    /**
+     * 从数据源中随机获取定长度的书
+     * 开始下标随机，后面书籍顺序累计添加
+     */
+    fun getRandomBooks(size: Int, books: ArrayList<RecommendBean>): ArrayList<RecommendBean> {
+        var resultList = ArrayList<RecommendBean>()
+        var randow = Random()
+        var startIndex = randow.nextInt(books.size)
+        for (i in 1..size) {
+            resultList.add(books[startIndex % books.size])
+            startIndex++
+        }
+
+        return resultList
+    }
+
+
+    /**
+     * 推荐该作者的其他作品
+     */
+    fun requestAuthorOtherBookRecommend() {
+
+        if (author != null && !TextUtils.isEmpty(author) && book_id != null && !TextUtils.isEmpty(book_id)) {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAuthorOtherBookRecommend(author!!, book_id, object : RequestSubscriber<ArrayList<RecommendBean>>() {
+                override fun requestResult(result: ArrayList<RecommendBean>?) {
+                    if (result != null) {
+                        coverPageContract.showAuthorRecommendSuccess(result)
+                    } else {
+                        coverPageContract.showRecommendFail()
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("获取作者推荐异常！")
+                    coverPageContract.showRecommendFail()
+                }
+            })
+        }
+    }
+
+    private val mRecommendBooks = ArrayList<Book>()
+    private val markIndexs = ArrayList<Int>()//用于标记推荐书籍
+
+    /***
+     * 获取封面页推荐书籍,  例如 今日多看 使用的v4接口
+     * **/
+    fun requestCoverRecommendV4() {
+        if (book_id != null && !TextUtils.isEmpty(book_id)) {
+            val bookIDs: String = loadBookShelfID()
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverRecommend(book_id, bookIDs, object : RequestSubscriber<CoverRecommendBean>() {
+                override fun requestResult(bean: CoverRecommendBean?) {
+
+                    mRecommendBooks.clear()
+
+                    if (bean != null && bean.data != null
+                            && bean!!.data!!.map != null) {
+                        if (sharePreUtil == null) {
+                            sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+                        }
+
+                        val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
+                        if (scale.size >= 2) {
+                            if (!TextUtils.isEmpty(scale[0])) {
+                                addZNBooks(bean, Integer.parseInt(scale[0]))
+                            }
+                            if (!TextUtils.isEmpty(scale[1])) {
+                                addQGBooks(bean, Integer.parseInt(scale[1]))
+                            }
+
+                        }
+                        coverPageContract.showRecommendSuccessV4(mRecommendBooks)
+
+                    } else {
+                        coverPageContract.showRecommendFail()
+                    }
+                }
+
+                override fun requestError(message: String) {
+                    Logger.e("获取封面推荐异常！")
+                    coverPageContract.showRecommendFail()
+                }
+            })
+        }
+    }
+
+    /**
+     * 添加推荐的智能的书
+     */
+    fun addZNBooks(bean: CoverRecommendBean, znSize: Int) {
+        var znIndex = -1
+        markIndexs.clear()
+        if (bean.data!!.map!!.znList != null && bean.data!!.map!!.znList!!.size > 0) {
+            for (i in 0 until znSize) {//推荐位 智能只取 3本
+                znIndex = mRandom!!.nextInt(bean.data!!.map!!.znList!!.size)
+                if (markIndexs.contains(znIndex)) {
+                    while (true) {
+                        znIndex = mRandom!!.nextInt(bean.data!!.map!!.znList!!.size)
+                        if (!markIndexs.contains(znIndex)) {
+                            break
+                        }
+                    }
+                }
+                markIndexs.add(znIndex)
+                val book = Book()
+                val znBean = bean.data!!.map!!.znList!![znIndex]
+                if (book_id != null && !book_id.equals(znBean.bookId)) {
+                    book.status = znBean.serialStatus
+                    book.book_id = znBean.bookId ?: ""
+                    book.book_source_id = znBean.id ?: ""
+                    book.name = znBean.bookName
+                    book.label = znBean.label
+                    book.author = znBean.authorName
+                    book.img_url = znBean.sourceImageUrl
+                    book.host = znBean.host
+                    book.chapter_count = Integer.valueOf(znBean.chapterCount)
+//                    if(!AppUtils.isContainChinese(znBean.readerCountDescp + "")){
+//                        book.uv = java.lang.Long.valueOf(znBean.readerCountDescp + "")
+//                    }
+                    // 这里用desc字段临时接收readerCountDescp, 后期推荐接口统一升级为v5
+                    book.desc = znBean.readerCountDescp + ""
+                    mRecommendBooks.add(book)
+                }
+
+            }
+        }
+    }
+
+//    private val mRandom: Random by lazy {
+//        Random()
+//    }
+
+    /**
+     * 添加推荐的青果的书
+     */
+    fun addQGBooks(bean: CoverRecommendBean, qgSize: Int) {
+        markIndexs.clear()
+        var qgIndex = -1
+        if (bean.data!!.map!!.qgList != null && bean.data!!.map!!.qgList!!.size > 0) {
+            for (i in 0 until qgSize) {//推荐位 青果只取 3本
+                qgIndex = mRandom!!.nextInt(bean.data!!.map!!.qgList!!.size)
+                if (markIndexs.contains(qgIndex)) {
+                    while (true) {
+                        qgIndex = mRandom!!.nextInt(bean.data!!.map!!.qgList!!.size)
+                        if (!markIndexs.contains(qgIndex)) {
+                            break
+                        }
+                    }
+                }
+                markIndexs.add(qgIndex)
+                val book = Book()
+                val qgBean = bean.data!!.map!!.qgList!![qgIndex]
+                if (book_id != null && !book_id.equals(qgBean.id)) {
+
+                    book.status = qgBean.serialStatus
+                    book.book_id = qgBean.id ?: ""
+                    book.book_source_id = qgBean.bookSourceId ?: ""
+                    book.name = qgBean.bookName
+                    book.label = qgBean.labels
+                    book.author = qgBean.author_name
+                    book.img_url = qgBean.image + ""
+                    book.host = qgBean.host + ""
+                    book.chapter_count = Integer.valueOf(qgBean.chapter_sn)
+                    book.uv = qgBean.read_count.toLong()
+                    mRecommendBooks.add(book)
+                }
+            }
+        }
+
+
+    }
+
+
     fun handleRecommendBooks(recommendBooks: RecommendBooks?) {
         if (recommendBooks != null) {
 
@@ -474,8 +711,13 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
             if (sharePreUtil == null) {
                 sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
             }
+            var scale: List<String>? = ArrayList<String>()
+            if (AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")) {
+                scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0")?.split(",")
+            } else {
+                scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
+            }
 
-            val scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
 
             if (scale != null) {
                 var znScale = 0
@@ -494,6 +736,7 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
                     feeScale = Integer.parseInt(scale[2])
                 }
 
+                recommendCount = znScale + qgScale
                 var znList: ArrayList<List<RecommendBean>>? = null
                 if (znScale > 0 && recommendBooks.znList != null && recommendBooks.znList!!.size > 0) {
                     znList = subRecommendList(recommendBooks.znList!!, znScale)
@@ -567,17 +810,17 @@ class CoverPagePresenter(private val book_id: String?, private var book_source_i
 
     fun changeRecommendBooks() {
 
-        if (recommendIndex + 6 > recommendBookList.size) {
+        if (recommendIndex + recommendCount > recommendBookList.size) {
             recommendIndex = 0
         }
 
         recommendList.clear()
 
-        for (i in recommendIndex until recommendIndex + 6) {
+        for (i in recommendIndex until recommendIndex + recommendCount) {
             recommendList.add(recommendBookList[i])
         }
 
-        recommendIndex += 6
+        recommendIndex += recommendCount
 
         coverPageContract.showRecommendSuccess(recommendList)
     }

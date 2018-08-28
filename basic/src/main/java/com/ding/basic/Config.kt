@@ -39,8 +39,6 @@ object Config {
 
     private var privateKey: String = ""
 
-
-
     private var bookContent: String? = null
 
     private var requestParameters: HashMap<String, String> = HashMap()
@@ -60,22 +58,21 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-        webViewHost = "http://8068.zn.bookapi.cn"
-        requestAPIHost = "http://8068.zn.bookapi.cn"
+//        webViewHost = "http://20.20.23.216:8082"
+//        requestAPIHost = "http://20.20.23.216:8082"
 
-
-//        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-//        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
     }
 
-    fun getContext(): Context?{
+    fun getContext(): Context? {
         return Config.context
     }
 
 
     fun insertWebViewHost(webViewHost: String) {
         if (!TextUtils.isEmpty(webViewHost)) {
-//            Config.webViewHost = webViewHost
+            Config.webViewHost = webViewHost
         }
     }
 
@@ -85,7 +82,7 @@ object Config {
 
     fun insertRequestAPIHost(requestAPIHost: String) {
         if (!TextUtils.isEmpty(requestAPIHost)) {
-//            Config.requestAPIHost = requestAPIHost
+            Config.requestAPIHost = requestAPIHost
         }
     }
 
@@ -113,7 +110,7 @@ object Config {
         }
     }
 
-    fun insertRequestParameters(@NotNull parameters:HashMap<String, String>) {
+    fun insertRequestParameters(@NotNull parameters: HashMap<String, String>) {
         requestParameters.putAll(parameters)
     }
 
@@ -125,7 +122,7 @@ object Config {
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
-                .tag("DingYue").methodCount(0).showThreadInfo(true).build()
+                .tag("DingYue").methodCount(0).showThreadInfo(false).build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
@@ -141,12 +138,6 @@ object Config {
         }
         return URLBuilder.buildUrl(requestAPIHost, request, parameters)
     }
-
-
-
-
-
-
 
 
     fun insertMicroAPIHost(microAPIHost: String) {

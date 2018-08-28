@@ -3,6 +3,7 @@ package com.intelligent.reader.activity
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.*
+import android.content.res.Resources
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
@@ -21,13 +23,18 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.contract.CommonContract
+import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
+import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
 import com.intelligent.reader.fragment.WebViewFragment
+import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
+import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -36,6 +43,8 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
+import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
@@ -49,10 +58,11 @@ import java.util.*
  */
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
-        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface, View.OnClickListener {
+        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface, View.OnClickListener, BookStoreFragment.SearchClickListener {
 
 
     //    private var viewPager: NonSwipeViewPager? = null
+    private var homePresenter:HomePresenter? = null
     private var bookView: BookShelfFragment? = null
     private var isClosed = false
     private var apkUpdateUtils: ApkUpdateUtils? = null
@@ -68,17 +78,32 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var sharedPreferences: SharedPreferences? = null
     private var homeAdapter: HomeAdapter? = null
 
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPNOWOPEN)
+        }
+        lifecycle.addObserver(dialog)
+        dialog
+    }
+
+    override fun getCurrent(position: Int) {
+        bottomType = position
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /* EventBus.getDefault().register(this)*/
 
         setContentView(R.layout.act_home)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        homePresenter = HomePresenter(this, this.packageManager)
 
-
-        initData()
         initListener()
         initViewPager()
+        homePresenter!!.initParameters()
 
         homeAdapter = HomeAdapter(supportFragmentManager)
         view_pager.adapter = homeAdapter
@@ -93,14 +118,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         } catch (e: Exception) {
             e.printStackTrace()
         }
-/*
-        initPositon()
-        checckUrlIsTest()*/
 
         AndroidLogStorage.getInstance().clear()
+        homePresenter!!.initDownloadService()
+        HomeLogger.uploadHomeBookListInformation()
+
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPMESSAGE)
+        }
 
     }
-
 
     override fun onClick(v: View) {
         when (v.id) {
@@ -166,6 +195,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     override fun changeHomePagerIndex(index: Int) {
+        // 去书城
+        view_pager.currentItem = index
     }
 
     override fun changeDrawerLayoutState() {
@@ -190,84 +221,22 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         startActivity(intent)
     }
 
-    private fun initData() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                applicationContext)
-        val edit = sharedPreferences.edit()
-        //获取阅读页背景
-        if (sharedPreferences.getInt("content_mode", 51) < 50) {
-            Constants.MODE = 51
-            edit.putInt("content_mode", Constants.MODE)
-            edit.putInt("current_light_mode", Constants.MODE)
-            edit.apply()
-        } else {
-            Constants.MODE = sharedPreferences.getInt("content_mode", 51)
-        }
 
-        //判断用户是否是当日首次打开应用
-        val first_time = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0)
-        AppLog.e("BaseBookApplication", "first_time=" + first_time)
-        val currentTime = System.currentTimeMillis()
-        val b = AppUtils.isToday(first_time, currentTime)
-        if (b) {
-            //用户非首次打开
-            Constants.is_user_today_first = false
-        } else {
-            //用户首次打开，记录当前时间
-            Constants.is_user_today_first = true
-            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply()
-            sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply()
-            GetAppList().execute()
-        }
-        AppLog.e("BaseBookApplication",
-                "Constants.is_user_today_first=" + Constants.is_user_today_first)
-
-        mLoadDataManager = LoadDataManager(this)
-        Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
-
-        val premVersionCode = Constants.preVersionCode
-        val currentVersionCode = AppUtils.getVersionCode()
-
-        if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            //
-            if (!Constants.upload_userinformation || premVersionCode != currentVersionCode) {
-                /*  // 获取用户基础数据
-                  StatisticManager.getStatisticManager().sendUserData()
-    */
-                Constants.upload_userinformation = true
-                Constants.preVersionCode = currentVersionCode
-                sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD,
-                        Constants.upload_userinformation).apply()
-            }
-        }
-
-
-        if (Constants.is_user_today_first) {
-            // 老用户更新书架书籍的完结/连载状态,和dex值
-            /*   mLoadDataManager!!.updateShelfBooks()*/
-
-            // 用户第一次启动时删掉物料表中的信息
-            /*  new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        AdDao.getInstance(HomeActivity.this).deleteAdMaterial();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();*/
-        }
-    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            doubleClickFinish()
+//            doubleClickFinish()
+            when {
+                view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
+                bookShelfFragment?.isRemoveMenuShow() == true -> bookShelfFragment?.dismissRemoveMenu()
+                else -> doubleClickFinish()
+            }
             return true
 
         }
         return super.onKeyDown(keyCode, event)
     }
+
 
     /**
      * 两次返回键退出
@@ -289,33 +258,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         handler.sendMessageDelayed(message, 2000)
     }
 
-/*    override fun onPause() {
-        try {
-            super.onPause()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (frameHelper != null) {
-            frameHelper!!.onPauseAction()
-        }
-    }*/
-
-    /**
-     * 接收默认书籍的加载完成刷新
-     */
-/*    fun onEvent(event: BookEvent) {
-        if (event.getMsg().equals(BookEvent.DEFAULTBOOK_UPDATED)) {
-            if (mLoadDataManager != null) {
-                mLoadDataManager!!.updateShelfBooks()
-            }
-        } else if (event.getMsg().equals(BookEvent.PULL_BOOK_STATUS)) {
-            if (bookView != null) {
-                bookView!!.updateBook()
-            }
-        }
-    }*/
-
 
 
 
@@ -323,64 +265,32 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         return super.onCreateOptionsMenu(menu)
     }
 
-//    fun getViewPager(pager: ViewPager) {
-//        this.viewPager = pager as NonSwipeViewPager
-//    }
-
-/*   fun getRemoveMenuHelper(helper: BookShelfRemoveHelper) {
-       this.removeMenuHelper = helper
-   }
-
-   fun getFrameBookRankView(bookView: Fragment) {
-       this.bookView = bookView as BookShelfFragment
-   }
-*/
-/*    fun frameHelper() {
-        if (frameHelper == null) {
-            frameHelper = FrameBookHelper(applicationContext, this@HomeActivity)
-        }
-        frameHelper!!.setCancleUpdate(this)
-    }
-
-    fun getAllCheckedState(isAllChecked: Boolean) {}
-
-    fun getMenuShownState(state: Boolean) {
-        if (mHomeFragment != null) {
-            mHomeFragment!!.onMenuShownState(state)
-        }
-    }
-
-    fun setSelectTab(index: Int) {
-        if (mHomeFragment != null) {
-            mHomeFragment!!.setTabSelected(index)
-        }
-    }*/
-
-    fun restoreSystemState() {
-        restoreSystemDisplayState()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         AndroidLogStorage.getInstance().clear()
         this.unregisterReceiver(homeBroadcastReceiver)
-
+        try {
+            homeAdapter = null
+            setContentView(R.layout.common_empty)
+        } catch (exception: Resources.NotFoundException) {
+            exception.printStackTrace()
+        }
+        fixInputMethodManagerLeak(applicationContext)
     }
 
     override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-
-
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
             try {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return@setOnSearchClick
+                }
                 val data = HashMap<String, String>()
-                data.put("keyword", keyWord)
-                data.put("type", "0")//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity,
-                        StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-                        data)
+                data["keyword"] = keyWord
+                data["type"] = "0"//0 代表从分类过来
+                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
 
-                SearchBookActivity.isStayHistory = false
                 val intent = Intent()
                 intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
                 intent.putExtra("word", keyWord)
@@ -390,7 +300,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 intent.putExtra("sort_type", sort_type)
                 intent.putExtra("from_class", "fromClass")//是否从分类来
                 startActivity(intent)
-                AppLog.e("kkk", search_type + "===")
+                AppLog.e("kkk", "$search_type===")
 
             } catch (e: Exception) {
                 AppLog.e(TAG, "Search failed")
@@ -398,7 +308,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (shake.check()) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
@@ -413,38 +323,62 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 e.printStackTrace()
             }
         })
+
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
+
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (shake.check()) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
-            val data = HashMap<String, String>()
-            data.put("BOOKID", book_id)
-            data.put("source", "WEBVIEW")
-            StartLogClickUtil.upLoadEventLog(this@HomeActivity,
-                    StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
-/*
-            val requestItem = RequestItem()
-            requestItem.book_id = book_id
-            requestItem.book_source_id = book_source_id
-            requestItem.host = host
-            requestItem.name = name
-            requestItem.authorType = authorType
-            requestItem.parameter = parameter
-            requestItem.extra_parameter = extra_parameter
 
-            val intent = Intent()
-            intent.setClass(applicationContext, CoverPageActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable(Constants.REQUEST_ITEM, requestItem)
-            intent.putExtras(bundle)
-            startActivity(intent)*/
+            if (!isFinishing) {
+                val intent = Intent()
+                intent.putExtra("book_id", book_id)
+                intent.putExtra("book_source_id", book_source_id)
+                intent.setClass(applicationContext, CoverPageActivity::class.java)
+                startActivity(intent)
+            }
         })
 
+        //为webview 加载广告提供回调
+        jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
+            try {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return@onWebGameClick
+                }
+                var title = ""
+                if (TextUtils.isEmpty(name)) {
+                    title = AppUtils.getPackageName()
+                } else {
+                    title = name
+                }
+                val welfareIntent = Intent()
+                welfareIntent.putExtra("url", url)
+                welfareIntent.putExtra("title", title)
+                welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
+                startActivity(welfareIntent)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        })
+
+        jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
+            AppLog.e("福利中心", "下载游戏: $name : $url")
+
+            try {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return@onGameAppClick
+                }
+                val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
+                intent.putExtra("url", url)
+                intent.putExtra("name", name)
+                startService(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
 
         jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-
-
     }
 
     override fun startLoad(webView: WebView, url: String): String {
@@ -496,24 +430,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-    // 获取用户app列表
-    internal inner class GetAppList : AsyncTask<Void, Int, String>() {
 
-
-        override fun doInBackground(vararg params: Void): String {
-            return AppUtils.scanLocalInstallAppList(
-                    packageManager)
-        }
-
-        override fun onPostExecute(s: String) {
-
-            /*   StartLogClickUtil.upLoadApps(this, s)*/
-        }
-    }
 
     override fun supportSlideBack(): Boolean {
         return false
     }
+
 
     companion object {
         private val BACK = 12
@@ -567,6 +489,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 1 -> {
                     if (bookStoreFragment == null) {
                         bookStoreFragment = BookStoreFragment.newInstance()
+                        bookStoreFragment?.setOnBottomClickListener(this@HomeActivity)
                         sharedPreferences?.edit()?.putString(Constants.FINDBOOK_SEARCH, "recommend")?.apply()
                     }
                     bookStoreFragment
