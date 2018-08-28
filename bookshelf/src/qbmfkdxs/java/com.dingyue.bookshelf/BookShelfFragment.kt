@@ -333,7 +333,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onException(exception: Exception) {
         if (activity != null && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
-            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_refresh_network_problem, 2000L)
+            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
             }

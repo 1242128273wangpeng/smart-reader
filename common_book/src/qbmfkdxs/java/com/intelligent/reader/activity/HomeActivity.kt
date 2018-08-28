@@ -113,7 +113,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         initPosition()
 
-        checkUrlDevelop()
 
         AndroidLogStorage.getInstance().clear()
 
@@ -327,14 +326,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-    /***
-     * 检查请求地址是否为测试地址
-     * **/
-    private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
-            this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
-        }
-    }
+
 
     override fun receiveUpdateCallBack(notification: Notification) {
         val intent = Intent(this, HomeActivity::class.java)

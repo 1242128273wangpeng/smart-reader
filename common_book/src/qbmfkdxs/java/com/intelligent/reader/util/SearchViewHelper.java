@@ -40,7 +40,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
@@ -72,7 +71,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private SearchHotWordAdapter mHotAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
     private SearchHisAdapter mHisAdapter;
-    private List<SearchCommonBean> mSuggestList = new ArrayList<SearchCommonBean>();
+    private List<SearchCommonBeanYouHua> mSuggestList = new ArrayList<SearchCommonBeanYouHua>();
     private Resources mResources;
     private boolean mShouldShowHint = true;
     private OnHistoryClickListener mOnHistoryClickListener;
@@ -396,7 +395,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         mSuggestListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                SearchCommonBean bean = mSuggestList.get(arg2);
+                SearchCommonBeanYouHua bean = mSuggestList.get(arg2);
                 suggest = bean.getSuggest();
                 searchType = "0";
                 if (bean.getWordtype().equals("label")) {
@@ -510,12 +509,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     @Override
-    public void onSearchResult(ArrayList<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean) {
+    public void onSearchResult(ArrayList<SearchCommonBeanYouHua> suggestList, SearchAutoCompleteBean transmitBean) {
         if (mSuggestList == null) {
             return;
         }
         mSuggestList.clear();
-        for (SearchCommonBean item : suggestList) {
+        for (SearchCommonBeanYouHua item : suggestList) {
             mSuggestList.add(item);
         }
         new Handler().post(new Runnable() {
