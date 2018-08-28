@@ -41,7 +41,7 @@
 
         <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:background="@color/color_divider"/>
 
         <View
@@ -51,7 +51,7 @@
 
         <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:background="@color/color_divider"/>
     </LinearLayout>
 </LinearLayout>
