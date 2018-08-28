@@ -314,10 +314,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
+            book_cover_bookshelf!!.setText("已在书架")
             setRemoveBtn()
         }else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            book_cover_bookshelf!!.setText("加入书架")
             setInsertBtn()
         }
     }
@@ -363,7 +363,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.have_in_bookshelf)
             setRemoveBtn()
         }
     }

@@ -10,11 +10,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
+import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.intelligent.reader.R;
 
 /**
@@ -23,10 +23,10 @@ import com.intelligent.reader.R;
 public class SearchSuggestAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<SearchCommonBean> mData;
+    private List<SearchCommonBeanYouHua> mData;
     private String editInput="";
 
-    public SearchSuggestAdapter(Context context, List<SearchCommonBean> mData, String editInput) {
+    public SearchSuggestAdapter(Context context, List<SearchCommonBeanYouHua> mData, String editInput) {
         this.mContext = context;
         this.mData = mData;
         this.editInput = editInput;
@@ -66,7 +66,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         } else {
             hodler = (ViewHolder) convertView.getTag();
         }
-        SearchCommonBean bean =  mData.get(position);
+        SearchCommonBeanYouHua bean =  mData.get(position);
         String type = bean.getWordtype();
         if(hodler != null){
             if(type.equals("author")){

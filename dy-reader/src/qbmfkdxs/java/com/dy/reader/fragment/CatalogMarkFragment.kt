@@ -172,7 +172,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             } else {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_zx_btn)
             }
-            ckb_catalog_order.setText(if (!reverse) R.string.catalog_negative else R.string.catalog_positive)
+            ckb_catalog_order.setText(if (!reverse) R.string.reverse_order else R.string.positive_order)
             presenter.loadCatalog(reverse)
         }
     }

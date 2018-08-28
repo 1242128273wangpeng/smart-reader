@@ -20,6 +20,7 @@ import com.ding.basic.bean.SearchAutoCompleteBean;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
@@ -33,7 +34,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.statistic.model.Search;
@@ -115,7 +115,7 @@ public class SearchHelper {
     }
 
     public interface SearchSuggestCallBack {
-        void onSearchResult(ArrayList<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean);
+        void onSearchResult(ArrayList<SearchCommonBeanYouHua> suggestList, SearchAutoCompleteBean transmitBean);
     }
 
     public void setStartedAction() {
@@ -246,7 +246,7 @@ public class SearchHelper {
                 }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
-                    if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
+                    if (url.contains(RequestService.AUTHOR_V4)) {
                         sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                                 "author").apply();//FindBookDetail 返回键时标识
                     }
@@ -441,7 +441,7 @@ public class SearchHelper {
             params.put("filter_word", filterWord);
             params.put("sort_type", sortType);
             AppLog.e("kk",searchWord+"=="+searchType+"=="+filterType+"=="+filterWord+"==="+sortType);
-            mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH, params);
+            mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
         }
 
         if (mStartLoadCall != null){
@@ -530,24 +530,24 @@ public class SearchHelper {
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAutoComplete(finalQuery, new RequestSubscriber<SearchAutoCompleteBean>() {
                 @Override
                 public void requestResult(@Nullable SearchAutoCompleteBean result) {
-                    ArrayList<SearchCommonBean> resultSuggest = new ArrayList<SearchCommonBean>();
+                    ArrayList<SearchCommonBeanYouHua> resultSuggest = new ArrayList<SearchCommonBeanYouHua>();
                     resultSuggest.clear();
                     AppLog.e("bean", result.toString());
                     if (result != null && "200".equals(result.getSuc())&& result.getData() != null) {
                         for (int i = 0; i < result.getData().getAuthors().size(); i++) {
-                            SearchCommonBean searchCommonBean = new SearchCommonBean();
+                            SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
                             searchCommonBean.setSuggest(result.getData().getAuthors().get(i).getSuggest());
                             searchCommonBean.setWordtype(result.getData().getAuthors().get(i).getWordtype());
                             resultSuggest.add(searchCommonBean);
                         }
                         for (int i = 0; i < result.getData().getLabel().size(); i++) {
-                            SearchCommonBean searchCommonBean = new SearchCommonBean();
+                            SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
                             searchCommonBean.setSuggest(result.getData().getLabel().get(i).getSuggest());
                             searchCommonBean.setWordtype(result.getData().getLabel().get(i).getWordtype());
                             resultSuggest.add(searchCommonBean);
                         }
                         for (int i = 0; i < result.getData().getName().size(); i++) {
-                            SearchCommonBean searchCommonBean = new SearchCommonBean();
+                            SearchCommonBeanYouHua searchCommonBean = new SearchCommonBeanYouHua();
                             searchCommonBean.setSuggest(result.getData().getName().get(i).getSuggest());
                             searchCommonBean.setWordtype(result.getData().getName().get(i).getWordtype());
                             resultSuggest.add(searchCommonBean);
