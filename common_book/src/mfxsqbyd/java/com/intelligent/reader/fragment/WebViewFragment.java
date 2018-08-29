@@ -18,9 +18,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
@@ -445,7 +443,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                             img_anim.setVisibility(View.GONE);
                             img_head.setVisibility(View.VISIBLE);
                             img_head.setImageResource((enable ? R.drawable.refresh_head_pull_light_1
-                                    : R.drawable.pull_light_0));
+                                    : R.drawable.refresh_head_pull_light_0));
                         }
                     });
             if (type != null && type.equals("recommend")) {
@@ -463,7 +461,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         img_anim = headerView.findViewById(R.id.img_anim);
         img_head.setVisibility(View.VISIBLE);
         img_anim.setVisibility(View.GONE);
-        img_head.setImageResource(R.drawable.pull_light_0);
+        img_head.setImageResource(R.drawable.refresh_head_pull_light_0);
         return headerView;
     }
 

@@ -20,6 +20,6 @@
         android:layout_height="80dp"
         android:layout_centerInParent="true"
         android:contentDescription="@null"
-        android:src="@drawable/pull_light_0"/>
+        android:src="@drawable/refresh_head_pull_light_0"/>
 
 </RelativeLayout>

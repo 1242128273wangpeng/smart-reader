@@ -22,7 +22,6 @@ import com.dingyue.contract.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.mfxsqbyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfxsqbyd.frag_bookshelf.*
@@ -184,7 +183,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 refreshHeader.img_anim.visibility = View.GONE
                 refreshHeader.img_head.visibility = View.VISIBLE
 //                headerView.img_anim.rotation = (if (enable) 180 else 0).toFloat()
-                refreshHeader.img_head.setImageResource((if (enable) R.drawable.refresh_head_pull_light_1 else R.drawable.pull_light_0))
+                refreshHeader.img_head.setImageResource((if (enable) R.drawable.refresh_head_pull_light_1 else R.drawable.refresh_head_pull_light_0))
             }
         })
         txt_head_title.text = getString(R.string.bookshelf)
@@ -292,7 +291,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     private fun createHeaderView(): View {
         refreshHeader.img_head.visibility = View.VISIBLE
-        refreshHeader.img_head.setImageResource(R.drawable.pull_light_0)
+        refreshHeader.img_head.setImageResource(R.drawable.refresh_head_pull_light_0)
         refreshHeader.img_anim.visibility = View.GONE
         return refreshHeader
     }
