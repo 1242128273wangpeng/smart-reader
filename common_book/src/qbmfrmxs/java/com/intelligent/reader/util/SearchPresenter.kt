@@ -377,7 +377,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
         }
     }
 
-    protected fun genCoverBook(host: String, book_id: String, book_source_id: String, name: String, author: String, status: String, category: String,
+    private fun genCoverBook(host: String, book_id: String, book_source_id: String, name: String, author: String, status: String, category: String?,
                                imgUrl: String, last_chapter: String, chapter_count: String, update_time: Long, parameter: String, extra_parameter: String, dex: Int): Book {
         val book = Book()
         book.status = status
@@ -389,7 +389,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
         book.img_url = imgUrl
         book.host = host
         book.chapter_count = Integer.valueOf(chapter_count)!!
-        var lastChapter = Chapter()
+        val lastChapter = Chapter()
         lastChapter.update_time = update_time
         lastChapter.name = last_chapter
         book.last_chapter = lastChapter
