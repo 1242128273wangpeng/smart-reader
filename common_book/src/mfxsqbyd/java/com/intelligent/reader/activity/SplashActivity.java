@@ -532,7 +532,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
     }
 
     private void initGenderOrData() {
-//        if (initChooseGender()) {
+        if (initChooseGender()) {
             FrameLayout frameLayout = findViewById(R.id.content_frame);
             frameLayout.removeAllViews();
             View view = LayoutInflater.from(this).inflate(R.layout.gender_splash, null);
@@ -556,9 +556,9 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                 mStepInFlag = true;
                 doOnCreate();
             }
-//        } else {
-//            doOnCreate();
-//        }
+        } else {
+            doOnCreate();
+        }
     }
 
     private boolean initChooseGender() {
