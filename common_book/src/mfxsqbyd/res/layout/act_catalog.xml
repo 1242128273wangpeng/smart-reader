@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:layout_above="@+id/layout_bottom_view"
-            android:src="@mipmap/bottom_shadow_bg"/>
+            android:src="@drawable/bottom_shadow_bg"/>
 
         <RelativeLayout
             android:id="@+id/layout_bottom_view"
