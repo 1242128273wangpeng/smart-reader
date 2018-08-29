@@ -420,7 +420,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
                 android:layout_above="@+id/layout_bottom_view"
-                android:src="@mipmap/bottom_shadow_bg"/>
+                android:src="@drawable/bottom_shadow_bg"/>
     </RelativeLayout>
 
     <ImageView
@@ -430,6 +430,6 @@
             android:layout_below="@+id/rl_title_book_cover"
             android:scaleType="fitXY"
             android:visibility="gone"
-            android:src="@mipmap/top_shadow_bg"/>
+            android:src="@drawable/top_shadow_bg"/>
 
 </RelativeLayout>

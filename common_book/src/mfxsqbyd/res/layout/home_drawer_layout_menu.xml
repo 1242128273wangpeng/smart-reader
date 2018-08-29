@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        android:src="@mipmap/setting_bg"/>
+        android:src="@drawable/setting_bg"/>
 
     <RelativeLayout
         android:id="@+id/rl_night_shift"

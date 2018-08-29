@@ -35,4 +35,9 @@
         "      "5.2、本协议的履行、解释及纠纷解决，适用中华人民共和国大陆地区法律。\n
     </string>
 
+    <string name="splash_boy">男生</string>
+    <string name="splash_boy_type">玄幻 都市 奇幻 武侠</string>
+    <string name="splash_girl">女生</string>
+    <string name="splash_girl_type">言情 穿越 总裁 校园</string>
+
 </resources>
