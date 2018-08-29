@@ -475,8 +475,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "8b015dab3f63bdb0f98c03e35bc885ab"
 //            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.dushixiaoshuo.cn"
 //            notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.dushixiaoshuo.cn"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://8053.zn.bookapi.cn"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "http://8053.zn.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://8048.uzn.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "http://8048.uzn.bookapi.cn"
         }
 
         txtqbdzs {
