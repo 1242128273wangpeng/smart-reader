@@ -383,39 +383,34 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
 
     fun chageNightMode(mode: Int = 0, useLightMode: Boolean = true) {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity?.get()?.applicationContext)
-        val edit = sharedPreferences.edit()
         val data = java.util.HashMap<String, String>()
 
-        if (activity?.get()?.mThemeHelper!!.isNight) {
-            //夜间模式只有一种背景， 不能存储
-//            edit.putInt("current_night_mode", ReaderSettings.instance.readThemeMode)
+        if (activity.get()?.mThemeHelper!!.isNight) {
             if (useLightMode) {
-                ReaderSettings.instance.readThemeMode = sharedPreferences.getInt("current_light_mode", 51)
+                ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
             } else {
                 ReaderSettings.instance.readThemeMode = mode
             }
 
-            activity?.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
+            activity.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
             data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         } else {
-            edit.putInt("current_light_mode", ReaderSettings.instance.readThemeMode)
-            //            ReadConfig.readThemeMode = sharedPreferences.getInt("current_night_mode", 61);
+
             //夜间模式只有一种背景
+            ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
             ReaderSettings.instance.readThemeMode = 61
-            activity?.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
+            activity.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
             data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         }
-        edit.putInt("content_mode", ReaderSettings.instance.readThemeMode)
-        edit.apply()
+        ReaderSettings.instance.save()
 
         changeNight()
     }
 
     fun changeNight() {
-        val editor = activity?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)?.edit()
+        val editor = activity.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)?.edit()
         if (ReaderSettings.instance.readThemeMode == 61) {
             if ("light" == ResourceUtil.mode) {
                 editor?.putString("mode", "night")
