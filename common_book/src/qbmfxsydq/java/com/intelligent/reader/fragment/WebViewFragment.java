@@ -41,7 +41,7 @@ import java.lang.ref.WeakReference;
 
 import de.greenrobot.event.EventBus;
 
-public class WebViewFragment extends Fragment implements View.OnClickListener {
+public class WebViewFragment extends Fragment {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
     public String url = "";
@@ -290,22 +290,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.content_head_search:
-                Intent intent = new Intent(getActivity(), SearchBookActivity.class);
-                try {
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.content_download_manage:
 
-                break;
-        }
-    }
 
     @Override
     public void onDestroy() {
