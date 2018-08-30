@@ -9,7 +9,7 @@ ext {
 
     compileSdkVersion = 27
 
-    minSdkVersion = 14
+    minSdkVersion = 16
     targetSdkVersion = 22
 
     minifyEnable = false
@@ -27,8 +27,8 @@ ext {
     // 无广告列表
     noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader','cn.mfxsqbyd.reader',"cn.qbmfkkydq.reader"]
     // 改完记得重新编译项目
-    applicationId = "cc.kdqbxs.reader"
-    defaultPublishConfig = 'mfqbxssc' + 'Debug'
+    applicationId = "cn.txtqbmfyd.reader"
+    defaultPublishConfig = 'txtqbmfyd' + 'Debug'
     def appPackageIDConfig = [
             qbmfxsydq : "cc.quanben.novel",//五步替
             mfqbxssc  : "cc.kdqbxs.reader", //快读替

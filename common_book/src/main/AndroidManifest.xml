@@ -94,6 +94,10 @@
         <meta-data
             android:name="android.notch_support"
             android:value="true"/>
+        <!--xiaomi-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait"/>
         <!-- start for GaoDe Map -->
         <service android:name="com.amap.api.location.APSService"/>
 

@@ -552,21 +552,27 @@ public class AppUtils {
      */
     public static String getIPAddress(Context context) {
         String ip = "";
-        ConnectivityManager conMann = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        //这里不应该每次都重新获得的, 应该在receiver里 收到网络状态的时候, 获取一次然后做记录, 偷懒了先catch一下吧
+        try {
+            ConnectivityManager conMann = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
-            ip = getLocalIpAddress();
-        } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
-            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            int ipAddress = wifiInfo.getIpAddress();
-            ip = getWifiIPAddress(ipAddress);
+            if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
+                ip = getLocalIpAddress();
+            } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                int ipAddress = wifiInfo.getIpAddress();
+                ip = getWifiIPAddress(ipAddress);
+            }
+        }catch (Throwable t){
+
         }
         return ip;
     }
+
 
     //如果连接的是移动网络
     private static String getLocalIpAddress() {

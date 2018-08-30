@@ -192,24 +192,34 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 adBookMap[key] = adBook
             }
         }
-        doAsync {
-            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
-                override fun requestMediaSuccess(views: List<ViewGroup>) {
-                    runOnMain {
-                        handleADResult(views)
-                        view?.onAdRefresh()
-                    }
-                }
 
-                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
-                    runOnMain {
-                        handleADResult(views)
-                        view?.onAdRefresh()
-                    }
+        val views = mutableListOf<ViewGroup>()
 
-                }
-            })
+        for (i in 0 until count){
+            views.add(BookShelfADView(activity))
         }
+
+        handleADResult(views)
+        view?.onAdRefresh()
+
+//        doAsync {
+//            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
+//                override fun requestMediaSuccess(views: List<ViewGroup>) {
+//                    runOnMain {
+//                        handleADResult(views)
+//                        view?.onAdRefresh()
+//                    }
+//                }
+//
+//                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
+//                    runOnMain {
+//                        handleADResult(views)
+//                        view?.onAdRefresh()
+//                    }
+//
+//                }
+//            })
+//        }
 
     }
 
