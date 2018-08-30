@@ -49,7 +49,7 @@
 
     <style name="CircleProgressBar">
         <item name="android:indeterminateOnly">true</item>
-        <item name="android:indeterminateDrawable">@drawable/loadingpage_progress_circle</item>
+        <item name="android:indeterminateDrawable">@drawable/progress_circle</item>
         <item name="android:indeterminateBehavior">repeat</item>
         <item name="android:indeterminateDuration">1500</item>
         <item name="android:minWidth">48dip</item>

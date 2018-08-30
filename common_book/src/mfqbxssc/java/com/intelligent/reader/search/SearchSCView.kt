@@ -1,7 +1,7 @@
 package com.intelligent.reader.presenter.search
 
 import com.ding.basic.bean.HotWordBean
-import net.lzbook.kit.data.search.SearchHotBean
+import com.ding.basic.bean.SearchHotBean
 
 /**
  * Created by yuchao on 2017/11/23 0023.

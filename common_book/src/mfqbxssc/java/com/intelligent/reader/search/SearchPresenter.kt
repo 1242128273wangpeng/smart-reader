@@ -21,13 +21,13 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.FindBookDetail
 import com.intelligent.reader.activity.SearchBookActivity
+import com.intelligent.reader.adapter.SearchSuggest
 import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.presenter.search.SearchSCView
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchSuggest
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.statistic.alilog
 import net.lzbook.kit.statistic.buildSearch

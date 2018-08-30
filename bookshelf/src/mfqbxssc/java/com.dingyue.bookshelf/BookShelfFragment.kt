@@ -362,7 +362,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null && !activity!!.isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (isAdded) {
-                activity!!.applicationContext.showToastMessage(R.string.bookshelf_refresh_network_problem, 2000L)
+                activity!!.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()

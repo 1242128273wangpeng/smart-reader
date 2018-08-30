@@ -15,7 +15,7 @@
             android:text="一键登录"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:background="@color/color_red_882f46"
+            android:background="@color/primary"
             />
     
     <TextView

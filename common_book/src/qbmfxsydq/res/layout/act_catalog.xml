@@ -30,7 +30,7 @@
                     android:layout_alignParentLeft="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/directory_back" />
+                    android:src="@drawable/icon_back_left" />
 
                 <RadioGroup
                     android:layout_width="match_parent"
