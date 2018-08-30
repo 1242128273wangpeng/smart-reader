@@ -2,26 +2,22 @@ package com.intelligent.reader.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Intent
 import android.content.res.Resources
+import android.preference.PreferenceManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AbsListView
 import android.widget.AdapterView.OnItemClickListener
-
-import com.intelligent.reader.adapter.SearchHisAdapter
-import com.intelligent.reader.adapter.SearchHotWordAdapter
-import com.intelligent.reader.adapter.SearchSuggestAdapter
-
-import net.lzbook.kit.utils.StatServiceUtils
-
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Intent
-import android.preference.PreferenceManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
-import android.widget.*
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.RelativeLayout
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
@@ -30,20 +26,19 @@ import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
-import com.intelligent.reader.adapter.RecommendBooksAdapter
+import com.intelligent.reader.adapter.*
 import com.intelligent.reader.presenter.search.SearchSCView
-import com.intelligent.reader.presenter.search.SearchViewPresenter
 import com.intelligent.reader.search.SearchPresenter
+import com.intelligent.reader.search.SearchViewPresenter
 import kotlinx.android.synthetic.mfqbxssc.search_hot_title_layout.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.*
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils
-import java.util.ArrayList
-import java.util.HashMap
+import net.lzbook.kit.utils.StatServiceUtils
+import java.util.*
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchHisAdapter.SearchClearCallBack, SearchSCView.View, RecommendBooksAdapter.RecommendItemClickListener {
 

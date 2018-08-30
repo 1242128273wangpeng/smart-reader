@@ -11,8 +11,8 @@
             android:id="@+id/novel_catalog_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/padding_0"
-            android:paddingRight="@dimen/padding_0"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             android:background="@color/color_white_ffffff"
             android:orientation="vertical">
 
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:scaleType="fitXY"
-                android:src="@mipmap/top_shadow"/>
+                android:src="@drawable/top_shadow"/>
 
 
         <RelativeLayout
@@ -129,7 +129,7 @@
 
                 android:layout_above="@+id/linear_bottom"
                 android:scaleType="fitXY"
-                android:src="@mipmap/bottom_shadow"/>
+                android:src="@drawable/top_shadow"/>
 
         <LinearLayout
                 android:id="@+id/linear_bottom"
@@ -241,6 +241,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:src="@drawable/ic_back_reading"
+            android:src="@drawable/icon_back_reading"
             android:layout_gravity="center_vertical|right"/>
 </FrameLayout>

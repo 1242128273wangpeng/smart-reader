@@ -68,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/tv_recommend"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/margin_5"
+                        android:layout_marginLeft="5dp"
                         android:src="@drawable/search_icon_suixinkang"/>
             </RelativeLayout>
 
