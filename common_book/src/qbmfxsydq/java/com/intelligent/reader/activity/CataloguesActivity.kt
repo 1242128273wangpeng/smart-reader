@@ -153,7 +153,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         char_hint!!.visibility = View.INVISIBLE
 
 
-        iv_back_reading!!.setOnClickListener(this)
         currentView = tab_catalog
 
         changeSortState(isPositive)
@@ -408,7 +407,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                 }
                 finish()
             }
-            R.id.iv_back_reading -> finish()
             R.id.catalog_empty_refresh -> getChapterData()
             R.id.tab_catalog -> {
                 if (recl_catalog_main != null) {

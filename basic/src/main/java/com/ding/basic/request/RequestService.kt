@@ -67,6 +67,9 @@ interface RequestService {
         // 搜索V3
         const val SEARCH = "/v3/search"
 
+        // 搜索
+        const val SEARCH_V5 = "/v5/search/page"
+
         /**
          * 搜索热词
          */

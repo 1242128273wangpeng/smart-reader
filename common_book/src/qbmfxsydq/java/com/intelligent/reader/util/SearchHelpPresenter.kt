@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
@@ -22,7 +23,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.ArrayList
@@ -33,7 +33,7 @@ import java.util.HashMap
  */
 class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<SearchView.HelpView> {
 
-    private var mSuggestList: MutableList<SearchCommonBean>? = ArrayList()
+    private var mSuggestList: MutableList<SearchCommonBeanYouHua>? = ArrayList()
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
@@ -180,11 +180,11 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         if (activity != null && !activity!!.isFinishing) {
             val myDialog = MyDialog(activity, R.layout.publish_hint_dialog)
             myDialog.setCanceledOnTouchOutside(true)
-            val dialog_title = myDialog.findViewById(R.id.dialog_title) as TextView
+            val dialog_title = myDialog.findViewById<TextView>(R.id.dialog_title)
             dialog_title.setText(R.string.prompt)
-            val dialog_content = myDialog.findViewById(R.id.publish_content) as TextView
+            val dialog_content = myDialog.findViewById<TextView>(R.id.publish_content)
             dialog_content.setText(R.string.determine_clear_serach_history)
-            val dialog_comfire = myDialog.findViewById(R.id.publish_leave) as TextView
+            val dialog_comfire = myDialog.findViewById<TextView>(R.id.publish_leave)
 
             dialog_comfire.setOnClickListener {
                 val data = HashMap<String, String>()
@@ -193,7 +193,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
                 mSearchHandler?.sendEmptyMessage(10)
                 myDialog.dismiss()
             }
-            val dialog_cancle = myDialog.findViewById(R.id.publish_stay) as TextView
+            val dialog_cancle = myDialog.findViewById<TextView>(R.id.publish_stay)
             dialog_cancle.setOnClickListener {
                 val data = HashMap<String, String>()
                 data.put("type", "0")
@@ -220,7 +220,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), mHistoryDatas)
     }
 
-    fun result(result: List<SearchCommonBean>) {
+    fun result(result: List<SearchCommonBeanYouHua>) {
         if (mSuggestList == null)
             return
         mSuggestList!!.clear()
@@ -237,7 +237,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     }
 
-    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    fun onSearchResult(suggestList: List<SearchCommonBeanYouHua>, transmitBean: SearchAutoCompleteBeanYouHua) {
         if (mSuggestList == null) {
             return
         }
@@ -278,7 +278,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             when (msg.what) {
                 10 -> helper.clearHistory()
 
-                20 -> helper.result(msg.obj as ArrayList<SearchCommonBean>)
+                20 -> helper.result(msg.obj as ArrayList<SearchCommonBeanYouHua>)
 
                 else -> {
                 }
@@ -339,7 +339,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         return searchType
     }
 
-    fun getSuggestData(): MutableList<SearchCommonBean>? {
+    fun getSuggestData(): MutableList<SearchCommonBeanYouHua>? {
         return mSuggestList
     }
 

@@ -34,7 +34,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchHotBean
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
