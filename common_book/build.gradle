@@ -255,37 +255,37 @@ android {
 
     buildTypes {
 
-    /*
-        百度应用中心	blp1298_10882_001
-        360手机助手	blp1298_10890_001
-        腾讯应用中心	blp1298_10891_001
-        小米软件商店	blf1298_10928_001
-        豌豆荚	    blp1298_10269_001
-        安卓市场	    blp1298_10883_001
-        91助手	    blp1298_10699_001
-        联想乐商店	blp1298_10610_001
-        优亿市场    	blf1298_10461_001
-        华为市场	    blf1298_12243_001
-        搜狗市场	    blf1298_12340_001
-        魅族开发者	blf1298_12237_001
-        木蚂蚁	    blf1298_10887_001
-        可可应用商店	blf1298_12242_001
-        搜狗手机助手	blf1298_12247_001
-        乐视应用中心	blf1298_13316_001
-        VIVO应用商店	blf1298_12923_001
-        默认升级渠道	blf1298_11974_001
-        N多网	    blf1298_10885_001
-        猎豹联盟     dyp1024_20001_001
-		            blf1298_13096_001
-		            blf1298_10930_001
-		            blf1298_10000_001
-		            blf1298_10001_001
-        安智市场渠道号  blp1298_10894_001
-        猎豹联盟     dyp1024_20001_001
-        三星         blf1298_10929_001
+        /*
+            百度应用中心	blp1298_10882_001
+            360手机助手	blp1298_10890_001
+            腾讯应用中心	blp1298_10891_001
+            小米软件商店	blf1298_10928_001
+            豌豆荚	    blp1298_10269_001
+            安卓市场	    blp1298_10883_001
+            91助手	    blp1298_10699_001
+            联想乐商店	blp1298_10610_001
+            优亿市场    	blf1298_10461_001
+            华为市场	    blf1298_12243_001
+            搜狗市场	    blf1298_12340_001
+            魅族开发者	blf1298_12237_001
+            木蚂蚁	    blf1298_10887_001
+            可可应用商店	blf1298_12242_001
+            搜狗手机助手	blf1298_12247_001
+            乐视应用中心	blf1298_13316_001
+            VIVO应用商店	blf1298_12923_001
+            默认升级渠道	blf1298_11974_001
+            N多网	    blf1298_10885_001
+            猎豹联盟     dyp1024_20001_001
+                        blf1298_13096_001
+                        blf1298_10930_001
+                        blf1298_10000_001
+                        blf1298_10001_001
+            安智市场渠道号  blp1298_10894_001
+            猎豹联盟     dyp1024_20001_001
+            三星         blf1298_10929_001
 
-        升级渠道	blf1298_11974_001
-    */
+            升级渠道	blf1298_11974_001
+        */
 
         //自定义
         custom {
@@ -364,11 +364,13 @@ android {
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbzs.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbzs.lsread.cn"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uqbzsydqunionapi.lsread.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://uqbzsydqunioncontent.lsread.cn"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://aqbzsydqunionapi.basicnos.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://aqbzsydqunioncontent.basicnos.cn"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uqbzsydqunionapi.lsread.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://uqbzsydqunioncontent.lsread.cn"
 
         }
-
 
         qbmfxsydq {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -399,8 +401,11 @@ android {
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.bookapi.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.bookapi.cn"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://aqbmfxsydqunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://aqbmfxsydqunioncontent.jingytech.com"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
         }
 
         mfqbxssc {
@@ -430,11 +435,13 @@ android {
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uamfqb.youshiit.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwmfqb.youshiit.com"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://umfqbxsscunionapi.youshiit.com"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://umfqbxsscunioncontent.youshiit.com"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://amfqbxsscunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://amfqbxsscunioncontent.jingytech.com"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://umfqbxsscunionapi.youshiit.com"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://umfqbxsscunioncontent.youshiit.com"
 
         }
-
 
         zsmfqbxs {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -463,8 +470,12 @@ android {
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uazsmf.lsread.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwzsmf.lsread.cn"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uzsmfqbxsunionapi.lsread.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://uzsmfqbxsunioncontent.lsread.cn"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://azsmfqbxsunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://azsmfqbxsunioncontent.jingytech.com"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://uzsmfqbxsunionapi.lsread.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://uzsmfqbxsunioncontent.lsread.cn"
+
 
         }
 
@@ -492,13 +503,16 @@ android {
             notOverrideResValue getOwner(), "string", "push_key", "5IGK3hQjIasKH9P9thgBtqop5tTzjiuF"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "23730670"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "8b015dab3f63bdb0f98c03e35bc885ab"
-//            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.dushixiaoshuo.cn"
-//            notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.dushixiaoshuo.cn"
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "http://8053.zn.bookapi.cn"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "http://8053.zn.bookapi.cn"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://utxtqbmfxsunionapi.dushixiaoshuo.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://utxtqbmfxsunioncontent.dushixiaoshuo.cn"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.dushixiaoshuo.cn"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.dushixiaoshuo.cn"
+
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://atxtqbmfxsunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://atxtqbmfxsunioncontent.jingytech.com"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://utxtqbmfxsunionapi.dushixiaoshuo.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://utxtqbmfxsunioncontent.dushixiaoshuo.cn"
+//
         }
 
         txtqbdzs {
@@ -562,8 +576,11 @@ android {
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.readzq.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.readzq.com"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://utxtqbmfydqunionapi.readzq.com"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://utxtqbmfydqunioncontent.readzq.com"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://atxtqbmfydunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://atxtqbmfydunioncontent.jingytech.com"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://utxtqbmfydqunionapi.readzq.com"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://utxtqbmfydqunioncontent.readzq.com"
 
         }
 
@@ -598,7 +615,6 @@ android {
             notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
         }
 
-
         qbmfrmxs {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -625,11 +641,17 @@ android {
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24812888"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "2baf3d5d4f949e5189afbe37a8e1302e"
+
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://news.fengxianghuawu.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://show.fengxianghuawu.com"
+
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://aqbmfrmxsunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://aqbmfrmxsunioncontent.jingytech.com"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
+
         }
-
-
 
         qbmfkkydq {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -655,8 +677,15 @@ android {
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"//待更换
             notOverrideResValue getOwner(), "string", "alifeedback_key", "25007608"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "637ef76b85f41fbf4ef38f950d45a116"
+
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://api.muxinvideo.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://webview.muxinvideo.com"
+
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://aqbmfkkydqunionapi.basicnos.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://aqbmfkkydqunioncontent.basicnos.cn"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
         }
 
         mfxsqbyd {
@@ -684,11 +713,18 @@ android {
             notOverrideResValue getOwner(), "string", "push_key", "DOGRj3vpV9F6KamswYShmdHM"//待更换
             notOverrideResValue getOwner(), "string", "alifeedback_key", "24906354"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "1f41b3f2695c9bf2910102eb5c01b218"
+
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uamfxsqb.fengxianghuawu.com"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwmfxsqb.fengxianghuawu.com"
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
+
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://amfxsqbydunionapi.mantantd.cn"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://amfxsqbydunioncontent.mantantd.cn"
+
+//            notOverrideResValue getOwner(), "string", "micro_api_host", "https://unionapi.bookapi.cn"
+//            notOverrideResValue getOwner(), "string", "content_api_host", "https://unioncontent.bookapi.cn"
+
         }
+
     }
 
 
