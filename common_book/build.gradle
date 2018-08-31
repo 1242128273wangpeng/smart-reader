@@ -476,8 +476,8 @@ N多网	        blf1298_10885_001
             notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmf.dushixiaoshuo.cn"
             notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmf.dushixiaoshuo.cn"
 
-            notOverrideResValue getOwner(), "string", "micro_api_host", "https://utxtqbmfxsunionapi.dushixiaoshuo.cn"
-            notOverrideResValue getOwner(), "string", "content_api_host", "https://utxtqbmfxsunioncontent.dushixiaoshuo.cn"
+            notOverrideResValue getOwner(), "string", "micro_api_host", "https://atxtqbmfxsunionapi.jingytech.com"
+            notOverrideResValue getOwner(), "string", "content_api_host", "https://atxtqbmfxsunioncontent.jingytech.com"
 
         }
 
