@@ -27,6 +27,8 @@ interface BasicRequestRepository {
 
     fun requestHotWords(): Flowable<SearchHotBean>?
 
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>?
+
     fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? //搜索推荐
 
     fun requestSubBook(bookName: String , bookAuthor: String): Flowable<JsonObject>? //搜索无结果 订阅

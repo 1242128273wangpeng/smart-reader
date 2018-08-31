@@ -26,6 +26,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
@@ -54,9 +55,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
+        popup.onApplicationShareClickListener = {
+            applicationShareDialog.show()
+            BookShelfLogger.uploadBookShelfShare()
+        }
         popup
     }
-
 
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(requireActivity())
@@ -126,6 +130,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog.onCancelListener = {
             BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
         }
+        dialog
+    }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
         dialog
     }
 
@@ -485,7 +494,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {
         bookShelfPresenter.deleteBooks(books, isDeleteCacheOnly)
     }
-
 
     companion object {
         private const val PULL_REFRESH_DELAY = 30 * 1000

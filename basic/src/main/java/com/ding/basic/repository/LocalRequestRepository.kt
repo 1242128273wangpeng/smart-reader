@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.request.RequestAPI
 import com.ding.basic.request.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
 import com.google.gson.JsonObject
@@ -104,6 +105,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     override fun requestHotWords(): Flowable<SearchHotBean>? {
+        return null
+    }
+
+    override fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
         return null
     }
 

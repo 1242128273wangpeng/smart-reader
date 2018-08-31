@@ -34,6 +34,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
@@ -381,6 +382,14 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
     }
 
+    fun showShareDialog() {
+        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
+        
+        if (activity.get() != null && !activity.get()!!.isFinishing) {
+            val applicationShareDialog = ApplicationShareDialog(activity.get())
+            applicationShareDialog.show()
+        }
+    }
 
     fun chageNightMode(mode: Int = 0, useLightMode: Boolean = true) {
         val data = java.util.HashMap<String, String>()
