@@ -13,12 +13,14 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.ATManager
 import net.lzbook.kit.utils.AppLog
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.collections.HashMap
 
 class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
 
@@ -320,5 +322,12 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
             return stringBuilder.toString()
         }
         return ""
+    }
+
+    fun uploadLog(book: Book?,type:String){
+        val data = HashMap<String,String>()
+        data.put("bookid",book?.book_id.toString())
+        data.put("chapterid",book?.book_chapter_id.toString())
+        StartLogClickUtil.upLoadEventLog(activity,StartLogClickUtil.READFINISH_PAGE,type,data)
     }
 }

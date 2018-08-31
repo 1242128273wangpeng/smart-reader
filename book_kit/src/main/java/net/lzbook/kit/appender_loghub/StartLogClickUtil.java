@@ -169,6 +169,7 @@ public class StartLogClickUtil {
     public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
     public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
+    public static final String READFINISH_PAGE = "READFINISH";//作者主页
 
     //PUSH
     public static final String PUSHRECEIVE = "PUSHRECEIVE";//通知送达

@@ -544,6 +544,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                 tvStepIn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Map<String,String> data = new HashMap<>();
+                        data.put("type","0");
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
                         tvStepIn.setText("努力加载中...");
                         tvStepIn.setClickable(false);
                         genderHelper.jumpAnimation();

@@ -104,8 +104,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                     }
 
                     if (book != null) {
-                        handleBook(book)
                         BookShelfLogger.uploadBookShelfBookClick(book, position)
+                        handleBook(book)
                     }
                 } else {
                     bookShelfAdapter.insertSelectedPosition(position)

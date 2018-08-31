@@ -64,7 +64,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         initIntent()
 
         initData()
-
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -82,11 +82,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             finish()
         }
 
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             finish()
         }
 

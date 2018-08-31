@@ -275,7 +275,9 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
+            logMap.put("bookid",ReaderStatus.book?.book_id)
+            logMap.put("chapterid",ReaderStatus?.chapterId)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
@@ -325,7 +327,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap.put("type", "2")
             logMap.put("bookid", ReaderStatus.book!!.book_id)
             logMap.put("chapterid", ReaderStatus.chapterId.toString())
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
             mBookDataHelper.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }
@@ -437,7 +439,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
                 return
             }
-
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
             val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
             readerFeedbackDialog.insertSubmitListener {
