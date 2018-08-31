@@ -193,6 +193,9 @@ class SharedPreUtil(val type: Int) {
         @JvmField
         val PUSH_TAG_LATEST_UPDATE_TIME = "push_tag_latest_update_time"
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
+
+
+        const val COVER_SHARE_PROMPT = "cover_share_prompt"
     }
 
 

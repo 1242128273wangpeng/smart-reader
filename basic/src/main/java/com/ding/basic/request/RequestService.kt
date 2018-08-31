@@ -94,6 +94,9 @@ interface RequestService {
         const val BOOKSHELF_UPDATE = "/v5/book/update"
 
         const val FEEDBACK_ERROR = "/v3/log/fb"
+
+        const val SHARE_INFORMATION = "/v5/share/getShareInfo"
+
         // 用户相关----------------------
         //登陆操作
         const val LOGIN_ACTION = "/v3/user/login"
@@ -267,6 +270,8 @@ interface RequestService {
     @GET(FEEDBACK_ERROR)
     fun requestFeedback(@QueryMap(encoded = false) params: Map<String, String>): Flowable<NoBodyEntity>
 
+    @GET(SHARE_INFORMATION)
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>
 
     /************************************* 用户相关 *************************************/
 

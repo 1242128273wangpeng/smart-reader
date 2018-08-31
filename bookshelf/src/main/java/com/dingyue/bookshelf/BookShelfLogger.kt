@@ -90,6 +90,14 @@ object BookShelfLogger {
     }
 
     /***
+     * 书架点击应用分享
+     * **/
+    fun uploadBookShelfShare() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
+    }
+
+    /***
      * 书架长按进入书架编辑状态
      * **/
     fun uploadBookShelfLongClickBookShelfEdit() {

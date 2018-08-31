@@ -22,6 +22,8 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
 
     var onBookSortingClickListener: (() -> Unit)? = null
 
+    var onApplicationShareClickListener: (() -> Unit)? = null
+
     init {
         popupWindow.isFocusable = true
         popupWindow.isOutsideTouchable = false
@@ -35,6 +37,10 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
             onBookSortingClickListener?.invoke()
         }
 
+        contentView.ll_app_share.setOnClickListener {
+            dismiss()
+            onApplicationShareClickListener?.invoke()
+        }
     }
 
     fun show(view: View) {
