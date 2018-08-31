@@ -181,6 +181,15 @@ public class StartLogClickUtil {
 
 
 
+
+
+
+    public static final String PAGE_SHARE = "SHAREPAGE";//分享弹窗
+    public static final String ACTION_SHARE = "SHARE";//分享
+    public static final String ACTION_CANCEL = "CANCEL";//分享
+
+
+
     //PUSH
     public static final String PUSHRECEIVE = "PUSHRECEIVE";//通知送达
     public static final String PUSHCLICK = "PUSHCLICK";//通知点击

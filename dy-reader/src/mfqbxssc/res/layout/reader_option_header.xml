@@ -37,14 +37,12 @@
             android:src="@drawable/reader_option_share_icon"/>
 
         <View
-            android:id="@+id/view_reader_share"
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:layout_marginTop="10dp"
             android:layout_alignTop="@id/ibtn_reader_share"
             android:layout_alignRight="@id/ibtn_reader_share"
-            android:background="@drawable/prompt_red_bg"
-            android:visibility="gone"/>
+            android:background="@drawable/prompt_red_bg"/>
 
         <ImageButton
             android:id="@+id/ibtn_reader_download"
