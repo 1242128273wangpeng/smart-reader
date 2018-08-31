@@ -234,6 +234,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                     bookShelfAdapter.notifyDataSetChanged()
                 }
             }
+            if(bookShelfPresenter.iBookList.isNotEmpty()){
+                BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
+            }
         }
     }
 
