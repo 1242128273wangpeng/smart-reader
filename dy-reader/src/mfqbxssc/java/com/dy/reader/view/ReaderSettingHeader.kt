@@ -72,10 +72,6 @@ class ReaderSettingHeader : FrameLayout {
             presenter?.openWeb()
         }
 
-        ibtn_reader_share?.setOnClickListener {
-            presenter?.showShareDialog()
-        }
-
         ibtn_reader_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
 

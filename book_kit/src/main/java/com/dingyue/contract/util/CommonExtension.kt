@@ -1,7 +1,6 @@
 package com.dingyue.contract.util
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.support.annotation.StringRes
@@ -9,7 +8,6 @@ import android.view.View
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.lzbook.kit.utils.msDebuggAble
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
 /**
@@ -86,7 +84,7 @@ fun Context.showToastMessage(message: String, delay: Long) {
 
 fun View.preventClickShake(listener: View.OnClickListener) {
     this.setOnClickListener {
-        if (isClickable) {
+        if(isClickable) {
             listener.onClick(it)
             postDelayed({
                 isClickable = true
@@ -95,19 +93,4 @@ fun View.preventClickShake(listener: View.OnClickListener) {
 
         isClickable = false
     }
-}
-
-fun Bitmap.bitmapTransformByteArray(): ByteArray {
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-
-    val result = byteArrayOutputStream.toByteArray()
-
-    try {
-        byteArrayOutputStream.close()
-    } catch (exception: Exception) {
-        exception.printStackTrace()
-    }
-
-    return result
 }

@@ -58,11 +58,11 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-        webViewHost = "http://8055.zn.bookapi.cn"
-        requestAPIHost = "http://8055.zn.bookapi.cn"
+//        webViewHost = "http://20.20.23.216:8082"
+//        requestAPIHost = "http://20.20.23.216:8082"
 
-//        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-//        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
     }
 
     fun getContext(): Context? {
@@ -71,9 +71,9 @@ object Config {
 
 
     fun insertWebViewHost(webViewHost: String) {
-//        if (!TextUtils.isEmpty(webViewHost)) {
-//            Config.webViewHost = webViewHost
-//        }
+        if (!TextUtils.isEmpty(webViewHost)) {
+            Config.webViewHost = webViewHost
+        }
     }
 
     fun loadWebViewHost(): String {
@@ -81,9 +81,9 @@ object Config {
     }
 
     fun insertRequestAPIHost(requestAPIHost: String) {
-//        if (!TextUtils.isEmpty(requestAPIHost)) {
-//            Config.requestAPIHost = requestAPIHost
-//        }
+        if (!TextUtils.isEmpty(requestAPIHost)) {
+            Config.requestAPIHost = requestAPIHost
+        }
     }
 
     fun loadRequestAPIHost(): String {
@@ -137,25 +137,6 @@ object Config {
             return null
         }
         return URLBuilder.buildUrl(requestAPIHost, request, parameters)
-    }
-
-    fun buildRequestUrl(url: String?): String? {
-        if (url == null) {
-            return null
-        }
-
-        val parameters = HashMap<String, String>()
-        parameters["os"] = Config.loadRequestParameter("os")
-        parameters["udid"] = Config.loadRequestParameter("udid")
-        parameters["version"] = Config.loadRequestParameter("version")
-        parameters["channelId"] = Config.loadRequestParameter("channelId")
-        parameters["packageName"] = Config.loadRequestParameter("packageName")
-
-        parameters["cityCode"] = Config.loadRequestParameter("cityCode")
-        parameters["latitude"] = Config.loadRequestParameter("latitude")
-        parameters["longitude"] = Config.loadRequestParameter("longitude")
-
-        return URLBuilder.buildUrl(requestAPIHost, url, parameters)
     }
 
 

@@ -78,11 +78,6 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestHotWords()
     }
 
-    override fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
-        return RequestAPI.requestShareInformation()
-    }
-
-
     override fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
         return RequestAPI.requestHotWordsV4()
     }

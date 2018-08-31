@@ -100,14 +100,12 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        val host = request.url().host()
-
-        if (host == URL("https://api.weixin.qq.com").host
-                || host == URL("https://graph.qq.com").host
-                || host == URL("https://public.lsread.cn/dpzn").host
-                || host == URL("https://public.dingyueads.com/dpzn").host
-                || host == URL("https://public.qingoo.cn/dpzn").host
-                || host == URL("http://ad.dingyueads.com:8010/insertData").host) {
+        if (request.url().host() == URL("https://api.weixin.qq.com").host
+                || request.url().host() == URL("https://graph.qq.com").host
+                || request.url().toString().contains("https://public.lsread.cn/dpzn")
+                || request.url().toString().contains("https://public.dingyueads.com/dpzn")
+                || request.url().toString().contains("https://public.qingoo.cn/dpzn")
+                || request.url().toString().contains("http://ad.dingyueads.com:8010/insertData")) {
             Logger.e("请求微信或者QQ的接口: " + request.url().toString())
         } else {
             request = buildRequest(request)

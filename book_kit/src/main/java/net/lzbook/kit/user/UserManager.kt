@@ -5,44 +5,27 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.os.Bundle
-import android.text.TextUtils
 import com.alibaba.fastjson.JSON
-import com.bumptech.glide.Glide
 import com.ding.basic.bean.LoginResp
 import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.dingyue.contract.util.bitmapTransformByteArray
-import com.dingyue.contract.util.mainLooperHandler
-import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-import com.tencent.connect.share.QQShare
-import com.tencent.connect.share.QzoneShare
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
 import com.tencent.mm.opensdk.modelmsg.SendAuth
-import com.tencent.mm.opensdk.modelmsg.SendMessageToWX
-import com.tencent.mm.opensdk.modelmsg.WXMediaMessage
-import com.tencent.mm.opensdk.modelmsg.WXWebpageObject
 import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.R
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.user.bean.LoginReq
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.toMap
 import java.util.*
@@ -52,6 +35,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Created by xian on 2017/6/20.
  */
+
+//val WX_APPID = "wx1adbbff037154040"
+//val QQ_APPID = "1105963470"
+
 
 object UserManager : IWXAPIEventHandler {
 
@@ -433,192 +420,6 @@ object UserManager : IWXAPIEventHandler {
             ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX -> {
             }
         }
-    }
-
-
-    /**************************** 分享 ****************************/
-
-
-    fun shareWechat(activity: Activity?, title: String, description: String, url: String, image: String) {
-        handleShareWechat(activity, title, description, url, image, SendMessageToWX.Req.WXSceneSession)
-    }
-
-    fun shareWechatCircle(activity: Activity?, title: String, description: String, url: String, image: String) {
-        handleShareWechat(activity, title, description, url, image, SendMessageToWX.Req.WXSceneTimeline)
-    }
-
-    private fun handleShareWechat(activity: Activity?, title: String, description: String, url: String, image: String, type: Int) {
-        if (mWXApi == null) {
-            mWXApi = WXAPIFactory.createWXAPI(activity?.applicationContext, mWXAppID, true)
-            mWXApi?.registerApp(mWXAppID)
-        }
-
-        if (mWXApi?.isWXAppInstalled == false) {
-            activity?.applicationContext?.showToastMessage("请先安装微信客户端，再进行分享操作！")
-            return
-        }
-
-        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
-            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
-        }
-
-        Observable.create<Bitmap> {
-            val bitmap = Glide.with(activity?.applicationContext)
-                    .load(image)
-                    .asBitmap()
-                    .centerCrop()
-                    .into(100, 100)
-                    .get()
-            it.onNext(bitmap)
-        }.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { handleShareWechatAction(title, description, url, it, type) }
-    }
-
-    private fun handleShareWechatAction(title: String, description: String, url: String, bitmap: Bitmap, scene: Int) {
-        val wxWebpageObject = WXWebpageObject()
-        wxWebpageObject.webpageUrl = url
-
-        val wxMediaMessage = WXMediaMessage(wxWebpageObject)
-
-        wxMediaMessage.title = title
-        wxMediaMessage.thumbData = bitmap.bitmapTransformByteArray()
-        wxMediaMessage.description = description
-
-        val req = SendMessageToWX.Req()
-        req.transaction = buildTransaction(AppUtils.getPackageName())
-        req.message = wxMediaMessage
-        req.scene = scene
-        mWXApi?.sendReq(req)
-    }
-
-    fun shareQQ(activity: Activity?, title: String, description: String, url: String, image: String) {
-        if (mTencent == null) {
-            mTencent = Tencent.createInstance(mQQAppID, activity?.applicationContext)
-        }
-
-        if (mTencent?.isQQInstalled(activity?.applicationContext) == false) {
-            activity?.applicationContext?.showToastMessage("请先安装QQ客户端，再进行分享操作！")
-            return
-        }
-
-        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
-            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
-        }
-
-        Observable.create<String> {
-            it.onNext(image)
-        }.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe { imagePath ->
-                    val params = Bundle()
-                    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT)
-                    params.putString(QQShare.SHARE_TO_QQ_TITLE, title)
-
-                    if (!TextUtils.isEmpty(description)) {
-                        params.putString(QQShare.SHARE_TO_QQ_SUMMARY, description)
-                    }
-
-                    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url)
-                    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imagePath)
-                    params.putString(QQShare.SHARE_TO_QQ_APP_NAME, activity?.getString(R.string.app_name))
-                    params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE)
-                    handleShareQQAction(activity, params)
-                }
-    }
-
-    private fun handleShareQQAction(activity: Activity?, params: Bundle) {
-        mainLooperHandler.post {
-            if (activity != null) {
-                mTencent?.shareToQQ(activity, params, object : IUiListener {
-                    override fun onComplete(p0: Any?) {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享成功！")
-                        }
-                    }
-
-                    override fun onCancel() {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享取消！")
-                        }
-                    }
-
-                    override fun onError(p0: UiError?) {
-                        Logger.e("分享失败: " + p0?.errorDetail)
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享失败！")
-                        }
-                    }
-                })
-            }
-        }
-    }
-
-    fun shareQzone(activity: Activity?, title: String, description: String, url: String, image: String) {
-
-        if (mTencent == null) {
-            mTencent = Tencent.createInstance(mQQAppID, activity?.applicationContext)
-        }
-
-        if (mTencent?.isQQInstalled(activity?.applicationContext) == false) {
-            activity?.applicationContext?.showToastMessage("请先安装QQ客户端，再进行分享操作！")
-            return
-        }
-
-        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
-            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
-        }
-
-        Observable.create<String> {
-            it.onNext(image)
-        }.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    val params = Bundle()
-
-                    params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT)
-                    params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title)
-
-                    if (!TextUtils.isEmpty(description)) {
-                        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, description)
-                    }
-
-                    params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url)
-
-                    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, arrayListOf(it))
-
-                    handleShareQzoneAction(activity, params)
-                }
-    }
-
-    private fun handleShareQzoneAction(activity: Activity?, params: Bundle) {
-        mainLooperHandler.post {
-            if (activity != null) {
-                mTencent?.shareToQzone(activity, params, object : IUiListener {
-                    override fun onComplete(p0: Any?) {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享成功！")
-                        }
-                    }
-
-                    override fun onCancel() {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享取消！")
-                        }
-                    }
-
-                    override fun onError(p0: UiError?) {
-                        Logger.e("分享失败: " + p0?.errorDetail)
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享失败！")
-                        }
-                    }
-                })
-            }
-        }
-    }
-
-    private fun buildTransaction(message: String?): String {
-        return if (message == null) System.currentTimeMillis().toString() else message + System.currentTimeMillis()
     }
 }
 

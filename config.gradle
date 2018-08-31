@@ -28,8 +28,8 @@ ext {
     // 无广告列表
     noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader','cn.mfxsqbyd.reader',"cn.qbmfkkydq.reader"]
     // 改完记得重新编译项目
-    applicationId = "cc.kdqbxs.reader"
-    defaultPublishConfig = 'mfqbxssc' + 'Debug'
+    applicationId = "cc.quanben.novel"
+    defaultPublishConfig = 'qbmfxsydq' + 'Debug'
     def appPackageIDConfig = [
             kdzsydq   : "cn.txtzsydsq.reader",
             qbzsydq   : "cn.qbzsydsq.reader",

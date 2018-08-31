@@ -34,8 +34,6 @@
 
     <string name="book_sort">书架排序</string>
 
-    <string name="application_share">分享应用</string>>
-
     <string name="refresh_start">下拉刷新</string>
 
     <string name="refresh_running">正在刷新</string>
