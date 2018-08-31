@@ -485,13 +485,6 @@
         <item name="android:background">@drawable/booksearch_red_bg</item>
     </style>
 
-    <style name="checkBox_feedback_btn_style">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:clickable">false</item>
-        <item name="android:button">@drawable/dialog_checkbox_selector</item>
-    </style>
 
     <style name="checkBox_feedback_txt_style">
         <item name="android:layout_width">wrap_content</item>

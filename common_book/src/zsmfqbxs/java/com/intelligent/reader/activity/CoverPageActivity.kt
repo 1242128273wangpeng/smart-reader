@@ -404,7 +404,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private fun initializeInsertShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_add_bg
-        mTextColor = R.color.cover_bottom_btn_add_text_color
+        mTextColor = R.color.primary
         book_cover_bookshelf?.setTextColor(ContextCompat.getColor(this, mTextColor))
         if (book_cover_category2?.visibility != View.VISIBLE) {
             book_cover_bookshelf?.setBackgroundResource(mBackground)

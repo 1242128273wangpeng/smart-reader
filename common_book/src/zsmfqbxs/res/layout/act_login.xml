@@ -15,7 +15,7 @@
             android:layout_alignParentTop="true"
             android:translationZ="1dp"
             android:fitsSystemWindows="true"
-            android:background="@color/top_navigation_bg_color">
+            android:background="@color/primary">
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:background="@android:color/transparent"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/icon_back_left"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center_vertical"
                     android:text="登 录"
-                    android:textColor="@color/top_navigation_text_color"
+                    android:textColor="@color/white"
                     android:textSize="18sp"/>
         </RelativeLayout>
     </RelativeLayout>
@@ -69,7 +69,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="38dp"
-                    android:src="@mipmap/login_btn_qq"
+                    android:src="@drawable/login_btn_qq"
                     android:id="@+id/ibtn_qq"
                     android:layout_marginRight="7dp"
                     android:layout_marginLeft="30dp"
@@ -80,7 +80,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="38dp"
-                    android:src="@mipmap/login_btn_wechat"
+                    android:src="@drawable/login_btn_wechat"
                     android:id="@+id/ibtn_wechat"
                     android:scaleType="centerCrop"
                     android:background="#00000000"

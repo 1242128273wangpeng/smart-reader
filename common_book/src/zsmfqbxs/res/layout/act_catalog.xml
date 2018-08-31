@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
         android:clipToPadding="true"
-        android:background="@color/color_primary"
+        android:background="@color/primary"
         android:layout_height="match_parent">
 
     <LinearLayout
@@ -31,7 +31,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
-                        android:src="@drawable/icon_back_left"
+                        android:src="@drawable/icon_back"
                         android:paddingLeft="@dimen/dimen_padding_12"
                         android:paddingRight="@dimen/dimen_padding_12"/>
 
@@ -107,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:src="@mipmap/dir_sort_negative"
+                    android:src="@drawable/icon_sort_negative"
                     android:paddingLeft="@dimen/dimen_padding_15"
                     android:paddingRight="@dimen/dimen_padding_15"/>
 

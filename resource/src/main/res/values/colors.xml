@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="base_bg">#fafafa</color>
+    <color name="color_divider">#e8e8e8</color>
+
     <!--调试界面下SwitchButton-->
-    <color name="debug_switch_button_checked_color">#acacac</color>
-    <color name="debug_switch_button_unchecked_color">#ffffff</color>
+    <color name="debug_switch_button_checked_color">#ACACAC</color>
+    <color name="debug_switch_button_unchecked_color">#FFFFFF</color>
     <color name="debug_switch_bg_checked_color">#565656</color>
-    <color name="debug_switch_bg_unchecked_color">#e3e1e1</color>
+    <color name="debug_switch_bg_unchecked_color">#E3E1E1</color>
 
 
     <!--书架-->
-    <color name="bookshelf_item_pressed">#FFFAFAFA</color>
-    <color name="bookshelf_item_book_pressed">#FFF4F4F4</color>
+    <color name="bookshelf_item_pressed">#FAFAFA</color>
+    <color name="bookshelf_item_book_pressed">#F4F4F4</color>
 
 
 
@@ -504,7 +508,5 @@
     <color name="divider_bg">#5D646E</color>
     <color name="cover_info_text_color">#5D646E</color>
     <color name="common_press_bg">#FFF4F5F7</color>
-    <color name="welfare_center_header_bg">#1fb7c3</color>
-    <color name="welfare_center_header_title">#ffffff</color>
 
 </resources>

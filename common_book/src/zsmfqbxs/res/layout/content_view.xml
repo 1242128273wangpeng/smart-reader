@@ -28,7 +28,7 @@
                     android:scaleType="fitXY"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="14dp"
-                    android:src="@mipmap/home_head_setting"/>
+                    android:src="@drawable/home_head_setting"/>
 
             <net.lzbook.kit.book.view.FirstUsePointView
                     android:layout_width="6dp"
@@ -47,7 +47,7 @@
                     android:layout_centerInParent="true"
                     android:text="书架"
                     android:textSize="18sp"
-                    android:textColor="@color/top_navigation_text_color"/>
+                    android:textColor="@color/white"/>
 
             <ImageView
                     android:id="@+id/content_head_search"
@@ -57,7 +57,7 @@
                     android:scaleType="fitXY"
                     android:layout_toLeftOf="@+id/content_download_manage"
                     android:layout_marginRight="21dp"
-                    android:src="@mipmap/home_head_search"/>
+                    android:src="@drawable/home_head_search"/>
 
             <ImageView
                     android:id="@+id/content_download_manage"
@@ -67,7 +67,7 @@
                     android:scaleType="fitXY"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="13.5dp"
-                    android:src="@mipmap/home_head_download"/>
+                    android:src="@drawable/home_head_download"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -97,7 +97,7 @@
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/icon_back_left"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
                     android:layout_centerInParent="true"
                     android:text="编辑书架"
                     android:textSize="18sp"
-                    android:textColor="@color/top_navigation_text_color"/>
+                    android:textColor="@color/white"/>
 
             <TextView
                     android:id="@+id/home_edit_cancel"
@@ -118,7 +118,7 @@
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical"
                     android:text="取消"
-                    android:textColor="@color/top_navigation_text_color"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_size_16"/>
         </RelativeLayout>
     </RelativeLayout>
@@ -153,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/home_bottom_tab_bg"
+            android:background="@color/base_bg"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bookshelf"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textColor="@drawable/home_tab_text_color_selector"
                     android:textSize="10sp"/>
         </LinearLayout>
 
@@ -203,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/recommend"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textColor="@drawable/home_tab_text_color_selector"
                     android:textSize="10sp"/>
         </LinearLayout>
 
@@ -228,7 +228,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ranking"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textColor="@drawable/home_tab_text_color_selector"
                     android:textSize="10sp"/>
         </LinearLayout>
 
@@ -253,7 +253,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/category"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                    android:textColor="@drawable/home_tab_text_color_selector"
                     android:textSize="10sp"/>
         </LinearLayout>
     </LinearLayout>
@@ -273,7 +273,7 @@
                 android:layout_marginRight="7dp"
                 android:layout_marginTop="56dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/icon_bookshelf_guide_download"
+                android:src="@drawable/bookshelf_guide_download"
                 android:visibility="gone"/>
 
         <ImageView
