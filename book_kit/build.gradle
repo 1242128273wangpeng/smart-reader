@@ -15,7 +15,7 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.google.protobuf:protobuf-java:2.4.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.6'
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:1.3.4'
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     compile 'com.github.bumptech.glide:glide:3.8.0'
 
@@ -48,7 +48,6 @@ dependencies {
 
     // 百度移动统计SDK
     implementation files('libs/Baidu_Mtj_3.9.1.0.jar')
-    implementation files('libs/open_sdk_r6008_lite.jar')
 }
 
 configurations.all {

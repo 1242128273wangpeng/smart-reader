@@ -40,8 +40,6 @@ interface RequestRepository {
 
     fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>)
 
-    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>?
-
     fun requestSearchOperationV4(requestSubscriber: RequestSubscriber<Result<SearchResult>>)
 
     fun requestChapterContent(chapter: Chapter): Flowable<Chapter>

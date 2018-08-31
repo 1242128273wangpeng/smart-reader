@@ -27,6 +27,10 @@ class BasicResultV4<T> : Serializable {
         }
     }
 
+    fun checkPrivateKeyExpire(): Boolean {
+        return respCode == ResultCode.PRIVATE_KEY_EXPIRE
+    }
+
     override fun toString(): String {
         return "BasicResult(code=$respCode, data=$data, msg=$message)"
     }
@@ -136,4 +140,6 @@ class BasicResultV4<T> : Serializable {
 
         }
     }
+
+
 }

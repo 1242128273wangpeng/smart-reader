@@ -26,8 +26,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="18dp"
-                android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
+                android:contentDescription="@string/module_name"
                 android:src="@drawable/bookshelf_head_personal_sel"/>
 
             <net.lzbook.kit.book.view.FirstUsePointView
@@ -48,14 +48,6 @@
                 android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_head_more_sel"/>
-
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_alignRight="@id/img_head_menu"
-                android:layout_alignTop="@id/img_head_menu"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/prompt_red_bg"/>
 
             <RelativeLayout
                 android:id="@+id/rl_head_search"
@@ -172,9 +164,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:text="@string/bookshelf_empty_prompt"
             android:textColor="#FF9B9B9B"
+            android:layout_gravity="center_horizontal"
             android:textSize="18sp"/>
 
         <TextView

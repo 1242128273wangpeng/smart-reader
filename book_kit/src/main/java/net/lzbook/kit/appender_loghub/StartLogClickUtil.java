@@ -64,7 +64,6 @@ public class StartLogClickUtil {
     public static final String PAGE_SHELF = "SHELF";
     //书架页功能
     public static final String ACTION_SHELF_MORE = "MORE";
-    public static final String ACTION_SHELF_SHARE = "SHARE";
     public static final String ACTION_SHELF_SEARCH = "SEARCH";
     public static final String ACTION_SHELF_PERSONAL = "PERSONAL";
     public static final String ACTION_SHELF_BOOK_SORT = "BOOKSORT";
@@ -171,15 +170,6 @@ public class StartLogClickUtil {
     public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
     public static final String READFINISH_PAGE = "READFINISH";//作者主页
-
-
-
-
-    public static final String PAGE_SHARE = "SHAREPAGE";//分享弹窗
-    public static final String ACTION_SHARE = "SHARE";//分享
-    public static final String ACTION_CANCEL = "CANCEL";//分享
-
-
 
     //PUSH
     public static final String PUSHRECEIVE = "PUSHRECEIVE";//通知送达
