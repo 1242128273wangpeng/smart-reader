@@ -417,6 +417,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 bookShelfInterface?.checkShowShelfGuide()
             }
         }
+        if(bookShelfPresenter.iBookList.isNotEmpty()){
+            BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
+        }
 
     }
 

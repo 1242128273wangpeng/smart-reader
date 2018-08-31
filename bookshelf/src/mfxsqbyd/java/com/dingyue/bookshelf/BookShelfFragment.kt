@@ -309,6 +309,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
         }
+        if(bookShelfPresenter.iBookList.isNotEmpty()){
+            BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
+        }
+
     }
 
     /**
