@@ -21,6 +21,7 @@ import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
@@ -37,7 +38,7 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.encrypt.URLBuilderIntterface
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 import swipeback.ActivityLifecycleHelper
 import java.text.DecimalFormat
@@ -59,6 +60,11 @@ class CoverPageActivity : BaseCacheableActivity(),
     }
 
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(this@CoverPageActivity)
+        dialog
+    }
 
     /**
      * 推荐书籍子条目点击事件
@@ -140,6 +146,7 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     private fun initListener() {
         book_cover_back.antiShakeClick(this)
+        img_app_share.antiShakeClick(this)
         book_cover_author.antiShakeClick(this)
         book_cover_last_chapter.antiShakeClick(this)
         cover_latest_section.antiShakeClick(this)
@@ -417,6 +424,7 @@ class CoverPageActivity : BaseCacheableActivity(),
 
         loadingPage?.onSuccess()
 
+        checkShowCoverPrompt()
     }
 
     override fun showLoadingFail() {
@@ -442,6 +450,11 @@ class CoverPageActivity : BaseCacheableActivity(),
                 data["type"] = "1"
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
                 finish()
+            }
+
+            R.id.img_app_share -> {
+                applicationShareDialog.show()
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ACTION_SHARE)
             }
 
             R.id.book_cover_bookshelf -> if (coverPagePresenter != null) {
@@ -518,6 +531,18 @@ class CoverPageActivity : BaseCacheableActivity(),
         //离线消息 跳转到主页
         if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
             startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
+
+    private fun checkShowCoverPrompt() {
+        val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+        if (!sharedPreUtil.getBoolean(SharedPreUtil.COVER_SHARE_PROMPT)) {
+            fl_cover_share_prompt.visibility = VISIBLE
+
+            fl_cover_share_prompt.setOnClickListener {
+                fl_cover_share_prompt.visibility = GONE
+                sharedPreUtil.putBoolean(SharedPreUtil.COVER_SHARE_PROMPT, true)
+            }
         }
     }
 
