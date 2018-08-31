@@ -153,7 +153,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_title"
         android:scaleType="fitXY"
-        android:src="@drawable/title_shadow"/>
+        android:src="@drawable/top_shadow"/>
 
     <ImageView
         android:id="@+id/img_bottom_shadow"

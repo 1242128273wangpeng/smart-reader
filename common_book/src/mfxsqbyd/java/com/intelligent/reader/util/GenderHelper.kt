@@ -15,8 +15,11 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.antiShakeClick
+import java.util.HashMap
 
 /**
  * 类描述：男女选择帮助类
@@ -57,9 +60,15 @@ class GenderHelper(view: View) {
 
     private fun initListener() {
         mBoySection.antiShakeClick( View.OnClickListener {
+            val data = HashMap<String, String>()
+            data.put("type", "1")
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data)
             selectBoy()
         })
         mGirlSection.antiShakeClick(View.OnClickListener {
+            val data = HashMap<String, String>()
+            data.put("type", "2")
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data)
             selectGirl()
         })
 

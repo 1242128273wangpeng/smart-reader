@@ -165,7 +165,7 @@ object BookShelfLogger {
      * **/
     fun uploadBookShelfEditSelectAll(all: Boolean) {
         val data = HashMap<String, String>()
-        data["type"] = if (all) "2" else "1"
+        data["type"] = if (all) "1" else "2"
 
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_SELECT_ALL, data)

@@ -473,6 +473,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
+        StartLogClickUtil.upLoadEventLog(requireContext(),StartLogClickUtil.RECOMMEND_PAGE,StartLogClickUtil.DROPDOWN);
         swipeRefreshLayout.onRefreshComplete();
         loadData("javascript:refreshNew()");
     }

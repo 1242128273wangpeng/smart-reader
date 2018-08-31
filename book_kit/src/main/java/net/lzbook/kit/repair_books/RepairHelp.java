@@ -83,6 +83,7 @@ public class RepairHelp {
                     }
                     Map<String, String> data2 = new HashMap<>();
                     data2.put("type", "1");
+                    data2.put("bookid",book.getBook_id());
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE,
                             StartLogClickUtil.REPAIRDEDIALOGUE, data2);
                 }
@@ -103,6 +104,7 @@ public class RepairHelp {
                     if (!isComfire) {
                         Map<String, String> data2 = new HashMap<>();
                         data2.put("type", "2");
+                        data2.put("bookid",book.getBook_id());
                         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE,
                                 StartLogClickUtil.REPAIRDEDIALOGUE, data2);
                     }

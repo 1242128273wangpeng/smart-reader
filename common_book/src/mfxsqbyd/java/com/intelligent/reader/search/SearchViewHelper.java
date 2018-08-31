@@ -46,6 +46,7 @@ import com.intelligent.reader.view.ScrollForGridView;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
@@ -141,6 +142,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
      *
      */
     private List<Book> books = new ArrayList<>();
+    private int itemGapViewCount = 0; // 用于打点 记录自动补全的type不为 书籍，作者，标签
 
     public SearchViewHelper(Activity activity, ViewGroup rootLayout, EditText
             searchEditText, SearchHelper searchHelper) {
@@ -574,6 +576,21 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                 isAuthor = 0;
                 Map<String, String> data = new HashMap<>();
 
+                if (!TextUtils.isEmpty(suggest) && mSearchEditText != null && mSuggestList != null) {
+                    itemGapViewCount = 0;
+                    data.put("keyword", suggest);
+                    data.put("type", searchType);
+                    data.put("enterword", mSearchEditText.getText().toString().trim());
+                    for(int i = 0; i< arg2 ; i++){
+                        if(!(mSuggestList.get(i) instanceof SearchCommonBeanYouHua)){
+                            itemGapViewCount++;
+                        }
+                    }
+                    data.put("rank", (arg2 + 1 - itemGapViewCount)+"");
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
+                            StartLogClickUtil.TIPLISTCLICK, data);
+                }
+
                 if (searchCommonBean.getWordtype().equals("label")) {
                     searchType = "1";
                     isAuthor = 0;
@@ -616,23 +633,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                     searchType = "0";
                     isAuthor = 0;
                 }
-                if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
 
-                    data.put("keyword", suggest);
-                    data.put("type", searchType);
-                    data.put("enterword", mSearchEditText.getText().toString().trim());
-                    if ((arg2 + 1) <= 2) {
-                        data.put("rank", (arg2 + 1) + "");
-                    } else if ((arg2 + 1) > 3 && (arg2 + 1) <= 5) {
-                        data.put("rank", arg2 + "");
-                    } else if ((arg2 + 1) > 6 && (arg2 + 1) <= 8) {
-                        data.put("rank", (arg2 - 1) + "");
-                    } else if ((arg2 + 1) > 9) {
-                        data.put("rank", (arg2 - 2) + "");
-                    }
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
-                            StartLogClickUtil.TIPLISTCLICK, data);
-                }
 
                 if (mSearchEditText != null && !searchType.equals("3")) {
                     startSearch(suggest, searchType, isAuthor);

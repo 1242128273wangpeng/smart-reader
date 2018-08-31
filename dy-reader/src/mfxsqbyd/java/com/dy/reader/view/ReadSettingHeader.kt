@@ -106,7 +106,6 @@ class ReadSettingHeader : FrameLayout{
                     v.context.applicationContext.showToastMessage("书签添加失败")
                 }
             }
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
         }
 
 

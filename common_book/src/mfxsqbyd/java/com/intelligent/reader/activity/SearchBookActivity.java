@@ -621,8 +621,6 @@ public class SearchBookActivity extends FrameActivity implements View.OnClickLis
                     search_result_clear.setVisibility(View.GONE);
                 }
                 dealSoftKeyboard(search_result_input);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCHRESULT_PAGE,
-                        StartLogClickUtil.CLEAR);
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
                         StartLogClickUtil.BARCLEAR);
                 break;
