@@ -312,10 +312,17 @@ class ReaderSettings {
             }
         }
 
+    /**
+     * 用来暂存日间模式下用户选择的背景
+     */
     @SerializedName(value = "readLightThemeMode")
     var readLightThemeMode = 51
 
-    //阅读模式 背景
+    /**
+     * 阅读模式背景
+     * 51：默认背景
+     * 61：夜间模式
+     */
     @SerializedName(value = "readThemeMode")
     var readThemeMode: Int = 0
         set(value) {

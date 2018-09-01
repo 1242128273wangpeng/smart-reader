@@ -722,6 +722,9 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
             try {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return@setOnSearchClick
+                }
                 val data = HashMap<String, String>()
                 data["keyword"] = keyWord
                 data["type"] = "0"//0 代表从分类过来
