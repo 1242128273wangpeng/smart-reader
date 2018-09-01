@@ -37,6 +37,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -466,16 +467,16 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 when {
                     it.checkPrivateKeyExpire() -> {
                         requestAuthAccess(null)
-                        chapter
+                        throw IllegalAccessException("接口鉴权失败！")
                     }
                     it.checkResultAvailable() -> {
-                        if (it.data!!.content != null) {
-                            it.data!!.content = it.data!!.content!!.replace("\\n", "\n")
-                            it.data!!.content = it.data!!.content!!.replace("\\n \\n", "\n")
-                            it.data!!.content = it.data!!.content!!.replace("\\n\\n", "\n")
-                            it.data!!.content = it.data!!.content!!.replace("\\", "")
+                        if (it.data?.content != null && !TextUtils.isEmpty(it.data?.content)) {
+                            it.data?.content = it.data?.content?.replace("\\n", "\n")
+                            it.data?.content = it.data?.content?.replace("\\n \\n", "\n")
+                            it.data?.content = it.data?.content?.replace("\\n\\n", "\n")
+                            it.data?.content = it.data?.content?.replace("\\", "")
                         }
-                        chapter.content = it.data!!.content
+                        chapter.content = it.data?.content
 
                         chapter
                     }
