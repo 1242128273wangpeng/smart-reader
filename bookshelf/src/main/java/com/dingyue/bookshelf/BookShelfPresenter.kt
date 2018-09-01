@@ -263,6 +263,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * 获取九宫格顶部广告
      * **/
     private fun requestShelfHeaderAD(activity: Activity) {
+        MediaControl.insertBookShelfMediaType(false)
         MediaControl.loadBookShelfHeaderMedia(activity, object : IMediaControl.HeaderMediaCallback {
             override fun requestMediaSuccess(viewGroup: ViewGroup?) {
                 if (viewGroup != null) {
