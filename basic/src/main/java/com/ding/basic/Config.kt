@@ -25,9 +25,9 @@ object Config {
     //智能API接口
     private var requestAPIHost: String? = ""
     //微服务API接口
-    private var microAPIHost: String = "https://unionapi.bookapi.cn"
+    private var microAPIHost: String = "https://atxtqbmfxsunionapi.jingytech.com"
     //微服务内容接口
-    private var contentAPIHost: String = "https://unioncontent.bookapi.cn"
+    private var contentAPIHost: String = "https://atxtqbmfxsunioncontent.jingytech.com"
 
     //设置页福利中心地址
     const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html"
