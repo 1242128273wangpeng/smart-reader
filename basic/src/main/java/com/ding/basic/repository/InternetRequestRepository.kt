@@ -212,6 +212,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestPushTags(udid)
     }
 
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>> {
+        return RequestAPI.requestBannerTags()
+    }
+
     override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
         return RequestAPI.requestSubBook(bookName, bookAuthor)
     }

@@ -14,6 +14,7 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.utils.PushExtKt;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -97,7 +98,7 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
         final Long currentTime = System.currentTimeMillis();
         boolean isSameDay = AppUtils.isToday(latestUpdateTime, currentTime);
         if (!isSameDay) {
-            ExtensionsKt.updateTags(PushAgent.getInstance(context), context, udid,
+            PushExtKt.updateTags(PushAgent.getInstance(context), context, udid,
                     new Function1<Boolean, Unit>() {
                         @Override
                         public Unit invoke(Boolean isSuccess) {

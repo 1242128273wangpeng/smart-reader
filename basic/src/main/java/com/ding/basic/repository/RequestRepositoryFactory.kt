@@ -9,6 +9,7 @@ import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
+import com.ding.basic.rx.CommonResultMapper
 import com.ding.basic.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
 import com.ding.basic.util.ChapterCacheUtil
@@ -1836,26 +1837,14 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
-    override fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<String>>) {
-        InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribeBy(
-                        onNext = {
-                            if (it.checkResultAvailable()) {
-                                requestSubscriber.onNext(it.data)
-                            } else {
-                                requestSubscriber.onError(Throwable("获取用户标签错误: ${it.message}"))
-                            }
-                        },
-                        onError = {
-                            requestSubscriber.onError(it)
-                        },
-                        onComplete = {
-                            requestSubscriber.onComplete()
-                        }
-                )
+    override fun requestPushTags(udid: String): Flowable<ArrayList<String>> {
+        return InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
+                .map(CommonResultMapper())
+    }
+
+    override fun requestBannerInfo() : Flowable<BannerInfo>{
+        return InternetRequestRepository.loadInternetRequestRepository(context).requestBannerTags()
+                .map(CommonResultMapper())
     }
 
     override fun requestAuthAccessSync(): Boolean {

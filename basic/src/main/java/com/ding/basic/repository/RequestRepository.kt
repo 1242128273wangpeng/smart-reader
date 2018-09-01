@@ -5,8 +5,7 @@ import com.ding.basic.request.RequestSubscriber
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 interface RequestRepository {
 
@@ -76,7 +75,9 @@ interface RequestRepository {
 
     fun requestAuthAccessSync(): Boolean
 
-    fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<ArrayList<String>>)
+    fun requestPushTags(udid: String): Flowable<ArrayList<String>>
+
+    fun requestBannerInfo(): Flowable<BannerInfo>
 
     /************************* 本地数据 *************************/
 

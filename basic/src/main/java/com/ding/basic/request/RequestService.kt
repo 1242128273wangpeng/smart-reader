@@ -216,6 +216,11 @@ interface RequestService {
         const val PUSH_TAG = "/v4/cn.dingyueWeb.reader/getUserTag"
 
         /**
+         * 活动标签
+         */
+        const val BANNER_TAG = "/v4/cn.dingyueWeb.reader/getActivityData"
+
+        /**
          * 搜索无结果页  点击订阅  searchEmpty/userSubscription
          */
         const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
@@ -399,6 +404,9 @@ interface RequestService {
 
     @GET(PUSH_TAG)
     fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+
+    @GET(BANNER_TAG)
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>>
 
     //搜索无结果页  订阅
     @GET(SEARCH_SUB_BOOK)
