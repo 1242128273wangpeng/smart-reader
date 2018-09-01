@@ -4,8 +4,8 @@
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:background="@drawable/reader_cache_item_sel"
-              android:paddingLeft="@dimen/padding_16"
-              android:paddingRight="@dimen/padding_16"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
               android:paddingTop="@dimen/padding_10">
 
     <LinearLayout

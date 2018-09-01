@@ -4,14 +4,14 @@
               android:id="@+id/rl_setting_layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/my_bg_color"
+              android:background="@color/white"
               android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/top_navigation_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_primary"
+        android:background="@color/primary"
         android:clipToPadding="true"
         android:fitsSystemWindows="true"
         android:focusableInTouchMode="true">
@@ -34,7 +34,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
+                android:src="@drawable/icon_back_left"/>
 
             <TextView
                 android:id="@+id/top_navigation_title"
@@ -43,7 +43,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
                 android:text="个人中心"
-                android:textColor="@color/top_navigation_text_color"
+                android:textColor="@color/white"
                 android:textSize="@dimen/dimen_text_17"/>
         </RelativeLayout>
     </RelativeLayout>
@@ -71,7 +71,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:background="@color/color_primary"
+                    android:background="@color/primary"
                     android:scaleType="fitXY"
                     android:visibility="visible"/>
 
@@ -85,7 +85,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_marginRight="15dp"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/default_head"
+                    android:src="@drawable/default_head"
                     android:translationZ="1dp"
                     app:civ_border_color="#00000000"
                     app:civ_border_width="0dp"/>
@@ -99,7 +99,7 @@
                     android:layout_marginTop="5.5dp"
                     android:gravity="left|center_vertical"
                     android:text="@string/state_unlogin"
-                    android:textColor="@color/setting_nickname_font_color"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:visibility="gone"/>
 
@@ -111,7 +111,7 @@
                     android:layout_below="@+id/txt_nickname"
                     android:layout_marginTop="6dp"
                     android:text="ID:666666"
-                    android:textColor="@color/setting_userid_font_color"
+                    android:textColor="@color/white"
                     android:textSize="12sp"
                     android:visibility="gone"/>
 
@@ -134,10 +134,10 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="14.5dp"
                     android:layout_marginTop="5.5dp"
-                    android:background="@drawable/setting_login_background"
+                    android:background="@null"
                     android:gravity="left|center_vertical"
                     android:text="@string/click_to_login"
-                    android:textColor="@color/setting_login_font_color"
+                    android:textColor="@color/white"
                     android:textSize="18sp"/>
             </RelativeLayout>
 
@@ -157,7 +157,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:src="@mipmap/cover_top_back"
+                    android:src="@drawable/icon_back_left"
                     android:visibility="gone"/>
 
                 <ImageView
@@ -168,7 +168,7 @@
                     android:layout_marginLeft="@dimen/dimen_margin_15"
                     android:layout_toEndOf="@+id/setting_back_left"
                     android:layout_toRightOf="@+id/setting_back_left"
-                    android:background="@mipmap/read_bookmark"
+                    android:background="@drawable/read_bookmark"
                     android:scaleType="centerCrop"/>
 
                 <ImageView
@@ -180,7 +180,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="13dp"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/my_more"/>
+                    android:src="@drawable/my_more"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -223,7 +223,6 @@
                 android:id="@+id/user_login_layout"
                 android:layout_width="match_parent"
                 android:layout_height="166dp"
-                android:background="@mipmap/my_top_bg"
                 android:focusableInTouchMode="true"
                 android:visibility="gone">
 
@@ -235,7 +234,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/icon_back_left"/>
 
                 <ImageView
                     android:id="@+id/iv_mine_image"
@@ -243,7 +242,7 @@
                     android:layout_height="75dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="25dp"
-                    android:background="@mipmap/read_bookmark"
+                    android:background="@drawable/read_bookmark"
                     android:scaleType="centerCrop"/>
 
                 <TextView
@@ -254,7 +253,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/my_top_login_bg"
+                    android:background="@drawable/login_mg_bg"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/text_login"
@@ -295,7 +294,7 @@
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
                     android:text="@string/bookshelf_community"
@@ -334,7 +333,7 @@
                     android:id="@+id/tv_style_change"
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
-                    android:drawableLeft="@mipmap/read_bookmark"
+                    android:drawableLeft="@drawable/read_bookmark"
                     android:drawablePadding="@dimen/dimen_margin_14"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -404,7 +403,7 @@
                     app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
                     app:sb_show_indicator="false"
                     app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-                    app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color"/>
+                    app:sb_uncheckedbtn_color="@color/white"/>
 
                 <View
                     android:id="@+id/v_divider6"
@@ -440,7 +439,7 @@
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
                     android:text="足迹"
@@ -522,7 +521,7 @@
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
                     android:text="@string/setting_reading_page"
@@ -576,7 +575,7 @@
                     app:sb_checkedbtn_color="@color/my_nightshift_button_checked_color"
                     app:sb_show_indicator="false"
                     app:sb_uncheck_color="@color/my_nightshift_bg_unchecked_color"
-                    app:sb_uncheckedbtn_color="@color/my_nightshift_button_unchecked_color"/>
+                    app:sb_uncheckedbtn_color="@color/white"/>
                 <View
                     android:id="@+id/v_divider20"
                     android:layout_width="match_parent"
@@ -597,7 +596,7 @@
                     android:id="@+id/tv_setting_more"
                     style="@style/text_setting_style"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -637,7 +636,7 @@
                     android:id="@+id/tv_feedback"
                     style="@style/text_setting_style"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -661,7 +660,7 @@
                     android:id="@+id/tv_mark"
                     style="@style/text_setting_style"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -761,7 +760,7 @@
                     android:id="@+id/text_disclaimer_statement"
                     style="@style/text_setting_style"
                     android:drawablePadding="@dimen/dimen_margin_14"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -787,7 +786,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/setting_logout_background"
+                    android:background="@null"
                     android:padding="7.5dp"
                     android:text="@string/logout"
                     android:textColor="@color/setting_logout_font_color"

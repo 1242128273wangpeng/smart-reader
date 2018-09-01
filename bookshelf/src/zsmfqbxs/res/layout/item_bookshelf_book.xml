@@ -116,7 +116,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="12dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/bookshelf_item_delete_checked_icon"
+        android:src="@drawable/bookshelf_delete_checked"
         android:contentDescription="@string/module_name"
         android:visibility="visible"/>
 </RelativeLayout>

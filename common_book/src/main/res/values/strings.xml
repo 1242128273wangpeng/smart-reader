@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--调试模式-->
-    <string name="debug_start_params">启用动态参数</string>
-    <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
-    <string name="debug_reset_book_shelf">重置获取默认书架</string>
-    <string name="debug_update_chapter">更新章节</string>
-    <string name="debug_show_toast">打点Toast</string>
+    <string name="read_network_error">网络连接不畅，请稍后再试~</string>
 
-    <string name="debug_api_host">智能API接口:</string>
-    <string name="debug_web_host">WebView接口:</string>
-    <string name="debug_micro_host">微服务API接口:</string>
-    <string name="debug_micro_content_host">微服务内容接口:</string>
-
-    <string name="debug_input_host">https://</string>
-    <string name="choice_host">host选择</string>
-    <string name="debug_mode">调试模式</string>
-    <string name="save">保存</string>
-    <string name="icon">图片</string>
 
     <!---->
     <string name="setting_offline_download_config_key">offline_download_config_key</string>
@@ -28,9 +13,7 @@
     <string name="setting_offline_download_select_all_key">offline_download_select_all_key</string>
     <string name="setting_offline_sns_bind">offline_sns_bind</string>
     <string name="setting_share_client">setting_share_client</string>
-    <!-- act_search_key -->
-    <string name="cancel">取消</string>
-    <string name="delete">删除</string>
+
     <!-- setting -->
     <string name="push">推送</string>
     <string name="check_update">当前版本</string>

@@ -314,7 +314,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             btn_login.setVisibility(View.VISIBLE);
             txt_nickname.setVisibility(View.GONE);
             txt_userid.setVisibility(View.GONE);
-            img_head.setImageResource(R.mipmap.default_head);
+            img_head.setImageResource(R.drawable.default_head);
             findViewById(R.id.rl_logout).setVisibility(View.GONE);
 
             if (txt_login_des != null) {

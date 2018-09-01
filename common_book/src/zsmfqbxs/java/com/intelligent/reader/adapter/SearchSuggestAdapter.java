@@ -37,7 +37,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         this.mContext = context;
         this.mData = mData;
         this.editInput = editInput;
-        int color = mContext.getResources().getColor(R.color.colorPrimary);
+        int color = mContext.getResources().getColor(R.color.primary);
         mColorTag = String.format("<font color='%s'>", AppUtils.colorHoHex(color));
     }
 

@@ -28,7 +28,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:padding="6dp"
-                android:src="@drawable/download_manager_head_back_icon"/>
+                android:src="@drawable/icon_back_left"/>
 
             <TextView
                 android:id="@+id/txt_head_title"

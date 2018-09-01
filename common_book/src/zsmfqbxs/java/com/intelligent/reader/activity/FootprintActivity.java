@@ -295,7 +295,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         int clearTvColor = 0;
 
         if (isEnable) {
-            clearTvColor = R.color.footprint_title_clear_color;
+            clearTvColor = R.color.white;
         } else {
             clearTvColor = R.color.footprint_title_clear_unusable_color;
         }

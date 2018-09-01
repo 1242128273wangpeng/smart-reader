@@ -21,7 +21,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:contentDescription="@string/module_name"
-            android:src="@drawable/download_manager_item_uncheck_icon"/>
+            android:src="@drawable/bookshelf_delete_unselected"/>
     </RelativeLayout>
 
     <RelativeLayout

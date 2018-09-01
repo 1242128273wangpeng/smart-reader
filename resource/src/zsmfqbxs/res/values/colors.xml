@@ -3,5 +3,6 @@
 
     <color name="accent">#1fb7c3</color>
     <color name="primary">#1fb7c3</color>
+    <color name="primary_alpha">#4c1fb7c3</color>
 
 </resources>

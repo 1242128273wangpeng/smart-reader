@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:background="@color/top_navigation_bg_color">
+            android:background="@color/primary">
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_view_height_48">
@@ -23,7 +23,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
+                android:src="@drawable/icon_back_left"/>
 
         <TextView
                 android:id="@+id/find_book_detail_title"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="18sp"
-                android:textColor="@color/top_navigation_text_color"/>
+                android:textColor="@color/white"/>
 
         <ImageView
                 android:id="@+id/find_book_detail_search"
@@ -40,7 +40,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/search_submit_btn"/>
+                android:src="@drawable/search_submit_btn"/>
         </RelativeLayout>
     </RelativeLayout>
 

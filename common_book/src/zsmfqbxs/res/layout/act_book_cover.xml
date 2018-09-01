@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="true"
-                android:background="@color/cover_bg">
+                android:background="@color/white">
 
     <RelativeLayout
             android:id="@+id/book_cover_main"
@@ -28,7 +28,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center"
                     android:text="全本缓存"
-                    android:textColor="@color/dialog_recommend"
+                    android:textColor="@color/primary"
                     android:textSize="14sp"/>
 
             <TextView
@@ -39,8 +39,8 @@
                     android:layout_weight="1.2"
                     android:gravity="center"
                     android:text="转码阅读"
-                    android:background="@color/dialog_recommend"
-                    android:textColor="@color/cover_bottom_btn_text_color"
+                    android:background="@color/primary"
+                    android:textColor="@color/white"
                     android:textSize="14sp"/>
 
             <TextView
@@ -50,7 +50,7 @@
                     android:layout_weight="0.9"
                     android:gravity="center"
                     android:text="加入书架"
-                    android:textColor="@color/dialog_recommend"
+                    android:textColor="@color/primary"
                     android:textSize="@dimen/text_size_14"/>
         </LinearLayout>
 
@@ -76,7 +76,7 @@
                 <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dimen_view_height_191"
-                        android:background="@mipmap/cover_profile_bg_pic"
+                        android:background="@drawable/cover_profile_bg_pic"
                         android:orientation="vertical">
 
                     <LinearLayout
@@ -175,7 +175,7 @@
                                         android:text="其他"
                                         android:gravity="center"
                                         android:singleLine="true"
-                                        android:textColor="@color/base_bg"
+                                        android:textColor="@color/white"
                                         android:background="@drawable/book_cover_label_bg"
                                         android:textSize="10sp"/>
 
@@ -282,7 +282,7 @@
                                 android:ellipsize="end"
                                 android:singleLine="true"
                                 android:gravity="center_vertical"
-                                android:drawableRight="@mipmap/my_more"
+                                android:drawableRight="@drawable/my_more"
                                 android:paddingRight="@dimen/padding_12"
                                 android:text="第145章 - 大结局"
                                 android:textColor="@color/cover_profile_title_color"
@@ -333,7 +333,7 @@
                             android:layout_centerInParent="true"
                             android:gravity="center"
                             android:text="查看目录"
-                            android:textColor="@color/dialog_recommend"
+                            android:textColor="@color/primary"
                             android:textSize="@dimen/text_size_16"/>
                 </RelativeLayout>
 
@@ -465,7 +465,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_margin="@dimen/dimen_margin_10"
-                        android:src="@drawable/icon_back_left"/>
+                        android:src="@drawable/icon_back"/>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

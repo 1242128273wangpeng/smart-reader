@@ -99,9 +99,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             img_book_status_update.visibility = View.GONE
 
             if (contains) {
-                img_item_select_state.setImageResource(R.drawable.bookshelf_item_delete_checked_icon)
+                img_item_select_state.setImageResource(R.drawable.bookshelf_delete_checked)
             } else {
-                img_item_select_state.setImageResource(R.drawable.bookshelf_item_delete_unchecked_icon)
+                img_item_select_state.setImageResource(R.drawable.bookshelf_delete_unchecked)
             }
         } else {
             img_item_select_state.visibility = View.GONE

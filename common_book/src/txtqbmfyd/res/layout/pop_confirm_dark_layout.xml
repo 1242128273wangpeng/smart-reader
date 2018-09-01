@@ -12,8 +12,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="提示"
-            android:paddingTop="@dimen/padding_16"
-            android:paddingBottom="@dimen/padding_14"
+            android:paddingTop="16dp"
+            android:paddingBottom="14dp"
             android:gravity="center"
             android:textColor="@color/reading_setting_text_color"
             android:textSize="@dimen/text_size_16"/>
