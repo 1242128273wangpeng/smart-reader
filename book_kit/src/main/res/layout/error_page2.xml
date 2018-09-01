@@ -7,7 +7,7 @@
         android:background="@color/color_white_faf9f7"
         android:orientation="vertical"
         android:paddingTop="80dp">
-    
+
     <TextView
             android:id="@+id/tv_network_error"
             android:layout_width="match_parent"
@@ -27,7 +27,7 @@
             android:layout_above="@+id/tv_network_error"
             android:layout_centerHorizontal="true"
             android:src="@drawable/icon_network_error"/>
-    
+
     <LinearLayout
             android:id="@+id/loading_error_linear"
             android:layout_width="match_parent"

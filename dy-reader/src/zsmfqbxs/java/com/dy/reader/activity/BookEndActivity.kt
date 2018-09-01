@@ -3,6 +3,7 @@ package com.dy.reader.activity
 import android.os.Bundle
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
@@ -73,6 +74,15 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
     private fun initListener() {
 
         iv_back.setOnClickListener {

@@ -52,7 +52,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:text="@string/change_source"
-                android:textColor="#1fb7c3"
+                android:textColor="@color/primary"
                 android:textSize="14sp"/>
 
         </RelativeLayout>
