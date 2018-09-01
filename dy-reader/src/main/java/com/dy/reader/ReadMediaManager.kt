@@ -260,7 +260,6 @@ object ReadMediaManager {
      */
     private fun mediaAction(adType: String, mark: String, height: Int, curTonken: Long,
                             adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-
         if (!adswitch) {
             if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
                 adCache.put(adType, AdBean(height, null, false, mark))
