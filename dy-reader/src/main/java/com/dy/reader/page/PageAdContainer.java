@@ -112,6 +112,6 @@ public class PageAdContainer extends FrameLayout {
 
         MediaConfig.INSTANCE.setExpandInfo(map);
 
-        MediaControl.INSTANCE.addPageAd(child);
+//        MediaControl.INSTANCE.addPageAd(child);
     }
 }

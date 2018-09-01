@@ -22,6 +22,7 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.MediaControl
 import com.dy.media.ReaderRestDialog
 import com.dy.reader.R
+import com.dy.reader.Reader
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventSetting
@@ -32,6 +33,9 @@ import com.dy.reader.page.BatteryView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.getNotchSize
+import com.dy.reader.util.isNotchScreen
+import com.dy.reader.util.xiaomiNotch
 import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -276,6 +280,13 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         AppHelper.screenHeight = realSize.y
         AppHelper.screenDensity = dm.density
         AppHelper.screenScaledDensity = dm.scaledDensity
+
+        if(isNotchScreen(Reader.context)){
+            if(xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape){
+                AppHelper.screenWidth -= getNotchSize(Reader.context)
+            }
+        }
+
         // 保存字体、亮度、阅读模式
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
 //        // 设置字体
