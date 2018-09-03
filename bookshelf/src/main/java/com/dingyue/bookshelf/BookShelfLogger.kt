@@ -1,6 +1,7 @@
 package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -171,7 +172,7 @@ object BookShelfLogger {
                 StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_SELECT_ALL, data)
     }
 
-    fun uploadFirstOpenBooks(iBookList:List<Book>) {
+    fun uploadFirstOpenBooks() {
 
         //判断用户是否是当日首次打开应用,并上传书架的id
         val lastTime = shareUtil.getLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
@@ -180,10 +181,11 @@ object BookShelfLogger {
         val isSameDay = AppUtils.isToday(lastTime, currentTime)
         if (!isSameDay) {
             val bookIdList = StringBuilder()
-            iBookList.forEachIndexed { index, book ->
+            val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
+            books?.forEachIndexed { index, book ->
                 bookIdList.append(book.book_id)
                 bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
-                bookIdList.append(if (index == iBookList.size) "" else "$")
+                bookIdList.append(if (index == books.size) "" else "$")
             }
             val data = HashMap<String, String>()
             data.put("bookid", bookIdList.toString())
