@@ -20,7 +20,12 @@ object TopSnackBarUtils{
 
     fun show(@StringRes id: Int) {
         val v = ActivityLifecycleHelper.getLatestActivity()?.findViewById<View>(android.R.id.content)
-        if (v != null)
-            TopSnackBar.make(v, id, BaseTransientBottomBar.LENGTH_LONG).show()
+        if (v != null) {
+            //百度移动统计 防止在部分机型不兼容问题
+            try {
+                TopSnackBar.make(v, id, BaseTransientBottomBar.LENGTH_LONG).show()
+            } catch (e: Exception) {
+            }
+        }
     }
 }
