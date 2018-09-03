@@ -61,15 +61,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <!-- WeChat -->
-    <!-- WeChat -->
 
-    <!--qq-->
-    <!-- SDK2.1新增获取用户位置信息 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
 
-    <uses-permission android:name="android.permission.GET_TASKS"/>
     <!--qq-->
     <supports-screens
         android:anyDensity="true"
