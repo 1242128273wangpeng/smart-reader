@@ -283,7 +283,6 @@ android {
             安智市场渠道号  blp1298_10894_001
             猎豹联盟     dyp1024_20001_001
             三星         blf1298_10929_001
-
             升级渠道	blf1298_11974_001
         */
 
@@ -678,8 +677,8 @@ android {
             notOverrideResValue getOwner(), "string", "alifeedback_key", "25007608"
             notOverrideResValue getOwner(), "string", "alifeedback_secret", "637ef76b85f41fbf4ef38f950d45a116"
 
-            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://api.muxinvideo.com"
-            notOverrideResValue getOwner(), "string", "book_webview_host", "https://webview.muxinvideo.com"
+            notOverrideResValue getOwner(), "string", "book_novel_deploy_host", "https://uaqbmfkk.muxinvideo.com"
+            notOverrideResValue getOwner(), "string", "book_webview_host", "https://uwqbmfkk.muxinvideo.com"
 
             notOverrideResValue getOwner(), "string", "micro_api_host", "https://aqbmfkkydqunionapi.basicnos.cn"
             notOverrideResValue getOwner(), "string", "content_api_host", "https://aqbmfkkydqunioncontent.basicnos.cn"
