@@ -431,10 +431,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
                 bookShelfInterface?.checkShowShelfGuide()
             }
+            BookShelfLogger.uploadFirstOpenBooks()
         }
-        if(bookShelfPresenter.iBookList.isNotEmpty()){
-            BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
-        }
+
 
     }
 

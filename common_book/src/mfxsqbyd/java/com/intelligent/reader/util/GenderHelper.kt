@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
+import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
@@ -41,9 +42,7 @@ class GenderHelper(view: View) {
     private val mTxtStepIn: TextView = view.findViewById(R.id.tv_step_in)
     private val mLlGenderSection: LinearLayout = view.findViewById(R.id.ll_section_icon)
     lateinit var mGenderSelectedListener :onGenderSelectedListener
-    private val mView = view
-    var defaultSharedPreferences  : SharedPreferences
-//    val mBackGround: View = view
+    var shareUtil : SharedPreUtil ?= null
 
     /*
      *动画持续时间
@@ -54,7 +53,7 @@ class GenderHelper(view: View) {
     val mTxtAlphaDuration = 1000L
 
     init {
-        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mView.context)
+        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         initListener()
     }
 
@@ -112,16 +111,6 @@ class GenderHelper(view: View) {
      * 图片的动画（上下移动）
      */
     private fun setIconAnimation(tran: View , alpha:View){
-        val iconAniSet = AnimatorSet()
-        val layoutParams: ViewGroup.MarginLayoutParams = mLlGenderSection.layoutParams as ViewGroup.MarginLayoutParams
-//        val distance = (tran.height - tran.height) / 2 - tran.top
-//        val translateAnimator = ObjectAnimator.ofFloat(tran, "translationY", 0f, distance.toFloat())
-//        translateAnimator.duration = mImgTranDuration
-//        translateAnimator.interpolator = AccelerateDecelerateInterpolator ()
-//        val alphaAnimator = ObjectAnimator.ofFloat(alpha, "alpha", 1f, 0f)
-//        alphaAnimator.duration = mImgAlphaDuration
-//        iconAniSet.playTogether(translateAnimator, alphaAnimator)
-//        iconAniSet.start()
         tran.isClickable = false
         alpha.isClickable = false
         alpha.alpha = 0.4f
@@ -132,15 +121,6 @@ class GenderHelper(view: View) {
      * 图片的消失
      */
      fun vanishIconAnimation(alpha1: View , alpha2:View){
-//        val iconAniSet = AnimatorSet()
-////        val layoutParams: ViewGroup.MarginLayoutParams = mLlGenderSection.layoutParams as ViewGroup.MarginLayoutParams
-//        val alphaAnimator1 = ObjectAnimator.ofFloat(alpha1, "alpha", 1f, 0.3f)
-//        val alphaAnimator2 = ObjectAnimator.ofFloat(alpha2, "alpha", 1f, 0.3f)
-//        iconAniSet.playTogether(alphaAnimator1, alphaAnimator2)
-//        iconAniSet.duration = mImgAlphaDuration
-//        iconAniSet.start()
-//        alpha1.isClickable = false
-//        alpha2.isClickable = false
         setTxtAnimation()
     }
 
@@ -148,7 +128,7 @@ class GenderHelper(view: View) {
      * 文字的动画
      */
     fun setTxtAnimation(){
-        defaultSharedPreferences.edit().putInt("gender", Constants.SGENDER).apply()
+        shareUtil?.putInt(SharedPreUtil.GENDER_TAG, Constants.SGENDER)
         mTxtStepIn.visibility = View.INVISIBLE
         mTxtDesc.visibility = View.INVISIBLE
         val txtAniSet = AnimatorSet()

@@ -260,9 +260,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, false)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
-            }
-            if(bookShelfPresenter.iBookList.isNotEmpty()){
-                BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
+                BookShelfLogger.uploadFirstOpenBooks()
             }
         }
     }

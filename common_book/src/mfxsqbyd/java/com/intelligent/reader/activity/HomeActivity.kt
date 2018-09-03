@@ -99,7 +99,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
+        var uri:String = ""
+        when(sharedPreUtil?.getInt(SharedPreUtil.GENDER_TAG)){
+            Constants.SBOY -> { uri = RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName())}
+            Constants.SGIRL -> { uri = RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName())}
+            else -> {
+                 uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
+            }
+        }
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment

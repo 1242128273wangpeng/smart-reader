@@ -567,9 +567,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
     private boolean initChooseGender() {
         AppUtils.initDensity(getApplicationContext());
-        int isChooseGender = PreferenceManager.getDefaultSharedPreferences(
-                getApplicationContext()).getInt("gender",
-                Constants.NONE);
+        if( sharedPreUtil == null){
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+        int isChooseGender = sharedPreUtil.getInt(SharedPreUtil.GENDER_TAG, Constants.NONE);
         return isChooseGender == Constants.NONE;
     }
 
