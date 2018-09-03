@@ -256,8 +256,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         if (hasFocus && !ReaderStatus.isMenuShow) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        } else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
 

@@ -128,6 +128,7 @@ class SharedPreUtil(val type: Int) {
         const val UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id" //更新当前章节
 
         val DATABASE_REMARK = "database_remark"
+        const val GENDER_TAG = "gender" //开屏选男女
 
         /**
          * HomeActivity

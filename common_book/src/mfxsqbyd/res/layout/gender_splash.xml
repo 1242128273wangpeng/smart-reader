@@ -117,8 +117,8 @@
 
             <ImageView
                 android:id="@+id/tv_boy_sel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignBottom="@id/iv_boy_sel"
                 android:layout_marginBottom="5dp"
                 android:layout_alignRight="@+id/iv_boy_sel"
@@ -173,8 +173,8 @@
 
             <ImageView
                 android:id="@+id/tv_girl_sel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignBottom="@id/iv_girl_sel"
                 android:layout_marginBottom="5dp"
                 android:layout_alignRight="@+id/iv_girl_sel"
