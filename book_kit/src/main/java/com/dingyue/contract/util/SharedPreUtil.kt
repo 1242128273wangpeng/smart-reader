@@ -193,6 +193,7 @@ class SharedPreUtil(val type: Int) {
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
 
 
+        const val APPLICATION_SHARE_ACTION = "application_share_action"
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
     }
 

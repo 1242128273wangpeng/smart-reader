@@ -50,12 +50,14 @@
                 android:src="@drawable/bookshelf_head_more_sel"/>
 
             <View
+                android:id="@+id/view_head_prompt"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_alignRight="@id/img_head_menu"
                 android:layout_alignTop="@id/img_head_menu"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/prompt_red_bg"/>
+                android:background="@drawable/prompt_red_bg"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/rl_head_search"

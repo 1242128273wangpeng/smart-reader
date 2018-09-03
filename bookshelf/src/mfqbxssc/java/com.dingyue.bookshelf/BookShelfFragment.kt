@@ -15,6 +15,7 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import de.greenrobot.event.EventBus
@@ -57,6 +58,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         popup.onApplicationShareClickListener = {
             applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
             BookShelfLogger.uploadBookShelfShare()
         }
         popup
@@ -238,6 +240,17 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
             bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
+        }
+
+        if (!requireActivity().isFinishing) {
+            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+
+            if (share) {
+                view_head_prompt.visibility = View.GONE
+            } else {
+                view_head_prompt.visibility = View.VISIBLE
+            }
         }
     }
 

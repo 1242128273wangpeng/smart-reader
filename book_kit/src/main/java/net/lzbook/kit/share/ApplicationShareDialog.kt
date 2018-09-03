@@ -16,6 +16,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.text.TextUtils
 import com.ding.basic.Config
+import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import java.util.HashMap
 
@@ -115,6 +116,9 @@ class ApplicationShareDialog(var activity: Activity?) {
                                             val clipData = ClipData.newPlainText("Label", url)
                                             clipboardManager.primaryClip = clipData
                                             activity?.showToastMessage("分享链接已经复制到剪贴板！")
+
+                                            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+                                            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
                                         }
                                     }
                                 }

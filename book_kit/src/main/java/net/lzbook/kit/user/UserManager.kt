@@ -15,6 +15,7 @@ import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.bitmapTransformByteArray
 import com.dingyue.contract.util.mainLooperHandler
 import com.dingyue.contract.util.showToastMessage
@@ -405,6 +406,22 @@ object UserManager : IWXAPIEventHandler {
                     })
 
 
+                } else if (resp.type == 2) {
+                    when (resp.errCode) {
+                        BaseResp.ErrCode.ERR_OK -> {
+                            Logger.e("微信分享成功！")
+                            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+                            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                        }
+
+                        BaseResp.ErrCode.ERR_USER_CANCEL -> {
+
+                        }
+
+                        BaseResp.ErrCode.ERR_AUTH_DENIED -> {
+
+                        }
+                    }
                 } else {
                     mFailureCallback?.invoke("unknown")
                 }
@@ -472,7 +489,11 @@ object UserManager : IWXAPIEventHandler {
             it.onNext(bitmap)
         }.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { handleShareWechatAction(title, description, url, it, type) }
+                .subscribe({ handleShareWechatAction(title, description, url, it, type) }, {
+                    activity?.applicationContext?.showToastMessage("参数异常，请稍后再试！")
+                }, {
+
+                })
     }
 
     private fun handleShareWechatAction(title: String, description: String, url: String, bitmap: Bitmap, scene: Int) {
@@ -509,7 +530,7 @@ object UserManager : IWXAPIEventHandler {
         Observable.create<String> {
             it.onNext(image)
         }.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe { imagePath ->
+                .subscribe {
                     val params = Bundle()
                     params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT)
                     params.putString(QQShare.SHARE_TO_QQ_TITLE, title)
@@ -519,9 +540,10 @@ object UserManager : IWXAPIEventHandler {
                     }
 
                     params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url)
-                    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imagePath)
+                    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, it)
                     params.putString(QQShare.SHARE_TO_QQ_APP_NAME, activity?.getString(R.string.app_name))
                     params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE)
+
                     handleShareQQAction(activity, params)
                 }
     }
@@ -529,26 +551,7 @@ object UserManager : IWXAPIEventHandler {
     private fun handleShareQQAction(activity: Activity?, params: Bundle) {
         mainLooperHandler.post {
             if (activity != null) {
-                mTencent?.shareToQQ(activity, params, object : IUiListener {
-                    override fun onComplete(p0: Any?) {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享成功！")
-                        }
-                    }
-
-                    override fun onCancel() {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享取消！")
-                        }
-                    }
-
-                    override fun onError(p0: UiError?) {
-                        Logger.e("分享失败: " + p0?.errorDetail)
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享失败！")
-                        }
-                    }
-                })
+                mTencent?.shareToQQ(activity, params, shareListener)
             }
         }
     }
@@ -584,7 +587,10 @@ object UserManager : IWXAPIEventHandler {
 
                     params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url)
 
-                    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, arrayListOf(it))
+                    val imgUrlList = ArrayList<String>()
+                    imgUrlList.add(it)
+
+                    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList)
 
                     handleShareQzoneAction(activity, params)
                 }
@@ -593,32 +599,33 @@ object UserManager : IWXAPIEventHandler {
     private fun handleShareQzoneAction(activity: Activity?, params: Bundle) {
         mainLooperHandler.post {
             if (activity != null) {
-                mTencent?.shareToQzone(activity, params, object : IUiListener {
-                    override fun onComplete(p0: Any?) {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享成功！")
-                        }
-                    }
-
-                    override fun onCancel() {
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享取消！")
-                        }
-                    }
-
-                    override fun onError(p0: UiError?) {
-                        Logger.e("分享失败: " + p0?.errorDetail)
-                        if (!activity.isFinishing) {
-                            activity.applicationContext?.showToastMessage("分享失败！")
-                        }
-                    }
-                })
+                mTencent?.shareToQzone(activity, params, shareListener)
             }
         }
     }
 
     private fun buildTransaction(message: String?): String {
         return if (message == null) System.currentTimeMillis().toString() else message + System.currentTimeMillis()
+    }
+
+    fun registerQQShareCallBack(requestCode: Int, resultCode: Int, data: Intent?) {
+        Tencent.onActivityResultData(requestCode, resultCode, data, shareListener)
+    }
+
+    private val shareListener = object : IUiListener {
+        override fun onCancel() {
+            Logger.e("QQ分享取消！")
+        }
+
+        override fun onComplete(response: Any) {
+            Logger.e("QQ分享成功！")
+            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+        }
+
+        override fun onError(e: UiError) {
+            Logger.e("QQ分享失败: " + e.errorDetail + " : " + e.errorMessage)
+        }
     }
 }
 

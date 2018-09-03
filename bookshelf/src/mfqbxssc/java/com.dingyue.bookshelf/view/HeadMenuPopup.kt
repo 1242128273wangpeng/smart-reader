@@ -5,6 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
+import com.dingyue.contract.util.SharedPreUtil
 import kotlinx.android.synthetic.mfqbxssc.popup_head_menu.view.*
 
 /**
@@ -45,6 +46,14 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
 
     fun show(view: View) {
         showAsDropDown(view, 0, -(view.height + 30))
-    }
 
+        val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+        val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+
+        if (share) {
+            contentView.view_app_share.visibility = View.GONE
+        } else {
+            contentView.view_app_share.visibility = View.VISIBLE
+        }
+    }
 }
