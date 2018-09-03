@@ -98,11 +98,13 @@
                         android:contentDescription="@string/module_name"/>
 
                     <View
+                        android:id="@+id/view_app_share"
                         android:layout_width="6dp"
                         android:layout_height="6dp"
                         android:background="@drawable/prompt_red_bg"
                         android:layout_alignRight="@id/img_app_share"
-                        android:layout_alignTop="@id/img_app_share"/>
+                        android:layout_alignTop="@id/img_app_share"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 

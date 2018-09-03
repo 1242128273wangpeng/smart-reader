@@ -50,6 +50,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
@@ -89,6 +90,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var rankingFragment: WebViewFragment? = null
 
     private var categoryFragment: WebViewFragment? = null
+
+    private var registerShareCallback = false
 
     private val pushSettingDialog: PushSettingDialog by lazy {
         val dialog = PushSettingDialog(this)
@@ -160,7 +163,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun onResume() {
         super.onResume()
+        StatService.onResume(this)
         this.changeHomePagerIndex(currentIndex)
+        this.registerShareCallback = false
         StatService.onResume(this)
         MediaLifecycle.onResume()
     }
@@ -633,6 +638,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     override fun changeDrawerLayoutState() {
 
+    }
+
+    override fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
     }
 
     @Subscribe(sticky = true)

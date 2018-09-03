@@ -388,6 +388,12 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             val applicationShareDialog = ApplicationShareDialog(activity.get())
             applicationShareDialog.show()
+
+            val activity = this.activity.get()
+
+            if (activity is ReaderActivity) {
+                activity.registerShareCallback(true)
+            }
         }
     }
 
