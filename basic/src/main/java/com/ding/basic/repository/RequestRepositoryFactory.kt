@@ -462,7 +462,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     override fun requestChapterContent(chapter: Chapter): Flowable<Chapter> {
         val content = ChapterCacheUtil.checkChapterCacheExist(chapter)
-        return if (content == null || content.isEmpty()) {
+        return if (content == null || content.isEmpty() || content == "null") {
             InternetRequestRepository.loadInternetRequestRepository(context = context).requestChapterContent(chapter).map {
                 when {
                     it.checkPrivateKeyExpire() -> {
