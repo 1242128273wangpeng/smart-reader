@@ -219,13 +219,15 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * **/
     private fun handleADResult(views: List<ViewGroup>) {
         val adViews = ArrayList<ViewGroup>()
+        val iBooks = ArrayList<Book>()
         adViews.addAll(views)
+        iBooks.addAll(iBookList)
 
         var index = 0
 
         val iterator = adBookMap.entries.iterator()
 
-        val size = iBookList.size
+        val size = iBooks.size
 
         while (iterator.hasNext()) {
             val entry = iterator.next()
@@ -233,10 +235,10 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 if (index < adViews.size) {
                     entry.value.item_view = adViews[index]
 
-                    if (iBookList[entry.key].item_type == 1) {
-                        iBookList[entry.key].item_view = entry.value.item_view
+                    if (iBooks[entry.key].item_type == 1) {
+                        iBooks[entry.key].item_view = entry.value.item_view
                     } else {
-                        iBookList.add(entry.key, entry.value)
+                        iBooks.add(entry.key, entry.value)
                     }
 
                     index += 1
