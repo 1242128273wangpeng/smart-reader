@@ -99,7 +99,11 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
             if (SystemClock.uptimeMillis() - it[0] <= 5000) {//5秒内连续点击。
                 mHits = null    //这里说明一下，我们在进来以后需要还原状态，否则如果点击过快，第六次，第七次 都会不断进来触发该效果。重新开始计数即可
 
-                showAdminDialog()
+                if ("DEBUG" == AppUtils.getChannelId()) {
+                    RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
+                } else {
+                    showAdminDialog()
+                }
             }
         }
     }
