@@ -27,6 +27,7 @@ class SwitchADActivity : Activity() {
     private var canHandleClickAction = false
 
     private var clickTime = LongArray(2)
+    private var loadedAD=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,23 +46,6 @@ class SwitchADActivity : Activity() {
 
         ll_switch_ad_close.setOnClickListener { finish() }
 
-        MediaControl.loadSwitchScreenMedia(this, fl_switch_ad_content) { resultCode ->
-            Logger.e("切屏广告: $resultCode")
-            when (resultCode) {
-                MediaCode.MEDIA_SUCCESS -> {
-                    updateContentView(fl_switch_ad_content, true)
-                    ll_switch_ad_close.visibility = View.VISIBLE
-                }
-
-                MediaCode.MEDIA_FAILED -> {
-                    this@SwitchADActivity.finish()
-                }
-
-                MediaCode.MEDIA_DISMISS -> {
-                    this@SwitchADActivity.finish()
-                }
-            }
-        }
 
         mainLooperHandler.postDelayed({ canHandleClickAction = true }, 2000)
     }
@@ -81,6 +65,37 @@ class SwitchADActivity : Activity() {
         } else {
             view.setBackgroundColor(Color.parseColor("#00FFFFFF"))
         }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        var width=window.decorView.width
+        var height=window.decorView.height
+        if(hasFocus&&!loadedAD&&height>width){
+            loadedAD=true
+
+            MediaControl.loadSwitchScreenMedia(this, fl_switch_ad_content) { resultCode ->
+                Logger.e("切屏广告: $resultCode")
+                when (resultCode) {
+                    MediaCode.MEDIA_SUCCESS -> {
+                        updateContentView(fl_switch_ad_content, true)
+                        ll_switch_ad_close.visibility = View.VISIBLE
+                    }
+
+                    MediaCode.MEDIA_FAILED -> {
+                        this@SwitchADActivity.finish()
+                    }
+
+                    MediaCode.MEDIA_DISMISS -> {
+                        this@SwitchADActivity.finish()
+                    }
+                }
+            }
+
+
+
+        }
+
     }
 
     override fun onResume() {

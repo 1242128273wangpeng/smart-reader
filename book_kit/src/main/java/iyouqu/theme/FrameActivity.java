@@ -418,7 +418,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
             boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
             if (isShowSwitchSplash) {
-                RouterUtil.INSTANCE.navigation(this, RouterConfig.SWITCH_AD_ACTIVITY);
+                getWindow().getDecorView().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        RouterUtil.INSTANCE.navigation(FrameActivity.this, RouterConfig.SWITCH_AD_ACTIVITY);
+                    }
+                }, 200);
             }
         }
     }
