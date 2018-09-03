@@ -5,13 +5,14 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.dingyue.contract.util.SharedPreUtil
 import kotlinx.android.synthetic.txtqbmfyd.item_bookshelf_book.view.*
-
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.repair_books.RepairHelp
 
 /**
  * Desc 书架页Item
@@ -33,18 +34,25 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             book.sequence = book.chapter_count - 1
         }
 
-        when {
-            book.update_status == 1 -> { //更新
-                img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
-            }
+        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(SharedPreUtil.SHAREDPREFERENCES_KEY, 0)
+        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
+            img_book_status.visibility = View.VISIBLE
+            img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
+        } else {
+            when {
+                book.update_status == 1 -> { //更新
+                    img_book_status.visibility = View.VISIBLE
+                    img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
+                }
 
-            book.status == "FINISH" -> { //完结
-                img_book_status.visibility = View.VISIBLE
-                img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
+                book.status == "FINISH" -> { //完结
+                    img_book_status.visibility = View.VISIBLE
+                    img_book_status.setImageResource(R.drawable.bookshelf_item_book_finish_icon)
+                }
+                else -> img_book_status.visibility = View.GONE
             }
-            else -> img_book_status.visibility = View.GONE
         }
+
 
         if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
             Glide.with(itemView.context.applicationContext)

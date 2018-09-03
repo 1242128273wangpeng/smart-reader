@@ -1,5 +1,7 @@
 package com.intelligent.reader.fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
-import com.dingyue.contract.util.*
+import android.webkit.WebView
 
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
@@ -17,8 +19,9 @@ import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.webview_layout.*
 import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.CustomWebClient
-import wendu.dsbridge.OnReturnValue
+import net.lzbook.kit.utils.JSInterfaceHelper
 
 open class WebViewFragment : Fragment() {
 
@@ -34,6 +37,16 @@ open class WebViewFragment : Fragment() {
     private var loadingPage: LoadingPage? = null
 
     private var handler: Handler = Handler()
+
+    private var jsInterfaceHelper: JSInterfaceHelper? = null
+
+    private var fragmentCallback: FragmentCallback? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        this.fragmentCallback = context as FragmentCallback?
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +79,7 @@ open class WebViewFragment : Fragment() {
         }
     }
 
+    @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
     private fun initView() {
         when (type) {
             "recommend" -> {
@@ -79,22 +93,34 @@ open class WebViewFragment : Fragment() {
             else -> rl_web_view_header.visibility = View.GONE
         }
 
+        AppUtils.disableAccessibility(requireActivity())
+
         loadingPage = LoadingPage(requireActivity(), rl_web_view_content)
 
 
-        if (bwv_web_view_result != null) {
-            customWebClient = CustomWebClient(requireContext(), bwv_web_view_result)
+        if (wv_web_view_result != null) {
+            customWebClient = CustomWebClient(requireContext(), wv_web_view_result)
         }
 
         customWebClient?.setWebSettings()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            bwv_web_view_result?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            wv_web_view_result?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        bwv_web_view_result?.webViewClient = customWebClient
+        wv_web_view_result?.webViewClient = customWebClient
 
-        bwv_web_view_result.addJavascriptObject(BridgeObject(requireActivity()), "DingYue")
+        if (wv_web_view_result != null) {
+            jsInterfaceHelper = JSInterfaceHelper(requireContext(), wv_web_view_result)
+        }
+
+        if (jsInterfaceHelper != null && wv_web_view_result != null) {
+            wv_web_view_result?.addJavascriptInterface(jsInterfaceHelper, "J_search")
+        }
+
+        if (fragmentCallback != null && jsInterfaceHelper != null) {
+            fragmentCallback?.webJsCallback(jsInterfaceHelper!!)
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -127,11 +153,7 @@ open class WebViewFragment : Fragment() {
             return
         }
 
-        type.let {
-            bwv_web_view_result.callHandler("handleEvent", arrayOf(type), OnReturnValue<Boolean> { data ->
-                Logger.e("调用JS打点: $data")
-            })
-        }
+        wv_web_view_result?.loadUrl("javascript:startEventFunc()")
     }
 
     private fun loadWebViewData(url: String?) {
@@ -144,7 +166,7 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun handleLoadWebViewAction(url: String) {
-        if (bwv_web_view_result == null) {
+        if (wv_web_view_result == null) {
             return
         }
 
@@ -154,9 +176,9 @@ open class WebViewFragment : Fragment() {
     private fun loadingWebView(url: String) {
         customWebClient?.doClear()
 
-        if (bwv_web_view_result != null && url.isNotEmpty()) {
+        if (wv_web_view_result != null && url.isNotEmpty()) {
             try {
-                bwv_web_view_result?.loadUrl(url)
+                wv_web_view_result?.loadUrl(url)
             } catch (exception: NullPointerException) {
                 exception.printStackTrace()
                 requireActivity().finish()
@@ -192,7 +214,7 @@ open class WebViewFragment : Fragment() {
                     customWebClient?.doClear()
                 }
 
-                bwv_web_view_result?.reload()
+                wv_web_view_result?.reload()
             })
         }
     }
@@ -202,29 +224,29 @@ open class WebViewFragment : Fragment() {
 
         handler.removeCallbacksAndMessages(null)
 
-        if (bwv_web_view_result != null) {
-            bwv_web_view_result?.clearCache(true)
+        if (wv_web_view_result != null) {
+            wv_web_view_result?.clearCache(false)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                 if (rl_web_view_main != null) {
-                    rl_web_view_main?.removeView(bwv_web_view_result)
+                    rl_web_view_main?.removeView(wv_web_view_result)
                 }
 
-                bwv_web_view_result?.stopLoading()
-                bwv_web_view_result?.settings?.javaScriptEnabled = false
-                bwv_web_view_result?.clearHistory()
-                bwv_web_view_result?.removeAllViews()
-                bwv_web_view_result?.destroy()
+                wv_web_view_result?.stopLoading()
+                wv_web_view_result?.settings?.javaScriptEnabled = false
+                wv_web_view_result?.clearHistory()
+                wv_web_view_result?.removeAllViews()
+                wv_web_view_result?.destroy()
             } else {
-                bwv_web_view_result?.stopLoading()
-                bwv_web_view_result?.settings?.javaScriptEnabled = false
-                bwv_web_view_result?.clearHistory()
-                bwv_web_view_result?.removeAllViews()
-                bwv_web_view_result?.destroy()
+                wv_web_view_result?.stopLoading()
+                wv_web_view_result?.settings?.javaScriptEnabled = false
+                wv_web_view_result?.clearHistory()
+                wv_web_view_result?.removeAllViews()
+                wv_web_view_result?.destroy()
 
                 if (rl_web_view_main != null) {
-                    rl_web_view_main?.removeView(bwv_web_view_result)
+                    rl_web_view_main?.removeView(wv_web_view_result)
                 }
             }
         }
@@ -232,5 +254,11 @@ open class WebViewFragment : Fragment() {
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }
+    }
+
+    interface FragmentCallback {
+        fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper)
+
+        fun startLoad(webView: WebView, url: String): String
     }
 }

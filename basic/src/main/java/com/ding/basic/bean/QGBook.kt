@@ -80,7 +80,7 @@ class QGBook private constructor(builder: QGBook.Builder) : Book() {
             return this
         }
 
-        fun imgUrl(imgUrl: String): QGBook.Builder {
+        fun imgUrl(imgUrl: String?): QGBook.Builder {
             this.imgUrl = imgUrl
             return this
         }

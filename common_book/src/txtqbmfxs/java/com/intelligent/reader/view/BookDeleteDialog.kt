@@ -24,7 +24,7 @@
 //    private val confirm = dialog.findViewById(R.id.bt_ok) as Button
 //    private val abrogate = dialog.findViewById(R.id.bt_cancel) as Button
 //
-//    private var confirmListener: ((books: ArrayList<Book>?, isChecked: Boolean) -> Unit)? = null
+//    private var confirmListener: ((books: ArrayList<Book>?, setSortChecked: Boolean) -> Unit)? = null
 //    private var abrogateListener: (() -> Unit)? = null
 //    private var books: ArrayList<Book>? = null
 //
@@ -38,7 +38,7 @@
 //        abrogate.setText(R.string.cancel)
 //        confirm.setOnClickListener {
 //            dialog.dismiss()
-//            confirmListener?.invoke(books, checkBox.isChecked)
+//            confirmListener?.invoke(books, checkBox.setSortChecked)
 //        }
 //        abrogate.setOnClickListener {
 //            dialog.dismiss()
@@ -46,7 +46,7 @@
 //        }
 //    }
 //
-//    fun setOnConfirmListener(listener: (books: ArrayList<Book>?, isChecked: Boolean) -> Unit) {
+//    fun setOnConfirmListener(listener: (books: ArrayList<Book>?, setSortChecked: Boolean) -> Unit) {
 //        confirmListener = listener
 //    }
 //
@@ -57,7 +57,7 @@
 //    fun show(books: ArrayList<Book>) {
 //        this.books = books
 //        dialog.show()
-//        checkBox.isChecked = false
+//        checkBox.setSortChecked = false
 //    }
 //
 //}

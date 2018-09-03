@@ -1,9 +1,5 @@
 package com.intelligent.reader.view;
 
-/**
- * Created by Administrator on 2017\11\2 0002.
- */
-
 import com.intelligent.reader.R;
 
 import android.content.Context;
@@ -16,6 +12,10 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 书籍详情页推荐标签流
+ * Created by Administrator on 2017\11\2 0002.
+ */
 public class FlowLayout extends ViewGroup {
     /**
      * Special value for the child view spacing.

@@ -5,7 +5,6 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
-import com.ding.basic.util.DataCache
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
 import com.dy.reader.page.Position
@@ -19,13 +18,11 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.PageManager
 import com.dy.reader.repository.ReaderRepository
 import com.dy.reader.repository.ReaderRepositoryFactory
-import com.intelligent.reader.read.mode.NovelChapter
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelChapter
+import com.dy.reader.mode.NovelPageBean
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -36,6 +33,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by xian on 18-3-21.
@@ -54,60 +52,71 @@ object DataProvider {
     fun onNeedRefresh(event: EventReaderConfig) {
         if (ReaderStatus.isReady()) {
             if (event.type == ReaderSettings.ConfigType.PAGE_REFRESH) {
-                loadGroup(ReaderStatus.position.group, {
+                loadGroup(ReaderStatus.position.group, false) {
                     groupListeners.forEach {
                         it.onPageRefreshed()
                     }
-                }, false)
+                }
             } else if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH || event.type == ReaderSettings.ConfigType.FONT_REFRESH) {
                 if (event.obj == null || ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
                     AppLog.e("DataProvider", "CHAPTER_REFRESH, but obj == null or is list animation")
                     return
                 }
+
                 val position = event.obj as Position
-                if (position.group >= 0 && position.group < ReaderStatus.chapterCount ?: 0 - 1) {
+
+                if (isGroupAvalable(position.group)) {
 
                     chapterCache.removeOther(position.group)
 
+                    val forceReload = event.type == ReaderSettings.ConfigType.FONT_REFRESH
+                    if (forceReload) {
+                        chapterCache.clear()
+                    }
+
                     if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
-                        EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
+                        if (forceReload || Math.abs(position.group - ReaderStatus.position.group) > 1 || chapterCache.get(position.group) == null) {
+                            EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
+                        }
 
                         loadPre(position.group + 2, position.group + 6)
                     }
 
-                    val forceReload = event.type == ReaderSettings.ConfigType.FONT_REFRESH
 
                     AppLog.e("DataProvider", "forceReload = " + forceReload)
 
-                    loadGroup(position.group, {
+                    loadGroup(position.group, forceReload) {
                         if (it) {
-                            loadGroup(Math.max(position.group - 1, 0), {
+
+                            loadGroup(Math.max(position.group - 1, 0), forceReload) {
                                 if (it) {
-                                    loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), {
-                                        groupListeners.forEach {
-                                            if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
-                                                it.onGroupRefreshed(position, {
-                                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
-                                                })
-                                            } else {
-                                                it.onFontRefreshed(position, {
-                                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
-                                                })
+                                    groupListeners.forEach {
+                                        if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
+                                            it.onGroupRefreshed(position) {
+                                                EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
+                                            }
+                                        } else {
+                                            it.onFontRefreshed(position) {
+                                                EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                                             }
                                         }
-                                    }, forceReload)
+                                    }
                                 } else {
-                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                                    EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                         onNeedRefresh(event)
-                                    }))
+                                    })
                                 }
-                            }, forceReload)
+                            }
+
+                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload)
                         } else {
-                            EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                            EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                 onNeedRefresh(event)
-                            }))
+                            })
                         }
-                    }, forceReload)
+                    }
+                } else {
+                    EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
                 }
             }
         }
@@ -177,7 +186,7 @@ object DataProvider {
                     }
 
                     mDisposable.add(Flowable.zipArray<Chapter, List<Chapter>>(Function { it ->
-                        val list = (it.toList() as List<Chapter>)
+                        val list = ArrayList<Chapter>((it.toList() as List<Chapter>))
                         Collections.sort(list, { first, second ->
                             (first.sequence - second.sequence)
                         })
@@ -332,29 +341,29 @@ object DataProvider {
 
     fun loadGroupWithBusyUI(book_id: String, group: Int, callback: ((Boolean) -> Unit)? = null) {
         EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
-        loadGroup(group, {
+        loadGroup(group, true) {
             if (it) {
                 EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
 
                 callback?.invoke(true)
             } else {
-                EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY, {
+                EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                     loadGroupWithBusyUI(book_id, group)
-                }))
+                })
 
                 callback?.invoke(false)
             }
-        })
+        }
     }
 
     fun loadGroupWithVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
-        loadGroupForVertical(group, { success: Boolean, chapter: Chapter? ->
+        loadGroupForVertical(group) { success: Boolean, chapter: Chapter? ->
             if (success) {
                 callback?.invoke(true, chapter)
             } else {
                 callback?.invoke(false, null)
             }
-        })
+        }
     }
 
     fun getPage(position: Position): NovelPageBean {
@@ -368,14 +377,14 @@ object DataProvider {
         if (position.group > curPosition.group ||
                 (position.group == curPosition.group && position.index > curPosition.index)) {
             if (curPosition.index == 0 && getPageData(curPosition.group + 1) == null) {
-                loadGroup(curPosition.group + 1, null, false)
+                loadGroup(curPosition.group + 1, false)
             }
         }
         //在加载上一页
         if (position.group < curPosition.group ||
                 (position.group == curPosition.group && position.index < curPosition.index)) {
             if (curPosition.index == curPosition.groupChildCount - 1 && getPageData(curPosition.group - 1) == null) {
-                loadGroup(curPosition.group - 1, null, false)
+                loadGroup(curPosition.group - 1, false)
             }
         }
 
@@ -403,9 +412,9 @@ object DataProvider {
         }
     }
 
-    private fun loadGroup(group: Int, callback: ((Boolean) -> Unit)? = null, force: Boolean = true) {
+    private fun loadGroup(group: Int, force: Boolean = true, callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
-            if (!force && chapterCache.get(group) != null) {
+            if (group < 0 || (!force && chapterCache.get(group) != null)) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
                 callback?.invoke(true)
                 return
@@ -480,11 +489,10 @@ object DataProvider {
 
     fun findCurrentPageNovelLineBean(): List<NovelLineBean>? {
         val novelChapter = chapterCache.get(ReaderStatus.position.group)
-        if (novelChapter != null) {
-            val mNovelPageBean = novelChapter.separateList
-            return mNovelPageBean[ReaderStatus.position.index].lines
+        return if (novelChapter != null && ReaderStatus.position.index < novelChapter.separateList.size) {
+            novelChapter.separateList[ReaderStatus.position.index].lines
         } else {
-            return null
+            null
         }
     }
 }

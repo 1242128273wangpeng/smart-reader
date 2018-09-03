@@ -10,7 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_CLOSED
+import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_END_SCROLL
 import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_OPENED
+import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_SCROLLING
+import com.intelligent.reader.widget.drawer.DrawerLayout.MenuState.MENU_START_SCROLL
+import net.lzbook.kit.utils.loge
 
 
 /**
@@ -127,9 +131,28 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
 
             if (dx > 0) {
                 dragOrientation = LEFT_TO_RIGHT
+                if (mainLeft == menuWidth) {
+                    onMenuStateChangeListener?.invoke(MENU_END_SCROLL)
+                }
             } else if (dx < 0) {
                 dragOrientation = RIGHT_TO_LEFT
+                if (mainLeft == 0) {
+                    onMenuStateChangeListener?.invoke(MENU_END_SCROLL)
+                }
+            } else {
+                if (mainLeft == 0 || mainLeft == menuWidth) {
+                    onMenuStateChangeListener?.invoke(MENU_START_SCROLL)
+                }
             }
+
+            if (mainView?.left == 0 && menuState != MENU_CLOSED) {
+                menuState = MENU_CLOSED
+                onMenuStateChangeListener?.invoke(MENU_CLOSED)
+            } else if (mainView?.left == menuWidth && menuState != MENU_OPENED) {
+                menuState = MENU_OPENED
+                onMenuStateChangeListener?.invoke(MENU_OPENED)
+            }
+            onMenuStateChangeListener?.invoke(MENU_SCROLLING)
         }
     }
 
@@ -187,13 +210,6 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
         if (viewDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this)
         }
-        if (mainView?.left == 0 && menuState != MENU_CLOSED) {
-            menuState = MENU_CLOSED
-            onMenuStateChangeListener?.invoke(MENU_CLOSED)
-        } else if (mainView?.left == menuWidth && menuState != MENU_OPENED) {
-            menuState = MENU_OPENED
-            onMenuStateChangeListener?.invoke(MENU_OPENED)
-        }
     }
 
     fun openMenu() {
@@ -243,6 +259,9 @@ class DrawerLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     object MenuState {
         val MENU_CLOSED = 1
         val MENU_OPENED = 2
+        val MENU_SCROLLING = 3
+        val MENU_START_SCROLL = 4
+        val MENU_END_SCROLL = 5
     }
 
 }

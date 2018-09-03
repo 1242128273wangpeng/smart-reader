@@ -21,8 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
@@ -42,7 +40,8 @@ import java.lang.ref.WeakReference;
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
-    public String url;
+    public String url = "";
+    private String type;
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
@@ -53,9 +52,19 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
-    private String type;
 
+    private boolean isPrepared;
     private boolean isVisible;
+
+    private boolean isFirstVisible = true;
+
+    private SuperSwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar pgbar_head_loading;
+    private TextView txt_head_prompt;
+    private ImageView img_head_arrow;
+
+    private boolean hasRefreshHead = false;
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -76,16 +85,24 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             AppLog.e(TAG, "url---->" + url);
             type = bundle.getString("type");
         }
+
+        String packageName = AppUtils.getPackageName();
+        hasRefreshHead = "cc.kdqbxs.reader".equals(packageName)
+                || "cn.txtqbmfyd.reader".equals(packageName);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        AppLog.e(TAG, "onCreateView");
         try {
             rootView = inflater.inflate(R.layout.webview_layout, container, false);
         } catch (InflateException e) {
             e.printStackTrace();
+        }
+        if(weakReference != null){
+            AppUtils.disableAccessibility(weakReference.get());
         }
         initView();
         initRefresh();
@@ -95,8 +112,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
-            contentLayout =  rootView.findViewById(R.id.web_content_layout);
-            contentView =  rootView.findViewById(R.id.web_content_view);
+            contentLayout = rootView.findViewById(R.id.web_content_layout);
+            contentView = rootView.findViewById(R.id.web_content_view);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
@@ -135,8 +152,13 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!TextUtils.isEmpty(url)) {
-            loadWebData(url);
+        isPrepared = true;
+        if (type != null && type.equals("category_female")) {//女频
+            lazyLoad();
+        } else {
+            if (!TextUtils.isEmpty(url)) {
+                loadWebData(url);
+            }
         }
     }
 
@@ -154,9 +176,17 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     protected void onVisible() {
         if (type != null) {
+            if (jsInterfaceHelper == null && contentView != null && context != null) {
+                jsInterfaceHelper = new JSInterfaceHelper(context, contentView);
+            }
             if (type.equals("rank")) {//榜单
-               /* jsInterfaceHelper.setRankingWebVisible();*/
                 notifyWebLog();//通知 H5 打点
+            }
+            if (type.equals("recommend")) {//推荐
+                notifyWebLog();
+            }
+            if (type.equals("category_female")) {//分类-女频
+                lazyLoad();
             }
         }
     }
@@ -165,10 +195,20 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     }
 
     private void notifyWebLog() {
-        if (!isVisible) {
+        if (!isVisible || !isPrepared) {
             return;
         }
         contentView.loadUrl("javascript:startEventFunc()");
+    }
+
+    protected void lazyLoad() {
+        if (!isVisible || !isPrepared || !isFirstVisible) {
+            return;
+        }
+        if (!TextUtils.isEmpty(url)) {
+            loadWebData(url);
+        }
+        isFirstVisible = false;
     }
 
     @Override
@@ -179,8 +219,6 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-//        contentView.clearCache(false);
-//        contentView.freeMemory();
     }
 
     public void loadWebData(String url) {
@@ -285,32 +323,37 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                 }
                 break;
-            case R.id.content_download_manage:
-                try {
-                    RouterUtil.INSTANCE.navigation(getActivity(),
-                            RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
+//            case R.id.content_download_manage:
+//                try {
+//                    RouterUtil.INSTANCE.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                break;
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        AppLog.e("webviewFrag", "exit");
         if (contentView != null) {
             contentView.clearCache(true); //清空缓存
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 if (contentLayout != null) {
                     contentLayout.removeView(contentView);
-
                 }
                 contentView.stopLoading();
+                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                contentView.getSettings().setJavaScriptEnabled(false);
+                contentView.clearHistory();
                 contentView.removeAllViews();
                 contentView.destroy();
             } else {
                 contentView.stopLoading();
+                // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+                contentView.getSettings().setJavaScriptEnabled(false);
+                contentView.clearHistory();
                 contentView.removeAllViews();
                 contentView.destroy();
                 if (contentLayout != null) {
@@ -332,19 +375,11 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
-    private SuperSwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar head_pb_view;
-    private TextView head_text_view;
-    private ImageView head_image_view;
-
     private void initRefresh() {
 
         // 免费全本小说书城 推荐页添加下拉刷新
-        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(url)
-                && rootView != null) {
-            swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(
-                    R.id.bookshelf_refresh_view);
+        if (hasRefreshHead && !TextUtils.isEmpty(url) && rootView != null) {
+            swipeRefreshLayout = rootView.findViewById(R.id.bookshelf_refresh_view);
             swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
             swipeRefreshLayout.setHeaderView(createHeaderView());
             swipeRefreshLayout.setTargetScrollWithLayout(true);
@@ -353,9 +388,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onRefresh() {
-                            head_text_view.setText("正在刷新");
-                            head_image_view.setVisibility(View.GONE);
-                            head_pb_view.setVisibility(View.VISIBLE);
+                            txt_head_prompt.setText("正在刷新");
+                            img_head_arrow.setVisibility(View.GONE);
+                            pgbar_head_loading.setVisibility(View.VISIBLE);
                             checkUpdate();
                         }
 
@@ -366,12 +401,10 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onPullEnable(boolean enable) {
-                            head_pb_view.setVisibility(View.GONE);
-                            head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
-                            head_image_view.setVisibility(View.VISIBLE);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                head_image_view.setRotation(enable ? 180 : 0);
-                            }
+                            pgbar_head_loading.setVisibility(View.GONE);
+                            txt_head_prompt.setText(enable ? "松开刷新" : "下拉刷新");
+                            img_head_arrow.setVisibility(View.VISIBLE);
+                            img_head_arrow.setRotation(enable ? 180 : 0);
                         }
                     });
             if (url.contains("recommend")) {
@@ -383,26 +416,23 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     }
 
     private View createHeaderView() {
-        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext())
-                .inflate(R.layout.layout_head, null);
-        head_pb_view = headerView.findViewById(R.id.head_pb_view);
-        head_text_view = headerView.findViewById(R.id.head_text_view);
-        head_text_view.setText("下拉刷新");
-        head_image_view = headerView.findViewById(R.id.head_image_view);
-        head_image_view.setVisibility(View.VISIBLE);
-        head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow);
-        head_pb_view.setVisibility(View.GONE);
+        View headerView = LayoutInflater.from(swipeRefreshLayout.getContext()).inflate(
+                R.layout.bookstore_refresh_header, null);
+        pgbar_head_loading = (ProgressBar) headerView.findViewById(R.id.pgbar_refresh_loading);
+        txt_head_prompt = (TextView) headerView.findViewById(R.id.txt_refresh_prompt);
+        txt_head_prompt.setText("下拉刷新");
+        img_head_arrow = (ImageView) headerView.findViewById(R.id.img_refresh_arrow);
+        img_head_arrow.setVisibility(View.VISIBLE);
+        img_head_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow);
+        pgbar_head_loading.setVisibility(View.GONE);
         return headerView;
     }
 
     private void checkUpdate() {
-        if (swipeRefreshLayout == null) {
-            return;
-        }
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             swipeRefreshLayout.setRefreshing(false);
-            CommonUtil.showToastMessage("网络不给力");
+            CommonUtil.showToastMessage("网络不给力！");
             return;
         }
 

@@ -85,7 +85,7 @@
                 android:background="@drawable/dialog_btn_right_selector"
                 android:gravity="center"
                 android:text="@string/reading_continue"
-                android:textColor="@color/color_primary"
+                android:textColor="@color/primary"
                 android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>

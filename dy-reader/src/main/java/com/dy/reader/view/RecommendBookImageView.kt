@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.iv_recommend.view.*
  * 创建人：Zach
  * 创建时间：2017/10/31 0031
  */
-
 class RecommendBookImageView: RelativeLayout {
 
     var mSelectedFlag = false
@@ -84,7 +83,7 @@ class RecommendBookImageView: RelativeLayout {
         //初始化图片内容
         icon_selector?.layoutParams = selectorParams
 
-        bg?.setBackgroundResource(R.drawable.book_cover_default_icon)
+        bg?.setBackgroundResource(R.drawable.book_cover_default)
         icon_selector?.setBackgroundDrawable(mSelectorImg)
         if(!mIconSelectorIsShow){
             icon_selector.visibility= View.GONE

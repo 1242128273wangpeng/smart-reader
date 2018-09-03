@@ -26,11 +26,13 @@ public class RecommendItemView extends RelativeLayout {
 
     public RecommendItemView(Context context, int type) {
         super(context);
-        if (context == null)
+        if (context == null) {
             return;
+        }
         try {
 
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
             if (type == BookCoverUtil.TYPE_AUTHOR) {
                 inflater.inflate(R.layout.layout_recommend_item_vertical, this);
             } else if (type == BookCoverUtil.TYPE_CATEGORY) {
@@ -39,12 +41,12 @@ public class RecommendItemView extends RelativeLayout {
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        mCovorImageView = (ImageView) findViewById(R.id.layout_recommend_item_cover);
-        mTitleTextView = (TextView) findViewById(R.id.layout_recommend_item_title);
-        mAuthorTextView = (TextView) findViewById(R.id.layout_recommend_item_author);
+        mCovorImageView = findViewById(R.id.layout_recommend_item_cover);
+        mTitleTextView = findViewById(R.id.layout_recommend_item_title);
+        mAuthorTextView = findViewById(R.id.layout_recommend_item_author);
 
         if (type == BookCoverUtil.TYPE_AUTHOR) {
-            mFansTextView = (TextView) findViewById(R.id.layout_recommend_item_fans);
+            mFansTextView = findViewById(R.id.layout_recommend_item_fans);
         } else {
             mFansTextView = null;
         }
@@ -56,18 +58,26 @@ public class RecommendItemView extends RelativeLayout {
 
     public void setArgs(String imgUrl, String title, String author, int fans) {
         mTitle = title;
-        if (!TextUtils.isEmpty(imgUrl) && mCovorImageView != null && !imgUrl.equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
-            Glide.with(getContext().getApplicationContext()).load(imgUrl).placeholder(R.drawable.icon_book_cover_default).error((R.drawable.icon_book_cover_default)).diskCacheStrategy(DiskCacheStrategy.ALL).into(mCovorImageView);
+        if (!TextUtils.isEmpty(imgUrl) && mCovorImageView != null && !imgUrl.equals(
+                ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
+            Glide.with(getContext().getApplicationContext()).load(imgUrl).placeholder(
+                    R.drawable.icon_book_cover_default).error(
+                    (R.drawable.icon_book_cover_default)).diskCacheStrategy(
+                    DiskCacheStrategy.ALL).into(mCovorImageView);
         } else {
-            Glide.with(getContext().getApplicationContext()).load(R.drawable.icon_book_cover_default).into(mCovorImageView);
+            Glide.with(getContext().getApplicationContext()).load(
+                    R.drawable.icon_book_cover_default).into(mCovorImageView);
         }
-        if (mTitleTextView != null)
+        if (mTitleTextView != null) {
             mTitleTextView.setText(title);
-        if (mAuthorTextView != null)
+        }
+        if (mAuthorTextView != null) {
             mAuthorTextView.setText(author);
-        if (mFansTextView != null)
+        }
+        if (mFansTextView != null) {
             mFansTextView.setText(Html.fromHtml(fans + "<font color=\"#999999\">"
                     + " 人追" + "</font>"));
+        }
     }
 
     public String getTitle() {

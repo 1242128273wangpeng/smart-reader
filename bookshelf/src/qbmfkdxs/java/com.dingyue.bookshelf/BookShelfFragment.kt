@@ -85,7 +85,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     val bookShelfAdapter: BookShelfAdapter by lazy {
-        BookShelfAdapter(requireActivity(), object : BookShelfAdapter.BookShelfItemListener {
+        BookShelfAdapter(object : BookShelfAdapter.BookShelfItemListener {
             override fun clickedBookShelfItem(book: Book?, position: Int) {
                 if (position < 0 || position >= bookShelfPresenter.iBookList.size) return
                 if (isRemoveMenuShow()) {
@@ -279,7 +279,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
+            BookShelfLogger.uploadFirstOpenBooks()
         }
+
     }
 
     /**
@@ -320,7 +322,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (activity != null && !requireActivity().isFinishing) {
+        if (isAdded && activity?.isFinishing == false) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -333,7 +335,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onException(exception: Exception) {
         if (activity != null && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
-            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_refresh_network_problem, 2000L)
+            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
             }

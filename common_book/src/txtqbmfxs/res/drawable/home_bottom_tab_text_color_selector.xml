@@ -6,5 +6,5 @@
           android:state_pressed="true"/>
     <item android:color="@color/theme_primary"
           android:state_focused="true"/>
-    <item android:color="@color/theme_primary"/>
+    <item android:color="@color/color_gray"/>
 </selector>

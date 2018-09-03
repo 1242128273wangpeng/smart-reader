@@ -33,9 +33,11 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
 import java.util.*
 import java.util.concurrent.Callable
+import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
+
     private var mBackground = 0
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
@@ -60,6 +62,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun onNewIntent(intent: Intent) {
+        if (book_cover_bookshelf != null) {
+            book_cover_bookshelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
+        coverPagePresenter?.destroy()
         initializeIntent(intent)
     }
 
@@ -315,6 +322,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+
+    }
+
+    override fun showRecommendSuccessV4(recommends: ArrayList<Book>) {
 
     }
 

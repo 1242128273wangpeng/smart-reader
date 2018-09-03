@@ -1,0 +1,81 @@
+<resources>
+    <string name="module_name">资源</string>
+
+    <string name="bookshelf">书架</string>
+    <string name="bookstore">书城</string>
+    <string name="recommend">精选</string>
+    <string name="ranking">榜单</string>
+    <string name="category">分类</string>
+
+    <string name="catalog_positive">正序</string>
+    <string name="catalog_negative">倒序</string>
+
+    <string name="add_bookshelf">加入书架</string>
+    <string name="remove_bookshelf">移出书架</string>
+    <string name="have_in_bookshelf">已在书架</string>
+
+    <string name="my_bookshelf">我的书架</string>
+    <string name="goto_bookstore">去书城</string>
+    <string name="goto_bookstore_look">去书城看看</string>
+    <string name="download_manager_no_book_desc">暂无缓存书籍，去书城逛逛吧~</string>
+    <string name="determine_remove_bookmark">你确定要清除该书签吗？</string>
+
+    <string name="no_net">网络不给力，请稍后重试</string>
+
+    <string name="login">登陆</string>
+    <string name="submit">提交</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="complete">完成</string>
+    <string name="select_all">全选</string>
+    <string name="select_all_cancel">取消全选</string>
+
+    <string name="sort_book">书籍排序</string>
+    <string name="sort_for_update_time">按更新时间排序</string>
+    <string name="sort_for_reading_time">按最近阅读排序</string>
+    <string name="sort_for_add_time">按添加书籍排序</string>
+
+    <string name="edit_bookshelf">编辑书架</string>
+    <string name="edit_cache">编辑缓存</string>
+    <string name="delete_cache">删除缓存</string>
+    <string name="download_manager">缓存管理</string>
+    <string name="application_cache_size">0B</string>
+
+    <string name="cached">已缓存</string>
+    <string name="un_cached">已缓存</string>
+    <string name="cached_ing">正在缓存</string>
+
+    <string name="default_title">正义的秘密</string>
+    <string name="default_message">有人说过,衡量一个作家是否优秀,就看他能不能担负起社会责任.东野吾做到了.</string>
+
+
+    <!--缓存管理-->
+
+    <string name="download_status_complete">缓存完成</string>
+    <string name="download_status_underway">缓存中…</string>
+    <string name="download_status_already">已缓存</string>
+    <string name="download_status_total">全本缓存</string>
+    <string name="download_status_paused">缓存已暂停</string>
+
+    <!--调试模式-->
+
+    <string name="debug_start_params">启用动态参数</string>
+    <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
+    <string name="debug_reset_book_shelf">重置获取默认书架</string>
+    <string name="debug_update_chapter">更新章节</string>
+    <string name="debug_show_toast">打点Toast</string>
+
+    <string name="debug_api_host">智能API接口:</string>
+    <string name="debug_web_host">WebView接口:</string>
+    <string name="debug_micro_host">微服务API接口:</string>
+    <string name="debug_micro_content_host">微服务内容接口:</string>
+
+    <string name="debug_input_host">https://</string>
+    <string name="choice_host">host选择</string>
+    <string name="debug_mode">调试模式</string>
+    <string name="save">保存</string>
+    <string name="icon">图片</string>
+
+</resources>

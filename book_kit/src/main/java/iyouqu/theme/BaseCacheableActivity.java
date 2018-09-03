@@ -3,6 +3,7 @@ package iyouqu.theme;
 import com.ding.basic.bean.Book;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
+import com.intelligent.reader.receiver.LoginInvalidReceiver;
 
 import static net.lzbook.kit.utils.ExtensionsKt.msMainLooperHandler;
 
@@ -27,11 +28,15 @@ import net.lzbook.kit.utils.AppLog;
 
 import java.util.List;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 public class BaseCacheableActivity extends FrameActivity {
 
     public static final String NEED_SPLASH = "NEED_SPLASH";
     protected BroadcastReceiver mCacheUpdateReceiver;
     private MyDialog netDialog;
+    private BroadcastReceiver loginInvalidReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,16 @@ public class BaseCacheableActivity extends FrameActivity {
         if (mCacheUpdateReceiver == null) {
             mCacheUpdateReceiver = new CacheUpdateReceiver();
         }
+        if (loginInvalidReceiver == null) {
+            loginInvalidReceiver = new LoginInvalidReceiver(this, new Function0<Unit>() {
+                @Override
+                public Unit invoke() {
+                    onResume();
+                    return null;
+                }
+            });
+        }
+        registerLoginInvalidReceiver(loginInvalidReceiver);
 
     }
 
@@ -53,6 +68,12 @@ public class BaseCacheableActivity extends FrameActivity {
             }
             registerCacheReceiver(mCacheUpdateReceiver);
         }
+    }
+
+    public void registerLoginInvalidReceiver(BroadcastReceiver receiver) {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ActionConstants.ACTION_USER_LOGIN_INVALID);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter);
     }
 
     public boolean shouldReceiveCacheEvent() {
@@ -181,6 +202,14 @@ public class BaseCacheableActivity extends FrameActivity {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loginInvalidReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(loginInvalidReceiver);
         }
     }
 }

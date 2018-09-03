@@ -200,7 +200,7 @@ object MediaControl : IMediaControl {
     override fun loadBookShelMedia(activity: Activity, count: Int,
                                    mediaCallback: IMediaControl.MediaCallback) {
         doAsync {
-            PlatformSDK.adapp()?.dycmNativeAd(activity.applicationContext, "1-1", RelativeLayout(activity), object : AbstractCallback() {
+            PlatformSDK.adapp()?.dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
                 override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
                     if (!adswitch) {
                         return

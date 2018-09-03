@@ -42,6 +42,7 @@ public class ActionConstants {
      * **/
     public static final String ACTION_DOWNLOAD_BOOK_LOCKED = PACKAGE_NAME + ".download_locked";
 
+    public static final String ACTION_USER_LOGIN_INVALID = "ACTION_USER_LOGIN_INVALID";// 登录无效
 
     public static final String ACTION_CACHE_COMPLETE_WITH_ERR = "ACTION_CACHE_COMPLETE_WITH_ERR";
 	

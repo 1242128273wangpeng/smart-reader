@@ -7,7 +7,11 @@
 
     <string name="source_recommend">[推荐]</string>
     <string name="source_new">最新</string>
-
+    <string name="read_end_tip">客官请留步...</string>
+    <string name="book_new_title">新锐好书抢先看 </string>
+    <string name="book_new_change">换一换 </string>
+    <string name="book_recommend_title">喜欢这本书的人还喜欢</string>
+    <string name="book_recommend_change">换一换</string>
 
     <string name="disclaimer_statement_description">
         "在使用追书免费全本小说（简称“本软件”）前，请您（个人、公司、其他组织）仔细阅读本使用协议如下全部内容以便决定是否继续使用本软件，您的继续使用行为即表示您已经完全理解并接受本使用协议，否则您应当立即卸载并删除本软件。同时，本使用协议内容可能会根据将来服务内容的变化而做相应的更改，故请您及时予以关注并决定是否继续接受相关更改。\n

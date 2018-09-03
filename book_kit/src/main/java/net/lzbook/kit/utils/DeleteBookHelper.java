@@ -81,7 +81,11 @@ public class DeleteBookHelper {
             alarmManager.setRepeating(ALARM_TYPE, settedDate.getTime(), INTERVAL_DAY_TEST, pendingIntent);
         } else {
             // 设定每天在指定的时间运行
-            alarmManager.setRepeating(ALARM_TYPE, settedDate.getTime(), INTERVAL_DAY, pendingIntent);
+            try {
+                alarmManager.setRepeating(ALARM_TYPE, settedDate.getTime(), INTERVAL_DAY, pendingIntent);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 

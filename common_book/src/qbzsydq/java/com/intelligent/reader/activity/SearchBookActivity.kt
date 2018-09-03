@@ -75,7 +75,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var mSearchPresenter: SearchPresenter? = null
 
     companion object {
-        var isSatyHistory = false
+       @JvmField var isSatyHistory = false
     }
 
 
@@ -112,24 +112,24 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     }
 
     private fun initView() {
-        search_result_back = findViewById(R.id.search_result_back) as ImageView
-        search_result_button = findViewById(R.id.search_result_button) as ImageView
-        search_result_outcome = findViewById(R.id.search_result_outcome) as RelativeLayout
+        search_result_back = findViewById(R.id.search_result_back)
+        search_result_button = findViewById(R.id.search_result_button)
+        search_result_outcome = findViewById(R.id.search_result_outcome)
         if (search_result_outcome != null) {
             search_result_outcome!!.visibility = View.VISIBLE
         }
-        search_result_count = findViewById(R.id.search_result_count) as TextView
-        search_result_keyword = findViewById(R.id.search_result_keyword) as TextView
-        search_result_default = findViewById(R.id.search_result_default) as RelativeLayout
-        search_result_clear = findViewById(R.id.search_result_clear) as ImageView
+        search_result_count = findViewById(R.id.search_result_count)
+        search_result_keyword = findViewById(R.id.search_result_keyword)
+        search_result_default = findViewById(R.id.search_result_default)
+        search_result_clear = findViewById(R.id.search_result_clear)
         if (search_result_clear != null) {
             search_result_clear!!.visibility = View.GONE
         }
-        search_result_input = findViewById(R.id.search_result_input) as HWEditText
-        search_result_main = findViewById(R.id.search_result_main) as RelativeLayout
-        search_result_content = findViewById(R.id.search_result_content) as WebView
+        search_result_input = findViewById(R.id.search_result_input)
+        search_result_main = findViewById(R.id.search_result_main)
+        search_result_content = findViewById(R.id.search_result_content)
 
-        search_result_hint = findViewById(R.id.search_result_hint) as FrameLayout
+        search_result_hint = findViewById(R.id.search_result_hint)
 
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this,this, this)

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="4dp"
+                android:background="@drawable/background_dialog_button_left"
+                android:layout_height="match_parent">
+
+    <ImageView
+            android:id="@+id/book_img_iv"
+            android:layout_width="80dp"
+            android:layout_height="113dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/bookshelf_book_cover_default"/>
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_below="@+id/book_img_iv"
+            android:layout_alignLeft="@+id/book_img_iv"
+            android:layout_alignRight="@+id/book_img_iv"
+            android:scaleType="fitXY"
+            android:src="@mipmap/cover_shadow"/>
+
+    <TextView
+            android:id="@+id/book_name_tv"
+            style="@style/style_text_large_dark"
+            android:layout_marginLeft="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/book_img_iv"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="书名"/>
+
+    <TextView
+            android:id="@+id/book_info_tv"
+            style="@style/style_text_small_light"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/book_img_iv"
+            android:layout_below="@+id/book_name_tv"
+            android:maxLines="2"
+            android:lineSpacingMultiplier="1.2"
+            android:ellipsize="end"
+            android:text="简介简介简介简介简介简介简介"/>
+
+    <TextView
+            android:id="@+id/book_author_tv"
+            style="@style/style_text_small_weak"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/book_img_iv"
+            android:layout_below="@+id/book_info_tv"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="作者"/>
+
+    <LinearLayout
+            android:id="@+id/ll_status_category_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/book_author_tv"
+            android:layout_marginBottom="2dp"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/book_cover_status"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_height="wrap_content"
+                android:text="连载"
+                android:gravity="center"
+                android:textColor="@color/title_state_text_color"
+                android:textSize="11sp"/>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:src="@mipmap/cover_divi_icon"/>
+
+        <TextView
+                android:id="@+id/book_cover_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="玄幻"
+                android:textColor="@color/title_tagart_text_color"
+                android:textSize="10sp"/>
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/cover_recomm_nomore"
+            android:layout_below="@+id/book_img_iv"
+            style="@style/style_text_small_weak"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:paddingTop="34dp"
+            android:paddingBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="没有更多数据"/>
+</RelativeLayout>

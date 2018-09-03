@@ -1,6 +1,4 @@
-package com.intelligent.reader.read.mode
-
-import com.dy.reader.mode.NovelLineBean
+package com.dy.reader.mode
 
 /**
  * 分页数据封装

@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
@@ -29,6 +30,8 @@ import java.util.concurrent.Callable
 
 @Route(path = RouterConfig.BOOK_END_ACTIVITY)
 class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickListener {
+    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+    }
 
     private var book: Book? = null
     private var book_id: String? = null
@@ -53,12 +56,21 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         bookEndPresenter = BookEndPresenter(this, this)
 
         loadBookSource()
-
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
     private fun initListener() {
         iv_back.setOnClickListener {
             val data = HashMap<String, String>()
@@ -72,6 +84,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         txt_bookshelf.setOnClickListener {
             if (bookEndPresenter != null) {
                 bookEndPresenter!!.startBookShelf()
+                bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             }
             finish()
         }
@@ -79,6 +92,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         txt_bookstore.setOnClickListener {
             if (bookEndPresenter != null) {
                 bookEndPresenter!!.startBookStore()
+                bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             }
             finish()
         }

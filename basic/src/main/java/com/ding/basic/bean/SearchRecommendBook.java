@@ -10,12 +10,11 @@ import android.arch.persistence.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
 
 /**
+ * 搜索推荐模块  一期二期实体类一致
  * Created by zhenXiang on 2018\1\16 0016.
  */
-
 public class SearchRecommendBook implements Serializable {
 
     private String respCode;
@@ -250,7 +249,6 @@ public class SearchRecommendBook implements Serializable {
         }
 
 
-
         public AttributeBean getAttribute() {
             return attribute;
         }
@@ -316,7 +314,6 @@ public class SearchRecommendBook implements Serializable {
         }
 
 
-
         public long getUpdateTime() {
             return updateTime;
         }
@@ -349,7 +346,6 @@ public class SearchRecommendBook implements Serializable {
         public void setChapterShortCount(int chapterShortCount) {
             this.chapterShortCount = chapterShortCount;
         }
-
 
 
         public String getWordCountDescp() {

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
 import retrofit2.Call
+import java.util.ArrayList
 
 /**
  * Created on 2018/3/19.
@@ -14,11 +15,9 @@ import retrofit2.Call
 
 interface BasicRequestRepository {
 
-    fun requestDefaultBooks(): Flowable<BasicResult<CoverList>> ?
+    fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>?
 
     fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>?
-
-    fun requestDynamicParameters(): Flowable<JsonObject>?
 
     fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>?
 
@@ -29,6 +28,8 @@ interface BasicRequestRepository {
     fun requestHotWords(): Flowable<SearchHotBean>?
 
     fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? //搜索推荐
+
+    fun requestSubBook(bookName: String , bookAuthor: String): Flowable<JsonObject>? //搜索无结果 订阅
 
     fun requestHotWordsV4(): Flowable<Result<SearchResult>>?
 
@@ -47,6 +48,8 @@ interface BasicRequestRepository {
 
     fun requestAuthAccess(): Flowable<BasicResult<String>>?
 
+    fun requestAuthAccessSync(): Call<BasicResult<String>>?
+
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>?
 
     fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>>
@@ -58,6 +61,10 @@ interface BasicRequestRepository {
 
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>?
 
+
+
+
+
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>?
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>?
@@ -68,10 +75,11 @@ interface BasicRequestRepository {
                               , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>?
 
 
-
-
-
     fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>?
+    fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>?
+
+    fun requestAuthorOtherBookRecommend(author: String,book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>?
+
 
 
 }

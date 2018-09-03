@@ -20,8 +20,10 @@ import com.alibaba.android.arouter.facade.annotation.Route
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.dy.reader.activity.DisclaimerActivity
+import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.util.EventBookStore
 import iyouqu.theme.BaseCacheableActivity
@@ -31,11 +33,7 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.SPKeys
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.UIHelper
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
@@ -43,7 +41,8 @@ import java.util.HashMap
 import iyouqu.theme.StatusBarCompat
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
-import net.lzbook.kit.utils.IntentUtils
+import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -115,8 +114,10 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         }
     }
 
+    private var isFromPush = false
+
     private val feedbackRunnable = Runnable({
-            FeedbackAPI.openFeedbackActivity()
+        FeedbackAPI.openFeedbackActivity()
     })
 
     internal var themeName = TypedValue()//分割块颜色
@@ -146,54 +147,53 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
         //用于判断是否显示Textview的Drawable
         is_show_drawable = findViewById(R.id.is_show_drawable)
-        top_navigation_bg = findViewById(R.id.top_navigation_bg) as RelativeLayout
-        icon_more_left = findViewById(R.id.icon_more_left) as ImageView
-        btnBack = findViewById(R.id.setting_back) as ImageView
-        top_setting_back = findViewById(R.id.top_setting_back) as ImageView
-        user_login_layout = findViewById(R.id.user_login_layout) as RelativeLayout
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image = findViewById(R.id.iv_mine_image) as ImageView
-        tv_login_info = findViewById(R.id.tv_login_info) as TextView
-        iv_mine_image_left = findViewById(R.id.iv_mine_image_left) as ImageView
-        user_login_layout_left = findViewById(R.id.user_login_layout_left) as RelativeLayout
-
+        top_navigation_bg = findViewById(R.id.top_navigation_bg)
+        icon_more_left = findViewById(R.id.icon_more_left)
+        btnBack = findViewById(R.id.setting_back)
+        top_setting_back = findViewById(R.id.top_setting_back)
+        user_login_layout = findViewById(R.id.user_login_layout)
+        iv_mine_image = findViewById(R.id.iv_mine_image)
+        tv_login_info = findViewById(R.id.tv_login_info)
+        iv_mine_image = findViewById(R.id.iv_mine_image)
+        tv_login_info = findViewById(R.id.tv_login_info)
+        iv_mine_image_left = findViewById(R.id.iv_mine_image_left)
+        user_login_layout_left = findViewById(R.id.user_login_layout_left)
         // 福利中心
-        rl_welfare = findViewById(R.id.rl_welfare) as RelativeLayout
-        img_welfare = findViewById(R.id.img_welfare) as ImageView
+        rl_welfare = findViewById(R.id.rl_welfare)
+        img_welfare = findViewById(R.id.img_welfare)
 
-        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs) as RelativeLayout
-        rl_style_change = findViewById(R.id.rl_style_change) as RelativeLayout
-        bt_night_shift = findViewById(R.id.bt_night_shift) as SwitchButton
-        bt_wifi_auto = findViewById(R.id.bt_wifi_auto) as SwitchButton
-        rl_readpage_setting = findViewById(R.id.rl_readpage_setting) as RelativeLayout
-        rl_setting_more = findViewById(R.id.rl_setting_more) as RelativeLayout
-        rl_feedback = findViewById(R.id.rl_feedback) as RelativeLayout
-        rl_mark = findViewById(R.id.rl_mark) as RelativeLayout
-        checkUpdateGuideRL = findViewById(R.id.check_update_rl) as RelativeLayout
-        clear_cache_rl = findViewById(R.id.clear_cache_rl) as RelativeLayout
-        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl) as RelativeLayout
-        rl_setting_layout = findViewById(R.id.rl_setting_layout) as LinearLayout
+        rl_readpage_bbs = findViewById(R.id.rl_readpage_bbs)
+        rl_style_change = findViewById(R.id.rl_style_change)
+        bt_night_shift = findViewById(R.id.bt_night_shift)
+        bt_wifi_auto = findViewById(R.id.bt_wifi_auto)
+        rl_readpage_setting = findViewById(R.id.rl_readpage_setting)
+        rl_setting_more = findViewById(R.id.rl_setting_more)
+        rl_feedback = findViewById(R.id.rl_feedback)
+        rl_mark = findViewById(R.id.rl_mark)
+        checkUpdateGuideRL = findViewById(R.id.check_update_rl)
+        clear_cache_rl = findViewById(R.id.clear_cache_rl)
+        disclaimer_statement_rl = findViewById(R.id.disclaimer_statement_rl)
+        rl_setting_layout = findViewById(R.id.rl_setting_layout)
 
-        theme_name = findViewById(R.id.theme_name) as TextView
-        clear_cache_size = findViewById(R.id.check_cache_size) as TextView
-        check_update_message = findViewById(R.id.check_update_message) as TextView
+        theme_name = findViewById(R.id.theme_name)
+        clear_cache_size = findViewById(R.id.check_cache_size)
+        check_update_message = findViewById(R.id.check_update_message)
 
         //条目字
-        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs) as TextView
-        tv_style_change = findViewById(R.id.tv_style_change) as TextView
-        tv_night_shift = findViewById(R.id.tv_night_shift) as TextView
-        tv_readpage_setting = findViewById(R.id.tv_readpage_setting) as TextView
-        tv_setting_more = findViewById(R.id.tv_setting_more) as TextView
-        tv_feedback = findViewById(R.id.tv_feedback) as TextView
-        tv_mark = findViewById(R.id.tv_mark) as TextView
-        text_check_update = findViewById(R.id.text_check_update) as TextView
-        text_clear_cache = findViewById(R.id.text_clear_cache) as TextView
-        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement) as TextView
+        tv_readpage_bbs = findViewById(R.id.tv_readpage_bbs)
+        tv_style_change = findViewById(R.id.tv_style_change)
+        tv_night_shift = findViewById(R.id.tv_night_shift)
+        tv_readpage_setting = findViewById(R.id.tv_readpage_setting)
+        tv_setting_more = findViewById(R.id.tv_setting_more)
+        tv_feedback = findViewById(R.id.tv_feedback)
+        tv_mark = findViewById(R.id.tv_mark)
+        text_check_update = findViewById(R.id.text_check_update)
+        text_clear_cache = findViewById(R.id.text_clear_cache)
+        text_disclaimer_statement = findViewById(R.id.text_disclaimer_statement)
 
-        tv_login_info_left = findViewById(R.id.tv_login_info_left) as TextView
-        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left) as TextView
-        top_navigation_title = findViewById(R.id.top_navigation_title) as TextView
+        tv_login_info_left = findViewById(R.id.tv_login_info_left)
+        tv_login_info_detail_left = findViewById(R.id.tv_login_info_detail_left)
+        top_navigation_title = findViewById(R.id.top_navigation_title)
 
 
         if (mThemeHelper.isNight()) {
@@ -278,6 +278,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         cacheAsyncTask!!.execute()
         val versionName = AppUtils.getVersionName()
         check_update_message!!.text = "V$versionName"
+        isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
     }
 
     override fun onResume() {
@@ -366,8 +367,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             R.id.disclaimer_statement_rl -> {
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL)
-                IntentUtils.start(this, DisclaimerActivity::class.java, IntentUtils.isFormDisclaimerPage, true, false)
-            }
+                val bundle = Bundle()
+                bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
+                RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle) }
 //            R.id.rl_readpage_setting -> {
 //                //阅读页设置
 //                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read)
@@ -409,7 +411,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             myDialog!!.setCanceledOnTouchOutside(true)//设置点击dialog外面对话框消失
             myDialog!!.publish_content.setText(R.string.tip_clear_cache)
             myDialog!!.publish_stay.setOnClickListener({
-                    dismissDialog()
+                dismissDialog()
             })
             myDialog!!.publish_leave.setOnClickListener({
                 myDialog!!.publish_content.setVisibility(View.GONE)
@@ -417,28 +419,26 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 myDialog!!.change_source_bottom.setVisibility(View.GONE)
 
                 myDialog!!.progress_del.setVisibility(View.VISIBLE)
-                    //添加清除缓存的处理
-                    object : Thread() {
-                        override fun run() {
-                            super.run()
+                //添加清除缓存的处理
+                object : Thread() {
+                    override fun run() {
+                        super.run()
 
 
-                            CacheManager.removeAll()
+                        CacheManager.removeAll()
 
-                            UIHelper.clearAppCache()
-                            DataCleanManager.clearAllCache(getApplicationContext())
-                            runOnUiThread({
-                                    dismissDialog()
-                                    clear_cache_size!!.setText("0B")
-                            })
-                        }
-                    }.start()
+                        UIHelper.clearAppCache()
+                        DataCleanManager.clearAllCache(getApplicationContext())
+                        runOnUiThread({
+                            dismissDialog()
+                            clear_cache_size!!.setText("0B")
+                        })
+                    }
+                }.start()
             })
 
-            myDialog!!.setOnCancelListener({
-                    myDialog!!.dismiss()
-            })
-            if (!myDialog!!.isShowing()) {
+            myDialog!!.setOnCancelListener { myDialog!!.dismiss() }
+            if (!myDialog!!.isShowing) {
                 try {
                     myDialog!!.show()
                 } catch (e: Exception) {
@@ -479,7 +479,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     }
 
     private fun dismissDialog() {
-        if (myDialog != null && myDialog!!.isShowing()) {
+        if (myDialog != null && myDialog!!.isShowing) {
             myDialog!!.dismiss()
         }
     }
@@ -494,23 +494,22 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     override fun onCheckedChanged(view: SwitchButton, isChecked: Boolean) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
         val edit = sharedPreferences.edit()
-        if (view.getId() === R.id.bt_night_shift) {
+        if (view.id == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE)
+            ReaderSettings.instance.initValues()
             if (isChecked) {
                 tv_night_shift!!.setText(R.string.mode_day)
-                edit.putInt("current_light_mode", Constants.MODE)
-                Constants.MODE = 61
+                ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
+                ReaderSettings.instance.readThemeMode = 61
                 mThemeHelper.setMode(ThemeMode.NIGHT)
             } else {
                 tv_night_shift!!.setText(R.string.mode_night)
-                edit.putInt("current_night_mode", Constants.MODE)
-                Constants.MODE = sharedPreferences.getInt("current_light_mode", 51)
+                ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
                 mThemeHelper.setMode(ThemeMode.THEME1)
             }
-            edit.putInt("content_mode", Constants.MODE)
-            edit.apply()
+            ReaderSettings.instance.save()
             nightShift(isChecked, true)
-        } else if (view.getId() === R.id.bt_wifi_auto) {
+        } else if (view.id == R.id.bt_wifi_auto) {
             edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
             edit.apply()
             val data = HashMap<String, String>()
@@ -535,7 +534,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
         override fun onPostExecute(result: String) {
             super.onPostExecute(result)
-            clear_cache_size!!.setText(result)
+            clear_cache_size!!.text = result
         }
 
     }
@@ -557,6 +556,18 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             else -> {
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
     }
 
     companion object {

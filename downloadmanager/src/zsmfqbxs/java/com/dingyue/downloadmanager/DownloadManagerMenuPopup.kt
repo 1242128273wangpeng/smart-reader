@@ -27,7 +27,7 @@ class DownloadManagerMenuPopup(context: Context) {
 
     private val settingItemsHelper = SettingItemsHelper.getSettingHelper(context)
 
-    private val selectTextColor = Color.parseColor("#1FB7C3")
+    private val selectTextColor = Color.parseColor("#212832")
     private val selectedTextColor = Color.parseColor("#1FB7C3")
 
     init {
@@ -72,6 +72,6 @@ class DownloadManagerMenuPopup(context: Context) {
             contentView.txt_time_sorting.setTextColor(selectedTextColor)
             contentView.txt_recent_read_sorting.setTextColor(selectTextColor)
         }
-        popupWindow.showAsDropDown(view, 0, 0)
+        popupWindow.showAsDropDown(view, 0,  -view.height)
     }
 }

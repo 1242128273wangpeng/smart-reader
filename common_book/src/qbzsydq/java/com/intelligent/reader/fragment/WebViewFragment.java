@@ -33,6 +33,7 @@ import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.FirstUsePointView;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 
@@ -43,7 +44,7 @@ import de.greenrobot.event.EventBus;
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
-    public String url;
+    public String url = "";
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
@@ -89,6 +90,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
             rootView = inflater.inflate(R.layout.webview_layout, container, false);
         } catch (InflateException e) {
             e.printStackTrace();
+        }
+        if(weakReference != null){
+            AppUtils.disableAccessibility(weakReference.get());
         }
         initView();
         return rootView;

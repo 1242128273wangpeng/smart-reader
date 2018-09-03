@@ -1,15 +1,15 @@
 package com.intelligent.reader.activity
 
-import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import com.ding.basic.Config
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intelligent.reader.R
+import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug_host.*
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
 
 
 /**
@@ -20,10 +20,9 @@ import net.lzbook.kit.constants.Constants
  * E-mail:yongzuo_chen@dingyuegroup.cn
  * </pre>
  */
-class DebugHostActivity : Activity() {
+class DebugHostActivity : BaseCacheableActivity() {
 
-    private val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-    private val editor = sp.edit()
+    private val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
 
     private var list = ArrayList<String>()
     private var mAdapter: ArrayAdapter<String>? = null
@@ -65,17 +64,29 @@ class DebugHostActivity : Activity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                var type = ""
-                when (intent.getStringExtra("type")) {
-                    Constants.NOVEL_HOST -> type = Constants.NOVEL_HOST
-                    Constants.WEBVIEW_HOST -> type = Constants.WEBVIEW_HOST
-                    Constants.UNION_HOST -> type = Constants.UNION_HOST
-                    Constants.CONTENT_HOST -> type = Constants.CONTENT_HOST
+                val type = when (intent.getStringExtra("type")) {
+                    SharedPreUtil.NOVEL_HOST -> {
+                        Config.insertRequestAPIHost(et_input_host.text.toString())
+                        SharedPreUtil.NOVEL_HOST
+                    }
+                    SharedPreUtil.WEBVIEW_HOST -> {
+                        Config.insertWebViewHost(et_input_host.text.toString())
+                        SharedPreUtil.WEBVIEW_HOST
+                    }
+                    SharedPreUtil.UNION_HOST -> {
+                        Config.insertMicroAPIHost(et_input_host.text.toString())
+                        SharedPreUtil.UNION_HOST
+                    }
+                    SharedPreUtil.CONTENT_HOST -> {
+                        Config.insertContentAPIHost(et_input_host.text.toString())
+                        SharedPreUtil.CONTENT_HOST
+                    }
+                    else -> {
+                        ""
+                    }
                 }
 
-                editor.putString(type, et_input_host.text.toString())
-                editor.putBoolean(Constants.START_PARAMS, false)
-                editor.apply()
+                sp.putString(type, et_input_host.text.toString())
 
                 finish()
             }
@@ -87,7 +98,7 @@ class DebugHostActivity : Activity() {
 
     private fun getList(): ArrayList<String> {
 
-        val json = sp.getString(Constants.HOST_LIST, "")
+        val json = sp.getString(SharedPreUtil.HOST_LIST, "")
         if (json != "") {
 
             list = Gson().fromJson(json, object : TypeToken<List<String>>() {}.type)
@@ -96,15 +107,10 @@ class DebugHostActivity : Activity() {
         } else {
 
             list.add("http://8086.zn.bookapi.cn")
-            list.add("https://test.lumanman.cc")
-            list.add("http://test5.api.bookapi.cn:8888")
-            list.add("http://test5.api.bookapi.cn:8880")
-            list.add("http://test5.api.bookapi.cn:8080")
-            list.add("http://test5.api.bookapi.cn:8090")
-            list.add("http://test5.api.bookapi.cn:8088")
-            list.add("https://txt.bookapi.cn")
+            list.add("https://unionapi.bookapi.cn")
+            list.add("https://unioncontent.bookapi.cn")
 
-            editor.putString(Constants.HOST_LIST, Gson().toJson(list)).apply()
+            sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(list))
         }
 
         return list
@@ -115,10 +121,10 @@ class DebugHostActivity : Activity() {
      * 添加host
      */
     private fun setHost(host: String) {
-        list.add(1, host)
+        list.add(0, host)
         mAdapter?.notifyDataSetChanged()
 
-        editor.putString(Constants.HOST_LIST, Gson().toJson(list)).apply()
+        sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(list))
     }
 
     /**
@@ -129,10 +135,10 @@ class DebugHostActivity : Activity() {
         list.removeAt(position)
         mAdapter?.notifyDataSetChanged()
 
-        val spList = Gson().fromJson<ArrayList<String>>(sp.getString(Constants.HOST_LIST, ""),
+        val spList = Gson().fromJson<ArrayList<String>>(sp.getString(SharedPreUtil.HOST_LIST, ""),
                 object : TypeToken<List<String>>() {}.type)
         spList.removeAt(position)
-        editor.putString(Constants.HOST_LIST, Gson().toJson(spList)).apply()
+        sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(spList))
 
     }
 

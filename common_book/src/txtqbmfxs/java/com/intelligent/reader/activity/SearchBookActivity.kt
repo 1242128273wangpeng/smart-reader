@@ -43,11 +43,11 @@ import java.util.*
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener,
         SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
 
-
     companion object {
         /**
          * 静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
          */
+        @JvmField
         var isStayHistory = false
     }
 
@@ -70,6 +70,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private var ziyougb: Boolean = false
 
+    private val isNotAuthor = 0//不是作者
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,14 +80,14 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         initListener()
 
         if (mSearchPresenter != null && !TextUtils.isEmpty(mSearchPresenter?.word)) {
-            loadDataFromNet()
+            loadDataFromNet(isNotAuthor)
         }
     }
 
 
     override fun onJsSearch() {
-        if (wv_search_result != null) {
-            wv_search_result.clearCache(true)
+        if (search_result_content != null) {
+            search_result_content.clearCache(true)
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }
@@ -96,8 +97,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onStartLoad(url: String) {
 
-        if (wv_search_result == null) return
-        search_result_main.visibility = View.VISIBLE
+        if (search_result_content == null) return
+        search_result_main!!.visibility = View.VISIBLE
         handler?.post { loadingData(url) }
 
         webViewCallback()
@@ -108,29 +109,29 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private fun initView() {
 
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter(this, this, this)
+            mSearchPresenter = SearchPresenter(this, this)
         }
 
         if (mSearchViewHelper == null) {
-            mSearchViewHelper = SearchViewHelper(this, fl_search_auto_hint, etxt_search_input, mSearchPresenter)
+            mSearchViewHelper = SearchViewHelper(this, search_result_hint, etxt_search_input, mSearchPresenter)
         }
 
         if (Build.VERSION.SDK_INT >= 14) {
-            wv_search_result.setLayerType(View.LAYER_TYPE_NONE, null)
+            search_result_content.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-        customWebClient = CustomWebClient(this, wv_search_result)
+        customWebClient = CustomWebClient(this, search_result_content)
         customWebClient?.setWebSettings()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            wv_search_result.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            search_result_content.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        wv_search_result.webViewClient = customWebClient
+        search_result_content.webViewClient = customWebClient
 
-        jsInterfaceHelper = JSInterfaceHelper(this, wv_search_result)
-        wv_search_result.addJavascriptInterface(jsInterfaceHelper, "J_search")
-        mSearchPresenter?.initJsInterfaceHelper(jsInterfaceHelper)
+        jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
+        search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
+        mSearchPresenter?.initJSHelp(jsInterfaceHelper)
 
 
         if (intent != null) {
@@ -147,7 +148,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private fun initListener() {
 
         img_back.antiShakeClick(this)
-//        img_search.antiShakeClick(this)
         img_search.setOnClickListener(this)
 
         search_result_outcome.setOnClickListener(this)
@@ -161,47 +161,64 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         etxt_search_input.addTextChangedListener(this)
         etxt_search_input.setOnEditorActionListener(this)
 
-
-        /*      mSearchPresenter?.let {
-                  it.setStartLoadCall(this)
-                  it.setJsCallSearchCall(this)
-                  it.setJsNoneResultSearchCall(this)
-              }*/
-
-        /*mSearchViewHelper?.let {
+        mSearchViewHelper?.let {
             it.setOnHistoryClickListener(this)
-            it.onHotWordClickListener = { tag, searchType ->
-                mSearchPresenter?.setHotWordType(tag, searchType)
-                loadDataFromNet()
+            it.onHotWordClickListener = object : SearchViewHelper.OnHotWordClickListener {
+                override fun hotWordClick(tag: String, searchType: String) {
+                    mSearchPresenter?.setHotWordType(tag, searchType)
+                    loadDataFromNet(isNotAuthor)
+                }
+
             }
-        }*/
+        }
 
     }
-
 
     /**
      * 从网络加载数据
      */
-    private fun loadDataFromNet() {
+    private fun loadDataFromNet(isAuthor: Int) {
 
-        if (mSearchPresenter == null) mSearchPresenter = SearchPresenter(this, this, this)
+        if (mSearchPresenter == null)
+            mSearchPresenter = SearchPresenter(this, this)
 
-        if (TextUtils.isEmpty(mSearchPresenter?.word)) showSearchViews()
-
-        search_result_count.text = null
-        etxt_search_input.setText(mSearchPresenter?.word)
-        search_result_keyword.text = mSearchPresenter?.word
-        mSearchViewHelper?.addHistoryWord(mSearchPresenter?.word)
-        mSearchViewHelper?.setShowHintEnabled(false)
-
-        hideSearchView()
-
-        if (loadingPage == null) {
-            loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+        if (search_result_count != null) {
+            search_result_count.text = null
         }
 
-        mSearchPresenter?.startLoadData(0)
+        if (!TextUtils.isEmpty(mSearchPresenter?.word)) {
 
+            if (isAuthor != 1) {
+                etxt_search_input.setText(mSearchPresenter?.word)
+            } else {
+                mSearchPresenter?.searchType = "2"
+                etxt_search_input.setText(Tools.getKeyWord())
+            }
+
+
+            if (isAuthor != 1) {
+                search_result_keyword.text = mSearchPresenter?.word
+            } else {
+                mSearchPresenter?.searchType = "2"
+                search_result_keyword.text = Tools.getKeyWord()
+            }
+
+
+            if (mSearchPresenter != null) {
+                mSearchViewHelper?.addHistoryWord(mSearchPresenter?.word)
+            }
+
+            hideSearchView()
+
+            if (loadingPage == null) {
+                loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+            }
+
+            mSearchPresenter?.startLoadData(isAuthor)
+
+        } else {
+            showSearchViews()
+        }
     }
 
 
@@ -210,9 +227,9 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             customWebClient!!.doClear()
         }
         Logger.e("LoadingData ==> " + url)
-        if (!TextUtils.isEmpty(url) && wv_search_result != null) {
+        if (!TextUtils.isEmpty(url) && search_result_content != null) {
             try {
-                wv_search_result.loadUrl(url)
+                search_result_content.loadUrl(url)
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 this.finish()
@@ -223,7 +240,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun webViewCallback() {
 
-        if (wv_search_result == null) {
+        if (search_result_content == null) {
             return
         }
 
@@ -231,7 +248,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             it.setStartedAction { url ->
                 Logger.e("onLoadStarted: " + url)
                 if (mSearchPresenter == null) {
-                    mSearchPresenter = SearchPresenter(this, this, this)
+                    mSearchPresenter = SearchPresenter(this, this)
                 }
                 mSearchPresenter?.setStartedAction()
             }
@@ -246,7 +263,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             it.setFinishedAction {
                 Logger.e("onLoadFinished")
                 if (mSearchPresenter == null) {
-                    mSearchPresenter = SearchPresenter(this, this, this)
+                    mSearchPresenter = SearchPresenter(this, this)
                 }
                 mSearchPresenter!!.onLoadFinished()
                 if (loadingPage != null) {
@@ -261,7 +278,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
                 if (customWebClient != null) customWebClient?.doClear()
-                wv_search_result.reload()
+                search_result_content.reload()
             })
         }
     }
@@ -295,21 +312,21 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onDestroy() {
 
-        if (wv_search_result != null) {
-            wv_search_result.clearCache(true)
+        if (search_result_content != null) {
+            search_result_content.clearCache(true)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if (search_result_main != null) {
-                    search_result_main.removeView(wv_search_result)
+                    search_result_main.removeView(search_result_content)
                 }
-                wv_search_result.stopLoading()
-                wv_search_result.removeAllViews()
-                wv_search_result.destroy()
+                search_result_content.stopLoading()
+                search_result_content.removeAllViews()
+                search_result_content.destroy()
             } else {
-                wv_search_result.stopLoading()
-                wv_search_result.removeAllViews()
-                wv_search_result.destroy()
+                search_result_content.stopLoading()
+                search_result_content.removeAllViews()
+                search_result_content.destroy()
                 if (search_result_main != null) {
-                    search_result_main.removeView(wv_search_result)
+                    search_result_main.removeView(search_result_content)
                 }
             }
         }
@@ -336,7 +353,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     /**
      * 点击搜索按钮
      */
-    private fun getSearchResult() {
+    private fun requestSearchResult() {
 
         val keyword = etxt_search_input.text.toString()
 
@@ -350,14 +367,12 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             if (mSearchViewHelper != null) {
                 mSearchViewHelper?.addHistoryWord(keyword)
 
-//                if (mSearchPresenter?.searchType == null) return
                 if (mSearchPresenter?.fromClass != null && mSearchPresenter?.fromClass != "other") {
                     mSearchPresenter?.setHotWordType(keyword, mSearchPresenter?.searchType)
                 } else {
-//                    val type = if (mSearchPresenter?.searchType != "0") mSearchPresenter?.searchType else "0"
                     mSearchPresenter?.setHotWordType(keyword, "0")
                 }
-                loadDataFromNet()
+                loadDataFromNet(isNotAuthor)
 
                 val data = HashMap<String, String>()
                 data.put("type", "0")
@@ -379,11 +394,11 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         search_result_default.visibility = View.VISIBLE
         search_result_outcome.visibility = View.GONE
-        wv_search_result.visibility = View.GONE
+        search_result_content.visibility = View.GONE
 
 
         if (!TextUtils.isEmpty(etxt_search_input.text)) {
-            fl_search_auto_hint.visibility = View.GONE
+            search_result_hint.visibility = View.GONE
             mSearchViewHelper?.hideRecommendListView()
             mSearchViewHelper?.showHintList(mSearchPresenter?.word)
         } else {
@@ -403,8 +418,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         search_result_default.visibility = View.GONE
         search_result_outcome.visibility = View.VISIBLE
-        wv_search_result.visibility = View.VISIBLE
-        fl_search_auto_hint.visibility = View.GONE
+        search_result_content.visibility = View.VISIBLE
+        search_result_hint.visibility = View.GONE
 
         etxt_search_input.clearFocus()
         mSearchViewHelper?.hideHintList()
@@ -437,7 +452,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.CLEAR)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR)
             }
-            R.id.img_search -> getSearchResult()
+            R.id.img_search -> requestSearchResult()
 
             R.id.search_result_outcome -> showSearchViews()
             R.id.search_result_keyword -> showSearchViews()
@@ -459,7 +474,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BAR)
             showSoftKeyboard(etxt_search_input)
 
-            wv_search_result.visibility = View.GONE
+            search_result_content.visibility = View.GONE
 
             if (mSearchViewHelper != null) {
 
@@ -478,7 +493,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
                 //判断当用户没有对editText进行操作时（即编辑框没有内容时），显示搜索历史
                 if (etxt_search_input.text.toString() == "") {
-                    mSearchViewHelper?.showHistoryList()
+                    /*mSearchViewHelper?.showHistoryList()*/
+                    mSearchViewHelper?.initVisibilityView(isHistoryListView = true)
                 }
             }
             ziyougb = true
@@ -521,7 +537,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         } else {
             editable.clear()
             img_clear.visibility = View.GONE
-            search_result_main.visibility = View.GONE
+            search_result_main!!.visibility = View.GONE
         }
 
         //保存用户搜索词
@@ -533,11 +549,10 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
     }
 
-
-    override fun onHistoryClick(history: String, searchType: String) {
+    override fun onHistoryClick(history: String, searchType: String, isAuthor: Int) {
         mSearchPresenter?.setHotWordType(history, searchType)
         if (searchType != "3") {
-            loadDataFromNet()
+            loadDataFromNet(isNotAuthor)
         }
     }
 
@@ -560,7 +575,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
                 mSearchViewHelper?.addHistoryWord(keyword)
                 mSearchPresenter?.setHotWordType(keyword, "0")
-                loadDataFromNet()
+                loadDataFromNet(isNotAuthor)
 
                 val data = HashMap<String, String>()
                 data.put("type", "1")
@@ -589,8 +604,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             mSearchViewHelper?.hideHintList()
         }
 
-        if (wv_search_result != null) {
-            wv_search_result!!.clearView()
+        if (search_result_content != null) {
+            search_result_content!!.clearView()
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
             }

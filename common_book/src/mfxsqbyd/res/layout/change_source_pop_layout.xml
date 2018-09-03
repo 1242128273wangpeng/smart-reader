@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.intelligent.reader.widget.MaxHeightView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/container"
+        android:layout_width="match_parent"
+        app:mhv_HeightRatio="0.6"
+        android:layout_height="wrap_content">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#212223"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/dialog_top_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/change_source"
+                android:paddingTop="24dp"
+                android:paddingBottom="12dp"
+                android:gravity="center"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="16sp"/>
+
+        <ListView
+                android:id="@+id/change_source_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/change_source_bottom_divider"
+                android:layout_below="@+id/dialog_top_title"
+                android:minHeight="60dp"
+                android:cacheColorHint="@android:color/transparent"
+                android:fadingEdge="none"
+                android:scrollbars="@null"
+                android:listSelector="@android:color/transparent"/>
+
+        <View
+                android:id="@+id/change_source_bottom_divider"
+                android:layout_width="match_parent"
+                android:layout_above="@+id/change_source_original_web"
+                android:layout_height="4dp"
+                android:background="@color/read_option_bottom_divi"/>
+
+        <TextView
+                android:id="@+id/change_source_original_web"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:padding="22dp"
+                android:background="@drawable/read_setting_background_press"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="16sp"/>
+
+    </RelativeLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+            android:id="@+id/nightShadowView"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="0dp"/>
+</com.intelligent.reader.widget.MaxHeightView>

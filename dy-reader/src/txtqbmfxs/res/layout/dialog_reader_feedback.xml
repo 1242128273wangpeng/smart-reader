@@ -190,7 +190,7 @@
                 android:background="@drawable/reader_feedback_submit_sel"
                 android:gravity="center"
                 android:text="@string/submit"
-                android:textColor="#FFC2B282"
+                android:textColor="@color/primary"
                 android:textSize="16sp"/>
         </LinearLayout>
 

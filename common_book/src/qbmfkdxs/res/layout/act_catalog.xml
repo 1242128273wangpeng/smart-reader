@@ -11,8 +11,6 @@
             android:id="@+id/novel_catalog_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/padding_0"
-            android:paddingRight="@dimen/padding_0"
             android:background="@color/color_white_ffffff"
             android:orientation="vertical">
 
@@ -29,7 +27,7 @@
                     android:layout_height="@dimen/top_bar_height">
 
                 <ImageView
-                        android:id="@+id/catalog_novel_close"
+                        android:id="@+id/img_catalog_back"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -55,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:scaleType="fitXY"
-                android:src="@mipmap/top_shadow"/>
+                android:src="@drawable/top_shadow"/>
 
 
         <RelativeLayout
@@ -81,7 +79,7 @@
                     android:textSize="@dimen/cover_book_text_title_size"/>
 
             <ImageView
-                    android:id="@+id/iv_catalog_novel_sort"
+                    android:id="@+id/img_catalog_sort"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
                     android:layout_alignParentRight="true"
@@ -98,27 +96,28 @@
                 android:layout_height="1dp"
                 android:background="@color/color_white_f9f9f9"/>
 
-        <FrameLayout
+        <RelativeLayout
                 android:layout_below="@+id/view_divider2"
                 android:id="@+id/catalog_content"
                 android:layout_above="@+id/linear_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <ListView
-                    android:id="@+id/catalog_main"
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recl_catalog_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_14"
-                    android:divider="@null"
-                    android:fadingEdge="none"
-                    android:fastScrollEnabled="true"
-                    android:cacheColorHint="@color/color_black_00000000"
-                    android:listSelector="@android:color/transparent"
-                    android:scrollbars="none"/>
+                    android:layerType="software"/>
 
-        </FrameLayout>
+            <com.dy.reader.view.RecyclerViewFastScroller
+                    android:id="@+id/reclfs_catalog_scroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
 
 
         <ImageView
@@ -128,7 +127,7 @@
 
                 android:layout_above="@+id/linear_bottom"
                 android:scaleType="fitXY"
-                android:src="@mipmap/bottom_shadow"/>
+                android:src="@drawable/bottom_shadow"/>
 
         <LinearLayout
                 android:id="@+id/linear_bottom"
@@ -139,7 +138,7 @@
                 android:orientation="horizontal">
 
             <TextView
-                    android:id="@+id/book_catalog_download"
+                    android:id="@+id/txt_catalog_cache"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
@@ -152,7 +151,7 @@
                     android:textSize="14sp"/>
 
             <TextView
-                    android:id="@+id/book_catalog_reading"
+                    android:id="@+id/txt_catalog_read"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
@@ -165,7 +164,7 @@
                     android:textSize="14sp"/>
 
             <TextView
-                    android:id="@+id/book_catalog_bookshelf"
+                    android:id="@+id/txt_catalog_shelf"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -235,11 +234,4 @@
             android:textColor="@android:color/white"
             android:textSize="30sp"/>
 
-    <ImageView
-            android:id="@+id/iv_back_reading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:src="@drawable/ic_back_reading"
-            android:layout_gravity="center_vertical|right"/>
 </FrameLayout>

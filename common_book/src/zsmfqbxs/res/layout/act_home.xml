@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/content_main"
                 android:layout_width="match_parent"
-                android:background="@color/color_primary"
+                android:background="@color/primary"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true">
 
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/home_bottom_tab_bg"
+        android:background="@color/base_bg"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -54,8 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/bookshelf"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textColor="@drawable/home_tab_text_color_selector"
+                android:textSize="@dimen/dimen_margin_10"/>
         </LinearLayout>
 
         <LinearLayout
@@ -79,8 +79,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/recommend"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textColor="@drawable/home_tab_text_color_selector"
+                android:textSize="@dimen/text_size_10"/>
         </LinearLayout>
 
         <LinearLayout
@@ -104,8 +104,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ranking"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textColor="@drawable/home_tab_text_color_selector"
+                android:textSize="@dimen/text_size_10"/>
         </LinearLayout>
 
         <LinearLayout
@@ -129,8 +129,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/category"
-                android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textColor="@drawable/home_tab_text_color_selector"
+                android:textSize="@dimen/text_size_10"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -146,10 +146,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="@dimen/padding_7"
-            android:layout_marginTop="@dimen/padding_56"
+            android:layout_marginRight="@dimen/dimen_margin_7"
+            android:layout_marginTop="@dimen/dimen_view_height_56"
             android:scaleType="fitXY"
-            android:src="@drawable/icon_bookshelf_guide_download"
+            android:src="@drawable/bookshelf_guide_download"
             android:visibility="gone"/>
 
         <ImageView

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bookshelf_empty_prompt">当前书架内无书籍\n请登录或前往书城阅读</string>
+
+    <string name="bookshelf_delete_dialog_loading_prompt">正在清理中...</string>
+    <string name="bookshelf_delete_dialog_content">删除书籍，确定要继续吗？</string>
+
+    <string name="bookshelf_empty_find">去找书</string>
+
+</resources>

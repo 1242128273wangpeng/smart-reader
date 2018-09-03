@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 
 /**
+ * 阅读页目录适配器
  * Created by xian on 2017/8/17.
  */
 class ListRecyclerAdapter<T, C : BaseRecyclerHolder<T>>(val datas: List<T>, @LayoutRes private val itemLayout: Int, private val clazz: Class<C>, var itemClick: View.OnClickListener? = null, var itemLongClick: View.OnLongClickListener? = null) : RecyclerView.Adapter<C>() {

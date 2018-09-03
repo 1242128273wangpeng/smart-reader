@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="mian_click_tiwce_exit">再按一次退出免费小说全本阅读</string>
+    <string name="bookshelf">书架</string>
+    <string name="recommend">精选</string>
+    <string name="ranking">榜单</string>
+    <string name="category">分类</string>
+
+    <string name="enter_community">社区更新中，Coming Soon！</string>
+    <string name="style_change_1">朱砂红</string>
+    <string name="style_change_2">水墨灰</string>
+    <string name="style_change_3">静默黑</string>
+    <string name="style_change_4">海洋蓝</string>
+
+    <string name="string_home_menu_desc">都进来了，找本书瞧瞧吧~</string>
+    <string name="auto_download">Wi-Fi下自动缓存</string>
+    <string name="bookshelf_no_book_desc">还没有添加书籍哦~</string>
+    <string name="bookshelf_no_book_goto">去找书</string>
+    <string name="check_network">检查网络</string>
+    <string name="bookshelf_edit_title">编辑书架</string>
+    <string name="select_all">全选</string>
+    <string name="select_all_cancel">取消全选</string>
+    <string name="delete_book_dialog_desc">删除后，缓存内容将被清空，\n你确定要继续吗？</string>
+    <string name="download_manager">缓存管理</string>
+    <string name="book_sorting">书籍排序</string>
+    <string name="sort_choice">排序选择</string>
+    <string name="recent_read_sorting">按最近阅读排序</string>
+    <string name="update_time_sorting">按更新时间排序</string>
+    <string name="bookshelf_delete_dialog_check_hint">保留书籍仅清除缓存</string>
+    <string name="main_update_no_new">作者正在努力码字，好内容不怕等</string>
+    <string name="book_delete_success">书籍删除成功</string>
+    <string name="book_delete_fail">书籍删除失败</string>
+    <string name="start">从</string>
+    <string name="stop">至</string>
+    <string name="cover_bookshelf_had">已在书架</string>
+
+
+    <string name="download_manager_no_book_desc">暂无缓存书籍，去书城逛逛吧~</string>
+    <string name="download_manager_no_book_goto">去书城</string>
+    <string name="download_manager_item_head_cached">已缓存</string>
+    <string name="download_manager_item_head_not_cached">未缓存</string>
+    <string name="download_manager_editor_title">编辑缓存</string>
+    <string name="dialog_addbook">喜欢可以放入书架哦～</string>
+    <string name="dialog_submit">好的</string>
+
+
+</resources>

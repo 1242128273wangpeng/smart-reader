@@ -11,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ding.basic.bean.HotWordBean;
+import com.ding.basic.bean.SearchHotBean;
 import com.intelligent.reader.R;
 
 
-import net.lzbook.kit.data.search.SearchHotBean;
 
 import java.util.List;
 import java.util.Random;
@@ -29,9 +30,9 @@ public class SearchHotWordAdapter extends BaseAdapter {
     private int layoutResourceId;
     private Random random;
     private int oldType = -1;
-    private List<SearchHotBean.DataBean> datas;
+    private List<HotWordBean> datas;
 
-    public SearchHotWordAdapter(Activity context,List<SearchHotBean.DataBean> datas) {
+    public SearchHotWordAdapter(Activity context,List<HotWordBean> datas) {
         this.mContext = context;
         this.datas = datas;
         random = new Random();
@@ -72,8 +73,8 @@ public class SearchHotWordAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        SearchHotBean.DataBean dataBean = datas.get(position);
-        holder.tvHotWord.setText(dataBean.getWord());
+        HotWordBean dataBean = datas.get(position);
+        holder.tvHotWord.setText(dataBean.getKeyword());
         return convertView;
 
 
@@ -84,7 +85,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
     }
 
 
-    public void setDatas(List<SearchHotBean.DataBean> datas) {
+    public void setDatas(List<HotWordBean> datas) {
         this.datas = datas;
     }
 

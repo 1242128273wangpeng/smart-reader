@@ -1,10 +1,8 @@
-package com.intelligent.reader.reader.v2
+package com.dy.reader.animation
 
 import android.graphics.PointF
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import android.view.SoundEffectConstants
-import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.flip.PageFlip
@@ -13,7 +11,6 @@ import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.PageManager
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.util.ThemeUtil
 import org.greenrobot.eventbus.EventBus
 
 /**

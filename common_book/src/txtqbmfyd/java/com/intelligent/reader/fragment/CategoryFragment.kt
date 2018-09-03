@@ -10,11 +10,11 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ding.basic.request.RequestService
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.txtqbmfyd.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
 
@@ -70,7 +70,7 @@ class CategoryFragment : Fragment() {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_male")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "0"
         bundle.putString("url", UrlUtils.buildWebUrl(uri, map))
@@ -83,7 +83,7 @@ class CategoryFragment : Fragment() {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_female")
-        val uri = URLBuilderIntterface.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "1"
         bundle.putString("url", UrlUtils.buildWebUrl(uri, map))

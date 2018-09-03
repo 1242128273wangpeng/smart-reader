@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,7 +42,6 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -51,6 +51,7 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -410,8 +411,6 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-        updateBookLastChapter();
-
         initializeDataFusion();
 
         // 安装快捷方式
@@ -530,11 +529,11 @@ public class SplashActivity extends FrameActivity {
         //判断是否展示广告
         if (sharedPreUtil != null) {
             long limited_time = sharedPreUtil.getLong(
-                    SharedPreUtil.Companion.getAD_LIMIT_TIME_DAY(), 0L);
+                    SharedPreUtil.AD_LIMIT_TIME_DAY, 0L);
             if (limited_time == 0) {
                 limited_time = System.currentTimeMillis();
                 try {
-                    sharedPreUtil.putLong(SharedPreUtil.Companion.getAD_LIMIT_TIME_DAY(),
+                    sharedPreUtil.putLong(SharedPreUtil.AD_LIMIT_TIME_DAY,
                             limited_time);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -544,13 +543,13 @@ public class SplashActivity extends FrameActivity {
             AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
             AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
-            int user_index = sharedPreUtil.getInt(SharedPreUtil.Companion.getUSER_NEW_INDEX(), 0);
+            int user_index = sharedPreUtil.getInt(SharedPreUtil.USER_NEW_INDEX, 0);
             boolean init_ad = false;
 
             if (user_index == 0) {
-                if (!sharedPreUtil.getBoolean(SharedPreUtil.Companion.getADD_DEFAULT_BOOKS(),
+                if (!sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
                         false)) {
-                    sharedPreUtil.putInt(SharedPreUtil.Companion.getUSER_NEW_INDEX(), 1);
+                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, 1);
                     init_ad = true;
                 } else {
                     init_ad = false;
@@ -562,7 +561,7 @@ public class SplashActivity extends FrameActivity {
                     }
                 }
             } else if (user_index == 1) {
-                if (sharedPreUtil.getBoolean(SharedPreUtil.Companion.getADD_DEFAULT_BOOKS(),
+                if (sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
                         false)) {
                     init_ad = true;
                 }
@@ -578,10 +577,10 @@ public class SplashActivity extends FrameActivity {
 
             if (init_ad) {
                 int ad_limit_time_day = sharedPreUtil.getInt(
-                        SharedPreUtil.Companion.getUSER_NEW_AD_LIMIT_DAY(), 0);
+                        SharedPreUtil.USER_NEW_AD_LIMIT_DAY, 0);
                 if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
                     ad_limit_time_day = Constants.ad_limit_time_day;
-                    sharedPreUtil.putInt(SharedPreUtil.Companion.getUSER_NEW_AD_LIMIT_DAY(),
+                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_AD_LIMIT_DAY,
                             ad_limit_time_day);
                 }
 
@@ -590,7 +589,7 @@ public class SplashActivity extends FrameActivity {
                         .currentTimeMillis()) {
                     Constants.isHideAD = true;
                 } else {
-                    sharedPreUtil.putInt(SharedPreUtil.Companion.getUSER_NEW_INDEX(), 2);
+                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, 2);
                     //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
                     if (Constants.new_app_ad_switch) {
                         Constants.isHideAD = false;
@@ -626,6 +625,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();
@@ -674,14 +678,14 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if (sharedPreUtil == null) {
-                sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+                sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
             }
 
             boolean b = sharedPreUtil.getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
@@ -728,19 +732,19 @@ public class SplashActivity extends FrameActivity {
                 // 统计阅读章节数
                 if (Constants.readedCount == 0) {
                     Constants.readedCount = sharedPreUtil.getInt(
-                            SharedPreUtil.Companion.getREADED_CONT());
+                            SharedPreUtil.READED_CONT);
                 }
 
                 //
                 DisplayMetrics dm = new DisplayMetrics();
                 SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                sharedPreUtil.putInt(SharedPreUtil.Companion.getSCREEN_WIDTH(), dm.widthPixels);
-                sharedPreUtil.putInt(SharedPreUtil.Companion.getSCREEN_HEIGHT(), dm.heightPixels);
+                sharedPreUtil.putInt(SharedPreUtil.SCREEN_WIDTH, dm.widthPixels);
+                sharedPreUtil.putInt(SharedPreUtil.SCREEN_HEIGHT, dm.heightPixels);
                 AppUtils.initDensity(getApplicationContext());
 
                 // 判断是否小说推送，检查小说是否更新
                 boolean isStarPush = sharedPreUtil.getBoolean(
-                        SharedPreUtil.Companion.getSETTINGS_PUSH(), true);
+                        SharedPreUtil.SETTINGS_PUSH, true);
                 if (isStarPush) {
                     CheckNovelUpdateService.startChkUpdService(getApplicationContext());
                 }
@@ -761,13 +765,13 @@ public class SplashActivity extends FrameActivity {
         @Override
         protected Void doInBackground(Void... params) {
             if (sharedPreUtil == null) {
-                sharedPreUtil = new SharedPreUtil(SharedPreUtil.Companion.getSHARE_DEFAULT());
+                sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
             }
-            boolean create = sharedPreUtil.getBoolean(SharedPreUtil.Companion.getCREATE_SHOTCUT(),
+            boolean create = sharedPreUtil.getBoolean(SharedPreUtil.CREATE_SHOTCUT,
                     false);
             if (!create) {
                 checkAndInstallShotCut(SplashActivity.this);
-                sharedPreUtil.putBoolean(SharedPreUtil.Companion.getCREATE_SHOTCUT(), true);
+                sharedPreUtil.putBoolean(SharedPreUtil.CREATE_SHOTCUT, true);
             }
             return null;
         }

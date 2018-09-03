@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--调试模式-->
-    <string name="debug_start_params">启用动态参数</string>
-    <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
-    <string name="debug_reset_book_shelf">重置获取默认书架</string>
-    <string name="debug_update_chapter">更新章节</string>
+    <string name="read_network_error">网络连接不畅，请稍后再试~</string>
 
-    <string name="debug_api_host">智能API接口:</string>
-    <string name="debug_web_host">WebView接口:</string>
-    <string name="debug_micro_host">微服务API接口:</string>
-    <string name="debug_micro_content_host">微服务内容接口:</string>
-
-    <string name="debug_input_host">https://</string>
-    <string name="choice_host">host选择</string>
-    <string name="debug_mode">调试模式</string>
-    <string name="save">保存</string>
-    <string name="icon">图片</string>
 
     <!---->
     <string name="setting_offline_download_config_key">offline_download_config_key</string>
@@ -27,15 +13,22 @@
     <string name="setting_offline_download_select_all_key">offline_download_select_all_key</string>
     <string name="setting_offline_sns_bind">offline_sns_bind</string>
     <string name="setting_share_client">setting_share_client</string>
-    <!-- act_search_key -->
-    <string name="cancel">取消</string>
-    <string name="delete">删除</string>
+
     <!-- setting -->
     <string name="push">推送</string>
     <string name="check_update">当前版本</string>
     <string name="market_go">去评分</string>
     <string name="about">关于</string>
     <string name="slogan">全本小说免费看</string>
+    <string name="book_update_push_subtitle">更新推送</string>
+    <string name="book_update_push">书籍更新</string>
+    <string name="umeng_push_subtitle">消息推送</string>
+    <string name="umeng_push">消息通知</string>
+    <string name="push_voice_subtitle">推送设置</string>
+    <string name="push_voice">推送声音</string>
+    <string name="push_time_dialog_title">时间设置</string>
+    <string name="push_time_dialog_confirm">设置</string>
+    <string name="push_time_dialog_cancel">取消</string>
 
     <!--Reader Page Operation-->
     <string name="origin_text">原网页</string>
@@ -59,15 +52,59 @@
     <string name="title_activity_act_book_over">ActBookOver</string>
 
     <string name="net_error">网络异常，请检查网络</string>
+
+
+
+
+
+    <string name="bookmark_start">在阅读时点击  “</string>
+    <string name="bookmark_end">”  按钮添加书签</string>
+
+    <string name="read_setting">阅读页设置</string>
+    <string name="push_setting">推送设置</string>
+    <string name="push_sound">推送声音</string>
+
+
+    <string name="determine_clear_all_file_cache">确定清除包括下载书籍在内的所有 \n 缓存吗？</string>
+
+    <!-- 封面页 -->
+
+    <string name="book_cover_source">来源：</string>
+    <string name="book_cover_no_source">暂无来源</string>
+    <string name="book_cover_last_chapter">最新章节：</string>
+    <string name="book_cover_update_time">更新：</string>
+    <string name="book_cover_reading">转码阅读</string>
+    <string name="book_cover_introduction">内容简介</string>
+    <string name="book_cover_no_description">无简介</string>
+    <string name="book_cover_catalog">查看目录</string>
+    <string name="book_cover_recommend">看过本书的人还看了</string>
+    <string name="book_cover_author_recommend">作者的其他作品</string>
+    <string name="book_cover_no_resource">暂时找不到此本书的资源</string>
+
+
     <!-- cover -->
+    <string name="book_cover_state_writing">连载中</string>
+    <string name="book_cover_state_written">已完结</string>
     <string name="state_writting">-连载中</string>
     <string name="state_written">-已完结</string>
     <string name="no_des">无简介</string>
     <string name="resource_text">来源：</string>
     <string name="resource_count">本书全部%d个来源</string>
-    <string name="succeed_add">成功添加到书架！</string>
     <string name="have_add">已在书架中！</string>
+
+    <string name="succeed_add">成功添加到书架！</string>
+    <string name="search_sub_success">成功添加到书架！</string>
+    <string name="bookshelf_insert_success">成功添加到书架！</string>
     <string name="succeed_remove">成功从书架移除！</string>
+    <string name="bookshelf_delete_success">成功从书架中移除！</string>
+    <string name="search_sub_remove_success">成功从书架中移除！</string>
+
+
+
+    <string name="read_catalog_error">抱歉，目录加载异常！</string>
+    <string name="read_network_retry">设置</string>
+    <string name="network_error_retry">刷新</string>
+
     <!-- 推荐页 -->
     <string name="over_chapter_count">共%d章</string>
     <string name="ask">询问</string>
@@ -168,8 +205,6 @@
     <string name="search_sorry_no_result">抱歉，暂无搜索结果</string>
     <string name="search_guess_favorite">也许你还喜欢这些</string>
     <string name="search_click_check_isright">请看看输入文字是否有误</string>
-    <string name="search_sub_success">成功添加到书架！</string>
-    <string name="search_sub_remove_success">成功从书架中移除！</string>
 
     <string name="book_last_chapter_nama_local_no">该书籍还未智能分章</string>
     <string name="auto_download_wifi">wifi下自动缓存</string>

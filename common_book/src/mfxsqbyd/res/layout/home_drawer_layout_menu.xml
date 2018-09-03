@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_bg"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
+
+    <ImageView
+        android:id="@+id/txt_menu_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@drawable/setting_bg"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_night_shift"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp">
+
+        <TextView
+            android:id="@+id/tv_night_shift"
+            style="@style/style_setting_text_font"
+            android:layout_marginTop="0dp"
+            android:drawableLeft="@mipmap/setting_night_icon"
+            android:text="@string/night_shift"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/bt_night_shift"
+            style="@style/style_setting_switch_button"
+            android:layout_marginRight="18dp"
+            app:sb_checked_color="@color/sb_checked_color"
+            app:sb_checkedbtn_color="@color/sb_checkedbtn_color"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="@color/sb_uncheck_color"
+            app:sb_uncheckedbtn_color="@color/sb_uncheckedbtn_color"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_auto_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp">
+
+        <TextView
+            android:id="@+id/txt_auto_download"
+            style="@style/style_setting_text_font"
+            android:drawableLeft="@mipmap/setting_wifi_icon"
+            android:text="@string/auto_download"/>
+
+        <com.intelligent.reader.widget.SwitchButton
+            android:id="@+id/btn_auto_download"
+            style="@style/style_setting_switch_button"
+            android:layout_marginRight="18dp"
+            app:sb_checked_color="@color/sb_checked_color"
+            app:sb_checkedbtn_color="@color/sb_checkedbtn_color"
+            app:sb_show_indicator="false"
+            app:sb_uncheck_color="@color/sb_uncheck_color"
+            app:sb_uncheckedbtn_color="@color/sb_uncheckedbtn_color"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_push_setting"
+        style="@style/style_setting_icon_text"
+        android:drawableLeft="@mipmap/setting_push_icon"
+        android:text="@string/push_setting"
+        tools:ignore="RtlSymmetry"/>
+
+    <View
+        style="@style/style_setting_line_view"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="28dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_clear_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp">
+
+        <TextView
+            android:id="@+id/txt_clear_cache"
+            style="@style/style_setting_text_font"
+            android:drawableLeft="@mipmap/setting_clear_cache_icon"
+            android:text="@string/clear_cache"/>
+
+        <TextView
+            android:id="@+id/txt_clear_cache_message"
+            style="@style/style_text_small_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            tools:text="23.56MB"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_market"
+        style="@style/style_setting_icon_text"
+        android:drawableLeft="@mipmap/setting_comment_icon"
+        android:text="@string/market_go"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_check_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp">
+
+        <TextView
+            android:id="@+id/txt_check_update"
+            style="@style/style_setting_text_font"
+            android:drawableLeft="@mipmap/setting_update_icon"
+            android:text="@string/check_update"/>
+
+        <TextView
+            android:id="@+id/txt_version_name"
+            style="@style/style_text_small_weak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            tools:text="V1.2.9"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_feedback"
+        style="@style/style_setting_icon_text"
+        android:drawableLeft="@mipmap/setting_feedback_icon"
+        android:text="@string/menu_feedback"/>
+
+
+    <TextView
+        android:id="@+id/txt_disclaimer_statement"
+        style="@style/style_setting_icon_text"
+        android:drawableLeft="@mipmap/setting_protocol_icon"
+        android:text="@string/disclaimer_statement"/>
+
+
+</LinearLayout>

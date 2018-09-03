@@ -17,14 +17,18 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
+import com.ding.basic.bean.SearchRecommendBook;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
+import com.dingyue.contract.util.CommonUtil;
+import com.google.gson.JsonObject;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.activity.FindBookDetail;
 import com.intelligent.reader.activity.SearchBookActivity;
+import com.intelligent.reader.view.SearchSubBookDialog;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -53,6 +57,9 @@ import java.util.Random;
 import java.util.Set;
 
 import io.reactivex.disposables.Disposable;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function2;
 
 /**
  * Created by yuchao on 2017/8/2 0002.
@@ -75,6 +82,7 @@ public class SearchHelper {
     private Activity mContext;
     private String url_tag;
     private Disposable disposable;
+    private SearchSubBookDialog subBookDialog;
 //    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     public SearchHelper(Activity context) {
@@ -227,6 +235,7 @@ public class SearchHelper {
                 Intent intent = new Intent();
                 intent.setClass(mContext, CoverPageActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString("author", author);
                 bundle.putString("book_id", book_id);
                 bundle.putString("book_source_id", book_source_id);
                 intent.putExtras(bundle);
@@ -393,6 +402,67 @@ public class SearchHelper {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+        jsInterfaceHelper.setSubSearchBook(new JSInterfaceHelper.OnSubSearchBook() {
+            @Override
+            public void showSubSearchBook(String word) {
+                StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.NORESULT_PAGE, StartLogClickUtil.FEEDBACK);
+                subBookDialog = new SearchSubBookDialog(mContext);
+                try {
+                    if(!subBookDialog.isShow()){
+                        subBookDialog.show();
+                    }
+                    subBookDialog.setBookName(word);
+                    subBookDialog.setOnConfirmListener(new Function2<String, String, Unit>() {
+                        @Override
+                        public Unit invoke(String bookName, String bookAuthor) {
+                            Map<String,String> data = new HashMap<>();
+                            data.put("type",2+"");
+                            data.put("name",bookName+"");
+                            data.put("author",bookAuthor+"");
+                            StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.FEEDBACK_PAGE, StartLogClickUtil.SUBMIT,data);
+                            submitSubBook(bookName,bookAuthor);
+                            subBookDialog.dismiss();
+                            return null;
+                        }
+                    });
+                    subBookDialog.setOnCancelListener(new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            Map<String,String> data = new HashMap<>();
+                            data.put("type",1+"");
+                            data.put("name","");
+                            data.put("author","");
+                            StartLogClickUtil.upLoadEventLog(mContext,StartLogClickUtil.FEEDBACK_PAGE, StartLogClickUtil.SUBMIT,data);
+                            return null;
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+            }
+        });
+    }
+
+    public void submitSubBook(String bookName,String bookAuthor){
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(mContext).requestSubBook(
+                bookName, bookAuthor, new RequestSubscriber<JsonObject>() {
+                    @Override
+                    public void requestResult(@Nullable JsonObject result) {
+                        if(result != null && "20000".equals(result.get("respCode").getAsString()) && subBookDialog != null){
+                            subBookDialog.showResult();
+                        }
+                    }
+
+                    @Override
+                    public void requestError(@NotNull String message) {
+                        CommonUtil.showToastMessage("订阅失败");
+                    }
+                });
     }
 
     protected Book genCoverBook(String host, String book_id, String book_source_id, String name,
@@ -673,27 +743,29 @@ public class SearchHelper {
         }
         final String finalQuery = query;
 
+        if (!TextUtils.isEmpty(finalQuery)) {
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).requestAutoCompleteV5(
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAutoCompleteV4(
-
-                finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
-                    @Override
-                    public void requestResult(@Nullable SearchAutoCompleteBeanYouHua bean) {
-                        if (bean != null
-                                && SearchAutoCompleteBeanYouHua.Companion.getREQUESR_SUCCESS()
-                                .equals(
-                                bean.getRespCode())
-                                && bean.getData() != null) {
-                            packageData(bean);
+                    finalQuery, new RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
+                        @Override
+                        public void requestResult(@Nullable SearchAutoCompleteBeanYouHua bean) {
+                            if (bean != null
+                                    && SearchAutoCompleteBeanYouHua.Companion.getREQUESR_SUCCESS()
+                                    .equals(
+                                            bean.getRespCode())
+                                    && bean.getData() != null) {
+                                packageData(bean);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void requestError(@NotNull String message) {
-                        Logger.e("请求自动补全失败！");
-                    }
-                });
+                        @Override
+                        public void requestError(@NotNull String message) {
+                            Logger.e("请求自动补全失败！");
+                        }
+                    });
+        }
+
 
     }
 }

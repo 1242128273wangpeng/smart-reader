@@ -53,7 +53,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         bookEndPresenter = BookEndPresenter(this, this)
 
         loadBookSource()
-
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -75,6 +75,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         txt_bookshelf.setOnClickListener {
             if (bookEndPresenter != null) {
                 bookEndPresenter!!.startBookShelf()
+                bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             }
             finish()
         }
@@ -82,6 +83,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         txt_bookstore.setOnClickListener {
             if (bookEndPresenter != null) {
                 bookEndPresenter!!.startBookStore()
+                bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             }
             finish()
         }
@@ -193,6 +195,10 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     }
 
     override fun showRecommend(recommends: ArrayList<RecommendBean>?) {
+
+    }
+
+    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
 
     }
 

@@ -15,7 +15,7 @@ import kotlin.properties.Delegates
  * Created on 2018/3/13.
  * Created by crazylei.
  */
-internal object ContentAPI {
+object ContentAPI {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(MicroRequestInterceptor()).build()
 
@@ -25,7 +25,7 @@ internal object ContentAPI {
         initMicroService()
     }
 
-    private fun initMicroService() {
+    fun initMicroService() {
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())

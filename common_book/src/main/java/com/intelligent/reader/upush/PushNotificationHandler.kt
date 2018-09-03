@@ -4,6 +4,8 @@ import android.content.Context
 import com.umeng.message.UmengNotificationClickHandler
 import com.umeng.message.entity.UMessage
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.openPushActivity
 
 /**
  * Desc 友盟消息推送 通知处理
@@ -19,6 +21,7 @@ class PushNotificationHandler : UmengNotificationClickHandler() {
         val data = mapOf(Pair("type", "1"))
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
                 StartLogClickUtil.PUSHCLICK, data)
+
     }
 
     //忽略通知
@@ -29,4 +32,23 @@ class PushNotificationHandler : UmengNotificationClickHandler() {
                 StartLogClickUtil.PUSHCLICK, data)
     }
 
+    override fun openActivity(context: Context?, msg: UMessage?) {
+        loge("msg.extra: ${msg?.extra}")
+
+        val data = mapOf(Pair("type", "1"))
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
+                StartLogClickUtil.PUSHCLICK, data)
+
+        if (msg?.activity?.trim()?.isNotEmpty() == true) {
+            context?.openPushActivity(msg)
+        }
+    }
+
+    override fun openUrl(context: Context?, msg: UMessage?) {
+        super.openUrl(context, msg)
+
+        val data = mapOf(Pair("type", "1"))
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
+                StartLogClickUtil.PUSHCLICK, data)
+    }
 }

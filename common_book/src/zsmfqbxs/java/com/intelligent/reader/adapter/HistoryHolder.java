@@ -1,4 +1,4 @@
-package com.intelligent.reader.adapter.holder;
+package com.intelligent.reader.adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -44,8 +44,8 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
         if (!TextUtils.isEmpty(book.getName()))
             this.mName.setText(book.getName());
 
-        if (!TextUtils.isEmpty(book.getAuthorType())) {
-            mAuthor.setText("作者: " + book.getAuthorType());
+        if (!TextUtils.isEmpty(book.getAuthor())) {
+            mAuthor.setText("作者: " + book.getAuthor());
         }
 
         if (!TextUtils.isEmpty(book.getDesc())) {
@@ -57,9 +57,9 @@ public class HistoryHolder extends AbsRecyclerViewHolder<HistoryInfo> {
         }
 
         if (!TextUtils.isEmpty(book.getImg_url()) && !book.getImg_url().equals(ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
-            Glide.with(itemView.getContext().getApplicationContext()).load(book.getImg_url()).placeholder(R.drawable.common_book_cover_default_icon).error((R.drawable.common_book_cover_default_icon)).diskCacheStrategy(DiskCacheStrategy.ALL).into(this.mImage);
+            Glide.with(itemView.getContext().getApplicationContext()).load(book.getImg_url()).placeholder(R.drawable.book_cover_default).error((R.drawable.book_cover_default)).diskCacheStrategy(DiskCacheStrategy.ALL).into(this.mImage);
         } else {
-            Glide.with(itemView.getContext().getApplicationContext()).load(R.drawable.common_book_cover_default_icon).into(this.mImage);
+            Glide.with(itemView.getContext().getApplicationContext()).load(R.drawable.book_cover_default).into(this.mImage);
         }
 
     }

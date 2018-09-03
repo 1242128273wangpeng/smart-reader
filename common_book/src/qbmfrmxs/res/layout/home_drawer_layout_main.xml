@@ -126,7 +126,7 @@
             android:layout_marginTop="40dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
-            android:src="@mipmap/bookshelf_guide_cache"
+            android:src="@drawable/bookshelf_guide_cache"
             android:visibility="gone"/>
 
         <ImageView
@@ -139,7 +139,7 @@
             android:layout_marginTop="130dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
-            android:src="@mipmap/bookshelf_guide_remove"
+            android:src="@drawable/bookshelf_guide_remove"
             android:visibility="gone"/>
     </RelativeLayout>
 </com.intelligent.reader.widget.drawer.DrawerMain>

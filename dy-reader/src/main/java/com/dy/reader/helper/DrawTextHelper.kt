@@ -6,7 +6,7 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.mode.NovelLineBean
 import com.dy.reader.setting.ReaderSettings
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelPageBean
 import java.util.ArrayList
 import com.dy.reader.setting.ReaderStatus
 

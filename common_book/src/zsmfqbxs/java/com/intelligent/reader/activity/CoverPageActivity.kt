@@ -4,8 +4,10 @@ package com.intelligent.reader.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
@@ -14,6 +16,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
@@ -29,13 +32,16 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.util.*
 import java.util.concurrent.Callable
-import android.support.v4.content.ContextCompat.startActivity
 
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {
+    override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+    }
+
     private var mBackground = 0
     private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
@@ -45,6 +51,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
+
+    private var isFromPush = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +66,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onNewIntent(intent: Intent) {
+        if (book_cover_bookshelf != null) {
+            book_cover_bookshelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
+        coverPagePresenter?.destroy()
         initializeIntent(intent)
     }
 
@@ -91,6 +104,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (intent.hasExtra("book_chapter_id")) {
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
+
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
@@ -164,89 +179,86 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                         net.lzbook.kit.R.drawable.icon_book_cover_default).into(book_cover_image!!)
             }
 
-            if (book_cover_title != null && !TextUtils.isEmpty(bookVo.name)) {
-                book_cover_title!!.text = bookVo.name
+            if (!TextUtils.isEmpty(bookVo.name)) {
+                book_cover_title?.text = bookVo.name
             }
 
-            if (book_cover_author != null && !TextUtils.isEmpty(bookVo.author)) {
-                book_cover_author!!.text = bookVo.author
+            if (!TextUtils.isEmpty(bookVo.author)) {
+                book_cover_author?.text = bookVo.author
             }
 
-            if (book_cover_category != null && !TextUtils.isEmpty(bookVo.label)) {
-                book_cover_category!!.text = bookVo.label
+            if (!TextUtils.isEmpty(bookVo.genre)) {
+                book_cover_category?.text = bookVo.genre
             }
 
-            if (book_cover_category2 != null && !TextUtils.isEmpty(bookVo.label)) {
-                book_cover_category2!!.text = bookVo.label
+            if (!TextUtils.isEmpty(bookVo.genre)) {
+                book_cover_category2?.text = bookVo.genre
                 if (!mThemeHelper.isNight) {
-                    book_cover_category2!!.setBackgroundResource(R.drawable.book_cover_label_bg)
-                    val background = book_cover_category2!!.background as GradientDrawable
-                    background.setColor(resources.getColor(R.color.color_white_ffffff))
-                    book_cover_category2!!.setTextColor(AppUtils.getRandomColor())
+                    book_cover_category2?.setBackgroundColor(Color.parseColor("#ffffff"))
+                    book_cover_category2?.setTextColor(AppUtils.getRandomColor())
                 } else {
-                    book_cover_category2!!.setTextColor(AppUtils.getRandomColor())
+                    book_cover_category2?.setTextColor(AppUtils.getRandomColor())
                 }
             }
 
             if ("FINISH" != bookVo.status) {
-                if (book_cover_category2!!.visibility != View.VISIBLE) {
-                    book_cover_status!!.text = "—" + getString(R.string.book_cover_state_writing)
+                if (book_cover_category2?.visibility != View.VISIBLE) {
+                    book_cover_status?.text = ("—" + getString(R.string.book_cover_state_writing))
                 } else {
-                    book_cover_status!!.text = getString(R.string.book_cover_state_writing)
+                    book_cover_status?.text = getString(R.string.book_cover_state_writing)
                     if (!mThemeHelper.isNight) {
-                        book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
+                        book_cover_status?.setBackgroundResource(R.drawable.book_cover_label_bg)
                         val background = book_cover_status!!.background as GradientDrawable
-                        background.setColor(resources.getColor(R.color.color_white_ffffff))
-                        book_cover_status!!.setTextColor(
-                                resources.getColor(R.color.color_red_ff2d2d))
+                        background.setColor(ContextCompat.getColor(this, R.color.color_white_ffffff))
+                        book_cover_status?.setTextColor(
+                                ContextCompat.getColor(this, R.color.color_red_ff2d2d))
                     } else {
-                        book_cover_status!!.setTextColor(
-                                resources.getColor(R.color.color_red_ff5656))
+                        book_cover_status?.setTextColor(
+                                ContextCompat.getColor(this, R.color.color_red_ff5656))
                     }
                 }
             } else {
-                if (book_cover_category2!!.visibility != View.VISIBLE) {
-                    book_cover_status!!.text = "—" + getString(R.string.book_cover_state_written)
+                if (book_cover_category2?.visibility != View.VISIBLE) {
+                    book_cover_status?.text = ("—" + getString(R.string.book_cover_state_written))
                 } else {
-                    book_cover_status!!.text = getString(R.string.book_cover_state_written)
+                    book_cover_status?.text = getString(R.string.book_cover_state_written)
                     if (!mThemeHelper.isNight) {
-                        book_cover_status!!.setBackgroundResource(R.drawable.book_cover_label_bg)
+                        book_cover_status?.setBackgroundResource(R.drawable.book_cover_label_bg)
                         val background = book_cover_status!!.background as GradientDrawable
-                        background.setColor(resources.getColor(R.color.color_white_ffffff))
-                        book_cover_status!!.setTextColor(
-                                resources.getColor(R.color.color_brown_e9cfae))
+                        background.setColor(ContextCompat.getColor(this, R.color.color_white_ffffff))
+                        book_cover_status?.setTextColor(
+                                ContextCompat.getColor(this, R.color.color_brown_e9cfae))
                     } else {
-                        book_cover_status!!.setTextColor(
-                                resources.getColor(R.color.color_brown_e2bd8d))
+                        book_cover_status?.setTextColor(
+                                ContextCompat.getColor(this, R.color.color_brown_e2bd8d))
                     }
 
                 }
             }
 
-            if (book_cover_update_time != null && bookVo.last_chapter != null) {
-                book_cover_update_time!!.text = Tools.compareTime(AppUtils.formatter, bookVo
+            if (bookVo.last_chapter != null) {
+                book_cover_update_time?.text = Tools.compareTime(AppUtils.formatter, bookVo
                         .last_chapter!!.update_time)
             }
 
-            if (book_cover_last_chapter != null
-                    && bookVo.last_chapter != null && !TextUtils.isEmpty(bookVo.last_chapter!!.name)) {
-                book_cover_last_chapter!!.text = bookVo.last_chapter!!.name
+            if (bookVo.last_chapter != null && !TextUtils.isEmpty(bookVo.last_chapter!!.name)) {
+                book_cover_last_chapter?.text = bookVo.last_chapter!!.name
             }
 
             if (bookVo.desc != null && !TextUtils.isEmpty(bookVo.desc)) {
-                book_cover_description!!.text = bookVo.desc
+                book_cover_description?.text = bookVo.desc
             } else {
-                book_cover_description!!.text = resources.getString(R.string
+                book_cover_description?.text = resources.getString(R.string
                         .book_cover_no_description)
             }
 
             if ("qg" == bookVo.book_type) {
-                book_cover_source_form!!.text = "青果阅读"
+                book_cover_source_form?.text = "青果阅读"
             } else {
-                book_cover_source_form!!.text = bookVo.host
+                book_cover_source_form?.text = bookVo.host
             }
 
-            book_cover_source_form!!.setCompoundDrawables(null, null, null, null)
+            book_cover_source_form?.setCompoundDrawables(null, null, null, null)
 
         } else {
             showToastMessage(R.string.book_cover_no_resource)
@@ -258,10 +270,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf?.setText(R.string.remove_bookshelf)
             initializeRemoveShelfButton()
         } else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            book_cover_bookshelf?.setText(R.string.add_bookshelf)
             initializeInsertShelfButton()
         }
     }
@@ -299,7 +311,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf?.setText(R.string.remove_bookshelf)
             initializeRemoveShelfButton()
         } else {
             initializeInsertShelfButton()
@@ -319,9 +331,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
-    override fun showRecommendSuccess(recommendBean: ArrayList<Book>) {
-
-    }
 
     override fun showRecommendFail() {
 
@@ -329,9 +338,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onClick(view: View) {
-        if (coverPagePresenter != null) {
-            coverPagePresenter!!.goToBookSearchActivity(view)
-        }
+//        if (coverPagePresenter != null) {
+//            coverPagePresenter!!.goToBookSearchActivity(view)
+//        }
 
         when (view.id) {
             R.id.book_cover_back -> {
@@ -387,18 +396,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun initializeRemoveShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_remove_bg
         mTextColor = R.color.cover_bottom_btn_remove_text_color
-        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        if (book_cover_category2!!.visibility != View.VISIBLE) {
-            book_cover_bookshelf!!.setBackgroundResource(mBackground)
+        book_cover_bookshelf?.setTextColor(ContextCompat.getColor(this, mTextColor))
+        if (book_cover_category2?.visibility != View.VISIBLE) {
+            book_cover_bookshelf?.setBackgroundResource(mBackground)
         }
     }
 
     private fun initializeInsertShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_add_bg
-        mTextColor = R.color.cover_bottom_btn_add_text_color
-        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        if (book_cover_category2!!.visibility != View.VISIBLE) {
-            book_cover_bookshelf!!.setBackgroundResource(mBackground)
+        mTextColor = R.color.primary
+        book_cover_bookshelf?.setTextColor(ContextCompat.getColor(this, mTextColor))
+        if (book_cover_category2?.visibility != View.VISIBLE) {
+            book_cover_bookshelf?.setBackgroundResource(mBackground)
         }
     }
 
@@ -406,6 +415,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     override fun onTaskStatusChange() {
         super.onTaskStatusChange()
         changeDownloadButtonStatus()
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
     }
 
     companion object {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--封面页标题栏样式，左侧带icon-->
+
+    <style name="Style_Cover_Page_Title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/cover_title_color</item>
+        <item name="android:paddingLeft">@dimen/dimen_margin_16</item>
+        <item name="android:drawableLeft">@mipmap/cover_profile_icon</item>
+        <item name="android:drawablePadding">@dimen/padding_8</item>
+    </style>
+</resources>

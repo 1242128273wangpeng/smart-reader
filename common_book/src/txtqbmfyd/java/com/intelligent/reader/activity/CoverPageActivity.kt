@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
@@ -27,9 +28,13 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.CommonUtil
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import java.text.DecimalFormat
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -58,6 +63,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onNewIntent(intent: Intent) {
+        if (book_cover_bookshelf != null) {
+            book_cover_bookshelf!!.isClickable = true
+            insertBookShelfResult(false)
+        }
+        coverPagePresenter?.destroy()
         initializeIntent(intent)
     }
 
@@ -110,8 +120,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                         data["Tbookid"] = recommendBean.bookId!!
                     }
 
+                    val book = Book()
+                    book.book_id = recommendBean.bookId
+                    book.book_source_id = recommendBean.id
+                    book.book_chapter_id = recommendBean.bookChapterId
+                    BookRouter.navigateCover(this, book)
+
                     StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
-//                    BookRouter.navigateCoverOrRead(this, book, BookRouter.NAVIGATE_TYPE_RECOMMEND)
                 }
             }
         }
@@ -163,11 +178,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             coverPagePresenter?.refreshNavigationState()
         }
         CacheManager.listeners.add(this)
+        StatService.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
         CacheManager.listeners.remove(this)
+        StatService.onPause(this)
     }
 
 
@@ -326,6 +343,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     book_cover_category2!!.visibility = View.GONE
                 }
             }
+            if (!TextUtils.isEmpty(book.host)) {
+                book_cover_source_form.text = (if (book.fromQingoo()) "青果阅读" else book.host)
+            }
 
             if (book.status == "SERIALIZE") {
                 if (book_cover_category2.visibility != View.VISIBLE) {
@@ -351,36 +371,25 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_description.text = resources.getString(R.string
                         .book_cover_no_description)
             }
+            val str = AppUtils.getCommonReadNums(book.uv)
+            if (!TextUtils.isEmpty(str)) {
+                tv_read_num.text = str + "值"
+            } else {
+                tv_read_num.text = ""
+            }
+            if (tv_text_number != null && book.word_count != null && !AppUtils.isContainChinese(book.word_count)) {
+                tv_text_number.text = AppUtils.getWordNums(java.lang.Long.parseLong(book.word_count))
+            } else {
+                tv_text_number.text = "暂无"
+            }
+            if (book.score == 0.0f) {
+                tv_score!!.text = "暂无评分"
+            } else {
+                book.score = java.lang.Float.valueOf(DecimalFormat("0.00").format(book.score))!!
 
-//            if (book.wordCountDescp != null) {
-//                if (Constants.QG_SOURCE != book.host) {
-//                    word_count_tv.text = book.wordCountDescp + "字"
-//                } else {
-//                    word_count_tv.text = AppUtils.getWordNums(java.lang.Long.valueOf(book.wordCountDescp)!!)
-//                }
-//            } else {
-//                word_count_tv.text = "暂无"
-//            }
-//
-//            if (book.readerCountDescp != null) {
-//                if (Constants.QG_SOURCE == book.host) {
-//                    reading_tv.text = AppUtils.getReadNums(java.lang.Long.valueOf(book.readerCountDescp)!!)
-//                } else {
-//                    reading_tv.text = book.readerCountDescp + "人在读"
-//                }
-//
-//            } else {
-//                reading_tv!!.text = "暂无"
-//            }
-//            if (book.score == 0.0) {
-//                start_tv.text = "暂无评分"
-//            } else {
-//                if (Constants.QG_SOURCE != book.host) {
-//                    book.score = java.lang.Double.valueOf(DecimalFormat("0.0").format(book.score))!!
-//                }
-//                start_tv.text = book.score.toString() + "分"
-//
-//            }
+                tv_score!!.text = book.score.toString() + "分"
+            }
+
         } else {
             this.showToastMessage(R.string.book_cover_no_resource)
 
@@ -414,9 +423,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.remove_bookshelf)
         } else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.add_bookshelf)
         }
     }
 
@@ -428,11 +437,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.remove_bookshelf)
         }
     }
 
     override fun showRecommendSuccess(recommends: ArrayList<RecommendBean>) {
+        ll_recommend_title.visibility = View.VISIBLE
         recommendList = recommends
         bookRecommendAdapter.setData(recommends)
     }

@@ -13,4 +13,5 @@
     <dimen name="setting_divider_height">55dp</dimen>
 
     <dimen name="recommend_book_label">4sp</dimen>
+    <dimen name="cover_book_text_title_size">16sp</dimen>
 </resources>

@@ -411,6 +411,13 @@ public protected *;
 
 #科大讯飞广告混淆
 -keep class com.iflytek.voiceads.** {*;}
+#鼎阅广告混淆
+-keep class com.dycm_adsdk.** {*;}
+
+#inmobi ali混淆
+-keep class com.alibaba.sdk.android.feedback.impl.** {*;}
+-keep class com.inmobi.commons.core.utilities.uid.** {*;}
+-keep class com.dingyueads.sdk.receiver.** {*;}
 
 #mongo ad
 #-keep public class com.adsmogo.** {*;}
@@ -458,14 +465,8 @@ public protected *;
 -keep class com.ta.** {*;}
 -dontwarn com.ta.**
 
-#greenDAO
--keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-    public static java.lang.String TABLENAME;
-}
 -keep class **$Properties
 
-# If you do not use SQLCipher:
--dontwarn org.greenrobot.greendao.database.**
 # If you do not use Rx:
 -dontwarn rx.**
 
@@ -497,3 +498,8 @@ public protected *;
 -keep public class **.R$*{
    public static final int *;
 }
+
+#新版百度移动统计SDK
+-keep class com.baidu.bottom.** { *; }
+-keep class com.baidu.kirin.** { *; }
+-keep class com.baidu.mobstat.** { *; }

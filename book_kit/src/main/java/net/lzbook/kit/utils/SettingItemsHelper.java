@@ -1,5 +1,6 @@
 package net.lzbook.kit.utils;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.data.bean.SettingItems;
 
 import android.content.Context;
@@ -12,7 +13,8 @@ import android.preference.PreferenceManager;
 public class SettingItemsHelper {
     public static SettingItemsHelper settingHelper;
     public SettingItems settings;
-    public String openPush = "settings_push";
+    public String openBookPush = "settings_push";
+    public String openUmengPush = "umeng_push";
     public String openPushSound = "push_sound";
     public String setPushTime = "push_time";
     public String pushTimeStartH = "push_time_start_hour";
@@ -43,7 +45,8 @@ public class SettingItemsHelper {
     }
 
     public SettingItems getValues() {//给内存数据赋值
-        settings.isPush = getBoolean(openPush, true);
+        settings.isBookUpdatePush = getBoolean(openBookPush, true);
+        settings.isUmengPush = getBoolean(openUmengPush, true);
         settings.isSoundOpen = getBoolean(openPushSound, true);
         settings.isSetPushTime = getBoolean(setPushTime, false);
 
@@ -54,7 +57,12 @@ public class SettingItemsHelper {
 
         settings.isFollowSystemBrightness = getBoolean(followSystemBrightness, true);
         settings.appBrightness = getInt(appBrightness, -1);
-        settings.booklist_sort_type = getInt(booklistSortType, 0);
+        if (BaseBookApplication.getGlobalContext().getPackageName().equals("cn.qbmfkkydq.reader")){
+            // 全本免费快看阅读器默认排序方式为添加顺序
+            settings.booklist_sort_type = getInt(booklistSortType, 2);
+        }else{
+            settings.booklist_sort_type = getInt(booklistSortType, 0);
+        }
         settings.isVolumeTurnover = getBoolean(volumeTurnover, true);
         AppLog.d("SettingItemsHelper", settings.toString());
         return settings;

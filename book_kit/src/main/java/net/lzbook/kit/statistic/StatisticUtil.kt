@@ -13,7 +13,7 @@ fun buildSearch(book: Book, keyword: String, op: Search.OP, useTime: Long): Sear
     val search = Search()
 
     search.book_id = book.book_id
-    search.book_code = if (Constants.QG_SOURCE.equals(book.host)) "1" else "0"
+    search.book_code = if (book.fromQingoo()) "1" else "0"
     search.book_source_id = book.book_source_id
 
     search.cost_time = useTime

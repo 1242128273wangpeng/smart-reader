@@ -211,6 +211,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         txt_editor_finish.setOnClickListener {
             dismissRemoveMenu()
+            BookShelfLogger.uploadBookShelfEditBack()
         }
 
         txt_empty_add_book.setOnClickListener {
@@ -295,15 +296,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
-            bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
-            uiThread {
-                bookShelfAdapter.notifyDataSetChanged()
+        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
+        uiThread {
+            bookShelfAdapter.notifyDataSetChanged()
 
-                if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
-                    bookShelfInterface?.checkShowShelfGuide()
-                }
+            if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
+                bookShelfInterface?.checkShowShelfGuide()
             }
-
+            BookShelfLogger.uploadFirstOpenBooks()
+        }
     }
 
     /**
@@ -373,7 +374,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     override fun onSuccess(result: BookUpdateResult) {
-        if (isAdded && !requireActivity().isFinishing) {
+        if (isAdded && activity?.isFinishing == false) {
             latestLoadDataTime = System.currentTimeMillis()
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -468,6 +469,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         bookShelfInterface?.changeHomeNavigationState(true)
 
+        bookShelfInterface?.lockDrawerLayout(true)
+
         fl_ad_float.visibility = View.GONE
 
         removeMenuPopup.show(ll_content)
@@ -485,6 +488,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfAdapter.insertRemoveState(false)
 
         bookShelfInterface?.changeHomeNavigationState(false)
+
+        bookShelfInterface?.lockDrawerLayout(false)
 
         removeMenuPopup.dismiss()
 

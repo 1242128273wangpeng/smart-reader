@@ -7,10 +7,12 @@ import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.PagerDesc;
 
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
@@ -25,8 +27,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -41,7 +45,7 @@ import java.lang.ref.WeakReference;
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
-    public String url;
+    public String url = "";
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
@@ -52,6 +56,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
+    public PagerDesc mPagerDesc;
+    private int h5Margin;
 
     @Override
     public void onAttach(Activity activity) {
@@ -82,6 +88,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         } catch (InflateException e) {
             e.printStackTrace();
         }
+        if(weakReference != null){
+            AppUtils.disableAccessibility(weakReference.get());
+        }
         initView();
 //        initRefresh();
         return rootView;
@@ -90,8 +99,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("JavascriptInterface")
     private void initView() {
         if (rootView != null) {
-            contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
-            contentView = (WebView) rootView.findViewById(R.id.web_content_view);
+            contentLayout =  rootView.findViewById(R.id.web_content_layout);
+            contentView =  rootView.findViewById(R.id.web_content_view);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
@@ -124,7 +133,67 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
         if (fragmentCallback != null && jsInterfaceHelper != null) {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
+
+        addTouchListener();
     }
+
+
+    public boolean isNeedInterceptSlide() {
+        String packageName = AppUtils.getPackageName();
+        if (this.url.contains("recommend")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void addTouchListener() {
+        if (contentView != null && isNeedInterceptSlide()) {
+            contentView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    float y = event.getRawY();
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            if (contentView != null) {
+                                int[] loction = new int[2];
+                                contentView.getLocationOnScreen(loction);
+                                h5Margin = loction[1];
+                            }
+//                            if (y > 100 && y < 800) {
+//                                contentView.requestDisallowInterceptTouchEvent(true);
+//                                isSupport = false;
+//                            } else {
+//                                contentView.requestDisallowInterceptTouchEvent(false);
+//                                isSupport = true;
+//                            }
+                            if (null != mPagerDesc) {
+                                float top = mPagerDesc.getTop();
+                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                DisplayMetrics metric = getResources().getDisplayMetrics();
+                                top = (float) (top * metric.density) + h5Margin;
+                                bottom = (float) (bottom * metric.density) + h5Margin;
+                                if (y > top && y < bottom) {
+                                    contentView.requestDisallowInterceptTouchEvent(true);
+                                } else {
+                                    contentView.requestDisallowInterceptTouchEvent(false);
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

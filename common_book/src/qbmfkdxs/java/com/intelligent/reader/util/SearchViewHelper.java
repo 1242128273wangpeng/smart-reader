@@ -20,37 +20,39 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+
+import com.ding.basic.bean.HotWordBean;
+import com.ding.basic.bean.Result;
+import com.ding.basic.bean.SearchAutoCompleteBean;
+import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
+import com.ding.basic.bean.SearchCommonBeanYouHua;
+import com.ding.basic.bean.SearchResult;
+import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestSubscriber;
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SearchHisAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.search.SearchAutoCompleteBean;
-import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.data.search.SearchHotBean;
-import net.lzbook.kit.net.custom.service.NetService;
-import net.lzbook.kit.net.custom.service.OwnSearchService;
-import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.ToastUtils;
 import net.lzbook.kit.utils.Tools;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -69,21 +71,18 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private SearchHotWordAdapter mHotAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
     private SearchHisAdapter mHisAdapter;
-    private List<SearchCommonBean> mSuggestList = new ArrayList<SearchCommonBean>();
+    private List<SearchCommonBeanYouHua> mSuggestList = new ArrayList<SearchCommonBeanYouHua>();
     private Resources mResources;
     private boolean mShouldShowHint = true;
     private OnHistoryClickListener mOnHistoryClickListener;
     private SearchHelper mSearchHelper;
     private boolean isFromEditClick = false;
     private Gson gson;
-    private List<SearchHotBean.DataBean> hotWords = new ArrayList<>();
+    private List<HotWordBean> hotWords = new ArrayList<>();
     private SharedPreferencesUtils sharedPreferencesUtils;
     private RelativeLayout relative_parent;
     private String searchType;
     private String suggest;
-    private List<SearchAutoCompleteBean.DataBean.AuthorsBean> authorsBean = new ArrayList<>();
-    private List<SearchAutoCompleteBean.DataBean.LabelBean> labelBean = new ArrayList<>();
-    private List<SearchAutoCompleteBean.DataBean.NameBean> bookNameBean = new ArrayList<>();
 
     private LoadingPage loadingPage;
 
@@ -157,7 +156,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         }
 
         if (mSearchHelper != null){
-            mSearchHelper.startSearchSuggestData(searchWord);
+            mSearchHelper.startSearch(searchWord);
         }
 
     }
@@ -199,45 +198,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                 loadingPage = new LoadingPage(activity, mRootLayout, LoadingPage.setting_result);
             }
 
+            getHotWords();
 
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
-            OwnSearchService searchService = NetService.INSTANCE.getOwnSearchService();
-            searchService.getHotWord()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<SearchHotBean>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-                        @Override
-                        public void onNext(SearchHotBean value) {
-                            AppLog.e("result", value.toString());
-
-                            parseResult(value,true);
-                            if(loadingPage != null){
-                                loadingPage.onSuccess();
-                            }
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            getCacheDataFromShare(true);
-                            if(loadingPage != null){
-                                loadingPage.onError();
-                            }
-
-                            AppLog.e("error", e.toString());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            AppLog.e("complete", "complete");
-                        }
-                    });
-
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(mContext));
         }
 
 
@@ -246,20 +208,52 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         }
     }
 
+    //获取热词
+    public void getHotWords() {
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestSearchOperationV4(
+
+                new RequestSubscriber<Result<SearchResult>>() {
+                    @Override
+                    public void requestResult(@Nullable Result<SearchResult> value) {
+                        if (value != null && value.getData() != null) {
+                            SearchResult result = value.getData();
+                            sharedPreferencesUtils.putString(Constants.SERARCH_HOT_WORD_YOUHUA,
+                                    gson.toJson(result, SearchResult.class));
+                            parseResult(result);
+
+                        } else {
+                            getCacheDataFromShare(true);
+                        }
+                        if (loadingPage != null) {
+                            loadingPage.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void requestError(@NotNull String message) {
+                        if (loadingPage != null) {
+                            loadingPage.onSuccess();
+                        }
+                    }
+                });
+
+    }
+
     /**
      * if hasn't net getData from sharepreferenecs cache
      */
     public void getCacheDataFromShare(boolean hasNet){
-        if (!TextUtils.isEmpty(sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD))) {
+        if (!TextUtils.isEmpty(sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
+            String cacheHotWords = sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD_YOUHUA);
+            SearchResult searchResult = gson.fromJson(cacheHotWords, SearchResult.class);
             relative_parent.setVisibility(View.VISIBLE);
-            hotWords.clear();
-            String cacheHotWords = sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD);
-            SearchHotBean searchHotBean = gson.fromJson(cacheHotWords, SearchHotBean.class);
-            parseResult(searchHotBean,false);
+            parseResult(searchResult);
             AppLog.e("urlbean", cacheHotWords);
         } else {
             if(!hasNet){
-                ToastUtils.showToastNoRepeat("网络不给力哦");
+                CommonUtil.showToastMessage("网络不给力哦");
             }
             relative_parent.setVisibility(View.GONE);
         }
@@ -268,15 +262,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     /**
      * parse result data
      */
-    public void parseResult(SearchHotBean value, boolean hasNet) {
+    public void parseResult(SearchResult value) {
         hotWords.clear();
-        if (value != null && value.getData() != null) {
-            hotWords = value.getData();
+        if (value != null && value.getHotWords() != null) {
+            hotWords = value.getHotWords();
             if (hotWords != null && hotWords.size() >= 0) {
                 relative_parent.setVisibility(View.VISIBLE);
-                if(hasNet){
-                    sharedPreferencesUtils.putString(Constants.SERARCH_HOT_WORD, gson.toJson(value, SearchHotBean.class));
-                }
                 mHotAdapter = new SearchHotWordAdapter(activity, hotWords);
                 if (mHotListView != null) {
 
@@ -286,11 +277,11 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
                             StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
                             if (hotWords != null && !hotWords.isEmpty() && position > -1 && position < hotWords.size()) {
-                                String hotWord = hotWords.get(arg2 - 1).getWord();
+                                String hotWord = hotWords.get(arg2 - 1).getKeyword();
                                 if (hotWord != null && mSearchEditText != null) {
                                     mShouldShowHint = false;
                                     mSearchEditText.setText(hotWord);
-                                    startSearch(hotWord,hotWords.get(arg2-1).getWordType()+"");
+                                    startSearch(hotWord,hotWords.get(arg2-1).getKeywordType()+"");
 
                                     Map<String, String> data = new HashMap<>();
                                     data.put("topicword", hotWord);
@@ -371,6 +362,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         return listHeader;
     }
 
+
     private void initSuggestListView() {
         if (mSearchHelper != null){
             mSearchHelper.setSearchSuggestCallBack(this);
@@ -403,13 +395,14 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         mSuggestListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                suggest = mSuggestList.get(arg2).getSuggest();
+                SearchCommonBeanYouHua bean = mSuggestList.get(arg2);
+                suggest = bean.getSuggest();
                 searchType = "0";
-                if (mSuggestList.get(arg2).getWordtype().equals("label")) {
+                if (bean.getWordtype().equals("label")) {
                     searchType = "1";
-                } else if (mSuggestList.get(arg2).getWordtype().equals("author")) {
+                } else if (bean.getWordtype().equals("author")) {
                     searchType = "2";
-                } else if (mSuggestList.get(arg2).getWordtype().equals("name")) {
+                } else if (bean.getWordtype().equals("name")) {
                     searchType = "3";
                 } else {
                     searchType = "0";
@@ -425,15 +418,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                     data.put("type", searchType);
                     data.put("enterword", mSearchEditText.getText().toString().trim());
                     data.put("rank", arg2 + 1 + "");
-                    if (arg2 + 1 <= authorsBean.size()) {
-                        data.put("typerank", arg2 + 1 + "");
-                    } else if (arg2 + 1 <= authorsBean.size() + labelBean.size()) {
-                        data.put("typerank", arg2 + 1 - authorsBean.size() + "");
-                    } else if (arg2 + 1 <= authorsBean.size() + labelBean.size() + bookNameBean.size()) {
-                        data.put("typerank", arg2 + 1 - authorsBean.size() - labelBean.size() + "");
-                    } else {
-                        data.put("typerank", arg2 + 1 + "");
-                    }
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
 
                     mShouldShowHint = false;
@@ -525,27 +509,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     @Override
-    public void onSearchResult(List<SearchCommonBean> suggestList, SearchAutoCompleteBean transmitBean) {
-        if (mSuggestList == null){
+    public void onSearchResult(ArrayList<SearchCommonBeanYouHua> suggestList, SearchAutoCompleteBean transmitBean) {
+        if (mSuggestList == null) {
             return;
         }
         mSuggestList.clear();
-        authorsBean.clear();
-        labelBean.clear();
-        bookNameBean.clear();
-        if (transmitBean.getData() != null) {
-            if (transmitBean.getData().getAuthors() != null) {
-                authorsBean = transmitBean.getData().getAuthors();
-            }
-            if (transmitBean.getData().getLabel() != null) {
-                labelBean = transmitBean.getData().getLabel();
-            }
-            if (transmitBean.getData().getName() != null) {
-                bookNameBean = transmitBean.getData().getName();
-            }
-        }
-        for (SearchCommonBean item : suggestList) {
-
+        for (SearchCommonBeanYouHua item : suggestList) {
             mSuggestList.add(item);
         }
         new Handler().post(new Runnable() {

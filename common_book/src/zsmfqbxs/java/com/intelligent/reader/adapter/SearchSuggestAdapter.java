@@ -1,9 +1,7 @@
 package com.intelligent.reader.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.Html;
-import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,23 +10,23 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.data.search.SearchCommonBean;
-import net.lzbook.kit.utils.AppUtils;
-
-import java.util.List;
-
 import com.bumptech.glide.Glide;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.utils.AppUtils;
+
+import java.util.List;
+
 /**
+ * 自动补全
  * Created by Administrator on 2016/12/16 0016.
  */
 public class SearchSuggestAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Object> mData;
-    private String editInput="";
+    private String editInput = "";
     String mColorTag;
     //item的类型
     private static final int ITEM_VIEW_TYPE_DATA = 0;
@@ -39,10 +37,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         this.mContext = context;
         this.mData = mData;
         this.editInput = editInput;
-        TypedValue typeColor = new TypedValue();
-        Resources.Theme theme=mContext.getTheme();
-//        theme.resolveAttribute(R.attr.dialog_recommend, typeColor, true);
-        int color = mContext.getResources().getColor(R.color.colorPrimary);
+        int color = mContext.getResources().getColor(R.color.primary);
         mColorTag = String.format("<font color='%s'>", AppUtils.colorHoHex(color));
     }
 
@@ -53,7 +48,8 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return mData.get(position) instanceof SearchCommonBeanYouHua ? ITEM_VIEW_TYPE_DATA : ITEM_VIEW_TYPE_GAP;
+        return mData.get(position) instanceof SearchCommonBeanYouHua ? ITEM_VIEW_TYPE_DATA
+                : ITEM_VIEW_TYPE_GAP;
     }
 
     @Override
@@ -74,7 +70,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //判断view的type，通过type判断item是显示数据还是隔断
-        switch (getItemViewType(position)){
+        switch (getItemViewType(position)) {
             //数据填充item
             case ITEM_VIEW_TYPE_DATA:
 
@@ -88,10 +84,10 @@ public class SearchSuggestAdapter extends BaseAdapter {
                     }
                     if (convertView != null) {
                         hodler = new ViewHolder();
-                        hodler.iv_icon = (ImageView) convertView.findViewById(R.id.iv_icon);
-                        hodler.iv_type = (ImageView) convertView.findViewById(R.id.iv_type);
-                        hodler.tv_2 = (TextView) convertView.findViewById(R.id.tv_search_item_2);
-                        hodler.iv_shadow = (ImageView) convertView.findViewById(R.id.iv_shadow);
+                        hodler.iv_icon = convertView.findViewById(R.id.iv_icon);
+                        hodler.iv_type = convertView.findViewById(R.id.iv_type);
+                        hodler.tv_2 = convertView.findViewById(R.id.tv_search_item_2);
+                        hodler.iv_shadow = convertView.findViewById(R.id.iv_shadow);
                         convertView.setTag(hodler);
                     }
                 } else {
@@ -99,8 +95,8 @@ public class SearchSuggestAdapter extends BaseAdapter {
                 }
                 SearchCommonBeanYouHua bean = (SearchCommonBeanYouHua) mData.get(position);
                 String type = bean.getWordtype();
-                if(hodler!=null) {
-                    if (type.equals("authorType")) {
+                if (hodler != null) {
+                    if (type.equals("author")) {
                         hodler.iv_shadow.setVisibility(View.GONE);
                         hodler.iv_icon.setImageResource(R.drawable.search_personal_yh);
                         hodler.iv_type.setImageResource(R.drawable.search_writer);
@@ -113,9 +109,11 @@ public class SearchSuggestAdapter extends BaseAdapter {
                     } else if (type.equals("name")) {
                         hodler.iv_shadow.setVisibility(View.VISIBLE);
                         //如果不是以上三种的话，说明返回的数据为书籍名，则通过url加载后台返回的图片URL地址（加上非空判断）
-                        if (bean != null) {
-                            Glide.with(mContext).load(bean.getImage_url()).placeholder(R.drawable.search_default_book_cover).error((R.drawable.search_default_book_cover)).into(hodler.iv_icon);
-                        }
+
+                        Glide.with(mContext).load(bean.getImage_url()).placeholder(
+                                R.drawable.book_cover_default).error(
+                                (R.drawable.book_cover_default)).into(hodler.iv_icon);
+
                         hodler.iv_type.setImageResource(R.drawable.search_book);
                     }
 
@@ -133,8 +131,9 @@ public class SearchSuggestAdapter extends BaseAdapter {
             //item中间的gap显示
             case ITEM_VIEW_TYPE_GAP:
 
-                if(convertView == null){
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.item_search_history_gap, parent, false);
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(mContext).inflate(
+                            R.layout.item_search_history_gap, parent, false);
                 }
                 break;
             default:
@@ -156,6 +155,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         ImageView iv_type;
         ImageView iv_shadow;
     }
+
     public void setEditInput(String editInput) {
         this.editInput = editInput;
     }

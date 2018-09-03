@@ -1,4 +1,4 @@
-package com.intelligent.reader.reader.v2.flip
+package com.dy.reader.flip
 
 import android.view.animation.Interpolator
 

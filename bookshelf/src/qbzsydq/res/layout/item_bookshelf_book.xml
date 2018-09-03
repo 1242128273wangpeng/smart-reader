@@ -15,7 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/icon_delete_checked"
+        android:background="@drawable/bookshelf_item_selected_icon"
         android:contentDescription="@string/module_name"
         android:visibility="gone"/>
 

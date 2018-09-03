@@ -1,4 +1,4 @@
-package com.intelligent.reader.read.mode
+package com.dy.reader.mode
 
 import com.ding.basic.bean.Chapter
 

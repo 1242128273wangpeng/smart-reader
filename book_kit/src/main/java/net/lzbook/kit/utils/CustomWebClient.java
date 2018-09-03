@@ -236,7 +236,7 @@ public class CustomWebClient extends WebViewClient {
             webSetting.setLayoutAlgorithm(LayoutAlgorithm.NORMAL);
             webSetting.setRenderPriority(RenderPriority.HIGH);// 提高渲染的优先级
 
-            webSetting.setBlockNetworkImage(false); // 图片下载阻塞
+            webSetting.setBlockNetworkImage(true); // 图片下载阻塞
             webSetting.setUseWideViewPort(true);//FIXME
         }
 

@@ -12,6 +12,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 import net.lzbook.kit.app.BaseBookApplication
@@ -31,9 +32,10 @@ import kotlin.collections.LinkedHashMap
 /**
  * Created by qiantao on 2017/11/14 0014
  */
-class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
+open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShelfView> {
 
     var iBookList: ArrayList<Book> = ArrayList()
+
 
     private val adBookMap = LinkedHashMap<Int, Book>()
 
@@ -63,7 +65,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     fun addUpdateTask(updateCallBack: UpdateCallBack) {
 
-        val count =  RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
+        val count = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
 
         if (count > 0 && updateService != null) {
             val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadReadBooks()
@@ -76,7 +78,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     fun queryBookListAndAd(activity: Activity, isShowAD: Boolean, isList: Boolean) {
         val adCount = calculationShelfADCount(isShowAD, isList)
-
         if (isShowAD && iBookList.isNotEmpty()) {
 
             if (isList) {
@@ -114,8 +115,12 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
         if (books != null) {
-            iBookList.removeAll {
-                it.item_type != 2
+            if(isList){
+                iBookList.removeAll {
+                    it.item_type != 2
+                }
+            }else{
+                iBookList.clear()
             }
 
             if (books.isEmpty()) {
@@ -195,6 +200,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                         view?.onAdRefresh()
                     }
                 }
+
                 override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
                     runOnMain {
                         handleADResult(views)
@@ -207,10 +213,14 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
 
     }
 
+
     /***
      * 处理书架列表中广告请求结果。返回结果先保存到adBookMap中，再添加或更新到列表中
      * **/
     private fun handleADResult(views: List<ViewGroup>) {
+        val adViews = ArrayList<ViewGroup>()
+        adViews.addAll(views)
+
         var index = 0
 
         val iterator = adBookMap.entries.iterator()
@@ -220,8 +230,8 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
         while (iterator.hasNext()) {
             val entry = iterator.next()
             if (entry.key < size && entry.value.item_view == null) {
-                if (index < views.size) {
-                    entry.value.item_view = views[index]
+                if (index < adViews.size) {
+                    entry.value.item_view = adViews[index]
 
                     if (iBookList[entry.key].item_type == 1) {
                         iBookList[entry.key].item_view = entry.value.item_view
@@ -236,7 +246,6 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             }
         }
     }
-
 
     /***
      * 获取九宫格顶部广告
@@ -272,6 +281,16 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
      * **/
     fun deleteBooks(deleteBooks: java.util.ArrayList<Book>, onlyDeleteCache: Boolean) {
         val size = deleteBooks.size
+
+        // 书架上书籍数量
+        val bookCount = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBookCount()
+
+        // 清除当前阅读书籍状态
+        if (bookCount.toInt() == size) {
+            val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            sp.putString(SharedPreUtil.CURRENT_READ_BOOK, "")
+        }
+
         doAsync {
             val stringBuilder = StringBuilder()
             for (i in 0 until size) {
@@ -288,6 +307,10 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
                     BaseBookHelper.removeChapterCacheFile(it)
                 }
             } else {
+                deleteBooks.forEach {
+                    CacheManager.remove(it.book_id)
+                    BaseBookHelper.removeChapterCacheFile(it)
+                }
                 RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBooks(deleteBooks)
             }
 
@@ -297,6 +320,7 @@ class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<BookShe
             }
 
             BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)
+
         }
     }
 

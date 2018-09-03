@@ -34,7 +34,7 @@
             android:background="@drawable/reader_option_seek_bar_bg"
             android:maxHeight="3dp"
             android:minHeight="3dp"
-            android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
+            android:progressDrawable="@drawable/reader_option_progress_bg"
             android:splitTrack="false"
             android:thumb="@drawable/reader_option_seek_bar_thumb_icon"/>
 

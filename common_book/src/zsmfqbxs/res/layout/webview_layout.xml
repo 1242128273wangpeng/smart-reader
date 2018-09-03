@@ -10,7 +10,7 @@
         android:id="@+id/rl_content_head"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="@color/top_navigation_bg_color">
+        android:background="@color/primary">
 
         <ImageView
             android:id="@+id/img_head_setting"
@@ -20,7 +20,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/home_head_setting"/>
+            android:src="@drawable/home_head_setting"/>
 
         <net.lzbook.kit.book.view.FirstUsePointView
             android:id="@+id/fupv_head_setting"
@@ -38,7 +38,7 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:text="书架"
-            android:textColor="@color/top_navigation_text_color"
+            android:textColor="@color/white"
             android:textSize="18sp"/>
 
 
@@ -50,7 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="13.5dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/home_head_download"/>
+            android:src="@drawable/home_head_download"/>
 
         <ImageView
             android:id="@+id/img_head_search"
@@ -60,7 +60,7 @@
             android:layout_marginRight="21dp"
             android:layout_toLeftOf="@+id/img_head_download_manage"
             android:scaleType="fitXY"
-            android:src="@mipmap/home_head_search"/>
+            android:src="@drawable/home_head_search"/>
 
     </RelativeLayout>
 

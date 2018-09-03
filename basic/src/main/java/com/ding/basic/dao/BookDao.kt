@@ -28,6 +28,9 @@ interface BookDao :BaseDao<Book>{
     @Query("DELETE FROM book WHERE book_id = :book_id")
     fun deleteBook(book_id: String): Int
 
+    @Query("DELETE FROM book WHERE id = :id")
+    fun deleteBookById(id: Int): Int
+
     @Query("SELECT * FROM book WHERE book_id = :book_id")
     fun loadBook(book_id: String): Book?
 

@@ -29,7 +29,7 @@
         <item name="android:layout_marginLeft">@dimen/dimen_margin_20</item>
         <item name="android:layout_marginRight">@dimen/dimen_margin_24</item>
         <item name="android:layout_marginTop">30dp</item>
-        <item name="android:drawableRight">@mipmap/board_more_nor_icon</item>
+        <item name="android:drawableRight">@drawable/board_more_nor_icon</item>
         <item name="android:textSize">@dimen/text_size_normal</item>
         <item name="android:textColor">@color/text_color_dark</item>
     </style>
@@ -57,7 +57,7 @@
     <style name="Style_Setting_Line_View">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0.5dp</item>
-        <item name="android:background">@color/color_divider</item>
+        <item name="android:background">@color/divider_bg</item>
     </style>
 
 

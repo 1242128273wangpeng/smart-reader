@@ -1,15 +1,16 @@
 package com.ding.basic.bean
 
 import com.google.gson.annotations.Expose
+import java.io.Serializable
+
 
 /**
- * @author lijun Lee
- * @desc 搜索热词
- * @mail jun_li@dingyuegroup.cn
- * @data 2017/12/4 14:18
+ * Function：搜索热词(二期)
+ *
+ * Created by JoannChen on 2018/7/19 0019 16:20
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
-
-class HotWordBean {
+class HotWordBean : Serializable {
 
     var keywordType: Int = 0
     var keyword: String? = null

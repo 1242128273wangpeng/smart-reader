@@ -1,6 +1,7 @@
 package com.intelligent.reader.activity
 
 import android.os.Bundle
+import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
 import com.intelligent.reader.widget.PushTimeDialog
 import iyouqu.theme.BaseCacheableActivity
@@ -38,7 +39,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
     private fun initData() {
         settingItemsHelper = SettingItemsHelper.getSettingHelper(applicationContext)
         settingItems = settingItemsHelper.values
-        btn_push.isChecked = settingItems.isPush
+        btn_push.isChecked = settingItems.isUmengPush
         btn_push_sound.isChecked = settingItems.isSoundOpen
         btn_push_time.isChecked = settingItems.isSetPushTime
         txt_push_time_setting.isEnabled = btn_push_time.isChecked
@@ -49,6 +50,16 @@ class SettingMoreActivity : BaseCacheableActivity() {
             txt_push_time_setting.text = "全天推送"
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
     }
 
     private fun initListener() {
@@ -110,7 +121,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
             btn_push_time.isEnabled = status
         }
 
-        settingItemsHelper.putBoolean(settingItemsHelper.openPush, status)
+        settingItemsHelper.putBoolean(settingItemsHelper.openPushSound, status)
 
         setPushSound(status, status)
         setPushTime(status, status)

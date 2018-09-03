@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/catalog_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:id="@+id/novel_catalog_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:orientation="vertical"
+      >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+
+                <ImageView
+                    android:id="@+id/catalog_novel_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@drawable/icon_back_left" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_view_height_50"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/tab_catalog"
+                        android:layout_width="125dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/directory_top_selector"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:text="@string/read_catalog"
+                        android:textColor="@drawable/directory_top_text" />
+
+                    <RadioButton
+                        android:id="@+id/tab_bookmark"
+                        android:layout_width="125dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/directory_top_selector"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:text="@string/read_bookmark"
+                        android:textColor="@drawable/directory_top_text" />
+                </RadioGroup>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_catalog_novel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_view_height_60"
+            android:layout_marginTop="@dimen/dimen_margin_10">
+
+            <TextView
+                android:id="@+id/catalog_novel_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/iv_catalog_novel_sort"
+                android:layout_toStartOf="@+id/iv_catalog_novel_sort"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:singleLine="true"
+                android:text="@string/app_name"
+                android:textColor="@color/color_black_323232"
+                android:textSize="@dimen/dimen_text_16" />
+
+            <TextView
+                android:id="@+id/catalog_chapter_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/catalog_novel_name"
+                android:layout_marginTop="@dimen/dimen_margin_10"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:text="@string/app_name"
+                android:textColor="@color/color_black_595858"
+                android:textSize="@dimen/dimen_text_13" />
+
+            <ImageView
+                android:id="@+id/iv_catalog_novel_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dimen_padding_15"
+                android:paddingRight="@dimen/dimen_padding_15"
+                android:src="@mipmap/dir_sort_negative" />
+
+            <TextView
+                android:id="@+id/tv_catalog_novel_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/iv_catalog_novel_sort"
+                android:paddingLeft="@dimen/dimen_padding_15"
+                android:paddingRight="@dimen/dimen_padding_15"
+                android:paddingTop="@dimen/dimen_padding_10"
+                android:text="@string/catalog_negative"
+                android:textColor="@color/color_black_595858"
+                android:textSize="@dimen/dimen_text_12" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/catalog_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recl_catalog_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layerType="software" />
+
+            <com.dy.reader.view.RecyclerViewFastScroller
+                android:id="@+id/reclfs_catalog_scroll"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recl_bookmark_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layerType="software"
+                android:visibility="gone" />
+
+            <include layout="@layout/layout_empty_catalog" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/catalog_empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_marginTop="@dimen/dimen_margin_70"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/read_catalog_error"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/dimen_text_16" />
+
+            <TextView
+                android:id="@+id/catalog_empty_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_margin_25"
+                android:layout_marginRight="@dimen/dimen_margin_25"
+                android:layout_marginTop="@dimen/dimen_margin_40"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_padding_10"
+                android:paddingTop="@dimen/dimen_padding_10"
+                android:text="@string/novel_click_refresh"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/dimen_text_14" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/char_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="160dp"
+        android:background="@drawable/char_hint_bg"
+        android:gravity="center"
+        android:maxWidth="200dip"
+        android:minWidth="200dip"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+
+    <ImageView
+        android:id="@+id/iv_fixbook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/cata_fixbook_img"
+        android:visibility="gone" />
+</FrameLayout>

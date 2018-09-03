@@ -1,138 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_white_ffffff"
-    android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/icon"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:src="@mipmap/directory_back" />
+            android:background="@color/white">
 
-        <TextView
-            android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/top_navigation_bg"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_vertical"
-            android:text="@string/debug_mode"
-            android:textColor="@color/color_text_most"
-            android:textSize="@dimen/dimen_text_17" />
-    </RelativeLayout>
+            android:background="@color/primary"
+            android:fitsSystemWindows="true"
+            android:focusableInTouchMode="true">
 
-    <RelativeLayout
-        android:id="@+id/rl_debug_start_params"
-        android:layout_width="match_parent"
-        android:layout_height="55dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_bar_height">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/icon"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:src="@drawable/icon_back_left"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/debug_mode"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimen_text_17"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_debug_start_params"
+            android:layout_width="match_parent"
+            android:layout_height="55dp">
+
+            <TextView
+                style="@style/Debug_Widget_Text"
+                android:text="@string/debug_start_params"/>
+
+            <net.lzbook.kit.book.view.SwitchButton
+                android:id="@+id/btn_debug_start_params"
+                style="@style/Debug_Widget_View"
+                app:sb_checked="true"
+                app:sb_checked_color="@color/debug_switch_bg_checked_color"
+                app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
+                app:sb_show_indicator="false"
+                app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+                app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp">
+
+            <TextView
+                style="@style/Debug_Widget_Text"
+                android:text="@string/debug_pre_show_ad"/>
+
+            <net.lzbook.kit.book.view.SwitchButton
+                android:id="@+id/btn_debug_pre_show_ad"
+                style="@style/Debug_Widget_View"
+                app:sb_checked_color="@color/debug_switch_bg_checked_color"
+                app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
+                app:sb_show_indicator="false"
+                app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+                app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp">
+
+            <TextView
+                style="@style/Debug_Widget_Text"
+                android:text="@string/debug_reset_book_shelf"/>
+
+            <net.lzbook.kit.book.view.SwitchButton
+                android:id="@+id/btn_debug_reset_book_shelf"
+                style="@style/Debug_Widget_View"
+                app:sb_checked_color="@color/debug_switch_bg_checked_color"
+                app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
+                app:sb_show_indicator="false"
+                app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+                app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp">
+
+            <TextView
+                style="@style/Debug_Widget_Text"
+                android:text="@string/debug_update_chapter"/>
+
+            <net.lzbook.kit.book.view.SwitchButton
+                android:id="@+id/btn_debug_update_chapter"
+                style="@style/Debug_Widget_View"
+                app:sb_checked_color="@color/debug_switch_bg_checked_color"
+                app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
+                app:sb_show_indicator="false"
+                app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+                app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp">
+
+            <TextView
+                style="@style/Debug_Widget_Text"
+                android:text="@string/debug_show_toast"/>
+
+            <net.lzbook.kit.book.view.SwitchButton
+                android:id="@+id/btn_debug_show_toast"
+                style="@style/Debug_Widget_View"
+                app:sb_checked_color="@color/debug_switch_bg_checked_color"
+                app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
+                app:sb_show_indicator="false"
+                app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+                app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
+
+        </RelativeLayout>
 
         <TextView
+            android:id="@+id/tv_api"
             style="@style/Debug_Widget_Text"
-            android:text="@string/debug_start_params" />
+            android:layout_height="55dp"
+            android:text="@string/debug_api_host"/>
 
-        <net.lzbook.kit.book.view.SwitchButton
-            android:id="@+id/btn_debug_start_params"
-            style="@style/Debug_Widget_View"
-            app:sb_checked="true"
-            app:sb_checked_color="@color/debug_switch_bg_checked_color"
-            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
-            app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp">
 
         <TextView
+            android:id="@+id/tv_web"
             style="@style/Debug_Widget_Text"
-            android:text="@string/debug_pre_show_ad" />
-
-        <net.lzbook.kit.book.view.SwitchButton
-            android:id="@+id/btn_debug_pre_show_ad"
-            style="@style/Debug_Widget_View"
-            app:sb_checked_color="@color/debug_switch_bg_checked_color"
-            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
-            app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp">
+            android:layout_height="55dp"
+            android:text="@string/debug_web_host"/>
 
         <TextView
+            android:id="@+id/tv_micro"
             style="@style/Debug_Widget_Text"
-            android:text="@string/debug_reset_book_shelf" />
-
-        <net.lzbook.kit.book.view.SwitchButton
-            android:id="@+id/btn_debug_reset_book_shelf"
-            style="@style/Debug_Widget_View"
-            app:sb_checked_color="@color/debug_switch_bg_checked_color"
-            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
-            app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp">
+            android:layout_height="55dp"
+            android:text="@string/debug_micro_host"/>
 
         <TextView
+            android:id="@+id/tv_micro_content"
             style="@style/Debug_Widget_Text"
-            android:text="@string/debug_update_chapter" />
-
-        <net.lzbook.kit.book.view.SwitchButton
-            android:id="@+id/btn_debug_update_chapter"
-            style="@style/Debug_Widget_View"
-            app:sb_checked_color="@color/debug_switch_bg_checked_color"
-            app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
-            app:sb_show_indicator="false"
-            app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
-            app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_api"
-        style="@style/Debug_Widget_Text"
-        android:layout_height="55dp"
-        android:text="@string/debug_api_host" />
+            android:layout_height="55dp"
+            android:text="@string/debug_micro_content_host"/>
 
 
-    <TextView
-        android:id="@+id/tv_web"
-        style="@style/Debug_Widget_Text"
-        android:layout_height="55dp"
-        android:text="@string/debug_web_host" />
-
-    <TextView
-        android:id="@+id/tv_micro"
-        style="@style/Debug_Widget_Text"
-        android:layout_height="55dp"
-        android:text="@string/debug_micro_host" />
-
-    <TextView
-        android:id="@+id/tv_micro_content"
-        style="@style/Debug_Widget_Text"
-        android:layout_height="55dp"
-        android:text="@string/debug_micro_content_host" />
-
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

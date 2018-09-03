@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.InflateException
 import android.view.LayoutInflater
@@ -17,13 +18,12 @@ import com.ding.basic.bean.SearchHotBean
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
-import com.intelligent.reader.presenter.search.SearchHelpYouHuaPresenter
-import com.intelligent.reader.presenter.search.SearchPresenter
-import com.intelligent.reader.presenter.search.SearchView
+import com.intelligent.reader.search.SearchHelpYouHuaPresenter
+import com.intelligent.reader.search.SearchPresenter
+import com.intelligent.reader.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.utils.StatServiceUtils
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {
@@ -71,6 +71,14 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         initSuggestListView()
     }
 
+    /**
+     * 返回isFocus 和 isBackSearch 的值，以此来确定searchBookActivity页面显示的模块
+     *
+     * @return
+     */
+    fun getShowStatus(): Boolean {
+        return mSearchHelpPresenter != null && !mSearchHelpPresenter!!.isBackSearch && mSearchHelpPresenter!!.isFocus
+    }
 
     fun setShowHintEnabled(showHint: Boolean) {
         mShouldShowHint = showHint
@@ -146,10 +154,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private fun initHistoryMain(context: Context) {
         mHistoryListView = ListView(context)
         if (mHistoryListView != null && mResources != null) {
-            mHistoryListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
-            val typeColor = R.color.color_gray_e8e8e8
-//            mHistoryListView!!.divider = mResources!!.getDrawable(typeColor)typeColor
-//            mHistoryListView!!.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
+            mHistoryListView!!.cacheColorHint = ContextCompat.getColor(mContext!!,R.color.transparent)
             mHistoryListView!!.divider = null
             mHistoryListView!!.dividerHeight = 0
             mHistoryListView!!.setHeaderDividersEnabled(false)
@@ -157,7 +162,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
 
         mHistoryDataListView = ListView(context)
-        mHistoryDataListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
+        mHistoryDataListView!!.cacheColorHint =  ContextCompat.getColor(mContext!!,R.color.transparent)
         mHistoryDataListView!!.divider = null
         mHistoryDataListView!!.dividerHeight = 0
         mHistoryDataListView!!.setHeaderDividersEnabled(false)
@@ -254,9 +259,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         if (mSuggestListView == null)
             return
         mSuggestListView!!.cacheColorHint = mResources!!.getColor(R.color.transparent)
-        val typeColor = R.color.color_gray_e8e8e8
-//        mSuggestListView!!.divider = mResources!!.getDrawable(typeColor)
-//        mSuggestListView!!.dividerHeight = AppUtils.dip2px(mContext, 0.5f)
         mSuggestListView!!.dividerHeight = 0
         mSuggestListView!!.divider = null
         mSuggestListView!!.setSelector(R.drawable.item_selector_white)
@@ -283,7 +285,11 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             if (mSearchEditText != null) {
                 mSearchHelpPresenter?.onSuggestItemClick(mContext, mSearchEditText!!.text.toString().trim { it <= ' ' }, arg2)
                 mShouldShowHint = false
-                mSearchEditText!!.setText(mSearchHelpPresenter?.getCurrSuggestData())
+                mSearchEditText?.setText(mSearchHelpPresenter?.getCurrSuggestData())
+                if(mSearchHelpPresenter?.getCurrSuggestData() != null){
+                    mSearchEditText?.setSelection(mSearchHelpPresenter?.getCurrSuggestData()?.length!!)
+                }
+
             }
 
             if (mSearchPresenter != null) {
@@ -331,10 +337,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         tv_clear_history_search_view = mHistoryHeadersTitle?.findViewById(R.id
                 .tv_clear_history_search_view)
 
-//        if (mHistoryListView != null) {
-//            mHistoryListView!!.addHeaderView(mHistoryHeadersTitle)
-//        }
-
         if (tv_clear_history_search_view == null)
             return
         tv_clear_history_search_view!!.setOnClickListener {
@@ -348,7 +350,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mShouldShowHint = false
         if (mSearchEditText != null) {
             mSearchEditText!!.setText(word)
-            //            mSearchEditText.setSelection(mSearchEditText.length());
+            mSearchEditText!!.setSelection(mSearchEditText!!.length())
         }
         mShouldShowHint = true
         addHistoryWord(word)
@@ -365,7 +367,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         mSearchHelpPresenter?.resetHotWordList(mContext!!)
     }
 
-    override fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    override fun onSearchResult(suggestList: List<Any>, transmitBean: SearchAutoCompleteBeanYouHua) {
         mSearchHelpPresenter?.onSearchResult(suggestList, transmitBean)
     }
 
@@ -375,7 +377,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
 
     interface OnHistoryClickListener {
-        fun OnHistoryClick(history: String?, searchType: String?)
+        fun OnHistoryClick(history: String?, searchType: String?,isAuthor: Int)
     }
 
     fun clear() {
@@ -466,9 +468,9 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         }
     }
 
-    override fun onStartSearch(searchWord: String?, searchType: String?) {
+    override fun onStartSearch(searchWord: String?, searchType: String?,isAuthor: Int) {
         if (mOnHistoryClickListener != null) {
-            mOnHistoryClickListener!!.OnHistoryClick(searchWord, searchType)
+            mOnHistoryClickListener!!.OnHistoryClick(searchWord, searchType,isAuthor)
         }
     }
 
@@ -504,7 +506,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         var inputString: String? = ""
         if (mSearchEditText != null) {
             val editable = mSearchEditText!!.text
-            if (editable != null && editable.length > 0) {
+            if (editable != null && editable.isNotEmpty()) {
                 inputString = editable.toString()
             }
         }

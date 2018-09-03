@@ -1,4 +1,4 @@
-package com.intelligent.reader.reader.v2
+package com.dy.reader.page
 
 import android.content.res.Configuration
 import android.graphics.*
@@ -8,17 +8,17 @@ import android.view.View
 import com.dy.reader.data.DataProvider
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.helper.DrawTextHelper
-import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import net.lzbook.kit.utils.runOnMain
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicBoolean
 import android.graphics.Bitmap
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
+import com.dy.reader.helper.INDEX_TEXTURE_ID
+import com.dy.reader.helper.glCheckErr
 import net.lzbook.kit.utils.AppLog
 
 
@@ -162,9 +162,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                                     position.offset = lastPosition.offset
 
                                     if (textureID == -1) {
-                                        textureID = loadTexture(bitmap!!)[INDEX_TEXTURE_ID]
+                                        textureID = com.dy.reader.helper.loadTexture(bitmap!!)[INDEX_TEXTURE_ID]
                                     } else {
-                                        loadTexture(bitmap!!, textureID)
+                                        com.dy.reader.helper.loadTexture(bitmap!!, textureID)
                                     }
 
 
@@ -196,11 +196,14 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
                 adBean?.view?.apply {
                     if (this.parent != null) {
-                        this.buildDrawingCache()
-                        var copy:Bitmap? = null
+                        var copy: Bitmap? = null
                         try {
+                            this.buildDrawingCache()
                             copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
-                        }catch (e:Exception){
+                        } catch (e: OutOfMemoryError) {
+                            e.printStackTrace()
+                            Glide.get(Reader.context).clearMemory()
+                        } catch (e: Exception) {
                             e.printStackTrace()
                             Glide.get(Reader.context).clearMemory()
                         }
@@ -213,11 +216,14 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                         }
                         ReadMediaManager.frameLayout?.addView(this)
                         ReadMediaManager.frameLayout?.post {
-                            this.buildDrawingCache()
-                            var copy:Bitmap? = null
+                            var copy: Bitmap? = null
                             try {
+                                this.buildDrawingCache()
                                 copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
-                            }catch (e:Exception){
+                            } catch (e: OutOfMemoryError) {
+                                e.printStackTrace()
+                                Glide.get(Reader.context).clearMemory()
+                            } catch (e: Exception) {
                                 e.printStackTrace()
                                 Glide.get(Reader.context).clearMemory()
                             }
@@ -260,10 +266,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             canvas?.drawColor(Color.WHITE)
 
             if (ReaderSettings.instance.readThemeMode == 51) {
-                ReaderSettings.instance.backgroundBitmap?.let {
-                    canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
-                            Rect(0, 0, canvas!!.width, canvas!!.height),
-                            null)
+                ReaderSettings.instance.backgroundDrawable?.let {
+                    it.setBounds(0, 0, canvas!!.width, canvas!!.height)
+                    it.draw(canvas)
                 }
             } else {
                 canvas?.drawColor(ReaderSettings.instance.backgroundColor)

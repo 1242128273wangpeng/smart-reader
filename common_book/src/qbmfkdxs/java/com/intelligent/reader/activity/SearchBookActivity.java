@@ -23,6 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.util.SearchViewHelper;
@@ -30,7 +33,6 @@ import com.intelligent.reader.util.SearchViewHelper;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.HWEditText;
 import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.data.db.BookDaoHelper;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
@@ -43,6 +45,7 @@ import java.util.Map;
 import iyouqu.theme.FrameActivity;
 
 
+@Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
         TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall {
 
@@ -61,7 +64,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private WebView search_result_content;
     private FrameLayout search_result_hint;
     private SearchViewHelper searchViewHelper;
-    private BookDaoHelper bookDaoHelper;
     private Handler handler = new Handler();
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
@@ -219,9 +221,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             searchViewHelper.setSearchWord(mSearchHelper.getWord());
         }
 
-        if (bookDaoHelper == null) {
-            bookDaoHelper = BookDaoHelper.getInstance();
-        }
     }
 
     private void loadDataFromNet() {
@@ -248,7 +247,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             if (loadingPage == null){
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
-            mSearchHelper.startLoadData();
+            mSearchHelper.startLoadData(0);
 
         } else {
             showSearchViews();
@@ -552,7 +551,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                     keyword = search_result_input.getText().toString();
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim())) {
-                    showToastShort(R.string.search_click_check_isright);
+                    CommonUtil.showToastMessage(R.string.search_click_check_isright);
                 } else {
                     hideInputMethod(search_result_input);
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim()) && searchViewHelper != null) {
@@ -691,7 +690,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 keyword = search_result_input.getText().toString();
             }
             if (keyword != null && keyword.trim().equals("")) {
-                showToastShort(R.string.search_click_check_isright);
+                CommonUtil.showToastMessage(R.string.search_click_check_isright);
             } else {
 
                 hideInputMethod(v);

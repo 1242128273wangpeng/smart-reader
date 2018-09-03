@@ -80,7 +80,7 @@ public abstract class BaseBookHelper {
         String newPath = ReplaceConstants.getReplaceConstants().APP_PATH_BOOK + book.getBook_id();
         FileUtils.deleteDir(new File(newPath));
 
-        if (Constants.QG_SOURCE.equals(book.getHost())) {
+        if (book.fromQingoo()) {
             removeQGChaptersCacheFile(book.getBook_id());
         }
     }

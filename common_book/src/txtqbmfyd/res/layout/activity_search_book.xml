@@ -23,7 +23,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_16"
-                    android:src="@mipmap/nbar_back_icon"/>
+                    android:src="@drawable/nbar_back_icon"/>
 
             <RelativeLayout
                     android:id="@+id/search_result_outcome"
@@ -53,13 +53,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dimen_margin_12"
                         android:layout_marginRight="@dimen/dimen_margin_10"
                         android:layout_toLeftOf="@id/search_result_count"
                         android:gravity="center|left"
                         android:singleLine="true"
                         android:textColor="@color/search_input_text_color"
-                        android:textSize="@dimen/dimen_text_16"/>
+                        android:textSize="14sp"/>
             </RelativeLayout>
 
 
@@ -112,7 +111,7 @@
                     android:paddingLeft="@dimen/dimen_padding_7"
                     android:paddingRight="@dimen/dimen_padding_12"
                     android:layout_alignParentRight="true"
-                    android:src="@mipmap/nbar_search_nor_icon"/>
+                    android:src="@drawable/nbar_search_nor_icon"/>
         </RelativeLayout>
     </RelativeLayout>
 

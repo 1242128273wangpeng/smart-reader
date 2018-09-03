@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="enter_community">讨论区升级中，敬请期待！</string>
+    <string name="style_change_1">很腹黑</string>
+    <string name="style_change_2">有点黄</string>
+    <string name="style_change_3">静默黑</string>
+    <string name="style_change_4">海洋蓝</string>
+
+    <string-array name="nav_bottom_text">
+        <item>书架</item>
+        <item>推荐</item>
+        <item>榜单</item>
+        <item>分类</item>
+    </string-array>
+    <string-array name="nav_bottom_icon">
+        <item>@drawable/home_tab_select_bookshelf</item>
+        <item>@drawable/home_tab_select_recommend</item>
+        <item>@drawable/home_tab_select_ranking</item>
+        <item>@drawable/home_tab_select_category</item>
+    </string-array>
+    <string name="download_app_nofify_title">缓存已开始</string>
+
+</resources>

@@ -4,41 +4,57 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFFFF"
+    android:background="@color/white"
     android:orientation="vertical"
+    android:paddingTop="0dp"
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
+        android:id="@+id/rl_title_book_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1fb7c3"
         android:fitsSystemWindows="true">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp">
+            android:layout_height="48dp"
+            android:fitsSystemWindows="true">
 
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
-                android:contentDescription="@string/module_name"
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:src="@drawable/common_back_icon"/>
+                android:src="@drawable/icon_back"/>
 
             <TextView
                 android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:gravity="center"
                 android:singleLine="true"
-                android:textColor="#FFFFFFFF"
-                android:textSize="18sp"
-                tools:text="@string/default_title"/>
+                android:text="@string/read_end_tip"
+                android:textColor="#000000"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/txt_change_source"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/change_source"
+                android:textColor="@color/primary"
+                android:textSize="14sp"/>
+
         </RelativeLayout>
     </RelativeLayout>
 
@@ -47,61 +63,42 @@
         android:layout_height="0.5dp"
         android:background="#E8E8E8"/>
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
 
         <LinearLayout
+            android:id="@+id/over_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/rl_book_end_ad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="5dp"
-                android:visibility="gone">
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/txt_prompt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:gravity="left|center"
-                android:textColor="#FF323232"
-                android:textSize="16sp"
-                tools:text="@string/default_message"/>
+            <include
+                android:id="@+id/ll_recommend"
+                layout="@layout/layout_book_end_recommend_books"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="#FFE8E8E8"/>
+                android:layout_marginTop="@dimen/dimen_view_height_16"
+                android:background="#E8E8E8"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rl_source"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFFFFFFF"/>
+            <include
+                android:id="@+id/ll_new_book"
+                layout="@layout/layout_book_end_new_books"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="20dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
 
@@ -118,7 +115,7 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
 
@@ -134,10 +131,21 @@
                 </LinearLayout>
             </LinearLayout>
 
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:background="#FFF5F5F5"/>
+                android:layout_height="0.5dp"
+                android:layout_marginTop="22dp"
+                android:background="#E8E8E8"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_book_end_ad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

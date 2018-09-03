@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <net.lzbook.kit.book.view.NonSwipeViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/content_tab_selection"
+        android:layout_below="@id/bookshelf_search_view"
+        android:layout_weight="1"
+        android:background="@color/color_white_fafafa"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
+
+    <ImageView
+        android:id="@+id/img_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/ll_home_tab"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_shadow_bg" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs_nav"
+        style="@style/Widget.Design.TabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_nav"
+        android:layout_gravity="bottom"
+        android:background="#ffffff"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp" />
+
+</LinearLayout>

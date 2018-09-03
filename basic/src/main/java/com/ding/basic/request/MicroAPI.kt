@@ -15,7 +15,7 @@ import kotlin.properties.Delegates
  * Created on 2018/3/13.
  * Created by crazylei.
  */
-internal object MicroAPI {
+object MicroAPI {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(MicroRequestInterceptor()).build()
 
@@ -25,7 +25,7 @@ internal object MicroAPI {
         initMicroService()
     }
 
-    private fun initMicroService() {
+    fun initMicroService() {
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -38,6 +38,10 @@ internal object MicroAPI {
 
     fun requestAuthAccess(): Flowable<BasicResult<String>>? {
         return microService.requestAuthAccess()
+    }
+
+    fun requestAuthAccessSync(): Call<BasicResult<String>> {
+        return microService.requestAuthAccessSync()
     }
 
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
@@ -60,5 +64,10 @@ internal object MicroAPI {
 
     fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
         return microService.requestBookUpdate(requestBody)
+    }
+
+    fun requestDownTaskConfig(bookID: String, bookSourceID: String
+                              , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
+        return microService.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 }

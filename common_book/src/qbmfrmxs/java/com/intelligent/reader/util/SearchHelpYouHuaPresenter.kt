@@ -21,7 +21,6 @@ import com.intelligent.reader.presenter.search.SearchView
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
@@ -68,7 +67,8 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
                 val data = HashMap<String, String>()
                 data.put("keyword", history)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data)
+                data.put("rank", position.toString() + "")
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARLIST, data)
             }
         }
     }
@@ -125,7 +125,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
                 dialog.dismiss()
             })
 
-            if(!dialog.isShowing){
+            if (!dialog.isShowing) {
                 dialog.show()
             }
         }
@@ -139,7 +139,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), mHistoryDatas)
     }
 
-    private fun result(result: List<SearchCommonBean>) {
+    private fun result(result: List<SearchCommonBeanYouHua>) {
         if (mSuggestList == null)
             return
         mSuggestList!!.clear()
@@ -199,7 +199,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
                     helper.clearHistory()
                 }
 
-                20 -> helper.result(msg.obj as ArrayList<SearchCommonBean>)
+                20 -> helper.result(msg.obj as ArrayList<SearchCommonBeanYouHua>)
                 else -> {
                 }
             }

@@ -156,6 +156,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
+
+        //横向阅读 最后一章到完结页 点击返回 dialog不显示
+        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+        }
+
+
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
             if(lastOrientation != newConfig.orientation) {
@@ -197,7 +204,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
                 ReaderStatus.book.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+                if (ReaderStatus.book.fromQingoo()) {
                     ReaderStatus.book.channel_code = 1
                 } else {
                     ReaderStatus.book.channel_code = 2
@@ -247,8 +254,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus && !ReaderStatus.isMenuShow) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        } else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -333,7 +338,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean("isFromReadingPage", true)
+            bundle.putBoolean(RouterUtil.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -381,8 +386,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             if (ReaderStatus.position.group > -1) {
                 rl_reader_bottom.visibility = View.VISIBLE
                 rl_reader_header.visibility = View.VISIBLE
-                txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
+                txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
+                txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
                 if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
                     txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
                     EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_SUCCESS, null))
@@ -391,7 +396,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 rl_reader_bottom.visibility = View.GONE
                 rl_reader_header.visibility = View.GONE
             }
-            mReadPresenter?.checkManualDialogShow()
+            mReadPresenter.checkManualDialogShow()
         } else if (event.type == EventLoading.Type.RETRY) {
             showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
         } else if (event.type == EventLoading.Type.SUCCESS) {
@@ -456,7 +461,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 txt_reader_page.setTextColor(titleColor)
                 txt_reader_progress.setTextColor(titleColor)
                 txt_reader_chapter_name.setTextColor(titleColor)
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
                 BatteryView.update()
+            }
+            ReaderSettings.ConfigType.TITLE_COCLOR_REFRESH -> {
+                window.decorView.setBackgroundColor(ReaderSettings.instance.backgroundColor)
             }
             else -> Unit
         }
@@ -532,7 +541,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.loadAdComplete = null
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
-                        val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
+                        (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
                         pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2

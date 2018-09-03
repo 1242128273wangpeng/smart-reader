@@ -1,12 +1,15 @@
 package com.dy.reader.activity
 
 import android.os.Bundle
+import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
+import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.adapter.BookEndAdapter
@@ -17,101 +20,111 @@ import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkdxs.act_book_end.*
-import kotlinx.android.synthetic.qbmfkdxs.bookend_new_books_layout.*
-import kotlinx.android.synthetic.qbmfkdxs.bookend_recommend_books_layout.*
+import kotlinx.android.synthetic.qbmfkdxs.layout_book_end_new_books.*
+import kotlinx.android.synthetic.qbmfkdxs.layout_book_end_recommend_books.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.user.BookRecommender
+import net.lzbook.kit.utils.AppLog
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.BOOK_END_ACTIVITY)
-class BookEndActivity : BaseCacheableActivity(), BookEndContract {
+class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickListener {
 
     private var book: Book? = null
-    private var book_id: String? = null
-    private var book_name: String? = null
-    private var chapter_id: String? = null
+    private var bookId: String? = null
+    private var bookName: String? = null
+    //TODO 打点使用，目前完结页打点缺失，后期需要补充
+    private var bookChapterId: String? = null
 
-    private var sourceList: ArrayList<Source> = ArrayList()
+    private var loadingPage: LoadingPage? = null
+    private val sourceList: ArrayList<Source> = ArrayList()
+    private var bookRecommendsList: ArrayList<Book>? = null
 
-    private val changeSourceDialog by lazy {
-        BookEndChangeSourceDialog(this, object : SourceClickListener {
-            override fun clickedSource(source: Source) {
-                bookEndPresenter.clickedBookSource(source)
-            }
+    private var mRecommendBookAdapter: BookEndAdapter? = null
+    private var mNewBookAdapter: BookEndAdapter? = null
 
-        })
-    }
-
-    private val loadingPage by lazy {
-        LoadingPage(this, LoadingPage.setting_result)
-    }
+    /**
+     * 推荐书籍管理类：负责书架和书末页的推荐书籍管理
+     */
+    private var recommender: BookRecommender? = null
 
     private val bookEndPresenter: BookEndPresenter by lazy {
         BookEndPresenter(this, this)
     }
 
-    private val recommendBookAdapter: BookEndAdapter by lazy {
-        BookEndAdapter(this)
+    private val changeSourceDialog: BookEndChangeSourceDialog by lazy {
+        BookEndChangeSourceDialog(this, this)
     }
-
-    private val newBookAdapter: BookEndAdapter by lazy {
-        BookEndAdapter(this)
-    }
-
-//    private var recommender: BookRecommender? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_book_end)
 
         initListener()
-
         initIntent()
-
-        loadBookSource()
-
+        initData()
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
     }
 
     private fun initListener() {
+
         iv_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, data)
+            val map = HashMap<String, String>()
+            map["type"] = "1"
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, map)
             finish()
         }
 
-//        txt_prompt.text = Html.fromHtml(resources.getString(R.string.book_end_prompt))
-
+        // 右上角换源按钮
         txt_change_source.setOnClickListener {
             if (sourceList.isEmpty()) {
                 showToastMessage("本书暂无其他来源")
             } else {
                 changeSourceDialog.show(sourceList)
             }
+            val map = HashMap<String, String>()
+            bookId?.let { map.put("bookid", it) }
+            bookChapterId?.let { map.put("chapterid", it) }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.SOURCECHANGE, map)
+
         }
 
-        tv_more_refresh.setOnClickListener {
-            refreshRecommendBooks()
-        }
 
-        tv_new_refresh.setOnClickListener {
-            refreshNewBooks()
-        }
-
+//        txt_prompt.text = Html.fromHtml(resources.getString(R.string.book_end_prompt))
+        // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             finish()
         }
 
+        //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             finish()
+        }
+        //喜欢这本书的人还喜欢（换一换）
+        txt_more_refresh.setOnClickListener {
+            refreshBooks1()
+            val refresh = java.util.HashMap<String, String>()
+            refresh.put("module", "1")
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.REPLACE, refresh)
+        }
+
+        //新锐好书抢先看（换一换）
+        txt_new_refresh.setOnClickListener {
+            refreshBooks2()
+            val refresh = java.util.HashMap<String, String>()
+            refresh.put("module", "2")
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.REPLACE, refresh)
         }
 
 
@@ -120,11 +133,11 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
     private fun initIntent() {
         if (intent != null) {
             book = intent.getSerializableExtra("book") as Book
-            book_id = intent.getStringExtra("book_id")
-            book_name = intent.getStringExtra("book_name")
-            chapter_id = intent.getStringExtra("chapter_id")
+            bookId = intent.getStringExtra("book_id")
+            bookName = intent.getStringExtra("book_name")
+            bookChapterId = intent.getStringExtra("chapter_id")
 
-            txt_title.text = book_name
+            txt_title.text = bookName
 
             if (book != null) {
                 ReaderStatus.book = book!!
@@ -137,12 +150,16 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
     }
 
 
-    private fun loadBookSource() {
+    private fun initData() {
+        loadingPage = LoadingPage(this, LoadingPage.setting_result)
 
         book?.let {
             bookEndPresenter.requestBookSource(it)
-            loadingPage.setReloadAction(Callable<Void> {
+            bookEndPresenter.requestRecommendV4(true, true, it.book_id)
+
+            loadingPage?.setReloadAction(Callable<Void> {
                 bookEndPresenter.requestBookSource(it)
+                bookEndPresenter.requestRecommendV4(true, true, it.book_id)
                 null
             })
         }
@@ -151,79 +168,53 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
 
     private fun initBookEndAD() {
-        //TODO 去 aar 添加新广告
-//        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
-//            if (isSuccess) {
-//                rl_book_end_ad.visibility = View.VISIBLE
-//                rl_book_end_ad.addView(view)
-//            } else {
-//                rl_book_end_ad.visibility = View.GONE
-//            }
-//        }
+        MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            if (isSuccess) {
+                rl_book_end_ad.visibility = View.VISIBLE
+                rl_book_end_ad.addView(view)
+            } else {
+                rl_book_end_ad.visibility = View.GONE
+            }
+        }
     }
 
-    private fun refreshRecommendBooks() {
-//        if (recommender != null) {
-//            val books = recommender!!.recommendBookendBooks1
-//            if (books != null) {
-//                recommendBookAdapter.setBooks(books)
-//                recommendBookAdapter.notifyDataSetChanged()
-//            } else {
-//                AppLog.e("test", "书籍已拿完，重新从后端获取")
-//                bookEndPresenter.loadRecommendBooks(true, false, bookId!!)
-//            }
-//        }
-        val refresh = HashMap<String, String>()
-        refresh.put("module", "1")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, 
-                StartLogClickUtil.REPLACE, refresh)
+
+    private fun refreshBooks1() {
+        if (recommender != null) {
+            val recommendBookendBooks1 = recommender!!.recommendBookendBooks1
+            if (recommendBookendBooks1 != null) {
+                mRecommendBookAdapter?.setBooks(recommendBookendBooks1)
+                mRecommendBookAdapter?.notifyDataSetChanged()
+            } else {
+                AppLog.e("test", "书籍已拿完，重新从后端获取")
+                bookEndPresenter.requestRecommendV4(true, false, bookId!!)
+            }
+        }
     }
 
-    private fun refreshNewBooks() {
-//        if (recommender != null) {
-//            val books = recommender!!.recommendBookendBooks2
-//            if (books != null) {
-//                newBookAdapter.setBooks(books)
-//                newBookAdapter.notifyDataSetChanged()
-//            } else {
-//                bookEndPresenter.loadRecommendBooks(false, true, bookId!!)
-//            }
-//        }
-        val data = HashMap<String, String>()
-        data.put("module", "2")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, 
-                StartLogClickUtil.REPLACE, data)
+    private fun refreshBooks2() {
+        if (recommender != null) {
+            val recommendBookendBooks2 = recommender!!.recommendBookendBooks2
+            if (recommendBookendBooks2 != null) {
+                mNewBookAdapter?.setBooks(recommendBookendBooks2)
+                mNewBookAdapter?.notifyDataSetChanged()
+            } else {
+                bookEndPresenter.requestRecommendV4(false, true, bookId!!)
+            }
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        MediaLifecycle.onResume()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        MediaLifecycle.onStart()
+    /***
+     * 隐藏LoadingPage
+     * **/
+    private fun dismissLoading() {
+        loadingPage?.onSuccess()
     }
-
-    override fun onPause() {
-        super.onPause()
-        MediaLifecycle.onPause()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        MediaLifecycle.onRestart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        MediaLifecycle.onStop()
-    }
-
 
     override fun onDestroy() {
-        super.onDestroy()
         MediaLifecycle.onDestroy()
+        super.onDestroy()
     }
 
 
@@ -231,40 +222,37 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
      * 展示来源信息
      * **/
     override fun showSourceList(sourceList: ArrayList<Source>) {
-//        if (sourceList.isNotEmpty()) {
-//            rl_source.visibility = View.VISIBLE
-//
-//            sourceAdapter = SourceAdapter(sourceList, this)
-//
-//            val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-//
-//            rl_source.adapter = sourceAdapter
-//
-//            rl_source.layoutManager = linearLayoutManager
-//
-//            rl_source.layoutParams.height = sourceList.size * resources.getDimensionPixelOffset(R.dimen.source_item_height)
-//        } else {
-//            rl_source.visibility = View.GONE
-//        }
-        if (sourceList.isNotEmpty()) {
-            this.sourceList.clear()
-            this.sourceList.addAll(sourceList)
+        this.sourceList.clear()
+        this.sourceList.addAll(sourceList)
+        dismissLoading()
+    }
+
+    override fun showRecommend(recommends: ArrayList<RecommendBean>?) {
+
+    }
+
+    override fun showRecommendV4(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
+        recommender = BookRecommender(recommendRes, Constants.sRecommendRateForBookend)
+        if (one) {
+            if (mRecommendBookAdapter == null) {
+                mRecommendBookAdapter = BookEndAdapter(this)
+            }
+            mRecommendBookAdapter?.setBooks(recommender!!.recommendBookendBooks1)
+            gv_recommend_book.adapter = mRecommendBookAdapter
         }
-
-        loadingPage.onSuccess()
+        if (two) {
+            if (mNewBookAdapter == null) {
+                mNewBookAdapter = BookEndAdapter(this)
+            }
+            mNewBookAdapter?.setBooks(recommender!!.recommendBookendBooks2)
+            gv_new_book.adapter = mNewBookAdapter
+        }
+        dismissLoading()
     }
 
-    override fun showRecommend(one: Boolean, two: Boolean, recommendRes: RecommendBooksEndResp) {
-//        recommender = BookRecommender(recommendRes, Constants.sRecommendRateForBookend)
-//        if (one) {
-//            recommendBookAdapter.setBooks(recommender!!.recommendBookendBooks1)
-//            gv_recommend_book.adapter = recommendBookAdapter
-//        }
-//        if (two) {
-//            newBookAdapter.setBooks(recommender!!.recommendBookendBooks2)
-//            gv_new_book.adapter = newBookAdapter
-//        }
-//        disLoading()
+    override fun clickedSource(source: Source) {
+        bookEndPresenter.clickedBookSource(source)
     }
+
 
 }

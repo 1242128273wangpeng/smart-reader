@@ -138,10 +138,18 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
     }
 
     public static List<Activity> getActivities() {
+        if (activities == null) {
+            activities = new LinkedList<>();
+        }
         return activities;
     }
 
-    private String getName(Context context) {
+    public static Boolean isInHome() {
+        Activity activity = getLatestActivity();
+        return activity != null && getName(activity).equals("HomeActivity");
+    }
+
+    private static String getName(Context context) {
         String contextString = context.toString();
         return contextString.substring(contextString.lastIndexOf(".") + 1, contextString.indexOf("@"));
     }

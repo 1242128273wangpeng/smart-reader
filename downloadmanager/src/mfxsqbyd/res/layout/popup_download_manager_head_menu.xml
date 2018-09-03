@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:id="@+id/ll_container"
+        android:layout_width="124dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/background_body_dialog"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_edit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/download_edit"
+            android:textColor="#5D646E"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/txt_sorting"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:text="@string/download_sort"
+            android:textColor="#5D646E"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="124dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        app:cornerRadius="4dp"/>
+
+</FrameLayout>

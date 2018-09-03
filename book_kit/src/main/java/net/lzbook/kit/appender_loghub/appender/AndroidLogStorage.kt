@@ -5,10 +5,9 @@ import com.ding.basic.bean.LocalLog
 import com.ding.basic.dao.LocalLogDao
 import com.ding.basic.database.LocalLogDataBase
 import com.dingyue.contract.util.CommonUtil
-import com.umeng.message.common.Const
+import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.ServerLog
-import net.lzbook.kit.appender_loghub.common.PLItemKey
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
@@ -64,10 +63,11 @@ class AndroidLogStorage {
             serverLog.putContent("wifi_mac", AppUtils.getWifiMacAddress(context))//WiFi-Mac地址
 
         }
-//
-//        if (Constants.SHOW_LOG) { //打点Toast
-//            CommonUtil.showToastMessage(serverLog.content.toString())
-//        }
+
+        val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+        if (sp.getBoolean(SharedPreUtil.SHOW_TOAST_LOG, false)) { //打点Toast
+            CommonUtil.showToastMessage(serverLog.content.toString())
+        }
 
         AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +
                 "2、手机型号:${AppUtils.getPhoneModel()}\n" +
@@ -205,8 +205,10 @@ class AndroidLogStorage {
             consumeSingleThread.execute {
                 AppLog.e(TAG, "consuming ${localLogList.size} $type logs")
                 val serverLogList: ArrayList<ServerLog> = ArrayList()
-                for (localLog in localLogList) {
-                    serverLogList.add(ServerLog(localLog.id, localLog.contentJson))
+                try {
+                    localLogList.mapTo(serverLogList) { ServerLog(it.id, it.contentJson) }
+                } catch (e: OutOfMemoryError) {
+                    e.printStackTrace()
                 }
                 AndroidLogClient.putLog(serverLogList)
             }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="@drawable/read_setting_background_press"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="12dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/bestSource_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:gravity="left"
+                android:singleLine="true"
+                android:text="[推荐]"
+                android:textColor="@color/theme_primary"
+                android:textSize="14sp"
+                />
+
+        <TextView
+                android:id="@+id/new_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="最新"
+                android:textColor="@color/reading_setting_text_color"
+                android:textSize="@dimen/text_size_14"/>
+        <!--<TextView
+                  android:id="@+id/bestSource_text"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:gravity="left"
+                  android:paddingLeft="0dp"
+                  android:singleLine="true"
+                  android:text="[最优源]"
+                  android:textColor="@color/color_orange_ff7d1a"
+                  android:textSize="@dimen/medium_size_16"
+                  android:visibility="gone"/>-->
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="12dp">
+
+        <TextView
+                android:id="@+id/site_text"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="shulou.com"
+                android:textColor="@color/reading_setting_text_info_color"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"/>
+
+        <TextView
+                android:id="@+id/time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:singleLine="true"
+                android:text="12天前更新"
+                android:textColor="@color/reading_setting_text_info_color"
+                android:textSize="12sp"/>
+    </LinearLayout>
+</LinearLayout>
