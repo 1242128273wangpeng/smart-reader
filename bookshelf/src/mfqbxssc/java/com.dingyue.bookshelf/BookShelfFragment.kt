@@ -302,7 +302,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 bookShelfAdapter.notifyDataSetChanged()
                 BookShelfLogger.uploadFirstOpenBooks()
             }
-
         }
     }
 

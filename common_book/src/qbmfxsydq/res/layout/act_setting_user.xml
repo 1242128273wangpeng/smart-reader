@@ -18,7 +18,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height">
+            android:layout_height="45dp">
             <!--通过Visiblie和gong来控制是否展现Textview的drawable展现-->
             <View
                 android:id="@+id/is_show_drawable"
@@ -541,7 +541,31 @@
                     android:visibility="gone"/>
 
                 <View
-                    android:id="@+id/v_divider10"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/color_divider"/>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="45dp">
+
+                <TextView
+                    android:id="@+id/tv_qrcode"
+                    style="@style/text_setting_style"
+                    android:drawablePadding="14dp"
+                    android:drawableRight="@mipmap/my_more"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/padding_12"
+                    android:paddingRight="@dimen/padding_12"
+                    android:text="@string/qr_code"
+                    android:textColor="@color/color_text_most"/>
+
+                <View
+                    android:id="@+id/v_dividerqr"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"

@@ -1,5 +1,6 @@
 package com.dy.reader.presenter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -31,6 +32,7 @@ import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils

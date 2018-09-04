@@ -63,7 +63,7 @@ class DynamicParameter(private val context: Context) {
                             mReqVersion = result.data!!
                             mCurVersion = mShareUtilDefault.getInt(SharedPreUtil.DYNAMIC_VERSION, -1)
                             AppLog.d("requestDynamicCheck", "mReqVersion = " + mReqVersion + "\nmCurVersion = " + mCurVersion)
-                            if (mCurVersion < mReqVersion) {
+                            if (mCurVersion != mReqVersion) {
                                 requestContent()
                             }
                         }

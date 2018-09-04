@@ -141,7 +141,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable  = {
+    val orientaionRunnable = {
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -167,7 +167,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            if(lastOrientation != newConfig.orientation) {
+            if (lastOrientation != newConfig.orientation) {
                 lastOrientation = newConfig.orientation
                 AppHelper.mainHandler.removeCallbacks(orientaionRunnable)
                 AppHelper.mainHandler.postDelayed(orientaionRunnable, 500)
@@ -247,6 +247,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         mReadPresenter.onResume()
+        MediaLifecycle.onResume()
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -256,8 +257,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         if (hasFocus && !ReaderStatus.isMenuShow) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        } else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
 
@@ -266,11 +265,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         isResume = false
         glSurfaceView.onPause()
         mReadPresenter.onPause()
+        MediaLifecycle.onPause()
     }
 
     override fun onStop() {
         super.onStop()
         mReadPresenter.onStop()
+        MediaLifecycle.onStop()
     }
 
 
@@ -348,7 +349,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 val uri = Uri.parse(url!!.trim { it <= ' ' })
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -511,10 +512,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //条件
-        if (pac_reader_ad != null) {
-            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
-        }
+        //如果夜间设置了alpha值之后, 视频将有重影
+//        if (pac_reader_ad != null) {
+//            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
+//        }
         if (ReaderStatus.currentChapter == null) return
         val mChapter = ReaderStatus.currentChapter!!
         val count = ReaderStatus.position.groupChildCount
@@ -529,7 +530,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (adView != null) {
             if (adView.loaded) {//加载成功
                 if (adView.view != null) {
-
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null
 
@@ -554,7 +554,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -584,6 +584,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private fun hideAd() {
         pac_reader_ad?.visibility = View.GONE
+        pac_reader_ad?.removeAllViews()
     }
 
     fun showLoadingDialog(type: LoadingDialogFragment.DialogType, retry: (() -> Unit)? = null) {
