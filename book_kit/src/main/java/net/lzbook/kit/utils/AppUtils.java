@@ -6,6 +6,7 @@ import static android.content.Context.TELEPHONY_SERVICE;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -1184,6 +1185,33 @@ public class AppUtils {
             // 未安装手Q或安装的版本不支持
             return false;
 
+        }
+
+    }
+
+    /**
+     * 一键复制粘贴
+     */
+
+    public static void copyText(String content, Context context) {
+
+        try {
+            String finalContent = content.trim();
+            int sdk = Build.VERSION.SDK_INT;
+            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                android.text.ClipboardManager clipboard =
+                        (android.text.ClipboardManager) context.getSystemService(
+                                Context.CLIPBOARD_SERVICE);
+                clipboard.setText(finalContent);
+            } else {
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(
+                        Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip_data = android.content.ClipData.newPlainText(
+                        "TSMS", finalContent);
+                clipboard.setPrimaryClip(clip_data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
