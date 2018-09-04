@@ -526,7 +526,7 @@ public class SplashActivity extends FrameActivity {
         if (ad_view == null) return;
         if (Constants.isHideAD) {
             AppLog.e(TAG, "Limited AD display!");
-            handler.sendEmptyMessage(0);
+            handler.sendEmptyMessageDelayed(0,2000);
             return;
         }
         if (isGo) {
