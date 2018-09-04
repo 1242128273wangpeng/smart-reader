@@ -125,7 +125,7 @@
                         android:layout_toRightOf="@id/book_cover_category"
                         android:text="-连载中"
                         android:textColor="@color/cover_gray98"
-                        android:textSize="@dimen/cover_page_author_text"/>
+                        android:textSize="13sp"/>
 
                     <TextView
                         android:id="@+id/book_cover_author"
@@ -136,7 +136,7 @@
                         android:layout_toRightOf="@id/frame"
                         android:text="望语"
                         android:textColor="@color/cover_gray98"
-                        android:textSize="@dimen/cover_page_author_text"/>
+                        android:textSize="13sp"/>
 
 
                     <TextView
@@ -264,7 +264,7 @@
                         android:drawableRight="@mipmap/cover_more_icon"
                         android:text="2 天前"
                         android:textColor="@color/cover_grayB9"
-                        android:textSize="@dimen/cover_page_author_text"/>
+                        android:textSize="13sp"/>
 
                     <TextView
                         android:id="@+id/book_cover_last_chapter"
@@ -314,7 +314,7 @@
                 <View
                     android:id="@+id/line4"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_below="@id/recycler_view_author"
                     android:layout_marginTop="@dimen/dimen_margin_20"
                     android:background="@color/color_divider"
@@ -391,7 +391,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_height_0.5"
+            android:layout_height="0.5dp"
             android:layout_above="@id/ll_tab"
             android:background="@color/color_divider"/>
 
@@ -404,6 +404,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_title_book_cover"
         android:scaleType="fitXY"
-        android:src="@mipmap/top_shadow"/>
+        android:src="@drawable/top_shadow"/>
 
 </RelativeLayout>

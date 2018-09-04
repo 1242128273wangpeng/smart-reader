@@ -24,14 +24,15 @@ import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
-import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.pointpage.EventPoint;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -183,16 +184,21 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 data.put("type", "1");
                 switch (fromType) {
                     case "class":
-                        DyStatService.onEvent(EventPoint.FIRSTCLASS_BACK, data);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
+                                StartLogClickUtil.BACK, data);
                         break;
                     case "top":
-                        DyStatService.onEvent(EventPoint.FIRSTTOP_BACK, data);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
+                                StartLogClickUtil.BACK, data);
                         break;
                     case "recommend":
-                        DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_BACK, data);
+                        StartLogClickUtil.upLoadEventLog(this,
+                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
+                                StartLogClickUtil.BACK, data);
                         break;
                     case "author":
-                        DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
+                                StartLogClickUtil.BACK, data);
                         break;
                 }
                 clickBackBtn();
@@ -204,15 +210,19 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 switch (fromType) {
                     case "class":
                         postData.put("firstclass", currentTitle);
-                        DyStatService.onEvent(EventPoint.FIRSTCLASS_SEARCH, postData);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
+                                StartLogClickUtil.SEARCH, postData);
                         break;
                     case "top":
                         postData.put("firsttop", currentTitle);
-                        DyStatService.onEvent(EventPoint.FIRSTTOP_SEARCH, postData);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
+                                StartLogClickUtil.SEARCH, postData);
                         break;
                     case "recommend":
                         postData.put("firstrecommend", currentTitle);
-                        DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, postData);
+                        StartLogClickUtil.upLoadEventLog(this,
+                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
+                                StartLogClickUtil.SEARCH, postData);
                         break;
                 }
 
@@ -440,7 +450,9 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", keyWord);
                     data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
-                    DyStatService.onEvent(EventPoint.SYSTEM_SEARCHRESULT, data);
+                    StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
+                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
+                            data);
 
                     Intent intent = new Intent();
                     intent.setClass(LabelsDetailActivity.this, SearchBookActivity.class);
@@ -471,9 +483,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 AppLog.e(TAG, "doCover");
 
                 Map<String, String> data = new HashMap<>();
-                data.put("bookid", book_id);
+                data.put("BOOKID", book_id);
                 data.put("source", "WEBVIEW");
-                DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data);
+                StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
+                        StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
 
                 Intent intent = new Intent();
                 intent.putExtra("author", author);
@@ -747,6 +760,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
         book.setChapter_count(Integer.valueOf(chapter_count));
         book.setLast_check_update_time(update_time);
         book.setLast_update_success_time(System.currentTimeMillis());
+        book.setChapters_update_index(dex);
 
 
 

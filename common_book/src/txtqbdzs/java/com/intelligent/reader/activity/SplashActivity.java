@@ -1,7 +1,5 @@
 package com.intelligent.reader.activity;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -41,7 +39,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -51,13 +49,11 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-
-import com.intelligent.reader.util.ShieldManager;
-
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,6 +74,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -710,8 +708,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }

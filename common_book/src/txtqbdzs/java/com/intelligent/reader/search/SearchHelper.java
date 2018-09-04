@@ -19,6 +19,7 @@ import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.bean.SearchRecommendBook;
 import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
@@ -252,7 +253,7 @@ public class SearchHelper {
                 }
                 AppLog.e(TAG, "doAnotherWeb");
                 try {
-                    if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
+                    if (url.contains(RequestService.AUTHOR_V4)) {
                         sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                                 "author").apply();//FindBookDetail 返回键时标识
                     }
@@ -507,7 +508,7 @@ public class SearchHelper {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("author", searchWord);
-                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord;
+                mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord;
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                             "author").apply();//FindBookDetail 返回键时标识
@@ -536,7 +537,7 @@ public class SearchHelper {
                 AppLog.e("kk",
                         searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
                                 + "===" + sortType);
-                mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params);
+                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
             }
 
         }

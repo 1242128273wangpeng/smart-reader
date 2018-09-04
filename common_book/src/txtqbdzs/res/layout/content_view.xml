@@ -139,15 +139,15 @@
         
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_48">
+                android:layout_height="48dp">
             
             <ImageView
                     android:id="@+id/content_head_user"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:paddingLeft="@dimen/padding_14"
-                    android:paddingRight="@dimen/padding_14"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
                     android:src="@mipmap/home_head_setting"
                     android:layout_gravity="right|left"/>
             
@@ -156,8 +156,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:paddingRight="@dimen/padding_14"
-                    android:paddingLeft="@dimen/padding_14"
+                    android:paddingRight="14dp"
+                    android:paddingLeft="14dp"
                     android:src="@mipmap/home_head_download"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentTop="true"/>
@@ -168,14 +168,14 @@
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/content_head_user"
                     android:layout_toLeftOf="@id/content_download_manage_four_tabs"
-                    android:paddingLeft="@dimen/padding_5"
-                    android:paddingRight="@dimen/padding_5"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal">
                 
                 <RelativeLayout
                         android:id="@+id/content_tab_bookshelf_four_tabs"
-                        android:layout_width="@dimen/dimen_width_0"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center">
@@ -199,7 +199,7 @@
                 
                 <RelativeLayout
                         android:id="@+id/content_tab_recommend_four_tabs"
-                        android:layout_width="@dimen/dimen_width_0"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center">
@@ -223,7 +223,7 @@
                 
                 <RelativeLayout
                         android:id="@+id/content_tab_ranking_four_tabs"
-                        android:layout_width="@dimen/dimen_width_0"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center">
@@ -247,7 +247,7 @@
                 
                 <RelativeLayout
                         android:id="@+id/content_tab_category_four_tabs"
-                        android:layout_width="@dimen/dimen_width_0"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center">
@@ -265,7 +265,7 @@
                             android:layout_width="20dp"
                             android:layout_height="2dp"
                             android:layout_alignParentBottom="true"
-                            android:paddingBottom="@dimen/padding_0"
+                            android:paddingBottom="0dp"
                             android:layout_centerHorizontal="true"
                             android:background="@drawable/home_top_tab_indicator_selector"/>
                 </RelativeLayout>
@@ -277,19 +277,19 @@
             android:id="@+id/bookshelf_search_view"
             android:layout_width="match_parent"
             android:layout_below="@id/content_head_four_tabs"
-            android:layout_height="@dimen/dimen_height_50"
+            android:layout_height="50dp"
             android:background="@color/base_bg">
         
         <TextView
                 android:id="@+id/bookshelf_search_four_tabs"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_35"
+                android:layout_height="35dp"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/dimen_margin_15"
                 android:layout_marginRight="@dimen/dimen_margin_15"
                 android:background="@drawable/bookshelf_search_bg"
                 android:drawableLeft="@mipmap/search_pic"
-                android:drawablePadding="@dimen/padding_8"
+                android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:hint="搜索自己喜欢的小说和作者"
                 android:paddingLeft="@dimen/padding_10"
@@ -340,7 +340,7 @@
                     android:gravity="center"
                     android:text="@string/bookshelf"
                     android:textColor="@drawable/home_top_text_selector"
-                    android:textSize="@dimen/large_size_18"/>
+                    android:textSize="18sp"/>
             
             <RadioButton
                     android:id="@+id/radiobutton_bookstore"
@@ -354,7 +354,7 @@
                     android:gravity="center"
                     android:text="@string/bookstore"
                     android:textColor="@drawable/home_top_text_selector"
-                    android:textSize="@dimen/large_size_18"/>
+                    android:textSize="18sp"/>
         </RadioGroup>
         
         <ImageView
@@ -436,7 +436,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="gone"
-            android:src="@mipmap/top_shadow"/>
+            android:src="@drawable/top_shadow"/>
     
     <View
             android:id="@+id/content_tab_selection_devider"
@@ -478,7 +478,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/bookshelf"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="@dimen/dimen_text_10"/>
+                    android:textSize="10sp"/>
         </LinearLayout>
         
         <LinearLayout
@@ -503,7 +503,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/recommend"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="@dimen/dimen_text_10"/>
+                    android:textSize="10sp"/>
         </LinearLayout>
         
         <LinearLayout
@@ -528,7 +528,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/ranking"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="@dimen/dimen_text_10"/>
+                    android:textSize="10sp"/>
         </LinearLayout>
         
         <LinearLayout
@@ -553,7 +553,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/category"
                     android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="@dimen/dimen_text_10"/>
+                    android:textSize="10sp"/>
         </LinearLayout>
     </LinearLayout>
     
@@ -569,7 +569,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginRight="@dimen/padding_7"
+                android:layout_marginRight="7dp"
                 android:layout_marginTop="57dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_bookshelf_guide_download"
