@@ -27,7 +27,7 @@ ext {
     // 无广告列表
     noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader','cn.mfxsqbyd.reader',"cn.qbmfkkydq.reader"]
     // 改完记得重新编译项目
-    applicationId = "cc.quanben.novel"
+    applicationId = "cn.mfxsqbyd.reader"
     defaultPublishConfig = 'qbmfxsydq' + 'Debug'
     def appPackageIDConfig = [
             qbmfxsydq : "cc.quanben.novel",//五步替
