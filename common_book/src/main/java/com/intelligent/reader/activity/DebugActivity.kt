@@ -60,9 +60,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         btn_debug_start_params.isChecked = sp.getBoolean(SharedPreUtil.START_PARAMS, true)
         txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
         if (AppUtils.hasUPush()) {
-            txt_device.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).getDeviceToken()
+            txt_device.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).deviceToken
         } else {
-            rl_device.visibility = View.GONE
             txt_device.visibility = View.GONE
         }
     }
