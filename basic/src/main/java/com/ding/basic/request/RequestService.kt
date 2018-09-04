@@ -1,6 +1,7 @@
 package com.ding.basic.request
 
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook

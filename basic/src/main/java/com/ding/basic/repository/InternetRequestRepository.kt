@@ -2,6 +2,7 @@ package com.ding.basic.repository
 
 import android.content.Context
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI

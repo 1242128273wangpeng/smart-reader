@@ -6,6 +6,8 @@ import android.text.TextUtils
 import android.util.Log
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
@@ -961,25 +963,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         getUploadBookShelfFlowable(accountId)
                     }
                 }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-            override fun onNext(it: BasicResultV4<String>?) {
-                onComplete?.invoke()
-                Log.d("keepBookShelf", "thread : " + Thread.currentThread() +
-                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+                    override fun onNext(it: BasicResultV4<String>?) {
+                        onComplete?.invoke()
+                        Log.d("keepBookShelf", "thread : " + Thread.currentThread() +
+                                if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
 
-            }
+                    }
 
-            override fun onError(t: Throwable?) {
-                onComplete?.invoke()
-                if (t != null) {
-                    Log.d("keepBookShelf", "fail : " + t.message)
-                }
-            }
+                    override fun onError(t: Throwable?) {
+                        onComplete?.invoke()
+                        if (t != null) {
+                            Log.d("keepBookShelf", "fail : " + t.message)
+                        }
+                    }
 
-            override fun onComplete() {
+                    override fun onComplete() {
 
-            }
+                    }
 
-        })
+                })
 
     }
 
@@ -1066,25 +1068,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 //
 
                 }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-            override fun onNext(it: BasicResultV4<String>?) {
-                onComplete?.invoke()
-                Log.d("keepBookMark", "thread : " + Thread.currentThread() +
-                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+                    override fun onNext(it: BasicResultV4<String>?) {
+                        onComplete?.invoke()
+                        Log.d("keepBookMark", "thread : " + Thread.currentThread() +
+                                if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
 
-            }
+                    }
 
-            override fun onError(t: Throwable?) {
-                onComplete?.invoke()
-                if (t != null) {
-                    Log.d("keepBookMark", "fail : " + t.message)
-                }
-            }
+                    override fun onError(t: Throwable?) {
+                        onComplete?.invoke()
+                        if (t != null) {
+                            Log.d("keepBookMark", "fail : " + t.message)
+                        }
+                    }
 
-            override fun onComplete() {
+                    override fun onComplete() {
 
-            }
+                    }
 
-        })
+                })
 
     }
 
@@ -1203,25 +1205,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
 
                 }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-            override fun onNext(it: BasicResultV4<String>?) {
-                onComplete?.invoke()
-                Log.d("keepBookMark", "thread : " + Thread.currentThread() +
-                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+                    override fun onNext(it: BasicResultV4<String>?) {
+                        onComplete?.invoke()
+                        Log.d("keepBookMark", "thread : " + Thread.currentThread() +
+                                if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
 
-            }
+                    }
 
-            override fun onError(t: Throwable?) {
-                onComplete?.invoke()
-                if (t != null) {
-                    Log.d("keepBookMark", "fail : " + t.message)
-                }
-            }
+                    override fun onError(t: Throwable?) {
+                        onComplete?.invoke()
+                        if (t != null) {
+                            Log.d("keepBookMark", "fail : " + t.message)
+                        }
+                    }
 
-            override fun onComplete() {
+                    override fun onComplete() {
 
-            }
+                    }
 
-        })
+                })
     }
 
     /**
@@ -1327,18 +1329,18 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestLogoutAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<JsonObject>())?.subscribeWith(object : ResourceSubscriber<JsonObject>() {
-            override fun onNext(result: JsonObject?) {
-                requestSubscriber.onNext(result)
-            }
+                    override fun onNext(result: JsonObject?) {
+                        requestSubscriber.onNext(result)
+                    }
 
-            override fun onError(throwable: Throwable) {
-                requestSubscriber.onError(throwable)
-            }
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
 
-            override fun onComplete() {
-                requestSubscriber.onComplete()
-            }
-        })
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
     }
 
 
@@ -1837,14 +1839,37 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
-    override fun requestPushTags(udid: String): Flowable<ArrayList<String>> {
-        return InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
-                .map(CommonResultMapper())
+    override fun requestPushTags(udid: String): Flowable<PushInfo> {
+        val localFlowable = LocalRequestRepository.loadLocalRequestRepository(context)
+                .requestPushInfo()
+        return if (localFlowable != null) {
+            localFlowable
+        } else {
+            InternetRequestRepository.loadInternetRequestRepository(context)
+                    .requestPushTags(udid)
+                    .map(CommonResultMapper())
+                    .flatMap {
+                        val pushInfo = PushInfo()
+                        pushInfo.tags = it
+                        pushInfo.updateMillSecs = System.currentTimeMillis()
+                        Flowable.create<PushInfo>({ emitter ->
+                            emitter.onNext(pushInfo)
+                            emitter.onComplete()
+                        }, BackpressureStrategy.BUFFER)
+                    }
+        }
     }
 
-    override fun requestBannerInfo() : Flowable<BannerInfo>{
-        return InternetRequestRepository.loadInternetRequestRepository(context).requestBannerTags()
-                .map(CommonResultMapper())
+    override fun requestBannerInfo(): Flowable<BannerInfo> {
+        val localFlowable = LocalRequestRepository.loadLocalRequestRepository(context)
+                .requestBannerTags()
+        return if (localFlowable != null) {
+            localFlowable
+        } else {
+            InternetRequestRepository.loadInternetRequestRepository(context)
+                    .requestBannerTags()
+                    .map(CommonResultMapper())
+        }
     }
 
     override fun requestAuthAccessSync(): Boolean {

@@ -3,10 +3,14 @@ package com.ding.basic.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestAPI
 import com.ding.basic.request.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
+import com.ding.basic.util.getSharedObject
+import com.ding.basic.util.isSameDay
 import com.google.gson.JsonObject
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -16,7 +20,6 @@ import retrofit2.Call
 
 @SuppressLint("StaticFieldLeak")
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
-
 
 
     companion object {
@@ -272,16 +275,47 @@ class LocalRequestRepository private constructor(private var context: Context) :
     override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
         return null
     }
-    fun insertOrUpdate(user:LoginRespV4){
+
+    fun insertOrUpdate(user: LoginRespV4) {
         BookDataProviderHelper.loadBookDataProviderHelper(context = context).insertOrUpdate(user)
     }
 
-    fun queryLoginUser():LoginRespV4{
-        return BookDataProviderHelper.loadBookDataProviderHelper(context=context).queryLoginUser()
+    fun queryLoginUser(): LoginRespV4 {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).queryLoginUser()
     }
 
-    fun deleteLoginUser(){
-        BookDataProviderHelper.loadBookDataProviderHelper(context=context).deleteLoginUser()
+    fun deleteLoginUser() {
+        BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteLoginUser()
+    }
+
+    fun requestPushInfo(): Flowable<PushInfo>? {
+        val pushInfo = context.getSharedObject("push_info", PushInfo::class.java)
+        if (pushInfo != null) {
+            val isSameDay = isSameDay(pushInfo.updateMillSecs, System.currentTimeMillis())
+            if (isSameDay) {
+                pushInfo.isFromCache = true
+                return Flowable.create<PushInfo>({ emitter ->
+                    emitter.onNext(pushInfo)
+                    emitter.onComplete()
+                }, BackpressureStrategy.BUFFER)
+            }
+        }
+        return null
+    }
+
+    fun requestBannerTags(): Flowable<BannerInfo>? {
+        val bannerInfo = context.getSharedObject("push_info", BannerInfo::class.java)
+        if (bannerInfo != null) {
+            val isSameDay = isSameDay(bannerInfo.updateMillSecs, System.currentTimeMillis())
+            if (isSameDay) {
+                bannerInfo.isFromCache = true
+                return Flowable.create<BannerInfo>({ emitter ->
+                    emitter.onNext(bannerInfo)
+                    emitter.onComplete()
+                }, BackpressureStrategy.BUFFER)
+            }
+        }
+        return null
     }
 
 }

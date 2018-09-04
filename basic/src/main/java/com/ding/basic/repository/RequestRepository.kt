@@ -1,6 +1,8 @@
 package com.ding.basic.repository
 
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.request.RequestSubscriber
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
@@ -75,7 +77,7 @@ interface RequestRepository {
 
     fun requestAuthAccessSync(): Boolean
 
-    fun requestPushTags(udid: String): Flowable<ArrayList<String>>
+    fun requestPushTags(udid: String): Flowable<PushInfo>
 
     fun requestBannerInfo(): Flowable<BannerInfo>
 

@@ -7,8 +7,11 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.support.v4.app.NotificationManagerCompat
-import com.ding.basic.bean.BannerInfo
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.util.editShared
+import com.ding.basic.util.putObject
 import com.dingyue.contract.util.SharedPreUtil
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
@@ -29,38 +32,56 @@ import java.util.HashMap
  */
 fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> Unit) {
     loge("更新用户标签")
-    val pushTagsFollowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
+    val pushTagsFlowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
             .requestPushTags(udid)
             .subscribeOn(Schedulers.io())
 
-    val bannerInfoFollowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
+    val bannerInfoFlowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
             .requestBannerInfo()
 
-    pushTagsFollowable
-            .doOnNext { pushTags ->
-                addPushTags(pushTags.toTypedArray())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeBy(onNext = { isAdd ->
-                            callback.invoke(isAdd)
-                        }, onError = {
-                            callback.invoke(false)
-                            it.printStackTrace()
-                        })
-            }
-            .zipWith(bannerInfoFollowable, BiFunction<ArrayList<String>, BannerInfo, String> { pushTags, bannerInfo ->
-                loge("zip")
-                var result = ""
-                val bannerTags = bannerInfo.tags
-                val bannerImgUrl = bannerInfo.url
-                if (pushTags.isNotEmpty() && bannerTags?.isNotEmpty() == true
-                        && bannerImgUrl?.isNotEmpty() == true) {
-                    bannerTags.retainAll(pushTags) // 求交集
-                    if (bannerTags.isNotEmpty()) {
-                        result = bannerImgUrl
-                    }
+    pushTagsFlowable
+            .doOnNext { pushInfo ->
+                val tags = pushInfo.tags
+                if (!pushInfo.isFromCache && tags != null) {
+                    addPushTags(tags.toTypedArray())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(onNext = { isAdd ->
+                                callback.invoke(isAdd)
+                                if (isAdd) {
+                                    context.editShared {
+                                        putObject("push_info", pushInfo)
+                                    }
+                                }
+                            }, onError = {
+                                callback.invoke(false)
+                                it.printStackTrace()
+                            })
                 }
-                loge("zip result: $result")
-                result
+            }
+            .zipWith(bannerInfoFlowable, BiFunction<PushInfo, BannerInfo, String> { pushInfo, bannerInfo ->
+                loge("zip")
+                if (bannerInfo.isFromCache) {
+                    ""
+                } else {
+                    var result = ""
+                    val pushTags = pushInfo.tags
+                    val bannerTags = bannerInfo.tags
+                    val bannerImgUrl = bannerInfo.url
+                    if (pushTags?.isNotEmpty() == true && bannerTags?.isNotEmpty() == true
+                            && bannerImgUrl?.isNotEmpty() == true) {
+                        bannerTags.retainAll(pushTags) // 求交集
+                        if (bannerTags.isNotEmpty()) {
+                            result = bannerImgUrl
+                        }
+                    }
+                    loge("zip result: $result")
+                    bannerInfo.updateMillSecs = System.currentTimeMillis()
+                    context.editShared {
+                        putObject("banner_info", bannerInfo)
+                    }
+                    result
+                }
             })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
