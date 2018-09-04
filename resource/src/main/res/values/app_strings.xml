@@ -71,6 +71,10 @@
     <string name="debug_web_host">WebView接口:</string>
     <string name="debug_micro_host">微服务API接口:</string>
     <string name="debug_micro_content_host">微服务内容接口:</string>
+    <string name="debug_udid">用户Udid:</string>
+    <string name="debug_deviceToken">用户deviceToken:</string>
+    <string name="debug_copy">一键复制</string>
+    <string name="debug_copy_success">一键复制成功</string>
 
     <string name="debug_input_host">https://</string>
     <string name="choice_host">host选择</string>
