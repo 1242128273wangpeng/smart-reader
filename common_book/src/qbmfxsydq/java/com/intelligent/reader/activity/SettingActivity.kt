@@ -352,6 +352,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         if (bt_wifi_auto != null) {
             bt_wifi_auto!!.setOnCheckedChangeListener(this)
         }
+        rl_qrcode?.antiShakeClick(this)
     }
 
     private fun initData() {
@@ -479,6 +480,13 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             R.id.btn_logout, R.id.rl_logout -> {
                 logoutDialog()
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGOUT)
+            }
+            R.id.rl_qrcode -> {
+                val welfareIntent = Intent()
+                welfareIntent.putExtra("url", Config.WelfareHost)
+                welfareIntent.putExtra("title", "和朋友一起读书")
+                welfareIntent.setClass(this@SettingActivity, WelfareCenterActivity::class.java)
+                startActivity(welfareIntent)
             }
             else -> {
             }
