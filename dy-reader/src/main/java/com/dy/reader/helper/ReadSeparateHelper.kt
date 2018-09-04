@@ -51,11 +51,20 @@ object ReadSeparateHelper {
         var novelText: ArrayList<NovelLineBean> = arrayListOf()
 
         if (!TextUtils.isEmpty(chapterName)) {
-            val chapterNameSplit = chapterName.split("章".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val chapterNameSplit = ArrayList<String>()
+            if (chapterName.contains("章")) {
+                chapterNameSplit.add(chapterName.substringBefore("章", chapterName).trim() + "章")
+                val strAft = chapterName.substringAfter("章", chapterName).trim()
+                if (strAft.isNotEmpty()){
+                    chapterNameSplit.add(strAft)
+                }
+            } else {
+                chapterNameSplit.add(chapterName)
+            }
 
             if (chapterNameSplit.isNotEmpty()) {
                 mchapterPaint.textSize = 16 * AppHelper.screenScaledDensity
-                val chapterTitleList = getNovelText(mchapterPaint, chapterNameSplit[0] + "章", readerSettings.mWidth - AppHelper.screenDensity * 10)
+                val chapterTitleList = getNovelText(mchapterPaint, chapterNameSplit[0], readerSettings.mWidth - AppHelper.screenDensity * 10)
 
                 novelText.addAll(chapterTitleList)
 

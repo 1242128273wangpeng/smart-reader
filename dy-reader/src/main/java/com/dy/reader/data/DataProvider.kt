@@ -203,7 +203,7 @@ object DataProvider {
                                         it.forEach {
                                             var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                                     ?: "", it.name ?: "")
-                                            separateContent = ReadMediaManager.insertChapterAd(it.sequence, separateContent)
+                                            separateContent = ReadMediaManager.insertChapterAd(it.sequence, ReadMediaManager.tonken, separateContent)
                                             chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                         }
 
@@ -427,7 +427,7 @@ object DataProvider {
                                 AppLog.e("DataProvider", "onNext = ")
                                 var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                         ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, separateContent)
+                                separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
 
                                 callback?.invoke(true)
@@ -453,7 +453,7 @@ object DataProvider {
                             onNext = {
                                 var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                         ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, separateContent)
+                                separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                 runOnMain {
                                     callback?.invoke(true, it)

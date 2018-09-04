@@ -56,7 +56,7 @@ object ReadMediaManager {
      * @param frequency 5-2 广告频率
      * @return 分页内容
      */
-    fun insertChapterAd(group: Int,
+    fun insertChapterAd(group: Int, token: Long,
                         page: ArrayList<NovelPageBean>,
                         within: Boolean = MediaControl.getAdSwitch("5-2") and MediaControl.getAdSwitch("6-2"),
                         between: Boolean = MediaControl.getAdSwitch("5-1") and MediaControl.getAdSwitch("6-1"),
@@ -76,7 +76,7 @@ object ReadMediaManager {
                 if (index % frequency == 0) {
                     val novelPageBean = generateNovelPageBean(group, index, page[index - 1].offset)
                     page.add(index, novelPageBean)
-                    requestAd(novelPageBean.adType, generateAdMark(1, 10))
+                    requestAd(novelPageBean.adType, generateAdMark(1, 10), AppHelper.screenHeight, AppHelper.screenWidth, token)
                     count++
                     index++
                 }
@@ -90,7 +90,7 @@ object ReadMediaManager {
                 val leftSpace = AppHelper.screenHeight - contentHeight - (AppHelper.screenDensity.times(15)).toInt()
                 if (leftSpace >= 200) {
                     last.adType = generateAdType(group, page.size - 1)
-                    requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt())
+                    requestAd(last.adType, generateAdMark(8, 10), (AppHelper.screenHeight - last.height).toInt(), AppHelper.screenWidth, token)
                 }
             } else if (!readerSettings.isLandscape) {//6-3 adView
                 mActivity?.get()?.apply {
@@ -109,11 +109,11 @@ object ReadMediaManager {
         if (between && readerSettings.animation != GLReaderView.AnimationType.LIST) {
             val novelPageBean = generateNovelPageBean(group, page.size, last.offset)
             page.add(novelPageBean)
-            requestAd(novelPageBean.adType, generateAdMark(9, 10))
+            requestAd(novelPageBean.adType, generateAdMark(9, 10), AppHelper.screenHeight, AppHelper.screenWidth, token)
         } else if (vertical_between && readerSettings.animation == GLReaderView.AnimationType.LIST) {//check 5-3 or 6-3 adView
             val novelPageBean = generateNovelPageBean(group, page.size, last.offset)
             page.add(novelPageBean)
-            requestAd(novelPageBean.adType, generateAdMark(9, 10))
+            requestAd(novelPageBean.adType, generateAdMark(9, 10), AppHelper.screenHeight, AppHelper.screenWidth, token)
         }
         return page
     }
@@ -125,7 +125,7 @@ object ReadMediaManager {
      * @param height 高度 默认值屏幕高度
      * @param width 宽度 默认值屏幕宽度
      */
-    fun requestAd(adType: String, adMark: String, height: Int = AppHelper.screenHeight, width: Int = AppHelper.screenWidth, token: Long = tonken) {
+    fun requestAd(adType: String, adMark: String, height: Int = AppHelper.screenHeight, width: Int = AppHelper.screenWidth, token: Long) {
         //
         mActivity?.get().apply {
             adCache.put(adType, AdBean(height, null, true, adMark))
@@ -135,6 +135,7 @@ object ReadMediaManager {
                 MediaControl.dycmNativeAd(this, adMark, null, { switch, list, jsonResult ->
                     mediaAction(adType, adMark, height, token, switch, list, jsonResult)
                 })
+
             } else {//8-1
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace).toInt()
                 MediaControl.dycmNativeAd(this, adMark, height - space, width, { switch, views, jsonResult ->
@@ -234,7 +235,7 @@ object ReadMediaManager {
 
     fun getLayoutParams(top: Int = 0): FrameLayout.LayoutParams? {
         if (params == null) {
-            params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
         params?.setMargins(0, top, 0, 0)
         return params
@@ -260,7 +261,6 @@ object ReadMediaManager {
      */
     private fun mediaAction(adType: String, mark: String, height: Int, curTonken: Long,
                             adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-
         if (!adswitch) {
             if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
                 adCache.put(adType, AdBean(height, null, false, mark))
@@ -296,6 +296,7 @@ object ReadMediaManager {
 
     fun onDestroy() {
         loadAdComplete = null
+
         ReadMediaManager.clearAllAd()
         ReadMediaManager.frameLayout = null
     }

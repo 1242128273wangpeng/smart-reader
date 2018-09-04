@@ -247,6 +247,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         mReadPresenter.onResume()
+        MediaLifecycle.onResume()
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -264,11 +265,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         isResume = false
         glSurfaceView.onPause()
         mReadPresenter.onPause()
+        MediaLifecycle.onPause()
     }
 
     override fun onStop() {
         super.onStop()
         mReadPresenter.onStop()
+        MediaLifecycle.onStop()
     }
 
 
@@ -497,10 +500,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //条件
-        if (pac_reader_ad != null) {
-            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
-        }
+//        //如果夜间设置了alpha值之后, 视频将有重影
+//        if (pac_reader_ad != null) {
+//            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
+//        }
         if (ReaderStatus.currentChapter == null) return
         val mChapter = ReaderStatus.currentChapter!!
         val count = ReaderStatus.position.groupChildCount
@@ -540,7 +543,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -570,6 +573,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private fun hideAd() {
         pac_reader_ad?.visibility = View.GONE
+        pac_reader_ad?.removeAllViews()
     }
 
     fun showLoadingDialog(type: LoadingDialogFragment.DialogType, retry: (() -> Unit)? = null) {
