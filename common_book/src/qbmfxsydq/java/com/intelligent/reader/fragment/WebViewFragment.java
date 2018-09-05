@@ -45,6 +45,7 @@ public class WebViewFragment extends Fragment {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
     public String url = "";
+    private String type = "";
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
@@ -60,6 +61,7 @@ public class WebViewFragment extends Fragment {
     private ImageView img_download_manager;
     private TextView txt_head_title;
     private int bottomType;//青果打点搜索 2 推荐  3 榜单
+    private RelativeLayout rl_head;
 
     @Override
     public void onAttach(Activity activity) {
@@ -78,6 +80,7 @@ public class WebViewFragment extends Fragment {
         if (bundle != null) {
             this.url = bundle.getString("url");
             AppLog.e(TAG, "url---->" + url);
+            type = bundle.getString("type");
         }
     }
 
@@ -113,11 +116,15 @@ public class WebViewFragment extends Fragment {
             img_download_manager = rootView.findViewById(R.id.img_download_manager);
             img_head_search = rootView.findViewById(R.id.img_head_search);
             txt_head_title = rootView.findViewById(R.id.txt_head_title);
+            rl_head = (RelativeLayout) rootView.findViewById(R.id.rl_head);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         }
 
+        if (type.equals("recommend_male") || type.equals("recommend_female") ) {
+            rl_head.setVisibility(View.GONE);
+        }
         if (weakReference != null) {
             loadingpage = new LoadingPage(weakReference.get(), contentLayout);
         }

@@ -30,6 +30,7 @@ import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
+import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
@@ -67,6 +68,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     var myNovelHelper: NovelHelper? = null
     private var is_dot_orientation = false// 横竖屏打点
     var time_text: CharSequence? = null
+    var goToBookEndCount = 0 //标记上下阅读时 最后一页到完结页会发送多个的event
     var versionCode: Int = 0
         get() = 0
     private var readReference: WeakReference<ReaderActivity>? = null
@@ -402,6 +404,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
+        goToBookEndCount = 0
         StatService.onResume(act)
     }
 
@@ -483,6 +486,14 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
         if (ReaderStatus.position.group != ReaderStatus.chapterList.size - 1) {
             return
+        }
+
+        // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
+        if(goToBookEndCount == 0){
+            //发送章节消费
+            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
+                    if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )
+            goToBookEndCount++
         }
 
         val bundle = Bundle()

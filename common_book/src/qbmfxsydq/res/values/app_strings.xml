@@ -76,4 +76,5 @@
 
     <string name="db_upgrade_hasnet">正在进入应用，马上就好（%1$d%%）</string>
     <string name="db_upgrade_nonet">正在优化应用，马上就好（%1$d%%）</string>
+    <string name="recommend_search">搜小说</string>
 </resources>
