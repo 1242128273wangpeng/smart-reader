@@ -24,6 +24,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.UserEvent
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -33,6 +34,7 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -43,9 +45,7 @@ import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
@@ -80,7 +80,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
-    private var recommendFragment: WebViewFragment? = null
+    private var recommendFragment: RecommendFragment? = null
     private var rankingFragment: WebViewFragment? = null
     private var categoryFragment: WebViewFragment? = null
 
@@ -220,9 +220,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.changeHomePagerIndex(1)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
-            if (recommendFragment != null) {
-                recommendFragment!!.setTitle(getString(R.string.recommend), 2)
-            }
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
@@ -509,12 +506,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
                 1 -> {
                     if (recommendFragment == null) {
-                        recommendFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", "recommend")
-                        val uri = WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        recommendFragment?.arguments = bundle
+                        recommendFragment = RecommendFragment()
                     }
                     recommendFragment
                 }
@@ -523,7 +515,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "rank")
-                        val uri = WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment?.arguments = bundle
                     }
@@ -534,7 +526,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                         categoryFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", "category")
-                        val uri = WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_CATEGORY_H5.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         categoryFragment?.arguments = bundle
                     }

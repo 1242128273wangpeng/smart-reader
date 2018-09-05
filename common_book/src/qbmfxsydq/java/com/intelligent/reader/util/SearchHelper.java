@@ -499,7 +499,7 @@ public class SearchHelper {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("author", searchWord);
-                mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord;
+                mUrl = RequestService.AUTHOR_h5 + "?author=" + searchWord;
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                             "author").apply();//FindBookDetail 返回键时标识
@@ -528,7 +528,7 @@ public class SearchHelper {
                 AppLog.e("kk",
                         searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
                                 + "===" + sortType);
-                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
+                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_VUE, params);
             }
 
         }
