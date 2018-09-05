@@ -1,6 +1,7 @@
 package com.ding.basic.repository
 
 import android.annotation.SuppressLint
+import android.arch.persistence.room.EmptyResultSetException
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -505,7 +506,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         chapter
                     }
                     else -> {
-                        throw IllegalStateException("接口返回内容异常！")
+                        throw EmptyResultSetException("接口返回内容异常！")
                     }
                 }
             }
