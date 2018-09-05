@@ -492,20 +492,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 when {
                     it.checkPrivateKeyExpire() -> {
                         requestAuthAccess(null)
+//                        StatService.onEvent(context, "request_content_access", "请求内容鉴权失败")
                         throw IllegalAccessException("接口鉴权失败！")
                     }
                     it.checkResultAvailable() -> {
                         if (it.data?.content != null && !TextUtils.isEmpty(it.data?.content)) {
+
+                            if (it.data?.content == "文章内容较短,可能非正文,正在抓紧修复中...") {
+//                                StatService.onEvent(context, "request_content_exception", "请求内容内容异常: ${chapter.chapter_id}")
+                            }
+
                             it.data?.content = it.data?.content?.replace("\\n", "\n")
                             it.data?.content = it.data?.content?.replace("\\n \\n", "\n")
                             it.data?.content = it.data?.content?.replace("\\n\\n", "\n")
                             it.data?.content = it.data?.content?.replace("\\", "")
+                        } else {
+//                            StatService.onEvent(context, "request_content_empty", "请求内容返回为空: ${chapter.chapter_id}")
                         }
                         chapter.content = it.data?.content
 
                         chapter
                     }
                     else -> {
+//                        StatService.onEvent(context, "request_content_error", "请求内容结果异常: ${chapter.chapter_id}")
                         throw EmptyResultSetException("接口返回内容异常！")
                     }
                 }
