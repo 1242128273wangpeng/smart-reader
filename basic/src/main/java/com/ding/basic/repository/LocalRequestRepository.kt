@@ -289,7 +289,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     fun requestPushInfo(): Flowable<PushInfo>? {
-        val pushInfo = context.getSharedObject("push_info", PushInfo::class.java)
+        val pushInfo = context.getSharedObject(PushInfo.KEY, PushInfo::class.java)
         if (pushInfo != null) {
             val isSameDay = isSameDay(pushInfo.updateMillSecs, System.currentTimeMillis())
             if (isSameDay) {
@@ -304,11 +304,10 @@ class LocalRequestRepository private constructor(private var context: Context) :
     }
 
     fun requestBannerTags(): Flowable<BannerInfo>? {
-        val bannerInfo = context.getSharedObject("push_info", BannerInfo::class.java)
+        val bannerInfo = context.getSharedObject(BannerInfo.KEY, BannerInfo::class.java)
         if (bannerInfo != null) {
             val isSameDay = isSameDay(bannerInfo.updateMillSecs, System.currentTimeMillis())
             if (isSameDay) {
-                bannerInfo.isFromCache = true
                 return Flowable.create<BannerInfo>({ emitter ->
                     emitter.onNext(bannerInfo)
                     emitter.onComplete()

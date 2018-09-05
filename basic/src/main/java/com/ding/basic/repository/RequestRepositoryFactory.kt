@@ -1869,6 +1869,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
             InternetRequestRepository.loadInternetRequestRepository(context)
                     .requestBannerTags()
                     .map(CommonResultMapper())
+                    .map {
+                        it.updateMillSecs = System.currentTimeMillis()
+                        it
+                    }
         }
     }
 

@@ -30,7 +30,7 @@ import java.util.HashMap
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/8/30 17:08
  */
-fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> Unit) {
+fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
     loge("更新用户标签")
     val pushTagsFlowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
             .requestPushTags(udid)
@@ -39,31 +39,32 @@ fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> 
     val bannerInfoFlowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
             .requestBannerInfo()
 
-    pushTagsFlowable
+    return pushTagsFlowable
             .doOnNext { pushInfo ->
-                val tags = pushInfo.tags
-                if (!pushInfo.isFromCache && tags != null) {
-                    addPushTags(tags.toTypedArray())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(onNext = { isAdd ->
-                                callback.invoke(isAdd)
-                                if (isAdd) {
-                                    context.editShared {
-                                        putObject("push_info", pushInfo)
-                                    }
-                                }
-                            }, onError = {
-                                callback.invoke(false)
-                                it.printStackTrace()
-                            })
+                val tags = pushInfo.tags ?: return@doOnNext
+
+                if (!pushInfo.isFromCache) {
+                    context.editShared {
+                        putObject(PushInfo.KEY, pushInfo)
+                    }
                 }
+
+                addPushTags(tags.toTypedArray())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(onNext = { isAdd ->
+                            loge("更新标签: $isAdd")
+                        }, onError = {
+                            loge("更新标签失败")
+                            it.printStackTrace()
+                        })
             }
             .zipWith(bannerInfoFlowable, BiFunction<PushInfo, BannerInfo, String> { pushInfo, bannerInfo ->
-                loge("zip")
-                if (bannerInfo.isFromCache) {
+                if (bannerInfo.hasShowed) {
+                    loge("此次活动弹窗已经展示过")
                     ""
                 } else {
+                    loge("zip")
                     var result = ""
                     val pushTags = pushInfo.tags
                     val bannerTags = bannerInfo.tags
@@ -76,19 +77,11 @@ fun PushAgent.updateTags(context: Context, udid: String, callback: (Boolean) -> 
                         }
                     }
                     loge("zip result: $result")
-                    bannerInfo.updateMillSecs = System.currentTimeMillis()
                     context.editShared {
-                        putObject("banner_info", bannerInfo)
+                        putObject(BannerInfo.KEY, bannerInfo)
                     }
                     result
                 }
-            })
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(onNext = {
-                loge("活动地址：$it")
-            }, onError = {
-                it.printStackTrace()
             })
 }
 
@@ -127,12 +120,13 @@ private fun PushAgent.deleteUTags(tags: Array<String>?): Flowable<Boolean> {
             tagManager.deleteTags({ isDelete, deleteResult ->
                 loge("删除用户旧标签: $isDelete", "result: $deleteResult")
                 emitter.onNext(isDelete)
+                emitter.onComplete()
             }, tags)
         } else {
             loge("用户旧标签为空")
             emitter.onNext(true)
+            emitter.onComplete()
         }
-        emitter.onComplete()
     }, BackpressureStrategy.BUFFER)
 }
 
@@ -142,12 +136,13 @@ private fun PushAgent.addUTags(tags: Array<String>?): Flowable<Boolean> {
             tagManager.addTags({ isAdd, addResult ->
                 loge("添加用户新标签: $isAdd", "addResult: $addResult")
                 emitter.onNext(isAdd)
+                emitter.onComplete()
             }, tags)
         } else {
             loge("用户新标签为空")
             emitter.onNext(true)
+            emitter.onComplete()
         }
-        emitter.onComplete()
     }, BackpressureStrategy.BUFFER)
 }
 
@@ -234,3 +229,6 @@ private fun Intent.putPushExtra(msg: UMessage) {
 
 @JvmField
 val IS_FROM_PUSH = "is_from_push"
+
+@JvmField
+val EVENT_UPDATE_TAG = "event_update_tag"

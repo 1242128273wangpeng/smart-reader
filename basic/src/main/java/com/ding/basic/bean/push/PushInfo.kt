@@ -15,4 +15,8 @@ data class PushInfo(
         var tags: ArrayList<String>? = null,
         var updateMillSecs: Long = 0L, //上次更新时间
         var isFromCache: Boolean = false
-) : Serializable
+) : Serializable{
+    companion object {
+        const val KEY = "push_info"
+    }
+}
