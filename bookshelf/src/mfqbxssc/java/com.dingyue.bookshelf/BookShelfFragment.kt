@@ -18,7 +18,6 @@ import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.mfqbxssc.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfqbxssc.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -29,6 +28,7 @@ import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
+import org.greenrobot.eventbus.EventBus
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 

@@ -39,7 +39,7 @@ import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.lang.ref.WeakReference;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 

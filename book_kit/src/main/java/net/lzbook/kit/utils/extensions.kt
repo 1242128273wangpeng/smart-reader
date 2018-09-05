@@ -13,9 +13,9 @@ import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.widget.TextView
-import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -144,16 +144,6 @@ fun <T> Observable<T>.subscribekt(onNext: ((t: T) -> Unit)? = null, onError: ((t
     }, io.reactivex.functions.Consumer { t ->
         onError?.invoke(t)
     })
-}
-
-fun EventBus.safeRegist(obj: Any) {
-    if (!isRegistered(obj))
-        register(obj)
-}
-
-fun EventBus.safeUnregist(obj: Any) {
-    if (isRegistered(obj))
-        unregister(obj)
 }
 
 fun Any.postEventToBus(obj: Any) {

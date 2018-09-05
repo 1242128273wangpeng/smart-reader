@@ -12,7 +12,6 @@ dependencies {
     compile "com.android.support:support-v4:$support_version"
     compile "com.android.support:design:$support_version"
     compile "com.android.support:recyclerview-v7:$support_version"
-    compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.google.protobuf:protobuf-java:2.4.1'
     testCompile 'junit:junit:4.12'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.6'

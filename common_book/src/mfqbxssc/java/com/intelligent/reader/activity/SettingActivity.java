@@ -48,10 +48,11 @@ import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.UIHelper;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
 import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
 import kotlin.Unit;
