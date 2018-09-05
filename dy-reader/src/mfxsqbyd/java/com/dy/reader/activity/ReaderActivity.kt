@@ -275,11 +275,68 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             if(keyCode == KeyEvent.KEYCODE_BACK ){
                 onBackPressed()
                 true
-            }else{
+            }else if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+                if (ReaderSettings.instance.isAutoReading) {
+
+                    if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                        val fragment = fragmentManager.findFragmentByTag("auto")
+
+                        if (fragment == null) {
+                            AutoReadOptionDialog().show(fragmentManager, "auto")
+                        } else {
+                            if (fragment is AutoReadOptionDialog) {
+                                fragment.dismissAllowingStateLoss()
+                            }
+                        }
+                    }
+                } else {
+                    if (ReaderStatus.isMenuShow) {
+                        mReadSettingFragment.show(false)
+                        ReaderStatus.isMenuShow = false
+                    } else {
+                        mReadSettingFragment.show(true)
+                        ReaderStatus.isMenuShow = true
+                    }
+
+                }
+                true
+
+            } else{
                 super.onKeyDown(keyCode, event)
             }
 
-
+//    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+//        if (keyCode == KeyEvent.KEYCODE_MENU) {
+//
+//            if (ReaderSettings.instance.isAutoReading) {
+//
+//                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+//                    val fragment = fragmentManager.findFragmentByTag("auto")
+//
+//                    if (fragment == null) {
+//                        AutoReadOptionDialog().show(fragmentManager, "auto")
+//                    } else {
+//                        if (fragment is AutoReadOptionDialog) {
+//                            fragment.dismissAllowingStateLoss()
+//                        }
+//                    }
+//                }
+//            } else {
+//                if (ReaderStatus.isMenuShow) {
+//                    mReadSettingFragment.show(false)
+//                    ReaderStatus.isMenuShow = false
+//                } else {
+//                    mReadSettingFragment.show(true)
+//                    ReaderStatus.isMenuShow = true
+//                }
+//
+//            }
+//
+//            return true
+//        }
+//        return super.onKeyDown(keyCode, event)
+//    }
 
 
 
