@@ -31,7 +31,7 @@ class LoadingDialogFragment : DialogFragment() {
         if (fm?.findFragmentByTag(ReadSettingFragment.TAG) == null) {
             dialog.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
-        dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//        dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 
         dialog.setContentView(R.layout.frag_loading_dialog)
 
