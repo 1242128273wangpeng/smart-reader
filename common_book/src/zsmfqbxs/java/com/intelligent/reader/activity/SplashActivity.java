@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -526,7 +527,7 @@ public class SplashActivity extends FrameActivity {
         if (ad_view == null) return;
         if (Constants.isHideAD) {
             AppLog.e(TAG, "Limited AD display!");
-            handler.sendEmptyMessageDelayed(0,2000);
+            handler.sendEmptyMessage(0);
             return;
         }
         if (isGo) {
@@ -667,6 +668,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();
