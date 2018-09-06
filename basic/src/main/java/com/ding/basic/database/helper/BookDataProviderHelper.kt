@@ -147,6 +147,13 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     }
 
     override fun updateBook(book: Book): Boolean {
+        if (book.id <= 0) {
+            val b = bookdao.loadBook(book.book_id)
+            if (b == null){
+                return false
+            }
+            book.id = b.id
+        }
         return bookdao.updateBook(book) != -1
     }
 
