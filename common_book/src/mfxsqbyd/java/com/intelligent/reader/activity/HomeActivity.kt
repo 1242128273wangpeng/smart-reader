@@ -303,7 +303,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             HomeLogger.uploadHomeCategorySelected()
         }
 
-        setNightMode(false)
+//        setNightMode(false)
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
             PersonalLogger.uploadPersonalNightModeChange()
@@ -733,7 +733,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment?.updateUI()
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
-                setNightMode(true)
+//                setNightMode(true)
             } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
