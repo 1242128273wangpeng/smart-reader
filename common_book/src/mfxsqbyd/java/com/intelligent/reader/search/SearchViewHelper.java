@@ -576,20 +576,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                 isAuthor = 0;
                 Map<String, String> data = new HashMap<>();
 
-                if (!TextUtils.isEmpty(suggest) && mSearchEditText != null && mSuggestList != null) {
-                    itemGapViewCount = 0;
-                    data.put("keyword", suggest);
-                    data.put("type", searchType);
-                    data.put("enterword", mSearchEditText.getText().toString().trim());
-                    for(int i = 0; i< arg2 ; i++){
-                        if(!(mSuggestList.get(i) instanceof SearchCommonBeanYouHua)){
-                            itemGapViewCount++;
-                        }
-                    }
-                    data.put("rank", (arg2 + 1 - itemGapViewCount)+"");
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
-                            StartLogClickUtil.TIPLISTCLICK, data);
-                }
 
                 if (searchCommonBean.getWordtype().equals("label")) {
                     searchType = "1";
@@ -634,7 +620,20 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                     isAuthor = 0;
                 }
 
-
+                if (!TextUtils.isEmpty(suggest) && mSearchEditText != null && mSuggestList != null) {
+                    itemGapViewCount = 0;
+                    data.put("keyword", suggest);
+                    data.put("type", searchType);
+                    data.put("enterword", mSearchEditText.getText().toString().trim());
+                    for(int i = 0; i< arg2 ; i++){
+                        if(!(mSuggestList.get(i) instanceof SearchCommonBeanYouHua)){
+                            itemGapViewCount++;
+                        }
+                    }
+                    data.put("rank", (arg2 + 1 - itemGapViewCount)+"");
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
+                            StartLogClickUtil.TIPLISTCLICK, data);
+                }
                 if (mSearchEditText != null && !searchType.equals("3")) {
                     startSearch(suggest, searchType, isAuthor);
 
