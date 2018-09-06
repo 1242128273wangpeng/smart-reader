@@ -613,6 +613,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         val data = java.util.HashMap<String, String>()
         data.put("type", "1")
         data.put("FONT", readerSettings.fontSize.toString())
+        data.put("sizevalue",readerSettings.fontSize.toString())
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
