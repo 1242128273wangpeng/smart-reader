@@ -93,6 +93,12 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         initPageMode()
         setFontSize()
 
+        if (ThemeHelper.getInstance(context).isNight) {
+            img_reader_night.setImageResource(R.drawable.reader_option_night_icon)
+        } else {
+            img_reader_night.setImageResource(R.drawable.reader_option_day_icon)
+        }
+
         ckb_reader_landscape.isChecked = readerSettings.isLandscape
         ckb_reader_full_screen.isChecked = readerSettings.isFullScreenRead
 
