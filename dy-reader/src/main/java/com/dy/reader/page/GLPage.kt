@@ -23,7 +23,7 @@ import net.lzbook.kit.utils.AppLog
 
 
 /**
- * Created by xian on 18-3-22.
+ * Created by xian on 18-3-22
  */
 class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
