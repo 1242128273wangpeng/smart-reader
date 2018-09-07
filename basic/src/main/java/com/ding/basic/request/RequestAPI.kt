@@ -2,7 +2,6 @@ package com.ding.basic.request
 
 import com.ding.basic.Config
 import com.ding.basic.bean.*
-import com.ding.basic.util.ReplaceConstants
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
