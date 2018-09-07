@@ -84,8 +84,8 @@ object Config {
 //        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
 //        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
 
-        webViewHost = "http://8045.uzn.bookapi.cn"
-        requestAPIHost = "http://8045.uzn.bookapi.cn"
+        webViewHost = "http://8014.uzn.bookapi.cn"
+        requestAPIHost = "http://8014.uzn.bookapi.cn"
 
         microAPIHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
         contentAPIHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
