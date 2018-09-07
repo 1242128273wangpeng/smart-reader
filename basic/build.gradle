@@ -76,5 +76,6 @@ dependencies {
     compile 'net.youqu:ibook-token:2.0.0'
 
     compile 'org.greenrobot:eventbus:3.1.1'
+    implementation "com.alibaba:arouter-api:$arouter_api_version"
 
 }

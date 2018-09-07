@@ -355,7 +355,7 @@ public class Constants {
         if (!isSdCard) {
             SDCARD_PATH = "mnt/sdcard";
         }
-        File dir = new File(SDCARD_PATH + ResourceUtil.getStringById(R.string.app_path));
+        File dir = new File(ReplaceConstants.getReplaceConstants().APP_PATH);
         if (!dir.exists()) {
             try {
                 dir.mkdirs();

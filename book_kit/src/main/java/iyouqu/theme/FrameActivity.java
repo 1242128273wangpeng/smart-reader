@@ -18,6 +18,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,6 +55,7 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +155,17 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         //友盟推送
         if (AppUtils.hasUPush()) {
-            PushAgent.getInstance(this).onAppStart();
+            final WeakReference<FrameActivity> weakReference=new WeakReference(FrameActivity.this);
+            new AsyncTask(){
+                @Override
+                protected Object doInBackground(Object[] objects) {
+                    if(weakReference!=null&&weakReference.get()!=null) {
+                        PushAgent.getInstance(weakReference.get()).onAppStart();
+                    }
+                    return null;
+                }
+            }.execute();
+
         }
 
     }
