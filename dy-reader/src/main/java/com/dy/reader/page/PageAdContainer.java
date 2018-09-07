@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.dy.media.MediaConfig;
-import com.dy.media.MediaControl;
 import com.dy.reader.helper.AppHelper;
 import com.dy.reader.setting.ReaderStatus;
 

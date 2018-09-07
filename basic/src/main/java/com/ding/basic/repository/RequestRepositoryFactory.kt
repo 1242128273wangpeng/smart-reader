@@ -460,6 +460,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
+        return InternetRequestRepository.loadInternetRequestRepository(context = context).requestShareInformation()
+    }
+
 
     override fun requestChapterContent(chapter: Chapter): Flowable<Chapter> {
         val content = ChapterCacheUtil.checkChapterCacheExist(chapter)
