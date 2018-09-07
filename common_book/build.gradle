@@ -847,6 +847,10 @@ N多网	        blf1298_10885_001
             outputFileName = "../../" + outputFileName
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 //配置特殊渠道的应用名称

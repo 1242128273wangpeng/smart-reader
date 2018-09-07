@@ -85,11 +85,11 @@ object DataProvider {
 
 
                     AppLog.e("DataProvider", "forceReload = " + forceReload)
-
-                    loadGroup(position.group, forceReload) {
+                    val mediaToken=ReadMediaManager.tonken
+                    loadGroup(position.group, forceReload,mediaToken) {
                         if (it) {
 
-                            loadGroup(Math.max(position.group - 1, 0), forceReload) {
+                            loadGroup(Math.max(position.group - 1, 0), forceReload,mediaToken) {
                                 if (it) {
                                     groupListeners.forEach {
                                         if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
@@ -109,7 +109,7 @@ object DataProvider {
                                 }
                             }
 
-                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload)
+                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload,mediaToken)
                         } else {
                             EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                 onNeedRefresh(event)
@@ -199,7 +199,7 @@ object DataProvider {
                                     onNext = {
 
                                         ReadMediaManager.tonken++
-                                        ReadMediaManager.adCache.clear()
+                                        ReadMediaManager.clearAllAd()
 
                                         it.forEach {
                                             var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
@@ -413,7 +413,7 @@ object DataProvider {
         }
     }
 
-    private fun loadGroup(group: Int, force: Boolean = true, callback: ((Boolean) -> Unit)? = null) {
+    private fun loadGroup(group: Int, force: Boolean = true, mediaToken:Long = ReadMediaManager.tonken,callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
             if (group < 0 || (!force && chapterCache.get(group) != null)) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
@@ -428,7 +428,7 @@ object DataProvider {
                                 AppLog.e("DataProvider", "onNext = ")
                                 var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                         ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
+                                separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
 
                                 callback?.invoke(true)

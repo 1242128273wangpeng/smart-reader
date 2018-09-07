@@ -30,6 +30,10 @@ import kotlin.jvm.functions.Function1;
 public class SwitchSplashAdActivity extends Activity {
 
     private boolean canBack = false;
+    FrameLayout fm = null;
+    LinearLayout linerClose = null;
+
+    private boolean loadedAD = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,8 @@ public class SwitchSplashAdActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_switch_splash_ad);
-        final FrameLayout fm = (FrameLayout) findViewById(R.id.container);
-        final LinearLayout linerClose = (LinearLayout) findViewById(R.id.ll_close_switch);
+        fm = (FrameLayout) findViewById(R.id.container);
+        linerClose = (LinearLayout) findViewById(R.id.ll_close_switch);
         setVisibility(fm, false);
         linerClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,24 +53,7 @@ public class SwitchSplashAdActivity extends Activity {
             }
         });
 
-        MediaControl.INSTANCE.loadSwitchScreenMedia(this, fm, new Function1<Integer, Unit>() {
-            @Override
-            public Unit invoke(Integer resultCode) {
-                switch (resultCode) {
-                    case MediaCode.MEDIA_SUCCESS: //广告请求成功
-                        setVisibility(fm, true);
-                        linerClose.setVisibility(View.VISIBLE);
-                        break;
-                    case MediaCode.MEDIA_FAILED: //广告请求失败
-                        SwitchSplashAdActivity.this.finish();
-                        break;
-                    case MediaCode.MEDIA_DISMISS: //开屏页面关闭
-                        SwitchSplashAdActivity.this.finish();
-                        break;
-                }
-                return null;
-            }
-        });
+
 
         msMainLooperHandler.postDelayed(new Runnable() {
             @Override
@@ -91,6 +78,34 @@ public class SwitchSplashAdActivity extends Activity {
             view.setBackgroundColor(Color.parseColor("#ffffffff"));
         } else {
             view.setBackgroundColor(Color.parseColor("#00ffffff"));
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        int width = getWindow().getDecorView().getWidth();
+        int height = getWindow().getDecorView().getHeight();
+        if (hasFocus && !loadedAD && height > width) {
+            loadedAD = true;
+            MediaControl.INSTANCE.loadSwitchScreenMedia(this, fm, new Function1<Integer, Unit>() {
+                @Override
+                public Unit invoke(Integer resultCode) {
+                    switch (resultCode) {
+                        case MediaCode.MEDIA_SUCCESS: //广告请求成功
+                            setVisibility(fm, true);
+                            linerClose.setVisibility(View.VISIBLE);
+                            break;
+                        case MediaCode.MEDIA_FAILED: //广告请求失败
+                            SwitchSplashAdActivity.this.finish();
+                            break;
+                        case MediaCode.MEDIA_DISMISS: //开屏页面关闭
+                            SwitchSplashAdActivity.this.finish();
+                            break;
+                    }
+                    return null;
+                }
+            });
         }
     }
 

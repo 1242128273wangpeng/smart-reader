@@ -20,7 +20,6 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.MediaControl
-import com.dy.media.ReaderRestDialog
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.activity.ReaderActivity
@@ -75,12 +74,12 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
 //    private val handler = Handler(Looper.getMainLooper())
 
-    private val readerRestDialog: ReaderRestDialog? by lazy {
-        readReference?.get()?.let {
-            ReaderRestDialog(it)
-        }
-        null
-    }
+//    private val readerRestDialog: ReaderRestDialog? by lazy {
+//        readReference?.get()?.let {
+//            ReaderRestDialog(it)
+//        }
+//        null
+//    }
 
     init {
         readReference = WeakReference(act)
@@ -114,15 +113,16 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
         initBookState()
-        MediaControl.startRestMedia {
-            if (readerRestDialog?.isShowing() == true) {
-                return@startRestMedia
-            }
-            MediaControl.loadRestMedia(readReference?.get(), { view: View? ->
-                if (readReference?.get()?.isFinishing == true) return@loadRestMedia
-                readerRestDialog?.show(view)
-            })
-        }
+        MediaControl.startRestMedia (act)
+//        MediaControl.startRestMedia {
+//            if (readerRestDialog?.isShowing() == true) {
+//                return@startRestMedia
+//            }
+//            MediaControl.loadRestMedia(readReference?.get(), { view: View? ->
+//                if (readReference?.get()?.isFinishing == true) return@loadRestMedia
+//                readerRestDialog?.show(view)
+//            })
+//        }
     }
 
     fun loadData(useReadStatus: Boolean = false) {
@@ -466,13 +466,13 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
         MediaControl.stopRestMedia()
 
-        try {
-            if (readerRestDialog != null && readerRestDialog!!.isShowing()) {
-                readerRestDialog?.dismiss()
-            }
-        } catch (e: Exception) {
-
-        }
+//        try {
+//            if (readerRestDialog != null && readerRestDialog!!.isShowing()) {
+//                readerRestDialog?.dismiss()
+//            }
+//        } catch (e: Exception) {
+//
+//        }
 
     }
 

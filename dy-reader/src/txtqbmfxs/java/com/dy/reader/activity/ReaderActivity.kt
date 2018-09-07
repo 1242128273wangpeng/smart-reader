@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
+import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
@@ -36,6 +37,7 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dycm_adsdk.view.NativeView
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_reader.*
@@ -51,7 +53,7 @@ import org.greenrobot.eventbus.ThreadMode
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
-
+    private var mNativeMediaView: NativeMediaView? = null
     private val mReadSettingFragment by lazy {
         val readSettingFragment = ReadSettingFragment()
         readSettingFragment.fm = fragmentManager
@@ -142,6 +144,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     val orientaionRunnable = {
+        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -248,6 +252,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onResume()
+        }
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -266,6 +273,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         glSurfaceView.onPause()
         mReadPresenter.onPause()
         MediaLifecycle.onPause()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onPause()
+        }
     }
 
     override fun onStop() {
@@ -305,6 +316,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         ReaderStatus.chapterList.clear()
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onDestroy()
+            mNativeMediaView = null
+        }
     }
 
 
@@ -407,7 +423,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     PageManager.clear()
                     hideAd()
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 } else if (glSurfaceView.visibility != View.VISIBLE && ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
                     PageManager.clear()
@@ -418,7 +434,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
 
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 }
             }
@@ -518,6 +534,24 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (adView != null) {
             if (adView.loaded) {//加载成功
                 if (adView.view != null) {
+
+                    if (adView.view is NativeView) {
+                        (adView.view as NativeView).setHideAdListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                        (adView.view as NativeView).setOnLoadCompleteListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    } else if (adView.view is NativeMediaView) {
+                        mNativeMediaView = adView.view as NativeMediaView
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
+                            mNativeMediaView?.onPause()
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    }
 
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null

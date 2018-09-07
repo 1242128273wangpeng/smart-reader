@@ -28,6 +28,7 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
@@ -265,11 +266,21 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onResume() {
+        super.onResume()
+        MediaLifecycle.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MediaLifecycle.onPause()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         AndroidLogStorage.getInstance().clear()
         this.unregisterReceiver(homeBroadcastReceiver)
+        MediaLifecycle.onDestroy()
         try {
             homeAdapter = null
             setContentView(R.layout.common_empty)

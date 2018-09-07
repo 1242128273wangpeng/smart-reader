@@ -502,3 +502,38 @@ public protected *;
 -keep class com.baidu.bottom.** { *; }
 -keep class com.baidu.kirin.** { *; }
 -keep class com.baidu.mobstat.** { *; }
+
+#头条SDK
+-keep class com.bytedance.sdk.openadsdk.** { *; }
+-keep class com.androidquery.callback.** {*;}
+-keep class com.bytedance.sdk.openadsdk.service.TTDownloadProvider
+
+# ijk
+-keep class tv.danmaku.ijk.** { *; }
+-dontwarn tv.danmaku.ijk.**
+-keep class com.dueeeke.videoplayer.** { *; }
+-dontwarn com.dueeeke.videoplayer.**
+
+-keep class cn.dycm.ad.** {*;}
+
+# inmobi.**
+-keepattributes SourceFile,LineNumberTable
+-keep class com.inmobi.** { *; }
+-keep public class com.google.android.gms.**
+-dontwarn com.google.android.gms.**
+-dontwarn com.squareup.picasso.**
+-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient{
+public *;
+}
+-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient$Info{
+public *;
+}
+# skip the Picasso library classes
+-keep class com.squareup.picasso.** {*;}
+-dontwarn com.squareup.picasso.**
+-dontwarn com.squareup.okhttp.**
+# skip Moat classes
+-keep class com.moat.** {*;}
+-dontwarn com.moat.**
+# skip AVID classes
+-keep class com.integralads.avid.library.* {*;}
