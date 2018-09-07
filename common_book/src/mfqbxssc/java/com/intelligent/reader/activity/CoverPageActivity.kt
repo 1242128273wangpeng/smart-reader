@@ -343,15 +343,15 @@ class CoverPageActivity : BaseCacheableActivity(),
         val textView = TextView(this)
         textView.text = text
         textView.textSize = 11f
-        textView.setGravity(Gravity.CENTER);
+        textView.gravity = Gravity.CENTER
         textView.setTextColor(resources.getColor(R.color.cover_recommend_read))
         textView.setBackgroundResource(R.drawable.cover_label_shape)
         textView.setPadding(left, top, right, bottom)
         textView.setOnClickListener(OnClickListener {
 
             var data = HashMap<String,String>()
-            data.put("bookid",book?.book_id+"")
-            data.put("name",book?.name+"")
+            data.put("bookid",book.book_id+"")
+            data.put("name",book.name+"")
             data.put("lablekey",text)
             data.put("rank",index.toString())
             StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.LABLECLICK,data)
