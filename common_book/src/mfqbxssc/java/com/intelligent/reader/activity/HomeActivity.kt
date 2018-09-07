@@ -30,6 +30,7 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
@@ -44,7 +45,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
@@ -82,8 +82,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var rankingFragment: WebViewFragment? = null
 
     private var categoryFragment: WebViewFragment? = null
-
-    private var registerShareCallback = false
 
     private val pushSettingDialog: PushSettingDialog by lazy {
         val dialog = PushSettingDialog(this)
@@ -131,19 +129,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        this.changeHomePagerIndex(currentIndex)
-        this.registerShareCallback = false
-
-        StatService.onResume(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        StatService.onPause(this)
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -164,13 +149,26 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        this.changeHomePagerIndex(currentIndex)
+        StatService.onResume(this)
+        MediaLifecycle.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+        MediaLifecycle.onPause()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         AndroidLogStorage.getInstance().clear()
 
         this.unregisterReceiver(homeBroadcastReceiver)
-
+        MediaLifecycle.onDestroy()
         try {
             bookShelfFragment = null
             recommendFragment = null
@@ -624,18 +622,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     override fun changeDrawerLayoutState() {
 
-    }
-
-    override fun registerShareCallback(state: Boolean) {
-        this.registerShareCallback = state
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (registerShareCallback) {
-            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
-        }
     }
 
     companion object {
