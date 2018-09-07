@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.InflateException
-import android.view.View
 import android.widget.Toast
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
@@ -29,7 +28,6 @@ import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
-import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
@@ -51,7 +49,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 /**
- * Created by yuchao on 2017/11/14 0014.
+ * Created by yuchao on 2017/11/14 0014
  */
 open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack {
 
@@ -115,10 +113,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
         initBookState()
-    //        横屏不显示休息广告
-        if (!ReaderSettings.instance.isLandscape) {
-            MediaControl.startRestMedia(act)
-        }
+        MediaControl.startRestMedia (act)
 //        MediaControl.startRestMedia {
 //            if (readerRestDialog?.isShowing() == true) {
 //                return@startRestMedia
@@ -189,11 +184,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     fun onConfigurationChanged() {
         initWindow()
-//        横屏不显示休息广告
-        MediaControl.stopRestMedia()
-        if (!ReaderSettings.instance.isLandscape) {
-            MediaControl.startRestMedia(act)
-        }
+
         ReaderStatus.clear()
         loadData(true)
     }
@@ -295,6 +286,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                 AppHelper.screenWidth -= getNotchSize(Reader.context)
             }
         }
+
         // 保存字体、亮度、阅读模式
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
 //        // 设置字体

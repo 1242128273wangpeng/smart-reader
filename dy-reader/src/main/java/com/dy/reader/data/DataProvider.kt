@@ -7,19 +7,19 @@ import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
-import com.dy.reader.page.Position
-import com.dy.reader.setting.ReaderSettings
-import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.helper.ReadSeparateHelper
+import com.dy.reader.mode.NovelChapter
 import com.dy.reader.mode.NovelLineBean
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.PageManager
+import com.dy.reader.page.Position
 import com.dy.reader.repository.ReaderRepository
 import com.dy.reader.repository.ReaderRepositoryFactory
-import com.dy.reader.mode.NovelChapter
-import com.dy.reader.mode.NovelPageBean
+import com.dy.reader.setting.ReaderSettings
+import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -36,7 +36,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * Created by xian on 18-3-21.
+ * Created by xian on 18-3-21
  */
 object DataProvider {
 
@@ -84,13 +84,11 @@ object DataProvider {
 
 
                     AppLog.e("DataProvider", "forceReload = " + forceReload)
-
                     val mediaToken = ReadMediaManager.tonken
-
-                    loadGroup(position.group, forceReload,mediaToken) {
+                    loadGroup(position.group, forceReload, mediaToken) {
                         if (it) {
 
-                            loadGroup(Math.max(position.group - 1, 0), forceReload,mediaToken) {
+                            loadGroup(Math.max(position.group - 1, 0), forceReload, mediaToken) {
                                 if (it) {
                                     groupListeners.forEach {
                                         if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
@@ -110,7 +108,7 @@ object DataProvider {
                                 }
                             }
 
-                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload,mediaToken)
+                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload, mediaToken)
                         } else {
                             EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                 onNeedRefresh(event)
@@ -414,7 +412,7 @@ object DataProvider {
         }
     }
 
-    private fun loadGroup(group: Int, force: Boolean = true, mediaToken:Long = ReadMediaManager.tonken,callback: ((Boolean) -> Unit)? = null) {
+    private fun loadGroup(group: Int, force: Boolean = true, mediaToken: Long = ReadMediaManager.tonken, callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
             if (group < 0 || (!force && chapterCache.get(group) != null)) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
