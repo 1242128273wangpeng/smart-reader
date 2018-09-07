@@ -268,7 +268,8 @@ object ReadMediaManager {
             return
         }
         if (ReadMediaManager.tonken != curTonken) {
-            adCache.put(adType, AdBean(height, null, false, mark))
+//            adCache.put(adType, AdBean(height, null, false, mark))
+            adCache.map.remove(adType)
             Log.e("mediaAction", "token改变了")
             return
         }
