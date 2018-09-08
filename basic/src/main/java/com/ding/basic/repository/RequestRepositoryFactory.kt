@@ -1,6 +1,7 @@
 package com.ding.basic.repository
 
 import android.annotation.SuppressLint
+import android.arch.persistence.room.EmptyResultSetException
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -480,8 +481,9 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                         chapter
                     }
-                    else ->
-                        chapter
+                    else -> {
+                        throw EmptyResultSetException("接口返回内容异常！")
+                    }
                 }
             }
         } else {
@@ -493,6 +495,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
             }, BackpressureStrategy.BUFFER)
         }
     }
+
 
     /**
      * 同步的请求章节内容的方法
