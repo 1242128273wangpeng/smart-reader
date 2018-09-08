@@ -38,7 +38,7 @@ import java.text.NumberFormat
 class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     val readerSettings = ReaderSettings.instance
-    
+
     var presenter: ReadSettingPresenter? = null
 
     internal var isCustomReadingSpace: Boolean = false
@@ -82,7 +82,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         skbar_reader_brightness_change?.max = 235
 
-        if(!readerSettings.isAutoBrightness) {
+        if (!readerSettings.isAutoBrightness) {
             setScreenBrightProgress()
         }
         setBrightnessBackground(readerSettings.isAutoBrightness)
@@ -204,7 +204,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_translation)
         } else if (readerSettings.animation_mode == 3) {
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_up_down)
-        }else{
+        } else {
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_slide)
         }
     }
@@ -338,7 +338,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     }
 
     override fun onClick(v: View) {
-        if(!ReaderStatus.isMenuShow) {
+        if (!ReaderStatus.isMenuShow) {
             return
         }
         when (v.id) {
@@ -404,7 +404,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
                 changeSavePowerMode();
                 break;*/
-            R.id.ll_reader_brightness_system, R.id.ckb_reader_brightness_system// 跟随系统 更改按钮背景
+            R.id.ckb_reader_brightness_system// 跟随系统 更改按钮背景
             -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.SYSFOLLOW)
@@ -606,12 +606,12 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     fun setNovelMode(index: Int) {
         when (index) {
-            51 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_first)
-            52 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_second)
-            53 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_third)
-            54 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_fourth)
-            55 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_fifth)
-            56 -> rg_reader_backdrop_group?.check(R.id.rbtn_reader_backdrop_sixth)
+            51 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_1)
+            52 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_2)
+            53 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_3)
+            54 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_4)
+            55 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_5)
+            56 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_6)
             61 -> {
                 restoreBright()
                 readerSettings.readThemeMode = index
@@ -663,9 +663,9 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
 
-        var current: Int = group.indexOfChild(group.findViewById(checkedId))
+        val current: Int = group.indexOfChild(group.findViewById(checkedId))
         when (checkedId) {
-            R.id.rbtn_reader_backdrop_first -> {
+            R.id.rbtn_read_bg_1 -> {
                 changePageBackgroundWrapper(51)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
@@ -675,7 +675,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 lastIndex = current
 
             }
-            R.id.rbtn_reader_backdrop_second -> {
+            R.id.rbtn_read_bg_2 -> {
 
                 changePageBackgroundWrapper(52)
                 if (current != lastIndex) {
@@ -685,7 +685,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 }
                 lastIndex = current
             }
-            R.id.rbtn_reader_backdrop_third -> {
+            R.id.rbtn_read_bg_3 -> {
                 changePageBackgroundWrapper(53)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
@@ -694,7 +694,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 }
                 lastIndex = current
             }
-            R.id.rbtn_reader_backdrop_fourth -> {
+            R.id.rbtn_read_bg_4 -> {
                 changePageBackgroundWrapper(54)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
@@ -703,7 +703,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 }
                 lastIndex = current
             }
-            R.id.rbtn_reader_backdrop_fifth -> {
+            R.id.rbtn_read_bg_5 -> {
                 changePageBackgroundWrapper(55)
                 if (current != lastIndex) {
 
@@ -713,10 +713,55 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 }
                 lastIndex = current
             }
-            R.id.rbtn_reader_backdrop_sixth -> {
+            R.id.rbtn_read_bg_6 -> {
                 changePageBackgroundWrapper(56)
                 if (current != lastIndex) {
 
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "5")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.rbtn_read_bg_img_1 -> {
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "5")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.rbtn_read_bg_img_2 -> {
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "5")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.rbtn_read_bg_img_3 -> {
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "5")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.rbtn_read_bg_img_4 -> {
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
+                    val data = java.util.HashMap<String, String>()
+                    data.put("type", "5")
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                }
+                lastIndex = current
+            }
+            R.id.rbtn_read_bg_img_5 -> {
+                changePageBackgroundWrapper(56)
+                if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)

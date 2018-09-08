@@ -131,7 +131,6 @@ class ReaderSettingHeader : FrameLayout {
 
         ibtn_reader_more?.setOnClickListener {
 
-            presenter?.showMore()
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_more)
 
             readerHeaderMorePopup.show(ibtn_reader_more)
