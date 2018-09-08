@@ -63,7 +63,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
 
     //    private var viewPager: NonSwipeViewPager? = null
-    private var homePresenter:HomePresenter? = null
+    private var homePresenter: HomePresenter? = null
     private var bookView: BookShelfFragment? = null
     private var isClosed = false
     private var apkUpdateUtils: ApkUpdateUtils? = null
@@ -130,6 +130,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     StartLogClickUtil.POPUPMESSAGE)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            if (intent.getIntExtra("position", 0) == 1) {
+                changeHomePagerIndex(1)
+            }
+
+        }
     }
 
     override fun onClick(v: View) {
@@ -223,7 +233,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
 
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 //            doubleClickFinish()
@@ -258,8 +267,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         message.what = BACK
         handler.sendMessageDelayed(message, 2000)
     }
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -440,7 +447,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
     }
-
 
 
     override fun supportSlideBack(): Boolean {
