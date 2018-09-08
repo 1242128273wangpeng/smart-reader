@@ -19,6 +19,10 @@
 
     <string name="delete_bookmark">删除书签</string>
     <string name="empty_bookmark">清空书签</string>
+    <string name="read_speed_slow">慢读</string>
+    <string name="read_speed_fast">快读</string>
+    <string name="read_auto_exit">退出自动阅读</string>
+    <string name="system">跟随系统</string>
 
     <string name="disclaimer_statement_description">
         "

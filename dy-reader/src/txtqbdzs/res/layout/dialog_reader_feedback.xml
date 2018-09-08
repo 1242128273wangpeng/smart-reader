@@ -11,7 +11,7 @@
     android:scrollbars="vertical"
     tools:ignore="RtlHardcoded">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_feedback_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,25 +21,27 @@
 
         <TextView
             android:id="@+id/dialog_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
             android:text="@string/feedback"
-            android:textColor="#E6000000"
-            android:textSize="20sp"
+            android:textColor="#282828"
+            android:textSize="18sp"
             android:textStyle="bold"/>
 
         <ScrollView
             android:id="@+id/sv_feedback_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="192dp"
+            android:layout_below="@+id/dialog_title"
+            android:layout_marginTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -47,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingTop="10dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -63,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingTop="10dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -79,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingTop="10dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -95,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingTop="10dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -111,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingBottom="10dp"
-                    android:paddingTop="13dp">
+                    android:paddingTop="10dp">
 
                     <TextView
                         style="@style/reader_feedback_txt_style"
@@ -156,45 +158,41 @@
             </LinearLayout>
         </ScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#FFEAEAEA"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp">
+        <Button
+            android:id="@+id/btn_feedback_cancel"
+            android:layout_width="108dp"
+            android:layout_height="38dp"
+            android:layout_below="@+id/sv_feedback_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/reader_dialog_cancel_sel"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="#3ECC96"
+            android:textSize="16sp"
+            app:onPressChangeAlpha="true"
+            tools:ignore="MissingPrefix"/>
 
-            <Button
-                android:id="@+id/btn_feedback_cancel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/reader_feedback_cancel_sel"
-                android:gravity="center"
-                android:text="@string/cancel"
-                android:textColor="#99000000"
-                android:textSize="16sp"/>
+        <Button
+            android:id="@+id/btn_feedback_submit"
+            android:layout_width="108dp"
+            android:layout_height="38dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/sv_feedback_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/reader_dialog_confirm_sel"
+            android:gravity="center"
+            android:text="@string/submit"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:onPressChangeAlpha="true"
+            tools:ignore="MissingPrefix"/>
 
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="#FFEAEAEA"/>
-
-            <Button
-                android:id="@+id/btn_feedback_submit"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/reader_feedback_submit_sel"
-                android:gravity="center"
-                android:text="@string/submit"
-                android:textColor="#FFC2B282"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="wrap_content"

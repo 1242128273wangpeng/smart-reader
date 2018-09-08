@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#F2212020"
-    tools:ignore="RtlHardcoded">
+    android:background="#F2191919"
+    android:fitsSystemWindows="true"
+    tools:ignore="RtlHardcoded,MissingPrefix">
 
     <RelativeLayout
         android:id="@+id/rl_reader_header_content"
@@ -18,11 +20,10 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:contentDescription="@string/module_name"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:src="@drawable/reader_option_back_sel"/>
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:src="@drawable/reader_option_header_back_icon"
+            app:onPressChangeAlpha="true"/>
 
         <ImageButton
             android:id="@+id/ibtn_reader_download"
@@ -34,7 +35,8 @@
             android:contentDescription="@string/module_name"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/reader_option_download_sel"/>
+            android:src="@drawable/reader_option_header_download_icon"
+            app:onPressChangeAlpha="true"/>
 
         <ImageButton
             android:id="@+id/ibtn_reader_more"
@@ -43,22 +45,13 @@
             android:layout_alignParentRight="true"
             android:background="@null"
             android:contentDescription="@string/module_name"
-            android:padding="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="16dp"
+            android:paddingTop="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/reader_option_more_sel"/>
+            android:src="@drawable/reader_option_header_more_icon"
+            tools:ignore="RtlSymmetry"/>
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txt_reader_source"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_below="@id/rl_reader_header_content"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:singleLine="true"
-        android:textColor="#6D6D6D"
-        android:textSize="12sp"
-        tools:text="@string/default_title"/>
 </RelativeLayout>

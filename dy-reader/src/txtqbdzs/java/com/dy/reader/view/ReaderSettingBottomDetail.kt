@@ -52,6 +52,8 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     private var time: Long = 0
 
+    private var lastProgress = 0
+
     constructor(context: Context) : super(context) {
         initView()
         initListener()
@@ -233,15 +235,14 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 } else {
                     skbar_reader_chapter_change?.progress = ReaderStatus.position.group
                 }
-                showChapterProgress()
             }
 
             if (ThemeHelper.getInstance(context).isNight) {
                 txt_reader_night.text = "白天"
-                ibtn_reader_night.setImageResource(R.drawable.reader_option_day_sel)
+                ibtn_reader_night.setImageResource(R.drawable.reader_option_day_normal_icon)
             } else {
                 txt_reader_night.text = "夜间"
-                ibtn_reader_night.setImageResource(R.drawable.reader_option_night_sel)
+                ibtn_reader_night.setImageResource(R.drawable.reader_option_bottom_night_icon)
             }
             setFontSize()
         } else {
@@ -255,19 +256,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         }
     }
 
-    private fun showChapterProgress() {
-        if (ReaderStatus.position.group == -1) {
-        } else {
-            if (txt_current_chapter_name != null) {
-                txt_current_chapter_name?.text = if (TextUtils.isEmpty(ReaderStatus.chapterName)) "" else ReaderStatus.chapterName
-            }
-            if (txt_current_chapter_sequence != null) {
-                txt_current_chapter_sequence?.text = (ReaderStatus.position.group + 1).toString() + "/" + ReaderStatus.chapterCount + "章"
-            }
-        }
-
-    }
-
     private fun initListener() {
 
         txt_reader_chapter_previous?.preventClickShake(this)
@@ -277,8 +265,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         skbar_reader_chapter_change?.setOnSeekBarChangeListener(this)
 
         rl_reader_catalog?.preventClickShake(this)
-
-        rl_reader_feedback?.preventClickShake(this)
 
         rl_reader_setting?.preventClickShake(this)
 
@@ -347,6 +333,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         ckb_reader_auto_read?.preventClickShake(this)
         ckb_reader_full_screen?.preventClickShake(this)
 
+        img_jump_back.preventClickShake(this)
 
     }
 
@@ -378,10 +365,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 presenter?.readCatalogLog()
             }
 
-            R.id.rl_reader_feedback -> {
-                presenter?.readFeedBack()
-            }
-
             R.id.rl_reader_setting -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_setting_btn)
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.SET)
@@ -391,10 +374,10 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             -> {
                 if (ThemeHelper.getInstance(context).isNight) {
                     txt_reader_night.text = "夜间"
-                    ibtn_reader_night.setImageResource(R.drawable.reader_option_night_sel)
+                    ibtn_reader_night.setImageResource(R.drawable.reader_option_bottom_night_icon)
                 } else {
                     txt_reader_night.text = "白天"
-                    ibtn_reader_night.setImageResource(R.drawable.reader_option_day_sel)
+                    ibtn_reader_night.setImageResource(R.drawable.reader_option_day_normal_icon)
 
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
@@ -456,6 +439,36 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                     data.put("type", "2")
                 }
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.FULLSCREENPAGEREAD, data)
+            }
+            R.id.img_jump_back -> {
+
+                val position = formatToPosition(lastProgress)
+                if (position.group == ReaderStatus.position.group) { // 本章不跳
+                    return
+                }
+
+                anim?.cancel()
+                rl_jump_back.alpha = 1F
+                anim = rl_jump_back.animate()
+                anim?.alpha(0F)
+                anim?.duration = 2000
+                anim?.startDelay = 2000
+                anim?.start()
+
+                jumpChapter(lastProgress)
+                if (lastProgress < 1 || lastProgress < 1) {
+                    skbar_reader_chapter_change?.progress = 0
+                } else {
+                    skbar_reader_chapter_change?.progress = lastProgress
+                }
+                showChapterInfo(lastProgress)
+
+                val data = HashMap<String, String>()
+                data["bookid"] = ReaderStatus.book.book_id
+                data["chapterid"] = ReaderStatus.book.book_chapter_id
+                StartLogClickUtil.upLoadEventLog(context.applicationContext,
+                        StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.PROGRESSCANCLE, data)
+
             }
             else -> {
             }
@@ -547,7 +560,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             val index = Math.max(ReaderStatus.position.group, 0)
             skbar_reader_chapter_change?.progress = index
         }
-        showChapterProgress()
         refreshJumpPreBtnState(sequence)
     }
 
@@ -802,14 +814,9 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.skbar_reader_chapter_change) {
-            ll_reader_chapter_info.visibility = View.VISIBLE
-            ll_reader_chapter_info.alpha = 1F
+            rl_jump_back.visibility = View.VISIBLE
             anim?.cancel()
-            anim = ll_reader_chapter_info.animate()
-            anim?.alpha(0F)
-            anim?.duration = 1000
-            anim?.startDelay = 1000
-            anim?.start()
+            rl_jump_back.alpha = 1F
 //            val resizeProgress = progress.times(ReaderStatus.chapterList.size).div(100)
             if (!ReaderStatus.chapterList.isEmpty()
                     && progress <= ReaderStatus.chapterList.size && progress >= 0) {
@@ -818,16 +825,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 txt_reader_chapter_previous.alpha = 1f
 //                ReaderStatus.novel_progress = resizeProgress
                 changeBottomSettingView(SETTING_OPTION)
-                if (progress == 0) {
-                    txt_current_chapter_name.text = ReaderStatus.chapterList[progress].name
-                    txt_current_chapter_sequence.text = progress.plus(1).toString() + "/" + ReaderStatus.chapterList.size
-                } else if (progress == ReaderStatus.chapterList.size - 1) {
-                    txt_current_chapter_name.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
-                    txt_current_chapter_sequence.text = ReaderStatus.chapterList.size.toString() + "/" + ReaderStatus.chapterList.size
-                } else {
-                    txt_current_chapter_name.text = ReaderStatus.chapterList[progress - 1].name
-                    txt_current_chapter_sequence.text = progress.toString() + "/" + ReaderStatus.chapterList.size
-                }
+                showChapterInfo(progress)
             }
 //            ReaderStatus.position.group = progress
 //            refreshJumpPreBtnState()
@@ -846,25 +844,40 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         }
     }
 
-    override fun onStartTrackingTouch(seekBar: SeekBar) {}
+    private fun showChapterInfo(progress: Int) {
+        when (progress) {
+            0 -> {
+                txt_cur_chapter_name.text = ReaderStatus.chapterList[progress].name
+                val percent = "1/${ReaderStatus.chapterList.size}"
+                txt_chapter_percent.text = percent
+            }
+            ReaderStatus.chapterList.size - 1 -> {
+                txt_cur_chapter_name.text = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1].name
+                val percent = "${ReaderStatus.chapterList.size}/${ReaderStatus.chapterList.size}"
+                txt_chapter_percent.text = percent
+            }
+            else -> {
+                txt_cur_chapter_name.text = ReaderStatus.chapterList[progress - 1].name
+                val percent = "$progress/${ReaderStatus.chapterList.size}"
+                txt_chapter_percent.text = percent
+            }
+        }
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar) {
+        lastProgress = if (lastProgress == 0) { // menu 重新 show 的时候，seekBar.progress 比正确值小 1
+            seekBar.progress + 1
+        } else {
+            seekBar.progress
+        }
+    }
 
 
     override fun onStopTrackingTouch(seekBar: SeekBar) {
         val numFormat = NumberFormat.getNumberInstance()
         numFormat.maximumFractionDigits = 2
         if (seekBar.id == R.id.skbar_reader_chapter_change) {
-            if (seekBar.progress == ReaderStatus.position.group) {// 本章不跳
-                return
-            }
-            var resizeProgress = when (seekBar.progress) {
-                0 -> 0
-                ReaderStatus.chapterList.size - 1 -> ReaderStatus.chapterList.size - 1
-                else -> seekBar.progress - 1
-            }
-            AppLog.e("progress2", resizeProgress.toString())
-            val position = Position(ReaderStatus.book.book_id, resizeProgress, 0)
-            EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, position))
-            refreshJumpPreBtnState(position.group)
+            jumpChapter(seekBar.progress)
         } else if (seekBar.id == R.id.skbar_reader_brightness_change) {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
 
@@ -875,6 +888,25 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.LIGHTEDIT, data)
 
         }
+    }
+
+    private fun jumpChapter(progress: Int) {
+        val position = formatToPosition(progress)
+        if (position.group == ReaderStatus.position.group) {// 本章不跳
+            return
+        }
+        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, position))
+        refreshJumpPreBtnState(position.group)
+    }
+
+    private fun formatToPosition(progress: Int): Position {
+        val resizeProgress = when (progress) {
+            0 -> 0
+            ReaderStatus.chapterList.size - 1 -> ReaderStatus.chapterList.size - 1
+            else -> progress - 1
+        }
+        AppLog.e("progress2", resizeProgress.toString())
+        return Position(ReaderStatus.book.book_id, resizeProgress, 0)
     }
 
 

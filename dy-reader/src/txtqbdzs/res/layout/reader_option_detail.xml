@@ -23,8 +23,8 @@
             android:layout_alignParentLeft="true"
             android:gravity="center"
             android:text="@string/brightness"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            android:textColor="#989898"
+            android:textSize="12sp"/>
 
         <SeekBar
             android:id="@+id/skbar_reader_brightness_change"
@@ -32,8 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:layout_toLeftOf="@+id/ll_reader_brightness_system"
+            android:layout_marginLeft="20dp"
+            android:layout_toLeftOf="@+id/ckb_reader_brightness_system"
             android:layout_toRightOf="@+id/txt_reader_brightness"
             android:background="@drawable/reader_option_seek_bar_bg"
             android:maxHeight="2dp"
@@ -42,32 +42,25 @@
             android:splitTrack="false"
             android:thumb="@drawable/reader_option_seek_bar_thumb"/>
 
-        <LinearLayout
-            android:id="@+id/ll_reader_brightness_system"
+        <CheckBox
+            android:id="@+id/ckb_reader_brightness_system"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/reader_option_brightness_system_bg"
+            android:button="@null"
+            android:checked="false"
+            android:paddingBottom="3dp"
             android:paddingLeft="10dp"
-            android:visibility="visible">
+            android:paddingRight="10dp"
+            android:paddingTop="3dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/system"
+            android:textColor="@drawable/reader_option_detail_txt_sel"
+            android:textSize="12sp"/>
 
-            <CheckBox
-                android:id="@+id/ckb_reader_brightness_system"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/reader_option_brightness_system_bg"
-                android:button="@null"
-                android:checked="false"
-                android:paddingBottom="3dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="3dp"
-                android:text="@string/system"
-                android:textColor="@drawable/reader_option_detail_txt_sel"
-                android:textSize="12sp"/>
-        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout

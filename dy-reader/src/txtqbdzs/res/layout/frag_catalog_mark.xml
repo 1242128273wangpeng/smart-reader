@@ -1,183 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFFFF"
+    android:clickable="true"
+    android:focusable="true"
     tools:ignore="RtlHardcoded">
 
-    <View
-        android:id="@+id/view_content_mask"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
-    </View>
-
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true">
+        android:id="@+id/rl_catalog"
+        android:layout_width="33dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="90dp"
+        android:layout_marginTop="20dp">
 
-        <RelativeLayout
-            android:id="@+id/rl_book_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="20dp">
-
-            <TextView
-                android:id="@+id/txt_book_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:singleLine="true"
-                android:textColor="#565D67"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="@string/default_title"/>
-
-            <TextView
-                android:id="@+id/txt_chapter_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/txt_book_name"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="10dp"
-                android:maxLines="1"
-                android:textColor="#858C96"
-                android:textSize="13sp"
-                tools:text="@string/default_title"/>
-
-            <CheckBox
-                android:id="@+id/ckb_catalog_order"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/txt_chapter_count"
-                android:background="@drawable/catalog_mark_order_bg_sel"
-                android:button="@null"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="@string/reverse_order"
-                android:textColor="@drawable/catalog_mark_order_txt_sel"
-                android:textSize="@dimen/dimen_text_12"/>
-        </RelativeLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/rg_catalog_mark"
-            android:layout_below="@+id/rl_book_content">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recl_catalog_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:cacheColorHint="#00000000"
-                android:layerType="software"
-                android:listSelector="@android:color/transparent"/>
-
-            <com.dy.reader.view.RecyclerViewFastScroller
-                android:id="@+id/rfs_catalog_scroller"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginBottom="12dp"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recl_mark_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:cacheColorHint="#00000000"
-                android:layerType="software"
-                android:listSelector="@android:color/transparent"
-                android:visibility="gone"/>
-
-            <com.dy.reader.view.RecyclerViewFastScroller
-                android:id="@+id/rfs_mark_scroller"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"/>
-
-            <LinearLayout
-                android:id="@+id/rl_mark_empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="115dp"
-                    android:contentDescription="@string/module_name"
-                    android:gravity="center"
-                    android:src="@drawable/catalog_mark_empty_icon"/>
-            </LinearLayout>
-        </FrameLayout>
-
-        <RadioGroup
-            android:id="@+id/rg_catalog_mark"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:translationZ="2dp">
-
-            <RadioButton
-                android:id="@+id/rbtn_catalog"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:text="@string/catalog"
-                android:textColor="@drawable/catalog_mark_option_txt_sel"/>
-
-            <RadioButton
-                android:id="@+id/rbtn_bookmark"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:button="@null"
-                android:checked="false"
-                android:gravity="center"
-                android:text="@string/bookmark"
-                android:textColor="@drawable/catalog_mark_option_txt_sel"/>
-        </RadioGroup>
-
-        <ImageView
-            android:id="@+id/img_fix_book"
+        <TextView
+            android:id="@+id/txt_catalog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/rg_catalog_mark"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="27dp"
-            android:layout_marginRight="15dp"
-            android:contentDescription="@string/module_name"
-            android:src="@drawable/catalog_mark_fix_book_icon"
-            android:visibility="gone"/>
+            android:text="@string/catalog"
+            android:textColor="@color/reader_catalog_head_text_sel"
+            android:textSize="16sp"/>
 
-        <net.lzbook.kit.book.view.NightShadowView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
+        <View
+            android:id="@+id/view_catalog"
+            android:layout_width="16dp"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/reader_catalog_head_indicator_sel"/>
+
     </RelativeLayout>
-</FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_bookmark"
+        android:layout_width="33dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="90dp"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/txt_bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bookmark"
+            android:textColor="@color/reader_catalog_head_text_sel"
+            android:textSize="16sp"/>
+
+        <View
+            android:id="@+id/view_bookmark"
+            android:layout_width="16dp"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/reader_catalog_head_indicator_sel"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rl_catalog"
+        android:background="#F4F4F4"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_book_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/rl_catalog"
+        android:clickable="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/txt_book_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:singleLine="true"
+            android:textColor="#282828"
+            android:textSize="16sp"
+            tools:text="@string/default_title"/>
+
+        <TextView
+            android:id="@+id/txt_chapter_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txt_book_name"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="8dp"
+            android:maxLines="1"
+            android:textColor="#CBCBCB"
+            android:textSize="14sp"
+            tools:text="@string/default_title"/>
+
+        <CheckBox
+            android:id="@+id/ckb_catalog_order"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/txt_chapter_count"
+            android:background="@null"
+            android:button="@drawable/reader_catalog_order_sel"
+            android:textSize="@dimen/dimen_text_12"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recl_catalog_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="#00000000"
+        android:layerType="software"
+        android:layout_below="@+id/rl_book_content"
+        android:listSelector="@android:color/transparent"/>
+
+    <com.dy.reader.view.RecyclerViewFastScroller
+        android:id="@+id/rfs_catalog_scroller"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rl_book_content"
+        android:layout_marginBottom="12dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recl_mark_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="#00000000"
+        android:layerType="software"
+        android:layout_below="@+id/rl_catalog"
+        android:listSelector="@android:color/transparent"
+        android:visibility="gone"/>
+
+    <com.dy.reader.view.RecyclerViewFastScroller
+        android:id="@+id/rfs_mark_scroller"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/rl_catalog"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/rl_mark_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="115dp"
+            android:contentDescription="@string/module_name"
+            android:gravity="center"
+            android:src="@drawable/catalog_mark_empty_icon"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_fix_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="27dp"
+        android:layout_marginRight="15dp"
+        android:contentDescription="@string/module_name"
+        android:src="@drawable/catalog_mark_fix_book_icon"
+        android:visibility="visible"/>
+
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+</RelativeLayout>

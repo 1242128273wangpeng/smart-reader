@@ -1,42 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_header_more_content"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/ll_header_more_content"
     android:background="@drawable/reader_option_header_popup_icon"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded, MissingPrefix">
 
-    <TextView
-        android:id="@+id/txt_reader_change_source"
-        android:layout_width="112dp"
-        android:layout_height="45dp"
-        android:background="@drawable/reader_option_header_popup_item_sel"
-        android:gravity="center"
-        android:soundEffectsEnabled="true"
-        android:text="@string/change_source"
-        android:textColor="#D3D3D3"
-        android:textSize="12sp"/>
+    <LinearLayout
+        android:id="@+id/ll_change_source"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/txt_reader_action_mark"
-        android:layout_width="112dp"
-        android:layout_height="45dp"
-        android:background="@drawable/reader_option_header_popup_item_sel"
-        android:gravity="center"
-        android:soundEffectsEnabled="true"
-        android:text="@string/insert_bookmark"
-        android:textColor="#D3D3D3"
-        android:textSize="12sp"/>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/reader_option_change_source_icon"
+            app:onPressChangeAlpha="true"/>
 
-    <TextView
-        android:id="@+id/txt_reader_book_detail"
-        android:layout_width="112dp"
-        android:layout_height="45dp"
-        android:background="@drawable/reader_option_header_popup_item_sel"
-        android:gravity="center"
-        android:soundEffectsEnabled="true"
-        android:text="@string/book_detail"
-        android:textColor="#D3D3D3"
-        android:textSize="12sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/reader_option_header_popup_item_sel"
+            android:gravity="center"
+            android:text="@string/change_source"
+            android:textColor="#989898"
+            android:textSize="14sp"
+            app:onPressChangeAlpha="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_book_mark"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/img_book_mark"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/reader_option_bookmark_add_icon"
+            app:onPressChangeAlpha="true"/>
+
+        <TextView
+            android:id="@+id/txt_book_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/reader_option_header_popup_item_sel"
+            android:gravity="center"
+            android:text="@string/insert_bookmark"
+            android:textColor="#989898"
+            android:textSize="12sp"
+            app:onPressChangeAlpha="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_book_detail"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/reader_option_detail_icon"
+            app:onPressChangeAlpha="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/reader_option_header_popup_item_sel"
+            android:gravity="center"
+            android:text="@string/book_detail"
+            android:textColor="#989898"
+            android:textSize="12sp"
+            app:onPressChangeAlpha="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/reader_option_feedback_icon"
+            app:onPressChangeAlpha="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/reader_option_header_popup_item_sel"
+            android:gravity="center"
+            android:text="@string/feedback"
+            android:textColor="#989898"
+            android:textSize="12sp"
+            app:onPressChangeAlpha="true"/>
+
+    </LinearLayout>
+
 </LinearLayout>
