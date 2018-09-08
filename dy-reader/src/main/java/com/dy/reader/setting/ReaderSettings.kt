@@ -5,10 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
@@ -58,7 +56,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND, CHAPTER_SUCCESS,
+        GO_TO_BOOKEND,CHAPTER_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 
@@ -187,7 +185,7 @@ class ReaderSettings {
     fun clear() {
         save()
         needNotify = false
-        backgroundDrawable = null
+        backgroundBitmap = null
     }
 
     @SerializedName(value = "animation")
@@ -284,14 +282,22 @@ class ReaderSettings {
         private set
 
     @Transient
-    var backgroundDrawable: Drawable? = null
+    var backgroundBitmap: Bitmap? = null
         private set
         get() {
             if (field == null) {
+                var inputStream: InputStream? = null
                 try {
-                    field = ContextCompat.getDrawable(Reader.context, R.drawable.read_page_bg_default)
+                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
+                    field = BitmapFactory.decodeStream(inputStream)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                } finally {
+                    try {
+                        inputStream?.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
                 }
             }
             return field
@@ -312,17 +318,10 @@ class ReaderSettings {
             }
         }
 
-    /**
-     * 用来暂存日间模式下用户选择的背景
-     */
     @SerializedName(value = "readLightThemeMode")
     var readLightThemeMode = 51
 
-    /**
-     * 阅读模式背景
-     * 51：默认背景
-     * 61：夜间模式
-     */
+    //阅读模式 背景
     @SerializedName(value = "readThemeMode")
     var readThemeMode: Int = 0
         set(value) {
@@ -338,17 +337,24 @@ class ReaderSettings {
 
     private fun refreshModeParams() {
         if (readThemeMode == 51) {
-            if (backgroundDrawable == null) {
+            if (backgroundBitmap == null) {
+                var inputStream: InputStream? = null
                 try {
-                    backgroundDrawable = ContextCompat.getDrawable(Reader.context,
-                            R.drawable.read_page_bg_default)
+                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
+                    backgroundBitmap = BitmapFactory.decodeStream(inputStream)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                } finally {
+                    try {
+                        inputStream?.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
                 }
             }
             backgroundColor = Reader.context.resources.getColor(R.color.reading_backdrop_first)
         } else {
-            backgroundDrawable = null
+            backgroundBitmap = null
             backgroundColor = ThemeUtil.getBackgroundColor(Reader.context.resources)
         }
 

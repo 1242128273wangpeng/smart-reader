@@ -5,21 +5,20 @@ import android.graphics.*
 import android.opengl.GLES20
 import android.text.TextPaint
 import android.view.View
-import com.dy.reader.data.DataProvider
-import com.dy.reader.helper.AppHelper
-import com.dy.reader.helper.DrawTextHelper
-import com.dy.reader.setting.ReaderSettings
-import net.lzbook.kit.utils.runOnMain
-import java.util.concurrent.Semaphore
-import java.util.concurrent.atomic.AtomicBoolean
-import android.graphics.Bitmap
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
+import com.dy.reader.data.DataProvider
+import com.dy.reader.helper.AppHelper
+import com.dy.reader.helper.DrawTextHelper
 import com.dy.reader.helper.INDEX_TEXTURE_ID
 import com.dy.reader.helper.glCheckErr
+import com.dy.reader.setting.ReaderSettings
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.runOnMain
+import java.util.concurrent.Semaphore
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 /**
@@ -266,9 +265,10 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             canvas?.drawColor(Color.WHITE)
 
             if (ReaderSettings.instance.readThemeMode == 51) {
-                ReaderSettings.instance.backgroundDrawable?.let {
-                    it.setBounds(0, 0, canvas!!.width, canvas!!.height)
-                    it.draw(canvas)
+                ReaderSettings.instance.backgroundBitmap?.let {
+                    canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
+                            Rect(0, 0, canvas!!.width, canvas!!.height),
+                            null)
                 }
             } else {
                 canvas?.drawColor(ReaderSettings.instance.backgroundColor)
