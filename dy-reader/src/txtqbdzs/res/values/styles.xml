@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="reader_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#65FFFFFF</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="reader_option2_style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -12,9 +22,10 @@
     </style>
 
     <style name="reader_option_style">
-        <item name="android:layout_width">63dp</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_marginRight">13dp</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/reader_option_group_border_bg_selector</item>
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>

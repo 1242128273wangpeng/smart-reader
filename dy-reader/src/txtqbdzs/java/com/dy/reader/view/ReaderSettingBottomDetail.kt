@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
+import android.widget.RelativeLayout
 import android.widget.SeekBar
 import com.dingyue.contract.util.preventClickShake
 import com.dy.reader.R
@@ -48,7 +48,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     private var lastIndex: Int? = null
     var currentThemeMode: String? = null
 
-    var readPresenter:ReadPresenter? = null
+    var readPresenter: ReadPresenter? = null
 
     private var time: Long = 0
 
@@ -222,8 +222,8 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     fun showMenu(isShow: Boolean) {
         if (isShow) {
-            img_reader_font_reduce?.isEnabled = readerSettings.fontSize > 10
-            img_reader_font_increase?.isEnabled = readerSettings.fontSize < 30
+            txt_reader_font_reduce?.isEnabled = readerSettings.fontSize > 10
+            txt_reader_font_increase?.isEnabled = readerSettings.fontSize < 30
             rl_reader_option_bottom.visibility = View.VISIBLE
             rl_reader_option_bottom.startAnimation(popUpInAnimation)
 
@@ -282,6 +282,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                     if (rbtn_reader_spacing_0_2!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.2f
                         setInterLinearSpaceMode()
+                        setFontSpaceBg(is0_2Checked = true)
                     }
                 }
                 R.id.rbtn_reader_spacing_0_5 -> {
@@ -292,6 +293,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                     if (rbtn_reader_spacing_0_5!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.3f
                         setInterLinearSpaceMode()
+                        setFontSpaceBg(is0_5Checked = true)
                     }
                 }
                 R.id.rbtn_reader_spacing_1_0 -> {
@@ -302,6 +304,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                     if (rbtn_reader_spacing_1_0!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.4f
                         setInterLinearSpaceMode()
+                        setFontSpaceBg(is1_0Checked = true)
                     }
                 }
                 R.id.rbtn_reader_spacing_1_5 -> {
@@ -312,6 +315,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                     if (rbtn_reader_spacing_1_5!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.5f
                         setInterLinearSpaceMode()
+                        setFontSpaceBg(is1_5Checked = true)
                     }
                 }
             }
@@ -319,9 +323,9 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         rg_reader_animation_group?.setOnCheckedChangeListener(this)
 
-        img_reader_font_reduce?.preventClickShake(this)
+        txt_reader_font_reduce?.preventClickShake(this)
 
-        img_reader_font_increase?.preventClickShake(this)
+        txt_reader_font_increase?.preventClickShake(this)
 
 
         skbar_reader_brightness_change?.setOnSeekBarChangeListener(this)
@@ -383,7 +387,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
             }
-            R.id.img_reader_font_reduce// 减小字号
+            R.id.txt_reader_font_reduce// 减小字号
             -> {
                 if (ReaderStatus.position.group < 0) {
                     return
@@ -391,7 +395,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_smaller)
                 decreaseFont()
             }
-            R.id.img_reader_font_increase// 加大字号
+            R.id.txt_reader_font_increase// 加大字号
             -> {
                 if (ReaderStatus.position.group < 0) {
                     return
@@ -514,11 +518,11 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     private fun decreaseFont() {
         if (readerSettings.fontSize > 10) {
             if (readerSettings.fontSize == 30) {
-                img_reader_font_increase?.isEnabled = true
+                txt_reader_font_increase?.isEnabled = true
             }
             readerSettings.fontSize -= 2
             if (readerSettings.fontSize <= 10) {
-                img_reader_font_reduce?.isEnabled = false
+                txt_reader_font_reduce?.isEnabled = false
             }
             setFontSize()
         }
@@ -534,11 +538,11 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     private fun increaseFont() {
         if (readerSettings.fontSize < 30) {
             if (readerSettings.fontSize == 10) {
-                img_reader_font_reduce?.isEnabled = true
+                txt_reader_font_reduce?.isEnabled = true
             }
             readerSettings.fontSize += 2
             if (readerSettings.fontSize >= 30) {
-                img_reader_font_increase?.isEnabled = false
+                txt_reader_font_increase?.isEnabled = false
             }
 
             setFontSize()
@@ -969,5 +973,30 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     companion object {
         private val SETTING_OPTION = 1
         private val SETTING_DETAIL = SETTING_OPTION + 1
+    }
+
+    /**
+     * 设置间距背景色
+     */
+    private fun setFontSpaceBg(is0_2Checked: Boolean = false,
+                               is0_5Checked: Boolean = false,
+                               is1_0Checked: Boolean = false,
+                               is1_5Checked: Boolean = false) {
+
+        setFontSpaceBg(is0_2Checked, rl_reader_spacing_1_5)
+        setFontSpaceBg(is0_5Checked, rl_reader_spacing_1_0)
+        setFontSpaceBg(is1_0Checked, rl_reader_spacing_0_5)
+        setFontSpaceBg(is1_5Checked, rl_reader_spacing_0_2)
+
+    }
+
+
+    private fun setFontSpaceBg(isChecked: Boolean, view: RelativeLayout) {
+
+        if (isChecked) {
+            view.setBackgroundResource(R.drawable.reader_option_group_border_bg_primary)
+        } else {
+            view.setBackgroundResource(R.drawable.reader_option_group_border_bg)
+        }
     }
 }
