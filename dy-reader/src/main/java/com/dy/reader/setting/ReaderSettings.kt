@@ -56,7 +56,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND, CHAPTER_SUCCESS,
+        GO_TO_BOOKEND,CHAPTER_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 
@@ -318,17 +318,10 @@ class ReaderSettings {
             }
         }
 
-    /**
-     * 用来暂存日间模式下用户选择的背景
-     */
     @SerializedName(value = "readLightThemeMode")
     var readLightThemeMode = 51
 
-    /**
-     * 阅读模式背景
-     * 51：默认背景
-     * 61：夜间模式
-     */
+    //阅读模式 背景
     @SerializedName(value = "readThemeMode")
     var readThemeMode: Int = 0
         set(value) {
