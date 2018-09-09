@@ -38,6 +38,14 @@ class PushSettingDialog(val activity: Activity) : LifecycleObserver {
             openPushListener?.invoke()
         }
 
+        dialog.setOnDismissListener {
+            DyStatService.onEvent(EventPoint.MAIN_PUSHCLOSE)
+        }
+
+        dialog.setOnShowListener {
+            DyStatService.onEvent(EventPoint.MAIN_PUSHEXPOSE)
+        }
+
     }
 
     fun show() {
