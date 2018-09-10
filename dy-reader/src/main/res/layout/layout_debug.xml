@@ -65,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@id/view_divider"
-                android:background="@drawable/reader_dialog_cancel_sel"
+                android:background="@drawable/reader_dialog_confirm_sel"
                 android:gravity="center"
                 android:text="@string/cancel"
                 android:textColor="@drawable/reader_dialog_cancel_txt_sel"
