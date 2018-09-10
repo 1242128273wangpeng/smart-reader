@@ -1,15 +1,16 @@
 package com.dy.reader.setting
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
+import android.support.annotation.RawRes
+import android.support.v4.content.ContextCompat
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
+import com.dy.reader.helper.AppHelper
+import com.dy.reader.page.GLPage
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.util.ThemeUtil
 import com.google.gson.InstanceCreator
@@ -56,7 +57,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND,CHAPTER_SUCCESS,
+        GO_TO_BOOKEND, CHAPTER_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 
@@ -185,7 +186,7 @@ class ReaderSettings {
     fun clear() {
         save()
         needNotify = false
-        backgroundBitmap = null
+        kraftBitmap = null
     }
 
     @SerializedName(value = "animation")
@@ -282,23 +283,111 @@ class ReaderSettings {
         private set
 
     @Transient
-    var backgroundBitmap: Bitmap? = null
+    var kraftBitmap: Bitmap? = null
         private set
         get() {
             if (field == null) {
-                var inputStream: InputStream? = null
-                try {
-                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
-                    field = BitmapFactory.decodeStream(inputStream)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    try {
-                        inputStream?.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
+                field = readBitmap(R.raw.read_page_bg_default)
+            }
+            return field
+        }
+
+    @Transient
+    var blueBitmapLandscape: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createBlueBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var blueBitmapPortrait: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createBlueBitmap()
+            }
+            return field
+        }
+    @Transient
+    var pinkBitmapLandscape: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createPinkBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var pinkBitmapPortrait: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createPinkBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var greenBitmapLandscape: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createGreenBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var greenBitmapPortrait: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createGreenBitmap()
+            }
+            return field
+        }
+
+
+    @Transient
+    var darkBitmapLandscape: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createDarkBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var darkBitmapPortrait: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createDarkBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var dimBitmapLandscape: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createDimBitmap()
+            }
+            return field
+        }
+
+    @Transient
+    var dimBitmapPortrait: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                field = createDimBitmap()
             }
             return field
         }
@@ -336,32 +425,173 @@ class ReaderSettings {
         }
 
     private fun refreshModeParams() {
-        if (readThemeMode == 51) {
-            if (backgroundBitmap == null) {
-                var inputStream: InputStream? = null
-                try {
-                    inputStream = Reader.context.resources.openRawResource(R.raw.read_page_bg_default)
-                    backgroundBitmap = BitmapFactory.decodeStream(inputStream)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    try {
-                        inputStream?.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            backgroundColor = Reader.context.resources.getColor(R.color.reading_backdrop_first)
-        } else {
-            backgroundBitmap = null
-            backgroundColor = ThemeUtil.getBackgroundColor(Reader.context.resources)
-        }
+        kraftBitmap = null
+        blueBitmapLandscape = null
+        blueBitmapPortrait = null
+        pinkBitmapLandscape = null
+        pinkBitmapPortrait = null
+        greenBitmapLandscape = null
+        greenBitmapPortrait = null
+        darkBitmapLandscape = null
+        darkBitmapPortrait = null
+        dimBitmapLandscape = null
+        dimBitmapPortrait = null
+        backgroundColor = ThemeUtil.getBackgroundColor(Reader.context.resources)
 
         titleColor = Color.BLACK
         titleColor = ThemeUtil.getTitleColor(Reader.context.resources)
         fontColor = ThemeUtil.getTextColor(Reader.context.resources)
 
+    }
+
+    private fun readBitmap(@RawRes bitmapId: Int): Bitmap? {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = Reader.context.resources.openRawResource(bitmapId)
+            return BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return null
+    }
+
+    private fun createBaseBitmap(): Bitmap {
+        return Bitmap.createBitmap(AppHelper.screenWidth, AppHelper.screenHeight,
+                Bitmap.Config.RGB_565)
+    }
+
+    private fun createBlueBitmap(): Bitmap? {
+        val topBitmap = readBitmap(R.raw.read_page_bg_blue_up)
+        val bottomBitmap = readBitmap(R.raw.read_page_bg_blue_down)
+        if (topBitmap == null || bottomBitmap == null) return null
+        val baseBitmap = createBaseBitmap()
+        val bgColor = ContextCompat.getColor(Reader.context, R.color.reader_backdrop_blue)
+
+        val canvas = Canvas(baseBitmap)
+        canvas.drawColor(bgColor)
+
+        val topMatrix = Matrix()
+        val width = if (isLandscape) {
+            canvas.height
+        } else {
+            canvas.width
+        }
+        val topScale = (0.74 * width).toFloat() / topBitmap.width
+        topMatrix.postScale(topScale, topScale)
+        canvas.drawBitmap(topBitmap, topMatrix, null)
+
+        val bottomMatrix = Matrix()
+        val bottomScale = (0.51 * width).toFloat() / bottomBitmap.width
+        bottomMatrix.postScale(bottomScale, bottomScale)
+        bottomMatrix.postTranslate(canvas.width - bottomBitmap.width.toFloat() * bottomScale,
+                canvas.height - bottomBitmap.height.toFloat() * bottomScale)
+        canvas.drawBitmap(bottomBitmap, bottomMatrix, null)
+
+        return baseBitmap
+    }
+
+    private fun createPinkBitmap(): Bitmap? {
+        val topBitmap = readBitmap(R.raw.read_page_bg_pink_up)
+        val bottomBitmap = readBitmap(R.raw.read_page_bg_pink_down)
+        if (topBitmap == null || bottomBitmap == null) return null
+        val baseBitmap = createBaseBitmap()
+        val bgColor = ContextCompat.getColor(Reader.context, R.color.reader_backdrop_pink)
+
+        val canvas = Canvas(baseBitmap)
+        canvas.drawColor(bgColor)
+
+        val topMatrix = Matrix()
+        val width = if (isLandscape) {
+            canvas.height
+        } else {
+            canvas.width
+        }
+        val topScale = (0.291 * width).toFloat() / topBitmap.width
+        topMatrix.postScale(topScale, topScale)
+        topMatrix.postTranslate(canvas.width - topBitmap.width * topScale, 0F)
+        canvas.drawBitmap(topBitmap, topMatrix, null)
+
+        val bottomMatrix = Matrix()
+        val bottomScale = (0.373 * width).toFloat() / bottomBitmap.width
+        bottomMatrix.postScale(bottomScale, bottomScale)
+        bottomMatrix.postTranslate(0F, canvas.height - bottomBitmap.height * bottomScale)
+        canvas.drawBitmap(bottomBitmap, bottomMatrix, null)
+
+        return baseBitmap
+    }
+
+    private fun createGreenBitmap(): Bitmap? {
+        val bitmap = readBitmap(R.raw.read_page_bg_green) ?: return null
+        val baseBitmap = createBaseBitmap()
+        val bgColor = ContextCompat.getColor(Reader.context, R.color.reader_backdrop_green)
+
+        val canvas = Canvas(baseBitmap)
+        canvas.drawColor(bgColor)
+
+        val matrix = Matrix()
+        val height = if (isLandscape) {
+            canvas.width
+        } else {
+            canvas.height
+        }
+        val scaleX = canvas.width.toFloat() / bitmap.width
+        val scaleY = (0.291 * height).toFloat() / bitmap.height
+        matrix.postScale(scaleX, scaleY)
+        matrix.postTranslate(0F, canvas.height - bitmap.height * scaleY)
+        canvas.drawBitmap(bitmap, matrix, null)
+
+        return baseBitmap
+    }
+
+    private fun createDarkBitmap(): Bitmap? {
+        val bitmap = readBitmap(R.raw.read_page_bg_dark) ?: return null
+        val baseBitmap = createBaseBitmap()
+        val bgColor = ContextCompat.getColor(Reader.context, R.color.reader_backdrop_dark)
+
+        val canvas = Canvas(baseBitmap)
+        canvas.drawColor(bgColor)
+
+        val matrix = Matrix()
+        val height = if (isLandscape) {
+            canvas.width
+        } else {
+            canvas.height
+        }
+        val scaleX = canvas.width.toFloat() / bitmap.width
+        val scaleY = (0.282 * height).toFloat() / bitmap.height
+        matrix.postScale(scaleX, scaleY)
+        matrix.postTranslate(0F, canvas.height - bitmap.height * scaleY)
+        canvas.drawBitmap(bitmap, matrix, null)
+
+        return baseBitmap
+    }
+
+    private fun createDimBitmap(): Bitmap? {
+        val bitmap = readBitmap(R.raw.read_page_bg_dim) ?: return null
+        val baseBitmap = createBaseBitmap()
+        val bgColor = ContextCompat.getColor(Reader.context, R.color.reader_backdrop_dim)
+
+        val canvas = Canvas(baseBitmap)
+        canvas.drawColor(bgColor)
+
+        val matrix = Matrix()
+        val width = if (isLandscape) {
+            canvas.height
+        } else {
+            canvas.width
+        }
+        val scale = (0.648 * width).toFloat() / bitmap.width
+        matrix.postScale(scale, scale)
+        matrix.postTranslate(canvas.width - bitmap.width * scale, 0F)
+        canvas.drawBitmap(bitmap, matrix, null)
+
+        return baseBitmap
     }
 
     //横竖屏切换

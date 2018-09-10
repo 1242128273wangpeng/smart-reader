@@ -41,6 +41,36 @@ object DrawTextHelper {
             } else {
                 R.color.reading_text_color_first
             }
+        } else if (readerSettings.readThemeMode == 511) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_blue
+            }
+        } else if (readerSettings.readThemeMode == 512) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_pink
+            }
+        } else if (readerSettings.readThemeMode == 513) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_green
+            }
+        } else if (readerSettings.readThemeMode == 514) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_dark
+            }
+        } else if (readerSettings.readThemeMode == 515) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_dim
+            }
         } else if (readerSettings.readThemeMode == 52) {
             color = if (type == 0) {
                 R.color.reading_backdrop_second

@@ -616,6 +616,11 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             54 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_4)
             55 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_5)
             56 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_6)
+            511 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_1)
+            512 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_2)
+            513 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_3)
+            514 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_4)
+            515 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_5)
             61 -> {
                 restoreBright()
                 readerSettings.readThemeMode = index
@@ -623,7 +628,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             }
             else -> Unit
         }
-        if (index in 51..56) {
+        if (index in 51..56 || index in 511..515) {
             readerSettings.readThemeMode = index
             readerSettings.readLightThemeMode = index
             presenter?.changeNight()
@@ -728,7 +733,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 lastIndex = current
             }
             R.id.rbtn_read_bg_img_1 -> {
-                changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(511)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
@@ -737,7 +742,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 lastIndex = current
             }
             R.id.rbtn_read_bg_img_2 -> {
-                changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(512)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
@@ -746,7 +751,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 lastIndex = current
             }
             R.id.rbtn_read_bg_img_3 -> {
-                changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(513)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
@@ -755,7 +760,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 lastIndex = current
             }
             R.id.rbtn_read_bg_img_4 -> {
-                changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(514)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
@@ -764,7 +769,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 lastIndex = current
             }
             R.id.rbtn_read_bg_img_5 -> {
-                changePageBackgroundWrapper(56)
+                changePageBackgroundWrapper(515)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
