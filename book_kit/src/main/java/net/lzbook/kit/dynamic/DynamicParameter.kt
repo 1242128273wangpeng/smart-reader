@@ -232,6 +232,8 @@ class DynamicParameter(private val context: Context) {
             mShareUtilConfig.putString(SharedPreUtil.CONTENT_HOST, map.content_host)
         }
 
+        mShareUtilConfig.putString(SharedPreUtil.USER_TAG_HOST, map.user_tag_host)
+
         // 保存动态参数校验版本号
         if (mCurVersion < mReqVersion) {
             mShareUtilDefault.putInt(SharedPreUtil.DYNAMIC_VERSION, mReqVersion)
@@ -284,6 +286,7 @@ class DynamicParameter(private val context: Context) {
         Config.insertWebViewHost(mShareUtilConfig.getString(SharedPreUtil.WEBVIEW_HOST))
         Config.insertMicroAPIHost(mShareUtilConfig.getString(SharedPreUtil.UNION_HOST))
         Config.insertContentAPIHost(mShareUtilConfig.getString(SharedPreUtil.CONTENT_HOST))
+        Config.insertUserTagHost(mShareUtilConfig.getString(SharedPreUtil.USER_TAG_HOST))
     }
 
     private fun initApi() {

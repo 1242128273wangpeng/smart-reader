@@ -1,11 +1,13 @@
 package com.ding.basic.repository
 
 import android.content.Context
+import com.ding.basic.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
+import com.ding.basic.request.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook
@@ -210,7 +212,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
-        return RequestAPI.requestPushTags(udid)
+        val url = Config.loadUserTagHost() + RequestService.PUSH_TAG
+        return RequestAPI.requestPushTags(url, udid)
     }
 
     fun requestBannerTags(): Flowable<CommonResult<BannerInfo>> {

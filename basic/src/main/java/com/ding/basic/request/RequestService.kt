@@ -214,7 +214,7 @@ interface RequestService {
         /**
          * PUSH标签
          */
-        const val PUSH_TAG = "/v4/cn.dingyueWeb.reader/getUserTag"
+        const val PUSH_TAG = "/v1/zn.bigdata.api/activity/getUserTag"
 
         /**
          * 活动标签
@@ -403,8 +403,8 @@ interface RequestService {
     @POST(BOOK_END_RECOMMEND_V4)
     fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
 
-    @GET(PUSH_TAG)
-    fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+    @GET
+    fun requestPushTags(@Url url: String, @Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
 
     @GET(BANNER_TAG)
     fun requestBannerTags(): Flowable<CommonResult<BannerInfo>>
