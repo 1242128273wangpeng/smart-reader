@@ -499,6 +499,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                         genderHelper.jumpAnimation();
                         mStepInFlag = true;
                         Constants.SGENDER = Constants.SDEFAULT;
+                        SharedPreUtil sp = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+                        sp.putInt("gender", Constants.SGENDER);
                         initData();
                     }
                 });
