@@ -113,7 +113,9 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
         initBookState()
-        MediaControl.startRestMedia (act)
+        if (!ReaderSettings.instance.isLandscape) {
+            MediaControl.startRestMedia(act)
+        }
 //        MediaControl.startRestMedia {
 //            if (readerRestDialog?.isShowing() == true) {
 //                return@startRestMedia
@@ -184,7 +186,11 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     fun onConfigurationChanged() {
         initWindow()
-
+//        横屏不显示休息广告
+        MediaControl.stopRestMedia()
+        if (!ReaderSettings.instance.isLandscape) {
+            MediaControl.startRestMedia(act)
+        }
         ReaderStatus.clear()
         loadData(true)
     }
