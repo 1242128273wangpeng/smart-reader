@@ -14,6 +14,7 @@ import com.ding.basic.util.putObject
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 
 
@@ -41,10 +42,19 @@ class BannerDialog(val activity: Activity) {
             intent.putExtra("title", "标题")
             activity.startActivity(intent)
             dialog.dismiss()
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.BANNER_POPUP_CLICK)
         }
 
         dialog.img_close.setOnClickListener {
             dialog.dismiss()
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.BANNER_POPUP_CLOSE)
+        }
+
+        dialog.setOnShowListener {
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.BANNER_POPUP_SHOW)
         }
 
     }
