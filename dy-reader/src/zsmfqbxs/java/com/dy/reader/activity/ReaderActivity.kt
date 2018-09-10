@@ -18,15 +18,14 @@ import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
+import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -46,12 +45,15 @@ import kotlinx.android.synthetic.zsmfqbxs.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = RouterConfig.READER_ACTIVITY)
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
+
+    private var registerShareCallback = false
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
     private var mNativeMediaView: NativeMediaView? = null
@@ -229,6 +231,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, extras)
             }
         }
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
     }
 
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
@@ -251,6 +257,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onResume() {
         super.onResume()
         isResume = true
+        registerShareCallback = false
         glSurfaceView.onResume()
         // 设置全屏
         when (!Constants.isFullWindowRead) {
@@ -632,6 +639,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     fun showLoadingDialog(type: LoadingDialogFragment.DialogType, retry: (() -> Unit)? = null) {
         mLoadingFragment.show(type, retry)
+    }
+
+    fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
     }
 
     override fun supportSlideBack(): Boolean = false
