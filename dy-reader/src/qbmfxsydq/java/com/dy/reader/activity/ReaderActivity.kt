@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
+import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
@@ -36,6 +37,7 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dycm_adsdk.view.NativeView
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_reader.*
@@ -52,7 +54,7 @@ import org.greenrobot.eventbus.ThreadMode
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
-
+    private var mNativeMediaView: NativeMediaView? = null
     private var registerShareCallback = false
 
     private val mReadSettingFragment by lazy {
@@ -144,7 +146,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable  = {
+    val orientaionRunnable = {
+        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -209,7 +213,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
                 ReaderStatus.book.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+                if (ReaderStatus.book.fromQingoo()) {
                     ReaderStatus.book.channel_code = 1
                 } else {
                     ReaderStatus.book.channel_code = 2
@@ -256,6 +260,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onResume()
+        }
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -274,6 +281,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         glSurfaceView.onPause()
         mReadPresenter.onPause()
         MediaLifecycle.onPause()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onPause()
+        }
     }
 
     override fun onStop() {
@@ -314,6 +325,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         ReaderStatus.chapterList.clear()
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onDestroy()
+            mNativeMediaView = null
+        }
     }
 
 
@@ -340,7 +356,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_READING_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -366,18 +382,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         } else {
             this.applicationContext.showToastMessage("无法查看原文链接！")
         }
-    }
-
-    fun full(isFull: Boolean) {
-//        if (!Constants.isFullWindowRead) {
-//            return
-//        }
-//        if (isFull) {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        } else {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -427,7 +431,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     PageManager.clear()
                     hideAd()
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 } else if (glSurfaceView.visibility != View.VISIBLE && ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
                     PageManager.clear()
@@ -438,7 +442,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
 
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 }
             }
@@ -511,7 +515,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
+//            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
             EventSetting.Type.HIDE_AD -> hideAd()
             EventSetting.Type.SHOW_AD -> showAd()
 
@@ -520,10 +524,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //条件
-        if (pac_reader_ad != null) {
-            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
-        }
+//        //如果夜间设置了alpha值之后, 视频将有重影
+//        if (pac_reader_ad != null) {
+//            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
+//        }
         if (ReaderStatus.currentChapter == null) return
         val mChapter = ReaderStatus.currentChapter!!
         val count = ReaderStatus.position.groupChildCount
@@ -538,6 +542,24 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (adView != null) {
             if (adView.loaded) {//加载成功
                 if (adView.view != null) {
+
+                    if (adView.view is NativeView) {
+                        (adView.view as NativeView).setHideAdListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                        (adView.view as NativeView).setOnLoadCompleteListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    } else if (adView.view is NativeMediaView) {
+                        mNativeMediaView = adView.view as NativeMediaView
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
+                            mNativeMediaView?.onPause()
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    }
 
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null

@@ -32,6 +32,7 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.RecommendFragment
@@ -124,11 +125,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
+        MediaLifecycle.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         StatService.onPause(this)
+        MediaLifecycle.onPause()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -169,6 +172,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             exception.printStackTrace()
         }
         fixInputMethodManagerLeak(applicationContext)
+        MediaLifecycle.onDestroy()
     }
 
 
