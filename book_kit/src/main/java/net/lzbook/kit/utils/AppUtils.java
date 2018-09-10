@@ -5,8 +5,10 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ClipboardManager;
+import android.content.ComponentCallbacks;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -1212,6 +1215,53 @@ public class AppUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+
+    private static float sNoncompatDensity;
+    private static float sNoncompatScaleDensity;
+
+    /**
+     * 屏幕适配修改属性
+     * @param activity
+     * @param application
+     */
+    public static void setCustomDensity(final Activity activity, final Application application){
+        try {
+            DisplayMetrics displayMetrics = application.getResources().getDisplayMetrics();
+            if (sNoncompatDensity == 0) {
+                sNoncompatDensity = displayMetrics.density;
+                sNoncompatScaleDensity = displayMetrics.scaledDensity;
+                application.registerComponentCallbacks(new ComponentCallbacks() {
+                    @Override
+                    public void onConfigurationChanged(Configuration newConfig) {
+                        if (newConfig != null && newConfig.fontScale > 0) {
+                            sNoncompatScaleDensity = application.getResources().getDisplayMetrics().scaledDensity;
+                        }
+                    }
+
+                    @Override
+                    public void onLowMemory() {
+
+                    }
+                });
+            }
+            float targetDensity = displayMetrics.widthPixels / 360;
+            float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
+            int targetDensityDpi = (int) (160 * targetDensity);
+
+            displayMetrics.density = targetDensity;
+            displayMetrics.scaledDensity = targetScaleDensity;
+            displayMetrics.densityDpi = targetDensityDpi;
+
+            DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
+            activityDisplayMetrics.density = targetDensity;
+            activityDisplayMetrics.scaledDensity = targetScaleDensity;
+            activityDisplayMetrics.densityDpi = targetDensityDpi;
+        }catch (Throwable e){
+            AppLog.e("setCustomDensity:"+e.getMessage());
         }
 
     }

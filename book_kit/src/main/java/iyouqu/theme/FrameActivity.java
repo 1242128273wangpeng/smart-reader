@@ -110,14 +110,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
-
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new LayoutInflaterFactory() {
             @Override
             public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
                 return createViewWithPressState(parent, name, context, attrs);
             }
         });
-
         super.onCreate(paramBundle);
 
         lifecycleRegistry = new LifecycleRegistry(this);
@@ -152,7 +150,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         initThemeHelper();
         initTheme();
-
+        //设置屏幕适配属性
+        AppUtils.setCustomDensity(this,BaseBookApplication.getGlobalContext());
         //友盟推送
         if (AppUtils.hasUPush()) {
             final WeakReference<FrameActivity> weakReference=new WeakReference(FrameActivity.this);
