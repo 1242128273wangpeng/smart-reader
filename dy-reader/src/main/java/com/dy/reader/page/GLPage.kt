@@ -268,9 +268,10 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             canvas?.drawColor(Color.WHITE)
 
             if (ReaderSettings.instance.readThemeMode == 51) {
-                ReaderSettings.instance.backgroundDrawable?.let {
-                    it.setBounds(0, 0, canvas!!.width, canvas!!.height)
-                    it.draw(canvas)
+                ReaderSettings.instance.backgroundBitmap?.let {
+                    canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
+                            Rect(0, 0, canvas!!.width, canvas!!.height),
+                            null)
                 }
             } else {
                 canvas?.drawColor(ReaderSettings.instance.backgroundColor)

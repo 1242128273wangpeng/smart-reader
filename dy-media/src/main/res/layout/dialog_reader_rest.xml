@@ -2,10 +2,9 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_reset_layout"
-    android:layout_width="234dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="#fafafa"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="10dp"
@@ -15,7 +14,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_reading_time"
@@ -46,8 +46,9 @@
 
     <RelativeLayout
         android:id="@+id/rl_ad"
-        android:layout_width="214dp"
-        android:layout_height="321dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
     </RelativeLayout>
 
 

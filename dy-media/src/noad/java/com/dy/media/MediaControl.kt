@@ -35,7 +35,7 @@ object MediaControl : IMediaControl {
     override fun loadBookShelfFloatMedia(activity: Activity, viewGroup: ViewGroup?) {}
 
     override fun loadBookShelMedia(activity: Activity, count: Int, mediaCallback: IMediaControl.MediaCallback) {}
-
+    override fun loadBookShelMedia2(activity: Activity, mediaCallback: IMediaControl.MediaCallback){}
     //阅读页
     override fun getAdSwitch(ad_mark_id: String): Boolean {
         return false
@@ -55,9 +55,7 @@ object MediaControl : IMediaControl {
 
     }
 
-    override fun startRestMedia(onTime: () -> Unit) {}
-
-    override fun loadRestMedia(activity: Activity?, onSuccess: (view: View?) -> Unit) {}
+    override fun startRestMedia(activity: Activity) {}
 
     override fun stopRestMedia() {}
 

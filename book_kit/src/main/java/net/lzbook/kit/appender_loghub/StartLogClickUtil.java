@@ -168,9 +168,9 @@ public class StartLogClickUtil {
     public static final String PROCTCOL_PAGE = "PROCTCOL";//使用协议
     public static final String PERHELP_PAGE = "PERHELP";//帮助与反馈
     public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
-    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
-    public static final String READFINISH_PAGE = "READFINISH";//作者主页
+    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍完结页
+    public static final String READFINISH_PAGE = "READFINISH";//完结页（新壳2新添加）
 
 
 
