@@ -41,6 +41,10 @@ interface RequestService {
         //动态参数
         const val DYNAMIC_PARAMETERS = "/v3/dynamic/dynamicParameter"
 
+
+        //广告分渠道，分版本，分广告位 动态参数
+        const val AD_CONTROL_DYNAMIC_PARAMETERS = "/v5/cn.dingyueApi.reader/advertising/get"
+
         //默认书架
         const val DEFAULT_BOOK = "/v5/book/default"
 
@@ -237,6 +241,9 @@ interface RequestService {
 
     @GET(DYNAMIC_PARAMETERS)
     fun requestDynamicParameters(): Flowable<Parameter>
+
+    @GET(AD_CONTROL_DYNAMIC_PARAMETERS)
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean>
 
     @GET
     fun requestCDNDynamicPar(@Url url: String): Flowable<Parameter>

@@ -3,6 +3,7 @@ package net.lzbook.kit.dynamic
 import android.content.Context
 import com.baidu.mobstat.StatService
 import com.ding.basic.Config
+import com.ding.basic.bean.AdControlByChannelBean
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
@@ -46,9 +47,35 @@ class DynamicParameter(private val context: Context) {
 
         installParams()
 
+        requestAdControl()
+
         requestCheck()
 
         DynamicService.startDynaService(BaseBookApplication.getGlobalContext())
+
+    }
+
+    fun requestAdControl(){
+        RequestRepositoryFactory.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestAdControlDynamic(
+                object : RequestSubscriber<AdControlByChannelBean>() {
+                    override fun requestResult(result: AdControlByChannelBean?) {
+                        if(result != null && result.respCode == "20000" && result.data != null && result.data!!.isNotEmpty()){
+                            checkAdControlResult(result)
+                        }else{
+                            saveAdControlParams(false,null)
+                        }
+                    }
+
+                    override fun requestError(message: String) {
+                        Logger.e("请求广告动态参数异常！")
+                        saveAdControlParams(false,null)
+                    }
+
+                    override fun requestComplete() {
+
+                    }
+                })
 
     }
 
@@ -119,6 +146,37 @@ class DynamicParameter(private val context: Context) {
             }
         }
     }
+
+    private fun checkAdControlResult(adControlBean: AdControlByChannelBean) {
+        var hasAdContol = false //
+        adControlBean.data?.forEach {
+            if (it.channelId?.toLowerCase() == AppUtils.getChannelId().toLowerCase() && it.packageName == AppUtils.getPackageName() && it.version == AppUtils.getVersionName()) {
+                hasAdContol = true
+                saveAdControlParams(true, it)
+            }
+        }
+        if (!hasAdContol) {
+            saveAdControlParams(false, null)
+        }
+    }
+    private fun saveAdControlParams(hasAdContol:Boolean , bean:AdControlByChannelBean.DataBean?){
+
+        if(hasAdContol){
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_STATUS, bean?.status)
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_PGK, bean?.packageName)
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_CHANNELID, bean?.channelId)
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_VERSION, bean?.version)
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_ADTYPE, bean?.adSpaceType)
+        }else{
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_STATUS, "0")
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_PGK,"")
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_CHANNELID,"")
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_VERSION,"")
+            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_ADTYPE, "")
+        }
+        setAdControl()
+    }
+
 
     private fun saveParams(map: Map) {
         loge("handleParams: $map")
@@ -206,6 +264,8 @@ class DynamicParameter(private val context: Context) {
         initApi()
 
         setBaidu()
+
+        setAdControl()
 
         setAd()
 
@@ -359,6 +419,37 @@ class DynamicParameter(private val context: Context) {
         }
     }
 
+    private fun setAdControl(){
+        //广告渠道控制 总开关
+        val adConstrolStatus = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_STATUS,"0")
+        if(adConstrolStatus.isNotEmpty()){
+            Constants.ad_control_status = adConstrolStatus
+        }
+
+        //广告渠道控制 包名
+        val adConstrolPkg = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_PGK)
+        if(adConstrolPkg.isNotEmpty()){
+            Constants.ad_control_pkg = adConstrolPkg
+        }
+
+        //广告渠道控制 渠道号
+        val adConstrolChannelId = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_CHANNELID)
+        if(adConstrolChannelId.isNotEmpty()){
+            Constants.ad_control_channelId = adConstrolChannelId
+        }
+
+        //广告渠道控制 版本号
+        val adConstrolVersion = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_VERSION)
+        if(adConstrolVersion.isNotEmpty()){
+            Constants.ad_control_version = adConstrolVersion
+        }
+
+        //广告渠道控制 广告位
+        val adConstrolAdType = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_ADTYPE)
+        if(adConstrolAdType.isNotEmpty()){
+            Constants.ad_control_adTpye = adConstrolAdType
+        }
+    }
     private fun setAd() {
 
         //广告总开关

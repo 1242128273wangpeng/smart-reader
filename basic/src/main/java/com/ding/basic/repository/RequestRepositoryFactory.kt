@@ -143,6 +143,22 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestAdControlDynamic(requestSubscriber: RequestSubscriber<AdControlByChannelBean>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestAdControlDynamic()!!
+                .compose(SchedulerHelper.schedulerIOHelper<AdControlByChannelBean>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.onNext(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取广告动态参数异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求广告动态参数完成！")
+                })
+    }
+
     override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestBookDetail(book_id, book_source_id, book_chapter_id)!!
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<Book>>())

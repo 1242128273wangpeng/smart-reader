@@ -113,7 +113,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
         initBookState()
-        if (!ReaderSettings.instance.isLandscape) {
+        if (!ReaderSettings.instance.isLandscape && !AppUtils.isNeedAdControl(Constants.ad_control_reader)) {
             MediaControl.startRestMedia(act)
         }
 //        MediaControl.startRestMedia {

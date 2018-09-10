@@ -20,6 +20,8 @@ interface RequestRepository {
 
     fun requestDynamicParameters(requestSubscriber: RequestSubscriber<Parameter>)
 
+    fun requestAdControlDynamic(requestSubscriber: RequestSubscriber<AdControlByChannelBean>) //广告分渠道，分版本，分广告位开关
+
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>)
 
     fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int)

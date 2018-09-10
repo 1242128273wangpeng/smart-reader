@@ -1222,4 +1222,45 @@ public class AppUtils {
         }
 
     }
+
+    /**
+     * 是否需要开启广告分渠道，分版本，分广告位控制
+     * @param adSpaceType  广告位类型
+     * @return
+     */
+
+    public static boolean isNeedAdControl(String adSpaceType){
+        AppLog.e("dynamic",getPackageName()+getChannelId()+getVersionName());
+        if(!TextUtils.isEmpty(Constants.ad_control_status) && Constants.ad_control_status.equals("1")){
+            if(Constants.ad_control_pkg.equals(getPackageName()) && Constants.ad_control_channelId.toLowerCase().equals(getChannelId().toLowerCase())
+                    && Constants.ad_control_version.equals(getVersionName())){
+                if("0".equals(Constants.ad_control_adTpye)){ //全部广告位
+                    return true;
+                }else if("1".equals(Constants.ad_control_adTpye)){ // 福利中心
+                    if(adSpaceType.equals(Constants.ad_control_welfare)){
+                        return true;
+                    }
+                }else if("2".equals(Constants.ad_control_adTpye)){//书架页 1-1
+                    if(adSpaceType.equals(Constants.ad_control_shelf_normal)){
+                        return true;
+                    }
+                }else if("3".equals(Constants.ad_control_adTpye)){ //书架页  1-2
+                    if(adSpaceType.equals(Constants.ad_control_shelf_float)){
+                        return true;
+                    }
+                }else if("4".equals(Constants.ad_control_adTpye)){ //阅读页
+                    if(adSpaceType.equals(Constants.ad_control_reader)){
+                        return true;
+                    }
+                }else if("5".equals(Constants.ad_control_adTpye)){ //福利中心和书架页 1-2
+                    if(adSpaceType.equals(Constants.ad_control_welfare_shelf)){
+                        return true;
+                    }
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 }

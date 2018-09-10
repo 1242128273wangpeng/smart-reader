@@ -160,6 +160,11 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         //条目字
         tv_night_shift = findViewById(R.id.tv_night_shift);
 
+        if(AppUtils.isNeedAdControl(Constants.ad_control_welfare) || AppUtils.isNeedAdControl(Constants.ad_control_welfare_shelf)){
+            rl_welfare.setVisibility(View.GONE);
+        }else{
+            rl_welfare.setVisibility(View.VISIBLE);
+        }
 
         txt_nickname = findViewById(R.id.txt_nickname);
         txt_userid = findViewById(R.id.txt_userid);

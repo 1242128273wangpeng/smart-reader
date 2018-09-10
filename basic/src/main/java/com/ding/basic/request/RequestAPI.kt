@@ -69,6 +69,10 @@ object RequestAPI {
         return requestService.requestDynamicParameters()
     }
 
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean> {
+        return requestService.requestAdControlDynamic()
+    }
+
     fun requestCDNDynamicPar(url: String): Flowable<Parameter> {
         return requestService.requestCDNDynamicPar(url)
     }

@@ -238,7 +238,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()
+                && (!AppUtils.isNeedAdControl(Constants.ad_control_shelf_float) && !AppUtils.isNeedAdControl(Constants.ad_control_welfare_shelf))) {
+
+            AppLog.e("dynamicShelfNo",(AppUtils.isNeedAdControl(Constants.ad_control_shelf_float)).toString())
             bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
         }
 
@@ -317,7 +320,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         if (activity != null && !activity!!.isFinishing) {
-            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
+            AppLog.e("dynamicShelfNo",(AppUtils.isNeedAdControl(Constants.ad_control_shelf_normal)).toString())
+            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0 && !AppUtils.isNeedAdControl(Constants.ad_control_shelf_normal)
 
             bookShelfPresenter.queryBookListAndAd(activity!!, isShowAD, false)
             uiThread {

@@ -13,6 +13,7 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import org.json.JSONException
 import java.io.Closeable
@@ -67,7 +68,7 @@ object ReadMediaManager {
                         frequency: Int = MediaControl.getChapterFrequency()
     ): ArrayList<NovelPageBean> {
         removeOldAd(group)
-        if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3) return page
+        if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3 || AppUtils.isNeedAdControl(Constants.ad_control_reader)) return page
 
 
         //check 5-2 or 6-2 adView

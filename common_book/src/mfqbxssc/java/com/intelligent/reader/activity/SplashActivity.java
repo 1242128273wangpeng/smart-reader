@@ -533,27 +533,34 @@ public class SplashActivity extends FrameActivity {
         if (isGo) {
             handler.sendEmptyMessageDelayed(1, 3000);
         }
-        MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
-            @Override
-            public Unit invoke(Integer resultCode) {
-                switch (resultCode) {
-                    case MediaCode.MEDIA_SUCCESS: //广告请求成功
-                        isGo = false;
-                        AppLog.e(TAG, "time");
-                        break;
-                    case MediaCode.MEDIA_FAILED: //广告请求失败
-                        handler.sendEmptyMessage(0);
-                        break;
-                    case MediaCode.MEDIA_DISMISS: //开屏页面关闭
-                        handler.sendEmptyMessage(0);
-                        break;
-                    case MediaCode.MEDIA_DISABLE: //无开屏广告
-                        handler.sendEmptyMessage(0);
-                        break;
+        if(!AppUtils.isNeedAdControl(Constants.ad_control_other)){
+            MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
+                @Override
+                public Unit invoke(Integer resultCode) {
+                    switch (resultCode) {
+                        case MediaCode.MEDIA_SUCCESS: //广告请求成功
+                            isGo = false;
+                            AppLog.e(TAG, "time");
+                            break;
+                        case MediaCode.MEDIA_FAILED: //广告请求失败
+                            handler.sendEmptyMessage(0);
+                            break;
+                        case MediaCode.MEDIA_DISMISS: //开屏页面关闭
+                            handler.sendEmptyMessage(0);
+                            break;
+                        case MediaCode.MEDIA_DISABLE: //无开屏广告
+                            handler.sendEmptyMessage(0);
+                            break;
+                    }
+                    return null;
                 }
-                return null;
+            });
+        }else{
+            if (isGo) {
+                handler.sendEmptyMessageDelayed(1, 3000);
             }
-        });
+        }
+
     }
 
     //初始化广告开关

@@ -54,6 +54,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestDynamicParameters()
     }
 
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean>? {
+        return RequestAPI.requestAdControlDynamic()
+    }
+
     override fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
         return RequestAPI.requestBookSources(book_id, book_source_id, book_chapter_id)
     }
