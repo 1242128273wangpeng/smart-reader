@@ -40,6 +40,8 @@
 -keep class net.lzbook.kit.user.bean.**{*;}
 -keep class com.ding.basic.bean.**{*;}
 
+-keep public class * extends com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
+
 ##---------------End: proguard configuration for Gson  ----------
 
 ##---------------Begin: proguard configuration for ALiFeedBack  ----------

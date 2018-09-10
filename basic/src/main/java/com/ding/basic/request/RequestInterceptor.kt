@@ -3,7 +3,9 @@ package com.ding.basic.request
 import android.text.TextUtils
 import com.ding.basic.Config
 import com.ding.basic.token.Token
+import com.ding.basic.util.ReplaceConstants
 import com.orhanobut.logger.Logger
+import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -98,12 +100,14 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        if (request.url().host() == URL("https://api.weixin.qq.com").host
-                || request.url().host() == URL("https://graph.qq.com").host
-                || request.url().toString().contains("https://public.lsread.cn/dpzn")
-                || request.url().toString().contains("https://public.dingyueads.com/dpzn")
-                || request.url().toString().contains("https://public.qingoo.cn/dpzn")
-                || request.url().toString().contains("http://ad.dingyueads.com:8010/insertData")) {
+        val host = request.url().host()
+
+        if (host == URL("https://api.weixin.qq.com").host
+                || host == URL("https://graph.qq.com").host
+                || host == URL("https://public.lsread.cn/dpzn").host
+                || host == URL("https://public.dingyueads.com/dpzn").host
+                || host == URL("https://public.qingoo.cn/dpzn").host
+                || host == URL("http://ad.dingyueads.com:8010/insertData").host) {
             Logger.e("请求微信或者QQ的接口: " + request.url().toString())
         } else {
             request = buildRequest(request)
