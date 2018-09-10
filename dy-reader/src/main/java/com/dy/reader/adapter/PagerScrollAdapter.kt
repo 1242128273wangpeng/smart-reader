@@ -415,7 +415,6 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
                 MediaConfig.setExpandInfo(map)
 
-                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 val adView = ReadMediaManager.adCache.get(page.adType)
                 adView?.view?.apply {
                     if (this.parent != null) {
@@ -425,6 +424,14 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                         this.tag = fl_reader_content_ad
                         fl_reader_content_ad.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
                     }
+                    fl_reader_content_ad.visibility = View.VISIBLE
+
+                    // 默认广告位高度是包裹的，在广告展现时更改为填充
+                    val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    itemView.layoutParams = lp
+
+                    val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
                     fl_reader_content_ad.addView(this, layoutParams)
                 }
             }
