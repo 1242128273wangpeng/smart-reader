@@ -39,7 +39,7 @@ class BannerDialog(val activity: Activity) {
             val intent = Intent()
             intent.setClass(activity, FindBookDetail::class.java)
             intent.putExtra("url", bannerWebUrl)
-            intent.putExtra("title", "标题")
+            intent.putExtra("title", "推荐书单")
             activity.startActivity(intent)
             dialog.dismiss()
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
