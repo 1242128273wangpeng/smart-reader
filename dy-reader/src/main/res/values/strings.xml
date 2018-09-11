@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="use">使用</string>
+    <string name="download">下载</string>
+
     <string name="loading_read_page">精彩内容即将呈现...</string>
 
     <string name="read_brightness_night">亮度</string>

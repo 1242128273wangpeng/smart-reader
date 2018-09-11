@@ -92,6 +92,11 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         initPageMode()
         setFontSize()
 
+        ll_default_font.setOnClickListener {
+
+            FontPopupWindow(context).showAsDropDown(this)
+            ll_reader_setting_detail?.visibility = View.GONE
+        }
         ckb_reader_landscape.isChecked = readerSettings.isLandscape
         ckb_reader_full_screen.isChecked = readerSettings.isFullScreenRead
 
