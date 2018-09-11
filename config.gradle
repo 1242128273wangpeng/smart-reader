@@ -9,7 +9,7 @@ ext {
 
     compileSdkVersion = 27
 
-    minSdkVersion = 16
+    minSdkVersion = 14
     targetSdkVersion = 22
 
     minifyEnable = false
