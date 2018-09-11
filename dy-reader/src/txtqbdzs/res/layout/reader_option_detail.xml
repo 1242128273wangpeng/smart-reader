@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:background="#212020"
+    android:background="#F2191919"
     android:gravity="bottom"
     android:orientation="vertical"
     tools:ignore="RtlHardcoded, SmallSp, RtlSymmetry">

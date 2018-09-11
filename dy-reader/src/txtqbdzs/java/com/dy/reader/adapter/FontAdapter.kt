@@ -22,10 +22,10 @@ class FontAdapter(var list:ArrayList<FontData>): RecyclerView.Adapter<RecyclerVi
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         list[position].apply {
-            holder.itemView.text1.text = name
+            holder.itemView.txt_name.text = name
         }
 
-        holder.itemView.btn_font_default.setOnClickListener {
+        holder.itemView.btn_use.setOnClickListener {
             onItemClickListener?.onItemClick(null,null,position,0)
         }
     }

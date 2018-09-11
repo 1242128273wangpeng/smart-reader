@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -54,6 +55,10 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     private var lastProgress = 0
 
+    private val fontPopupWindow: FontPopupWindow by lazy {
+        FontPopupWindow(context)
+    }
+
     constructor(context: Context) : super(context) {
         initView()
         initListener()
@@ -93,8 +98,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         setFontSize()
 
         ll_default_font.setOnClickListener {
-
-            FontPopupWindow(context).showAsDropDown(this)
+            fontPopupWindow.show(this)
             ll_reader_setting_detail?.visibility = View.GONE
         }
         ckb_reader_landscape.isChecked = readerSettings.isLandscape
@@ -857,14 +861,23 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
     // 单选切换行间距
     private fun switchSpaceState() {
-        if (readerSettings.readInterlineaSpace == 0.2f) {
-            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_0_2)
-        } else if (readerSettings.readInterlineaSpace == 0.3f) {
-            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_0_5)
-        } else if (readerSettings.readInterlineaSpace == 0.4f) {
-            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_1_0)
-        } else if (readerSettings.readInterlineaSpace == 0.5f) {
-            rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_1_5)
+        when (readerSettings.readInterlineaSpace) {
+            0.2f -> {
+                rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_0_2)
+                setFontSpaceBg(is0_2Checked = true)
+            }
+            0.3f -> {
+                setFontSpaceBg(is0_5Checked = true)
+                rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_0_5)
+            }
+            0.4f -> {
+                setFontSpaceBg(is1_0Checked = true)
+                rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_1_0)
+            }
+            0.5f -> {
+                setFontSpaceBg(is1_5Checked = true)
+                rg_reader_spacing_group?.check(R.id.rbtn_reader_spacing_1_5)
+            }
         }
     }
 
@@ -993,10 +1006,10 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                                is1_0Checked: Boolean = false,
                                is1_5Checked: Boolean = false) {
 
-        setFontSpaceBg(is0_2Checked, rl_reader_spacing_1_5)
-        setFontSpaceBg(is0_5Checked, rl_reader_spacing_1_0)
-        setFontSpaceBg(is1_0Checked, rl_reader_spacing_0_5)
-        setFontSpaceBg(is1_5Checked, rl_reader_spacing_0_2)
+        setFontSpaceBg(is0_2Checked, rl_reader_spacing_0_2)
+        setFontSpaceBg(is0_5Checked, rl_reader_spacing_0_5)
+        setFontSpaceBg(is1_0Checked, rl_reader_spacing_1_0)
+        setFontSpaceBg(is1_5Checked, rl_reader_spacing_1_5)
 
     }
 
