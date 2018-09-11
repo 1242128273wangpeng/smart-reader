@@ -37,11 +37,11 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
 
     init {
 
-        list.add(FontData("默认字体", ""))
-        list.add(FontData("思源宋体", ""))
-        list.add(FontData("全字库正楷体", ""))
-        list.add(FontData("杨任东竹石体", ""))
-        list.add(FontData("思源黑体", ""))
+        list.add(FontData(null, ""))
+        list.add(FontData(R.drawable.font_2, ""))
+        list.add(FontData(R.drawable.font_3, ""))
+        list.add(FontData(R.drawable.font_4, ""))
+        list.add(FontData(R.drawable.font_5, ""))
         contentView.recyclerView.adapter = fontAdapter
         fontAdapter.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             FontDownLoadService().downLoad("我的字体啊", "http://gyxz.hwm6b6.cn/hk/rj_hq1/koudaiyoushu.apk")

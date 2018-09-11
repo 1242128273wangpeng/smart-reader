@@ -13,10 +13,21 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        tools:text="@string/default_font"
+        android:text="@string/default_font"
         android:textColor="#989898"
         android:textSize="15sp"
+        android:visibility="gone"
         tools:ignore="RtlHardcoded"/>
+
+    <ImageView
+        android:id="@+id/img_name"
+        android:layout_width="90dp"
+        android:layout_height="16dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:visibility="visible"
+        tools:ignore="RtlHardcoded"
+        tools:src="@drawable/font_2"/>
 
     <Button
         android:id="@+id/btn_use"
@@ -49,8 +60,8 @@
         android:layout_marginRight="20dp"
         android:contentDescription="@string/icon"
         android:padding="8dp"
-        android:visibility="gone"
         android:src="@drawable/read_font_using"
+        android:visibility="gone"
         tools:ignore="RtlHardcoded"/>
 
     <View

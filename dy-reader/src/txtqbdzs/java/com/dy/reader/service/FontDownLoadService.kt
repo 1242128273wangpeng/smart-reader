@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Environment
 import android.os.IBinder
 import com.dingyue.statistics.utils.ToastUtil
+import com.dy.media.uiThread
 import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
@@ -70,7 +71,9 @@ class FontDownLoadService : Service() {
                         fos?.write(buf, 0, len)
                         sum += len
                         progress = (sum * 1.0f / total * 100).toInt()
-                        ToastUtil.showToastMessage("进度" + progress)
+                        uiThread {
+                            ToastUtil.showToastMessage("进度" + progress)
+                        }
                     }
 
                     fos?.flush()
