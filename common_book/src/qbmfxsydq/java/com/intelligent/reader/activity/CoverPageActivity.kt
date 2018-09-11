@@ -456,7 +456,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun checkShowCoverPrompt() {
         val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         if (!sharedPreUtil.getBoolean(SharedPreUtil.COVER_SHARE_PROMPT)) {
-            fl_cover_share_prompt.visibility = View.VISIBLE
+            fl_cover_share_prompt.visibility = View.GONE
 
             fl_cover_share_prompt.setOnClickListener {
                 fl_cover_share_prompt.visibility = View.GONE

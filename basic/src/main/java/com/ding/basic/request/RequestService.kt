@@ -216,6 +216,12 @@ interface RequestService {
          */
         const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
 
+
+        /**
+         * 二维码 拉新
+         */
+        const val QR_CODE = "/h5/{packageName}/share"
+
     }
 
     @GET(DEFAULT_BOOK)
