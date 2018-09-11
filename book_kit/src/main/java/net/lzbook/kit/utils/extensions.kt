@@ -332,7 +332,11 @@ fun Activity.openPushSetting() {
     //百度移动统计 部分机型 No Activity found to handle Intent
     try {
         startActivity(intent)
+        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MAIN_PAGE,
+                StartLogClickUtil.POPUPSET)
     } catch (e: Exception) {
+        //打开设置界面
+        startActivity(Intent(Settings.ACTION_SETTINGS))
     }
 }
 

@@ -18,6 +18,8 @@ import android.text.TextUtils
 import com.ding.basic.Config
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.utils.AppUtils
 import java.util.HashMap
 
 class ApplicationShareDialog(var activity: Activity?) {
@@ -98,27 +100,53 @@ class ApplicationShareDialog(var activity: Activity?) {
                                 if (url == null || TextUtils.isEmpty(url)) {
                                     activity?.showToastMessage("请求分享信息失败，请稍后再试！")
                                 } else {
-                                    when (platform) {
-                                        "Wechat" -> {
-                                            UserManager.shareWechat(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
-                                        }
-                                        "WechatCircle" -> {
-                                            UserManager.shareWechatCircle(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
-                                        }
-                                        "QQ" -> {
-                                            UserManager.shareQQ(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
-                                        }
-                                        "Qzone" -> {
-                                            UserManager.shareQzone(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
-                                        }
-                                        "Url" -> {
-                                            val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                            val clipData = ClipData.newPlainText("Label", url)
-                                            clipboardManager.primaryClip = clipData
-                                            activity?.showToastMessage("分享链接已经复制到剪贴板！")
+                                    if("cc.quanben.novel" == AppUtils.getPackageName()){
+                                        when (platform) {
+                                            "Wechat" -> {
+                                                UserManagerV4.shareWechat(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "WechatCircle" -> {
+                                                UserManagerV4.shareWechatCircle(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "QQ" -> {
+                                                UserManagerV4.shareQQ(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "Qzone" -> {
+                                                UserManagerV4.shareQzone(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "Url" -> {
+                                                val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                                val clipData = ClipData.newPlainText("Label", url)
+                                                clipboardManager.primaryClip = clipData
+                                                activity?.showToastMessage("分享链接已经复制到剪贴板！")
 
-                                            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-                                            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                                                val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+                                                sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                                            }
+                                        }
+                                    }else{
+                                        when (platform) {
+                                            "Wechat" -> {
+                                                UserManager.shareWechat(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "WechatCircle" -> {
+                                                UserManager.shareWechatCircle(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "QQ" -> {
+                                                UserManager.shareQQ(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "Qzone" -> {
+                                                UserManager.shareQzone(activity, it.data?.title ?: "", it.data?.desc ?: "", url, it.data?.logo ?: "")
+                                            }
+                                            "Url" -> {
+                                                val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                                val clipData = ClipData.newPlainText("Label", url)
+                                                clipboardManager.primaryClip = clipData
+                                                activity?.showToastMessage("分享链接已经复制到剪贴板！")
+
+                                                val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+                                                sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                                            }
                                         }
                                     }
                                 }

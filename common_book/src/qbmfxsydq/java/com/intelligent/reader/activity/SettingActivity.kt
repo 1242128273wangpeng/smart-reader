@@ -55,6 +55,7 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.UserManagerV4
+import swipeback.ActivityLifecycleHelper
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -130,6 +131,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     private var txt_login_des: TextView? = null
     private var img_welfare: ImageView? = null
     private var rl_welfare: RelativeLayout? = null
+    private var isFromPush = false
+
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -608,6 +611,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME)
         themIntent.putExtras(bundle)
         startActivity(themIntent)
+        finish()
     }
 
     private fun dismissDialog() {
@@ -689,6 +693,19 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             clear_cache_size!!.text = result
         }
 
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        val isThemeChange = currentThemeMode != mThemeHelper.mode || isStyleChanged
+        if (!isThemeChange && isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
     }
 
     companion object {

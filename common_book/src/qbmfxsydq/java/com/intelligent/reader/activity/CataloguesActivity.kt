@@ -123,9 +123,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     }
 
-    fun shouldLightStatusBase(): Boolean {
-        return true
-    }
+
 
 
     private fun initUI() {

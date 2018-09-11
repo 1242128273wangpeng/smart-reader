@@ -712,6 +712,7 @@ public class AppUtils {
                 || packageName.equals("cc.kdqbxs.reader") //快读替
                 || packageName.equals("cc.quanbennovel") //今日多看
                 || packageName.equals("cc.lianzainovel") //鸿雁替
+                || packageName.equals("cc.quanben.novel") //五步替
                 || packageName.equals("cc.mianfeinovel"); //阅微替
     }
 
