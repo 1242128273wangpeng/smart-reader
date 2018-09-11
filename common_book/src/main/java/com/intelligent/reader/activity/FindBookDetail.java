@@ -169,6 +169,14 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     }
 
     @Override
+    public boolean shouldLightStatusBase() {
+        if("cc.quanben.novel".equals(AppUtils.getPackageName())){
+            return true;
+        }
+        return super.shouldLightStatusBase();
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.find_book_detail_back:

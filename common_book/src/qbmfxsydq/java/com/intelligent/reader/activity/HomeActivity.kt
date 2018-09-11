@@ -40,6 +40,7 @@ import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -117,6 +118,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         homePresenter.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
+
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPMESSAGE)
+        }
+    }
+
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPNOWOPEN)
+        }
+        lifecycle.addObserver(dialog)
+        dialog
     }
 
     override fun onResume() {
@@ -493,6 +511,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         return false
     }
 
+    override fun shouldLightStatusBase(): Boolean {
+        return super.shouldLightStatusBase()
+    }
+
+
     /***
      * HomeActivity子页面的Adapter
      * **/
@@ -518,7 +541,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     if (rankingFragment == null) {
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
-                        bundle.putString("type", "rank")
+                        //0 男 1 女
+                        if(sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX) == 0){
+                            bundle.putString("type", "rankBoy")
+                        }else{
+                            bundle.putString("type", "rankGirl")
+                        }
+
                         val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment?.arguments = bundle
