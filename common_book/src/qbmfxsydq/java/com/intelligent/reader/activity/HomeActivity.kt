@@ -130,8 +130,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val dialog = PushSettingDialog(this)
         dialog.openPushListener = {
             openPushSetting()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPNOWOPEN)
         }
         lifecycle.addObserver(dialog)
         dialog
@@ -541,14 +539,15 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     if (rankingFragment == null) {
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
+                        val uri :String
                         //0 男 1 女
                         if(sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX) == 0){
                             bundle.putString("type", "rankBoy")
+                             uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}", AppUtils.getPackageName())
                         }else{
                             bundle.putString("type", "rankGirl")
+                            uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}", AppUtils.getPackageName())
                         }
-
-                        val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment?.arguments = bundle
                     }

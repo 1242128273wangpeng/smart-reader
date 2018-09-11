@@ -70,7 +70,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:background="#2D313C"
-                        android:gravity="center_vertical"
                         android:orientation="vertical"
                         android:paddingLeft="129dp"
                         android:paddingRight="16dp"

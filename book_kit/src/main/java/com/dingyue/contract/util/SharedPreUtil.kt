@@ -113,6 +113,15 @@ class SharedPreUtil(val type: Int) {
 
 
         /**
+         * webviewFragment
+         */
+
+        const val RANK_SELECT_SEX = "rank_select_sex"   // 五步替 榜单选男女
+        const val RECOMMEND_SELECT_SEX = "recommend_select_sex"   // 五步替 精选页选男女
+
+
+
+        /**
          * SplashActivity
          */
         const val SCREEN_WIDTH = "screen_width"   //屏幕宽度

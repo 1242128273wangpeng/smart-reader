@@ -203,6 +203,8 @@ interface RequestService {
          */
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
+        const val WEB_RANK_H5_BOY = "/h5/{packageName}/rankBoy"
+        const val WEB_RANK_H5_Girl = "/h5/{packageName}/rankGirl"
 
         /**
          * PUSH标签

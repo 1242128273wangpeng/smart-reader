@@ -34,10 +34,8 @@ import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.share.ApplicationShareDialog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -57,6 +55,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var coverPagePresenter: CoverPagePresenter? = null
 
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
+    private var isFromPush = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +105,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (intent.hasExtra("book_chapter_id")) {
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
+
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
@@ -463,4 +464,17 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
         }
     }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
+
 }

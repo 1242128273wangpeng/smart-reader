@@ -21,12 +21,20 @@
             android:flipInterval="30"
             android:persistentDrawingCache="animation" />
 
-        <View
+        <!--<View-->
+            <!--android:id="@+id/view_bottom_divider"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:layout_above="@+id/ll_home_tab"-->
+            <!--android:background="#E8E8E8" />-->
+
+        <ImageView
             android:id="@+id/view_bottom_divider"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="7dp"
             android:layout_above="@+id/ll_home_tab"
-            android:background="#E8E8E8" />
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_shadow"/>
 
         <LinearLayout
             android:id="@+id/ll_home_tab"

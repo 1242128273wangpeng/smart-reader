@@ -13,8 +13,6 @@
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:background="@drawable/dialog_bg"
         >
 
@@ -25,33 +23,70 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:src="@drawable/select_boy"/>
+        <LinearLayout
+            android:id="@+id/ll_sex"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+
+                android:layout_marginTop="25dp"
+                android:id="@+id/rl_sex1"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/img_girl"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/dialog_select_girl"/>
+
+                <ImageView
+                    android:id="@+id/img_boy"
+                    android:layout_toLeftOf="@+id/img_girl"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/dialog_select_man"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_sex2"
+                android:visibility="gone"
+                android:gravity="center"
+                android:layout_marginTop="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/img_boy1"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@+id/img_girl1"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/dialog_select_man"/>
+                <ImageView
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/img_girl1"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/dialog_select_girl"/>
+
+            </RelativeLayout>
+        </LinearLayout>
 
 
-        <ImageView
-            android:id="@+id/img_boy"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dp"
-            android:src="@drawable/icon"
-            android:text="男"
-            android:textSize="28sp"/>
-        <ImageView
-            android:id="@+id/img_girl"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dp"
-            android:src="@drawable/icon"
-            android:text="男"
-            android:textSize="28sp"/>
 
         <TextView
             android:id="@+id/txt_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="6dp"
+            android:layout_below="@+id/ll_sex"
             android:gravity="center"
             android:text="@string/select_boy"
             android:textColor="#282828"
