@@ -119,7 +119,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         loadingPage?.onSuccess()
 
-        loadingPage = LoadingPage(this, book_cover_bottom_btns, LoadingPage.setting_result)
+        loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
         coverPagePresenter?.requestCoverRecommend()
