@@ -11,8 +11,10 @@
     <string name="catalog_negative">倒序</string>
 
     <string name="add_bookshelf">加入书架</string>
+    <string name="add_bookshelf_cover">加书架</string>
     <string name="remove_bookshelf">移出书架</string>
     <string name="have_in_bookshelf">已在书架</string>
+    <string name="add_bookshelf_cover_success">已加入</string>
 
     <string name="my_bookshelf">我的书架</string>
     <string name="goto_bookstore">去书城</string>
@@ -54,9 +56,11 @@
     <!--缓存管理-->
 
     <string name="download_status_complete">缓存完成</string>
+    <string name="download_status_complete_cache">已缓存</string>
     <string name="download_status_underway">缓存中…</string>
     <string name="download_status_already">已缓存</string>
     <string name="download_status_total">全本缓存</string>
+    <string name="download_status_total_cache">缓存</string>
     <string name="download_status_paused">缓存已暂停</string>
 
     <!--调试模式-->

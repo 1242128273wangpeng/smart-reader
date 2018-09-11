@@ -29,6 +29,7 @@ import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
+import com.intelligent.reader.view.SelectSexDialog;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -58,6 +59,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private ImageView find_book_detail_back;
     private TextView find_book_detail_title;
     private ImageView find_book_detail_search;
+    private ImageView img_sex;
     private WebView find_detail_content;
     private String currentUrl;
     private String currentTitle;
@@ -74,7 +76,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private int h5Margin;
     private boolean isSupport = true;
     private boolean isFromPush = false;
-
+    private SelectSexDialog selectSexDialog;
+    private boolean isMale;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 "other");
         AppUtils.disableAccessibility(this);
         initView();
-
+        selectSexDialog = new SelectSexDialog(this);
         initJSHelp();
 
         if (!TextUtils.isEmpty(currentUrl)) {
@@ -118,13 +121,33 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_book_detail_back = findViewById(R.id.find_book_detail_back);
         find_book_detail_title = findViewById(R.id.find_book_detail_title);
         find_book_detail_search = findViewById(R.id.find_book_detail_search);
+        img_sex = findViewById(R.id.img_sex);
+
         find_detail_content = findViewById(R.id.rank_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(RequestService.AUTHOR_V4)||currentUrl.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
+                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);
+        }
+
+        //精选页 榜单进入需要选男女
+        if(currentUrl.contains("/h5/cc.quanben.novel/rank")){
+            img_sex.setVisibility(View.VISIBLE);
+            find_book_detail_search.setVisibility(View.GONE);
+        }else {
+            img_sex.setVisibility(View.GONE);
+            find_book_detail_search.setVisibility(View.VISIBLE);
+        }
+
+        if (currentUrl.contains("/h5/cc.quanben.novel/rankBoy")) {
+            isMale = true;
+            img_sex.setImageResource(R.drawable.rank_boy_icon);
+        } else{
+            isMale = false;
+            img_sex.setImageResource(R.drawable.rank_gril_icon);
         }
 
         if (Build.VERSION.SDK_INT >= 11) {
@@ -165,7 +188,16 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             find_book_detail_back.setOnClickListener(this);
         }
         find_book_detail_search.setOnClickListener(this);
+        img_sex.setOnClickListener(this);
         addTouchListener();
+    }
+
+    @Override
+    public boolean shouldLightStatusBase() {
+        if ("cc.quanben.novel".equals(AppUtils.getPackageName())) {
+            return true;
+        }
+        return super.shouldLightStatusBase();
     }
 
     @Override
@@ -213,6 +245,25 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 intent.setClass(this, SearchBookActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.img_sex:
+                if(selectSexDialog == null){
+                    selectSexDialog = new SelectSexDialog(this);
+                }
+                //0 表示男  1 表示女
+                if(isMale){
+                    isMale = false;
+                    img_sex.setImageResource(R.drawable.rank_gril_icon);
+                    selectSexDialog.show(false);
+                    currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}", AppUtils.getPackageName());
+                    loadWebData(currentUrl,currentTitle);
+                }else{
+                    isMale = true;
+                    selectSexDialog.show(true);
+                    img_sex.setImageResource(R.drawable.rank_boy_icon);
+                    currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}", AppUtils.getPackageName());
+                    loadWebData(currentUrl,currentTitle);
+                }
+                    break;
 
         }
     }
@@ -360,6 +411,12 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     if (loadingpage != null) {
                         loadingpage.onErrorVisable();
                     }
+                    if (selectSexDialog != null) {
+                        AppLog.e("webview", selectSexDialog.hasFinishAni + "");
+                        if (selectSexDialog.hasFinishAni) {
+                            selectSexDialog.dismiss();
+                        }
+                    }
                 }
             });
 
@@ -371,6 +428,12 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                         loadingpage.onSuccessGone();
                     }
                     addCheckSlide(find_detail_content);
+                    if (selectSexDialog != null) {
+                        AppLog.e("webview", selectSexDialog.hasFinishAni + "");
+                        if (selectSexDialog.hasFinishAni) {
+                            selectSexDialog.dismiss();
+                        }
+                    }
                 }
             });
         }

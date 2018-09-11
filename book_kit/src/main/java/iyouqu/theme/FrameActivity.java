@@ -130,7 +130,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (isDarkStatusBarText) {
+            if (isDarkStatusBarText || shouldLightStatusBase()) {
                 isMIUISupport = new MIUIHelper().setStatusBarLightMode(this, true);
                 isFlymeSupport = new FlymeHelper().setStatusBarLightMode(this, true);
                 if (isMIUISupport || isFlymeSupport) {
@@ -143,7 +143,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            if (isDarkStatusBarText) {
+            if (isDarkStatusBarText || shouldLightStatusBase()) {
                 getWindow().getDecorView().setSystemUiVisibility(getWindow().getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
@@ -263,6 +263,10 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         } else {
             isDarkStatusBarText = false;
         }
+    }
+
+    public boolean shouldLightStatusBase(){
+        return false;
     }
 
     /**

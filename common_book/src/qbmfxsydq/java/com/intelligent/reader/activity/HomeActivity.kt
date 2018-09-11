@@ -32,6 +32,7 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.RecommendFragment
@@ -39,6 +40,7 @@ import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -116,6 +118,21 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         homePresenter.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
+
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                    StartLogClickUtil.POPUPMESSAGE)
+        }
+    }
+
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+        }
+        lifecycle.addObserver(dialog)
+        dialog
     }
 
     override fun onResume() {
@@ -124,11 +141,13 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
+        MediaLifecycle.onResume()
     }
 
     override fun onPause() {
         super.onPause()
         StatService.onPause(this)
+        MediaLifecycle.onPause()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -169,6 +188,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             exception.printStackTrace()
         }
         fixInputMethodManagerLeak(applicationContext)
+        MediaLifecycle.onDestroy()
     }
 
 
@@ -489,6 +509,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         return false
     }
 
+    override fun shouldLightStatusBase(): Boolean {
+        return super.shouldLightStatusBase()
+    }
+
+
     /***
      * HomeActivity子页面的Adapter
      * **/
@@ -514,8 +539,15 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     if (rankingFragment == null) {
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
-                        bundle.putString("type", "rank")
-                        val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
+                        val uri :String
+                        //0 男 1 女
+                        if(sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX) == 0){
+                            bundle.putString("type", "rankBoy")
+                             uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}", AppUtils.getPackageName())
+                        }else{
+                            bundle.putString("type", "rankGirl")
+                            uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}", AppUtils.getPackageName())
+                        }
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment?.arguments = bundle
                     }

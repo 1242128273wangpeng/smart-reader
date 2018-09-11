@@ -46,14 +46,14 @@ class RecommendFragment : Fragment() {
         }
         mRecommendPageAdapter = RecommendPageAdapter(childFragmentManager)
         category_view_page.adapter = mRecommendPageAdapter
-        when(sharedPreUtil?.getInt(SharedPreUtil.GENDER_TAG)){
-            Constants.SGIRL -> { category_view_page.setCurrentItem(1, false)}
-            else -> {
-                category_view_page.setCurrentItem(0, false)
-            }
+        tabstrip.setViewPager(category_view_page)
+        if(sharedPreUtil?.getInt(SharedPreUtil.RECOMMEND_SELECT_SEX) == 0){
+            category_view_page.setCurrentItem(0, true)
+        }else{
+            category_view_page.setCurrentItem(1,true)
         }
 
-        tabstrip.setViewPager(category_view_page)
+
         category_view_page.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -61,6 +61,11 @@ class RecommendFragment : Fragment() {
 
             override fun onPageSelected(position: Int) {
                 uploadTabSwitchLog(position)
+                if(position == 0){
+                    sharedPreUtil.putInt(SharedPreUtil.RECOMMEND_SELECT_SEX,0)
+                }else{
+                    sharedPreUtil.putInt(SharedPreUtil.RECOMMEND_SELECT_SEX,1)
+                }
             }
 
         })
