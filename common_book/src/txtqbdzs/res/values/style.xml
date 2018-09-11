@@ -10,7 +10,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/cover_title_color</item>
         <item name="android:paddingLeft">@dimen/dimen_margin_16</item>
-        <item name="android:drawableLeft">@mipmap/cover_profile_icon</item>
+        <item name="android:drawableLeft">@drawable/cover_profile_icon</item>
         <item name="android:drawablePadding">8dp</item>
     </style>
 </resources>

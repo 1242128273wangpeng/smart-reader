@@ -23,7 +23,7 @@
                     android:layout_alignParentLeft="true"
                     android:paddingLeft="14dp"
                     android:paddingRight="14dp"
-                    android:src="@mipmap/home_head_setting"
+                    android:src="@drawable/home_head_setting"
                     android:layout_gravity="right|left"/>
 
             <ImageView
@@ -33,7 +33,7 @@
                     android:layout_alignParentRight="true"
                     android:paddingRight="14dp"
                     android:paddingLeft="14dp"
-                    android:src="@mipmap/home_head_download"
+                    android:src="@drawable/home_head_download"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentTop="true"/>
 
@@ -163,7 +163,7 @@
                 android:layout_marginLeft="@dimen/dimen_margin_15"
                 android:layout_marginRight="@dimen/dimen_margin_15"
                 android:background="@drawable/bookshelf_search_bg"
-                android:drawableLeft="@mipmap/search_pic"
+                android:drawableLeft="@drawable/search_pic"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:hint="搜索自己喜欢的小说和作者"
@@ -196,7 +196,7 @@
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/top_back"/>
+                    android:src="@drawable/top_back"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -227,7 +227,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/bookshelf_search_view"
-            android:layout_above="@+id/content_tab_selection"
             android:background="@color/color_white_fafafa"
             android:flipInterval="30"
             android:persistentDrawingCache="animation"/>

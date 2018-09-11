@@ -44,7 +44,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/search_submit_btn"/>
+                android:src="@drawable/search_submit_btn"/>
         </RelativeLayout>
     </RelativeLayout>
 

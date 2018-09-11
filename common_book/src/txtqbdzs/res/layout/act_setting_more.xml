@@ -30,7 +30,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/top_back"/>
+                android:src="@drawable/top_back"/>
 
             <TextView
                 android:id="@+id/tv_title_name"
@@ -302,7 +302,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="17dp"
-                        android:src="@mipmap/bookshelf_delete_checked"
+                        android:src="@drawable/bookshelf_delete_checked"
                         android:visibility="visible"/>
 
                     <TextView
@@ -335,7 +335,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="17dp"
-                        android:src="@mipmap/bookshelf_delete_unchecked"
+                        android:src="@drawable/bookshelf_delete_unchecked"
                         android:visibility="visible"/>
 
                     <TextView

@@ -27,7 +27,7 @@
                 android:gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:src="@mipmap/icon_back"/>
+                android:src="@drawable/icon_back"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
                         android:layout_marginRight="@dimen/dimen_margin_20"
                         android:contentDescription="@string/app_name"
                         android:scaleType="fitXY"
-                        android:src="@mipmap/cover_book_shadow"/>
+                        android:src="@drawable/cover_book_shadow"/>
 
                     <ImageView
                         android:id="@+id/book_cover_image"
@@ -86,9 +86,9 @@
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="3dp"
                         android:layout_marginTop="2dp"
-                        android:background="@mipmap/bookshelf_book_cover_default"
+                        android:background="@drawable/bookshelf_book_cover_default"
                         android:scaleType="fitXY"
-                        android:src="@mipmap/bookshelf_book_cover_default"/>
+                        android:src="@drawable/bookshelf_book_cover_default"/>
 
 
                     <TextView
@@ -261,7 +261,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:drawablePadding="@dimen/dimen_margin_8"
-                        android:drawableRight="@mipmap/cover_more_icon"
+                        android:drawableRight="@drawable/cover_more_icon"
                         android:text="2 天前"
                         android:textColor="@color/cover_grayB9"
                         android:textSize="13sp"/>
@@ -372,7 +372,7 @@
                 android:layout_width="142dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:background="@mipmap/cover_reading_btn"
+                android:background="@drawable/cover_reading_btn"
                 android:gravity="center"
                 android:text="转码阅读"
                 android:textColor="@color/white"

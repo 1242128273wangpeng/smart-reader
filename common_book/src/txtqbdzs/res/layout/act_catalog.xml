@@ -28,7 +28,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
-                        android:src="@mipmap/directory_back"
+                        android:src="@drawable/directory_back"
                         android:paddingLeft="@dimen/dimen_padding_12"
                         android:paddingRight="@dimen/dimen_padding_12"/>
 
@@ -104,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:src="@mipmap/dir_sort_negative"
+                    android:src="@drawable/dir_sort_negative"
                     android:paddingLeft="@dimen/dimen_padding_15"
                     android:paddingRight="@dimen/dimen_padding_15"/>
 
