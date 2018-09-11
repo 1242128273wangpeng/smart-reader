@@ -233,6 +233,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         if (isShow) {
             txt_reader_font_reduce?.isEnabled = readerSettings.fontSize > 10
             txt_reader_font_increase?.isEnabled = readerSettings.fontSize < 30
+            txt_reader_font_typeface?.text = TypefaceUtil.loadTypefaceTag(readerSettings.fontTypeface)
             rl_reader_option_bottom.visibility = View.VISIBLE
             rl_reader_option_bottom.startAnimation(popUpInAnimation)
 
@@ -336,6 +337,8 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         txt_reader_font_increase?.preventClickShake(this)
 
+        txt_reader_font_typeface?.preventClickShake(this)
+
 
         skbar_reader_brightness_change?.setOnSeekBarChangeListener(this)
 
@@ -412,6 +415,11 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
                 increaseFont()
             }
+            R.id.txt_reader_font_typeface//修改字体
+            -> {
+//                showTypefaceView()
+            }
+
         /*case R.id.ll_reader_brightness_system:// 省电模式
             case R.id.read_setting_save_power:
 

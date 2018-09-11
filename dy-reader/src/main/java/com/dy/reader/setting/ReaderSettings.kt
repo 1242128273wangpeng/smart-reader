@@ -10,7 +10,6 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.helper.AppHelper
-import com.dy.reader.page.GLPage
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.util.ThemeUtil
 import com.google.gson.InstanceCreator
@@ -82,6 +81,11 @@ class ReaderSettings {
         if (fontSize == 0) {
             fontSize = 18
         }
+
+        if (fontTypeface == 0) {
+            fontTypeface = 0x81
+        }
+
         if (readThemeMode == 0) {
             readThemeMode = 51
         }
@@ -106,6 +110,7 @@ class ReaderSettings {
         animation_mode = sp.getInt("page_mode", Constants.PAGE_MODE_DELAULT)
         isFullScreenRead = sp.getBoolean("full_screen_read", false)
         readThemeMode = sp.getInt("content_mode", 51)
+        fontTypeface = sp.getInt("content_font_typeface", 0x80)
 
         isVolumeTurnover = sp.getBoolean("sound_turnover", true)
 
@@ -169,6 +174,10 @@ class ReaderSettings {
             fontSize = 18
         }
 
+        if (fontTypeface == 0) {
+            fontTypeface = 0x81
+        }
+
         if (animation == GLReaderView.AnimationType.AUTO) {
             animation_mode = lastAnimationMode
         }
@@ -229,6 +238,17 @@ class ReaderSettings {
 
     @SerializedName(value = "fontSize")
     var fontSize = 0
+        set(value) {
+            if (field != value) {
+                field = value
+
+                if (needNotify)
+                    EventBus.getDefault().post(EventReaderConfig(ConfigType.FONT_REFRESH, ReaderStatus.position))
+            }
+        }
+
+    @SerializedName(value = "fontTypeface")
+    var fontTypeface = 0x80
         set(value) {
             if (field != value) {
                 field = value

@@ -9,6 +9,7 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.mode.NovelPageBean
+import net.lzbook.kit.utils.TypefaceUtil
 import java.util.ArrayList
 
 /**
@@ -180,6 +181,7 @@ object ReadSeparateHelper {
             readerSettings.mPaint!!.style = Paint.Style.FILL
             readerSettings.mPaint!!.isAntiAlias = true
             readerSettings.mPaint!!.isDither = true
+            readerSettings.mPaint!!.typeface = TypefaceUtil.loadTypeface(readerSettings.fontTypeface)
         }
         readerSettings.mPaint!!.textSize = readerSettings.fontSize * AppHelper.screenScaledDensity
 
