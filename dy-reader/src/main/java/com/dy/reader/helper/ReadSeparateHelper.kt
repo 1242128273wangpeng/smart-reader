@@ -181,9 +181,10 @@ object ReadSeparateHelper {
             readerSettings.mPaint!!.style = Paint.Style.FILL
             readerSettings.mPaint!!.isAntiAlias = true
             readerSettings.mPaint!!.isDither = true
-            readerSettings.mPaint!!.typeface = TypefaceUtil.loadTypeface(readerSettings.fontTypeface)
         }
         readerSettings.mPaint!!.textSize = readerSettings.fontSize * AppHelper.screenScaledDensity
+
+        readerSettings.mPaint!!.typeface = TypefaceUtil.loadTypeface(readerSettings.fontTypeface)
 
         val fm = readerSettings.mPaint!!.fontMetrics
 

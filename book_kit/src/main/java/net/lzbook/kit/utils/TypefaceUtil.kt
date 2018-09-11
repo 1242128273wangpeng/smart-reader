@@ -24,7 +24,7 @@ object TypefaceUtil {
     fun loadTypeface(type: Int): Typeface? {
         return when (type) {
             TYPEFACE_SYSTEM -> Typeface.DEFAULT
-            TYPEFACE_ZHENG_KAI -> initTypeface(BaseBookApplication.getGlobalContext(), "fss")
+            TYPEFACE_ZHENG_KAI -> initTypeface(BaseBookApplication.getGlobalContext(), "fss.ttf")
             else -> Typeface.DEFAULT
         }
     }

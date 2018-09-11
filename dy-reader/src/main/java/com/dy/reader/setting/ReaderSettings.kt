@@ -110,7 +110,7 @@ class ReaderSettings {
         animation_mode = sp.getInt("page_mode", Constants.PAGE_MODE_DELAULT)
         isFullScreenRead = sp.getBoolean("full_screen_read", false)
         readThemeMode = sp.getInt("content_mode", 51)
-        fontTypeface = sp.getInt("content_font_typeface", 0x80)
+        fontTypeface = sp.getInt("content_font_typeface", 0x81)
 
         isVolumeTurnover = sp.getBoolean("sound_turnover", true)
 
@@ -248,7 +248,7 @@ class ReaderSettings {
         }
 
     @SerializedName(value = "fontTypeface")
-    var fontTypeface = 0x80
+    var fontTypeface = 0x81
         set(value) {
             if (field != value) {
                 field = value
