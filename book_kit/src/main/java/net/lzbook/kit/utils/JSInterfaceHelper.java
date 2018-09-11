@@ -1,7 +1,6 @@
 package net.lzbook.kit.utils;
 
 import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -14,7 +13,6 @@ import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     onSearchWordClick searchWordClick;
     OnSubSearchBook subSearchBook;
-
+    OnSearchResultNotify searchResultNotify;
 
     public JSInterfaceHelper(Context context, WebView webView) {
         super();
@@ -105,6 +103,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     public void setOnH5PagerInfo(OnH5PagerInfoListener info) {
         this.pagerInfo = info;
+    }
+
+    public void setOnSearchResultNotify(OnSearchResultNotify notify){
+        this.searchResultNotify = notify;
     }
 
     @Override
@@ -470,6 +472,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         void doSearch(final String keyWord, final String search_type, final String filter_type, final String filter_word, final String sort_type);
     }
 
+    public interface OnSearchResultNotify{
+        void onSearchResult(int result);
+    }
+
     //搜索优化新增
 
     public interface onSearchWordClick {
@@ -529,6 +535,17 @@ public class JSInterfaceHelper implements WebViewJsInterface {
                 }
             });
         }
+    }
+
+    /**
+     * 搜索结果H5回调
+     *
+     * @param result 1表示有结果，2表示搜索无结果
+     */
+    @Override
+    @JavascriptInterface
+    public void onSearchResult(int result) {
+        if (searchResultNotify != null) searchResultNotify.onSearchResult(result);
     }
 
     // ========================================================

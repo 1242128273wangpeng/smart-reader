@@ -86,6 +86,8 @@ public class SearchHelper {
     private SearchSubBookDialog subBookDialog;
 //    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
+    private int searchResult;
+
     public SearchHelper(Activity context) {
         mContext = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -175,6 +177,10 @@ public class SearchHelper {
         filterWord = intent.getStringExtra("filter_word");
         sortType = intent.getStringExtra("sort_type");
 
+    }
+
+    public int getSearchResult() {
+        return searchResult;
     }
 
     private AntiShake shake = new AntiShake();
@@ -445,6 +451,13 @@ public class SearchHelper {
 
 
 
+            }
+        });
+        jsInterfaceHelper.setOnSearchResultNotify(new JSInterfaceHelper.OnSearchResultNotify() {
+
+            @Override
+            public void onSearchResult(int result) {
+                searchResult = result;
             }
         });
     }
