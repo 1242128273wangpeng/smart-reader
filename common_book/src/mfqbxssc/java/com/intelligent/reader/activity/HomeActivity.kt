@@ -94,8 +94,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val dialog = PushSettingDialog(this)
         dialog.openPushListener = {
             openPushSetting()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPNOWOPEN)
         }
         lifecycle.addObserver(dialog)
         dialog
@@ -135,8 +133,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPMESSAGE)
         }
 
         EventBus.getDefault().register(this)
