@@ -8,7 +8,7 @@ import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.setting.ReaderStatus
 
 /**
- * Desc 书籍封面Holder
+ * Desc 书籍扉页
  * Author qiantao
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/6/22 11:43

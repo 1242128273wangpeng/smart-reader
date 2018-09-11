@@ -36,6 +36,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.dy.reader.event.EventSetting
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
@@ -146,7 +147,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun onResume() {
         super.onResume()
-
+        MediaLifecycle.onResume()
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
@@ -155,6 +156,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun onPause() {
         super.onPause()
         StatService.onPause(this)
+        MediaLifecycle.onPause()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -182,7 +184,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         AndroidLogStorage.getInstance().clear()
 
         this.unregisterReceiver(homeBroadcastReceiver)
-
+        MediaLifecycle.onDestroy()
         try {
             bookShelfFragment = null
             recommendFragment = null
