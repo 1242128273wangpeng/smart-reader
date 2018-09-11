@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import cn.dycm.ad.nativ.NativeMediaView
-import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.GLReaderView
