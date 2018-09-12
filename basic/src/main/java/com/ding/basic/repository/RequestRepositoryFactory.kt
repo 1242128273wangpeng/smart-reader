@@ -1,7 +1,6 @@
 package com.ding.basic.repository
 
 import android.annotation.SuppressLint
-import android.arch.persistence.room.EmptyResultSetException
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -18,10 +17,7 @@ import com.ding.basic.util.ParserUtil
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.FlowableEmitter
-import io.reactivex.FlowableOnSubscribe
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -485,7 +481,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         chapter
                     }
                     else -> {
-                        throw EmptyResultSetException("接口返回内容异常！")
+                        throw IllegalStateException("接口返回内容异常！")
                     }
                 }
             }
