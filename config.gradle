@@ -54,12 +54,16 @@ ext {
     if (!startParameter.taskRequests.isEmpty()) {
         def arg0 = startParameter.taskRequests[0].args[0]
         log(arg0)
-        if (project.hasProperty("BuildTask") && !arg0.isEmpty()) {
+        if (arg0.contains(":common_book:")) {
             def isDebug = arg0.contains("Debug")
-            def app = BuildTask
-
+            def app = arg0.replace(":common_book:", "")
+                    .replace("generate", "")
+                    .replace("assemble", "")
+                    .replace("Debug", "")
+                    .replace("Release", "")
+                    .replace("Custom", "")
+                    .replace("Sources", "").toLowerCase()
             log(app)
-
             if (!appPackageIDConfig.containsKey(app)) {
                 throw new RuntimeException("app not found: $app")
             }
