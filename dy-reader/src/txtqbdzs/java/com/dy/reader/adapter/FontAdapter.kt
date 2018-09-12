@@ -4,9 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.reader.R
 import com.dy.reader.model.FontData
+import com.dy.reader.service.FontDownLoadService
 import kotlinx.android.synthetic.txtqbdzs.item_reader_option_font.view.*
 
 /**
@@ -17,12 +18,21 @@ import kotlinx.android.synthetic.txtqbdzs.item_reader_option_font.view.*
  */
 class FontAdapter(var list: ArrayList<FontData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onItemClickListener: AdapterView.OnItemClickListener? = null
+    var onItemClickListener: ((data: FontData, position: Int) -> Unit)? = null
+
+    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+
+    private var curFontName: String = FontDownLoadService.FONT_DEFAULT
+        get() {
+            field = sharedPreUtil.getString(SharedPreUtil.READER_TYPE_FACE, FontDownLoadService.FONT_DEFAULT)
+            return field
+        }
 
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val img = list[position].name
+        val data = list[position]
+        val img = data.iconRes
         if (img != null) {
             holder.itemView.img_name.setImageResource(img)
         } else {
@@ -30,8 +40,26 @@ class FontAdapter(var list: ArrayList<FontData>) : RecyclerView.Adapter<Recycler
             holder.itemView.img_name.visibility = View.GONE
         }
 
+        if (data.name == curFontName) {
+            holder.itemView.btn_use.visibility = View.GONE
+            holder.itemView.img_current_use.visibility = View.VISIBLE
+        } else {
+            holder.itemView.btn_use.visibility = View.VISIBLE
+            holder.itemView.img_current_use.visibility = View.GONE
+        }
+
+        val progress = data.progress
+        holder.itemView.btn_use.text = when (progress) {
+            100 -> holder.itemView.resources.getString(R.string.use)
+            -1 -> holder.itemView.context.resources.getString(R.string.download)
+            else -> {
+                "$progress%"
+            }
+        }
+
         holder.itemView.btn_use.setOnClickListener {
-            onItemClickListener?.onItemClick(null, null, position, 0)
+            if (data.name == curFontName) return@setOnClickListener
+            onItemClickListener?.invoke(data, position)
         }
     }
 

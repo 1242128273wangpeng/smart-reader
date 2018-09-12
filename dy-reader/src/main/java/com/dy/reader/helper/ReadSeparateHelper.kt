@@ -9,7 +9,7 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.mode.NovelPageBean
-import net.lzbook.kit.utils.TypefaceUtil
+import com.dy.reader.util.TypefaceUtil
 import java.util.ArrayList
 
 /**

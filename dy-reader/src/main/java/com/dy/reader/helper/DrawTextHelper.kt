@@ -9,6 +9,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.mode.NovelPageBean
 import java.util.ArrayList
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.TypefaceUtil
 
 /**
  *  阅读页绘制辅助类
@@ -25,6 +26,7 @@ object DrawTextHelper {
         textPaint.isDither = true
         textPaint.color = Color.RED
         textPaint.textSize = readerSettings.FONT_CHAPTER_SIZE * AppHelper.screenScaledDensity
+        textPaint.typeface = TypefaceUtil.loadTypeface(readerSettings.fontTypeface)
         textPaint
     }
 

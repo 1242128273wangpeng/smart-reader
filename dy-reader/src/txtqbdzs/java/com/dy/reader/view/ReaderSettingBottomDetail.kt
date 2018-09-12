@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewPropertyAnimator
@@ -24,6 +23,7 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.TypefaceUtil
 import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.txtqbdzs.reader_option_bottom.view.*
 import kotlinx.android.synthetic.txtqbdzs.reader_option_detail.view.*
@@ -337,8 +337,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         txt_reader_font_increase?.preventClickShake(this)
 
-        txt_reader_font_typeface?.preventClickShake(this)
-
 
         skbar_reader_brightness_change?.setOnSeekBarChangeListener(this)
 
@@ -414,10 +412,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
                 increaseFont()
-            }
-            R.id.txt_reader_font_typeface//修改字体
-            -> {
-//                showTypefaceView()
             }
 
         /*case R.id.ll_reader_brightness_system:// 省电模式

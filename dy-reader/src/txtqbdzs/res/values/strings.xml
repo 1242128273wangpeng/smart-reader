@@ -26,10 +26,8 @@
 
     <string name="default_font">默认字体</string>
     <string name="siyuan_song_font">思源宋体</string>
-    <string name="kalti_font">全字库正楷体</string>
     <string name="zhushiti_font">杨任东竹石体</string>
     <string name="siyuan_hei_font">思源黑体</string>
-    <string name="wenquan_mihei_font">文泉驿微米黑</string>
 
 
 </resources>

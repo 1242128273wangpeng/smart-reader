@@ -8,9 +8,9 @@
 
         <activity
             android:name=".activity.ReaderActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
             android:hardwareAccelerated="true"
             android:launchMode="singleTask"
-            android:configChanges="orientation|keyboardHidden|screenSize|uiMode|navigation"
             android:screenOrientation="nosensor"
             android:theme="@style/Theme.DesignDemo"/>
 
@@ -24,6 +24,10 @@
             android:name=".activity.DisclaimerActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppThemeTranslucent"/>
+
+        <service
+            android:name=".service.FontDownLoadService"
+            android:exported="false"/>
 
     </application>
 

@@ -6,12 +6,15 @@ import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
 import android.support.annotation.RawRes
 import android.support.v4.content.ContextCompat
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.GLReaderView
+import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.util.ThemeUtil
+import com.dy.reader.util.TypefaceUtil
 import com.google.gson.InstanceCreator
 import net.lzbook.kit.constants.Constants
 import org.greenrobot.eventbus.EventBus
@@ -83,7 +86,7 @@ class ReaderSettings {
         }
 
         if (fontTypeface == 0) {
-            fontTypeface = 0x81
+            fontTypeface = TypefaceUtil.TYPEFACE_SYSTEM
         }
 
         if (readThemeMode == 0) {
@@ -110,7 +113,8 @@ class ReaderSettings {
         animation_mode = sp.getInt("page_mode", Constants.PAGE_MODE_DELAULT)
         isFullScreenRead = sp.getBoolean("full_screen_read", false)
         readThemeMode = sp.getInt("content_mode", 51)
-        fontTypeface = sp.getInt("content_font_typeface", 0x81)
+        fontTypeface = TypefaceUtil.getTypefaceCode(sp.getString(SharedPreUtil.READER_TYPE_FACE,
+                FontDownLoadService.FONT_DEFAULT))
 
         isVolumeTurnover = sp.getBoolean("sound_turnover", true)
 
@@ -175,7 +179,7 @@ class ReaderSettings {
         }
 
         if (fontTypeface == 0) {
-            fontTypeface = 0x81
+            fontTypeface = TypefaceUtil.TYPEFACE_SYSTEM
         }
 
         if (animation == GLReaderView.AnimationType.AUTO) {
@@ -248,7 +252,7 @@ class ReaderSettings {
         }
 
     @SerializedName(value = "fontTypeface")
-    var fontTypeface = 0x81
+    var fontTypeface = TypefaceUtil.TYPEFACE_SYSTEM
         set(value) {
             if (field != value) {
                 field = value

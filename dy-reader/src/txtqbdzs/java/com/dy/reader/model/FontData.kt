@@ -1,7 +1,5 @@
 package com.dy.reader.model
 
-import android.support.annotation.IntegerRes
-
 /**
  * Function：字体类
  *
@@ -9,6 +7,7 @@ import android.support.annotation.IntegerRes
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 data class FontData(
-        var name: Int? = null,
-        var url: String
+        var name:String,
+        var iconRes: Int? = null,
+        var progress: Int = -1
 )
