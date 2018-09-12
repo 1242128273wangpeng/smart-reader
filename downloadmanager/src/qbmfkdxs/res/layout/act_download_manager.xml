@@ -121,6 +121,6 @@
         android:layout_below="@id/rl_head"
         android:contentDescription="@string/module_name"
         android:scaleType="fitXY"
-        android:src="@drawable/download_manager_head_shadow"
+        android:src="@drawable/top_shadow"
         android:visibility="gone"/>
 </RelativeLayout>
