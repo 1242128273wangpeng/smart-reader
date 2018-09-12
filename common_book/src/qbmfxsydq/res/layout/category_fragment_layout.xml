@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/web_content_layout"
+        android:layout_width="match_parent"
+        android:background="#ffffff"
+        android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#ffffff">
+
+
+        <com.intelligent.reader.widget.FlymeTabStrip
+                android:id="@+id/tabstrip"
+                app:indicatorHeight="3dp"
+                app:indicatorColor="@color/theme_primary"
+                app:indicatorMargin="24dp"
+                app:indicatorTextSize="18sp"
+                app:selectedIndicatorTextSize="18sp"
+                app:indicatorTextColor="#282828"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_height="match_parent"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_head_search"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_below="@+id/title_layout"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/recommend_head_search_bg"
+        android:focusable="false"
+        android:layout_marginTop="10dp"
+        android:focusableInTouchMode="false"
+        android:paddingLeft="10dp"
+        tools:ignore="RtlSymmetry">
+
+        <ImageView
+            android:id="@+id/img_head_search"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/recommend_head_search_icon"
+            android:contentDescription="@string/module_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@id/img_head_search"
+            android:text="@string/recommend_search"
+            android:textColor="#B5B5B5"
+            android:textSize="13sp"/>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+            android:id="@+id/category_view_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rl_head_search"/>
+
+</RelativeLayout>

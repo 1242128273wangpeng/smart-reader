@@ -48,6 +48,8 @@ interface IMediaControl {
 
     fun loadBookShelMedia(activity: Activity, count: Int, mediaCallback: MediaCallback)
 
+    fun loadBookShelMedia2(activity: Activity, mediaCallback: MediaCallback)
+
     interface MediaCallback {
         fun requestMediaSuccess(views: List<ViewGroup>)
 
@@ -63,15 +65,13 @@ interface IMediaControl {
 
     fun getChapterFrequency(): Int
 
-    fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                     resultCallback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
+    fun dycmNativeAd(context: Activity?, adLocalId: String, view: ViewGroup?,
+                     resultSuccessCallback: (views: List<ViewGroup>?) -> Unit,resultFailCallback: (errorCode: Int) -> Unit)
 
-    fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
-                     resultCallback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit)
+    fun dycmNativeAd(context: Activity?, adLocalId: String, height: Int, width: Int,
+                     resultSuccessCallback: (views: List<ViewGroup>?) -> Unit, resultFailCallback: (errorCode: Int) -> Unit)
 
-    fun startRestMedia(onTime: () -> Unit)
-
-    fun loadRestMedia(activity: Activity?, onSuccess: (view: View?) -> Unit)
+    fun startRestMedia(activity: Activity)
 
     fun stopRestMedia()
 

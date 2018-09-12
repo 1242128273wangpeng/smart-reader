@@ -552,21 +552,27 @@ public class AppUtils {
      */
     public static String getIPAddress(Context context) {
         String ip = "";
-        ConnectivityManager conMann = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        //这里不应该每次都重新获得的, 应该在receiver里 收到网络状态的时候, 获取一次然后做记录, 偷懒了先catch一下吧
+        try {
+            ConnectivityManager conMann = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
-            ip = getLocalIpAddress();
-        } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
-            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            int ipAddress = wifiInfo.getIpAddress();
-            ip = getWifiIPAddress(ipAddress);
+            if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
+                ip = getLocalIpAddress();
+            } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                int ipAddress = wifiInfo.getIpAddress();
+                ip = getWifiIPAddress(ipAddress);
+            }
+        }catch (Throwable t){
+
         }
         return ip;
     }
+
 
     //如果连接的是移动网络
     private static String getLocalIpAddress() {
@@ -706,6 +712,7 @@ public class AppUtils {
                 || packageName.equals("cc.kdqbxs.reader") //快读替
                 || packageName.equals("cc.quanbennovel") //今日多看
                 || packageName.equals("cc.lianzainovel") //鸿雁替
+                || packageName.equals("cc.quanben.novel") //五步替
                 || packageName.equals("cc.mianfeinovel"); //阅微替
     }
 
@@ -1175,8 +1182,8 @@ public class AppUtils {
                         + ".com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D"
                         + key));
 
-            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
-            // .FLAG_ACTIVITY_NEW_TASK)
+        // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
+        // .FLAG_ACTIVITY_NEW_TASK)
         try {
             activity.startActivity(intent);
             return true;

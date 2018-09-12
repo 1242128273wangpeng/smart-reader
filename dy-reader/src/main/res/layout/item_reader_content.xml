@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!--8-1章节末广告-->
     <FrameLayout
         android:id="@+id/fl_reader_content_ad"
         android:layout_width="match_parent"

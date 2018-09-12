@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
 import com.ding.basic.util.ReplaceConstants
+import com.ding.basic.util.URLBuilder
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -103,7 +104,7 @@ object Config {
     }
 
     fun loadRequestAPIHost(): String {
-        return requestAPIHost
+        return requestAPIHost!!
     }
 
     fun insertRequestParameter(@NotNull key: String, @NotNull value: String) {
@@ -133,6 +134,34 @@ object Config {
             }
         })
     }
+
+    fun buildUrl(request: String?, parameters: MutableMap<String, String>): String? {
+
+        if (request == null) {
+            return null
+        }
+        return URLBuilder.buildUrl(requestAPIHost, request, parameters)
+    }
+
+    fun buildRequestUrl(url: String?): String? {
+        if (url == null) {
+            return null
+        }
+
+        val parameters = HashMap<String, String>()
+        parameters["os"] = Config.loadRequestParameter("os")
+        parameters["udid"] = Config.loadRequestParameter("udid")
+        parameters["version"] = Config.loadRequestParameter("version")
+        parameters["channelId"] = Config.loadRequestParameter("channelId")
+        parameters["packageName"] = Config.loadRequestParameter("packageName")
+
+        parameters["cityCode"] = Config.loadRequestParameter("cityCode")
+        parameters["latitude"] = Config.loadRequestParameter("latitude")
+        parameters["longitude"] = Config.loadRequestParameter("longitude")
+
+        return URLBuilder.buildUrl(requestAPIHost, url, parameters)
+    }
+
 
     fun insertMicroAPIHost(microAPIHost: String) {
         if (!TextUtils.isEmpty(microAPIHost)) {

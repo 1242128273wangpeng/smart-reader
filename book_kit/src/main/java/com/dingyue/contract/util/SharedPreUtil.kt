@@ -113,6 +113,15 @@ class SharedPreUtil(val type: Int) {
 
 
         /**
+         * webviewFragment
+         */
+
+        const val RANK_SELECT_SEX = "rank_select_sex"   // 五步替 榜单选男女
+        const val RECOMMEND_SELECT_SEX = "recommend_select_sex"   // 五步替 精选页选男女
+
+
+
+        /**
          * SplashActivity
          */
         const val SCREEN_WIDTH = "screen_width"   //屏幕宽度
@@ -191,6 +200,10 @@ class SharedPreUtil(val type: Int) {
         @JvmField
         val PUSH_TAG_LATEST_UPDATE_TIME = "push_tag_latest_update_time"
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
+
+
+        const val APPLICATION_SHARE_ACTION = "application_share_action"
+        const val COVER_SHARE_PROMPT = "cover_share_prompt"
     }
 
 

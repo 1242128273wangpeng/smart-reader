@@ -2,7 +2,6 @@ package com.ding.basic.request
 
 import com.ding.basic.Config
 import com.ding.basic.bean.*
-import com.ding.basic.util.ReplaceConstants
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
@@ -122,6 +121,9 @@ object RequestAPI {
         return requestService.requestFeedback(parameters)
     }
 
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>> {
+        return requestService.requestShareInformation()
+    }
 
     // v3 的登陆接口强制走阿里云服务器，也就是默认的 host
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {

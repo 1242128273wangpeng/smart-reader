@@ -15,6 +15,7 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import de.greenrobot.event.EventBus
@@ -26,6 +27,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
@@ -54,9 +56,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
+        popup.onApplicationShareClickListener = {
+            applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
+            BookShelfLogger.uploadBookShelfShare()
+        }
         popup
     }
-
 
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(requireActivity())
@@ -126,6 +132,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog.onCancelListener = {
             BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
         }
+        dialog
+    }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
         dialog
     }
 
@@ -229,6 +240,17 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
             bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
+        }
+
+        if (!requireActivity().isFinishing) {
+            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+
+            if (share) {
+                view_head_prompt.visibility = View.GONE
+            } else {
+                view_head_prompt.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -482,7 +504,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {
         bookShelfPresenter.deleteBooks(books, isDeleteCacheOnly)
     }
-
 
     companion object {
         private const val PULL_REFRESH_DELAY = 30 * 1000

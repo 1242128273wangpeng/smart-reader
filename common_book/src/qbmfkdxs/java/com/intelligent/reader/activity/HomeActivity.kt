@@ -129,7 +129,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun onResume() {
         super.onResume()
-
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
@@ -165,7 +164,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         AndroidLogStorage.getInstance().clear()
 
         this.unregisterReceiver(homeBroadcastReceiver)
-
         try {
             bookShelfFragment = null
             recommendFragment = null

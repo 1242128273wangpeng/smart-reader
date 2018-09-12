@@ -3,15 +3,16 @@ package com.intelligent.reader.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -20,31 +21,29 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.dingyue.bookshelf.BookShelfLogger;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
+import com.ding.basic.request.RequestService;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.PagerDesc;
+import com.intelligent.reader.view.SelectSexDialog;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.ConsumeEvent;
-import net.lzbook.kit.book.view.FirstUsePointView;
 import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
-import de.greenrobot.event.EventBus;
-
-public class WebViewFragment extends Fragment {
+public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFinishedCallback {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
     public String url = "";
+    private String type = "";
     private WeakReference<Activity> weakReference;
     private Context context;
     private View rootView;
@@ -55,11 +54,16 @@ public class WebViewFragment extends Fragment {
     private FragmentCallback fragmentCallback;
     private LoadingPage loadingpage;
     private Handler handler;
-    private ImageView img_head_setting;
-    private ImageView img_head_search;
-    private ImageView img_download_manager;
     private TextView txt_head_title;
     private int bottomType;//青果打点搜索 2 推荐  3 榜单
+    private RelativeLayout rl_head;
+    private View img_shadow;
+    private int count = 0;
+    private SelectSexDialog selectSexDialog;
+    private SharedPreUtil sharedPreUtil;
+    private ImageView img_sex;
+    public PagerDesc mPagerDesc;
+    private int h5Margin;
 
     @Override
     public void onAttach(Activity activity) {
@@ -78,6 +82,7 @@ public class WebViewFragment extends Fragment {
         if (bundle != null) {
             this.url = bundle.getString("url");
             AppLog.e(TAG, "url---->" + url);
+            type = bundle.getString("type");
         }
     }
 
@@ -91,14 +96,16 @@ public class WebViewFragment extends Fragment {
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        if(weakReference != null){
+        if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
         }
+        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         initView();
         return rootView;
     }
+
     public void setTitle(String title, int logBottomType) {
-        if(txt_head_title != null){
+        if (txt_head_title != null) {
             txt_head_title.setText(title);
         }
         bottomType = logBottomType;
@@ -109,13 +116,56 @@ public class WebViewFragment extends Fragment {
         if (rootView != null) {
             contentLayout = (RelativeLayout) rootView.findViewById(R.id.web_content_layout);
             contentView = (WebView) rootView.findViewById(R.id.web_content_view);
-            img_head_setting = rootView.findViewById(R.id.img_head_setting);
-            img_download_manager = rootView.findViewById(R.id.img_download_manager);
-            img_head_search = rootView.findViewById(R.id.img_head_search);
             txt_head_title = rootView.findViewById(R.id.txt_head_title);
+            rl_head = (RelativeLayout) rootView.findViewById(R.id.rl_head);
+            img_sex = rootView.findViewById(R.id.img_sex);
+            img_shadow = rootView.findViewById(R.id.img_shadow);
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
+            img_sex.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (selectSexDialog == null) {
+                        selectSexDialog = new SelectSexDialog(weakReference.get());
+                        selectSexDialog.setAniFinishedAction(WebViewFragment.this);
+                    }
+                    //0 表示男  1 表示女
+                    if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
+                        sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
+                        img_sex.setImageResource(R.drawable.rank_gril_icon);
+                        selectSexDialog.show(false);
+                        String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
+                                AppUtils.getPackageName());
+                        url = UrlUtils.buildWebUrl(uri, new HashMap());
+                        loadingData(url);
+                    } else {
+                        sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
+                        selectSexDialog.show(true);
+                        img_sex.setImageResource(R.drawable.rank_boy_icon);
+                        String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
+                                AppUtils.getPackageName());
+                        url = UrlUtils.buildWebUrl(uri, new HashMap());
+                        loadingData(url);
+                    }
+
+                }
+            });
+        }
+
+        if (type.equals("recommend_male") || type.equals("recommend_female")) {
+            rl_head.setVisibility(View.GONE);
+            img_shadow.setVisibility(View.GONE);
+        }
+        if ("rankBoy".equals(type)) {
+            img_sex.setVisibility(View.VISIBLE);
+            img_sex.setImageResource(R.drawable.rank_boy_icon);
+        } else if ("rankGirl".equals(type)) {
+            img_sex.setVisibility(View.VISIBLE);
+            img_sex.setImageResource(R.drawable.rank_gril_icon);
+        } else {
+            img_sex.setVisibility(View.GONE);
         }
 
         if (weakReference != null) {
@@ -146,39 +196,7 @@ public class WebViewFragment extends Fragment {
         if (fragmentCallback != null && jsInterfaceHelper != null) {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
-
-        img_head_setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    BookShelfLogger.INSTANCE.uploadBookShelfPersonal();
-                    EventBus.getDefault().post(new ConsumeEvent(R.id.fup_head_personal));
-                    RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY);
-            }
-        });
-
-        img_head_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
-                if(bottomType ==2){
-                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
-                }else if(bottomType==3){
-                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
-                }else if(bottomType == 4){
-                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
-                }else{
-                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
-                }
-            }
-        });
-
-        img_download_manager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
-                BookShelfLogger.INSTANCE.uploadBookShelfCacheManager();
-            }
-        });
+        addTouchListener();
     }
 
     @Override
@@ -226,6 +244,53 @@ public class WebViewFragment extends Fragment {
         }
     }
 
+    public boolean isNeedInterceptSlide() {
+        if (this.url.contains("recommend")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void addTouchListener() {
+        if (contentView != null && isNeedInterceptSlide()) {
+            contentView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    float y = event.getRawY();
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            if (contentView != null) {
+                                int[] loction = new int[2];
+                                contentView.getLocationOnScreen(loction);
+                                h5Margin = loction[1];
+                            }
+                            if (null != mPagerDesc) {
+                                float top = mPagerDesc.getTop();
+                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                DisplayMetrics metric = getResources().getDisplayMetrics();
+                                top = (float) (top * metric.density) + h5Margin;
+                                bottom = (float) (bottom * metric.density) + h5Margin;
+                                if (y > top && y < bottom) {
+                                    contentView.requestDisallowInterceptTouchEvent(true);
+                                } else {
+                                    contentView.requestDisallowInterceptTouchEvent(false);
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+
     private void loadingData(String url) {
         if (customWebClient != null) {
             customWebClient.doClear();
@@ -271,6 +336,7 @@ public class WebViewFragment extends Fragment {
                     if (loadingpage != null) {
                         loadingpage.onSuccessGone();
                     }
+
                 }
             });
         }
@@ -291,10 +357,12 @@ public class WebViewFragment extends Fragment {
     }
 
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (selectSexDialog != null) {
+            selectSexDialog = null;
+        }
         if (contentView != null) {
             contentView.clearCache(true); //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -319,6 +387,15 @@ public class WebViewFragment extends Fragment {
             BookApplication.getRefWatcher().watch(this);
         }
 
+    }
+
+    @Override
+    public void onAniFinished() {
+        if (selectSexDialog != null) {
+            if (selectSexDialog.isShow()) {
+                selectSexDialog.dismiss();
+            }
+        }
     }
 
     public interface FragmentCallback {

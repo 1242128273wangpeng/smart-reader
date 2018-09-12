@@ -14,7 +14,9 @@
     <string name="search_sub_book_author">作者（必填）</string>
     <string name="search_sub_book_success">订阅成功</string>
     <string name="search_sub_book_notify">书籍上架后第一时间通知您！</string>
-
+    <string name="push_setting_dialog_title">开启消息通知</string>
+    <string name="push_setting_dialog_subtitle">更多热门好书，精选书单及运营活动等你来看！</string>
+    <string name="push_setting_dialog_action">现在开启</string>
 
     <string name="disclaimer_statement_description">
         "在使用全本追书阅读器（简称“本软件”）前，请您（个人、公司、其他组织）仔细阅读本使用协议如下全部内容以便决定是否继续使用本软件，您的继续使用行为即表示您已经完全理解并接受本使用协议，否则您应当立即卸载并删除本软件。同时，本使用协议内容可能会根据将来服务内容的变化而做相应的更改，故请您及时予以关注并决定是否继续接受相关更改。\n
@@ -76,4 +78,8 @@
 
     <string name="db_upgrade_hasnet">正在进入应用，马上就好（%1$d%%）</string>
     <string name="db_upgrade_nonet">正在优化应用，马上就好（%1$d%%）</string>
+    <string name="recommend_search">搜小说</string>
+    <string name="select_boy">切换到男生</string>
+    <string name="select_girl">切换到女生</string>
+    <string name="book_cover_recommend">你还喜欢</string>
 </resources>

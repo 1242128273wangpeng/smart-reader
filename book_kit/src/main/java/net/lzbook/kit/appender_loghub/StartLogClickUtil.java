@@ -64,6 +64,7 @@ public class StartLogClickUtil {
     public static final String PAGE_SHELF = "SHELF";
     //书架页功能
     public static final String ACTION_SHELF_MORE = "MORE";
+    public static final String ACTION_SHELF_SHARE = "SHARE";
     public static final String ACTION_SHELF_SEARCH = "SEARCH";
     public static final String ACTION_SHELF_PERSONAL = "PERSONAL";
     public static final String ACTION_SHELF_BOOK_SORT = "BOOKSORT";
@@ -167,9 +168,18 @@ public class StartLogClickUtil {
     public static final String PROCTCOL_PAGE = "PROCTCOL";//使用协议
     public static final String PERHELP_PAGE = "PERHELP";//帮助与反馈
     public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
-    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
-    public static final String READFINISH_PAGE = "READFINISH";//作者主页
+    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍完结页
+    public static final String READFINISH_PAGE = "READFINISH";//完结页（新壳2新添加）
+
+
+
+
+    public static final String PAGE_SHARE = "SHAREPAGE";//分享弹窗
+    public static final String ACTION_SHARE = "SHARE";//分享
+    public static final String ACTION_CANCEL = "CANCEL";//分享
+
+
 
     //PUSH
     public static final String PUSHRECEIVE = "PUSHRECEIVE";//通知送达
@@ -206,8 +216,10 @@ public class StartLogClickUtil {
     public static final String TOBOOKCITY = "TOBOOKCITY";//空白页点击跳转书城
     public static final String LONGTIMEBOOKSHELFEDIT = "LONGTIMEBOOKSHELFEDIT";//长按编辑书架
     public static final String VERSIONUPDATE2 = "VERSIONUPDATE";//点击更新
+    public static final String POPUPEXPOSE = "POPUPEXPOSE"; //通知权限弹窗展现
     public static final String POPUPMESSAGE = "POPUPMESSAGE"; //弹出「开启消息通知」弹窗
     public static final String POPUPNOWOPEN = "POPUPNOWOPEN"; //弹窗点击现在开启
+    public static final String POPUPSET = "POPUPSET"; //通知权限弹窗前往系统设置页
     public static final String POPUPCLOSE = "POPUPCLOSE"; //关闭弹窗
 
     //书架编辑页

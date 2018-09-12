@@ -1,6 +1,5 @@
 package com.dy.reader.presenter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -32,10 +31,10 @@ import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
@@ -383,6 +382,20 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
     }
 
+    fun showShareDialog() {
+        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
+        
+        if (activity.get() != null && !activity.get()!!.isFinishing) {
+            val applicationShareDialog = ApplicationShareDialog(activity.get())
+            applicationShareDialog.show()
+
+            val activity = this.activity.get()
+
+            if (activity is ReaderActivity) {
+                activity.registerShareCallback(true)
+            }
+        }
+    }
 
     fun chageNightMode(mode: Int = 0, useLightMode: Boolean = true) {
         val data = java.util.HashMap<String, String>()

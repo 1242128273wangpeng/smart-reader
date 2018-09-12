@@ -102,6 +102,9 @@ interface RequestService {
         const val BOOKSHELF_UPDATE = "/v5/book/update"
 
         const val FEEDBACK_ERROR = "/v3/log/fb"
+
+        const val SHARE_INFORMATION = "/v5/share/getShareInfo"
+
         // 用户相关----------------------
         //登陆操作
         const val LOGIN_ACTION = "/v3/user/login"
@@ -200,6 +203,8 @@ interface RequestService {
          */
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
+        const val WEB_RANK_H5_BOY = "/h5/{packageName}/rankBoy"
+        const val WEB_RANK_H5_Girl = "/h5/{packageName}/rankGirl"
 
         /**
          * PUSH标签
@@ -210,6 +215,12 @@ interface RequestService {
          * 搜索无结果页  点击订阅  searchEmpty/userSubscription
          */
         const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
+
+
+        /**
+         * 二维码 拉新
+         */
+        const val QR_CODE = "/h5/{packageName}/share"
 
     }
 
@@ -274,6 +285,8 @@ interface RequestService {
     @GET(FEEDBACK_ERROR)
     fun requestFeedback(@QueryMap(encoded = false) params: Map<String, String>): Flowable<NoBodyEntity>
 
+    @GET(SHARE_INFORMATION)
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>
 
     /************************************* 用户相关 *************************************/
 

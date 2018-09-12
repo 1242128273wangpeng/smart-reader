@@ -38,7 +38,7 @@ object MediaConfig {
         PlatformSDK.config()?.setCityName(cityName)
     }
 
-    fun setCityCode(cityCode: Int) {
+    fun setCityCode(cityCode: String) {
         PlatformSDK.config()?.setCityCode(cityCode)
     }
 
@@ -67,6 +67,6 @@ object MediaConfig {
     }
 
     fun setExpandInfo(bookmap: Map<String, String>) {
-        PlatformSDK.config()?.setExpandInfo(bookmap)
+        PlatformSDK.config()?.setExpMap(bookmap)
     }
 }
