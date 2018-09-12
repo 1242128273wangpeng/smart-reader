@@ -51,7 +51,7 @@ import swipeback.ActivityLifecycleHelper;
 /**
  * WebView二级页面
  */
-public class FindBookDetail extends FrameActivity implements View.OnClickListener {
+public class FindBookDetail extends FrameActivity implements View.OnClickListener,SelectSexDialog.onAniFinishedCallback {
 
     private static String TAG = FindBookDetail.class.getSimpleName();
     String rankType;
@@ -108,7 +108,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 "other");
         AppUtils.disableAccessibility(this);
         initView();
-        selectSexDialog = new SelectSexDialog(this);
         initJSHelp();
 
         if (!TextUtils.isEmpty(currentUrl)) {
@@ -248,6 +247,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             case R.id.img_sex:
                 if(selectSexDialog == null){
                     selectSexDialog = new SelectSexDialog(this);
+                    selectSexDialog.setAniFinishedAction(this);
                 }
                 //0 表示男  1 表示女
                 if(isMale){
@@ -411,12 +411,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     if (loadingpage != null) {
                         loadingpage.onErrorVisable();
                     }
-                    if (selectSexDialog != null) {
-                        AppLog.e("webview", selectSexDialog.hasFinishAni + "");
-                        if (selectSexDialog.hasFinishAni) {
-                            selectSexDialog.dismiss();
-                        }
-                    }
+
                 }
             });
 
@@ -428,12 +423,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                         loadingpage.onSuccessGone();
                     }
                     addCheckSlide(find_detail_content);
-                    if (selectSexDialog != null) {
-                        AppLog.e("webview", selectSexDialog.hasFinishAni + "");
-                        if (selectSexDialog.hasFinishAni) {
-                            selectSexDialog.dismiss();
-                        }
-                    }
                 }
             });
         }
@@ -782,6 +771,15 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         //离线消息 跳转到主页
         if (isFromPush && ActivityLifecycleHelper.getActivities().size() <= 1) {
             startActivity(new Intent(this, SplashActivity.class));
+        }
+    }
+
+    @Override
+    public void onAniFinished() {
+        if (selectSexDialog != null) {
+            if (selectSexDialog.isShow()) {
+                selectSexDialog.dismiss();
+            }
         }
     }
 }

@@ -9,8 +9,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -24,6 +26,7 @@ import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.view.SelectSexDialog;
 
 import net.lzbook.kit.book.view.LoadingPage;
@@ -36,7 +39,7 @@ import net.lzbook.kit.utils.JSInterfaceHelper;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
-public class WebViewFragment extends Fragment {
+public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFinishedCallback {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
     public String url = "";
@@ -59,6 +62,8 @@ public class WebViewFragment extends Fragment {
     private SelectSexDialog selectSexDialog;
     private SharedPreUtil sharedPreUtil;
     private ImageView img_sex;
+    public PagerDesc mPagerDesc;
+    private int h5Margin;
 
     @Override
     public void onAttach(Activity activity) {
@@ -93,9 +98,6 @@ public class WebViewFragment extends Fragment {
         }
         if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
-            if (selectSexDialog == null) {
-                selectSexDialog = new SelectSexDialog(weakReference.get());
-            }
         }
         sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         initView();
@@ -127,6 +129,7 @@ public class WebViewFragment extends Fragment {
 
                     if (selectSexDialog == null) {
                         selectSexDialog = new SelectSexDialog(weakReference.get());
+                        selectSexDialog.setAniFinishedAction(WebViewFragment.this);
                     }
                     //0 表示男  1 表示女
                     if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
@@ -193,7 +196,7 @@ public class WebViewFragment extends Fragment {
         if (fragmentCallback != null && jsInterfaceHelper != null) {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
-
+        addTouchListener();
     }
 
     @Override
@@ -241,6 +244,53 @@ public class WebViewFragment extends Fragment {
         }
     }
 
+    public boolean isNeedInterceptSlide() {
+        if (this.url.contains("recommend")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void addTouchListener() {
+        if (contentView != null && isNeedInterceptSlide()) {
+            contentView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    float y = event.getRawY();
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            if (contentView != null) {
+                                int[] loction = new int[2];
+                                contentView.getLocationOnScreen(loction);
+                                h5Margin = loction[1];
+                            }
+                            if (null != mPagerDesc) {
+                                float top = mPagerDesc.getTop();
+                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                DisplayMetrics metric = getResources().getDisplayMetrics();
+                                top = (float) (top * metric.density) + h5Margin;
+                                bottom = (float) (bottom * metric.density) + h5Margin;
+                                if (y > top && y < bottom) {
+                                    contentView.requestDisallowInterceptTouchEvent(true);
+                                } else {
+                                    contentView.requestDisallowInterceptTouchEvent(false);
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+
     private void loadingData(String url) {
         if (customWebClient != null) {
             customWebClient.doClear();
@@ -276,12 +326,6 @@ public class WebViewFragment extends Fragment {
                     if (loadingpage != null) {
                         loadingpage.onErrorVisable();
                     }
-                    if (selectSexDialog != null) {
-                        AppLog.e("webview", selectSexDialog.hasFinishAni + "");
-                        if (selectSexDialog.hasFinishAni) {
-                            selectSexDialog.dismiss();
-                        }
-                    }
                 }
             });
 
@@ -292,12 +336,7 @@ public class WebViewFragment extends Fragment {
                     if (loadingpage != null) {
                         loadingpage.onSuccessGone();
                     }
-                    if (selectSexDialog != null) {
-                        AppLog.e("webview", selectSexDialog.hasFinishAni + "");
-                        if (selectSexDialog.hasFinishAni) {
-                            selectSexDialog.dismiss();
-                        }
-                    }
+
                 }
             });
         }
@@ -348,6 +387,15 @@ public class WebViewFragment extends Fragment {
             BookApplication.getRefWatcher().watch(this);
         }
 
+    }
+
+    @Override
+    public void onAniFinished() {
+        if (selectSexDialog != null) {
+            if (selectSexDialog.isShow()) {
+                selectSexDialog.dismiss();
+            }
+        }
     }
 
     public interface FragmentCallback {
