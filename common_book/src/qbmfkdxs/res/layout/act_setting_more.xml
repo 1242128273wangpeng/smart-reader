@@ -279,7 +279,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:paddingLeft="17dp"
-                            android:src="@mipmap/bookshelf_delete_checked"
+                            android:src="@drawable/bookshelf_delete_checked"
                             android:visibility="visible"/>
                     
                     <TextView
@@ -312,7 +312,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:paddingLeft="17dp"
-                            android:src="@mipmap/bookshelf_delete_unchecked"
+                            android:src="@drawable/bookshelf_delete_unchecked"
                             android:visibility="visible"/>
                     
                     <TextView

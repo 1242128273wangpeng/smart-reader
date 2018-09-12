@@ -153,7 +153,7 @@
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
-                    android:drawableRight="@mipmap/my_more"
+                    android:drawableRight="@drawable/my_more"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:text="@string/setting_history_page"
@@ -196,7 +196,7 @@
                     android:layout_marginEnd="14dp"
                     android:layout_marginRight="14dp"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/icon_welfare_center"/>
+                    android:src="@drawable/icon_welfare_center"/>
 
             </RelativeLayout>
 

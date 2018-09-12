@@ -131,7 +131,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginTop="115dp"
-                        android:src="@mipmap/read_catalog_mark_empty"/>
+                        android:src="@drawable/read_catalog_mark_empty"/>
             </LinearLayout>
         </FrameLayout>
 
