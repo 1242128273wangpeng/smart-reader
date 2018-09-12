@@ -45,6 +45,8 @@ class ReaderSettingHeader : FrameLayout {
                     isOutAnimationRun = false
                 }
                 this.startAnimation(menuUpOutAnimation)
+                // 关闭更多对话框
+                readerHeaderMorePopup.dismiss()
             }
         }
 
