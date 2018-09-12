@@ -106,7 +106,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_15"
                 android:paddingRight="@dimen/dimen_padding_15"
-                android:src="@mipmap/dir_sort_negative" />
+                android:src="@drawable/dir_sort_negative" />
 
             <TextView
                 android:id="@+id/tv_catalog_novel_sort"
