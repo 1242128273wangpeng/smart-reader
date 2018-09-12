@@ -80,7 +80,7 @@ class RecommendFragment : Fragment() {
     }
 
     // 男频
-    private val manRecommendFragment: WebViewFragment by lazy {
+    val manRecommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend_male")
@@ -93,7 +93,7 @@ class RecommendFragment : Fragment() {
     }
 
     // 女频
-    private val girlRecommendFragment: WebViewFragment by lazy {
+     val girlRecommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend_female")

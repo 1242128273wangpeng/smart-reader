@@ -287,6 +287,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(selectSexDialog != null){
+            selectSexDialog = null;
+        }
         if (find_detail_content != null) {
             find_detail_content.clearCache(false); //清空缓存
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

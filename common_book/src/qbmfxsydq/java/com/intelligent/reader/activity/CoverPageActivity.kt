@@ -91,6 +91,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_reading!!.antiShakeClick(this)
         book_cover_download!!.antiShakeClick(this)
         book_cover_catalog_view_nobg!!.antiShakeClick(this)
+
+        book_cover_content.scrollChanged = {
+            txt_book_name.visibility = if (it > AppUtils.dp2px(resources, 20f)) View.VISIBLE else View.GONE
+        }
     }
 
     private fun initializeIntent(intent: Intent?) {
@@ -166,7 +170,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_content?.smoothScrollTo(0, 0)
 
         if (book != null) {
-
+            if (txt_book_name != null && !TextUtils.isEmpty(book.name)) {
+                txt_book_name.text = book.name
+            }
             if (book_cover_image != null) {
                 if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
                     Glide.with(applicationContext).load(book.img_url).placeholder(R.drawable.icon_book_cover_default).error(R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image!!)
