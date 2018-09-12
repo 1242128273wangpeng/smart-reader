@@ -62,7 +62,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/dimen_margin_30"
         android:layout_marginRight="@dimen/dimen_margin_10"
-        android:src="@mipmap/bookshelf_downlaod_floating_btn"
+        android:src="@drawable/bookshelf_downlaod_floating_btn"
         android:visibility="gone" />
 
 

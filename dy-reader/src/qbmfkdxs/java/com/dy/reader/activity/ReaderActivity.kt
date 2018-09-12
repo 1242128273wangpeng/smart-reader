@@ -43,12 +43,15 @@ import kotlinx.android.synthetic.qbmfkdxs.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = RouterConfig.READER_ACTIVITY)
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
+
+    private var registerShareCallback = false
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
 
@@ -219,6 +222,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, extras)
             }
         }
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
     }
 
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
@@ -241,6 +248,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onResume() {
         super.onResume()
         isResume = true
+        registerShareCallback = false
         glSurfaceView.onResume()
         // 设置全屏
         when (!Constants.isFullWindowRead) {
@@ -588,6 +596,42 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mLoadingFragment.show(type, retry)
     }
 
+    fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
     override fun supportSlideBack(): Boolean = false
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(false)
+                    ReaderStatus.isMenuShow = false
+                } else {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
 }
