@@ -595,4 +595,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     override fun changeDownloadButtonStatus() {
     }
 
+    override fun shouldLightStatusBase(): Boolean {
+        return true
+    }
 }
