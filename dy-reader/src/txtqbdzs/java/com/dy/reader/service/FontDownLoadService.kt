@@ -69,8 +69,8 @@ class FontDownLoadService : IntentService("font_download_service") {
         var fos: FileOutputStream? = null
         try {
             inputStream = it.byteStream()
-            val buf = ByteArray(2048)
-            var len = -1
+            val buf = ByteArray(1024 * 4)
+            var len = 0
             var progress: Int
 
             // 储存下载文件的目录
@@ -93,15 +93,12 @@ class FontDownLoadService : IntentService("font_download_service") {
 
             fos = FileOutputStream(curDownloadFile)
             var sum = 0L
-            inputStream.read(buf) != 1
-
             while (inputStream.read(buf).apply { len = this } > 0) {
                 fos.write(buf, 0, len)
                 sum += len
                 progress = (sum * 1.0f / total * 100).toInt()
                 onProgress(progress, fontName, fontPosition)
             }
-            onProgress(100, fontName, fontPosition)
             fos.flush()
         } catch (e: Exception) {
             e.printStackTrace()
