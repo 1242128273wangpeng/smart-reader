@@ -179,15 +179,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 requestSubscriber.onNext(result.data)
 
                                 synchronized(RequestRepositoryFactory::class.java) {
-                                    val book = result.data
                                     val localBook = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
 
-                                    if (book != null && localBook != null) {
-                                        book.last_chapter = localBook.last_chapter
-                                        LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
-
-                                        if (localBook.book_chapter_id == "") {
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(book.book_chapter_id)
+                                    if (localBook != null && !TextUtils.isEmpty(localBook.book_id)) {
+                                        if (TextUtils.isEmpty(localBook.book_chapter_id) && !TextUtils.isEmpty(result.data?.book_chapter_id)) {
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, localBook.book_id).updateBookChapterId(result.data?.book_chapter_id!!)
                                         }
                                     }
                                 }
@@ -313,7 +309,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             val lastChapter = chapterDaoHelp.queryLastChapter()
 
                             if (lastChapter != null) {
-                                book.host = result.data!!.host
+                                book.host = result.data?.host
                                 book.book_id = result.data!!.book_id
                                 book.chapter_count = result.data?.chapterCount!!
                                 book.book_source_id = result.data!!.book_source_id
@@ -687,44 +683,48 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
 
                             result.data?.coverList?.forEach {
-                                if (loadRepository.checkBookSubscribe(it.book_id) != null) {
-                                    val book = loadRepository.loadBook(it.book_id)
-                                    if (book != null) {
-                                        if (!TextUtils.isEmpty(it.book_chapter_id)) {
-                                            book.book_chapter_id = it.book_chapter_id
+                                val book = loadRepository.checkBookSubscribe(it.book_id)
+                                if (book != null) {
+                                    if (!TextUtils.isEmpty(it.book_chapter_id)) {
+                                        book.book_chapter_id = it.book_chapter_id
 
-                                            book.host = it.host
+                                        book.host = it.host
 
-                                            book.book_type = it.book_type
-
-                                            // 保存在chapter表中
-                                            if (book.fromQingoo()) {
-                                                ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
-                                            }
-
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
-                                        }
-                                        if (!TextUtils.isEmpty(it.desc)) {
-                                            book.desc = it.desc
-                                        }
-                                        if (!TextUtils.isEmpty(it.status)) {
-                                            book.status = it.status
-                                        }
-                                        book.genre = it.genre
-                                        book.sub_genre = it.sub_genre
                                         book.book_type = it.book_type
+
+                                        // 保存在chapter表中
+                                        if (book.fromQingoo()) {
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
+                                        }
+
+                                        ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
+                                    }
+                                    if (!TextUtils.isEmpty(it.desc)) {
+                                        book.desc = it.desc
+                                    }
+                                    if (!TextUtils.isEmpty(it.status)) {
+                                        book.status = it.status
+                                    }
+                                    book.genre = it.genre
+                                    book.sub_genre = it.sub_genre
+                                    book.book_type = it.book_type
+
+                                    val lastChapter = ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).queryLastChapter()
+
+                                    if (lastChapter != null) {
+                                        book.last_chapter = lastChapter
+                                    } else {
                                         if (it.last_chapter != null) {
                                             book.last_chapter = it.last_chapter
                                         }
-
-                                        //青果书籍有可能book_source_id不对
-                                        if (book.book_source_id == "api.qingoo.cn") {
-                                            book.book_source_id = book.book_id
-                                        }
-
-                                        books.add(book)
                                     }
 
+                                    //青果书籍有可能book_source_id不对
+                                    if (book.book_source_id == "api.qingoo.cn") {
+                                        book.book_source_id = book.book_id
+                                    }
+
+                                    books.add(book)
                                 }
                             }
                             if (books.isNotEmpty()) {

@@ -33,13 +33,15 @@ object BookRouter {
 
     private val shake = AntiShake()
 
-    fun navigateCoverOrRead(activity: Activity, book: Book, type: Int): Any? {
+    fun navigateCoverOrRead(activity: Activity, b: Book, type: Int): Any? {
 
         val bundle = Bundle()
 
+        var book = b
         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id)
 
         if (localBook != null) {
+            book = localBook
             book.update_status = 0
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
         }
