@@ -206,7 +206,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .doOnNext { result ->
                     if (result != null && result.checkResultAvailable() && result.data?.chapters != null && result.data?.chapters!!.isNotEmpty()) {
 
-                        val resList = noRepeatList(result.data!!.chapters!!)
+                        val resList = result.data!!.chapters!!
 
                         for (chapter in resList) {
                             chapter.host = result.data!!.host
@@ -980,6 +980,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
         return InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadBookshelf(body)
+    }
+
+
+    /**
+     * 获取刷新token
+     */
+    fun getRefreshToken(requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+       InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .refreshToken()
+               ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+               ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
+                   override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                       requestSubscriber.onNext(result)
+                   }
+
+                   override fun onError(throwable: Throwable) {
+                       requestSubscriber.onError(throwable)
+                   }
+
+                   override fun onComplete() {
+                       requestSubscriber.onComplete()
+                   }
+               })
     }
 
     /**
