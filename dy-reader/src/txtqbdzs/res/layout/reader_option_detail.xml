@@ -109,32 +109,38 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/ll_default_font"
             android:layout_width="88dp"
             android:layout_height="32dp"
             android:layout_marginLeft="13dp"
             android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:background="@drawable/reader_option_group_border_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@drawable/reader_option_group_border_bg">
 
             <TextView
                 android:id="@+id/txt_reader_font_typeface"
-                style="@style/reader_text_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
+                android:ellipsize="end"
+                android:maxEms="4"
+                android:maxLines="1"
                 android:text="@string/default_font"
+                android:textColor="#989898"
                 android:textSize="14sp"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingTop="2dp"
+                android:layout_marginRight="10dp"
                 android:contentDescription="@string/icon"
                 android:src="@drawable/read_set_ziti_icon_more"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
