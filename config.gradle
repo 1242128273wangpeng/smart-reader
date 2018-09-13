@@ -1,5 +1,4 @@
-
-void log(def str){
+void log(def str) {
     System.err.println("gradle: " + str)
 }
 
@@ -26,9 +25,7 @@ ext {
     hasad = true
     // 无广告列表
     noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader', 'cn.mfxsqbyd.reader', "cn.qbmfkkydq.reader"]
-    // 改完记得重新编译项目
-    applicationId = "cc.kdqbxs.reader"
-    defaultPublishConfig = 'mfqbxssc' + 'Debug'
+
     def appPackageIDConfig = [
             qbmfxsydq: "cc.quanben.novel",//五步替
             mfqbxssc : "cc.kdqbxs.reader", //快读替
@@ -43,6 +40,10 @@ ext {
             qbmfkkydq: "cn.qbmfkkydq.reader" //全本免费快看阅读器(新壳4)
     ]
 
+    // 改完记得重新编译项目
+    def appName = "mfqbxssc"
+    defaultPublishConfig = appName + 'Debug'
+    applicationId = appPackageIDConfig.get(appName)
 
     def startParameter = project.getGradle().getStartParameter()
     log(" = = = = = = = = = = = = = = = = = = = = = = = = ")
