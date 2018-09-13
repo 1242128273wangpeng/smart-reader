@@ -13,7 +13,7 @@
         android:id="@+id/rl_reader_guide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/img_reader_guide_action"
@@ -25,20 +25,7 @@
             android:contentDescription="@string/module_name"
             android:scaleType="fitXY"
             android:src="@drawable/reader_guide_gesture_icon"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/img_reader_guide_option"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="65dp"
-            android:scaleType="fitXY"
-            android:contentDescription="@string/module_name"
-            android:src="@drawable/reader_guide_more_icon"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
     </RelativeLayout>
 
     <fragment

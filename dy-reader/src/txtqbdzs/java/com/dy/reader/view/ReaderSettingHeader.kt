@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -20,6 +21,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus
@@ -31,6 +33,9 @@ class ReaderSettingHeader : FrameLayout {
     private var bookDownloadState: DownloadState = DownloadState.NOSTART
 
     var isOutAnimationRun = false
+
+    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+    private val guideSharedKey = AppUtils.getVersionCode().toString() + SharedPreUtil.READING_SETING_GUIDE_TAG
 
     fun showMenu(flag: Boolean) {
         if (flag) {
@@ -51,6 +56,17 @@ class ReaderSettingHeader : FrameLayout {
         }
 
         EventBus.getDefault().post(EventSetting(EventSetting.Type.FULL_WINDOW_CHANGE, !flag))
+
+        if (!sharedPreUtil.getBoolean(guideSharedKey)) {
+            view_guide.visibility = View.VISIBLE
+            txt_reader_guide_option.visibility = View.VISIBLE
+
+            view_guide.setOnClickListener {
+                view_guide.visibility = View.GONE
+                txt_reader_guide_option.visibility = View.GONE
+                sharedPreUtil.putBoolean(guideSharedKey, true)
+            }
+        }
     }
 
     constructor(context: Context?) : super(context)

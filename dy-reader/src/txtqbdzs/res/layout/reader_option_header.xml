@@ -5,53 +5,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#F2191919"
-    android:fitsSystemWindows="true"
     tools:ignore="RtlHardcoded,MissingPrefix">
 
     <RelativeLayout
-        android:id="@+id/rl_reader_header_content"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="wrap_content"
+        android:background="#F2191919"
+        android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/img_reader_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/module_name"
-            android:paddingLeft="22dp"
-            android:paddingRight="22dp"
-            android:src="@drawable/reader_option_header_back_icon"
-            app:onPressChangeAlpha="true"/>
+        <RelativeLayout
+            android:id="@+id/rl_reader_header_content"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
 
-        <ImageButton
-            android:id="@+id/ibtn_reader_download"
-            android:layout_width="44dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/ibtn_reader_more"
-            android:background="@null"
-            android:contentDescription="@string/module_name"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/reader_option_header_download_icon"
-            app:onPressChangeAlpha="true"/>
+            <ImageView
+                android:id="@+id/img_reader_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/module_name"
+                android:paddingLeft="22dp"
+                android:paddingRight="22dp"
+                android:src="@drawable/reader_option_header_back_icon"
+                app:onPressChangeAlpha="true"/>
 
-        <ImageButton
-            android:id="@+id/ibtn_reader_more"
-            android:layout_width="44dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="@null"
-            android:contentDescription="@string/module_name"
-            android:paddingBottom="10dp"
-            android:paddingLeft="6dp"
-            android:paddingRight="16dp"
-            android:paddingTop="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/reader_option_header_more_icon"
-            tools:ignore="RtlSymmetry"/>
+            <ImageButton
+                android:id="@+id/ibtn_reader_download"
+                android:layout_width="44dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/ibtn_reader_more"
+                android:background="@null"
+                android:contentDescription="@string/module_name"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reader_option_header_download_icon"
+                app:onPressChangeAlpha="true"/>
+
+            <ImageButton
+                android:id="@+id/ibtn_reader_more"
+                android:layout_width="44dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                android:contentDescription="@string/module_name"
+                android:paddingBottom="10dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="16dp"
+                android:paddingTop="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/reader_option_header_more_icon"
+                tools:ignore="RtlSymmetry"/>
+        </RelativeLayout>
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_reader_guide_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="75dp"
+        android:background="@drawable/reader_guide_more_bg"
+        android:contentDescription="@string/module_name"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="@string/guide_more"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:ignore="RtlSymmetry"/>
+
+    <View
+        android:id="@+id/view_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </RelativeLayout>
