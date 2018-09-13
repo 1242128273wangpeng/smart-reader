@@ -7,6 +7,8 @@ import android.text.TextUtils
 import android.util.Log
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.dao.BookmarkDao
+import com.ding.basic.dao.BookmarkDao_Impl
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
@@ -22,6 +24,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
 import io.reactivex.FlowableOnSubscribe
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -38,6 +41,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -609,7 +613,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                         if (localBook != null) {
-
                                             localBook.status = book!!.status   //更新书籍状态
                                             localBook.book_chapter_id = book!!.book_chapter_id
                                             localBook.name = book.name
@@ -622,7 +625,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             localBook.img_url = book.img_url
                                             localBook.label = book.label
                                             localBook.sub_genre = book.sub_genre
-                                            localBook.chapters_update_index = book.chapters_update_index
                                             localBook.genre = book.genre
                                             localBook.score = book.score
 
