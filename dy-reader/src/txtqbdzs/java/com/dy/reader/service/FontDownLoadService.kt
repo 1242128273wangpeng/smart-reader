@@ -22,37 +22,21 @@ import java.io.InputStream
  */
 class FontDownLoadService : IntentService("font_download_service") {
 
-    var onProgressChange: ((progress: Int, fontPosition: Int) -> Unit)? = null
-
-    var onDownloadError: ((t: Throwable) -> Unit)? = null
-
-    private var curDownloadFile: File? = null
-
-    var fontProgressMap: HashMap<String, Int>? = null
-        get() {
-            if (field == null) {
-                field = HashMap()
-            }
-            return field
-        }
-
     fun start(context: Context, fontName: String, position: Int) {
-        if (fontProgressMap?.containsKey(fontName) == true) return
-
         val intent = Intent(context, FontDownLoadService::class.java)
         intent.putExtra(FONT_NAME_KEY, fontName)
         intent.putExtra(FONT_POSITION_KEY, position)
         context.startService(intent)
-
-        EventBus.getDefault().postSticky(Event(0, position, STATUS_DOWNLOADING))
-        fontProgressMap?.put(fontName, 0)
     }
 
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) return
         val fontName = intent.getStringExtra(FONT_NAME_KEY)
-        if (fontName?.isEmpty() == true) return
         val fontPosition = intent.getIntExtra(FONT_POSITION_KEY, 0)
+
+        if (fontName?.isEmpty() == true) return
+
+        EventBus.getDefault().postSticky(Event(fontName, 0, fontPosition, STATUS_DOWNLOADING))
 
         InternetRequestRepository.loadInternetRequestRepository(this)
                 .downloadFont(fontName)
@@ -76,53 +60,59 @@ class FontDownLoadService : IntentService("font_download_service") {
             // 储存下载文件的目录
             val savePath = getFontPath(fontName)
             val total = it.contentLength()
-            curDownloadFile = File(savePath)
+            val file = File("$savePath.tmp") //临时命名
             loge("create file: $savePath")
 
-            curDownloadFile?.parentFile?.let {
+            file.parentFile?.let {
                 if (!it.exists()) {
                     it.mkdirs()
                 }
             }
 
-            if (curDownloadFile?.exists() == false) {
-                curDownloadFile?.createNewFile()
+            if (!file.exists()) {
+                file.createNewFile()
             } else {
-                curDownloadFile?.delete()
+                file.delete()
             }
 
-            fos = FileOutputStream(curDownloadFile)
+            fos = FileOutputStream(file)
             var sum = 0L
             while (inputStream.read(buf).apply { len = this } > 0) {
                 fos.write(buf, 0, len)
                 sum += len
                 progress = (sum * 1.0f / total * 100).toInt()
                 onProgress(progress, fontName, fontPosition)
+                if (sum == total) {
+                    onDownloadFinish(progress, fontName, fontPosition)
+                }
             }
+
+            file.renameTo(File(savePath)) //改回原来的名字
+
             fos.flush()
         } catch (e: Exception) {
             e.printStackTrace()
             onDownloadError(fontName, fontPosition, e)
         } finally {
-            inputStream?.close()
-            fos?.close()
+            try {
+                inputStream?.close()
+                fos?.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     private fun onProgress(progress: Int, fontName: String, fontPosition: Int) {
-        fontProgressMap?.put(fontName, progress)
-        EventBus.getDefault().postSticky(Event(progress, fontPosition, STATUS_DOWNLOADING))
+        EventBus.getDefault().postSticky(Event(fontName, progress, fontPosition, STATUS_DOWNLOADING))
+    }
 
-        if (progress >= 100) {
-            fontProgressMap?.remove(fontName)
-            EventBus.getDefault().postSticky(Event(progress, fontPosition, STATUS_FINISH))
-        }
+    private fun onDownloadFinish(progress: Int, fontName: String, fontPosition: Int) {
+        EventBus.getDefault().postSticky(Event(fontName, progress, fontPosition, STATUS_FINISH))
     }
 
     private fun onDownloadError(fontName: String, position: Int, t: Throwable) {
-        curDownloadFile?.delete()
-        fontProgressMap?.remove(fontName)
-        EventBus.getDefault().postSticky(Event(-1, position, STATUS_ERROR))
+        EventBus.getDefault().postSticky(Event(fontName, -1, position, STATUS_ERROR))
     }
 
     companion object {
@@ -149,12 +139,8 @@ class FontDownLoadService : IntentService("font_download_service") {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        fontProgressMap = null
-    }
-
     data class Event(
+            val fontName: String,
             val progress: Int,
             val fontPosition: Int,
             val status: Int = STATUS_DOWNLOADING

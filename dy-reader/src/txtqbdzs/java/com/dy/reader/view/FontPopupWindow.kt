@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SimpleItemAnimator
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -44,6 +45,14 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
     private val fontDownLoadService = FontDownLoadService()
     private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
+    var fontProgressMap: HashMap<String, Int>? = null
+        get() {
+            if (field == null) {
+                field = HashMap()
+            }
+            return field
+        }
+
     init {
 
         fontList.add(FontData(FontDownLoadService.FONT_DEFAULT, null, 100))
@@ -52,6 +61,11 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
         fontList.add(FontData(FontDownLoadService.FONT_SIYUAN_HEI, R.drawable.font_5))
 
         contentView.recyclerView.adapter = fontAdapter
+        val itemAnimator = contentView.recyclerView.itemAnimator
+        if (itemAnimator is SimpleItemAnimator) {
+            itemAnimator.supportsChangeAnimations = false //解决 notifyItemChanged 闪烁
+        }
+
         fontAdapter.onItemClickListener = { data, position ->
             if (data.progress == 100) {
                 if (data.name != FontDownLoadService.FONT_DEFAULT
@@ -68,7 +82,9 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                 }
                 fontAdapter.notifyDataSetChanged()
             } else if (data.progress == -1) {
-                fontDownLoadService.start(context, data.name, position)
+                if (fontProgressMap?.containsKey(data.name) == false) {
+                    fontDownLoadService.start(context, data.name, position)
+                }
             }
         }
     }
@@ -86,8 +102,8 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
             val name = fontData.name
             if (FontDownLoadService.isFontExists(name)) {
                 fontData.progress = 100
-            } else if (fontDownLoadService.fontProgressMap?.containsKey(name) == true) {
-                fontData.progress = fontDownLoadService.fontProgressMap?.get(name) ?: -1
+            } else if (fontProgressMap?.containsKey(name) == true) {
+                fontData.progress = fontProgressMap?.get(name) ?: -1
             } else {
                 fontData.progress = -1
             }
@@ -95,52 +111,46 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
 
         fontAdapter.notifyDataSetChanged()
 
-        fontDownLoadService.onProgressChange = { progress, fontPosition ->
-
-        }
-
-        fontDownLoadService.onDownloadError = {
-
-        }
-
         showAtLocation(parent, Gravity.BOTTOM)
     }
 
     override fun dismiss() {
         super.dismiss()
         EventBus.getDefault().unregister(this)
-        fontDownLoadService.onProgressChange = null
-        fontDownLoadService.onDownloadError = null
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onEvent(event: FontDownLoadService.Event) {
+        if (fontList.isEmpty() || event.fontPosition >= fontList.size) return
+
         when (event.status) {
             FontDownLoadService.STATUS_DOWNLOADING -> {
-                if (fontList.isNotEmpty()) {
-                    val font = fontList[event.fontPosition]
-                    loge("popup progress: ${event.progress} + position:${event.fontPosition}")
-                    font.progress = event.progress
-                    fontAdapter.notifyItemChanged(event.fontPosition)
-                }
+                fontProgressMap?.put(event.fontName, event.progress)
+
+                val font = fontList[event.fontPosition]
+                if (event.progress == 100) return
+                loge("popup progress: ${event.progress} + position:${event.fontPosition}")
+                font.progress = event.progress
+                fontAdapter.notifyItemChanged(event.fontPosition)
             }
             FontDownLoadService.STATUS_FINISH -> {
-                if (fontList.isNotEmpty()) {
-                    val font = fontList[event.fontPosition]
-                    loge("popup progress: ${event.progress}")
-                    font.progress = 100
-                    fontAdapter.notifyItemChanged(event.fontPosition)
-                }
+                fontProgressMap?.remove(event.fontName)
+
+                val font = fontList[event.fontPosition]
+                loge("popup progress: ${event.progress}")
+                font.progress = 100
+                fontAdapter.notifyItemChanged(event.fontPosition)
             }
             FontDownLoadService.STATUS_ERROR -> {
-                if (fontList.isNotEmpty()) {
-                    val font = fontList[event.fontPosition]
-                    loge("popup progress: ${event.progress}")
-                    font.progress = -1
-                    fontAdapter.notifyItemChanged(event.fontPosition)
-                }
+                fontProgressMap?.remove(event.fontName)
+
+                val font = fontList[event.fontPosition]
+                loge("popup progress: ${event.progress}")
+                font.progress = -1
+                fontAdapter.notifyItemChanged(event.fontPosition)
                 context.showToastMessage("下载字体失败")
             }
         }
     }
+
 }
