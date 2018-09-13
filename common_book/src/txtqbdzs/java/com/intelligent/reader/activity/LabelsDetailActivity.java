@@ -760,7 +760,6 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
         book.setChapter_count(Integer.valueOf(chapter_count));
         book.setLast_check_update_time(update_time);
         book.setLast_update_success_time(System.currentTimeMillis());
-        book.setChapters_update_index(dex);
 
 
 
