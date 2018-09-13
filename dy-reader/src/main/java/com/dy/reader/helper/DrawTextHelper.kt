@@ -403,4 +403,8 @@ object DrawTextHelper {
         }
     }
 
+    fun setTypeFace(textTypeface: Typeface){
+//        textPaint.color = Color.GREEN
+        textPaint.typeface = textTypeface
+    }
 }

@@ -3,6 +3,7 @@ package com.dy.reader.view
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
@@ -13,10 +14,12 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.adapter.FontAdapter
+import com.dy.reader.helper.DrawTextHelper
 import com.dy.reader.model.FontData
 import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.util.TypefaceUtil
+import com.umeng.commonsdk.statistics.common.DataHelper
 import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.uiThread
@@ -57,6 +60,10 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                 } else {
                     val typeface = TypefaceUtil.getTypefaceCode(data.name)
                     ReaderSettings.instance.fontTypeface = typeface
+
+                    TypefaceUtil.loadTypeface(typeface)?.let {
+                        DrawTextHelper.setTypeFace(it)
+                    }
                     sharedPreUtil.putString(SharedPreUtil.READER_TYPE_FACE, data.name)
                 }
                 fontAdapter.notifyDataSetChanged()
@@ -112,17 +119,9 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
             FontDownLoadService.STATUS_DOWNLOADING -> {
                 if (fontList.isNotEmpty()) {
                     val font = fontList[event.fontPosition]
-                    loge("popup progress: ${event.progress}")
-                    val newFont = FontData("")
-                    newFont.progress = event.progress
-                    newFont.iconRes = font.iconRes
-                    newFont.name = font.name
-//                    font.progress = event.progress
-                    fontList.removeAt(event.fontPosition)
-                    fontList.add(event.fontPosition, newFont)
-                    uiThread {
-                        fontAdapter.notifyDataSetChanged()
-                    }
+                    loge("popup progress: ${event.progress} + position:${event.fontPosition}")
+                    font.progress = event.progress
+                    fontAdapter.notifyItemChanged(event.fontPosition)
                 }
             }
             FontDownLoadService.STATUS_FINISH -> {
@@ -131,9 +130,6 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                     loge("popup progress: ${event.progress}")
                     font.progress = 100
                     fontAdapter.notifyItemChanged(event.fontPosition)
-                    uiThread {
-                        fontAdapter.notifyDataSetChanged()
-                    }
                 }
             }
             FontDownLoadService.STATUS_ERROR -> {
@@ -142,9 +138,6 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                     loge("popup progress: ${event.progress}")
                     font.progress = -1
                     fontAdapter.notifyItemChanged(event.fontPosition)
-                    uiThread {
-                        fontAdapter.notifyDataSetChanged()
-                    }
                 }
                 context.showToastMessage("下载字体失败")
             }

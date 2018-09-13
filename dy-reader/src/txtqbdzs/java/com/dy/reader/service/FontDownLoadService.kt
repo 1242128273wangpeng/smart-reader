@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Environment
 import com.ding.basic.repository.InternetRequestRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.utils.loge
 import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
@@ -56,7 +56,7 @@ class FontDownLoadService : IntentService("font_download_service") {
 
         InternetRequestRepository.loadInternetRequestRepository(this)
                 .downloadFont(fontName)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribeBy(onNext = {
                     writeToFile(it, fontName, fontPosition)
                 }, onError = {
@@ -95,13 +95,13 @@ class FontDownLoadService : IntentService("font_download_service") {
             var sum = 0L
             inputStream.read(buf) != 1
 
-            while ({ len = inputStream.read(buf);len }() != -1) {
+            while (inputStream.read(buf).apply { len = this } > 0) {
                 fos.write(buf, 0, len)
                 sum += len
-                progress = (sum / total.toFloat() * 100).toInt()
+                progress = (sum * 1.0f / total * 100).toInt()
                 onProgress(progress, fontName, fontPosition)
             }
-
+            onProgress(100, fontName, fontPosition)
             fos.flush()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -112,16 +112,11 @@ class FontDownLoadService : IntentService("font_download_service") {
         }
     }
 
-    private var lastUpdateTime = 0L
-
     private fun onProgress(progress: Int, fontName: String, fontPosition: Int) {
         fontProgressMap?.put(fontName, progress)
-        val curTime = System.currentTimeMillis()
-        if (curTime - lastUpdateTime > 500) {
-            EventBus.getDefault().postSticky(Event(progress, fontPosition, STATUS_DOWNLOADING))
-            lastUpdateTime = curTime
-        }
-        if (progress >= 99) {
+        EventBus.getDefault().postSticky(Event(progress, fontPosition, STATUS_DOWNLOADING))
+
+        if (progress >= 100) {
             fontProgressMap?.remove(fontName)
             EventBus.getDefault().postSticky(Event(progress, fontPosition, STATUS_FINISH))
         }
