@@ -83,7 +83,7 @@ object BookRouter {
 
             val data = HashMap<String, String>()
 
-            data["BOOKID"] = book.book_id
+            data["bookid"] = book.book_id
 
             when (type) {
                 NAVIGATE_TYPE_BOOKSHELF -> data["source"] = "SHELF"
