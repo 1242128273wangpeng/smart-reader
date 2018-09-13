@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "0287191dd41ec5d18e06a8855d93be34",
+    "version": 2,
+    "identityHash": "0c95ba5b8b377079050183217c74793d",
     "entities": [
       {
         "tableName": "chapters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`book_id` TEXT NOT NULL, `book_source_id` TEXT NOT NULL, `book_chapter_id` TEXT NOT NULL, `chapter_id` TEXT NOT NULL, `serial_number` INTEGER NOT NULL, `name` TEXT, `url` TEXT, `update_time` INTEGER NOT NULL, `word_count` INTEGER NOT NULL, `vip` INTEGER NOT NULL, `price` REAL NOT NULL, `sequence` INTEGER NOT NULL, `host` TEXT, `chapter_status` TEXT, `charge` INTEGER NOT NULL, `purchase` INTEGER NOT NULL, `gold` INTEGER NOT NULL, `auto_flag` TEXT, `ex_content` INTEGER NOT NULL, PRIMARY KEY(`chapter_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`book_id` TEXT NOT NULL, `book_source_id` TEXT NOT NULL, `book_chapter_id` TEXT NOT NULL, `chapter_id` TEXT NOT NULL, `serial_number` INTEGER NOT NULL, `name` TEXT, `url` TEXT, `update_time` INTEGER NOT NULL, `word_count` INTEGER NOT NULL, `vip` INTEGER NOT NULL, `price` REAL NOT NULL, `sequence` INTEGER NOT NULL, `host` TEXT, `chapter_status` TEXT, `charge` INTEGER NOT NULL, `purchase` INTEGER NOT NULL, `gold` INTEGER NOT NULL, `auto_flag` TEXT, `ex_content` INTEGER NOT NULL, `fix_state` INTEGER NOT NULL, PRIMARY KEY(`chapter_id`))",
         "fields": [
           {
             "fieldPath": "book_id",
@@ -121,6 +121,12 @@
             "columnName": "ex_content",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "fix_state",
+            "columnName": "fix_state",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -144,7 +150,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0287191dd41ec5d18e06a8855d93be34\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0c95ba5b8b377079050183217c74793d\")"
     ]
   }
 }

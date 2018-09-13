@@ -279,19 +279,21 @@ public class CheckNovelUpdateService extends Service {
         hasUpdatedCount = 0;
         updateTotalCount = 0;
 
-        ArrayList<Book> checkUpdateBooks = bookUpdateTaskData.books;
+        ArrayList<Book> books = bookUpdateTaskData.books;
+        ArrayList<Book> checkUpdateBooks = new ArrayList<Book>();
+
+        for (Book book : books) {
+            if (book != null && !TextUtils.isEmpty(book.getBook_id()) && !book.waitingCataFix()) {
+                book.setLast_check_update_time(System.currentTimeMillis());
+                checkUpdateBooks.add(book);
+            }
+        }
 
         final BookUpdateResult updateResult = new BookUpdateResult();
 
         if (checkUpdateBooks == null || checkUpdateBooks.size() == 0) {
             checkOnSuccess(bookUpdateTaskData, updateResult);
             return;
-        }
-
-        for (Book book : checkUpdateBooks) {
-            if (book != null && !TextUtils.isEmpty(book.getBook_id())) {
-                book.setLast_check_update_time(System.currentTimeMillis());
-            }
         }
 
         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(

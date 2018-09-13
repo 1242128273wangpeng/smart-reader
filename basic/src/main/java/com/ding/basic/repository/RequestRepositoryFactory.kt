@@ -233,6 +233,12 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.insertOrUpdateChapter(resList)
                             book.chapter_count = chapterDaoHelp.getCount()
+                            if (result.data!!.listVersion!! > book.list_version) {
+                                book.list_version = result.data!!.listVersion!!
+                            }
+                            if (result.data!!.contentVersion!! > book.c_version) {
+                                book.c_version = result.data!!.contentVersion!!
+                            }
 
                             val lastChapter = chapterDaoHelp.queryLastChapter()
 
@@ -324,6 +330,12 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 book.chapter_count = result.data?.chapterCount!!
                                 book.book_source_id = result.data!!.book_source_id
                                 book.book_chapter_id = result.data!!.book_chapter_id
+                                if (result.data!!.listVersion!! > book.list_version) {
+                                    book.list_version = result.data!!.listVersion!!
+                                }
+                                if (result.data!!.contentVersion!! > book.c_version) {
+                                    book.c_version = result.data!!.contentVersion!!
+                                }
 
                                 book.last_chapter = lastChapter
 
@@ -1659,32 +1671,33 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     @Synchronized
     private fun handleFixInformation(fixBooks: List<BookFix>?, fixContents: List<FixContent>?) {
         if (fixBooks != null && fixBooks.isNotEmpty()) {
-            Flowable.fromIterable(fixBooks)
-                    .subscribeOn(Schedulers.io())
-                    .filter({ !TextUtils.isEmpty(it.book_id) })
-                    .subscribe({
-                        if (it != null && !TextUtils.isEmpty(it.book_id)) {
-                            val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
-                            if (book != null && !TextUtils.isEmpty(book.book_id)) {
-                                if (book.list_version == -1 || book.c_version == -1) {
-                                    book.c_version = it.c_version
-                                    book.list_version = it.list_version
+            fixBooks.forEach {
+                if (it != null && !TextUtils.isEmpty(it.book_id)) {
+                    val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
+                    if (book != null && !TextUtils.isEmpty(book.book_id)) {
+                        if (book.list_version == -1 || book.c_version == -1) {
+                            // 这里返回的version是后端按照书籍加入书架时间查找到的最新version
+                            // 为什么要求按照加入书架时间返回version的解释:
+                            // 考虑满足条件的以下用户:
+                            // 1)用户在9月1号加入书架拉取目录,没有执行check接口但关闭了应用
+                            // 2)后端在9月2号进行了书籍的目录修复
+                            // 3)用户在9月3日打开了应用执行第一次check接口
+                            // 后端直接返回最新版本会导致用户永远无法接受9月2号的书籍修改
+                            book.c_version = it.c_version
+                            book.list_version = it.list_version
 
-                                    LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
-                                    Logger.v("更新书籍ListVersion和ContentVersion")
-                                } else {
-                                    val bookFix = BookFix()
-                                    bookFix.book_id = it.book_id
-                                    bookFix.c_version = it.c_version
-                                    bookFix.list_version = it.list_version
-                                    bookFix.fix_type = 2
+                            Logger.v("更新书籍ListVersion和ContentVersion")
+                        } else {
+                            // 目录修复后c_version应保持与后端一致
+                            book.c_version = it.c_version
+                            book.list_version_fix = it.list_version
 
-                                    LocalRequestRepository.loadLocalRequestRepository(context).insertBookFix(bookFix)
-                                    Logger.v("更新BookFix表")
-                                }
-                            }
+                            Logger.v("记录ListVersion和ContentVersion, 等待用户触发目录修复")
                         }
-                    })
+                        LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+                    }
+                }
+            }
         }
 
         if (fixContents != null && !fixContents.isEmpty()) {
@@ -1692,101 +1705,83 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     .subscribeOn(Schedulers.io())
                     .filter { it.chapters != null && !TextUtils.isEmpty(it.book_id) }
                     .subscribe({
-                        if (it.chapters != null && it.chapters!!.isNotEmpty()) {
+                        val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
+                        if (it.chapters != null && it.chapters!!.isNotEmpty() && book != null) {
 
                             val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, it.book_id)
 
-                            val contextFixState = ContextFixState()
-
-                            var isNoChapterID = false
+                            var localNoChapterID = false
 
                             for (chapter in it.chapters!!) {
                                 if (TextUtils.isEmpty(chapter.chapter_id)) {
-                                    contextFixState.addMsgState(false)
                                     continue
                                 }
 
-                                val localChapter = chapterDaoHelp.getChapterById(chapter.chapter_id)
+                                val fixChapter = chapterDaoHelp.getChapterById(chapter.chapter_id)
 
-                                if (localChapter == null) {
-                                    contextFixState.addMsgState(false)
-                                    isNoChapterID = true
+                                if (fixChapter == null) {
+                                    localNoChapterID = true
                                     continue
                                 }
 
-                                localChapter.book_id = it.book_id
-                                localChapter.book_source_id = it.book_source_id
-                                localChapter.book_chapter_id = it.book_chapter_id
-                                localChapter.url = chapter.url
-                                localChapter.name = chapter.name
-                                localChapter.serial_number = chapter.serial_number
-                                localChapter.word_count = chapter.word_count
-                                localChapter.update_time = chapter.update_time
-                                localChapter.vip = chapter.vip
-                                localChapter.price = chapter.price
+                                fixChapter.book_id = it.book_id
+                                fixChapter.book_source_id = it.book_source_id
+                                fixChapter.book_chapter_id = it.book_chapter_id
+                                fixChapter.url = chapter.url
+                                fixChapter.name = chapter.name
+                                fixChapter.serial_number = chapter.serial_number
+                                fixChapter.word_count = chapter.word_count
+                                fixChapter.update_time = chapter.update_time
+                                fixChapter.vip = chapter.vip
+                                fixChapter.price = chapter.price
 
-                                val isUpdateChapterByIdSucess = chapterDaoHelp.updateChapter(localChapter)
+                                val content = ChapterCacheUtil.checkChapterCacheExist(fixChapter)
+                                if (content != null && !content.isEmpty() && content != "null") {
+                                    // 删除本地缓存
+                                    DataCache.deleteChapterCache(fixChapter)
+                                    fixChapter.setWaitFix(true)
 
-                                contextFixState.addMsgState(isUpdateChapterByIdSucess)
-
-                                //2.修复章节缓存内容
-                                fixChapterContent(localChapter, contextFixState)
-                            }
-
-                            if (contextFixState.fixState) {
-
-                                val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
-
-                                if (book != null && !TextUtils.isEmpty(book.book_id)) {
-                                    book.c_version = it.c_version
-                                    book.list_version = it.list_version
-
-                                    LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
-
-                                    if (contextFixState.saveFixState) {
-                                        val bookFix = BookFix()
-                                        bookFix.book_id = book.book_id
-                                        bookFix.fix_type = 1  //标识已修复 等待toast提示用户
-                                        bookFix.c_version = it.c_version
-                                        bookFix.list_version = it.list_version
-
-                                        LocalRequestRepository.loadLocalRequestRepository(context).insertBookFix(bookFix)
+                                    if (fixChapter.sequence == book.sequence) {
+                                        book.offset = 0
                                     }
                                 }
+
+                                chapterDaoHelp.updateChapter(fixChapter)
                             }
 
-                            if (isNoChapterID) {
-                                val bookFix = BookFix()
-                                bookFix.book_id = it.book_id
-                                bookFix.c_version = it.c_version
-                                bookFix.list_version = it.list_version
-                                bookFix.fix_type = 2 //标识未修复
-                                LocalRequestRepository.loadLocalRequestRepository(context).insertBookFix(bookFix)
+                            book.c_version = it.c_version
+                            book.list_version = it.list_version
+                            if (localNoChapterID) {
+                                // 本地没有章节id的书籍,强制执行目录修复
+                                book.force_fix = 1
+                                book.list_version_fix = it.list_version
                             }
+                            LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+
                         }
                     })
         }
     }
 
-    private fun fixChapterContent(chapter: Chapter?, fixState: ContextFixState) {
-        if (chapter != null && DataCache.isNewCacheExists(chapter)) {
-
-            try {
-                chapter.content = RequestRepositoryFactory.loadRequestRepositoryFactory(context).requestChapterContentSync(chapter)
-
-                var content = chapter.content
-                if (TextUtils.isEmpty(content)) {
-                    content = "null"
-                }
-
-                fixState.addContState(DataCache.fixChapter(content, chapter))
-            } catch (e: Exception) {
-                fixState.addContState(false)
-                e.printStackTrace()
-            }
-
-        }
-    }
+//    private fun fixChapterContent(chapter: Chapter?, fixState: ContextFixState) {
+//        if (chapter != null && DataCache.isNewCacheExists(chapter)) {
+//
+//            try {
+//                chapter.content = RequestRepositoryFactory.loadRequestRepositoryFactory(context).requestChapterContentSync(chapter)
+//
+//                var content = chapter.content
+//                if (TextUtils.isEmpty(content)) {
+//                    content = "null"
+//                }
+//
+//                fixState.addContState(DataCache.fixChapter(content, chapter))
+//            } catch (e: Exception) {
+//                fixState.addContState(false)
+//                e.printStackTrace()
+//            }
+//
+//        }
+//    }
 
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
                               , type: Int, startChapterID: String

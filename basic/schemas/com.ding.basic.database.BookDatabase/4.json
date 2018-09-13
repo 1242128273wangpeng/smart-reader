@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "912d1a59d11d8a940286104728dfe656",
+    "version": 4,
+    "identityHash": "5c48a651b7975724ef0034d370f6faf6",
     "entities": [
       {
         "tableName": "book",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `book_id` TEXT NOT NULL, `book_chapter_id` TEXT NOT NULL, `book_source_id` TEXT NOT NULL, `name` TEXT, `author` TEXT, `desc` TEXT, `label` TEXT, `genre` TEXT, `sub_genre` TEXT, `img_url` TEXT, `status` TEXT, `host` TEXT, `book_type` TEXT, `word_count` TEXT, `list_version` INTEGER NOT NULL, `c_version` INTEGER NOT NULL, `score` REAL NOT NULL, `uv` INTEGER NOT NULL, `readed` INTEGER NOT NULL, `sequence` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `last_read_time` INTEGER NOT NULL, `insert_time` INTEGER NOT NULL, `update_status` INTEGER NOT NULL, `chapter_count` INTEGER NOT NULL, `last_check_update_time` INTEGER NOT NULL, `last_updateSucessTime` INTEGER NOT NULL, `update_date_fusion` INTEGER NOT NULL, `chapters_update_index` INTEGER NOT NULL, `chapter_book_id` TEXT, `chapter_book_source_id` TEXT, `chapter_book_chapter_id` TEXT, `chapter_chapter_id` TEXT, `chapter_serial_number` INTEGER, `chapter_name` TEXT, `chapter_url` TEXT, `chapter_update_time` INTEGER, `chapter_word_count` INTEGER, `chapter_vip` INTEGER, `chapter_price` REAL, `chapter_sequence` INTEGER, `chapter_host` TEXT, `chapter_chapter_status` TEXT, `chapter_charge` INTEGER, `chapter_purchase` INTEGER, `chapter_gold` INTEGER, `chapter_auto_flag` TEXT, `chapter_ex_content` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `book_id` TEXT NOT NULL, `book_chapter_id` TEXT NOT NULL, `book_source_id` TEXT NOT NULL, `name` TEXT, `author` TEXT, `desc` TEXT, `label` TEXT, `genre` TEXT, `sub_genre` TEXT, `img_url` TEXT, `status` TEXT, `host` TEXT, `book_type` TEXT, `word_count` TEXT, `list_version` INTEGER NOT NULL, `c_version` INTEGER NOT NULL, `score` REAL NOT NULL, `uv` INTEGER NOT NULL, `readed` INTEGER NOT NULL, `sequence` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `last_read_time` INTEGER NOT NULL, `insert_time` INTEGER NOT NULL, `update_status` INTEGER NOT NULL, `chapter_count` INTEGER NOT NULL, `last_check_update_time` INTEGER NOT NULL, `last_updateSucessTime` INTEGER NOT NULL, `update_date_fusion` INTEGER NOT NULL, `chapters_update_index` INTEGER NOT NULL, `list_version_fix` INTEGER NOT NULL, `force_fix` INTEGER NOT NULL, `chapter_book_id` TEXT, `chapter_book_source_id` TEXT, `chapter_book_chapter_id` TEXT, `chapter_chapter_id` TEXT, `chapter_serial_number` INTEGER, `chapter_name` TEXT, `chapter_url` TEXT, `chapter_update_time` INTEGER, `chapter_word_count` INTEGER, `chapter_vip` INTEGER, `chapter_price` REAL, `chapter_sequence` INTEGER, `chapter_host` TEXT, `chapter_chapter_status` TEXT, `chapter_charge` INTEGER, `chapter_purchase` INTEGER, `chapter_gold` INTEGER, `chapter_auto_flag` TEXT, `chapter_ex_content` INTEGER, `chapter_fix_state` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -189,6 +189,18 @@
             "notNull": true
           },
           {
+            "fieldPath": "list_version_fix",
+            "columnName": "list_version_fix",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "force_fix",
+            "columnName": "force_fix",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "last_chapter.book_id",
             "columnName": "chapter_book_id",
             "affinity": "TEXT",
@@ -299,6 +311,12 @@
           {
             "fieldPath": "last_chapter.exContent",
             "columnName": "chapter_ex_content",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "last_chapter.fix_state",
+            "columnName": "chapter_fix_state",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -691,7 +709,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"912d1a59d11d8a940286104728dfe656\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5c48a651b7975724ef0034d370f6faf6\")"
     ]
   }
 }
