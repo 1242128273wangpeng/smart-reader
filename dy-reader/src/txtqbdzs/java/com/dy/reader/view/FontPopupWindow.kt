@@ -13,6 +13,7 @@ import android.view.WindowManager
 import com.dingyue.contract.BasePopup
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.adapter.FontAdapter
 import com.dy.reader.helper.DrawTextHelper
@@ -22,6 +23,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.util.TypefaceUtil
 import com.umeng.commonsdk.statistics.common.DataHelper
 import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.uiThread
 import org.greenrobot.eventbus.EventBus
@@ -75,18 +77,33 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                     val typeface = TypefaceUtil.getTypefaceCode(data.name)
                     ReaderSettings.instance.fontTypeface = typeface
 
+
                     TypefaceUtil.loadTypeface(typeface)?.let {
                         DrawTextHelper.setTypeFace(it)
                     }
                     sharedPreUtil.putString(SharedPreUtil.READER_TYPE_FACE, data.name)
+
+                    uploadUseFontLog(typeface)
                 }
                 fontAdapter.notifyDataSetChanged()
             } else if (data.progress == -1) {
                 if (fontProgressMap?.containsKey(data.name) == false) {
                     fontDownLoadService.start(context, data.name, position)
+                    uploadDownloadFontLog(data.name)
                 }
             }
         }
+    }
+
+    private fun uploadUseFontLog(typeface: Int) {
+        DyStatService.onEvent(EventPoint.READPAGESET_FONTSETTING,
+                mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
+    }
+
+    private fun uploadDownloadFontLog(name: String) {
+        val typeface = TypefaceUtil.getTypefaceCode(name)
+        DyStatService.onEvent(EventPoint.READPAGESET_FONTDOWNLOAD,
+                mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
     }
 
     fun show(parent: View) {
