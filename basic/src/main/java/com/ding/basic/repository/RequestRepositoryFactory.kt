@@ -624,7 +624,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                         if (localBook != null) {
-
                                             localBook.status = book!!.status   //更新书籍状态
                                             localBook.book_chapter_id = book!!.book_chapter_id
                                             localBook.name = book.name
@@ -637,7 +636,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             localBook.img_url = book.img_url
                                             localBook.label = book.label
                                             localBook.sub_genre = book.sub_genre
-                                            localBook.chapters_update_index = book.chapters_update_index
                                             localBook.genre = book.genre
                                             localBook.score = book.score
 
