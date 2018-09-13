@@ -6,7 +6,7 @@ dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'net.iyouqu.android.common:iyouqu_logencap:1.1.0'
-    compile 'com.amap:AMap_Location:2.4.1'
+    compile 'com.amap.api:location:4.2.0'
 
     compile 'info.monitorenter:cpdetector:1.0.10'
     compile "com.android.support:support-v4:$support_version"
@@ -39,7 +39,6 @@ dependencies {
 
     //华为Push通道
     compile 'com.umeng.sdk:push-huawei:1.0.0'
-    compile 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
 
     //美团打包
     compile 'com.meituan.android.walle:library:1.1.6'
