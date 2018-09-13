@@ -49,6 +49,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
@@ -125,6 +126,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
                     StartLogClickUtil.POPUPMESSAGE)
         }
+
+        if (UserManagerV4.isUserLogin) run {
+            UserManagerV4.refreshToken(
+                    uploadReadInfo()
+            )
+        }
     }
 
     private val pushSettingDialog: PushSettingDialog by lazy {
@@ -188,11 +195,26 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         } catch (exception: Resources.NotFoundException) {
             exception.printStackTrace()
         }
+        if (UserManager.isUserLogin) {
+            uploadReadInfo()
+        }
         fixInputMethodManagerLeak(applicationContext)
         MediaLifecycle.onDestroy()
     }
 
 
+    private fun uploadReadInfo(): (() -> Unit)? {
+        UserManagerV4.upUserReadInfo { success ->
+            val data = HashMap<String, String>()
+            data.put("type", NetWorkUtils.NETTYPE.toString())
+            data.put("reason", "")
+            data.put("status", success.toString())
+            StartLogClickUtil.upLoadEventLog(applicationContext,
+                    StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.USERINFO, data)
+
+        }
+        return null
+    }
     override fun onBackPressed() {
         when {
             view_pager?.currentItem != 0 -> changeHomePagerIndex(0)

@@ -7,6 +7,8 @@ import android.text.TextUtils
 import android.util.Log
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.dao.BookmarkDao
+import com.ding.basic.dao.BookmarkDao_Impl
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
@@ -22,6 +24,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
 import io.reactivex.FlowableOnSubscribe
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -38,6 +41,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -164,15 +168,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 requestSubscriber.onNext(result.data)
 
                                 synchronized(RequestRepositoryFactory::class.java) {
-                                    val book = result.data
                                     val localBook = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
 
-                                    if (book != null && localBook != null) {
-                                        book.last_chapter = localBook.last_chapter
-                                        LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
-
-                                        if (localBook.book_chapter_id == "") {
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(book.book_chapter_id)
+                                    if (localBook != null && !TextUtils.isEmpty(localBook.book_id)) {
+                                        if (TextUtils.isEmpty(localBook.book_chapter_id) && !TextUtils.isEmpty(result.data?.book_chapter_id)) {
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, localBook.book_id).updateBookChapterId(result.data?.book_chapter_id!!)
                                         }
                                     }
                                 }
@@ -248,7 +248,16 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
                         }
                     } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
-                        requestSubscriber.onNext(it.data?.chapters)
+                        val resList = noRepeatList(it.data!!.chapters!!)
+
+                        for (chapter in resList) {
+                            chapter.host = it.data!!.host
+                            chapter.book_id = it.data!!.book_id
+                            chapter.book_source_id = it.data!!.book_source_id
+                            chapter.book_chapter_id = it.data!!.book_chapter_id
+                        }
+
+                        requestSubscriber.onNext(resList)
                     } else {
                         requestSubscriber.onError(Throwable("获取章节目录异常！"))
                     }
@@ -298,7 +307,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             val lastChapter = chapterDaoHelp.queryLastChapter()
 
                             if (lastChapter != null) {
-                                book.host = result.data!!.host
+                                book.host = result.data?.host
                                 book.book_id = result.data!!.book_id
                                 book.chapter_count = result.data?.chapterCount!!
                                 book.book_source_id = result.data!!.book_source_id
@@ -613,7 +622,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                         if (localBook != null) {
-
                                             localBook.status = book!!.status   //更新书籍状态
                                             localBook.book_chapter_id = book!!.book_chapter_id
                                             localBook.name = book.name
@@ -626,7 +634,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             localBook.img_url = book.img_url
                                             localBook.label = book.label
                                             localBook.sub_genre = book.sub_genre
-                                            localBook.chapters_update_index = book.chapters_update_index
                                             localBook.genre = book.genre
                                             localBook.score = book.score
 
@@ -672,44 +679,48 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
 
                             result.data?.coverList?.forEach {
-                                if (loadRepository.checkBookSubscribe(it.book_id) != null) {
-                                    val book = loadRepository.loadBook(it.book_id)
-                                    if (book != null) {
-                                        if (!TextUtils.isEmpty(it.book_chapter_id)) {
-                                            book.book_chapter_id = it.book_chapter_id
+                                val book = loadRepository.checkBookSubscribe(it.book_id)
+                                if (book != null) {
+                                    if (!TextUtils.isEmpty(it.book_chapter_id)) {
+                                        book.book_chapter_id = it.book_chapter_id
 
-                                            book.host = it.host
+                                        book.host = it.host
 
-                                            book.book_type = it.book_type
-
-                                            // 保存在chapter表中
-                                            if (book.fromQingoo()) {
-                                                ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
-                                            }
-
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
-                                        }
-                                        if (!TextUtils.isEmpty(it.desc)) {
-                                            book.desc = it.desc
-                                        }
-                                        if (!TextUtils.isEmpty(it.status)) {
-                                            book.status = it.status
-                                        }
-                                        book.genre = it.genre
-                                        book.sub_genre = it.sub_genre
                                         book.book_type = it.book_type
+
+                                        // 保存在chapter表中
+                                        if (book.fromQingoo()) {
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
+                                        }
+
+                                        ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
+                                    }
+                                    if (!TextUtils.isEmpty(it.desc)) {
+                                        book.desc = it.desc
+                                    }
+                                    if (!TextUtils.isEmpty(it.status)) {
+                                        book.status = it.status
+                                    }
+                                    book.genre = it.genre
+                                    book.sub_genre = it.sub_genre
+                                    book.book_type = it.book_type
+
+                                    val lastChapter = ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).queryLastChapter()
+
+                                    if (lastChapter != null) {
+                                        book.last_chapter = lastChapter
+                                    } else {
                                         if (it.last_chapter != null) {
                                             book.last_chapter = it.last_chapter
                                         }
-
-                                        //青果书籍有可能book_source_id不对
-                                        if (book.book_source_id == "api.qingoo.cn") {
-                                            book.book_source_id = book.book_id
-                                        }
-
-                                        books.add(book)
                                     }
 
+                                    //青果书籍有可能book_source_id不对
+                                    if (book.book_source_id == "api.qingoo.cn") {
+                                        book.book_source_id = book.book_id
+                                    }
+
+                                    books.add(book)
                                 }
                             }
                             if (books.isNotEmpty()) {
@@ -980,6 +991,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
         return InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadBookshelf(body)
+    }
+
+
+    /**
+     * 获取刷新token
+     */
+    fun getRefreshToken(requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+       InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .refreshToken()
+               ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+               ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
+                   override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                       requestSubscriber.onNext(result)
+                   }
+
+                   override fun onError(throwable: Throwable) {
+                       requestSubscriber.onError(throwable)
+                   }
+
+                   override fun onComplete() {
+                       requestSubscriber.onComplete()
+                   }
+               })
     }
 
     /**

@@ -21,20 +21,41 @@ class RequestInterceptor : Interceptor {
     private val requestParameters = mutableMapOf<String, String>()
 
     private fun buildRequestParameters(): Map<String, String> {
+
         if (requestParameters["packageName"] == null) {
-            requestParameters["os"] = Config.loadRequestParameter("os")
-            requestParameters["udid"] = Config.loadRequestParameter("udid")
-            requestParameters["version"] = Config.loadRequestParameter("version")
-            requestParameters["channelId"] = Config.loadRequestParameter("channelId")
             requestParameters["packageName"] = Config.loadRequestParameter("packageName")
         }
 
-        requestParameters["latitude"] = Config.loadRequestParameter("latitude")
-        requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
-        requestParameters["longitude"] = Config.loadRequestParameter("longitude")
+        if (requestParameters["os"] == null) {
+            requestParameters["os"] = Config.loadRequestParameter("os")
+        }
 
-        if(!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))){
-            requestParameters["loginToken"]=Config.loadRequestParameter("loginToken")
+        if (requestParameters["udid"] == null) {
+            requestParameters["udid"] = Config.loadRequestParameter("udid")
+        }
+
+        if (requestParameters["version"] == null) {
+            requestParameters["version"] = Config.loadRequestParameter("version")
+        }
+
+        if (requestParameters["channelId"] == null) {
+            requestParameters["channelId"] = Config.loadRequestParameter("channelId")
+        }
+
+        if (requestParameters["latitude"] == null) {
+            requestParameters["latitude"] = Config.loadRequestParameter("latitude")
+        }
+
+        if (requestParameters["longitude"] == null) {
+            requestParameters["longitude"] = Config.loadRequestParameter("longitude")
+        }
+
+        if (requestParameters["cityCode"] == null) {
+            requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
+        }
+
+        if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
+            requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")
         }
 
         return requestParameters
@@ -126,9 +147,7 @@ class RequestInterceptor : Interceptor {
             parameters[otherRequest.url().queryParameterName(index)] = otherRequest.url().queryParameterValue(index)
         }
 
-        if (!parameters.containsKey("packageName")) {
-            parameters.putAll(buildRequestParameters())
-        }
+        parameters.putAll(buildRequestParameters())
 
         val url = initializeToken(otherRequest, parameters) ?: return request
 

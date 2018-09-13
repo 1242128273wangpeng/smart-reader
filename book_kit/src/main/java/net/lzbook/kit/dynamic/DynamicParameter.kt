@@ -59,10 +59,10 @@ class DynamicParameter(private val context: Context) {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .requestDynamicCheck(object :RequestSubscriber<BasicResult<Int>>() {
                     override fun requestResult(result: BasicResult<Int>?) {
-                        if (result != null && result.data != null) {
+                        if (result?.data != null) {
                             mReqVersion = result.data!!
                             mCurVersion = mShareUtilDefault.getInt(SharedPreUtil.DYNAMIC_VERSION, -1)
-                            AppLog.d("requestDynamicCheck", "mReqVersion = " + mReqVersion + "\nmCurVersion = " + mCurVersion)
+                            AppLog.d("requestDynamicCheck", "mReqVersion = $mReqVersion\nmCurVersion = $mCurVersion")
                             if (mCurVersion != mReqVersion) {
                                 requestContent()
                             }
