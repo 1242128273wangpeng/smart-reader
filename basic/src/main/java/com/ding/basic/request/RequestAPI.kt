@@ -180,6 +180,10 @@ object RequestAPI {
         return requestService.uploadBookshelf(bookShelfBody)
     }
 
+    fun refreshToken(): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.refreshToken()
+    }
+
     fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
         return requestService.requestBookMarks(accountId)
     }
