@@ -25,7 +25,7 @@
             android:contentDescription="@string/module_name"
             android:scaleType="fitXY"
             android:src="@drawable/reader_guide_gesture_icon"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <fragment

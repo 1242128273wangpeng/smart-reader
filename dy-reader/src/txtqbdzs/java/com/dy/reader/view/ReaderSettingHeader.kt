@@ -53,6 +53,9 @@ class ReaderSettingHeader : FrameLayout {
                 // 关闭更多对话框
                 readerHeaderMorePopup.dismiss()
             }
+            if (view_guide.visibility == View.VISIBLE) {
+                hideGuide()
+            }
         }
 
         EventBus.getDefault().post(EventSetting(EventSetting.Type.FULL_WINDOW_CHANGE, !flag))
@@ -62,11 +65,15 @@ class ReaderSettingHeader : FrameLayout {
             txt_reader_guide_option.visibility = View.VISIBLE
 
             view_guide.setOnClickListener {
-                view_guide.visibility = View.GONE
-                txt_reader_guide_option.visibility = View.GONE
-                sharedPreUtil.putBoolean(guideSharedKey, true)
+                hideGuide()
             }
         }
+    }
+
+    private fun hideGuide() {
+        view_guide.visibility = View.GONE
+        txt_reader_guide_option.visibility = View.GONE
+        sharedPreUtil.putBoolean(guideSharedKey, true)
     }
 
     constructor(context: Context?) : super(context)
