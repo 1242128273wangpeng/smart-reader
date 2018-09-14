@@ -16,6 +16,7 @@ import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.user.UserManager
 
 
 /**
@@ -42,8 +43,12 @@ class BannerDialog(val activity: Activity) {
             intent.putExtra("title", "推荐书单")
             activity.startActivity(intent)
             dialog.dismiss()
+
+            // 弹窗点击，status记录登录状态：1未登录、2已登录
+            val data = HashMap<String, String>()
+            data.put("status", if (UserManager.isUserLogin) "2" else "1")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.BANNER_POPUP_CLICK)
+                    StartLogClickUtil.BANNER_POPUP_CLICK, data)
         }
 
         dialog.img_close.setOnClickListener {
