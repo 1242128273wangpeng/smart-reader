@@ -41,7 +41,7 @@
         android:lineSpacingExtra="4dp"
         android:gravity="center_horizontal"
         android:text="@string/push_setting_dialog_subtitle"
-        android:textColor="#616161"
+        android:textColor="#989898"
         android:textSize="14sp"/>
 
 
