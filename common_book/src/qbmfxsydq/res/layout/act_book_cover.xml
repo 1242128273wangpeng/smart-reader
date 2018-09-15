@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rl_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/cover_bg">
@@ -37,11 +38,11 @@
                 android:id="@+id/img_app_share"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:visibility="gone"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
                 android:src="@drawable/cover_share"
+                android:visibility="gone"
                 />
         </RelativeLayout>
     </RelativeLayout>
@@ -384,15 +385,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-       >
+        >
 
         <ImageView
             android:layout_width="230dp"
             android:layout_height="45dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="4dp"
-            android:contentDescription="@string/module_name"
             android:layout_gravity="right"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="60dp"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/cover_share_prompt_icon"/>
     </FrameLayout>
 
