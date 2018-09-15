@@ -125,7 +125,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         loadingPage?.onSuccess()
 
-        loadingPage = LoadingPage(this, book_cover_main, LoadingPage.setting_result)
+        loadingPage = LoadingPage(this, rl_container, LoadingPage.setting_result)
 
         coverPagePresenter?.requestBookDetail(false)
         coverPagePresenter?.requestCoverRecommend()
@@ -426,6 +426,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.startCatalogActivity(false)
                 }
+
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
             }
         }
