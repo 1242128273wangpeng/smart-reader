@@ -6,21 +6,20 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import cn.dycm.ad.nativ.NativeMediaView
-import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.reader.helper.AppHelper
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.Closeable
 import java.lang.ref.WeakReference
 import java.util.*
+
 @SuppressLint("StaticFieldLeak")
 /**
  * Desc 阅读广告管理类
@@ -32,11 +31,10 @@ object ReadMediaManager {
 
     val readerSettings = ReaderSettings.instance
     var frameLayout: FrameLayout? = null
-    set(value) {
-        value?.visibility = View.INVISIBLE
-        field = value
-    }
-
+        set(value) {
+            value?.visibility = View.INVISIBLE
+            field = value
+        }
     val adCache = DataCache()
     var mActivity: WeakReference<Activity>? = null
     //无缓存加载回调
@@ -61,7 +59,7 @@ object ReadMediaManager {
      * @param frequency 5-2 广告频率
      * @return 分页内容
      */
-    fun insertChapterAd(group: Int,token:Long,
+    fun insertChapterAd(group: Int, token: Long,
                         page: ArrayList<NovelPageBean>,
                         within: Boolean = MediaControl.getAdSwitch("5-2") and MediaControl.getAdSwitch("6-2"),
                         between: Boolean = MediaControl.getAdSwitch("5-1") and MediaControl.getAdSwitch("6-1"),
@@ -70,7 +68,7 @@ object ReadMediaManager {
                         frequency: Int = MediaControl.getChapterFrequency()
     ): ArrayList<NovelPageBean> {
         removeOldAd(group)
-        if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3) return page
+        if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3 || AppUtils.isNeedAdControl(Constants.ad_control_reader)) return page
 
 
         //check 5-2 or 6-2 adView
@@ -104,8 +102,8 @@ object ReadMediaManager {
                     val adMark = generateAdMark(8, 10)
                     MediaControl.dycmNativeAd(this, adMark, null, { view ->
                         this@ReadMediaManager.mediaAction(last.adType, adMark,
-                                (AppHelper.screenHeight - last.height).toInt(), token, view)
-                    }, { errorCode ->
+                                (AppHelper.screenHeight - last.height).toInt(), tonken, view)
+                    },{errorCode ->
 
                     })
                 }
@@ -132,22 +130,24 @@ object ReadMediaManager {
      * @param height 高度 默认值屏幕高度
      * @param width 宽度 默认值屏幕宽度
      */
-    fun requestAd(adType: String, adMark: String, height: Int = AppHelper.screenHeight, width: Int = AppHelper.screenWidth, token: Long ) {
+    fun requestAd(adType: String, adMark: String, height: Int = AppHelper.screenHeight, width: Int = AppHelper.screenWidth, token: Long) {
         //
         mActivity?.get().apply {
             adCache.put(adType, AdBean(height, null, true, adMark))
             if (height == AppHelper.screenHeight) {//5-1 5-2 6-1 6-2
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace * 2f).toInt()
+//                PlatformSDK.adapp().dycmNativeAd(this, adMark, height - space, width, AdCallback(adType, adMark, height,token))
                 MediaControl.dycmNativeAd(this, adMark, null, { list ->
                     mediaAction(adType, adMark, height, token, list)
-                }, { errorCode ->
+                },{errorCode ->
 
                 })
+
             } else {//8-1
                 val space = (AppHelper.screenDensity * readerSettings.readContentPageTopSpace).toInt()
                 MediaControl.dycmNativeAd(this, adMark, height - space, width, { views ->
                     mediaAction(adType, adMark, height, token, views)
-                }, { errorCode ->
+                },{errorCode ->
 
                 })
             }
@@ -303,7 +303,7 @@ object ReadMediaManager {
                 adCache.put(adType, AdBean(height, views[0], true, mark))
                 loadAdComplete?.invoke(adType)
             } else {
-                if (adCache.get(adType) == null || adCache.get(adType)?.loaded == false) {
+                if (adCache.get(adType) == null || !adCache.get(adType)!!.loaded) {
                     adCache.put(adType, AdBean(height, null, false, mark))
                 }
             }
@@ -317,8 +317,8 @@ object ReadMediaManager {
 
     fun onDestroy() {
         loadAdComplete = null
+
         ReadMediaManager.clearAllAd()
         ReadMediaManager.frameLayout = null
     }
 }
-

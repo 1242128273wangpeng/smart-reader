@@ -87,7 +87,7 @@
         <meta-data
             android:name="android.notch_support"
             android:value="true"/>
-        <!--xiaomi-->
+        <!--xiaomi适配异形屏-->
         <meta-data
             android:name="notch.config"
             android:value="portrait"/>

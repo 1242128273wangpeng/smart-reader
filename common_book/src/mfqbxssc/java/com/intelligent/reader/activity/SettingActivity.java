@@ -1,6 +1,6 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,10 +48,11 @@ import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.UIHelper;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
 import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
 import kotlin.Unit;
@@ -160,6 +161,11 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         //条目字
         tv_night_shift = findViewById(R.id.tv_night_shift);
 
+        if(AppUtils.isNeedAdControl(Constants.ad_control_welfare) || AppUtils.isNeedAdControl(Constants.ad_control_welfare_shelf)){
+            rl_welfare.setVisibility(View.GONE);
+        }else{
+            rl_welfare.setVisibility(View.VISIBLE);
+        }
 
         txt_nickname = findViewById(R.id.txt_nickname);
         txt_userid = findViewById(R.id.txt_userid);

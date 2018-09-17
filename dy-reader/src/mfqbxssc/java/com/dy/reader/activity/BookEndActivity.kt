@@ -28,6 +28,7 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.BookRecommender
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 import java.util.concurrent.Callable
@@ -70,7 +71,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         initIntent()
         initData()
         bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
-        if (!Constants.isHideAD) {
+        if (!Constants.isHideAD && !AppUtils.isNeedAdControl(Constants.ad_control_other)) {
             initBookEndAD()
         }
     }

@@ -551,6 +551,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                         tvStepIn.setText("努力加载中...");
                         tvStepIn.setClickable(false);
                         genderHelper.jumpAnimation();
+                        sharedPreUtil.putInt(SharedPreUtil.GENDER_TAG, Constants.SDEFAULT);
                         mStepInFlag = true;
                         Constants.SGENDER = Constants.SDEFAULT;
                         doOnCreate();

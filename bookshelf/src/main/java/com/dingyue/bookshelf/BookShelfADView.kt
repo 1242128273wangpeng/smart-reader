@@ -10,10 +10,10 @@ import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 
 /**
- * Desc 请描述这个文件
- * Author Xian
- * Mail dongxian_zhang@dingyuegroup.cn
- * Date 2018/8/16 06:47
+ * Function：书架顶部广告
+ *
+ * Created by JoannChen on 2018/9/7 0007 18:28
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 class BookShelfADView : FrameLayout {
     val activity: Activity

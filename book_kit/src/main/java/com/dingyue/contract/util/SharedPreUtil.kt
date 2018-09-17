@@ -50,6 +50,7 @@ class SharedPreUtil(val type: Int) {
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
         const val UNION_HOST = "union_host"           //微服务API接口
         const val CONTENT_HOST = "content_host"       //微服务内容接口
+        const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
         /**
          * 禁用动态参数前保留一份动态HOST
@@ -113,12 +114,21 @@ class SharedPreUtil(val type: Int) {
 
 
         /**
+         * 广告分版本，分渠道，分广告位开关控制
+         */
+        const val AD_CONTROL_STATUS = "status" //广告动态参数总开关 0关 1 开
+        const val AD_CONTROL_PGK = "packageName" //广告动态参数 包名
+        const val AD_CONTROL_CHANNELID = "channelId" //广告动态参数 渠道号
+        const val AD_CONTROL_VERSION = "version" //广告动态参数 app版本号
+        const val AD_CONTROL_ADTYPE = "advertisingSpace" //广告动态参数  广告位类型  0 福利中心 1书架页1-1  2书架页1-2  3阅读页广告 4全部
+
+
+        /**
          * webviewFragment
          */
 
         const val RANK_SELECT_SEX = "rank_select_sex"   // 五步替 榜单选男女
         const val RECOMMEND_SELECT_SEX = "recommend_select_sex"   // 五步替 精选页选男女
-
 
 
         /**

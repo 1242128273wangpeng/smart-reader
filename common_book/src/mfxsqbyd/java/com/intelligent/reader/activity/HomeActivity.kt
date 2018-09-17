@@ -45,6 +45,7 @@ import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
+import com.intelligent.reader.widget.SwitchButton
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -71,7 +72,7 @@ import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
-        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
+        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface , SwitchButton.OnCheckedChangeListener{
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
@@ -303,25 +304,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             HomeLogger.uploadHomeCategorySelected()
         }
 
-        setNightMode(false)
+//        setNightMode(false)
 
-        bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
-            PersonalLogger.uploadPersonalNightModeChange()
-            ReaderSettings.instance.initValues()
-            if (isChecked) {
-                tv_night_shift.setText(R.string.mode_day)
-                ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
-                ReaderSettings.instance.readThemeMode = 61
-                mThemeHelper.setMode(ThemeMode.NIGHT)
-            } else {
-                tv_night_shift.setText(R.string.mode_night)
-                ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
-                mThemeHelper.setMode(ThemeMode.THEME1)
-            }
-//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
-            ReaderSettings.instance.save()
-            nightShift(isChecked, true)
-        }
+        bt_night_shift.setOnCheckedChangeListener(this)
 
         val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE,true)
 
@@ -374,7 +359,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         rl_check_update.setOnClickListener {
             PersonalLogger.uploadPersonalCheckUpdate()
             try {
-                apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
+                apkUpdateUtils.getApkUpdateInfo(this, handler, "SettingActivity")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -390,6 +375,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_clear_cache_message.text = applicationContext.getString(R.string.application_cache_size)
     }
+
 
     private fun initGuide() {
         val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
@@ -733,7 +719,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment?.updateUI()
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
-                setNightMode(true)
+//                setNightMode(true)
             } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
@@ -776,6 +762,25 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             dl_home_content.openMenu()
         }
     }
+
+    override fun onCheckedChanged(view: SwitchButton?, isChecked: Boolean) {
+        PersonalLogger.uploadPersonalNightModeChange()
+        ReaderSettings.instance.initValues()
+        if (isChecked) {
+            tv_night_shift.setText(R.string.mode_day)
+            ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
+            ReaderSettings.instance.readThemeMode = 61
+            mThemeHelper.setMode(ThemeMode.NIGHT)
+        } else {
+            tv_night_shift.setText(R.string.mode_night)
+            ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
+            mThemeHelper.setMode(ThemeMode.THEME1)
+        }
+//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
+        ReaderSettings.instance.save()
+        nightShift(isChecked, true)
+    }
+
 
     companion object {
         private const val BACK = 0x80

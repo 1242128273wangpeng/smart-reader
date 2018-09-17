@@ -2,6 +2,8 @@ package com.ding.basic.request
 
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.util.ReplaceConstants
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
@@ -69,6 +71,10 @@ object RequestAPI {
         return requestService.requestDynamicParameters()
     }
 
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean> {
+        return requestService.requestAdControlDynamic()
+    }
+
     fun requestCDNDynamicPar(url: String): Flowable<Parameter> {
         return requestService.requestCDNDynamicPar(url)
     }
@@ -127,17 +133,20 @@ object RequestAPI {
 
     // v3 的登陆接口强制走阿里云服务器，也就是默认的 host
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
-        val url = RequestService.QBMFXSYDQ_DEFAULT_HOST + RequestService.LOGIN_ACTION
+        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
+                RequestService.LOGIN_ACTION
         return requestService.requestLoginAction(url, parameters)
     }
 
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
-        val url = RequestService.QBMFXSYDQ_DEFAULT_HOST + RequestService.LOGOUT_ACTION
+        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
+                RequestService.LOGIN_ACTION
         return requestService.requestLogoutAction(url, parameters)
     }
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
-        val url = RequestService.QBMFXSYDQ_DEFAULT_HOST + RequestService.REFRESH_TOKEN
+        val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
+                RequestService.LOGIN_ACTION
         return requestService.requestRefreshToken(url, parameters)
     }
 
@@ -244,8 +253,12 @@ object RequestAPI {
         return requestService.requestBookRecommendV4(book_id, recommend)
     }
 
-    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
-        return requestService.requestPushTags(udid)
+    fun requestPushTags(url:String, udid: String): Flowable<CommonResult<ArrayList<String>>> {
+        return requestService.requestPushTags(url, udid)
+    }
+
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>> {
+        return requestService.requestBannerTags()
     }
 
     fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {

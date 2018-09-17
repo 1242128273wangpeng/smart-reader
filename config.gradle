@@ -1,5 +1,4 @@
-
-void log(def str){
+void log(def str) {
     System.err.println("gradle: " + str)
 }
 
@@ -25,24 +24,26 @@ ext {
     // 广告默认开启
     hasad = true
     // 无广告列表
-    noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader','cn.mfxsqbyd.reader',"cn.qbmfkkydq.reader"]
-    // 改完记得重新编译项目
-    applicationId = "cc.mianfeinovel"
-    defaultPublishConfig = 'zsmfqbxs' + 'Debug'
+    noadList = ['cn.txtqbmfyd.reader', 'cn.qbmfrmxs.reader', 'cn.mfxsqbyd.reader', "cn.qbmfkkydq.reader"]
+
     def appPackageIDConfig = [
-            qbmfxsydq : "cc.quanben.novel",//五步替
-            mfqbxssc  : "cc.kdqbxs.reader", //快读替
-            zsmfqbxs  : "cc.mianfeinovel", //阅微替
-            qbzsydq   : "cn.qbzsydsq.reader",//全本追书阅读器
-            txtqbmfxs : "cc.lianzainovel", //鸿雁替
-            qbmfkdxs  : "cc.quanbennovel", //今日多看
-            txtqbdzs  : "cc.remennovel",   //智胜电子书替
-            txtqbmfyd : "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
-            mfxsqbyd  : "cn.mfxsqbyd.reader",//免费小说全本阅读 (新壳2)
-            qbmfrmxs  : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
-            qbmfkkydq  : "cn.qbmfkkydq.reader" //全本免费快看阅读器(新壳4)
+            qbmfxsydq: "cc.quanben.novel",//五步替
+            mfqbxssc : "cc.kdqbxs.reader", //快读替
+            zsmfqbxs : "cc.mianfeinovel", //阅微替
+            qbzsydq  : "cn.qbzsydsq.reader",//全本追书阅读器
+            txtqbmfxs: "cc.lianzainovel", //鸿雁替
+            qbmfkdxs : "cc.quanbennovel", //今日多看
+            txtqbdzs : "cc.remennovel",   //智胜电子书替
+            txtqbmfyd: "cn.txtqbmfyd.reader",//TXT全本免费阅读(新壳1)
+            mfxsqbyd : "cn.mfxsqbyd.reader",//免费小说全本阅读 (新壳2)
+            qbmfrmxs : "cn.qbmfrmxs.reader", //全本免费热门小说(新壳3)
+            qbmfkkydq: "cn.qbmfkkydq.reader" //全本免费快看阅读器(新壳4)
     ]
 
+    // 改完记得重新编译项目
+    def appName = "mfqbxssc"
+    defaultPublishConfig = appName + 'Debug'
+    applicationId = appPackageIDConfig.get(appName)
 
     def startParameter = project.getGradle().getStartParameter()
     log(" = = = = = = = = = = = = = = = = = = = = = = = = ")

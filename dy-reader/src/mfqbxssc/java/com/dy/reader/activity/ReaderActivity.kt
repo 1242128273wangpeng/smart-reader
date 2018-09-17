@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
+import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
@@ -21,10 +22,10 @@ import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
+import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -36,6 +37,7 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dycm_adsdk.view.NativeView
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.mfqbxssc.act_reader.*
@@ -43,6 +45,7 @@ import kotlinx.android.synthetic.mfqbxssc.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.user.UserManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -52,7 +55,7 @@ import org.greenrobot.eventbus.ThreadMode
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
-
+    private var mNativeMediaView: NativeMediaView? = null
     private var registerShareCallback = false
 
     private val mReadSettingFragment by lazy {
@@ -145,6 +148,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     val orientaionRunnable = {
+        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -209,7 +214,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
                 ReaderStatus.book.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+                if (ReaderStatus.book.fromQingoo()) {
                     ReaderStatus.book.channel_code = 1
                 } else {
                     ReaderStatus.book.channel_code = 2
@@ -239,6 +244,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         //锁定不可滑出
         override fun onDrawerClosed(drawerView: View) {
             dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            mCatalogMarkFragment?.dimissDialog()
         }
 
         override fun onDrawerStateChanged(newState: Int) = Unit
@@ -256,6 +262,9 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onResume()
+        }
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -274,6 +283,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         glSurfaceView.onPause()
         mReadPresenter.onPause()
         MediaLifecycle.onPause()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onPause()
+        }
     }
 
     override fun onStop() {
@@ -314,6 +327,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         ReaderStatus.chapterList.clear()
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onDestroy()
+            mNativeMediaView = null
+        }
     }
 
 
@@ -340,7 +358,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_READING_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -368,42 +386,31 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
     }
 
-    fun full(isFull: Boolean) {
-//        if (!Constants.isFullWindowRead) {
-//            return
-//        }
-//        if (isFull) {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        } else {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventLoading) {
-        if (event.type == EventLoading.Type.START) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
-        } else if (event.type == EventLoading.Type.PROGRESS_CHANGE) {
-            if (ReaderStatus.position.group > -1) {
-                rl_reader_bottom.visibility = View.VISIBLE
-                rl_reader_header.visibility = View.VISIBLE
-                txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
-                if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
-                    txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+        when {
+            event.type == EventLoading.Type.START -> showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+            event.type == EventLoading.Type.PROGRESS_CHANGE -> {
+                if (ReaderStatus.position.group > -1) {
+                    rl_reader_bottom.visibility = View.VISIBLE
+                    rl_reader_header.visibility = View.VISIBLE
+                    txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
+                    txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
+                    if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
+                        txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+                    }
+                } else {
+                    rl_reader_bottom.visibility = View.GONE
+                    rl_reader_header.visibility = View.GONE
                 }
-            } else {
-                rl_reader_bottom.visibility = View.GONE
-                rl_reader_header.visibility = View.GONE
+                mReadPresenter.checkManualDialogShow()
             }
-            mReadPresenter?.checkManualDialogShow()
-        } else if (event.type == EventLoading.Type.RETRY) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
-        } else if (event.type == EventLoading.Type.SUCCESS) {
+            event.type == EventLoading.Type.RETRY -> showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
+            event.type == EventLoading.Type.SUCCESS -> {
 
-            showAd()
-            mLoadingFragment.dismissDiaslog(isResume)
+                showAd()
+                mLoadingFragment.dismissDiaslog(isResume)
+            }
         }
     }
 
@@ -427,7 +434,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     PageManager.clear()
                     hideAd()
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 } else if (glSurfaceView.visibility != View.VISIBLE && ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
                     PageManager.clear()
@@ -438,7 +445,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
 
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 }
             }
@@ -511,7 +518,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
+//            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
             EventSetting.Type.HIDE_AD -> hideAd()
             EventSetting.Type.SHOW_AD -> showAd()
 
@@ -520,7 +527,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //如果夜间设置了alpha值之后, 视频将有重影
+//        //如果夜间设置了alpha值之后, 视频将有重影
 //        if (pac_reader_ad != null) {
 //            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
 //        }
@@ -538,6 +545,25 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (adView != null) {
             if (adView.loaded) {//加载成功
                 if (adView.view != null) {
+
+                    if (adView.view is NativeView) {
+                        (adView.view as NativeView).setHideAdListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                        (adView.view as NativeView).setOnLoadCompleteListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    } else if (adView.view is NativeMediaView) {
+                        mNativeMediaView = adView.view as NativeMediaView
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
+                            mNativeMediaView?.onPause()
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    }
+
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null
 
@@ -605,4 +631,35 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun supportSlideBack(): Boolean = false
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(false)
+                    ReaderStatus.isMenuShow = false
+                } else {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 }
