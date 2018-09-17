@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Debug;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
@@ -36,7 +38,6 @@ import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
 
 import java.util.concurrent.Callable;
-import java.util.logging.Handler;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -86,12 +87,19 @@ public class BookApplication extends BaseBookApplication {
             setRxJavaErrorHandler();
         }
 
-       new android.os.Handler().postDelayed(new Runnable() {
-           @Override
-           public void run() {
+        initHandler.sendEmptyMessageDelayed(0,500);
+        initHandler.sendEmptyMessageDelayed(1,1500);
+    }
+
+    private Handler initHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+           if(msg.what==0){
                if (AppUtils.isMainProcess(BookApplication.this)) {
                    MediaLifecycle.INSTANCE.onAppCreate(BookApplication.this);
-
+               }
+           }else if(msg.what==1){
+               if (AppUtils.isMainProcess(BookApplication.this)) {
                    // 自定义ErrorCallback
                    FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
                        @Override
@@ -161,8 +169,8 @@ public class BookApplication extends BaseBookApplication {
                    e.printStackTrace();
                }
            }
-       },1000L);
-    }
+        }
+    };
 
     /**
      * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),
