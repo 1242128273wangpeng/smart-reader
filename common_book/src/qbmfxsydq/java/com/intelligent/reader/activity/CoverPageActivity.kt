@@ -3,6 +3,7 @@ package com.intelligent.reader.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
@@ -95,6 +96,19 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_content.scrollChanged = {
             txt_book_name.visibility = if (it > AppUtils.dp2px(resources, 20f)) View.VISIBLE else View.GONE
         }
+        book_cover_description.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                if (book_cover_description.maxLines <= 4) {
+                    book_cover_description.maxLines = book_cover_description.lineCount
+                    expand_collapse.setImageResource(R.drawable.icon_open_text)
+                } else {
+                    expand_collapse.setImageResource(R.drawable.icon_close_text)
+                    book_cover_description.maxLines = 4
+                }
+
+            }
+        }
+
     }
 
     private fun initializeIntent(intent: Intent?) {
@@ -220,10 +234,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 txt_cover_score!!.text = book.score.toString() + "分"
             }
 
-            if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
-                book_cover_description!!.text = book.desc
+            if (book.desc?.isNotEmpty() == true) {
+                book_cover_description.text = book.desc
+                if (book_cover_description.lineCount > 4) {
+                    expand_collapse.visibility = View.VISIBLE
+                    expand_collapse.setImageResource(R.drawable.icon_open_text)
+                } else {
+                    expand_collapse.visibility = View.VISIBLE
+                    expand_collapse.setImageResource(R.drawable.icon_close_text)
+                }
             } else {
-                book_cover_description!!.text = resources.getString(R.string.book_cover_no_description)
+                book_cover_description?.text = resources.getString(R.string.book_cover_no_description)
+                expand_collapse.visibility = View.GONE
             }
 
             if (book.last_chapter != null) {

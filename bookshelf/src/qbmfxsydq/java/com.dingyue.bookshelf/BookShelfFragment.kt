@@ -142,7 +142,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             override fun onPullEnable(enable: Boolean) {
                 refreshHeader.img_anim.visibility = View.GONE
                 refreshHeader.img_head.visibility = View.VISIBLE
-                refreshHeader.img_head.setImageResource((if (enable) R.drawable.refresh_head_loading1 else R.drawable.refresh_head_loading10))
+//                refreshHeader.img_head.setImageResource((if (enable) R.drawable.refresh_head_loading1 else R.drawable.refresh_head_loading10))
             }
         })
         btn_find.setOnClickListener {
