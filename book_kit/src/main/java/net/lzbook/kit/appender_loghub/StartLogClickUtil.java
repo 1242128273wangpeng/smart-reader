@@ -172,18 +172,6 @@ public class StartLogClickUtil {
     public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍完结页
     public static final String READFINISH_PAGE = "READFINISH";//完结页（新壳2新添加）
 
-
-
-
-    public static final String PAGE_SHARE = "SHAREPAGE";//分享弹窗
-    public static final String ACTION_SHARE = "SHARE";//分享
-    public static final String ACTION_CANCEL = "CANCEL";//分享
-
-
-
-
-
-
     public static final String PAGE_SHARE = "SHAREPAGE";//分享弹窗
     public static final String ACTION_SHARE = "SHARE";//分享
     public static final String ACTION_CANCEL = "CANCEL";//分享
