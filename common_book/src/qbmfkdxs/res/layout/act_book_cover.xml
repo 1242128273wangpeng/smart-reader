@@ -95,7 +95,7 @@
                                     android:layout_height="match_parent"
                                     android:contentDescription="@string/app_name"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/cover_book_shadow"/>
+                                    android:src="@drawable/cover_book_shadow"/>
 
                             <ImageView
                                     android:id="@+id/book_cover_image"
@@ -108,8 +108,8 @@
                                     android:layout_gravity="center_horizontal"
                                     android:contentDescription="@string/app_name"
                                     android:scaleType="fitXY"
-                                    android:background="@mipmap/bookshelf_book_cover_default"
-                                    android:src="@mipmap/bookshelf_book_cover_default"/>
+                                    android:background="@drawable/bookshelf_book_cover_default"
+                                    android:src="@drawable/bookshelf_book_cover_default"/>
 
                         </FrameLayout>
 
@@ -452,7 +452,7 @@
                                 android:text="2天前更新"
                                 android:gravity="center_vertical"
                                 android:layout_centerVertical="true"
-                                android:drawableRight="@mipmap/cover_go"
+                                android:drawableRight="@drawable/cover_go"
                                 android:layout_alignParentRight="true"
                                 android:textColor="@color/cover_recommend_read"
                                 android:textSize="12sp"/>

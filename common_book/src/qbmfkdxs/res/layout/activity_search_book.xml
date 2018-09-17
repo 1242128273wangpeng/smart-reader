@@ -35,7 +35,7 @@
                     android:paddingLeft="11dp"
                     android:paddingRight="15dp"
                     android:layout_alignParentRight="true"
-                    android:src="@mipmap/search_submit_btn"/>
+                    android:src="@drawable/search_submit_btn"/>
     
             <RelativeLayout
                     android:id="@+id/search_result_outcome"
@@ -81,7 +81,7 @@
                         android:contentDescription="@string/app_name"
                         android:paddingLeft="@dimen/dimen_padding_10"
                         android:scaleType="fitCenter"
-                        android:src="@mipmap/search_edit_content_clear"
+                        android:src="@drawable/search_edit_content_clear"
                         android:visibility="visible"/>
         
                 <net.lzbook.kit.book.view.HWEditText

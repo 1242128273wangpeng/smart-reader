@@ -22,6 +22,7 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -29,6 +30,7 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
@@ -42,7 +44,6 @@ import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
@@ -55,7 +56,7 @@ import java.util.*
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
-    private var homePresenter:HomePresenter? = null
+    private var homePresenter: HomePresenter? = null
 
     private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
 
@@ -105,7 +106,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         initView()
         initGuide()
 
-        homePresenter!!.initParameters()
+        homePresenter?.initParameters()
 
         registerHomeReceiver()
 
@@ -116,7 +117,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         AndroidLogStorage.getInstance().clear()
 
-        homePresenter!!.initDownloadService()
+        homePresenter?.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
 
@@ -129,6 +130,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun onResume() {
         super.onResume()
+        MediaLifecycle.onResume()
         this.changeHomePagerIndex(currentIndex)
 
         StatService.onResume(this)
@@ -137,6 +139,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun onPause() {
         super.onPause()
         StatService.onPause(this)
+        MediaLifecycle.onPause()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -164,6 +167,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         AndroidLogStorage.getInstance().clear()
 
         this.unregisterReceiver(homeBroadcastReceiver)
+        MediaLifecycle.onDestroy()
         try {
             bookShelfFragment = null
             recommendFragment = null
@@ -323,7 +327,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
     }
-
 
 
     override fun receiveUpdateCallBack(notification: Notification) {
@@ -490,33 +493,33 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment
                 }
                 1 -> {
-                    if(recommendFragment == null){
+                    if (recommendFragment == null) {
                         recommendFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", WebViewFragment.TYPE_RECOMM)
-                        val uri = "/{packageName}/v3/recommend/index.do".replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         recommendFragment?.arguments = bundle
                     }
                     recommendFragment
                 }
                 2 -> {
-                    if(rankingFragment == null){
+                    if (rankingFragment == null) {
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", WebViewFragment.TYPE_RANK)
-                        val uri = "/{packageName}/v3/rank/index.do".replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         rankingFragment?.arguments = bundle
                     }
                     rankingFragment
                 }
                 3 -> {
-                    if(categoryFragment == null){
+                    if (categoryFragment == null) {
                         categoryFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", WebViewFragment.TYPE_CATEGORY)
-                        val uri = "/{packageName}/v3/category/index.do".replace("{packageName}", AppUtils.getPackageName())
+                        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
                         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
                         categoryFragment?.arguments = bundle
                     }

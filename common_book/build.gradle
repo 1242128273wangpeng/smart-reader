@@ -283,7 +283,6 @@ android {
             安智市场渠道号  blp1298_10894_001
             猎豹联盟     dyp1024_20001_001
             三星         blf1298_10929_001
-
             升级渠道	blf1298_11974_001
         */
 
@@ -568,8 +567,8 @@ android {
             buildConfigField "String", "alifeedback_secret", "\"becf9b2d02e1caa350b0f9f8b84bb1bd\""
             buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmf.zhuishuwang.com\""
             buildConfigField "String", "book_webview_host", "\"https://uwqbmf.zhuishuwang.com\""
-            buildConfigField "String", "micro_api_host", "\"https://unionapi.bookapi.cn\""
-            buildConfigField "String", "content_api_host", "\"https://unioncontent.bookapi.cn\""
+            buildConfigField "String", "micro_api_host", "\"https://ajrdkunionapi.basicnos.cn\""
+            buildConfigField "String", "content_api_host", "\"https://ajrdkunioncontent.basicnos.cn\""
         }
 
         qbmfrmxs {
@@ -627,8 +626,8 @@ android {
             buildConfigField "String", "push_key", "\"DOGRj3vpV9F6KamswYShmdHM\""
             buildConfigField "String", "alifeedback_key", "\"25007608\""
             buildConfigField "String", "alifeedback_secret", "\"637ef76b85f41fbf4ef38f950d45a116\""
-            buildConfigField "String", "book_novel_deploy_host", "\"https://api.muxinvideo.com\""
-            buildConfigField "String", "book_webview_host", "\"https://webview.muxinvideo.com\""
+            buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmfkk.muxinvideo.com\""
+            buildConfigField "String", "book_webview_host", "\"https://uwqbmfkk.muxinvideo.com\""
             buildConfigField "String", "micro_api_host", "\"https://aqbmfkkydqunionapi.basicnos.cn\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfkkydqunioncontent.basicnos.cn\""
         }
