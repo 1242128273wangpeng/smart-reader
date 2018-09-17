@@ -67,7 +67,7 @@ public class BookApplication extends BaseBookApplication {
 
             MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
-//            MediaLifecycle.INSTANCE.onAppCreate(this);
+            MediaLifecycle.INSTANCE.onAppCreate(this);
 
 //            //防止定位不回掉导致缺失id
 //            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
@@ -86,19 +86,13 @@ public class BookApplication extends BaseBookApplication {
             registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
             setRxJavaErrorHandler();
         }
-
-        initHandler.sendEmptyMessageDelayed(0,500);
         initHandler.sendEmptyMessageDelayed(1,1500);
     }
 
     private Handler initHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
-           if(msg.what==0){
-               if (AppUtils.isMainProcess(BookApplication.this)) {
-                   MediaLifecycle.INSTANCE.onAppCreate(BookApplication.this);
-               }
-           }else if(msg.what==1){
+           if(msg.what==1){
                if (AppUtils.isMainProcess(BookApplication.this)) {
                    // 自定义ErrorCallback
                    FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
