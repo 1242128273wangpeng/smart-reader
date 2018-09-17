@@ -157,6 +157,15 @@
                                 android:textSize="10sp"/>
                         </LinearLayout>
                     </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="97dp"
+                        android:layout_height="140dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@drawable/cover_book_shadow"
+                        android:scaleType="fitXY"
+                        />
                     <ImageView
                         android:id="@+id/book_cover_image"
                         android:layout_width="97dp"
@@ -166,15 +175,6 @@
                         android:background="@drawable/bookshelf_book_cover_default"
                         android:scaleType="fitXY"
                         android:src="@drawable/bookshelf_book_cover_default"/>
-                    <ImageView
-                        android:layout_width="97dp"
-                        android:layout_height="10dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="142dp"
-                        android:background="@drawable/top_shadow"
-                        android:scaleType="fitXY"
-                        />
-
                     <TextView
                         android:id="@+id/txt_book_status"
                         android:layout_width="wrap_content"
@@ -184,8 +184,8 @@
                         android:paddingBottom="1dp"
                         android:paddingLeft="6dp"
                         android:paddingRight="6dp"
-                        android:paddingTop="8dp"
                         android:scaleType="fitXY"
+                        android:layout_marginTop="8dp"
                         android:text="完结"
                         android:textColor="#ffffff"
                         android:textSize="11sp"

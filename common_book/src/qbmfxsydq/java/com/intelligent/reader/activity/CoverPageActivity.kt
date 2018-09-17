@@ -96,18 +96,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_content.scrollChanged = {
             txt_book_name.visibility = if (it > AppUtils.dp2px(resources, 20f)) View.VISIBLE else View.GONE
         }
-        book_cover_description.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                if (book_cover_description.maxLines <= 4) {
-                    book_cover_description.maxLines = book_cover_description.lineCount
-                    expand_collapse.setImageResource(R.drawable.icon_open_text)
-                } else {
-                    expand_collapse.setImageResource(R.drawable.icon_close_text)
-                    book_cover_description.maxLines = 4
-                }
-
-            }
-        }
+        book_cover_description?.antiShakeClick(this)
 
     }
 
@@ -236,12 +225,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if (book.desc?.isNotEmpty() == true) {
                 book_cover_description.text = book.desc
-                if (book_cover_description.lineCount > 4) {
-                    expand_collapse.visibility = View.VISIBLE
-                    expand_collapse.setImageResource(R.drawable.icon_open_text)
-                } else {
+                if (book_cover_description.lineCount >= 4) {
                     expand_collapse.visibility = View.VISIBLE
                     expand_collapse.setImageResource(R.drawable.icon_close_text)
+                } else {
+                    expand_collapse.visibility = View.GONE
+//                    expand_collapse.setImageResource(R.drawable.icon_open_text)
                 }
             } else {
                 book_cover_description?.text = resources.getString(R.string.book_cover_no_description)
@@ -451,6 +440,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
             }
+            R.id.book_cover_description ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    if (book_cover_description.maxLines <= 4) {
+                        book_cover_description.maxLines = book_cover_description.lineCount
+                        expand_collapse.setImageResource(R.drawable.icon_open_text)
+                    } else {
+                        expand_collapse.setImageResource(R.drawable.icon_close_text)
+                        book_cover_description.maxLines = 4
+                    }
+
+                }
+
         }
     }
 
