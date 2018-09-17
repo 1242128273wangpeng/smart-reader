@@ -855,8 +855,6 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
             Constants.isHideAD = !Constants.new_app_ad_switch;
         }
-
-        Constants.isHideAD = false;
     }
 
     /**
