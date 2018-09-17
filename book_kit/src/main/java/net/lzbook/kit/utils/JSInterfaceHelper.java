@@ -5,6 +5,7 @@ import net.lzbook.kit.app.BaseBookApplication;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.request.UrlUtils;
 
 import android.content.Context;

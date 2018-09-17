@@ -126,7 +126,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     }
 
-    fun shouldLightStatusBase(): Boolean {
+    override fun shouldLightStatusBase(): Boolean {
         return true
     }
 

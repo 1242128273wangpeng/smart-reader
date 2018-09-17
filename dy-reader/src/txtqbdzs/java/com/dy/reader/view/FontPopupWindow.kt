@@ -1,9 +1,6 @@
 package com.dy.reader.view
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.graphics.Typeface
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
@@ -13,7 +10,6 @@ import android.view.WindowManager
 import com.dingyue.contract.BasePopup
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.adapter.FontAdapter
 import com.dy.reader.helper.DrawTextHelper
@@ -21,11 +17,9 @@ import com.dy.reader.model.FontData
 import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.util.TypefaceUtil
-import com.umeng.commonsdk.statistics.common.DataHelper
 import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
-import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.loge
-import net.lzbook.kit.utils.uiThread
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -96,14 +90,14 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
     }
 
     private fun uploadUseFontLog(typeface: Int) {
-        DyStatService.onEvent(EventPoint.READPAGESET_FONTSETTING,
-                mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE,
+                StartLogClickUtil.FONTSETTING, mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
     }
 
     private fun uploadDownloadFontLog(name: String) {
         val typeface = TypefaceUtil.getTypefaceCode(name)
-        DyStatService.onEvent(EventPoint.READPAGESET_FONTDOWNLOAD,
-                mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
+        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE,
+                StartLogClickUtil.FONTDOWNLOAD, mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
     }
 
     fun show(parent: View) {

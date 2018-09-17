@@ -156,8 +156,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPMESSAGE)
         }
 
     }

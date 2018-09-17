@@ -8,7 +8,14 @@ import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
 import com.intelligent.reader.app.BookApplication
+import com.orhanobut.logger.Logger
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadConfig

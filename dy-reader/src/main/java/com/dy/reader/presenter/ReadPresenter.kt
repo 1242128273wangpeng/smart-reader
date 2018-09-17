@@ -32,10 +32,10 @@ import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.TypefaceUtil
 import com.dy.reader.util.getNotchSize
 import com.dy.reader.util.isNotchScreen
 import com.dy.reader.util.xiaomiNotch
-import com.dy.reader.util.TypefaceUtil
 import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -48,8 +48,6 @@ import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
-import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * Created by yuchao on 2017/11/14 0014
@@ -134,7 +132,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         params["readgap"] = settings.readInterlineaSpace.toString()
         params["pageturn"] = settings.animation_mode.toString()
 
-        DyStatService.onEvent(EventPoint.READPAGE_DEFAULTSETTINGS, params)
+        StartLogClickUtil.upLoadEventLog(act, StartLogClickUtil.READPAGE_PAGE
+                , StartLogClickUtil.DEFAULTSETTING)
     }
 
     fun loadData(useReadStatus: Boolean = false) {

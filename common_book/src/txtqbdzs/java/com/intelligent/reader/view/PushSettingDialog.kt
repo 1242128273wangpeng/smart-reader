@@ -30,16 +30,19 @@ class PushSettingDialog(val activity: Activity) : LifecycleObserver {
 
         dialog.img_close.setOnClickListener {
             dialog.dismiss()
-            DyStatService.onEvent(EventPoint.MAIN_PUSHCLOSE)
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
+                    StartLogClickUtil.POPUPCLOSE)
         }
 
         dialog.txt_open_push.setOnClickListener {
             openPushListener?.invoke()
-            DyStatService.onEvent(EventPoint.MAIN_POPUPNOWOPEN)
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
+                    StartLogClickUtil.POPUPNOWOPEN)
         }
 
         dialog.setOnShowListener {
-            DyStatService.onEvent(EventPoint.MAIN_PUSHEXPOSE)
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
+                    StartLogClickUtil.POPUPEXPOSE)
         }
 
     }
