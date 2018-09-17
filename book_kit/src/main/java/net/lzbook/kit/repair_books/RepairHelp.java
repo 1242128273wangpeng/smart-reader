@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.bean.BookFix;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.util.CommonUtil;
 import com.dingyue.contract.util.SharedPreUtil;
@@ -33,27 +31,12 @@ import java.util.Map;
  */
 public class RepairHelp {
 
-    private static SharedPreUtil sp =
-            new SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG);
-
     public static void showFixMsg(Activity activity, Book book, FixCallBack fixCallBack) {
-
-        if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id())
-                != null)) {
-            BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBookFix(book.getBook_id());
-            if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
-                if (bookFix.getFix_type() == 1) {
-                    CommonUtil.showToastMessage("本书问题章节已精修完成");
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                            BaseBookApplication.getGlobalContext()).deleteBookFix(
-                            bookFix.getBook_id());
-                } else if (bookFix.getFix_type() == 2) {
-                    if (NetWorkUtils.isNetworkAvailable(activity)) {
-                        showFixHintDialog(activity, book, bookFix, fixCallBack);
-                    }
-                }
+        Book book1 = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.getBook_id());
+        if (book1 != null && book1.waitingCataFix()) {
+            if (NetWorkUtils.isNetworkAvailable(activity)) {
+                showFixHintDialog(activity, book1, fixCallBack);
             }
         }
 
@@ -62,8 +45,7 @@ public class RepairHelp {
 
     private static boolean isComfire = false;
 
-    private static void showFixHintDialog(final Activity activity, final Book book,
-            final BookFix bookFix, final FixCallBack fixCallBack) {
+    private static void showFixHintDialog(final Activity activity, final Book book, final FixCallBack fixCallBack) {
         if (activity != null && !activity.isFinishing()) {
             isComfire = false;
             final MyDialog myDialog = new MyDialog(activity, R.layout.fixbook_hint_dialog);
@@ -72,12 +54,10 @@ public class RepairHelp {
             dialog_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // 更新修复状态为已修复
-                    sp.putBoolean(book.getBook_id(), false);
                     isComfire = true;
                     myDialog.dismiss();
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
-                        fixBook(book, bookFix, fixCallBack);
+                        fixBook(book, fixCallBack);
                     } else {
                         CommonUtil.showToastMessage("网络不给力，请检查网络连接");
                     }
@@ -98,9 +78,6 @@ public class RepairHelp {
             myDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    bookFix.setDialog_flag(1);
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                            BaseBookApplication.getGlobalContext()).updateBookFix(bookFix);
                     if (!isComfire) {
                         Map<String, String> data2 = new HashMap<>();
                         data2.put("type", "2");
@@ -120,8 +97,7 @@ public class RepairHelp {
         }
     }
 
-    private static void fixBook(final Book book, final BookFix bookFix,
-            final FixCallBack fixCallBack) {
+    private static void fixBook(final Book book, final FixCallBack fixCallBack) {
         //1.删除缓存
         //2.删除目录
         //3.清除缓存队列中信息
@@ -131,61 +107,45 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                ChapterDaoHelper bookChapterDao =
+                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                BaseBookApplication.getGlobalContext(), book.getBook_id());
+                BaseBookHelper.removeChapterCacheFile(book);
+                CacheManager.INSTANCE.remove(book.getBook_id());
+                bookChapterDao.deleteAllChapters();
 
-                Book interimBook = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).loadBook(book.getBook_id());
-
-                if (interimBook != null) {
-
-                    ChapterDaoHelper bookChapterDao =
-                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                    BaseBookApplication.getGlobalContext(),
-                                    interimBook.getBook_id());
-                    BaseBookHelper.removeChapterCacheFile(interimBook);
-                    CacheManager.INSTANCE.remove(interimBook.getBook_id());
-                    bookChapterDao.deleteAllChapters();
-
-                    interimBook.setList_version(bookFix.getList_version());
-                    interimBook.setC_version(bookFix.getC_version());
-
-                    if (interimBook.getLast_chapter() != null) {
-                        interimBook.getLast_chapter().setChapter_id("");
-                    }
-
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                            BaseBookApplication.getGlobalContext()).updateBook(interimBook);
-
-                    CacheManager.INSTANCE.start(interimBook.getBook_id(), 0);
-
-                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                            BaseBookApplication.getGlobalContext()).deleteBookFix(
-                            interimBook.getBook_id());
-
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (fixCallBack != null) {
-                                fixCallBack.toDownLoadActivity();
-                            }
-                        }
-                    });
+                if (book.waitingCataFix()) {
+                    book.setList_version(book.getList_version_fix());
+                    book.setForce_fix(0);
                 }
+
+                if (book.getLast_chapter() != null) {
+                    book.getLast_chapter().setChapter_id("");
+                }
+
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).updateBook(book);
+
+                CacheManager.INSTANCE.start(book.getBook_id(), 0);
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (fixCallBack != null) {
+                            fixCallBack.toDownLoadActivity();
+                        }
+                    }
+                });
+
             }
         }).start();
     }
 
     public static boolean isShowFixBtn(Context context, String book_id) {
-        if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id) != null)) {
-            BookFix bookFix = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBookFix(book_id);
-            if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
-                if (bookFix.getFix_type() == 2) {
-                    if (NetWorkUtils.isNetworkAvailable(context)) {
-                        sp.putBoolean(book_id, true);
-                        return true;
-                    }
-                }
+        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id);
+        if (book != null && book.waitingCataFix()) {
+            if (NetWorkUtils.isNetworkAvailable(context)) {
+                return true;
             }
         }
         return false;
@@ -206,57 +166,47 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Book interimBook = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                Book book1 = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                         BaseBookApplication.getGlobalContext()).checkBookSubscribe(
                         book.getBook_id());
-                if (interimBook != null) {
-                    BookFix bookFix =
-                            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                    BaseBookApplication.getGlobalContext()).loadBookFix(
-                                    interimBook.getBook_id());
-                    if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
-                        if (bookFix.getFix_type() == 2) {
-                            if (NetWorkUtils.isNetworkAvailable(context)) {
-                                ChapterDaoHelper bookChapterDao =
-                                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                                BaseBookApplication.getGlobalContext(),
-                                                interimBook.getBook_id());
-                                BaseBookHelper.removeChapterCacheFile(interimBook);
-                                CacheManager.INSTANCE.remove(interimBook.getBook_id());
-                                bookChapterDao.deleteAllChapters();
+                if (book1 != null && book1.waitingCataFix()) {
+                    if (NetWorkUtils.isNetworkAvailable(context)) {
+                        ChapterDaoHelper bookChapterDao =
+                                ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                        BaseBookApplication.getGlobalContext(),
+                                        book1.getBook_id());
+                        BaseBookHelper.removeChapterCacheFile(book1);
+                        CacheManager.INSTANCE.remove(book1.getBook_id());
+                        bookChapterDao.deleteAllChapters();
 
-                                interimBook.setList_version(bookFix.getList_version());
-                                interimBook.setC_version(bookFix.getC_version());
-
-                                if (interimBook.getLast_chapter() != null) {
-                                    interimBook.getLast_chapter().setChapter_id("");
-                                }
-
-                                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                        BaseBookApplication.getGlobalContext()).updateBook(
-                                        interimBook);
-                                CacheManager.INSTANCE.start(interimBook.getBook_id(), 0);
-                                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                        BaseBookApplication.getGlobalContext()).deleteBookFix(
-                                        interimBook.getBook_id());
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (fixCallBack != null) {
-                                            fixCallBack.toDownLoadActivity();
-                                        }
-                                    }
-                                });
-
-                            } else {
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        CommonUtil.showToastMessage("网络不给力，请检查网络连接");
-                                    }
-                                });
-                            }
+                        if (book1.waitingCataFix()) {
+                            book1.setList_version(book1.getList_version_fix());
+                            book1.setForce_fix(0);
                         }
+
+                        if (book1.getLast_chapter() != null) {
+                            book1.getLast_chapter().setChapter_id("");
+                        }
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book1);
+                        CacheManager.INSTANCE.start(book1.getBook_id(), 0);
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (fixCallBack != null) {
+                                    fixCallBack.toDownLoadActivity();
+                                }
+                            }
+                        });
+
+                    } else {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommonUtil.showToastMessage("网络不给力，请检查网络连接");
+                            }
+                        });
                     }
                 }
             }

@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:ellipsize="end"
-    android:gravity="center_vertical"
-    android:maxLines="1"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:textColor="#4C000000"
-    tools:text="@string/default_title"/>
+    android:layout_height="50dp">
+
+    <TextView
+        android:id="@+id/txt_chapter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="#616161"
+        android:textSize="14sp"
+        tools:text="@string/default_title"
+        tools:ignore="RtlHardcoded"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#F4F4F4"/>
+
+</RelativeLayout>

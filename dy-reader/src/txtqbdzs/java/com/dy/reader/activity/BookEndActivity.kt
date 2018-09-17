@@ -266,7 +266,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
             this.sourceList.clear()
             this.sourceList.addAll(sourceList)
         }
-
     }
 
 }

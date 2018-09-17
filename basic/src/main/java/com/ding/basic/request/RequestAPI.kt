@@ -14,6 +14,7 @@ import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -265,5 +266,9 @@ object RequestAPI {
         return requestService.requestSubBook(bookName, bookAuthor)
     }
 
+    fun downloadFont(fontName: String): Flowable<ResponseBody> {
+        val url = RequestService.FONT_URL + fontName
+        return requestService.downloadFont(url)
+    }
 
 }

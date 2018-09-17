@@ -203,6 +203,7 @@ class SharedPreUtil(val type: Int) {
         const val READ_PARAGRAPH_SPACE = "read_paragraph_space"     //阅读页段间距
         const val READ_CONTENT_PAGE_TOP_SPACE = "read_content_page_top_space"   //阅读页距顶部的间距
         const val READ_CONTENT_PAGE_LEFT_SPACE = "read_content_page_left_space" //阅读页距左右的间距
+        const val READ_TODAY_FIRST_POST_SETTINGS = "read_today_first_post_settings" //每天上传一次阅读页设置
 
         /**
          * push
@@ -214,6 +215,8 @@ class SharedPreUtil(val type: Int) {
 
         const val APPLICATION_SHARE_ACTION = "application_share_action"
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
+
+        const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
     }
 
 

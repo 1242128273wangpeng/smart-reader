@@ -30,7 +30,9 @@ import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
+import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.TypefaceUtil
 import com.dy.reader.util.getNotchSize
 import com.dy.reader.util.isNotchScreen
 import com.dy.reader.util.xiaomiNotch
@@ -46,7 +48,6 @@ import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
-import java.util.*
 
 /**
  * Created by yuchao on 2017/11/14 0014
@@ -72,15 +73,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     var currentThemeMode: String? = null
 
-//    private val handler = Handler(Looper.getMainLooper())
-
-//    private val readerRestDialog: ReaderRestDialog? by lazy {
-//        readReference?.get()?.let {
-//            ReaderRestDialog(it)
-//        }
-//        null
-//    }
-
     init {
         readReference = WeakReference(act)
     }
@@ -92,16 +84,9 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         ReaderSettings.instance.loadParams()
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
-//        ReaderSettings.animation_mode = sp?.getInt("page_mode", Constants.PAGE_MODE_DELAULT) ?: Constants.PAGE_MODE_DELAULT
-//        ReaderSettings.FULL_SCREEN_READ = sp?.getBoolean("full_screen_read", false) ?: false
-//        ReaderSettings.MODE = 0
-//        ReaderSettings.MODE = sp?.getInt("content_mode", 51) ?: 51
-//        Constants.isSlideUp = ReaderSettings.animation_mode == 3
-//        Constants.isVolumeTurnover = sp?.getBoolean("sound_turnover", true) ?: true
         AppLog.e("getAdsStatus", "novel_onCreate")
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
-//        autoSpeed = ReaderStatus.autoReadSpeed()!!
         myNovelHelper = NovelHelper(readReference?.get())
         myNovelHelper?.setOnHelperCallBack(this)
 
@@ -125,6 +110,30 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 //                readerRestDialog?.show(view)
 //            })
 //        }
+
+        uploadSettingLog(act)
+    }
+
+    private fun uploadSettingLog(act: ReaderActivity) {
+        val sp = act.getSharedPreferences(READER_CONFIG, Context.MODE_PRIVATE)
+        val lastTime = sp.getLong(SharedPreUtil.READ_TODAY_FIRST_POST_SETTINGS, 0L)
+        val currentTime = System.currentTimeMillis()
+        val isSameDay = AppUtils.isToday(lastTime, currentTime)
+        if (isSameDay) return
+
+        val settings: ReaderSettings = Gson().fromJson(sp.getString(READER_CONFIG, "{}"),
+                ReaderSettings::class.java) ?: return
+
+        val params = HashMap<String, String>()
+        params["lightvalue"] = settings.screenBrightness.toString()
+        params["font"] = settings.fontSize.toString()
+        params["fontsetting"] = TypefaceUtil.loadTypefaceTag(settings.fontTypeface)
+        params["background"] = settings.readThemeMode.toString()
+        params["readgap"] = settings.readInterlineaSpace.toString()
+        params["pageturn"] = settings.animation_mode.toString()
+
+        StartLogClickUtil.upLoadEventLog(act, StartLogClickUtil.READPAGE_PAGE
+                , StartLogClickUtil.DEFAULTSETTING)
     }
 
     fun loadData(useReadStatus: Boolean = false) {
@@ -239,7 +248,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                 ReaderSettings.instance.isLandscape = false
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             } else if (sp?.getInt("screen_mode", 3) == Configuration.ORIENTATION_LANDSCAPE && readReference?.get()?.getResources()!!
-                    .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                            .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
                 }
@@ -408,7 +417,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
-        goToBookEndCount = 0
         StatService.onResume(act)
     }
 
@@ -470,14 +478,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         ReaderStatus.position = Position(book_id = "")
 
         MediaControl.stopRestMedia()
-
-//        try {
-//            if (readerRestDialog != null && readerRestDialog!!.isShowing()) {
-//                readerRestDialog?.dismiss()
-//            }
-//        } catch (e: Exception) {
-//
-//        }
 
     }
 

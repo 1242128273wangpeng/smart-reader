@@ -13,9 +13,6 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.repair_books.RepairHelp
 import java.text.MessageFormat
 
 /**
@@ -53,8 +50,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
          * 并且章节信息变更为：章节已修复至最新（列表书架显示，九宫格书架只显示更新角标）
          * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
          */
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
+        if (book.waitingCataFix()) {
             txt_book_states_update.visibility = View.VISIBLE
             txt_book_last_update_time.text = ""
             txt_book_last_chapter.text = "章节已修复至最新"

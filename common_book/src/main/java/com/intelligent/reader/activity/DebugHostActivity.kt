@@ -109,6 +109,7 @@ class DebugHostActivity : BaseCacheableActivity() {
             list.add("http://8086.zn.bookapi.cn")
             list.add("https://unionapi.bookapi.cn")
             list.add("https://unioncontent.bookapi.cn")
+            list.add("https://uniontest.bookapi.cn")
 
             sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(list))
         }

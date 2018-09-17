@@ -9,6 +9,7 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.mode.NovelPageBean
+import com.dy.reader.util.TypefaceUtil
 import java.util.ArrayList
 
 /**
@@ -182,6 +183,8 @@ object ReadSeparateHelper {
             readerSettings.mPaint!!.isDither = true
         }
         readerSettings.mPaint!!.textSize = readerSettings.fontSize * AppHelper.screenScaledDensity
+
+        readerSettings.mPaint!!.typeface = TypefaceUtil.loadTypeface(readerSettings.fontTypeface)
 
         val fm = readerSettings.mPaint!!.fontMetrics
 

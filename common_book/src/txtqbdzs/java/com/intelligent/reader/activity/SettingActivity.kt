@@ -22,6 +22,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.reader.activity.DisclaimerActivity
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
@@ -33,7 +34,6 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
@@ -206,7 +206,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             bt_night_shift!!.setChecked(false)
         }
 
-        bt_wifi_auto!!.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true))
+        bt_wifi_auto!!.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true))
 
         //福利中心动画
         startWelfareCenterAnim()
@@ -510,7 +510,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
-            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
+            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
             edit.apply()
             val data = HashMap<String, String>()
             data.put("type", if (isChecked) "1" else "0")

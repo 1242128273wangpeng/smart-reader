@@ -31,7 +31,7 @@ class LoadingDialogFragment : DialogFragment() {
         if (fm?.findFragmentByTag(ReadSettingFragment.TAG) == null) {
             dialog.window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
-        dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//        dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 
         dialog.setContentView(R.layout.frag_loading_dialog)
 
@@ -105,7 +105,7 @@ class LoadingDialogFragment : DialogFragment() {
     /**
      * 显示加载布局
      */
-    fun showLoading() {
+    private fun showLoading() {
         dialog?.ll_loading_content?.visibility = View.VISIBLE
         dialog?.ll_reload_content?.visibility = View.GONE
     }
@@ -113,7 +113,7 @@ class LoadingDialogFragment : DialogFragment() {
     /**
      * 显示重新加载布局
      */
-    fun showReload() {
+    private fun showReload() {
         dialog?.ll_loading_content?.visibility = View.GONE
         dialog?.ll_reload_content?.visibility = View.VISIBLE
         dialog?.ll_reload_content?.setOnClickListener({
@@ -132,19 +132,10 @@ class LoadingDialogFragment : DialogFragment() {
     }
 
     fun dismissDiaslog(isResumed: Boolean) {
-        if (isResumed) {
-            if (activity != null && !activity.isFinishing && activity.fragmentManager != null) {
-                super.dismiss()
-            }
+        if (isResumed && activity != null && !activity.isFinishing && activity.fragmentManager != null) {
+            super.dismiss()
         } else {
             dismissAllowingStateLoss()
-        }
-
-    }
-
-    override fun dismissAllowingStateLoss() {
-        if (isDialogShowing()) {
-            super.dismissAllowingStateLoss()
         }
     }
 
@@ -153,7 +144,7 @@ class LoadingDialogFragment : DialogFragment() {
      * 判断弹窗是否显示
      * @return
      */
-    fun isDialogShowing(): Boolean {
+    private fun isDialogShowing(): Boolean {
         return dialog != null && dialog.isShowing
     }
 }

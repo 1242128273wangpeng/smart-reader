@@ -30,12 +30,6 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
-        if (ReaderSettings.instance.isLandscape) {
-            dialog.sv_feedback_content.layoutParams.height = readerActivity.resources.getDimensionPixelOffset(R.dimen.feedback_content_height)
-        } else {
-            dialog.sv_feedback_content.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-        }
-
         dialog.cb_feedback_chapter_empty.setOnClickListener {
             checkedPosition = 1
 
