@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.ding.basic.Config
@@ -31,14 +30,10 @@ import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
-import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
-import com.dy.reader.event.EventSetting
-import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
@@ -46,29 +41,18 @@ import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.view.PushSettingDialog
-import de.greenrobot.event.EventBus
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.zsmfqbxs.act_home.*
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadConfig
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
 import java.io.File
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
@@ -245,7 +229,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         ll_bottom_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
-            recommendFragment?.setTitle("推荐",2);
+            recommendFragment?.setTitle("推荐", 2);
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
         }
@@ -253,19 +237,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
-            rankingFragment?.setTitle("榜单",3);
+            rankingFragment?.setTitle("榜单", 3);
             HomeLogger.uploadHomeRankSelected()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
             sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
-            categoryFragment?.setTitle("分类",4);
+            categoryFragment?.setTitle("分类", 4);
             HomeLogger.uploadHomeCategorySelected()
         }
 
         setMenuTitleMargin()
-
 
 
     }
@@ -360,7 +343,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
-
 
 
     override fun receiveUpdateCallBack(notification: Notification) {
@@ -531,8 +513,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
 
-
-
     /***
      * HomeActivity子页面的Adapter
      * **/
@@ -638,7 +618,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
 //                setNightMode(true)
-            } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
+            } else if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }
@@ -673,7 +653,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             view_pager.setCurrentItem(index, false)
         }
     }
-
 
 
     companion object {

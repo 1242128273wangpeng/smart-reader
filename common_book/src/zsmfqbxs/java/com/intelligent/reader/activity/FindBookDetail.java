@@ -1,6 +1,7 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -121,7 +122,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_detail_content = findViewById(R.id.rank_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(RequestService.AUTHOR_V4)||currentUrl.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
+                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);
@@ -170,7 +172,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     @Override
     public boolean shouldLightStatusBase() {
-        if("cc.quanben.novel".equals(AppUtils.getPackageName())){
+        if ("cc.quanben.novel".equals(AppUtils.getPackageName())) {
             return true;
         }
         return super.shouldLightStatusBase();

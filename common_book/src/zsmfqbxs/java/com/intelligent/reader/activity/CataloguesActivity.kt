@@ -25,7 +25,6 @@ import com.intelligent.reader.adapter.CatalogAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.zsmfqbxs.act_catalog.*
@@ -37,6 +36,7 @@ import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.antiShakeClick
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.Callable
 
