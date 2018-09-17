@@ -11,6 +11,7 @@
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="5dp"
+        android:visibility="gone"
         android:background="@drawable/bookshelf_common_shadow_bg"/>
 
     <LinearLayout
