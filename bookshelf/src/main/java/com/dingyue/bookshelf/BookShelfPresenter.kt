@@ -115,8 +115,12 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
         if (books != null) {
-            iBookList.removeAll {
-                it.item_type != 2
+            if(isList){
+                iBookList.removeAll {
+                    it.item_type != 2
+                }
+            }else{
+                iBookList.clear()
             }
 
             if (books.isEmpty()) {
@@ -191,7 +195,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
         val views = mutableListOf<ViewGroup>()
 
-        for (i in 0 until count){
+        for (i in 0 until count) {
             views.add(BookShelfADView(activity))
         }
 
