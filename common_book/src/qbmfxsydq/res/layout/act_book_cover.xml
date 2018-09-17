@@ -159,8 +159,8 @@
                     </LinearLayout>
 
                     <ImageView
-                        android:layout_width="97dp"
-                        android:layout_height="140dp"
+                        android:layout_width="95dp"
+                        android:layout_height="148dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginLeft="16dp"
                         android:background="@drawable/cover_book_shadow"
@@ -168,8 +168,8 @@
                         />
                     <ImageView
                         android:id="@+id/book_cover_image"
-                        android:layout_width="97dp"
-                        android:layout_height="136dp"
+                        android:layout_width="95dp"
+                        android:layout_height="134dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginLeft="16dp"
                         android:background="@drawable/bookshelf_book_cover_default"
