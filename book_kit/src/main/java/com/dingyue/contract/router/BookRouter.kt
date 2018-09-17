@@ -1,7 +1,6 @@
 package com.dingyue.contract.router
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.bean.Book
@@ -9,7 +8,6 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.NetWorkUtils
@@ -33,11 +31,11 @@ object BookRouter {
 
     private val shake = AntiShake()
 
-    fun navigateCoverOrRead(activity: Activity, interimBook: Book, type: Int): Any? {
+    fun navigateCoverOrRead(activity: Activity, b: Book, type: Int): Any? {
 
         val bundle = Bundle()
 
-        var book = interimBook
+        var book = b
         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id)
 
         if (localBook != null) {
