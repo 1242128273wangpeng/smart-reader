@@ -1,12 +1,13 @@
 package com.ding.basic.repository
 
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.request.RequestSubscriber
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 interface RequestRepository {
 
@@ -19,6 +20,8 @@ interface RequestRepository {
     fun requestDynamicCheck(requestSubscriber: RequestSubscriber<BasicResult<Int>>)
 
     fun requestDynamicParameters(requestSubscriber: RequestSubscriber<Parameter>)
+
+    fun requestAdControlDynamic(requestSubscriber: RequestSubscriber<AdControlByChannelBean>) //广告分渠道，分版本，分广告位开关
 
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>)
 
@@ -74,7 +77,9 @@ interface RequestRepository {
 
     fun requestAuthAccessSync(): Boolean
 
-    fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<ArrayList<String>>)
+    fun requestPushTags(udid: String): Flowable<PushInfo>
+
+    fun requestBannerInfo(): Flowable<BannerInfo>
 
     /************************* 本地数据 *************************/
 

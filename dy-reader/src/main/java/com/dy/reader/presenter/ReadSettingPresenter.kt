@@ -419,7 +419,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             data.put("type", "1")
             StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         }
-        ReaderSettings.instance.save()
+//        ReaderSettings.instance.save()
 
         changeNight()
     }

@@ -131,40 +131,47 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                BaseBookApplication.getGlobalContext(), book.getBook_id());
-                BaseBookHelper.removeChapterCacheFile(book);
-                CacheManager.INSTANCE.remove(book.getBook_id());
-                bookChapterDao.deleteAllChapters();
 
-                book.setList_version(bookFix.getList_version());
-                book.setC_version(bookFix.getC_version());
+                Book interimBook = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).loadBook(book.getBook_id());
 
-                if (book.getLast_chapter() != null) {
-                    book.getLast_chapter().setChapter_id("");
-                }
+                if (interimBook != null) {
 
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).updateBook(book);
+                    ChapterDaoHelper bookChapterDao =
+                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                    BaseBookApplication.getGlobalContext(),
+                                    interimBook.getBook_id());
+                    BaseBookHelper.removeChapterCacheFile(interimBook);
+                    CacheManager.INSTANCE.remove(interimBook.getBook_id());
+                    bookChapterDao.deleteAllChapters();
 
-                CacheManager.INSTANCE.start(book.getBook_id(), 0);
+                    interimBook.setList_version(bookFix.getList_version());
+                    interimBook.setC_version(bookFix.getC_version());
 
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).deleteBookFix(book.getBook_id());
-
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (fixCallBack != null) {
-                            fixCallBack.toDownLoadActivity();
-                        }
+                    if (interimBook.getLast_chapter() != null) {
+                        interimBook.getLast_chapter().setChapter_id("");
                     }
-                });
 
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                            BaseBookApplication.getGlobalContext()).updateBook(interimBook);
+
+                    CacheManager.INSTANCE.start(interimBook.getBook_id(), 0);
+
+                    RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                            BaseBookApplication.getGlobalContext()).deleteBookFix(
+                            interimBook.getBook_id());
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (fixCallBack != null) {
+                                fixCallBack.toDownLoadActivity();
+                            }
+                        }
+                    });
+                }
             }
         }).start();
-
     }
 
     public static boolean isShowFixBtn(Context context, String book_id) {
@@ -199,37 +206,39 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if ((RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                Book interimBook = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                         BaseBookApplication.getGlobalContext()).checkBookSubscribe(
-                        book.getBook_id()) != null)) {
+                        book.getBook_id());
+                if (interimBook != null) {
                     BookFix bookFix =
                             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                                     BaseBookApplication.getGlobalContext()).loadBookFix(
-                                    book.getBook_id());
+                                    interimBook.getBook_id());
                     if (bookFix != null && !TextUtils.isEmpty(bookFix.getBook_id())) {
                         if (bookFix.getFix_type() == 2) {
                             if (NetWorkUtils.isNetworkAvailable(context)) {
                                 ChapterDaoHelper bookChapterDao =
                                         ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
                                                 BaseBookApplication.getGlobalContext(),
-                                                book.getBook_id());
-                                BaseBookHelper.removeChapterCacheFile(book);
-                                CacheManager.INSTANCE.remove(book.getBook_id());
+                                                interimBook.getBook_id());
+                                BaseBookHelper.removeChapterCacheFile(interimBook);
+                                CacheManager.INSTANCE.remove(interimBook.getBook_id());
                                 bookChapterDao.deleteAllChapters();
 
-                                book.setList_version(bookFix.getList_version());
-                                book.setC_version(bookFix.getC_version());
+                                interimBook.setList_version(bookFix.getList_version());
+                                interimBook.setC_version(bookFix.getC_version());
 
-                                if (book.getLast_chapter() != null) {
-                                    book.getLast_chapter().setChapter_id("");
+                                if (interimBook.getLast_chapter() != null) {
+                                    interimBook.getLast_chapter().setChapter_id("");
                                 }
 
                                 RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                        BaseBookApplication.getGlobalContext()).updateBook(book);
-                                CacheManager.INSTANCE.start(book.getBook_id(), 0);
+                                        BaseBookApplication.getGlobalContext()).updateBook(
+                                        interimBook);
+                                CacheManager.INSTANCE.start(interimBook.getBook_id(), 0);
                                 RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                                         BaseBookApplication.getGlobalContext()).deleteBookFix(
-                                        book.getBook_id());
+                                        interimBook.getBook_id());
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     @Override
                                     public void run() {

@@ -1,6 +1,6 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -51,7 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
 import swipeback.ActivityLifecycleHelper;

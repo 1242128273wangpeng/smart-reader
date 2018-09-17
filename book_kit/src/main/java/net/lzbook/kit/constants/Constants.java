@@ -411,6 +411,27 @@ public class Constants {
      */
     public static int book_shelf_state = 1;
 
+    /**
+     *广告分渠道，分版本，分广告位控制
+     * @param context
+     */
+
+    public static String ad_control_status = "0"; //广告分渠道控制  0表示关 1表示开
+    public static String ad_control_pkg = ""; //广告分渠道控制   包名
+    public static String ad_control_channelId = "";//广告分渠道控制 渠道号
+    public static String ad_control_version = "";//广告分渠道控制 app版本号
+    public static String ad_control_adTpye = "";//广告分渠道控制  广告位类型  0全部 1 福利中心 2书架页1-1  3书架页1-2  4阅读页广告 5 福利中心和书架页1-2
+
+    public static String ad_control_welfare= "1"; //广告分渠道控制广告位  1福利中心
+    public static String ad_control_shelf_normal = "2"; //广告分渠道控制广告位   2书架页1-1
+    public static String ad_control_shelf_float = "3";//广告分渠道控制广告位  3书架页1-2
+    public static String ad_control_reader = "4";//广告分渠道控制广告位     4阅读页广告
+    public static String ad_control_welfare_shelf = "5";//广告分渠道控制广告位     5福利中心和书架页1-2
+    public static String ad_control_other = "6";//广告分渠道控制广告位    4其他广告
+
+
+
+
 
     /*
      * 初始化

@@ -6,9 +6,12 @@ import android.text.TextUtils
 import android.util.Log
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.request.ResultCode
+import com.ding.basic.rx.CommonResultMapper
 import com.ding.basic.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
 import com.ding.basic.util.ChapterCacheUtil
@@ -143,6 +146,22 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    override fun requestAdControlDynamic(requestSubscriber: RequestSubscriber<AdControlByChannelBean>) {
+        InternetRequestRepository.loadInternetRequestRepository(context = context).requestAdControlDynamic()!!
+                .compose(SchedulerHelper.schedulerIOHelper<AdControlByChannelBean>())
+                .subscribe({ result ->
+                    if (result != null) {
+                        requestSubscriber.onNext(result)
+                    } else {
+                        requestSubscriber.onError(Throwable("获取广告动态参数异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求广告动态参数完成！")
+                })
+    }
+
     override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestBookDetail(book_id, book_source_id, book_chapter_id)!!
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<Book>>())
@@ -160,15 +179,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 requestSubscriber.onNext(result.data)
 
                                 synchronized(RequestRepositoryFactory::class.java) {
-                                    val book = result.data
                                     val localBook = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
 
-                                    if (book != null && localBook != null) {
-                                        book.last_chapter = localBook.last_chapter
-                                        LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
-
-                                        if (localBook.book_chapter_id == "") {
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(book.book_chapter_id)
+                                    if (localBook != null && !TextUtils.isEmpty(localBook.book_id)) {
+                                        if (TextUtils.isEmpty(localBook.book_chapter_id) && !TextUtils.isEmpty(result.data?.book_chapter_id)) {
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, localBook.book_id).updateBookChapterId(result.data?.book_chapter_id!!)
                                         }
                                     }
                                 }
@@ -303,7 +318,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             val lastChapter = chapterDaoHelp.queryLastChapter()
 
                             if (lastChapter != null) {
-                                book.host = result.data!!.host
+                                book.host = result.data?.host
                                 book.book_id = result.data!!.book_id
                                 book.chapter_count = result.data?.chapterCount!!
                                 book.book_source_id = result.data!!.book_source_id
@@ -618,7 +633,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                         if (localBook != null) {
-
                                             localBook.status = book!!.status   //更新书籍状态
                                             localBook.book_chapter_id = book!!.book_chapter_id
                                             localBook.name = book.name
@@ -631,7 +645,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             localBook.img_url = book.img_url
                                             localBook.label = book.label
                                             localBook.sub_genre = book.sub_genre
-                                            localBook.chapters_update_index = book.chapters_update_index
                                             localBook.genre = book.genre
                                             localBook.score = book.score
 
@@ -677,44 +690,48 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
 
                             result.data?.coverList?.forEach {
-                                if (loadRepository.checkBookSubscribe(it.book_id) != null) {
-                                    val book = loadRepository.loadBook(it.book_id)
-                                    if (book != null) {
-                                        if (!TextUtils.isEmpty(it.book_chapter_id)) {
-                                            book.book_chapter_id = it.book_chapter_id
+                                val book = loadRepository.checkBookSubscribe(it.book_id)
+                                if (book != null) {
+                                    if (!TextUtils.isEmpty(it.book_chapter_id)) {
+                                        book.book_chapter_id = it.book_chapter_id
 
-                                            book.host = it.host
+                                        book.host = it.host
 
-                                            book.book_type = it.book_type
-
-                                            // 保存在chapter表中
-                                            if (book.fromQingoo()) {
-                                                ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
-                                            }
-
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
-                                        }
-                                        if (!TextUtils.isEmpty(it.desc)) {
-                                            book.desc = it.desc
-                                        }
-                                        if (!TextUtils.isEmpty(it.status)) {
-                                            book.status = it.status
-                                        }
-                                        book.genre = it.genre
-                                        book.sub_genre = it.sub_genre
                                         book.book_type = it.book_type
+
+                                        // 保存在chapter表中
+                                        if (book.fromQingoo()) {
+                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
+                                        }
+
+                                        ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
+                                    }
+                                    if (!TextUtils.isEmpty(it.desc)) {
+                                        book.desc = it.desc
+                                    }
+                                    if (!TextUtils.isEmpty(it.status)) {
+                                        book.status = it.status
+                                    }
+                                    book.genre = it.genre
+                                    book.sub_genre = it.sub_genre
+                                    book.book_type = it.book_type
+
+                                    val lastChapter = ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).queryLastChapter()
+
+                                    if (lastChapter != null) {
+                                        book.last_chapter = lastChapter
+                                    } else {
                                         if (it.last_chapter != null) {
                                             book.last_chapter = it.last_chapter
                                         }
-
-                                        //青果书籍有可能book_source_id不对
-                                        if (book.book_source_id == "api.qingoo.cn") {
-                                            book.book_source_id = book.book_id
-                                        }
-
-                                        books.add(book)
                                     }
 
+                                    //青果书籍有可能book_source_id不对
+                                    if (book.book_source_id == "api.qingoo.cn") {
+                                        book.book_source_id = book.book_id
+                                    }
+
+                                    books.add(book)
                                 }
                             }
                             if (books.isNotEmpty()) {
@@ -953,25 +970,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         getUploadBookShelfFlowable(accountId)
                     }
                 }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-            override fun onNext(it: BasicResultV4<String>?) {
-                onComplete?.invoke()
-                Log.d("keepBookShelf", "thread : " + Thread.currentThread() +
-                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+                    override fun onNext(it: BasicResultV4<String>?) {
+                        onComplete?.invoke()
+                        Log.d("keepBookShelf", "thread : " + Thread.currentThread() +
+                                if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
 
-            }
+                    }
 
-            override fun onError(t: Throwable?) {
-                onComplete?.invoke()
-                if (t != null) {
-                    Log.d("keepBookShelf", "fail : " + t.message)
-                }
-            }
+                    override fun onError(t: Throwable?) {
+                        onComplete?.invoke()
+                        if (t != null) {
+                            Log.d("keepBookShelf", "fail : " + t.message)
+                        }
+                    }
 
-            override fun onComplete() {
+                    override fun onComplete() {
 
-            }
+                    }
 
-        })
+                })
 
     }
 
@@ -1058,25 +1075,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 //
 
                 }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-            override fun onNext(it: BasicResultV4<String>?) {
-                onComplete?.invoke()
-                Log.d("keepBookMark", "thread : " + Thread.currentThread() +
-                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+                    override fun onNext(it: BasicResultV4<String>?) {
+                        onComplete?.invoke()
+                        Log.d("keepBookMark", "thread : " + Thread.currentThread() +
+                                if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
 
-            }
+                    }
 
-            override fun onError(t: Throwable?) {
-                onComplete?.invoke()
-                if (t != null) {
-                    Log.d("keepBookMark", "fail : " + t.message)
-                }
-            }
+                    override fun onError(t: Throwable?) {
+                        onComplete?.invoke()
+                        if (t != null) {
+                            Log.d("keepBookMark", "fail : " + t.message)
+                        }
+                    }
 
-            override fun onComplete() {
+                    override fun onComplete() {
 
-            }
+                    }
 
-        })
+                })
 
     }
 
@@ -1195,25 +1212,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
 
                 }.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-            override fun onNext(it: BasicResultV4<String>?) {
-                onComplete?.invoke()
-                Log.d("keepBookMark", "thread : " + Thread.currentThread() +
-                        if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
+                    override fun onNext(it: BasicResultV4<String>?) {
+                        onComplete?.invoke()
+                        Log.d("keepBookMark", "thread : " + Thread.currentThread() +
+                                if (it?.data == null) " 服务器已有数据或本地无数据" else " 服务器无数据 上传成功 data : " + it.toString())
 
-            }
+                    }
 
-            override fun onError(t: Throwable?) {
-                onComplete?.invoke()
-                if (t != null) {
-                    Log.d("keepBookMark", "fail : " + t.message)
-                }
-            }
+                    override fun onError(t: Throwable?) {
+                        onComplete?.invoke()
+                        if (t != null) {
+                            Log.d("keepBookMark", "fail : " + t.message)
+                        }
+                    }
 
-            override fun onComplete() {
+                    override fun onComplete() {
 
-            }
+                    }
 
-        })
+                })
     }
 
     /**
@@ -1319,18 +1336,18 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     override fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
         InternetRequestRepository.loadInternetRequestRepository(context = context).requestLogoutAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<JsonObject>())?.subscribeWith(object : ResourceSubscriber<JsonObject>() {
-            override fun onNext(result: JsonObject?) {
-                requestSubscriber.onNext(result)
-            }
+                    override fun onNext(result: JsonObject?) {
+                        requestSubscriber.onNext(result)
+                    }
 
-            override fun onError(throwable: Throwable) {
-                requestSubscriber.onError(throwable)
-            }
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
 
-            override fun onComplete() {
-                requestSubscriber.onComplete()
-            }
-        })
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
     }
 
 
@@ -1829,26 +1846,41 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
-    override fun requestPushTags(udid: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<String>>) {
-        InternetRequestRepository.loadInternetRequestRepository(context).requestPushTags(udid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribeBy(
-                        onNext = {
-                            if (it.checkResultAvailable()) {
-                                requestSubscriber.onNext(it.data)
-                            } else {
-                                requestSubscriber.onError(Throwable("获取用户标签错误: ${it.message}"))
-                            }
-                        },
-                        onError = {
-                            requestSubscriber.onError(it)
-                        },
-                        onComplete = {
-                            requestSubscriber.onComplete()
-                        }
-                )
+    override fun requestPushTags(udid: String): Flowable<PushInfo> {
+        val localFlowable = LocalRequestRepository.loadLocalRequestRepository(context)
+                .requestPushInfo()
+        return if (localFlowable != null) {
+            localFlowable
+        } else {
+            InternetRequestRepository.loadInternetRequestRepository(context)
+                    .requestPushTags(udid)
+                    .map(CommonResultMapper())
+                    .flatMap {
+                        val pushInfo = PushInfo()
+                        pushInfo.tags = it
+                        pushInfo.updateMillSecs = System.currentTimeMillis()
+                        Flowable.create<PushInfo>({ emitter ->
+                            emitter.onNext(pushInfo)
+                            emitter.onComplete()
+                        }, BackpressureStrategy.BUFFER)
+                    }
+        }
+    }
+
+    override fun requestBannerInfo(): Flowable<BannerInfo> {
+        val localFlowable = LocalRequestRepository.loadLocalRequestRepository(context)
+                .requestBannerTags()
+        return if (localFlowable != null) {
+            localFlowable
+        } else {
+            InternetRequestRepository.loadInternetRequestRepository(context)
+                    .requestBannerTags()
+                    .map(CommonResultMapper())
+                    .map {
+                        it.updateMillSecs = System.currentTimeMillis()
+                        it
+                    }
+        }
     }
 
     override fun requestAuthAccessSync(): Boolean {

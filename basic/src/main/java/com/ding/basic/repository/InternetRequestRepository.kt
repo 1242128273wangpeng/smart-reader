@@ -1,10 +1,13 @@
 package com.ding.basic.repository
 
 import android.content.Context
+import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
+import com.ding.basic.request.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook
@@ -52,6 +55,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     fun requestDynamicParameters(): Flowable<Parameter> {
         return RequestAPI.requestDynamicParameters()
+    }
+
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean>? {
+        return RequestAPI.requestAdControlDynamic()
     }
 
     override fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
@@ -205,7 +212,12 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
-        return RequestAPI.requestPushTags(udid)
+        val url = Config.loadUserTagHost() + RequestService.PUSH_TAG
+        return RequestAPI.requestPushTags(url, udid)
+    }
+
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>> {
+        return RequestAPI.requestBannerTags()
     }
 
     override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {

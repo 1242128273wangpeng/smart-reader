@@ -1,6 +1,7 @@
 package com.ding.basic.request
 
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook
@@ -40,6 +41,10 @@ interface RequestService {
 
         //动态参数
         const val DYNAMIC_PARAMETERS = "/v3/dynamic/dynamicParameter"
+
+
+        //广告分渠道，分版本，分广告位 动态参数
+        const val AD_CONTROL_DYNAMIC_PARAMETERS = "/v5/cn.dingyueApi.reader/advertising/get"
 
         //默认书架
         const val DEFAULT_BOOK = "/v5/book/default"
@@ -209,7 +214,12 @@ interface RequestService {
         /**
          * PUSH标签
          */
-        const val PUSH_TAG = "/v4/cn.dingyueWeb.reader/getUserTag"
+        const val PUSH_TAG = "/v1/zn.bigdata.api/activity/getUserTag"
+
+        /**
+         * 活动标签
+         */
+        const val BANNER_TAG = "/v4/cn.dingyueWeb.reader/getActivityData"
 
         /**
          * 搜索无结果页  点击订阅  searchEmpty/userSubscription
@@ -237,6 +247,9 @@ interface RequestService {
 
     @GET(DYNAMIC_PARAMETERS)
     fun requestDynamicParameters(): Flowable<Parameter>
+
+    @GET(AD_CONTROL_DYNAMIC_PARAMETERS)
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean>
 
     @GET
     fun requestCDNDynamicPar(@Url url: String): Flowable<Parameter>
@@ -390,8 +403,11 @@ interface RequestService {
     @POST(BOOK_END_RECOMMEND_V4)
     fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
 
-    @GET(PUSH_TAG)
-    fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+    @GET
+    fun requestPushTags(@Url url: String, @Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+
+    @GET(BANNER_TAG)
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>>
 
     //搜索无结果页  订阅
     @GET(SEARCH_SUB_BOOK)

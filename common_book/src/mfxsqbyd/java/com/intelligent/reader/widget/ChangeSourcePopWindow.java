@@ -127,7 +127,7 @@ public class ChangeSourcePopWindow {
                 public void onClick(View v) {
                     Map<String, String> map1 = new HashMap<String, String>();
                     map1.put("type", "1");
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE, map1);
+                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map1);
                     dialog.dismiss();
                 }
             });

@@ -334,8 +334,7 @@ public class CheckNovelUpdateService extends Service {
                                 bookUpdates = new ArrayList<>();
 
                                 for (int i = 0; i < result.size(); i++) {
-                                    BookUpdate bookUpdate = changeChapters(bookItems,
-                                            result.get(i));
+                                    BookUpdate bookUpdate = changeChapters(result.get(i));
 
                                     if (bookUpdate != null) {
                                         bookUpdates.add(bookUpdate);
@@ -615,56 +614,67 @@ public class CheckNovelUpdateService extends Service {
         return result;
     }
 
-    public BookUpdate changeChapters(HashMap<String, Book> bookItems, BookUpdate bookUpdate) {
-        Book book = bookItems.get(bookUpdate.getBook_id());
-        BookUpdate resUpdate = null;
-        if (bookUpdate.getChapterList() != null && bookUpdate.getChapterList().size() > 0) {
-            ChapterDaoHelper bookChapterDao =
-                    ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                            BaseBookApplication.getGlobalContext(), book.getBook_id());
-            // 增加更新章节
-            bookChapterDao.insertOrUpdateChapter(bookUpdate.getChapterList());
-            // 更新书架信息
-            Chapter lastChapter = bookUpdate.getChapterList().get(bookUpdate.getChapterList().size() - 1);
-            book.setChapter_count(bookChapterDao.getCount());
-            book.setLast_chapter(lastChapter);
-            book.setUpdate_status(1);
+    public BookUpdate changeChapters(BookUpdate bookUpdate) {
+        if (bookUpdate != null && !TextUtils.isEmpty(bookUpdate.getBook_id())) {
+            Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(bookUpdate.getBook_id());
 
-            // 返回bookUpdate
-            resUpdate = new BookUpdate();
-            resUpdate.setBook_name(book.getName());
-            resUpdate.setBook_id(book.getBook_id());
-            resUpdate.setLast_chapter_name(lastChapter.getName());
-            resUpdate.setUpdate_count(bookUpdate.getChapterList().size());
+            BookUpdate resUpdate = null;
 
-            if (Constants.DEVELOPER_MODE) {
-                StringBuilder update_log = new StringBuilder();
-                update_log.append("book_id : ").append(book.getBook_id()).append(" \\\n");
-                update_log.append("book_source_id : ").append(book.getBook_source_id()).append(
-                        " \\\n");
-                update_log.append("book_name : ").append(bookUpdate.getBook_name()).append(" \\\n");
-                update_log.append("update_count_service : ").append(
-                        bookUpdate.getChapterList().size()).append(" \\\n");
-                update_log.append("update_count_local : ").append(book.getChapter_count()).append(
-                        " \\\n");
-                update_log.append("last_chapter_name_service : ").append(
-                        lastChapter.getName()).append(" \\\n");
-                update_log.append("last_chapter_name_local : ").append(book.getName()).append(
-                        " \\\n");
-                update_log.append("update_time : ").append(
-                        Tools.logTime(AppUtils.log_formatter, lastChapter.getUpdate_time())).append(
-                        " \\\n");
-                update_log.append("system_time : ").append(
-                        Tools.logTime(AppUtils.log_formatter, System.currentTimeMillis())).append(
-                        " \\\n");
-                DataCache.saveUpdateLog(update_log.toString());
+            if (book != null && bookUpdate.getChapterList() != null && bookUpdate.getChapterList().size() > 0) {
+                ChapterDaoHelper bookChapterDao =
+                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                BaseBookApplication.getGlobalContext(), book.getBook_id());
+                // 增加更新章节
+                bookChapterDao.insertOrUpdateChapter(bookUpdate.getChapterList());
+                // 更新书架信息
+                Chapter lastChapter = bookUpdate.getChapterList().get(bookUpdate.getChapterList().size() - 1);
+
+                book.setChapter_count(bookChapterDao.getCount());
+                book.setLast_chapter(lastChapter);
+                book.setUpdate_status(1);
+
+                // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext()).updateBook(book);
+
+                // 返回bookUpdate
+                resUpdate = new BookUpdate();
+                resUpdate.setBook_name(book.getName());
+                resUpdate.setBook_id(book.getBook_id());
+                resUpdate.setLast_chapter_name(lastChapter.getName());
+                resUpdate.setUpdate_count(bookUpdate.getChapterList().size());
+
+                if (Constants.DEVELOPER_MODE) {
+                    StringBuilder update_log = new StringBuilder();
+                    update_log.append("book_id : ").append(book.getBook_id()).append(" \\\n");
+                    update_log.append("book_source_id : ").append(book.getBook_source_id()).append(
+                            " \\\n");
+                    update_log.append("book_name : ").append(bookUpdate.getBook_name()).append(
+                            " \\\n");
+                    update_log.append("update_count_service : ").append(
+                            bookUpdate.getChapterList().size()).append(" \\\n");
+                    update_log.append("update_count_local : ").append(
+                            book.getChapter_count()).append(
+                            " \\\n");
+                    update_log.append("last_chapter_name_service : ").append(
+                            lastChapter.getName()).append(" \\\n");
+                    update_log.append("last_chapter_name_local : ").append(book.getName()).append(
+                            " \\\n");
+                    update_log.append("update_time : ").append(
+                            Tools.logTime(AppUtils.log_formatter,
+                                    lastChapter.getUpdate_time())).append(
+                            " \\\n");
+                    update_log.append("system_time : ").append(
+                            Tools.logTime(AppUtils.log_formatter,
+                                    System.currentTimeMillis())).append(
+                            " \\\n");
+                    DataCache.saveUpdateLog(update_log.toString());
+                }
             }
+
+            return resUpdate;
         }
-        // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).updateBook(book);
 
-        return resUpdate;
+        return null;
     }
-
 }

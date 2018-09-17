@@ -40,6 +40,11 @@ object Config {
      * **/
     private var contentAPIHost: String = ""
 
+    /***
+     * user tag 接口
+     * **/
+    private var userTagHost: String = "https://znapi-bigdata.zhuishuwang.com"
+
 
     /***
      * 设置页福利中心地址
@@ -181,6 +186,16 @@ object Config {
 
     fun loadContentAPIHost(): String {
         return contentAPIHost
+    }
+
+    fun insertUserTagHost(userTagHost: String) {
+        if (!TextUtils.isEmpty(userTagHost)) {
+            Config.userTagHost = userTagHost
+        }
+    }
+
+    fun loadUserTagHost(): String {
+        return userTagHost
     }
 
     fun loadAccessKey(): String {

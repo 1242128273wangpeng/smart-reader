@@ -18,7 +18,6 @@ import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.mfqbxssc.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfqbxssc.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -29,6 +28,7 @@ import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
+import org.greenrobot.eventbus.EventBus
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
@@ -238,7 +238,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()
+                && (!AppUtils.isNeedAdControl(Constants.ad_control_shelf_float) && !AppUtils.isNeedAdControl(Constants.ad_control_welfare_shelf))) {
+
+            AppLog.e("dynamicShelfNo",(AppUtils.isNeedAdControl(Constants.ad_control_shelf_float)).toString())
             bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
         }
 
@@ -317,7 +320,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         if (activity != null && !activity!!.isFinishing) {
-            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
+            AppLog.e("dynamicShelfNo",(AppUtils.isNeedAdControl(Constants.ad_control_shelf_normal)).toString())
+            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0 && !AppUtils.isNeedAdControl(Constants.ad_control_shelf_normal)
 
             bookShelfPresenter.queryBookListAndAd(activity!!, isShowAD, false)
             uiThread {

@@ -248,16 +248,12 @@ public class NovelHelper {
             book.setBook_id(book_id);
             book.setOffset(offset);
             book.setSequence(sequence);
-            book.setLast_read_time(System.currentTimeMillis());
-
             book.setReaded(1);
+            book.setLast_read_time(System.currentTimeMillis());
 
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).updateBook(book);
-
         }
-
-
     }
 
 

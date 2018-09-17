@@ -74,5 +74,6 @@ data class Map(
         var P2P_ENABLE: String?,
         var baidu_stat_id: String?,
         var DY_page_middle_ad_switch: String?,
-        var DY_ad_old_request_switch: String?
+        var DY_ad_old_request_switch: String?,
+        var user_tag_host: String?
 ) : Serializable
