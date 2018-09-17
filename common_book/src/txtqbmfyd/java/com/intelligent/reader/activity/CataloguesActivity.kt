@@ -20,7 +20,6 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -98,7 +97,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             changeSortState(isPositive)
         }
 
-        EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
@@ -220,12 +218,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             }
 
         }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         chapterList.clear()
 
         if (cataloguesPresenter != null) {

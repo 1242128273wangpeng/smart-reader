@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -46,6 +45,8 @@ import java.util.Map;
 
 import iyouqu.theme.FrameActivity;
 import swipeback.ActivityLifecycleHelper;
+
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 /**
  * WebView二级页面
