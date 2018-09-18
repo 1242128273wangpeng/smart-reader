@@ -76,7 +76,7 @@
                             android:id="@+id/home_bookshelf_txt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_5"
+                            android:layout_marginLeft="5dp"
                             android:text="@string/bookshelf"
                             android:textColor="@drawable/home_bookshelf_txt_selector"
                             android:textSize="@dimen/dimen_text_15"/>
@@ -108,7 +108,7 @@
                             android:id="@+id/home_bookstore_txt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_5"
+                            android:layout_marginLeft="5dp"
                             android:text="@string/bookstore"
                             android:textColor="@drawable/home_bookshelf_txt_selector"
                             android:textSize="@dimen/dimen_text_15"/>

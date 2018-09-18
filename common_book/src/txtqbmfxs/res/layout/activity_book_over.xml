@@ -23,7 +23,7 @@
                 android:layout_alignParentLeft="true"
                 android:gravity="center"
                 android:paddingLeft="16dp"
-                android:paddingRight="@dimen/padding_16"
+                android:paddingRight="16dp"
                 android:src="@drawable/icon_back_left" />
 
             <TextView
@@ -48,8 +48,8 @@
                 android:text="@string/change_source"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/text_size_14"
-                android:paddingLeft="@dimen/padding_16"
-                android:paddingRight="@dimen/padding_16"/>
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -99,7 +99,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/end_to_bookshelf"
+                    android:text="@string/my_bookshelf"
                     android:textColor="@drawable/book_end_text_selector_bookshelf"
                     android:textSize="@dimen/text_size_14"
                     android:layout_marginLeft="@dimen/dimen_margin_18"
@@ -112,7 +112,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/end_to_bookstore"
+                    android:text="@string/goto_bookstore"
                     android:layout_marginLeft="@dimen/dimen_margin_22"
                     android:layout_marginRight="@dimen/dimen_margin_18"
                     android:textColor="@color/color_white"

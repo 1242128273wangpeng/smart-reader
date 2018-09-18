@@ -25,4 +25,6 @@
         ,{\"keyword\":\"超级资源帝国\",\"keywordType\":0,\"sort\":8}
         ,{\"keyword\":\"杀手房东俏房客\",\"keywordType\":0,\"sort\":9}
         ]}</string>
+    <string name="read_end_tip">客官请留步...</string>
+
 </resources>

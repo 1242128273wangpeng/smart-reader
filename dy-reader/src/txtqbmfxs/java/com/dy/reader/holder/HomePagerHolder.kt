@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.read.mode.NovelPageBean
 import kotlinx.android.synthetic.txtqbmfxs.item_reader_cover.view.*
 
 /**

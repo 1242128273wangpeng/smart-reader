@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
@@ -38,7 +39,6 @@ import net.lzbook.kit.book.view.ConsumeEvent;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.book.view.SwitchButton;
 import net.lzbook.kit.cache.DataCleanManager;
-import net.lzbook.kit.constants.SPKeys;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
@@ -246,7 +246,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
         }
 
         bt_wifi_auto.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-                SPKeys.Setting.AUTO_UPDATE_CAHCE, true));
+                SharedPreUtil.AUTO_UPDATE_CAHCE, true));
 
         startWelfareCenterAnim();
 
@@ -696,7 +696,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
         } else if (view.getId() == R.id.bt_wifi_auto) {
-            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked);
+            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked);
             edit.apply();
             Map<String, String> data = new HashMap<>();
             data.put("type", isChecked ? "1" : "0");
