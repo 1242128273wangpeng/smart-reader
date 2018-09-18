@@ -89,6 +89,7 @@ public class StartLogClickUtil {
     //书架排序弹窗功能
     public static final String ACTION_SHELF_SORT_CANCEL = "CANCLE";
     public static final String ACTION_SHELF_SORT_BOOK_SORT = "BOOKSORT";
+    public static final String USERINFO = "USERINFO";//用户信息同步（书架书籍、书签、阅读历史）
 
     //福利中心
     public static final String ADPAGE = "ADPAGE";   //屏幕左上方点击返回按钮
