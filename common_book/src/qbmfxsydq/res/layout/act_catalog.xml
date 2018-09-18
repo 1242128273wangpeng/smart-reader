@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
-    android:fitsSystemWindows="true">
+    >
 
     <LinearLayout
         android:id="@+id/novel_catalog_view"
@@ -106,7 +106,7 @@
                 android:layout_alignParentRight="true"
                 android:paddingLeft="@dimen/dimen_padding_15"
                 android:paddingRight="@dimen/dimen_padding_15"
-                android:src="@mipmap/dir_sort_negative" />
+                android:src="@drawable/dir_sort_negative" />
 
             <TextView
                 android:id="@+id/tv_catalog_novel_sort"

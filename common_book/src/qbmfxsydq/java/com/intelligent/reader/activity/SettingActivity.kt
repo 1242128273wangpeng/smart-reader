@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
 import com.ding.basic.bean.LoginRespV4
+import com.ding.basic.request.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -54,6 +55,7 @@ import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.user.UserManagerV4
 import swipeback.ActivityLifecycleHelper
 
@@ -486,7 +488,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             }
             R.id.rl_qrcode -> {
                 val welfareIntent = Intent()
-                welfareIntent.putExtra("url", Config.WelfareHost)
+                val uri = RequestService.QR_CODE.replace("{packageName}", AppUtils.getPackageName())
+                welfareIntent.putExtra("url", UrlUtils.buildWebUrl(uri, HashMap()))
                 welfareIntent.putExtra("title", "和朋友一起读书")
                 welfareIntent.setClass(this@SettingActivity, WelfareCenterActivity::class.java)
                 startActivity(welfareIntent)

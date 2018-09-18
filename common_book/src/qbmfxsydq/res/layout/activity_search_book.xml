@@ -24,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/cover_top_back"/>
+                android:src="@drawable/cover_top_back"/>
 
             <ImageView
                 android:id="@+id/search_result_button"
@@ -34,7 +34,7 @@
                 android:layout_marginLeft="5dp"
                 android:paddingLeft="@dimen/dimen_padding_7"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/search_submit_btn"/>
+                android:src="@drawable/search_submit_btn"/>
 
             <RelativeLayout
                 android:id="@+id/search_result_outcome"

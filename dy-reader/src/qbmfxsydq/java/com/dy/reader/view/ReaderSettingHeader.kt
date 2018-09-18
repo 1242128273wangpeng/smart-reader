@@ -79,7 +79,7 @@ class ReaderSettingHeader : FrameLayout {
         if (share) {
             view_reader_share.visibility = View.GONE
         } else {
-            view_reader_share.visibility = View.VISIBLE
+            view_reader_share.visibility = View.GONE
         }
 
         ibtn_reader_share?.setOnClickListener {
