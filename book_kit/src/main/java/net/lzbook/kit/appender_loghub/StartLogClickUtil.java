@@ -75,6 +75,8 @@ public class StartLogClickUtil {
     public static final String ACTION_SHELF_TO_BOOK_CITY = "TOBOOKCITY";
     public static final String ACTION_SHELF_CACHE_MANAGE = "CACHEMANAGE";
     public static final String ACTION_SHELF_LONG_TIME_BOOK_SHELF_EDIT = "LONGTIMEBOOKSHELFEDIT";
+    public static final String POPUPMESSAGE = "POPUPMESSAGE";
+
 
     //书架编辑页面
     public static final String PAGE_SHELF_EDIT = "SHELFEDIT";
