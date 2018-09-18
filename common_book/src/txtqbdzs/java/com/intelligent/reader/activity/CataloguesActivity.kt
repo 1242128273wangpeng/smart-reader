@@ -409,10 +409,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 //书签点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                 isPositive = !isPositive
-                Collections.reverse(chapterList!!)
+                Collections.reverse(chapterList)
                 mCatalogAdapter!!.list = chapterList
                 mCatalogAdapter!!.notifyDataSetChanged()
                 changeSortState(isPositive)
+                catalog_main.setSelection(0)
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
                 mCataloguesPresenter!!.fixBook()
