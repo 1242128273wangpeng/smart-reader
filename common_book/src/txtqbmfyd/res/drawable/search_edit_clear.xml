@@ -4,5 +4,5 @@
           android:state_pressed="true"/>
     <item android:drawable="@drawable/search_edit_clear_press"
           android:state_focused="true"/>
-    <item android:drawable="@drawable/search_edit_clear"/>
+    <item android:drawable="@drawable/search_edit_clear_icon"/>
 </selector>

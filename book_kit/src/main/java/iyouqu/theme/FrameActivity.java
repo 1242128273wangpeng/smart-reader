@@ -18,6 +18,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,6 +55,7 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,14 +110,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
-
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new LayoutInflaterFactory() {
             @Override
             public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
                 return createViewWithPressState(parent, name, context, attrs);
             }
         });
-
         super.onCreate(paramBundle);
 
         lifecycleRegistry = new LifecycleRegistry(this);
@@ -150,10 +150,21 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         initThemeHelper();
         initTheme();
-
+        //设置屏幕适配属性
+        AppUtils.setCustomDensity(this,BaseBookApplication.getGlobalContext());
         //友盟推送
         if (AppUtils.hasUPush()) {
-            PushAgent.getInstance(this).onAppStart();
+            final WeakReference<FrameActivity> weakReference=new WeakReference(FrameActivity.this);
+            new AsyncTask(){
+                @Override
+                protected Object doInBackground(Object[] objects) {
+                    if(weakReference!=null&&weakReference.get()!=null) {
+                        PushAgent.getInstance(weakReference.get()).onAppStart();
+                    }
+                    return null;
+                }
+            }.execute();
+
         }
 
     }

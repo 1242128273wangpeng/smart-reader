@@ -41,11 +41,11 @@ import java.util.Collections
 import java.util.HashMap
 import java.util.concurrent.Callable
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfxs.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
+import org.greenrobot.eventbus.EventBus
 
 /**
  * Function：小说目录页

@@ -2,6 +2,9 @@ package net.lzbook.kit.appender_loghub;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -72,6 +75,8 @@ public class StartLogClickUtil {
     public static final String ACTION_SHELF_TO_BOOK_CITY = "TOBOOKCITY";
     public static final String ACTION_SHELF_CACHE_MANAGE = "CACHEMANAGE";
     public static final String ACTION_SHELF_LONG_TIME_BOOK_SHELF_EDIT = "LONGTIMEBOOKSHELFEDIT";
+    public static final String POPUPMESSAGE = "POPUPMESSAGE";
+
 
     //书架编辑页面
     public static final String PAGE_SHELF_EDIT = "SHELFEDIT";
@@ -391,24 +396,76 @@ public class StartLogClickUtil {
 
     private static List<String> prePageList = new ArrayList<>();
 
+    private static Handler handler;
+
+    static{
+        HandlerThread handlerThread=new HandlerThread("upload-event-log-thread");
+        handlerThread.start();
+        handler=new Handler(handlerThread.getLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                if(msg.what==0) {
+                    String[] data = (String[]) msg.obj;
+                    if (data != null && data.length == 2) {
+                        String pageCode = data[0];
+                        String identify = data[1];
+                        final ServerLog log = getCommonLog();
+                        log.putContent("code", identify);//点击事件唯一标识
+                        log.putContent("page_code", pageCode);
+                        log.putContent("pre_page_code", getPrePageCode(pageCode));
+                        AppLog.e("log", log.getContent().toString());
+                        if (identify.equals(APPINIT)) log.setEventType(LocalLog.getMINORITY());
+
+                        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
+                    }
+                }else if(msg.what==1){
+                    Object[] data=(Object[])msg.obj;
+                    if(data!=null&&data.length==3) {
+                        String pageCode = (String) data[0];
+                        String identify = (String) data[1];
+                        Map<String, String> extraParam = (Map<String, String>) data[2];
+                        final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
+
+                        log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
+                        log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
+                        log.putContent("code", identify);//点击事件唯一标识
+                        log.putContent("page_code", pageCode);
+
+                        upLoadUserInfo(log);
+
+                        log.putContent("os", "android");//手机操作系统
+                        log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
+                        log.putContent("network", NetWorkUtils.NETTYPE);//网络状况
+                        log.putContent("longitude", Constants.longitude + "");//经度
+                        log.putContent("latitude", Constants.latitude + "");//纬度
+                        log.putContent("city_info", Constants.adCityInfo);//城市
+                        log.putContent("location_detail", Constants.adLocationDetail);//具体位置信息
+                        log.putContent("pre_page_code", getPrePageCode(pageCode));
+
+                        //事件对应的额外的参数部分
+
+                        if (extraParam != null) {
+                            log.putContent("data", FormatUtil.forMatMap(extraParam));
+                        }
+                        AppLog.e("log", log.getContent().toString());
+                        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
+
+                    }
+                }
+            }
+        };
+    }
+
 
     //上传普通的点击事件
     public static void upLoadEventLog(Context context, String pageCode, String identify) {
         if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
-        final ServerLog log = getCommonLog();
-
-
-        log.putContent("code", identify);//点击事件唯一标识
-        log.putContent("page_code", pageCode);
-        log.putContent("pre_page_code", getPrePageCode(pageCode));
-
-
-        AppLog.e("log", log.getContent().toString());
-        if (identify.equals(APPINIT)) log.setEventType(LocalLog.getMINORITY());
-
-        AndroidLogStorage.getInstance().accept(log, context);
+        if(handler!=null){
+            Message message=handler.obtainMessage(0,new String[]{pageCode,identify});
+            handler.sendMessage(message);
+        }
     }
 
 
@@ -481,32 +538,10 @@ public class StartLogClickUtil {
         if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
-        final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
-
-        log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
-        log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
-        log.putContent("code", identify);//点击事件唯一标识
-        log.putContent("page_code", pageCode);
-
-        upLoadUserInfo(log);
-
-        log.putContent("os", "android");//手机操作系统
-        log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.putContent("network", NetWorkUtils.NETTYPE);//网络状况
-        log.putContent("longitude", Constants.longitude + "");//经度
-        log.putContent("latitude", Constants.latitude + "");//纬度
-        log.putContent("city_info", Constants.adCityInfo);//城市
-        log.putContent("location_detail", Constants.adLocationDetail);//具体位置信息
-        log.putContent("pre_page_code", getPrePageCode(pageCode));
-
-        //事件对应的额外的参数部分
-
-        if (extraParam != null) {
-            log.putContent("data", FormatUtil.forMatMap(extraParam));
+        if(handler!=null){
+            Message message=handler.obtainMessage(1,new Object[]{pageCode,identify,extraParam});
+            handler.sendMessage(message);
         }
-        AppLog.e("log", log.getContent().toString());
-        AndroidLogStorage.getInstance().accept(log, context);
-
     }
 
     //上传用户App列表

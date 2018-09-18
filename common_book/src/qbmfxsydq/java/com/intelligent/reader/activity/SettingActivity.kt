@@ -50,13 +50,13 @@ import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.user.UserManagerV4
+import org.greenrobot.eventbus.EventBus
 import swipeback.ActivityLifecycleHelper
 
 

@@ -35,11 +35,11 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 
 import java.util.concurrent.Callable
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbzsydq.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -126,7 +126,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     }
 
-    fun shouldLightStatusBase(): Boolean {
+    override  fun shouldLightStatusBase(): Boolean {
         return true
     }
 

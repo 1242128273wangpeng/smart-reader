@@ -1,9 +1,7 @@
 package com.intelligent.reader.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.Html;
-import android.util.TypedValue;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +10,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.data.search.SearchCommonBean;
+import com.ding.basic.bean.SearchCommonBeanYouHua;
+import com.intelligent.reader.R;
+
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
-
-import com.bumptech.glide.Glide;
-import com.ding.basic.bean.SearchCommonBeanYouHua;
-import com.intelligent.reader.R;
 
 /**
  * 自动补全

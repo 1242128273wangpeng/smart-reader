@@ -32,7 +32,6 @@ import java.util.HashMap;
 
 
 public abstract class BaseBookApplication extends Application {
-    public static Context sCtx;
     private static BaseBookApplication g_context;
     private static DisplayMetrics dm;
     private static URLBuilderIntterface urlBuilderIntterface;
@@ -58,7 +57,6 @@ public abstract class BaseBookApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.sCtx = this;
         loge(this, "onCreate");
 
         if (AppUtils.isMainProcess(this)) {
@@ -77,7 +75,6 @@ public abstract class BaseBookApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
-        this.sCtx = this;
         super.attachBaseContext(base);
         loge(this, "attachBaseContext");
 
@@ -85,12 +82,12 @@ public abstract class BaseBookApplication extends Application {
                 (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         //分割dex防止方法数过多
         MultiDex.install(this);
-        initData();
+        g_context = this;
         initARouter();
+        initData();
     }
 
     private void initData() {
-        g_context = this;
         dm = getResources().getDisplayMetrics();
 
         Constants.init(BaseBookApplication.this);
