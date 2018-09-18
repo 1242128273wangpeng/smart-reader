@@ -173,7 +173,7 @@
 好不容易幻化成人形，虽然是个美人胚子，却成了睿王的第五任冲喜新娘。"/>
 
                     <RelativeLayout
-                        android:layout_width="@dimen/dimen_height_40"
+                        android:layout_width="40dp"
                         android:layout_height="@dimen/dimen_margin_20"
                         android:layout_gravity="bottom|right"
                         android:layout_marginBottom="@dimen/dimen_margin_12"
