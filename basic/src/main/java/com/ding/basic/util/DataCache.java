@@ -39,14 +39,23 @@ public class DataCache {
         if (TextUtils.isEmpty(content)) {
             content = "null";
         }
-        return FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(content.getBytes()));
-//        } else {
-//            return false;
-//        }
+
+        Boolean success = FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(content.getBytes()));
+
+        if (success && chapter.waitingFix()) {
+            chapter.setWaitFix(false);
+        }
+
+        return success;
     }
 
     public static boolean saveEncryptedChapter(byte[] content, Chapter chapter) {
-        return FileUtils.writeByteFile(getCacheFilePath(chapter), content);
+        Boolean success = FileUtils.writeByteFile(getCacheFilePath(chapter), content);
+
+        if (success && chapter.waitingFix()) {
+            chapter.setWaitFix(false);
+        }
+        return success;
     }
 
     public static boolean isRangeCached(Book book, List<Chapter> chapterList) {
@@ -69,20 +78,6 @@ public class DataCache {
 
     public static String getOldQGCacheFilePath(Chapter chapter) {
         return QG_CACHE_PATH + chapter.getBook_id() + "/" + chapter.getChapter_id() + ".text";
-    }
-
-    public static boolean fixChapter(String content, Chapter chapter) {
-        String filePath = getCacheFilePath(chapter);
-        File file = new File(filePath);
-        boolean isDeleteSuc = true;
-        if (file.exists()) {
-            isDeleteSuc = file.delete();
-        }
-        if (isDeleteSuc && !TextUtils.isEmpty(content) && FileUtils.writeByteFile(filePath, MultiInputStreamHelper.encrypt(content.getBytes()))) {
-            return true;
-        }
-
-        return false;
     }
 
     public static String getChapterFromCache(Chapter chapter) {
@@ -113,6 +108,27 @@ public class DataCache {
             return content;
         }
         return content.replace("\\n", "\n").replace("\\n\\n", "\n").replace("\\n \\n", "\n").replace("\\", "");
+    }
+
+    public static void deleteChapterCache(Chapter chapter) {
+        String filePath = getCacheFilePath(chapter);
+        String oldFilePath = getOldCacheFilePath(chapter);
+        String oldQGFilePath = getOldQGCacheFilePath(chapter);
+
+        File file = new File(filePath);
+        if (file.isFile() && file.exists()) {
+            file.delete();
+        }
+
+        File oldFile = new File(oldFilePath);
+        if (oldFile.isFile() && oldFile.exists()) {
+            oldFile.delete();
+        }
+
+        File oldQGFile = new File(oldQGFilePath);
+        if (oldQGFile.isFile() && oldQGFile.exists()) {
+            oldQGFile.delete();
+        }
     }
 
     public static boolean isChapterCached(Chapter chapter) {

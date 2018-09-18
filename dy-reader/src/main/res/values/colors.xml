@@ -9,6 +9,18 @@
     <color name="reading_operation_text_color_first">#66000000</color>
     <color name="reading_backdrop_first">#D0BD9C</color>
 
+    <!--color_blue-->
+    <color name="reading_text_color_blue">#445377</color>
+    <!--color_pink-->
+    <color name="reading_text_color_pink">#954C6A</color>
+    <!--color_green-->
+    <color name="reading_text_color_green">#48605F</color>
+    <!--color_dark-->
+    <color name="reading_text_color_dark">#4C403B</color>
+    <!--color_dim-->
+    <color name="reading_text_color_dim">#383B59</color>
+    <color name="reading_text_color_dim_second">#64667C</color>
+
     <!--color_second-->
     <color name="reading_text_color_second">#E6000000</color>
     <color name="reading_backdrop_second">#F7F0DE</color>
@@ -80,4 +92,11 @@
     <color name="reader_backdrop_fourth">#FFFFFF</color>
     <color name="reader_backdrop_fifth">#E2ECF6</color>
     <color name="reader_backdrop_sixth">#111111</color>
+
+    <color name="reader_backdrop_blue">#D2E1F7</color>
+    <color name="reader_backdrop_pink">#FBF2F6</color>
+    <color name="reader_backdrop_green">#E9F5F8</color>
+    <color name="reader_backdrop_dark">#080402</color>
+    <color name="reader_backdrop_dim">#00071F</color>
+
 </resources>

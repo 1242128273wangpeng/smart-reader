@@ -68,16 +68,6 @@ class ReaderChangeSourceDialog(activity: Activity) {
 
         if (sourceList.isNotEmpty()) {
 
-            if (ReaderSettings.instance.isLandscape) {
-                if (sourceList.size > 1) {
-                    dialog.recl_change_source_content.layoutParams.height = activity.resources.getDimensionPixelOffset(R.dimen.dimen_view_height_80)
-                }
-            } else {
-                if (sourceList.size > 3) {
-                    dialog.recl_change_source_content.layoutParams.height = activity.resources.getDimensionPixelOffset(R.dimen.dimen_view_height_135)
-                }
-            }
-
             sourceAdapter = SourceAdapter(sourceList, sourceClickListener)
 
             val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

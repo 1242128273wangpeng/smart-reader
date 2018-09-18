@@ -20,18 +20,14 @@
 
         <TextView
             android:id="@+id/txt_dialog_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="21dp"
             android:text="@string/prompt"
-            android:textColor="#323232"
-            android:textSize="18sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:background="#E8E8E8"
-            android:layout_height="0.5dp"/>
+            android:textColor="#282828"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/txt_dialog_information"
@@ -60,46 +56,33 @@
             android:textColor="#777777"
             android:textSize="14sp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:background="#E8E8E8"
-            android:layout_height="0.5dp"/>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
-            <View
-                android:id="@+id/view_divider"
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="true"
-                android:background="#E8E8E8"/>
-
             <Button
                 android:id="@+id/btn_cancel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="108dp"
+                android:layout_height="38dp"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@id/view_divider"
+                android:layout_marginLeft="16dp"
                 android:background="@drawable/reader_dialog_cancel_sel"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textColor="@drawable/reader_dialog_cancel_txt_sel"
-                android:textSize="16sp"/>
+                android:textColor="#3ECC96"
+                android:textSize="14sp"/>
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="108dp"
+                android:layout_height="38dp"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/view_divider"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/reader_dialog_confirm_sel"
                 android:gravity="center"
                 android:text="@string/confirm"
-                android:textColor="@drawable/reader_dialog_confirm_txt_sel"
-                android:textSize="16sp"/>
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"/>
         </RelativeLayout>
     </LinearLayout>
 

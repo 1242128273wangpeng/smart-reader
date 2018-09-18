@@ -1,8 +1,6 @@
 package com.intelligent.reader.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -11,10 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.ding.basic.bean.SearchHotBean;
 import com.intelligent.reader.R;
-
-
-import net.lzbook.kit.data.search.SearchHotBean;
 
 import java.util.List;
 import java.util.Random;

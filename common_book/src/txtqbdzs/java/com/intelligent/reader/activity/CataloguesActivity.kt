@@ -126,7 +126,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     }
 
-    fun shouldLightStatusBase(): Boolean {
+    override fun shouldLightStatusBase(): Boolean {
         return true
     }
 
@@ -426,7 +426,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         if (tv_catalog_novel_sort != null && iv_catalog_novel_sort != null) {
             if (b) {
                 tv_catalog_novel_sort!!.setText(R.string.catalog_negative)
-                sortIcon = R.mipmap.dir_sort_negative
+                sortIcon = R.drawable.dir_sort_negative
                 //正序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
 
@@ -434,7 +434,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
             } else {
                 tv_catalog_novel_sort!!.setText(R.string.catalog_positive)
-                sortIcon = R.mipmap.dir_sort_positive
+                sortIcon = R.drawable.dir_sort_positive
                 iv_catalog_novel_sort!!.setImageResource(sortIcon)
                 //倒序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)

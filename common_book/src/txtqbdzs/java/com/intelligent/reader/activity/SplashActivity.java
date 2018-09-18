@@ -1,7 +1,5 @@
 package com.intelligent.reader.activity;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -28,6 +26,7 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -41,7 +40,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -51,13 +50,11 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-
-import com.intelligent.reader.util.ShieldManager;
-
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,6 +75,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -425,8 +424,10 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -436,6 +437,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -710,8 +719,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }

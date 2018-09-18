@@ -86,10 +86,26 @@ open class Chapter : Serializable {
     @ColumnInfo(name = "ex_content")
     var exContent: Int = 0
 
+    //当前章节内容是否等待修复 1 为是  0为否
+    @ColumnInfo(name = "fix_state")
+    var fix_state: Int = 0
+
 
     constructor()
 
-    override fun equals(other: Any?): Boolean {
+
+    fun waitingFix(): Boolean {
+        return fix_state == 1
+    }
+
+    fun setWaitFix(state: Boolean) {
+        when (state) {
+            true -> fix_state = 1
+            false -> fix_state = 0
+        }
+    }
+
+   override fun equals(other: Any?): Boolean {
         if (other == null) {
             return false
         } else {

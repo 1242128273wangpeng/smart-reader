@@ -95,32 +95,85 @@ object ThemeUtil {
 
 
     fun getModePrimaryBackground(resources: Resources, view: View?) {
-        if (readerSettings.readThemeMode == 51) {// 牛皮纸
-            view?.setBackgroundDrawable(BitmapDrawable(ReaderSettings.instance.backgroundBitmap))
-        } else {
-            // 通过新的画布，将矩形画新的bitmap上去
-            var color_int = R.color.reading_backdrop_first
-            when {
-                readerSettings.readThemeMode == 52 -> // day
-                    color_int = R.color.reading_backdrop_second
-                readerSettings.readThemeMode == 53 -> // eye
-                    color_int = R.color.reading_backdrop_third
-                readerSettings.readThemeMode == 54 -> // powersave
-                    color_int = R.color.reading_backdrop_fourth
-                readerSettings.readThemeMode == 55 -> // color -4
-                    color_int = R.color.reading_backdrop_fifth
-                readerSettings.readThemeMode == 56 -> // color -5
-                    color_int = R.color.reading_backdrop_sixth
-                readerSettings.readThemeMode == 61 -> //night3
-                    color_int = R.color.reading_backdrop_night
+        when (readerSettings.readThemeMode) {// 牛皮纸
+            51 -> {
+                view?.setBackgroundDrawable(BitmapDrawable(ReaderSettings.instance.kraftBitmap))
             }
-            view?.setBackgroundColor(resources.getColor(color_int))
+            511 -> {
+                val bitmap = if (ReaderSettings.instance.isLandscape) {
+                    ReaderSettings.instance.blueBitmapLandscape
+                } else {
+                    ReaderSettings.instance.blueBitmapPortrait
+                }
+                view?.setBackgroundDrawable(BitmapDrawable(bitmap))
+            }
+            512 -> {
+                val bitmap = if (ReaderSettings.instance.isLandscape) {
+                    ReaderSettings.instance.pinkBitmapLandscape
+                } else {
+                    ReaderSettings.instance.pinkBitmapPortrait
+                }
+                view?.setBackgroundDrawable(BitmapDrawable(bitmap))
+            }
+            513 -> {
+                val bitmap = if (ReaderSettings.instance.isLandscape) {
+                    ReaderSettings.instance.greenBitmapLandscape
+                } else {
+                    ReaderSettings.instance.greenBitmapPortrait
+                }
+                view?.setBackgroundDrawable(BitmapDrawable(bitmap))
+            }
+            514 -> {
+                val bitmap = if (ReaderSettings.instance.isLandscape) {
+                    ReaderSettings.instance.darkBitmapLandscape
+                } else {
+                    ReaderSettings.instance.darkBitmapPortrait
+                }
+                view?.setBackgroundDrawable(BitmapDrawable(bitmap))
+            }
+            515 -> {
+                val bitmap = if (ReaderSettings.instance.isLandscape) {
+                    ReaderSettings.instance.dimBitmapLandscape
+                } else {
+                    ReaderSettings.instance.dimBitmapPortrait
+                }
+                view?.setBackgroundDrawable(BitmapDrawable(bitmap))
+            }
+            else -> {
+                // 通过新的画布，将矩形画新的bitmap上去
+                var color_int = R.color.reading_backdrop_first
+                when {
+                    readerSettings.readThemeMode == 52 -> // day
+                        color_int = R.color.reading_backdrop_second
+                    readerSettings.readThemeMode == 53 -> // eye
+                        color_int = R.color.reading_backdrop_third
+                    readerSettings.readThemeMode == 54 -> // powersave
+                        color_int = R.color.reading_backdrop_fourth
+                    readerSettings.readThemeMode == 55 -> // color -4
+                        color_int = R.color.reading_backdrop_fifth
+                    readerSettings.readThemeMode == 56 -> // color -5
+                        color_int = R.color.reading_backdrop_sixth
+                    readerSettings.readThemeMode == 61 -> //night3
+                        color_int = R.color.reading_backdrop_night
+                }
+                view?.setBackgroundColor(resources.getColor(color_int))
+            }
         }
     }
 
-    fun getBackgroundColor(resources:Resources): Int {
+    fun getBackgroundColor(resources: Resources): Int {
         var color_int = R.color.reading_backdrop_first
-        when (readerSettings.readThemeMode){
+        when (readerSettings.readThemeMode) {
+            511 -> // day
+                color_int = R.color.reader_backdrop_blue
+            512 -> // day
+                color_int = R.color.reader_backdrop_pink
+            513 -> // day
+                color_int = R.color.reader_backdrop_green
+            514 -> // day
+                color_int = R.color.reader_backdrop_dark
+            515 -> // day
+                color_int = R.color.reader_backdrop_dim
             52 -> // day
                 color_int = R.color.reading_backdrop_second
             53 -> // eye
@@ -137,10 +190,15 @@ object ThemeUtil {
         return resources.getColor(color_int)
     }
 
-    fun getTitleColor(resources:Resources):Int{
+    fun getTitleColor(resources: Resources): Int {
         //设置电池,转码阅读,原网页等字体色
         var colorInt = when (readerSettings.readThemeMode) {
             51 -> R.color.reading_operation_text_color_first
+            511 -> R.color.reading_text_color_blue
+            512 -> R.color.reading_text_color_pink
+            513 -> R.color.reading_text_color_green
+            514 -> R.color.reading_text_color_dark
+            515 -> R.color.reading_text_color_dim_second
             52 -> R.color.reading_operation_text_color_second
             53 -> R.color.reading_operation_text_color_third
             54 -> R.color.reading_operation_text_color_fourth
@@ -152,7 +210,7 @@ object ThemeUtil {
         return resources.getColor(colorInt)
     }
 
-    fun getTextColor(resources:Resources):Int{
+    fun getTextColor(resources: Resources): Int {
         //设置阅读正文字体色
         var colorInt = when (readerSettings.readThemeMode) {
             51 -> R.color.reading_text_color_first

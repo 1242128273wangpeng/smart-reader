@@ -4,10 +4,10 @@ import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.intelligent.reader.app.BookApplication
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
+import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe

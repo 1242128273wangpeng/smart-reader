@@ -16,6 +16,7 @@ import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 
 /**
@@ -263,5 +264,9 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
         return ContentAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
+    }
+
+    fun downloadFont(fontName: String): Flowable<ResponseBody> {
+        return RequestAPI.downloadFont(fontName)
     }
 }

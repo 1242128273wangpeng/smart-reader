@@ -218,11 +218,10 @@ public class StartLogClickUtil {
     public static final String VERSIONUPDATE2 = "VERSIONUPDATE";//点击更新
 
     //主页
-    public static final String POPUPEXPOSE = "POPUPEXPOSE";  //通知权限弹窗展现
-    public static final String POPUPMESSAGE = "POPUPMESSAGE";//弹出「开启消息通知」弹窗
-    public static final String POPUPNOWOPEN = "POPUPNOWOPEN";//通知权限弹窗点击现在开启
-    public static final String POPUPSET = "POPUPSET";        //通知权限弹窗前往系统设置页
-    public static final String POPUPCLOSE = "POPUPCLOSE";    //通知权限弹窗关闭
+    public static final String POPUPEXPOSE = "POPUPEXPOSE";// 通知权限弹窗展现
+    public static final String POPUPCLOSE = "POPUPCLOSE";// 通知权限弹窗关闭
+    public static final String POPUPNOWOPEN = "POPUPNOWOPEN";// 通知权限弹窗点击现在开启
+    public static final String POPUPSET = "POPUPSET";// 通知权限弹窗前往系统设置页
 
     public static final String BANNER_POPUP_SHOW = "BANNERPOPUPSHOW"; //活动弹窗曝光
     public static final String BANNER_POPUP_CLICK = "BANNERPOPUPCLICK"; //活动弹窗点击
@@ -327,6 +326,8 @@ public class StartLogClickUtil {
     public static final String POPUPSHELFADDCANCLE = "POPUPSHELFADDCANCLE";//阅读页加入书架弹窗取消
     public static final String SET = "SET";//点击阅读页内设置
     public static final String DEFAULTSETTING = "DEFAULTSETTINGS";//点击阅读页内设置
+    public static final String FONTSETTING = "FONTSETTING";//字体设置
+    public static final String FONTDOWNLOAD = "FONTDOWNLOAD";//字体下载
 
     //'阅读页设置
     public static final String LIGHTEDIT = "LIGHTEDIT";//点击亮度调整

@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -20,6 +21,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus
@@ -32,11 +34,13 @@ class ReaderSettingHeader : FrameLayout {
 
     var isOutAnimationRun = false
 
+    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+    private val guideSharedKey = AppUtils.getVersionCode().toString() + SharedPreUtil.READING_SETING_GUIDE_TAG
+
     fun showMenu(flag: Boolean) {
         if (flag) {
             this.visibility = View.VISIBLE
             isOutAnimationRun = false
-            updateStatus()
             this.startAnimation(menuDownInAnimation)
         } else {
             if (this.visibility == View.VISIBLE && !isOutAnimationRun) {
@@ -46,10 +50,30 @@ class ReaderSettingHeader : FrameLayout {
                     isOutAnimationRun = false
                 }
                 this.startAnimation(menuUpOutAnimation)
+                // 关闭更多对话框
+                readerHeaderMorePopup.dismiss()
+            }
+            if (view_guide.visibility == View.VISIBLE) {
+                hideGuide()
             }
         }
 
         EventBus.getDefault().post(EventSetting(EventSetting.Type.FULL_WINDOW_CHANGE, !flag))
+
+        if (!sharedPreUtil.getBoolean(guideSharedKey)) {
+            view_guide.visibility = View.VISIBLE
+            txt_reader_guide_option.visibility = View.VISIBLE
+
+            view_guide.setOnClickListener {
+                hideGuide()
+            }
+        }
+    }
+
+    private fun hideGuide() {
+        view_guide.visibility = View.GONE
+        txt_reader_guide_option.visibility = View.GONE
+        sharedPreUtil.putBoolean(guideSharedKey, true)
     }
 
     constructor(context: Context?) : super(context)
@@ -60,16 +84,62 @@ class ReaderSettingHeader : FrameLayout {
 
     private var menuUpOutAnimation: Animation
 
+    private val readerHeaderMorePopup: ReaderHeaderMorePopup by lazy {
+        val popup = ReaderHeaderMorePopup(context)
+
+        popup.changeSourceListener = {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
+            presenter?.changeSource()
+            popup.dismiss()
+
+            EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
+        }
+
+        popup.handleBookmarkListener = {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
+            val result = presenter?.bookMark()
+            val data = HashMap<String, String>()
+
+            when (result) {
+                1 -> {
+                    context.applicationContext.showToastMessage("书签添加成功")
+                    popup.insertBookmarkContent(false)
+                    data["type"] = "1"
+                }
+                2 -> {
+                    context.applicationContext.showToastMessage("书签已删除")
+                    popup.insertBookmarkContent(true)
+                    data["type"] = "2"
+
+                }
+                else -> {
+                    context.applicationContext.showToastMessage("书签添加失败")
+                }
+            }
+
+            popup.dismiss()
+            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
+        }
+
+        popup.startBookDetailListener = {
+            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
+            presenter?.bookInfo()
+            popup.dismiss()
+        }
+
+        popup.feedbackListener = {
+            presenter?.readFeedBack()
+            popup.dismiss()
+        }
+        popup
+    }
+
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.reader_option_header, null)
         addView(view)
 
         img_reader_back.setOnClickListener {
             presenter?.back()
-        }
-
-        txt_reader_source.setOnClickListener {
-            presenter?.openWeb()
         }
 
         ibtn_reader_download.setOnClickListener {
@@ -86,60 +156,9 @@ class ReaderSettingHeader : FrameLayout {
 
         ibtn_reader_more?.setOnClickListener {
 
-            presenter?.showMore()
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_more)
 
-            val readerHeaderMorePopup = ReaderHeaderMorePopup(context)
-
-            val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
-
-            if (isMarkPage) {
-                readerHeaderMorePopup.insertBookmarkContent("删除书签")
-            } else {
-                readerHeaderMorePopup.insertBookmarkContent("添加书签")
-            }
-
-            readerHeaderMorePopup.changeSourceListener = {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
-                presenter?.changeSource()
-                readerHeaderMorePopup.dismiss()
-
-                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
-            }
-
-            readerHeaderMorePopup.handleBookmarkListener = {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
-                val result = presenter?.bookMark()
-                val data = HashMap<String, String>()
-
-                when (result) {
-                    1 -> {
-                        context.applicationContext.showToastMessage("书签添加成功")
-                        readerHeaderMorePopup.insertBookmarkContent("删除书签")
-                        data["type"] = "1"
-                    }
-                    2 -> {
-                        context.applicationContext.showToastMessage("书签已删除")
-                        readerHeaderMorePopup.insertBookmarkContent("添加书签")
-                        data["type"] = "2"
-
-                    }
-                    else -> {
-                        context.applicationContext.showToastMessage("书签添加失败")
-                    }
-                }
-
-                readerHeaderMorePopup.dismiss()
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
-            }
-
-            readerHeaderMorePopup.startBookDetailListener = {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
-                presenter?.bookInfo()
-                readerHeaderMorePopup.dismiss()
-            }
-
-            readerHeaderMorePopup.showAsDropDown(ibtn_reader_more)
+            readerHeaderMorePopup.show(ibtn_reader_more)
         }
 
         // 初始化动画
@@ -147,23 +166,5 @@ class ReaderSettingHeader : FrameLayout {
         menuUpOutAnimation = AnimationUtils.loadAnimation(context.applicationContext, R.anim.menu_push_up_out)
 
         this.visibility = View.GONE
-    }
-
-    private fun updateStatus() {
-        if (ReaderStatus.position.group == -1) {
-            txt_reader_source.visibility = View.GONE
-        } else {
-            if (ReaderStatus.book.fromQingoo()) {
-                txt_reader_source.text = "青果阅读"
-                txt_reader_source.visibility = View.VISIBLE
-            } else {
-                if (ReaderStatus.currentChapter != null && !TextUtils.isEmpty(ReaderStatus.currentChapter!!.url)) {
-                    txt_reader_source.text = ReaderStatus.currentChapter!!.url
-                    txt_reader_source.visibility = View.VISIBLE
-                } else {
-                    txt_reader_source.visibility = View.GONE
-                }
-            }
-        }
     }
 }

@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 
 
 /**
- * Created by xian on 2017/8/9.
+ * Created by xian on 2017/8/9
  */
 class LRadioGroup : LinearLayout {
 
@@ -18,7 +18,7 @@ class LRadioGroup : LinearLayout {
 
     constructor(context: Context) : super(context) {}
 
-    @JvmOverloads constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    @JvmOverloads constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     override fun addView(child: View, index: Int,
                          params: android.view.ViewGroup.LayoutParams) {

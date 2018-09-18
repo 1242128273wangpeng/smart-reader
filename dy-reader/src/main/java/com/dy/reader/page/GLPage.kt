@@ -40,7 +40,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
         private var mOrientation = Configuration.ORIENTATION_UNDEFINED
 
         private var bitmap: Bitmap? = null
-        private var canvas: Canvas? = null
+        var canvas: Canvas? = null
 
         fun createBitmap(orientation: Int) {
             if (mOrientation != orientation) {
@@ -266,14 +266,67 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 //        canvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             canvas?.drawColor(Color.WHITE)
 
-            if (ReaderSettings.instance.readThemeMode == 51) {
-                ReaderSettings.instance.backgroundBitmap?.let {
-                    canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
-                            Rect(0, 0, canvas!!.width, canvas!!.height),
-                            null)
+            when (ReaderSettings.instance.readThemeMode) {
+                51 -> {
+                    ReaderSettings.instance.kraftBitmap?.let {
+                        canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
+                                Rect(0, 0, canvas!!.width, canvas!!.height),
+                                null)
+                    }
                 }
-            } else {
-                canvas?.drawColor(ReaderSettings.instance.backgroundColor)
+                511 -> {
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.blueBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.blueBitmapPortrait
+                    }
+                    bitmap?.let {
+                        canvas?.drawBitmap(it, 0F, 0F, null)
+                    }
+                }
+                512 -> {
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.pinkBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.pinkBitmapPortrait
+                    }
+                    bitmap?.let {
+                        canvas?.drawBitmap(it, 0F, 0F, null)
+                    }
+                }
+                513 -> {
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.greenBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.greenBitmapPortrait
+                    }
+                    bitmap?.let {
+                        canvas?.drawBitmap(it, 0F, 0F, null)
+                    }
+                }
+                514 -> {
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.darkBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.darkBitmapPortrait
+                    }
+                    bitmap?.let {
+                        canvas?.drawBitmap(it, 0F, 0F, null)
+                    }
+                }
+                515 -> {
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.dimBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.dimBitmapPortrait
+                    }
+                    bitmap?.let {
+                        canvas?.drawBitmap(it, 0F, 0F, null)
+                    }
+                }
+                else -> {
+                    canvas?.drawColor(ReaderSettings.instance.backgroundColor)
+                }
             }
             if (DataProvider.isGroupExist(posi.group)) {
                 DrawTextHelper.drawText(canvas, DataProvider.getPage(posi))

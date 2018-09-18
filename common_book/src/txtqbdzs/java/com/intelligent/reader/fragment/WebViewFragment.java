@@ -1,26 +1,8 @@
 package com.intelligent.reader.fragment;
 
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
-import com.dingyue.contract.util.CommonUtil;
-import com.intelligent.reader.BuildConfig;
-import com.intelligent.reader.R;
-import com.intelligent.reader.activity.SearchBookActivity;
-import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.PagerDesc;
-
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-import net.lzbook.kit.utils.NetWorkUtils;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,9 +22,23 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dingyue.contract.util.CommonUtil;
+import com.intelligent.reader.BuildConfig;
+import com.intelligent.reader.R;
+import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.PagerDesc;
+
+import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
+import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.NetWorkUtils;
+
 import java.lang.ref.WeakReference;
 
-public class WebViewFragment extends Fragment implements View.OnClickListener {
+public class WebViewFragment extends Fragment {
 
     private static String TAG = WebViewFragment.class.getSimpleName();
     public String url = "";
@@ -304,27 +300,27 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.content_head_search:
-                Intent intent = new Intent(getActivity(), SearchBookActivity.class);
-                try {
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.content_download_manage:
-                try {
-                    RouterUtil.INSTANCE.navigation(getActivity(),
-                            RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.content_head_search:
+//                Intent intent = new Intent(getActivity(), SearchBookActivity.class);
+//                try {
+//                    startActivity(intent);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                break;
+//            case R.id.content_download_manage:
+//                try {
+//                    RouterUtil.INSTANCE.navigation(getActivity(),
+//                            RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                break;
+//        }
+//    }
 
     @Override
     public void onDestroy() {

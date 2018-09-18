@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="330dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:focusable="true"
@@ -20,80 +20,78 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="12dp"
-            android:text="@string/change_source"
-            android:textColor="#323232"
-            android:textSize="18sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#E8E8E8"/>
-
-        <TextView
-            android:id="@+id/txt_change_source_prompt"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="10dp"
-            android:ellipsize="end"
-            android:gravity="left|center"
-            android:lineSpacingMultiplier="1.5"
-            android:maxLines="4"
-            android:padding="4dp"
-            android:text="@string/change_source_prompt"
-            android:textColor="#323232"
-            android:textSize="14sp"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/change_source"
+            android:textColor="#282828"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recl_change_source_content"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="192dp"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_change_source_prompt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="left|center"
+                    android:lineSpacingMultiplier="1.5"
+                    android:maxLines="4"
+                    android:text="@string/change_source_prompt"
+                    android:textColor="#616161"
+                    android:textSize="12sp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recl_change_source_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+        </ScrollView>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
-
-            <View
-                android:id="@+id/view_change_source_divider"
-                android:layout_width="0.5dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="true"
-                android:background="#E8E8E8"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/txt_change_source_cancel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="108dp"
+                android:layout_height="38dp"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@id/view_change_source_divider"
                 android:background="@drawable/reader_dialog_cancel_sel"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textColor="@drawable/reader_dialog_cancel_txt_sel"
+                android:textColor="#3ECC96"
                 android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/txt_change_source_continue"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="108dp"
+                android:layout_height="38dp"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/view_change_source_divider"
                 android:background="@drawable/reader_dialog_confirm_sel"
                 android:gravity="center"
                 android:text="@string/reading_continue"
-                android:textColor="@drawable/reader_dialog_confirm_txt_sel"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"/>
-
-            <include
-                android:id="@+id/change_source_divider"
-                layout="@layout/dialog_divider"/>
         </RelativeLayout>
     </LinearLayout>
 

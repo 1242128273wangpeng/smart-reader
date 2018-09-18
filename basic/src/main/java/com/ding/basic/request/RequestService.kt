@@ -10,6 +10,7 @@ import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 interface RequestService {
@@ -227,6 +228,11 @@ interface RequestService {
         const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
 
         /**
+         * 字体下载链接
+         */
+        const val FONT_URL = "https://sta.zhuishuwang.com/cc-remennovel/apk/"
+
+        /**
          * 二维码 拉新
          */
         const val QR_CODE = "/h5/{packageName}/share"
@@ -412,5 +418,9 @@ interface RequestService {
     //搜索无结果页  订阅
     @GET(SEARCH_SUB_BOOK)
     fun requestSubBook(@Query("bookName") bookName: String, @Query("authorName") bookAuthor: String): Flowable<JsonObject>
+
+    @Streaming
+    @GET
+    fun downloadFont(@Url url: String): Flowable<ResponseBody>
 
 }

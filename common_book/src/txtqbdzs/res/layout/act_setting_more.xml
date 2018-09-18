@@ -30,7 +30,7 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@mipmap/top_back"/>
+                android:src="@drawable/top_back"/>
 
             <TextView
                 android:id="@+id/tv_title_name"
@@ -49,7 +49,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:gravity="center"
-                android:paddingRight="@dimen/padding_14"
+                android:paddingRight="14dp"
                 android:text="@string/menu_feedback"
                 android:textColor="@color/color_gray_9a9a9a"
                 android:textSize="14sp"
@@ -246,17 +246,17 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:background="@color/color_divider"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_12"
+                android:layout_height="12dp"
                 android:background="@color/color_divider_item"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:background="@color/color_divider"/>
 
             <LinearLayout
@@ -302,7 +302,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="17dp"
-                        android:src="@mipmap/bookshelf_delete_checked"
+                        android:src="@drawable/bookshelf_delete_checked"
                         android:visibility="visible"/>
 
                     <TextView
@@ -335,7 +335,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:paddingLeft="17dp"
-                        android:src="@mipmap/bookshelf_delete_unchecked"
+                        android:src="@drawable/bookshelf_delete_unchecked"
                         android:visibility="visible"/>
 
                     <TextView
@@ -364,5 +364,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_setting_title"
         android:scaleType="fitXY"
-        android:src="@mipmap/top_shadow"/>
+        android:src="@drawable/top_shadow"/>
 </RelativeLayout>
