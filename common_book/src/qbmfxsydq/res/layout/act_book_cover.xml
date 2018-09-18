@@ -43,7 +43,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
                 android:src="@drawable/cover_share"
-                android:visibility="gone"
                 />
         </RelativeLayout>
     </RelativeLayout>
