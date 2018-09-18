@@ -28,6 +28,7 @@ import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
+import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
@@ -417,6 +418,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
+        goToBookEndCount = 0
         StatService.onResume(act)
     }
 

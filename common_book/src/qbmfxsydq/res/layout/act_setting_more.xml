@@ -26,7 +26,7 @@
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/cover_top_back"/>
 
             <TextView
                     android:id="@+id/tv_title_name"

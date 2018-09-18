@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import com.intelligent.reader.R
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import net.lzbook.kit.book.view.MyDialog
 import kotlinx.android.synthetic.qbmfxsydq.dialog_select_sex.*
 import net.lzbook.kit.utils.AppLog
@@ -27,8 +26,7 @@ class SelectSexDialog(val activity: Activity) {
     private val dialog = MyDialog(activity, R.layout.dialog_select_sex, Gravity.CENTER)
 
     private var isMan:Boolean = true
-    @JvmField
-    var hasFinishAni:Boolean = false
+    private var onAniFinish:onAniFinishedCallback ?= null
     init {
 
         val window = dialog.window
@@ -102,9 +100,10 @@ class SelectSexDialog(val activity: Activity) {
         mAnimationSet.addAnimation(mScaleAnimation)
         mAnimationSet.addAnimation(mTranslateAnimation)
 
-        mAnimationSet.duration = 500
+        mAnimationSet.duration = 550
         mAnimationSet.fillAfter = true
         aniView.startAnimation(mAnimationSet)
+//        showAniState(mAnimationSet)
     }
 
     fun setRightToLeftAni(aniView: View,scalSize:Float,translateSize:Float) {
@@ -123,9 +122,13 @@ class SelectSexDialog(val activity: Activity) {
         mAnimationSet.addAnimation(mScaleAnimation)
         mAnimationSet.addAnimation(mTranslateAnimation)
 
-        mAnimationSet.duration = 500
+        mAnimationSet.duration = 550
         mAnimationSet.fillAfter = true
         aniView.startAnimation(mAnimationSet)
+        showAniState(mAnimationSet)
+    }
+
+    fun showAniState(mAnimationSet:AnimationSet){
         mAnimationSet.setAnimationListener(object : Animation.AnimationListener {
 
             override fun onAnimationStart(animation: Animation) {
@@ -137,11 +140,16 @@ class SelectSexDialog(val activity: Activity) {
             }
 
             override fun onAnimationEnd(animation: Animation) {
-                hasFinishAni = true
+               onAniFinish?.onAniFinished()
             }
         })
     }
 
 
-
+    fun setAniFinishedAction(onAniFinish: onAniFinishedCallback) {
+        this.onAniFinish = onAniFinish
+    }
+    interface onAniFinishedCallback {
+        fun onAniFinished()
+    }
 }
