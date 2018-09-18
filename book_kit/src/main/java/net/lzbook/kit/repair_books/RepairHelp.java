@@ -11,14 +11,13 @@ import android.widget.TextView;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.util.CommonUtil;
-import com.dingyue.contract.util.SharedPreUtil;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 
@@ -107,8 +106,8 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                ChapterDataProviderHelper bookChapterDao =
+                        ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
                                 BaseBookApplication.getGlobalContext(), book.getBook_id());
                 BaseBookHelper.removeChapterCacheFile(book);
                 CacheManager.INSTANCE.remove(book.getBook_id());
@@ -171,8 +170,8 @@ public class RepairHelp {
                         book.getBook_id());
                 if (book1 != null && book1.waitingCataFix()) {
                     if (NetWorkUtils.isNetworkAvailable(context)) {
-                        ChapterDaoHelper bookChapterDao =
-                                ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                        ChapterDataProviderHelper bookChapterDao =
+                                ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
                                         BaseBookApplication.getGlobalContext(),
                                         book1.getBook_id());
                         BaseBookHelper.removeChapterCacheFile(book1);

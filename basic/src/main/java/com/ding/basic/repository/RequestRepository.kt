@@ -3,7 +3,7 @@ package com.ding.basic.repository
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody

@@ -3,8 +3,7 @@ package com.ding.basic.bean
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import android.support.annotation.NonNull
-import com.ding.basic.database.migration.FieldMigration
+import com.ding.basic.db.migration.FieldMigration
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 

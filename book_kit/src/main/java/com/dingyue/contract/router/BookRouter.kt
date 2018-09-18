@@ -8,7 +8,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
 import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -106,7 +106,7 @@ object BookRouter {
 
     private fun isCached(book: Book): Boolean {
         val index = Math.max(0, book.sequence)
-        val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id)
+        val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id)
         val chapter = bookChapterDao.queryChapterBySequence(index) ?: return false
 
         return DataCache.isChapterCached(chapter)

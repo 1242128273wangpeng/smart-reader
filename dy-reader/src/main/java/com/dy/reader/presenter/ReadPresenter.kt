@@ -28,7 +28,6 @@ import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
-import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
@@ -42,7 +41,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils
@@ -327,7 +326,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             ReaderStatus.book.readed = 1
 
             if (ReaderStatus.chapterList != null) {
-                val helper = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
+                val helper = ChapterDataProviderHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
                 helper.deleteAllChapters()
                 helper.insertOrUpdateChapter(ReaderStatus.chapterList)
                 ReaderStatus.book.chapter_count = helper.getCount()

@@ -1,6 +1,6 @@
 package com.ding.basic.util;
 
-import com.ding.basic.token.Token;
+import com.ding.basic.net.token.Token;
 import com.easou.novel.commons.encryp.util.SignatureUtil;
 
 import java.io.UnsupportedEncodingException;

@@ -29,9 +29,9 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.ding.basic.db.provider.impl.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.media.MediaCode;
@@ -49,7 +49,7 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper;
 import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AppLog;
@@ -317,7 +317,7 @@ public class SplashActivity extends FrameActivity {
 
     private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
         if (!chapterDBList.isEmpty()) {
-            ChapterDaoHelper.Companion.upgradeFromOld(this, chapterDBList)
+            ChapterDataProviderHelper.Companion.upgradeFromOld(this, chapterDBList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Integer>() {
@@ -504,8 +504,8 @@ public class SplashActivity extends FrameActivity {
             if (bookList != null && bookList.size() > 0) {
 
                 for (Book book : bookList) {
-                    ChapterDaoHelper chapterDaoHelper =
-                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                    ChapterDataProviderHelper chapterDaoHelper =
+                            ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
                                     BaseBookApplication.getGlobalContext(), book.getBook_id());
 
                     Chapter lastChapter = chapterDaoHelper.queryLastChapter();
@@ -731,8 +731,8 @@ public class SplashActivity extends FrameActivity {
                     for (int i = 0; i < bookOnlineList.size(); i++) {
                         Book iBook = bookOnlineList.get(i);
                         if (!TextUtils.isEmpty(iBook.getBook_id())) {
-                            ChapterDaoHelper bookChapterDao =
-                                    ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                            ChapterDataProviderHelper bookChapterDao =
+                                    ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
                                             BookApplication.getGlobalContext(), iBook.getBook_id());
                             Chapter lastChapter = bookChapterDao.queryLastChapter();
                             if (lastChapter != null) {

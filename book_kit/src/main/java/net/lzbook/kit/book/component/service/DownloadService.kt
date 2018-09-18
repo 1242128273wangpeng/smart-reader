@@ -14,8 +14,8 @@ import com.ding.basic.bean.CacheTaskConfig
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.PackageInfo
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.DataCache
 import com.orhanobut.logger.Logger
 import com.tencent.mm.opensdk.utils.Log
@@ -27,7 +27,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.*
 import net.lzbook.kit.data.bean.BookTask
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
 import net.lzbook.kit.encrypt.v17.util.NovelException
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.runOnMain
@@ -96,7 +96,7 @@ class DownloadService : Service(), Runnable {
                     DataCache.deleteOtherSourceCache(task.book)
                 }
 
-                val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(this, task.book_id)
+                val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(this, task.book_id)
 
                 if (bookChapterDao.getCount() <= 0) {
                     requestBookCatalog(task)
@@ -118,7 +118,7 @@ class DownloadService : Service(), Runnable {
 
     private fun requestBookCatalog(bookTask: BookTask) {
 
-        val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(this, bookTask.book_id)
+        val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(this, bookTask.book_id)
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .requestCatalog(bookTask.book_id, bookTask.book.book_source_id, bookTask.book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
@@ -141,7 +141,7 @@ class DownloadService : Service(), Runnable {
                 }, SchedulerHelper.Type_Default)
     }
 
-    fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDao: ChapterDaoHelper) {
+    fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDaoProvider: ChapterDataProviderHelper) {
 
         if (task.state != DownloadState.DOWNLOADING) {
             CacheManager.innerListener.onTaskStatusChange(task.book_id)
@@ -170,7 +170,7 @@ class DownloadService : Service(), Runnable {
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                     .requestDownTaskConfig(task.book_id, task.book.book_source_id ?: ""
                             , if (task.startSequence != 0) 1 else 0
-                            , chapterList[task.startSequence].chapter_id!!, object:  RequestSubscriber<BasicResult<CacheTaskConfig>> () {
+                            , chapterList[task.startSequence].chapter_id!!, object:  RequestSubscriber<BasicResult<CacheTaskConfig>>() {
 
                         override fun requestResult(ret: BasicResult<CacheTaskConfig>?) {
                             if (ret != null && ret.checkResultAvailable() && ret.data!!.fileUrlList != null) {
@@ -533,7 +533,7 @@ class DownloadService : Service(), Runnable {
                     while (sourceArr.size < DOWN_SIZE && index < chapterList.size) {
 
                         if (task.state != DownloadState.DOWNLOADING) {
-                            stopForeground(true)
+                            stopForeground( true)
                             CacheManager.innerListener.onTaskStatusChange(task.book_id)
                             return
                         }

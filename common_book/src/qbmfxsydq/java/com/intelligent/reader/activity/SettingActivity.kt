@@ -11,7 +11,6 @@ import android.os.Message
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
@@ -25,8 +24,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
-import com.ding.basic.bean.LoginRespV4
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.service.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -52,7 +50,6 @@ import java.util.HashMap
 
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
-import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.user.UserManagerV4

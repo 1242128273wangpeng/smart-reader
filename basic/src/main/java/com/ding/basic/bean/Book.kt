@@ -2,7 +2,7 @@ package com.ding.basic.bean
 
 import android.arch.persistence.room.*
 import android.view.ViewGroup
-import com.ding.basic.database.migration.*
+import com.ding.basic.db.migration.*
 import java.io.Serializable
 
 @Entity(tableName = "book")

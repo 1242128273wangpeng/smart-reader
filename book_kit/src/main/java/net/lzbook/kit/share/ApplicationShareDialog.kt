@@ -3,10 +3,9 @@ package net.lzbook.kit.share
 import android.app.Activity
 import android.view.*
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.net.rx.SchedulerHelper
 import com.dingyue.contract.util.showToastMessage
 
-import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.view.MyDialog

@@ -49,7 +49,7 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.data.db.help.ChapterDataProviderHelper;
 import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;

@@ -5,16 +5,15 @@ import android.content.Context
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.database.helper.BookDataProviderHelper
-import com.ding.basic.request.RequestAPI
-import com.ding.basic.request.ResultCode
+import com.ding.basic.db.provider.impl.BookDataProviderHelper
+import com.ding.basic.net.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
 import com.ding.basic.util.getSharedObject
 import com.ding.basic.util.isSameDay
 import com.google.gson.JsonObject
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
 import okhttp3.RequestBody
 import retrofit2.Call
 
@@ -73,7 +72,7 @@ class LocalRequestRepository private constructor(private var context: Context) :
             catalog.book_chapter_id = book_chapter_id
 
             if (RequestRepositoryFactory.loadRequestRepositoryFactory(context).checkBookSubscribe(book_id) != null) {
-                val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context = context, book_id = book_id)
+                val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context = context, book_id = book_id)
                 catalog.chapters = chapterDaoHelp.queryAllChapters()
             }
             catalog.chapterCount = if (catalog.chapters == null) {

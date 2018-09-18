@@ -4,10 +4,10 @@ import android.content.Context
 import com.ding.basic.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
-import com.ding.basic.request.ContentAPI
-import com.ding.basic.request.MicroAPI
-import com.ding.basic.request.RequestAPI
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
+import com.ding.basic.net.api.RequestAPI
+import com.ding.basic.net.service.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook

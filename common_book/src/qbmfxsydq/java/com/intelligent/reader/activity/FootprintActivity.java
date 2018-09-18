@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ding.basic.bean.HistoryInfo;
-import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.ding.basic.db.provider.impl.BookDataProviderHelper;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;

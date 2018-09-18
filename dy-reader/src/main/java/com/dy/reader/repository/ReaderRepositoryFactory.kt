@@ -3,7 +3,7 @@ package com.dy.reader.repository
 import android.text.TextUtils
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.helper.WriteFileFailException
+import com.ding.basic.net.exception.WriteFileFailException
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import com.dy.reader.Reader

@@ -13,7 +13,7 @@ import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson

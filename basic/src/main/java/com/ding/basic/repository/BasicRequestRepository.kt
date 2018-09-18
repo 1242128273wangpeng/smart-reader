@@ -1,7 +1,6 @@
 package com.ding.basic.repository
 
 import com.ding.basic.bean.*
-import com.ding.basic.request.RequestAPI
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import okhttp3.RequestBody

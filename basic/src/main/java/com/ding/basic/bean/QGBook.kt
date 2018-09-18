@@ -1,6 +1,6 @@
 package com.ding.basic.bean
 
-import com.ding.basic.database.migration.StatusConverter
+import com.ding.basic.db.migration.StatusConverter
 
 /**
  * 类描述：

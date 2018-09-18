@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.*
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil

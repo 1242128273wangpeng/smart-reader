@@ -7,8 +7,12 @@ import com.ding.basic.bean.AdControlByChannelBean
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
+import com.ding.basic.net.api.RequestAPI
+import com.ding.basic.net.service.RequestService
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.*
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.dynamic.service.DynamicService
 import com.orhanobut.logger.Logger
@@ -84,7 +88,7 @@ class DynamicParameter(private val context: Context) {
      */
     fun requestCheck() {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                .requestDynamicCheck(object :RequestSubscriber<BasicResult<Int>>() {
+                .requestDynamicCheck(object : RequestSubscriber<BasicResult<Int>>() {
                     override fun requestResult(result: BasicResult<Int>?) {
                         if (result?.data != null) {
                             mReqVersion = result.data!!

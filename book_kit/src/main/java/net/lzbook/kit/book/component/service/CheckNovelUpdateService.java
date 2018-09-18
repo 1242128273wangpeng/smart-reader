@@ -21,7 +21,7 @@ import com.ding.basic.bean.BookUpdate;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
 import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -34,7 +34,7 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.UpdateCallBack;
 import net.lzbook.kit.data.bean.BookUpdateResult;
 import net.lzbook.kit.data.bean.BookUpdateTaskData;
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CheckNovelUpdHelper;
@@ -623,8 +623,8 @@ public class CheckNovelUpdateService extends Service {
             BookUpdate resUpdate = null;
 
             if (book != null && bookUpdate.getChapterList() != null && bookUpdate.getChapterList().size() > 0) {
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                ChapterDataProviderHelper bookChapterDao =
+                        ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
                                 BaseBookApplication.getGlobalContext(), book.getBook_id());
                 // 增加更新章节
                 bookChapterDao.insertOrUpdateChapter(bookUpdate.getChapterList());

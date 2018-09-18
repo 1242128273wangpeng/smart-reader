@@ -4,14 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.widget.Toast
 import com.ding.basic.bean.*
-import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.db.provider.impl.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -32,7 +31,7 @@ import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.bean.ChapterErrorBean
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
@@ -479,7 +478,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         chapterErrorBean.channelCode = if (book.fromQingoo()) "1" else "2"
         var currChapter: Chapter? = null
         if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {
-            val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id!!)
+            val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id!!)
             currChapter = bookChapterDao.queryChapterBySequence(ReaderStatus.position.group)
         }
         if (currChapter == null) {

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
@@ -15,9 +15,7 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.ATManager
-import net.lzbook.kit.utils.AppLog
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.HashMap

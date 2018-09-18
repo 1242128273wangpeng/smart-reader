@@ -15,9 +15,9 @@ import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
-import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.db.provider.impl.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.bitmapTransformByteArray
 import com.dingyue.contract.util.mainLooperHandler

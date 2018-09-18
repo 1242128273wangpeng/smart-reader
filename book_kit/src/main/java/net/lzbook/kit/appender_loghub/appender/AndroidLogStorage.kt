@@ -2,8 +2,8 @@ package net.lzbook.kit.appender_loghub.appender
 
 import android.content.Context
 import com.ding.basic.bean.LocalLog
-import com.ding.basic.dao.LocalLogDao
-import com.ding.basic.database.LocalLogDataBase
+import com.ding.basic.db.dao.LocalLogDao
+import com.ding.basic.db.database.LocalLogDataBase
 import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication

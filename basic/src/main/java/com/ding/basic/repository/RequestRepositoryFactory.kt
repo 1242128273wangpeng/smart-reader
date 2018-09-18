@@ -9,11 +9,11 @@ import com.ding.basic.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.database.helper.BookDataProviderHelper
-import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.request.ResultCode
-import com.ding.basic.rx.CommonResultMapper
-import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.db.provider.impl.BookDataProviderHelper
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.ResultCode
+import com.ding.basic.net.rx.CommonResultMapper
+import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
 import com.ding.basic.util.ChapterCacheUtil
 import com.ding.basic.util.DataCache
@@ -22,12 +22,11 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.data.book.*
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
@@ -185,7 +184,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                     if (localBook != null && !TextUtils.isEmpty(localBook.book_id)) {
                                         if (TextUtils.isEmpty(localBook.book_chapter_id) && !TextUtils.isEmpty(result.data?.book_chapter_id)) {
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, localBook.book_id).updateBookChapterId(result.data?.book_chapter_id!!)
+                                            ChapterDataProviderHelper.loadChapterDataProviderHelper(context, localBook.book_id).updateBookChapterId(result.data?.book_chapter_id!!)
                                         }
                                     }
                                 }
@@ -231,7 +230,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         val book = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book_id)
 
                         if (book != null) {
-                            val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
+                            val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.insertOrUpdateChapter(resList)
                             book.chapter_count = chapterDaoHelp.getCount()
                             if (result.data!!.listVersion!! > book.list_version) {
@@ -317,7 +316,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
 
                         if (book != null) {
-                            val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
+                            val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.deleteAllChapters()
                             BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id)
 
@@ -715,7 +714,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                             loadRepository.updateBook(book)
 
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, it.from).deleteAllChapters()
+                                            ChapterDataProviderHelper.loadChapterDataProviderHelper(context, it.from).deleteAllChapters()
                                         }
                                     }
                                 }
@@ -733,10 +732,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                         // 保存在chapter表中
                                         if (book.fromQingoo()) {
-                                            ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
+                                            ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookSourceId(it.book_source_id)
                                         }
 
-                                        ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
+                                        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book.book_id).updateBookChapterId(it.book_chapter_id)
                                     }
                                     if (!TextUtils.isEmpty(it.desc)) {
                                         book.desc = it.desc
@@ -748,7 +747,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     book.sub_genre = it.sub_genre
                                     book.book_type = it.book_type
 
-                                    val lastChapter = ChapterDaoHelper.loadChapterDataProviderHelper(context, book.book_id).queryLastChapter()
+                                    val lastChapter = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book.book_id).queryLastChapter()
 
                                     if (lastChapter != null) {
                                         book.last_chapter = lastChapter
@@ -1737,11 +1736,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
             Flowable.fromIterable(fixContents)
                     .subscribeOn(Schedulers.io())
                     .filter { it.chapters != null && !TextUtils.isEmpty(it.book_id) }
-                    .subscribe({
+                    .subscribe {
                         val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
                         if (it.chapters != null && it.chapters!!.isNotEmpty() && book != null) {
 
-                            val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, it.book_id)
+                            val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, it.book_id)
 
                             var localNoChapterID = false
 
@@ -1792,7 +1791,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
 
                         }
-                    })
+                    }
         }
     }
 

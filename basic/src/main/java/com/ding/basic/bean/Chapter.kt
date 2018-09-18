@@ -1,7 +1,7 @@
 package com.ding.basic.bean
 
 import android.arch.persistence.room.*
-import com.ding.basic.database.migration.FieldMigration
+import com.ding.basic.db.migration.FieldMigration
 import java.io.Serializable
 
 @Entity(tableName = "chapters", indices = arrayOf(Index("sequence", unique = true)))
