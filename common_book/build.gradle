@@ -23,6 +23,7 @@ android {
 
     dexOptions {
         javaMaxHeapSize rootProject.ext.javaMaxHeapSize
+        threadCount 32
     }
 
 
