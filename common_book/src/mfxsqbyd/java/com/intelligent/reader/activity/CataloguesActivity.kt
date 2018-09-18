@@ -20,7 +20,6 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.mfxsqbyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -29,6 +28,7 @@ import net.lzbook.kit.data.bean.EventBookmark
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.Callable
 
