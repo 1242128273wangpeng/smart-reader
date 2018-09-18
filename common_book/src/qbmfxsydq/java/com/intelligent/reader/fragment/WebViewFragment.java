@@ -29,6 +29,7 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.view.SelectSexDialog;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
@@ -38,6 +39,7 @@ import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFinishedCallback {
 
@@ -131,8 +133,10 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         selectSexDialog = new SelectSexDialog(weakReference.get());
                         selectSexDialog.setAniFinishedAction(WebViewFragment.this);
                     }
+                    Map<String,String> data = new HashMap<>();
                     //0 表示男  1 表示女
                     if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
+                        data.put("type","2");
                         sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
                         img_sex.setImageResource(R.drawable.rank_gril_icon);
                         selectSexDialog.show(false);
@@ -141,6 +145,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         url = UrlUtils.buildWebUrl(uri, new HashMap());
                         loadingData(url);
                     } else {
+                        data.put("type","1");
                         sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
                         selectSexDialog.show(true);
                         img_sex.setImageResource(R.drawable.rank_boy_icon);
@@ -149,6 +154,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         url = UrlUtils.buildWebUrl(uri, new HashMap());
                         loadingData(url);
                     }
+                    StartLogClickUtil.upLoadEventLog(weakReference.get(),StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data);
 
                 }
             });

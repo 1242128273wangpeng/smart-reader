@@ -251,8 +251,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     selectSexDialog = new SelectSexDialog(this);
                     selectSexDialog.setAniFinishedAction(this);
                 }
+                Map<String,String> data1 = new HashMap<>();
                 //0 表示男  1 表示女
                 if (isMale) {
+                    data1.put("type","2");
                     isMale = false;
                     img_sex.setImageResource(R.drawable.rank_gril_icon);
                     selectSexDialog.show(false);
@@ -260,6 +262,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                             AppUtils.getPackageName());
                     loadWebData(currentUrl, currentTitle);
                 } else {
+                    data1.put("type","1");
                     isMale = true;
                     selectSexDialog.show(true);
                     img_sex.setImageResource(R.drawable.rank_boy_icon);
@@ -267,6 +270,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                             AppUtils.getPackageName());
                     loadWebData(currentUrl, currentTitle);
                 }
+                StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data1);
                 break;
 
         }
