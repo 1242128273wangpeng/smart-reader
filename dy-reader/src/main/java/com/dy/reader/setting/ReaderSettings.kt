@@ -59,7 +59,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND, CHAPTER_SUCCESS,
+        GO_TO_BOOKEND,CHAPTER_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 

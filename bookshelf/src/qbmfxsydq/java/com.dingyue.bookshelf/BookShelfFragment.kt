@@ -2,6 +2,7 @@ package com.dingyue.bookshelf
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.SimpleItemAnimator
@@ -130,19 +131,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
-                refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_running)
-                refreshHeader.img_refresh_arrow.visibility = View.GONE
-                refreshHeader.pgbar_refresh_loading.visibility = View.VISIBLE
+                refreshHeader.img_head.visibility = View.GONE
+                refreshHeader.img_anim.visibility = View.VISIBLE
+                (refreshHeader.img_anim.drawable as AnimationDrawable).start()
                 checkBookUpdate()
             }
 
             override fun onPullDistance(distance: Int) {}
 
             override fun onPullEnable(enable: Boolean) {
-                refreshHeader.pgbar_refresh_loading.visibility = View.GONE
-                refreshHeader.txt_refresh_prompt.text = if (enable) getString(R.string.refresh_release) else getString(R.string.refresh_start)
-                refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
-                refreshHeader.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
+                refreshHeader.img_anim.visibility = View.GONE
+                refreshHeader.img_head.visibility = View.VISIBLE
+//                refreshHeader.img_head.setImageResource((if (enable) R.drawable.refresh_head_loading1 else R.drawable.refresh_head_loading10))
             }
         })
         btn_find.setOnClickListener {
@@ -241,10 +241,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     private fun createHeaderView(): View {
-        refreshHeader.txt_refresh_prompt.text = getString(R.string.refresh_start)
-        refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
-        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
-        refreshHeader.pgbar_refresh_loading.visibility = View.GONE
         return refreshHeader
     }
 

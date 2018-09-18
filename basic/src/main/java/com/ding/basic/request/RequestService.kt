@@ -4,6 +4,7 @@ import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
@@ -120,6 +121,11 @@ interface RequestService {
 
         //刷新Token
         const val REFRESH_TOKEN = "/v3/user/refLToken"
+        /**
+         * 刷新用户token
+         */
+        const val PATH_REFRESH_TOKEN = "/v4/user/refresh_token"
+
         // 获取短信
         const val PATH_FETCH_SMS_CODE_V4 = "/v4/message/sms"
         // 短信登录
@@ -351,6 +357,12 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_BOOKSHELF_UPLOAD) //上传书架
     fun uploadBookshelf(@Body bookshelf: RequestBody): Flowable<BasicResultV4<String>>
+    /**
+     * 刷新Token
+     * @return Observable<Result></Result><User>>
+    </User> */
+    @GET(PATH_REFRESH_TOKEN)
+    fun refreshToken(): Flowable<BasicResultV4<LoginRespV4>>
 
     @GET(PATH_BOOKMAEK_GET) // 获取用户书签
     fun requestBookMarks(@Query("accountId") userId: String): Flowable<BasicResultV4<List<UserMarkBook>>>

@@ -150,6 +150,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.uploadBookshelf(bookShelfBody)
     }
 
+    fun refreshToken(): Flowable<BasicResultV4<LoginRespV4>>? {
+        return RequestAPI.refreshToken()
+    }
+
     fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
         return RequestAPI.requestBookMarks(accountId)
     }
