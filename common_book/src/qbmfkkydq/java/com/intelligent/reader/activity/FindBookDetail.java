@@ -1,6 +1,7 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 import android.content.Intent;
 import android.content.res.Resources;

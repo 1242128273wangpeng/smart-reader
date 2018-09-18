@@ -50,8 +50,8 @@ class BookEndRecommendAdapter(private val context: Activity) : RecyclerView.Adap
         if (!TextUtils.isEmpty(rBook.sourceImageUrl)) {
 
             Glide.with(context)
-                    .load(rBook.sourceImageUrl).placeholder(R.drawable.book_cover_default_icon)
-                    .error(R.drawable.book_cover_default_icon)
+                    .load(rBook.sourceImageUrl).placeholder(R.drawable.icon_book_cover_default)
+                    .error(R.drawable.icon_book_cover_default)
                     .into(holder.recommendImage.getBackGroundImage())
 
         } else {
