@@ -18,6 +18,6 @@
         android:layout_marginTop="-6dp"
         android:gravity="center_horizontal"
         android:textColor="@color/bottom_navi_text"
-        android:textSize="@dimen/text_size_11"/>
+        android:textSize="11sp"/>
 
 </LinearLayout>
