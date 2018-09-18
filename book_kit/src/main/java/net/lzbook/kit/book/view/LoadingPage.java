@@ -3,12 +3,14 @@ package net.lzbook.kit.book.view;
 import net.lzbook.kit.R;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,9 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
@@ -33,6 +39,7 @@ public class LoadingPage extends FrameLayout {
     reloadCallback reload;
     boolean isCustomLoading = false;
     private ProgressBar loading_progressbar;
+    private ImageView img_loading;
     private Runnable settingAction;
     private Callable<Void> reLoadAction;
     private RelativeLayout loading_error_view;
@@ -229,7 +236,10 @@ public class LoadingPage extends FrameLayout {
         if (act == null) {
             return;
         }
-        tv_loading_progress.setTextColor(act.getResources().getColor(color));
+        if(!"cc.quanben.novel".equals(AppUtils.getPackageName())){
+            tv_loading_progress.setTextColor(act.getResources().getColor(color));
+        }
+
     }
 
     @SuppressLint("ResourceAsColor")
@@ -262,6 +272,15 @@ public class LoadingPage extends FrameLayout {
         tv_network_error.setText(R.string.read_network_error);
 
         loading_progressbar =  loadView.findViewById(R.id.loading_progressbar);
+        img_loading = loadView.findViewById(R.id.img_loading);
+        if("cc.quanben.novel".equals(AppUtils.getPackageName())){
+            img_loading.setVisibility(View.VISIBLE);
+            loading_progressbar.setVisibility(GONE);
+            ((AnimationDrawable)img_loading.getDrawable()).start();
+        }else{
+            img_loading.setVisibility(View.GONE);
+            loading_progressbar.setVisibility(VISIBLE);
+        }
 
 //        setLoadingBg(R.color.color_white_faf9f7);
         setLoadingTextColor(R.color.color_brown_a8978d);

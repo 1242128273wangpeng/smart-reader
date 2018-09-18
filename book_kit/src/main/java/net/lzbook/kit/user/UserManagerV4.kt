@@ -46,7 +46,10 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
 import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_QQ
-import net.lzbook.kit.user.bean.*
+import net.lzbook.kit.user.bean.AvatarReq
+import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.loge
@@ -164,6 +167,30 @@ object UserManagerV4 : IWXAPIEventHandler {
             callback?.invoke(true)
         }
     }
+
+    fun refreshToken(callBack: (() -> Unit)? = null) {
+        loge("refreshToken")
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .getRefreshToken(object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            user?.let {
+                                user?.token = result.data?.token
+                                onLogin(it)
+                                callBack?.invoke()
+                            }
+                        } else {
+                            callBack?.invoke()
+                        }
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack?.invoke()
+                    }
+
+                })
+    }
+
 
     /**
      * 检测第三方登录平台是否可用
@@ -346,7 +373,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 登出上传操作---------------------开始
      */
-    private fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
+    fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
         user?.let {
             val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
             repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)

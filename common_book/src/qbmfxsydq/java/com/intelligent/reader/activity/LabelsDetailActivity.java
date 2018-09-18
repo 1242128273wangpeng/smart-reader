@@ -51,10 +51,9 @@ import swipeback.ActivityLifecycleHelper;
 /**
  * WebView二级页面
  */
-public class FindBookDetail extends FrameActivity implements View.OnClickListener,
-        SelectSexDialog.onAniFinishedCallback {
+public class LabelsDetailActivity extends FrameActivity implements View.OnClickListener,SelectSexDialog.onAniFinishedCallback {
 
-    private static String TAG = FindBookDetail.class.getSimpleName();
+    private static String TAG = LabelsDetailActivity.class.getSimpleName();
     String rankType;
     private RelativeLayout find_book_detail_main;
     private ImageView find_book_detail_back;
@@ -79,7 +78,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private boolean isFromPush = false;
     private SelectSexDialog selectSexDialog;
     private boolean isMale;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,10 +133,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         //精选页 榜单进入需要选男女
-        if (currentUrl.contains("/h5/cc.quanben.novel/rank")) {
+        if(currentUrl.contains("/h5/cc.quanben.novel/rank")){
             img_sex.setVisibility(View.VISIBLE);
             find_book_detail_search.setVisibility(View.GONE);
-        } else {
+        }else {
             img_sex.setVisibility(View.GONE);
             find_book_detail_search.setVisibility(View.VISIBLE);
         }
@@ -146,7 +144,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         if (currentUrl.contains("/h5/cc.quanben.novel/rankBoy")) {
             isMale = true;
             img_sex.setImageResource(R.drawable.rank_boy_icon);
-        } else {
+        } else{
             isMale = false;
             img_sex.setImageResource(R.drawable.rank_gril_icon);
         }
@@ -247,27 +245,25 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 startActivity(intent);
                 break;
             case R.id.img_sex:
-                if (selectSexDialog == null) {
+                if(selectSexDialog == null){
                     selectSexDialog = new SelectSexDialog(this);
                     selectSexDialog.setAniFinishedAction(this);
                 }
                 //0 表示男  1 表示女
-                if (isMale) {
+                if(isMale){
                     isMale = false;
                     img_sex.setImageResource(R.drawable.rank_gril_icon);
                     selectSexDialog.show(false);
-                    currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
-                            AppUtils.getPackageName());
-                    loadWebData(currentUrl, currentTitle);
-                } else {
+                    currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}", AppUtils.getPackageName());
+                    loadWebData(currentUrl,currentTitle);
+                }else{
                     isMale = true;
                     selectSexDialog.show(true);
                     img_sex.setImageResource(R.drawable.rank_boy_icon);
-                    currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
-                            AppUtils.getPackageName());
-                    loadWebData(currentUrl, currentTitle);
+                    currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}", AppUtils.getPackageName());
+                    loadWebData(currentUrl,currentTitle);
                 }
-                break;
+                    break;
 
         }
     }
@@ -291,7 +287,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (selectSexDialog != null) {
+        if(selectSexDialog != null){
             selectSexDialog = null;
         }
         if (find_detail_content != null) {
@@ -461,12 +457,12 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", keyWord);
                     data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
-                    StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
+                    StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
                             StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
                             data);
 
                     Intent intent = new Intent();
-                    intent.setClass(FindBookDetail.this, SearchBookActivity.class);
+                    intent.setClass(LabelsDetailActivity.this, SearchBookActivity.class);
                     intent.putExtra("word", keyWord);
                     intent.putExtra("search_type", search_type);
                     intent.putExtra("filter_type", filter_type);
@@ -496,7 +492,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 Map<String, String> data = new HashMap<>();
                 data.put("BOOKID", book_id);
                 data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
+                StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
                         StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
 
 
@@ -520,16 +516,31 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                try {
-                    Intent intent = new Intent();
-                    intent.setClass(FindBookDetail.this, LabelsDetailActivity.class);
-                    intent.putExtra("url", url);
-                    intent.putExtra("title", name);
-                    startActivity(intent);
-                    AppLog.e(TAG, "EnterAnotherWeb");
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if ("cc.kdqbxs.reader".equals(packageName)
+                        || "cn.txtkdxsdq.reader".equals(packageName)) {
+                    try {
+                        Intent intent = new Intent();
+                        intent.setClass(LabelsDetailActivity.this, LabelsDetailActivity.class);
+                        intent.putExtra("url", url);
+                        intent.putExtra("title", name);
+                        startActivity(intent);
+                        AppLog.e(TAG, "EnterAnotherWeb");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        currentUrl = url;
+                        currentTitle = name;
+                        urls.add(currentUrl);
+                        names.add(currentTitle);
+                        loadWebData(currentUrl, name);
+//                    setTitle(name);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+
             }
         });
 
@@ -559,7 +570,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 boolean succeed = (RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                         BaseBookApplication.getGlobalContext()).insertBook(book) > 0);
                 if (succeed) {
-                    Toast.makeText(FindBookDetail.this.getApplicationContext(),
+                    Toast.makeText(LabelsDetailActivity.this.getApplicationContext(),
                             R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -573,7 +584,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                         BaseBookApplication.getGlobalContext()).deleteBook(book_id);
                 CacheManager.INSTANCE.stop(book_id);
                 CacheManager.INSTANCE.resetTask(book_id);
-                Toast.makeText(FindBookDetail.this.getApplicationContext(),
+                Toast.makeText(LabelsDetailActivity.this.getApplicationContext(),
                         R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
             }
         });
@@ -659,7 +670,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     private void clickBackBtn() {
         if (urls.size() - backClickCount <= 1) {
-            FindBookDetail.this.finish();
+            LabelsDetailActivity.this.finish();
         } else {
             backClickCount++;
             int nowIndex = urls.size() - 1 - backClickCount;

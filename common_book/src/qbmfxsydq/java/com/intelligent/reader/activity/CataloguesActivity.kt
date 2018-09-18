@@ -112,12 +112,13 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         val bundle = intent.extras ?: return
 
         initData(bundle)
-        initCatalogAndBookmark()
+
 
         if (fromEnd) {
             isPositive = false
             changeSortState(isPositive)
         }
+
 
         EventBus.getDefault().register(this)
 
@@ -442,10 +443,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                 //书签点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                 isPositive = !isPositive
-                Collections.reverse(chapterList!!)
+                if(!is_last_chapter){
+                    Collections.reverse(chapterList!!)
+                }else{
+                    is_last_chapter = false
+                }
                 mCataloguesAdapter.insertCatalog(chapterList)
                 mCataloguesAdapter.notifyDataSetChanged()
                 changeSortState(isPositive)
+                recl_catalog_main.scrollToPosition(0)
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
                 mCataloguesPresenter!!.fixBook()
@@ -561,6 +567,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         if (mCataloguesAdapter != null) {
             mCataloguesAdapter.setSelectedItem(position)
         }
+        initCatalogAndBookmark()
     }
 
     override fun requestCatalogError() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rl_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/cover_bg">
@@ -73,6 +74,7 @@
                         android:layout_height="120dp"
                         android:background="#2D313C"
                         android:orientation="vertical"
+                        android:paddingTop="5dp"
                         android:paddingLeft="129dp"
                         android:paddingRight="16dp"
                         >
@@ -125,7 +127,7 @@
                                 android:id="@+id/book_cover_category2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="12dp"
+                                android:layout_marginLeft="8dp"
                                 android:background="@drawable/book_cover_label_bg"
                                 android:ellipsize="end"
                                 android:gravity="center"
@@ -142,7 +144,7 @@
                                 android:id="@+id/tv_text_number"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="12dp"
+                                android:layout_marginLeft="8dp"
                                 android:background="@drawable/book_cover_label_bg"
                                 android:gravity="center"
                                 android:includeFontPadding="false"
@@ -155,23 +157,24 @@
                                 android:textSize="10sp"/>
                         </LinearLayout>
                     </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="95dp"
+                        android:layout_height="148dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@drawable/cover_book_shadow"
+                        android:scaleType="fitXY"
+                        />
                     <ImageView
                         android:id="@+id/book_cover_image"
-                        android:layout_width="97dp"
-                        android:layout_height="136dp"
+                        android:layout_width="95dp"
+                        android:layout_height="134dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginLeft="16dp"
                         android:background="@drawable/bookshelf_book_cover_default"
                         android:scaleType="fitXY"
                         android:src="@drawable/bookshelf_book_cover_default"/>
-                    <ImageView
-                        android:layout_width="97dp"
-                        android:layout_height="10dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="136dp"
-                        android:background="@drawable/top_shadow"
-                        android:scaleType="fitXY"
-                        />
-
                     <TextView
                         android:id="@+id/txt_book_status"
                         android:layout_width="wrap_content"
@@ -181,8 +184,8 @@
                         android:paddingBottom="1dp"
                         android:paddingLeft="6dp"
                         android:paddingRight="6dp"
-                        android:paddingTop="1dp"
                         android:scaleType="fitXY"
+                        android:layout_marginTop="8dp"
                         android:text="完结"
                         android:textColor="#ffffff"
                         android:textSize="11sp"
@@ -191,41 +194,80 @@
                 </FrameLayout>
 
 
-                <com.intelligent.reader.view.ExpandTextView
-                    android:id="@+id/book_cover_description"
+                <FrameLayout
+                    android:id="@+id/fl_des_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
                     android:layout_marginTop="12dp"
-                    android:orientation="vertical"
-                    expandableTextView:animAlphaStart="1"
-                    expandableTextView:maxCollapsedLines="3">
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp">
 
                     <TextView
-                        android:id="@+id/expandable_text"
+                        android:id="@+id/book_cover_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical"
-                        android:lineSpacingMultiplier="1.5"
-                        android:text=""
-                        android:textColor="@color/text_color_plain"
-                        android:textSize="14sp"/>
+                        android:lineSpacingExtra="10dp"
+                        android:maxLines="4"
+                        android:textColor="#5D646E"
+                        android:textSize="14sp"
+                       />
 
-                    <ImageView
-                        android:id="@+id/expand_collapse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:paddingBottom="8dp"
-                        android:src="@drawable/icon_close_text"/>
-                </com.intelligent.reader.view.ExpandTextView>
+                    <!--<RelativeLayout-->
+                        <!--android:layout_width="40dp"-->
+                        <!--android:layout_height="@dimen/dimen_margin_20"-->
+                        <!--android:layout_gravity="bottom|right"-->
+                        <!--android:layout_marginBottom="@dimen/dimen_margin_12"-->
+                        <!--android:background="@drawable/book_cover_more_bg">-->
+
+                        <ImageView
+                            android:id="@+id/expand_collapse"
+                            android:layout_width="40dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="bottom|right"
+                            android:scaleType="center"
+                            android:layout_marginBottom="10dp"
+                            android:src="@drawable/icon_close_text"/>
+                    <!--</RelativeLayout>-->
+
+                </FrameLayout>
+
+                <!--<com.intelligent.reader.view.ExpandTextView-->
+                    <!--android:id="@+id/book_cover_description"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="16dp"-->
+                    <!--android:layout_marginRight="16dp"-->
+                    <!--android:layout_marginTop="12dp"-->
+                    <!--android:orientation="vertical"-->
+                    <!--expandableTextView:animAlphaStart="1"-->
+                    <!--expandableTextView:maxCollapsedLines="4">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/expandable_text"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:lineSpacingMultiplier="1.5"-->
+                        <!--android:text=""-->
+                        <!--android:textColor="@color/text_color_plain"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<ImageView-->
+                        <!--android:id="@+id/expand_collapse"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentBottom="true"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:paddingBottom="4dp"-->
+                        <!--android:src="@drawable/icon_close_text"/>-->
+                <!--</com.intelligent.reader.view.ExpandTextView>-->
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_marginTop="12dp"
                     android:background="#F9F9F9"/>
 
@@ -384,15 +426,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-       >
+        >
 
         <ImageView
             android:layout_width="230dp"
             android:layout_height="45dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="4dp"
-            android:contentDescription="@string/module_name"
             android:layout_gravity="right"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="60dp"
+            android:contentDescription="@string/module_name"
             android:src="@drawable/cover_share_prompt_icon"/>
     </FrameLayout>
 

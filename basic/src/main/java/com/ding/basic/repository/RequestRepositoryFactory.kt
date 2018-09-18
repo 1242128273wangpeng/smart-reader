@@ -38,6 +38,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RequestRepositoryFactory private constructor(private val context: Context) : RequestRepository {
 
@@ -1033,6 +1034,29 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
         return InternetRequestRepository.loadInternetRequestRepository(context = context)
                 .uploadBookshelf(body)
+    }
+
+
+    /**
+     * 获取刷新token
+     */
+    fun getRefreshToken(requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
+       InternetRequestRepository.loadInternetRequestRepository(context = context)
+                .refreshToken()
+               ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
+               ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
+                   override fun onNext(result: BasicResultV4<LoginRespV4>) {
+                       requestSubscriber.onNext(result)
+                   }
+
+                   override fun onError(throwable: Throwable) {
+                       requestSubscriber.onError(throwable)
+                   }
+
+                   override fun onComplete() {
+                       requestSubscriber.onComplete()
+                   }
+               })
     }
 
     /**
