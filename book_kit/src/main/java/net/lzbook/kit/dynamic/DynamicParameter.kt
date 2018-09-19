@@ -12,7 +12,7 @@ import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
 import com.ding.basic.net.api.service.RequestService
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.dynamic.service.DynamicService
 import com.orhanobut.logger.Logger

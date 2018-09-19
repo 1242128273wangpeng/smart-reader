@@ -20,7 +20,7 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookUpdate;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;

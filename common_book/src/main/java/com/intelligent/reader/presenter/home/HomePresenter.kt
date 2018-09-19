@@ -3,7 +3,7 @@ package com.intelligent.reader.presenter.home
 import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson

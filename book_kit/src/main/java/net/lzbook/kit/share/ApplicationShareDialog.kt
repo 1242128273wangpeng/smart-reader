@@ -2,7 +2,7 @@ package net.lzbook.kit.share
 
 import android.app.Activity
 import android.view.*
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.rx.SchedulerHelper
 import com.dingyue.contract.util.showToastMessage
 

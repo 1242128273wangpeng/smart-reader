@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.ding.basic.bean.LoginResp
 import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.bitmapTransformByteArray

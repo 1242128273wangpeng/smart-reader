@@ -1,6 +1,5 @@
 package com.ding.basic.net.repository
 
-import android.content.Context
 import com.ding.basic.net.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
@@ -24,17 +23,17 @@ import retrofit2.Call
  * Created on 2018/3/6.
  * Created by crazylei.
  */
-class InternetRequestRepository private constructor(context: Context?) : BasicRequestRepository {
+class InternetRequestRepository private constructor() {
 
 
     companion object {
         private var internetRequestRepository: InternetRequestRepository? = null
 
-        fun loadInternetRequestRepository(context: Context?): InternetRequestRepository {
+        fun loadInternetRequestRepository(): InternetRequestRepository {
             if (internetRequestRepository == null) {
                 synchronized(LocalRequestRepository::class) {
                     if (internetRequestRepository == null) {
-                        internetRequestRepository = InternetRequestRepository(context = context)
+                        internetRequestRepository = InternetRequestRepository()
                     }
                 }
             }
@@ -43,11 +42,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         }
     }
 
-    override fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
+    fun requestDefaultBooks(sex: Int): Flowable<BasicResult<CoverList>>? {
         return RequestAPI.requestDefaultBooks(sex)
     }
 
-    override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
+    fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }
 
@@ -63,53 +62,53 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestAdControlDynamic()
     }
 
-    override fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
+    fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
         return RequestAPI.requestBookSources(book_id, book_source_id, book_chapter_id)
     }
 
-    override fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>? {
+    fun requestAutoComplete(word: String): Flowable<SearchAutoCompleteBean>? {
         return RequestAPI.requestAutoComplete(word)
     }
 
-    override fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+    fun requestAutoCompleteV4(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
         return RequestAPI.requestAutoCompleteV4(word)
     }
 
-    override fun requestAutoCompleteV5(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
+    fun requestAutoCompleteV5(word: String): Flowable<SearchAutoCompleteBeanYouHua>? {
         return RequestAPI.requestAutoCompleteV5(word)
     }
 
-    override fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? {
+    fun requestSearchRecommend(bookIds: String): Flowable<SearchRecommendBook>? {
         return RequestAPI.requestSearchRecommend(bookIds)
     }
 
-    override fun requestHotWords(): Flowable<SearchHotBean>? {
+    fun requestHotWords(): Flowable<SearchHotBean>? {
         return RequestAPI.requestHotWords()
     }
 
-    override fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
         return RequestAPI.requestShareInformation()
     }
 
 
-    override fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
+    fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
         return RequestAPI.requestHotWordsV4()
     }
 
-    override fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
+    fun requestBookShelfUpdate(requestBody: RequestBody): Flowable<BasicResult<CoverList>>? {
         return RequestAPI.requestBookShelfUpdate(requestBody)
     }
 
 
-    override fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
+    fun requestFeedback(parameters: Map<String, String>): Flowable<NoBodyEntity>? {
         return RequestAPI.requestFeedback(parameters)
     }
 
-    override fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
+    fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
         return RequestAPI.requestLoginAction(parameters)
     }
 
-    override fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
+    fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestLogoutAction(parameters)
     }
 
@@ -122,7 +121,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestSmsLogin(smsRequestBody)
     }
 
-    fun requestLogout(): Flowable<BasicResultV4<String>> {
+    fun requestLogout(): Flowable<BasicResultV4<String>>? {
         return RequestAPI.requestLogout()
     }
 
@@ -175,11 +174,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.bindPhoneNumber(phoneBody)
     }
 
-    override fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
+    fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         return RequestAPI.requestRefreshToken(parameters)
     }
 
-    override fun requestUserInformation(token: String, appid: String, openid: String): Flowable<QQSimpleInfo>? {
+    fun requestUserInformation(token: String, appid: String, openid: String): Flowable<QQSimpleInfo>? {
         return RequestAPI.requestUserInformation(token, appid, openid)
     }
 
@@ -200,20 +199,20 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
 
-    override fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
+    fun requestCoverRecommend(book_id: String, recommend: String): Flowable<CoverRecommendBean>? {
         return RequestAPI.requestCoverRecommend(book_id, recommend)
     }
 
 
-    override fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>? {
+    fun requestBookRecommend(book_id: String, shelfBooks: String): Flowable<CommonResult<RecommendBooks>>? {
         return RequestAPI.requestBookRecommend(book_id, shelfBooks)
     }
 
-    override fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
+    fun requestAuthorOtherBookRecommend(author: String, book_id: String): Flowable<CommonResult<ArrayList<RecommendBean>>>? {
         return RequestAPI.requestAuthorOtherBookRecommend(author, book_id)
     }
 
-    override fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
+    fun requestBookRecommendV4(book_id: String, recommend: String): Flowable<RecommendBooksEndResp>? {
         return RequestAPI.requestBookRecommendV4(book_id, recommend)
     }
 
@@ -226,48 +225,48 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestBannerTags()
     }
 
-    override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
+    fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
         return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
     /***************** 微服务 *****************/
 
-    override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
+    fun requestAuthAccess(): Flowable<BasicResult<String>>? {
         return MicroAPI.requestAuthAccess()
     }
 
     /***************** 微服务同步鉴权 *****************/
 
-    override fun requestAuthAccessSync(): Call<BasicResult<String>> {
+    fun requestAuthAccessSync(): Call<BasicResult<String>> {
         return MicroAPI.requestAuthAccessSync()
     }
 
-    override fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
+    fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
         return MicroAPI.requestBookDetail(book_id, book_source_id, book_chapter_id)
     }
 
-    override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
+    fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
         return MicroAPI.requestBookCatalog(book_id, book_source_id, book_chapter_id)
     }
 
-    override fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
+    fun requestBookUpdate(requestBody: RequestBody): Flowable<BasicResult<UpdateBean>>? {
         return MicroAPI.requestBookUpdate(requestBody)
     }
 
-    override fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
+    fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
         return MicroAPI.requestCoverBatch(requestBody)
     }
 
-    override fun requestDownTaskConfig(bookID: String, bookSourceID: String
+    fun requestDownTaskConfig(bookID: String, bookSourceID: String
                                        , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
         return MicroAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 
-    override fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
+    fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>> {
         return ContentAPI.requestChapterContent(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)
     }
 
-    override fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
+    fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
         return ContentAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
     }
 

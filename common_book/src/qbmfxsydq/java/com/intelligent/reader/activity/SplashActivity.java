@@ -30,7 +30,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.db.provider.BookDataProviderHelper;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.bean.Book
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

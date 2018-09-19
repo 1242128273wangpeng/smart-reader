@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.ChapterState;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.util.DataCache;
 
 import net.lzbook.kit.R;

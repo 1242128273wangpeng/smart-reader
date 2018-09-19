@@ -8,7 +8,7 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter

@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.ChapterState;
 import com.ding.basic.bean.Source;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 import com.dy.reader.dialog.ReaderAddShelfDialog;
 import com.dy.reader.dialog.ReaderAutoReadDialog;
 import com.dy.reader.dialog.ReaderChangeSourceDialog;

@@ -1,7 +1,7 @@
 package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

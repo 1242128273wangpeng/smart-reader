@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 import com.dy.reader.activity.ReaderActivity;
 import com.intelligent.reader.activity.HomeActivity;
 

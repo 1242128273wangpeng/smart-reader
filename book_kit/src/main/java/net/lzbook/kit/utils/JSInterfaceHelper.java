@@ -3,7 +3,7 @@ package net.lzbook.kit.utils;
 import net.lzbook.kit.app.BaseBookApplication;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.request.UrlUtils;

@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.net.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 import com.dingyue.contract.util.CommonUtil;
 
 import net.lzbook.kit.R;

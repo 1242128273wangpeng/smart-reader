@@ -13,7 +13,7 @@ import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.CacheTaskConfig
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.PackageInfo
-import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.DataCache
