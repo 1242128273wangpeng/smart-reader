@@ -8,7 +8,6 @@ import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.widget.Toast
 import com.ding.basic.bean.*
-import com.ding.basic.db.provider.BookDataProviderHelper
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
@@ -49,7 +48,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     private val font_count = 50
 
-    val mBookDataHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+    private val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
 
     private var activity: WeakReference<ReaderActivity>
 
@@ -272,7 +271,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             return 0
         }
 
-        if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
+        if (!requestRepositoryFactory.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
             logMap.put("bookid",ReaderStatus.book?.book_id)
@@ -320,7 +319,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 content_text = content_text.substring(0, font_count)
             }
             bookMark.chapter_content = content_text
-            mBookDataHelper.insertBookMark(bookMark)
+            requestRepositoryFactory.insertBookMark(bookMark)
             return 1
         } else {
             var logMap = HashMap<String, String>()
@@ -328,7 +327,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap.put("bookid", ReaderStatus.book!!.book_id)
             logMap.put("chapterid", ReaderStatus.chapterId.toString())
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
-            mBookDataHelper.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
+            requestRepositoryFactory.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }
     }

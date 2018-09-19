@@ -244,7 +244,7 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
 
     @Synchronized
     fun insertBookMark(bookMark: Bookmark) {
-        bookmarkDao.insertBookmark(bookMark)
+        bookmarkDao.insertOrUpdate(bookMark)
     }
 
     @Synchronized

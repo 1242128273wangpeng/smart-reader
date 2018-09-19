@@ -2,7 +2,6 @@ package com.intelligent.reader.cover;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Bookmark;
-import com.ding.basic.db.provider.BookDataProviderHelper;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
 import com.intelligent.reader.DisposableAndroidViewModel;
@@ -28,8 +27,8 @@ public class BookCoverViewModel extends DisposableAndroidViewModel {
 
     private BookChapterViewCallback bookChapterViewCallback;
 
-    private BookDataProviderHelper bookDataProviderHelper =
-            BookDataProviderHelper.Companion.loadBookDataProviderHelper(
+    private RequestRepositoryFactory requestRepositoryFactory =
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext());
 
     public BookCoverViewModel() {
@@ -72,7 +71,7 @@ public class BookCoverViewModel extends DisposableAndroidViewModel {
     public void getBookMarkList(String bookId) {
         if (bookChapterViewCallback != null) {
             bookChapterViewCallback.requestBookmarkList(
-                    bookDataProviderHelper.getBookMarks(bookId));
+                    requestRepositoryFactory.getBookMarks(bookId));
         }
     }
 
@@ -80,7 +79,7 @@ public class BookCoverViewModel extends DisposableAndroidViewModel {
      * 删除书签
      */
     public void deleteBookMark(ArrayList<Integer> ids) {
-        bookDataProviderHelper.deleteBookMark(ids);
+        requestRepositoryFactory.deleteBookMark(ids);
     }
 
     public void setBookCoverViewCallback(BookCoverViewCallback bookCoverViewCallback) {

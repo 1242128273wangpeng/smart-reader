@@ -3,10 +3,10 @@ package com.dy.reader.presenter
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.db.provider.BookDataProviderHelper
 import com.ding.basic.util.DataCache
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -42,7 +42,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DIRECTORYREPAIR, data)
     }
 
-    private var mBookDataHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+    private var requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
 
     override fun getBook(): Book {
         return ReaderStatus.book
@@ -86,7 +86,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
 
-            val list = mBookDataHelper.getBookMarks(ReaderStatus.book.book_id!!)
+            val list = requestRepositoryFactory.getBookMarks(ReaderStatus.book.book_id!!)
 
             emitter?.onNext(list)
             emitter?.onComplete()
@@ -150,7 +150,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
-            mBookDataHelper.deleteBookMark(mark.book_id!!, mark.sequence, mark.offset)
+            requestRepositoryFactory.deleteBookMark(mark.book_id!!, mark.sequence, mark.offset)
 
             e?.onNext(true)
             e?.onComplete()
@@ -164,7 +164,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
     override fun deleteAllBookMark(activity: Activity) {
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
-            mBookDataHelper.deleteBookMark(ReaderStatus.book.book_id)
+            requestRepositoryFactory.deleteBookMark(ReaderStatus.book.book_id)
 
             e?.onNext(true)
             e?.onComplete()

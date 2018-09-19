@@ -1,25 +1,23 @@
 package net.lzbook.kit.utils;
 
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.HistoryInfo;
-import com.ding.basic.db.provider.BookDataProviderHelper;
 
 import net.lzbook.kit.app.BaseBookApplication;
-
 
 /**
  * Created by yuchao on 2017/6/20 0020.
  */
-
 public class FootprintUtils {
 
 
     public static boolean saveHistoryData(HistoryInfo info) {
-        BookDataProviderHelper bookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext());
-        if (bookDataHelper.getHistoryCount() >= 200) {
-            bookDataHelper.deleteSmallTimeHistory();
+        RequestRepositoryFactory requestRepositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext());
+        if (requestRepositoryFactory.getHistoryCount() >= 200) {
+            requestRepositoryFactory.deleteSmallTimeHistory();
         }
-        bookDataHelper.insertOrUpdateHistory(info);
+        requestRepositoryFactory.insertOrUpdateHistory(info);
         return true;
     }
 

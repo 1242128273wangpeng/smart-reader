@@ -13,6 +13,7 @@ import com.ding.basic.util.getSharedObject
 import com.ding.basic.util.isSameDay
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import java.util.ArrayList
 
 /**
  * 本地数据库，数据对外提供类
@@ -203,5 +204,58 @@ class LocalRequestRepository private constructor(private var context: Context) {
         }
         return null
     }
+
+    fun queryHistoryPaging(startNum: Long, limtNum: Long): ArrayList<HistoryInfo> {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context).queryHistoryPaging(startNum, limtNum)
+    }
+
+    fun deleteAllHistory() {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteAllHistory()
+    }
+
+    fun insertHistoryInfo(hisInfo: HistoryInfo) {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).insertHistoryInfo(hisInfo)
+    }
+
+    fun deleteAllBookMark() {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteAllBookMark()
+    }
+
+    fun insertBookMark(bookMark: Bookmark) {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).insertBookMark(bookMark)
+    }
+
+    fun getBookMarks(book_id: String): ArrayList<Bookmark> {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context).getBookMarks(book_id)
+    }
+
+    fun deleteBookMark(book_id: String) {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id)
+    }
+
+    fun deleteBookMark(ids: ArrayList<Int>) {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(ids)
+    }
+
+    fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id, sequence, offset)
+    }
+
+    fun isBookMarkExist(book_id: String, sequence: Int, offset: Int): Boolean {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context).isBookMarkExist(book_id, sequence, offset)
+    }
+
+    fun getHistoryCount(): Long {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context).getHistoryCount()
+    }
+
+    fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
+        return BookDataProviderHelper.loadBookDataProviderHelper(context).insertOrUpdateHistory(historyInfo)
+    }
+
+    fun deleteSmallTimeHistory() {
+        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteSmallTimeHistory()
+    }
+
 
 }

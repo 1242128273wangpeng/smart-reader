@@ -5,13 +5,15 @@ import android.arch.persistence.room.EmptyResultSetException
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import com.ding.basic.net.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.db.provider.BookDataProviderHelper
+import com.ding.basic.db.provider.ChapterDataProviderHelper
+import com.ding.basic.db.repository.LocalRequestRepository
+import com.ding.basic.net.Config
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.ResultCode
+import com.ding.basic.net.repository.InternetRequestRepository
 import com.ding.basic.net.rx.CommonResultMapper
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
@@ -21,14 +23,14 @@ import com.ding.basic.util.ParserUtil
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-import io.reactivex.*
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.FlowableEmitter
+import io.reactivex.FlowableOnSubscribe
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.data.book.*
-import com.ding.basic.db.provider.ChapterDataProviderHelper
-import com.ding.basic.db.repository.LocalRequestRepository
-import com.ding.basic.net.repository.InternetRequestRepository
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
@@ -38,8 +40,6 @@ import okhttp3.ResponseBody
 import org.json.JSONException
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * 数据对外提供者（包含网络数据和DB数据）（Data Module）
@@ -323,7 +323,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         if (book != null) {
                             val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.deleteAllChapters()
-                            BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id)
+                            LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(book_id)
 
                             chapterDaoHelp.insertOrUpdateChapter(result.data?.chapters!!)
 
@@ -1158,8 +1158,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     @Suppress("SENSELESS_COMPARISON")
     private fun mergeBookMark(data: List<UserMarkBook>) {
-        val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
-        bookDataProviderHelper.deleteAllBookMark()
+        val localRequestRepository = LocalRequestRepository.loadLocalRequestRepository(context)
+        localRequestRepository.deleteAllBookMark()
         if (data.isEmpty()) {
             return
         }
@@ -1189,7 +1189,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         }
         if (bookMarkList.isNotEmpty()) {
             for (item in bookMarkList) {
-                bookDataProviderHelper.insertBookMark(item)
+                localRequestRepository.insertBookMark(item)
             }
         }
 
@@ -1233,8 +1233,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      */
 
     fun queryLatestBookMark(bookId: String): ArrayList<Bookmark> {
-        val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
-        return bookDataProviderHelper.getBookMarks(bookId)
+        return LocalRequestRepository.loadLocalRequestRepository(context).getBookMarks(bookId)
     }
 
     /**
@@ -1297,7 +1296,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      */
     private fun mergeBookBrowe(data: List<UserBook>) {
 
-        var mBookDataHelper: BookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
+        val mBookDataHelper = LocalRequestRepository.loadLocalRequestRepository(context)
         mBookDataHelper.deleteAllHistory()
 
         if (data.isEmpty()) {
@@ -1317,8 +1316,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      *  获取上传本地足迹Flowable
      */
     fun getUploadBookBrowseFlowable(userId: String): Flowable<BasicResultV4<String>> {
-        var mBookDataHelper: BookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(context = context)
-        val upLoadData = mBookDataHelper.queryHistoryPaging(0, 200)
+        val upLoadData = LocalRequestRepository.loadLocalRequestRepository(context).queryHistoryPaging(0, 200)
         val bookInfoBodyList = ArrayList<BookBrowseReqBody.BookInfoBody>()
         for (i in upLoadData.indices) {
             val upData = upLoadData[i]
@@ -1955,5 +1953,53 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
         return InternetRequestRepository.loadInternetRequestRepository().downloadFont(fontName)
+    }
+
+    fun deleteAllBookMark() {
+        LocalRequestRepository.loadLocalRequestRepository(context).deleteAllBookMark()
+    }
+
+    fun deleteAllHistory() {
+        LocalRequestRepository.loadLocalRequestRepository(context).deleteAllHistory()
+    }
+
+    fun deleteBookMark(book_id: String) {
+        LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(book_id)
+    }
+
+    fun deleteBookMark(ids: ArrayList<Int>) {
+        LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(ids)
+    }
+
+    fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
+        LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(book_id, sequence, offset)
+    }
+
+    fun getBookMarks(book_id: String): java.util.ArrayList<Bookmark> {
+        return LocalRequestRepository.loadLocalRequestRepository(context).getBookMarks(book_id)
+    }
+
+    fun isBookMarkExist(book_id: String, sequence: Int, offset: Int): Boolean {
+        return LocalRequestRepository.loadLocalRequestRepository(context).isBookMarkExist(book_id, sequence, offset)
+    }
+
+    fun insertBookMark(bookMark: Bookmark) {
+        LocalRequestRepository.loadLocalRequestRepository(context).insertBookMark(bookMark)
+    }
+
+    fun getHistoryCount(): Long {
+        return LocalRequestRepository.loadLocalRequestRepository(context).getHistoryCount()
+    }
+
+    fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
+        return LocalRequestRepository.loadLocalRequestRepository(context).insertOrUpdateHistory(historyInfo)
+    }
+
+    fun deleteSmallTimeHistory() {
+        LocalRequestRepository.loadLocalRequestRepository(context).deleteSmallTimeHistory()
+    }
+
+    fun queryHistoryPaging(startNum: Long, limtNum: Long): java.util.ArrayList<HistoryInfo> {
+        return LocalRequestRepository.loadLocalRequestRepository(context).queryHistoryPaging(startNum, limtNum)
     }
 }

@@ -338,7 +338,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
     fun doDeleteBookmarks(list: ArrayList<Int>) {
 
-        val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+        val bookHelper = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
         bookHelper.deleteBookMark(list)
         val marks = bookHelper.getBookMarks(book.book_id)
         bookmarkList.clear()

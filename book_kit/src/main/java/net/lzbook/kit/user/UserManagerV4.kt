@@ -15,7 +15,6 @@ import com.ding.basic.net.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
-import com.ding.basic.db.provider.BookDataProviderHelper
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.util.SharedPreUtil
@@ -351,9 +350,9 @@ object UserManagerV4 : IWXAPIEventHandler {
             this.user = null
             repositoryFactory.deleteLoginUser()//删除用户信息
             repositoryFactory.deleteShelfBook()// 移除书架
-            val bookDataProviderHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
-            bookDataProviderHelper.deleteAllBookMark() //移除书签
-            bookDataProviderHelper.deleteAllHistory() // 移除足迹
+            val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+            requestRepositoryFactory.deleteAllBookMark() //移除书签
+            requestRepositoryFactory.deleteAllHistory() // 移除足迹
             repositoryFactory.requestLogout(object : RequestSubscriber<BasicResultV4<String>>() {
                 override fun requestResult(result: BasicResultV4<String>?) {
                     onLogout?.invoke()
