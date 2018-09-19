@@ -297,8 +297,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
                 }
             }
         });
-
-
     }
 
     @Override
@@ -329,7 +327,6 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     //去重书架上的书
     @Override
     @JavascriptInterface
-
     public String uploadBookShelfList() {
 
         List<Book> bookShelfList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks();
