@@ -154,7 +154,7 @@ object ThemeUtil {
                     readerSettings.readThemeMode == 56 -> // color -5
                         color_int = R.color.reading_backdrop_sixth
                     readerSettings.readThemeMode == 61 -> //night3
-                        color_int = R.color.reading_backdrop_night
+                        color_int = R.color.reading_backdrop_nightly
                 }
                 view?.setBackgroundColor(resources.getColor(color_int))
             }
@@ -185,7 +185,7 @@ object ThemeUtil {
             56 -> // color -5
                 color_int = R.color.reading_backdrop_sixth
             61 -> //night3
-                color_int = R.color.reading_backdrop_night
+                color_int = R.color.reading_backdrop_nightly
         }
         return resources.getColor(color_int)
     }
@@ -194,11 +194,11 @@ object ThemeUtil {
         //设置电池,转码阅读,原网页等字体色
         var colorInt = when (readerSettings.readThemeMode) {
             51 -> R.color.reading_operation_text_color_first
-            511 -> R.color.reading_text_color_blue
-            512 -> R.color.reading_text_color_pink
-            513 -> R.color.reading_text_color_green
-            514 -> R.color.reading_text_color_dark
-            515 -> R.color.reading_text_color_dim_second
+            511 -> R.color.reading_text_color_blue_alpha
+            512 -> R.color.reading_text_color_pink_alpha
+            513 -> R.color.reading_text_color_green_alpha
+            514 -> R.color.reading_text_color_dark_alpha
+            515 -> R.color.reading_text_color_dim_alpha
             52 -> R.color.reading_operation_text_color_second
             53 -> R.color.reading_operation_text_color_third
             54 -> R.color.reading_operation_text_color_fourth
@@ -219,7 +219,7 @@ object ThemeUtil {
             54 -> R.color.reading_text_color_fourth
             55 -> R.color.reading_text_color_fifth
             56 -> R.color.reading_text_color_sixth
-            61 -> R.color.reading_text_color_night
+            61 -> R.color.reading_text_color_nightly
             else -> R.color.reading_text_color_first
         }
         return resources.getColor(colorInt)

@@ -7,7 +7,8 @@ package com.dy.reader.model
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 data class FontData(
-        var name:String,
+        var name: String,
         var iconRes: Int? = null,
+        var fileSize: String = "",
         var progress: Int = -1
 )

@@ -46,9 +46,14 @@
 
     <TextView
         android:id="@+id/txt_font_size"
-        style="@style/reader_text_style"
-        android:layout_toLeftOf="@id/btn_use"
-        android:layout_toStartOf="@id/btn_use"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="95dp"
+        android:textColor="#989898"
+        android:textSize="14sp"
+        tools:ignore="RtlHardcoded"
         tools:text="3.1M"/>
 
     <ImageView
@@ -59,9 +64,9 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
         android:contentDescription="@string/icon"
-        android:padding="8dp"
+        android:padding="10dp"
         android:src="@drawable/read_font_using"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:ignore="RtlHardcoded"/>
 
     <View
