@@ -11,15 +11,19 @@
 
     <!--color_blue-->
     <color name="reading_text_color_blue">#445377</color>
+    <color name="reading_text_color_blue_alpha">#B3445377</color>
     <!--color_pink-->
     <color name="reading_text_color_pink">#954C6A</color>
+    <color name="reading_text_color_pink_alpha">#80954C6A</color>
     <!--color_green-->
     <color name="reading_text_color_green">#48605F</color>
+    <color name="reading_text_color_green_alpha">#B348605F</color>
     <!--color_dark-->
     <color name="reading_text_color_dark">#4C403B</color>
+    <color name="reading_text_color_dark_alpha">#B34C403B</color>
     <!--color_dim-->
     <color name="reading_text_color_dim">#383B59</color>
-    <color name="reading_text_color_dim_second">#64667C</color>
+    <color name="reading_text_color_dim_alpha">#80585D7B</color>
 
     <!--color_second-->
     <color name="reading_text_color_second">#E6000000</color>
@@ -49,7 +53,7 @@
     <!--color_night-->
     <color name="reading_text_color_night">#CC9B9B9B</color>
     <color name="reading_operation_text_color_night">#309B9B9B</color>
-    <color name="reading_backdrop_night">#333333</color>
+    <color name="reading_backdrop_nightly">#333333</color>
 
     <color name="whole_bg">#faf9f7</color>
     <color name="white">#ffffffff</color>

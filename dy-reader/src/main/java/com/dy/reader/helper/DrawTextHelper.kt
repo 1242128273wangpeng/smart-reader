@@ -105,9 +105,9 @@ object DrawTextHelper {
             }
         } else if (readerSettings.readThemeMode == 61) {
             color = if (type == 0) {
-                R.color.reading_backdrop_night
+                R.color.reading_backdrop_nightly
             } else {
-                R.color.reading_text_color_night
+                R.color.reading_text_color_nightly
             }
         } else {
             color = if (type == 0) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_reader_setting_detail"
@@ -12,13 +12,14 @@
     tools:ignore="RtlHardcoded, SmallSp, RtlSymmetry">
 
     <RelativeLayout
+        android:id="@+id/rl_light"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <TextView
             android:id="@+id/txt_reader_brightness"
             style="@style/reader_text_style"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="0dp"
             android:text="@string/brightness"/>
 
         <SeekBar
@@ -34,6 +35,7 @@
             android:minHeight="2dp"
             android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
             android:splitTrack="false"
+            tools:progress="0"
             android:thumb="@drawable/reader_option_seek_bar_thumb"/>
 
         <!--android:background="@drawable/reader_option_brightness_system_bg"-->
@@ -49,7 +51,7 @@
             android:checked="false"
             android:drawablePadding="6dp"
             android:drawableRight="@drawable/read_follow_system_selector"
-            android:paddingLeft="10dp"
+            android:paddingLeft="5dp"
             android:text="@string/follow_system"
             android:textColor="@drawable/reader_option_detail_txt_sel"
             android:textSize="12sp"/>
@@ -57,8 +59,10 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/ll_text"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@+id/rl_light"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -82,7 +86,7 @@
                 android:gravity="center"
                 android:text="A-"
                 android:textColor="#65FFFFFF"
-                android:textSize="12sp"/>
+                android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/txt_reader_font_size"
@@ -92,8 +96,8 @@
                 android:layout_marginRight="5dp"
                 android:background="#FF383838"
                 android:gravity="center"
-                android:textColor="#65FFFFFF"
-                android:textSize="12sp"
+                android:textColor="#CBCBCB"
+                android:textSize="18sp"
                 tools:text="16"/>
 
             <TextView
@@ -105,7 +109,7 @@
                 android:gravity="center"
                 android:text="A+"
                 android:textColor="#65FFFFFF"
-                android:textSize="12sp"/>
+                android:textSize="15sp"/>
 
         </LinearLayout>
 
@@ -135,9 +139,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:paddingTop="2dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/icon"
+                android:paddingTop="2dp"
                 android:src="@drawable/read_set_ziti_icon_more"/>
 
         </RelativeLayout>
@@ -145,8 +149,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_bg"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@+id/ll_text"
         android:orientation="horizontal">
 
         <TextView
@@ -227,8 +233,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_space"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@+id/ll_bg"
         android:orientation="horizontal">
 
         <TextView
@@ -302,8 +310,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_mode"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@+id/ll_space"
         android:orientation="horizontal">
 
         <TextView
@@ -345,14 +355,15 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/view_line"
         style="@style/reader_line_style"
-        android:layout_marginBottom="13dp"
+        android:layout_below="@+id/ll_mode"
         android:layout_marginTop="20dp"/>
-
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
+        android:layout_below="@+id/view_line"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="5dp"
         android:gravity="center_vertical"
@@ -378,4 +389,8 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="327dp"
+        android:visibility="gone"/>
+</RelativeLayout>
