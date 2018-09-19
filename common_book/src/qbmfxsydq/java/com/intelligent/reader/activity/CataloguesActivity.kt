@@ -39,7 +39,6 @@ import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -118,10 +117,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             isPositive = false
             changeSortState(isPositive)
         }
-
-
-        EventBus.getDefault().register(this)
-
     }
 
 
@@ -371,12 +366,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             }
 
         }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         if (mCataloguesPresenter != null) {
             mCataloguesPresenter!!.removeHandler()
             mCataloguesPresenter!!.unRegisterRec()
