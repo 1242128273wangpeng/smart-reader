@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/web_content_layout"
+    android:id="@+id/web_view_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <RelativeLayout
-        android:id="@+id/title_layout"
+        android:id="@+id/rl_web_view_head"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height"
         android:layout_alignParentTop="true"
@@ -19,7 +19,7 @@
             android:id="@+id/rl_recommend_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/top_navigation_bg_color"
+            android:background="#FFFFFF"
             android:visibility="gone">
 
             <RelativeLayout
@@ -42,6 +42,7 @@
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/recommend_title_search_icon"
+                    android:contentDescription="@string/module_name"
                     app:onPressChangeAlpha="true"
                     tools:ignore="MissingPrefix"/>
 
@@ -58,7 +59,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rl_head_ranking"
+            android:id="@+id/rl_ranking_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/top_navigation_bg_color"
@@ -72,7 +73,6 @@
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:text="@string/ranking"/>
-
 
             <ImageView
                 android:id="@+id/img_ranking_search"
@@ -90,13 +90,13 @@
 
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-        android:id="@+id/bookshelf_refresh_view"
+        android:id="@+id/srl_web_view_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title_layout">
 
         <com.intelligent.reader.widget.topshadow.TopShadowWebView
-            android:id="@+id/web_content_view"
+            android:id="@+id/web_view_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"/>
@@ -107,7 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        android:visibility="gone"
-        android:src="@drawable/top_shadow_bg"/>
+        android:src="@drawable/top_shadow_bg"
+        android:visibility="gone"/>
 
 </RelativeLayout>
