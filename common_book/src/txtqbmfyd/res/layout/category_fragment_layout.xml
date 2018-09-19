@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/web_content_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/web_content_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
-            android:id="@+id/title_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height"
-            android:background="@color/top_navigation_bg_color">
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        android:background="@color/top_navigation_bg_color">
 
 
         <com.intelligent.reader.widget.FlymeTabStrip
-                android:id="@+id/tabstrip"
-                app:indicatorHeight="3dp"
-                app:indicatorColor="@color/theme_primary"
-                app:indicatorMargin="20dp"
-                app:indicatorTextSize="17sp"
-                app:selectedIndicatorTextSize="17sp"
-                app:indicatorTextColor="@color/text_color_dark"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_height="match_parent"/>
+            android:id="@+id/tabstrip"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            app:indicatorColor="@color/theme_primary"
+            app:indicatorHeight="3dp"
+            app:indicatorMargin="20dp"
+            app:indicatorTextColor="@color/text_color_dark"
+            app:indicatorTextSize="17sp"
+            app:selectedIndicatorTextSize="17sp"/>
 
         <ImageView
-                android:id="@+id/content_head_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:layout_alignParentRight="true"
-                android:scaleType="fitXY"
-                app:onPressChangeAlpha="true"
-                android:src="@drawable/nbar_search_nor_icon"
-                tools:ignore="MissingPrefix"/>
+            android:id="@+id/content_head_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/nbar_search_nor_icon"
+            app:onPressChangeAlpha="true"
+            tools:ignore="MissingPrefix"/>
 
     </RelativeLayout>
 
 
     <android.support.v4.view.ViewPager
-            android:id="@+id/category_view_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/title_layout"/>
+        android:id="@+id/category_view_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_layout"/>
 
 </RelativeLayout>
