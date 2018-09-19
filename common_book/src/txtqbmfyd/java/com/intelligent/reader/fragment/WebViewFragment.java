@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.baidu.mobstat.StatService;
 import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
@@ -35,14 +34,10 @@ import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 import java.lang.ref.WeakReference;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 
