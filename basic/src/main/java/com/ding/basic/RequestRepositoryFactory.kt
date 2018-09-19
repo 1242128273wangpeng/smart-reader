@@ -2002,4 +2002,37 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     fun queryHistoryPaging(startNum: Long, limtNum: Long): java.util.ArrayList<HistoryInfo> {
         return LocalRequestRepository.loadLocalRequestRepository(context).queryHistoryPaging(startNum, limtNum)
     }
+
+    fun queryChapterBySequence(book_id: String, sequence: Int): Chapter? {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).queryChapterBySequence(sequence)
+    }
+
+    fun getChapterCount(book_id: String): Int {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).getCount()
+    }
+
+    fun queryAllChapters(book_id: String): List<Chapter> {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).queryAllChapters()
+    }
+
+    fun queryLastChapter(book_id: String): Chapter? {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).queryLastChapter()
+    }
+
+    fun deleteChapters(book_id: String, sequence: Int) {
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).deleteChapters(sequence)
+    }
+
+    fun deleteAllChapters(book_id: String) {
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).deleteAllChapters()
+    }
+
+    fun insertOrUpdateChapter(book_id: String, chapterList: List<Chapter>): Boolean {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).insertOrUpdateChapter(chapterList)
+    }
+
+    fun updateChapterBySequence(book_id: String, chapter: Chapter) {
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).updateChapterBySequence(chapter)
+    }
+
 }

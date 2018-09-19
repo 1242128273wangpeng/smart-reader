@@ -63,8 +63,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     override fun showCatalogActivity(source: Source?) {
         if (source != null && !TextUtils.isEmpty(source.book_source_id) && ReaderStatus.book != null) {
-            if ((RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null)) {
-                val iBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
+            if ((requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) != null)) {
+                val iBook = requestRepositoryFactory.loadBook(ReaderStatus.book.book_id)
                 if (iBook != null && source.book_source_id != iBook.book_source_id) {
                     //弹出切源提示
                     val map2 = java.util.HashMap<String, String>()
@@ -79,7 +79,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     private fun intoCatalogActivity(source: Source, changeSource: Boolean) {
-        var book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
+        var book = requestRepositoryFactory.loadBook(ReaderStatus.book.book_id)
 
         if (book != null) {
             book.host = source.host
@@ -112,7 +112,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     fun cache() {
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) == null && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book) <= 0) {
+        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) == null && requestRepositoryFactory.insertBook(ReaderStatus.book) <= 0) {
             return
         }
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
@@ -230,7 +230,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
 
             if (ReaderStatus.book != null && !TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookSources(ReaderStatus.book.book_id, ReaderStatus.book.book_source_id, ReaderStatus.book.book_chapter_id, object : RequestSubscriber<BookSource>() {
+                requestRepositoryFactory.requestBookSources(ReaderStatus.book.book_id, ReaderStatus.book.book_source_id, ReaderStatus.book.book_chapter_id, object : RequestSubscriber<BookSource>() {
                     override fun requestResult(result: BookSource?) {
                         if (result != null) {
                             this@ReadSettingPresenter.onGetSourceList(result.items as ArrayList<Source>?)
@@ -267,7 +267,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             return 0
         }
 
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) == null && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book) <= 0) {
+        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) == null && requestRepositoryFactory.insertBook(ReaderStatus.book) <= 0) {
             return 0
         }
 
@@ -476,9 +476,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         chapterErrorBean.author = getEncode(book.author!!)
         chapterErrorBean.channelCode = if (book.fromQingoo()) "1" else "2"
         var currChapter: Chapter? = null
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {
-            val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id!!)
-            currChapter = bookChapterDao.queryChapterBySequence(ReaderStatus.position.group)
+        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) != null) {
+            currChapter = requestRepositoryFactory.queryChapterBySequence(ReaderStatus.book.book_id , ReaderStatus.position.group)
         }
         if (currChapter == null) {
             val time = Observable.timer(1000, TimeUnit.MILLISECONDS)

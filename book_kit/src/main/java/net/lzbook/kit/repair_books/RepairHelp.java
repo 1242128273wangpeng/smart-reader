@@ -17,7 +17,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.MyDialog;
-import com.ding.basic.db.provider.ChapterDataProviderHelper;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 
@@ -106,12 +105,11 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ChapterDataProviderHelper bookChapterDao =
-                        ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
-                                BaseBookApplication.getGlobalContext(), book.getBook_id());
+                RequestRepositoryFactory requestFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
                 BaseBookHelper.removeChapterCacheFile(book);
                 CacheManager.INSTANCE.remove(book.getBook_id());
-                bookChapterDao.deleteAllChapters();
+                requestFactory.deleteAllChapters(book.getBook_id());
 
                 if (book.waitingCataFix()) {
                     book.setList_version(book.getList_version_fix());
@@ -122,8 +120,7 @@ public class RepairHelp {
                     book.getLast_chapter().setChapter_id("");
                 }
 
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).updateBook(book);
+                requestFactory.updateBook(book);
 
                 CacheManager.INSTANCE.start(book.getBook_id(), 0);
 
@@ -141,13 +138,9 @@ public class RepairHelp {
     }
 
     public static boolean isShowFixBtn(Context context, String book_id) {
-        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id);
-        if (book != null && book.waitingCataFix()) {
-            if (NetWorkUtils.isNetworkAvailable(context)) {
-                return true;
-            }
-        }
-        return false;
+        Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).checkBookSubscribe(book_id);
+        return book != null && book.waitingCataFix() && NetWorkUtils.isNetworkAvailable(context);
     }
 
     public static void fixBook(final Context context, final Book book,
@@ -165,18 +158,14 @@ public class RepairHelp {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Book book1 = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).checkBookSubscribe(
-                        book.getBook_id());
+                RequestRepositoryFactory requestFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
+                Book book1 = requestFactory.checkBookSubscribe(book.getBook_id());
                 if (book1 != null && book1.waitingCataFix()) {
                     if (NetWorkUtils.isNetworkAvailable(context)) {
-                        ChapterDataProviderHelper bookChapterDao =
-                                ChapterDataProviderHelper.Companion.loadChapterDataProviderHelper(
-                                        BaseBookApplication.getGlobalContext(),
-                                        book1.getBook_id());
                         BaseBookHelper.removeChapterCacheFile(book1);
                         CacheManager.INSTANCE.remove(book1.getBook_id());
-                        bookChapterDao.deleteAllChapters();
+                        requestFactory.deleteAllChapters(book1.getBook_id());
 
                         if (book1.waitingCataFix()) {
                             book1.setList_version(book1.getList_version_fix());
@@ -187,8 +176,7 @@ public class RepairHelp {
                             book1.getLast_chapter().setChapter_id("");
                         }
 
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).updateBook(book1);
+                        requestFactory.updateBook(book1);
                         CacheManager.INSTANCE.start(book1.getBook_id(), 0);
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override

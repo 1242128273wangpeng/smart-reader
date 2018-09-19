@@ -13,8 +13,8 @@ import android.text.TextUtils
 import android.view.InflateException
 import android.widget.Toast
 import com.baidu.mobstat.StatService
-import com.ding.basic.bean.Book
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -41,7 +41,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
-import com.ding.basic.db.provider.ChapterDataProviderHelper
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils
@@ -78,7 +77,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
-        ReaderStatus.startTime = System.currentTimeMillis()/1000L
+        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -296,8 +295,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         AppHelper.screenDensity = dm.density
         AppHelper.screenScaledDensity = dm.scaledDensity
 
-        if(isNotchScreen(Reader.context)){
-            if(xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape){
+        if (isNotchScreen(Reader.context)) {
+            if (xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape) {
                 AppHelper.screenWidth -= getNotchSize(Reader.context)
             }
         }
@@ -326,10 +325,10 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             ReaderStatus.book.readed = 1
 
             if (ReaderStatus.chapterList != null) {
-                val helper = ChapterDataProviderHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), ReaderStatus.book.book_id)
-                helper.deleteAllChapters()
-                helper.insertOrUpdateChapter(ReaderStatus.chapterList)
-                ReaderStatus.book.chapter_count = helper.getCount()
+                val helper = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                helper.deleteAllChapters(ReaderStatus.book.book_id)
+                helper.insertOrUpdateChapter(ReaderStatus.book.book_id, ReaderStatus.chapterList)
+                ReaderStatus.book.chapter_count = helper.getChapterCount(ReaderStatus.book.book_id)
 
                 if (ReaderStatus.chapterList.size > 1) {
                     ReaderStatus.book.last_chapter = ReaderStatus.chapterList[ReaderStatus.chapterList.size - 1]
@@ -492,10 +491,14 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
 
         // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
-        if(goToBookEndCount == 0){
+        if (goToBookEndCount == 0) {
             //发送章节消费
-            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                    if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )
+            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus?.book.book_id, ReaderStatus?.currentChapter?.chapter_id, ReaderStatus?.book?.book_source_id,
+                    if (("zn").equals(ReaderStatus?.book?.book_type)) {
+                        "2"
+                    } else {
+                        "1"
+                    }, ReaderStatus?.position.groupChildCount.toString())
             goToBookEndCount++
         }
 

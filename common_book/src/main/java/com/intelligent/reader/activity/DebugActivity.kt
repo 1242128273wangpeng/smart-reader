@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.ding.basic.net.Config
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
@@ -17,11 +17,10 @@ import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.umeng.message.MessageSharedPrefs
 import iyouqu.theme.BaseCacheableActivity
+import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.constants.Constants
-import com.ding.basic.db.provider.ChapterDataProviderHelper
-import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.LoadDataManager
 import net.lzbook.kit.utils.OpenUDID
@@ -228,8 +227,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                     it.chapter_count -= 1
                     if (Constants.QG_SOURCE == it.book_type) {
                         if (it.chapters_update_index <= 0) {
-                            val dao = ChapterDataProviderHelper.loadChapterDataProviderHelper(context = this, book_id = it.book_id)
-                            val lastChapter = dao.queryLastChapter()
+                            val lastChapter = factory.queryLastChapter(it.book_id)
                             if (lastChapter != null) it.chapters_update_index = lastChapter.sequence + 2
 
                         }
@@ -237,10 +235,9 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                     }
 
                     // 查询并删除最后一条章节
-                    val dao = ChapterDataProviderHelper.loadChapterDataProviderHelper(context = this, book_id = it.book_id)
-                    val chapters = dao.queryAllChapters()
+                    val chapters = factory.queryAllChapters(it.book_id)
 
-                    dao.deleteChapters(chapters.size - 1)
+                    factory.deleteChapters(it.book_id,chapters.size - 1)
                 }
 
                 //更新书的当前章节数

@@ -9,11 +9,11 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.widget.Toast
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.CacheTaskConfig
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.PackageInfo
-import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.DataCache
@@ -27,7 +27,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.*
 import net.lzbook.kit.data.bean.BookTask
-import com.ding.basic.db.provider.ChapterDataProviderHelper
 import net.lzbook.kit.encrypt.v17.util.NovelException
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.runOnMain
@@ -96,12 +95,12 @@ class DownloadService : Service(), Runnable {
                     DataCache.deleteOtherSourceCache(task.book)
                 }
 
-                val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(this, task.book_id)
+                val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
 
-                if (bookChapterDao.getCount() <= 0) {
+                if (requestRepositoryFactory.getChapterCount(task.book_id) <= 0) {
                     requestBookCatalog(task)
                 } else {
-                    downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
+                    downBook(task, requestRepositoryFactory.queryAllChapters(task.book_id))
                 }
             } else {
                 synchronized(lock) {
@@ -118,14 +117,12 @@ class DownloadService : Service(), Runnable {
 
     private fun requestBookCatalog(bookTask: BookTask) {
 
-        val bookChapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(this, bookTask.book_id)
-
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .requestCatalog(bookTask.book_id, bookTask.book.book_source_id, bookTask.book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
                     override fun requestResult(result: List<Chapter>?) {
                         if (result != null) {
                             if (result.isNotEmpty()) {
-                                downBook(bookTask, result, bookChapterDao)
+                                downBook(bookTask, result)
                             } else {
                                 CacheManager.innerListener.onTaskFailed(bookTask.book_id,
                                         IllegalArgumentException("server return null chapter list"))
@@ -141,7 +138,7 @@ class DownloadService : Service(), Runnable {
                 }, SchedulerHelper.Type_Default)
     }
 
-    fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDaoProvider: ChapterDataProviderHelper) {
+    fun downBook(task: BookTask, chapterList: List<Chapter>) {
 
         if (task.state != DownloadState.DOWNLOADING) {
             CacheManager.innerListener.onTaskStatusChange(task.book_id)
@@ -170,7 +167,7 @@ class DownloadService : Service(), Runnable {
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                     .requestDownTaskConfig(task.book_id, task.book.book_source_id ?: ""
                             , if (task.startSequence != 0) 1 else 0
-                            , chapterList[task.startSequence].chapter_id!!, object:  RequestSubscriber<BasicResult<CacheTaskConfig>>() {
+                            , chapterList[task.startSequence].chapter_id!!, object : RequestSubscriber<BasicResult<CacheTaskConfig>>() {
 
                         override fun requestResult(ret: BasicResult<CacheTaskConfig>?) {
                             if (ret != null && ret.checkResultAvailable() && ret.data!!.fileUrlList != null) {
@@ -258,7 +255,7 @@ class DownloadService : Service(), Runnable {
                                 parsedList.clear()
                             } else if (ret != null && ret.code == CacheTaskConfig.USE_CHAPTER_BY_CHAPTER) {
                                 downChapterOneByOne(task, chapterList, false)
-                            } else if (ret != null){
+                            } else if (ret != null) {
 
                                 CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("server err : " + ret.code))
                             }
@@ -363,7 +360,7 @@ class DownloadService : Service(), Runnable {
                     data.put("endtime", "" + System.currentTimeMillis())
                     data.put("times", "" + (System.currentTimeMillis() - startParseTime))
                     StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.RESOLVEPACKE, data)
-                } catch (e:OutOfMemoryError){
+                } catch (e: OutOfMemoryError) {
                     val data = HashMap<String, String>()
                     data.put("STATUS", "2")
                     data.put("reason", e.javaClass.simpleName + ":" + e.message)
@@ -533,7 +530,7 @@ class DownloadService : Service(), Runnable {
                     while (sourceArr.size < DOWN_SIZE && index < chapterList.size) {
 
                         if (task.state != DownloadState.DOWNLOADING) {
-                            stopForeground( true)
+                            stopForeground(true)
                             CacheManager.innerListener.onTaskStatusChange(task.book_id)
                             return
                         }
@@ -549,7 +546,7 @@ class DownloadService : Service(), Runnable {
                         index++
                         tempChapterCount++
 
-                        if(tempChapterCount > 10){
+                        if (tempChapterCount > 10) {
                             if (task.state == DownloadState.DOWNLOADING) {
 
                                 task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence
