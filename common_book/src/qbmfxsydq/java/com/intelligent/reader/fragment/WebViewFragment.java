@@ -125,53 +125,58 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
             if (Build.VERSION.SDK_INT >= 11) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
-            img_sex.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            if(img_sex != null){
+                img_sex.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                    if (selectSexDialog == null) {
-                        selectSexDialog = new SelectSexDialog(weakReference.get());
-                        selectSexDialog.setAniFinishedAction(WebViewFragment.this);
-                    }
-                    Map<String,String> data = new HashMap<>();
-                    //0 表示男  1 表示女
-                    if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
-                        data.put("type","2");
-                        sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
-                        img_sex.setImageResource(R.drawable.rank_gril_icon);
-                        selectSexDialog.show(false);
-                        String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
-                                AppUtils.getPackageName());
-                        url = UrlUtils.buildWebUrl(uri, new HashMap());
-                        loadingData(url);
-                    } else {
-                        data.put("type","1");
-                        sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
-                        selectSexDialog.show(true);
-                        img_sex.setImageResource(R.drawable.rank_boy_icon);
-                        String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
-                                AppUtils.getPackageName());
-                        url = UrlUtils.buildWebUrl(uri, new HashMap());
-                        loadingData(url);
-                    }
-                    StartLogClickUtil.upLoadEventLog(weakReference.get(),StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data);
+                        if (selectSexDialog == null) {
+                            selectSexDialog = new SelectSexDialog(weakReference.get());
+                            selectSexDialog.setAniFinishedAction(WebViewFragment.this);
+                        }
+                        Map<String,String> data = new HashMap<>();
+                        //0 表示男  1 表示女
+                        if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
+                            data.put("type","2");
+                            sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
+                            img_sex.setImageResource(R.drawable.rank_gril_icon);
+                            selectSexDialog.show(false);
+                            String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
+                                    AppUtils.getPackageName());
+                            url = UrlUtils.buildWebUrl(uri, new HashMap());
+                            loadingData(url);
+                        } else {
+                            data.put("type","1");
+                            sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
+                            selectSexDialog.show(true);
+                            img_sex.setImageResource(R.drawable.rank_boy_icon);
+                            String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
+                                    AppUtils.getPackageName());
+                            url = UrlUtils.buildWebUrl(uri, new HashMap());
+                            loadingData(url);
+                        }
+                        StartLogClickUtil.upLoadEventLog(weakReference.get(),StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data);
 
-                }
-            });
+                    }
+                });
+            }
+
         }
 
         if (type.equals("recommend_male") || type.equals("recommend_female")) {
             rl_head.setVisibility(View.GONE);
             img_shadow.setVisibility(View.GONE);
         }
-        if ("rankBoy".equals(type)) {
-            img_sex.setVisibility(View.VISIBLE);
-            img_sex.setImageResource(R.drawable.rank_boy_icon);
-        } else if ("rankGirl".equals(type)) {
-            img_sex.setVisibility(View.VISIBLE);
-            img_sex.setImageResource(R.drawable.rank_gril_icon);
-        } else {
-            img_sex.setVisibility(View.GONE);
+        if(img_sex != null){
+            if ("rankBoy".equals(type)) {
+                img_sex.setVisibility(View.VISIBLE);
+                img_sex.setImageResource(R.drawable.rank_boy_icon);
+            } else if ("rankGirl".equals(type)) {
+                img_sex.setVisibility(View.VISIBLE);
+                img_sex.setImageResource(R.drawable.rank_gril_icon);
+            } else {
+                img_sex.setVisibility(View.GONE);
+            }
         }
 
         if (weakReference != null) {
