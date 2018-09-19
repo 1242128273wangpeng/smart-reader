@@ -440,8 +440,9 @@ public class SearchHelper {
             params.put("filter_type", filterType);
             params.put("filter_word", filterWord);
             params.put("sort_type", sortType);
+
             AppLog.e("kk",searchWord+"=="+searchType+"=="+filterType+"=="+filterWord+"==="+sortType);
-            mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
+            mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V3, params);
         }
 
         if (mStartLoadCall != null){
