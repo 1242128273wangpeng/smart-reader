@@ -69,7 +69,7 @@ class AndroidLogStorage {
             CommonUtil.showToastMessage(serverLog.content.toString())
         }
 
-        AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +
+        /*AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +
                 "2、手机型号:${AppUtils.getPhoneModel()}\n" +
                 "3、系统版本号:${AppUtils.getRelease()}\n" +
                 "4、屏幕分辨率:${AppUtils.getScreenMetrics(context)}\n" +
@@ -89,7 +89,7 @@ class AndroidLogStorage {
                 "16、电池电量:${AppUtils.getBatteryLevel()}\n" +
                 "17、X86架构:${AppUtils.getX86()}\n" +
                 "19、MEID:${AppUtils.getIMEI(context)}\n" +
-                "20、WiFi-Mac地址:${AppUtils.getWifiMacAddress(context)}")
+                "20、WiFi-Mac地址:${AppUtils.getWifiMacAddress(context)}")*/
 
         val type = serverLog.eventType
         val localLog = LocalLog(type, serverLog.content)
