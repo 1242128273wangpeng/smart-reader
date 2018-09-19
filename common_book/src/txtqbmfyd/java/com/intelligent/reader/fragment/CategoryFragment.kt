@@ -66,8 +66,8 @@ class CategoryFragment : Fragment() {
     }
 
     // 男频
-    private val manCategoryFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val manCategoryFragmentCustom: CustomWebViewFragment by lazy {
+        val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_male")
         val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
@@ -79,8 +79,8 @@ class CategoryFragment : Fragment() {
     }
 
     // 女频
-    private val girlCategoryFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val girlCategoryFragmentCustom: CustomWebViewFragment by lazy {
+        val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_female")
         val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
@@ -96,9 +96,9 @@ class CategoryFragment : Fragment() {
         override fun getCount() = 2
 
         override fun getItem(position: Int): Fragment = when (position) {
-            0 -> manCategoryFragment
-            1 -> girlCategoryFragment
-            else -> manCategoryFragment
+            0 -> manCategoryFragmentCustom
+            1 -> girlCategoryFragmentCustom
+            else -> manCategoryFragmentCustom
         }
 
         override fun getItemPosition(`object`: Any): Int = PagerAdapter.POSITION_NONE

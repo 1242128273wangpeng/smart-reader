@@ -41,7 +41,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CategoryFragment
-import com.intelligent.reader.fragment.WebViewFragment
+import com.intelligent.reader.fragment.CustomWebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
@@ -71,7 +71,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
-class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
+class HomeActivity : BaseCacheableActivity(), CustomWebViewFragment.FragmentCallback,
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
@@ -100,8 +100,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     // webview排行页面
     private val WEB_RANK = "/{packageName}/v3/rank/index.do"
 
-    private val recommendFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val recommendFragmentCustom: CustomWebViewFragment by lazy {
+        val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
         val uri = WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
@@ -110,8 +110,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         fragment
     }
 
-    private val rankingFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val rankingFragmentCustom: CustomWebViewFragment by lazy {
+        val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
         val uri = WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
@@ -643,7 +643,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
     }
 
-    override fun startLoad(webView: WebView, url: String): String {
+    override fun startLoad(webView: WebView?, url: String): String {
         return url
     }
 
@@ -703,8 +703,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     }
                     bookShelfFragment
                 }
-                1 -> recommendFragment
-                2 -> rankingFragment
+                1 -> recommendFragmentCustom
+                2 -> rankingFragmentCustom
                 3 -> categoryFragment
                 else -> null
             }
