@@ -11,10 +11,10 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 import com.ding.basic.bean.LoginResp;
 import com.ding.basic.bean.LoginRespV4;
-import com.ding.basic.db.provider.impl.BookDataProviderHelper;
+import com.ding.basic.db.provider.BookDataProviderHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;

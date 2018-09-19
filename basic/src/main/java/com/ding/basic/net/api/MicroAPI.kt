@@ -1,8 +1,8 @@
 package com.ding.basic.net.api
 
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.bean.*
-import com.ding.basic.net.service.MicroService
+import com.ding.basic.net.api.service.MicroService
 import com.ding.basic.net.interceptor.MicroRequestInterceptor
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient

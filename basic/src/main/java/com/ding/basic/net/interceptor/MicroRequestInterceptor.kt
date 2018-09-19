@@ -1,7 +1,7 @@
 package com.ding.basic.net.interceptor
 
 import android.text.TextUtils
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.net.token.Token
 import com.orhanobut.logger.Logger
 import okhttp3.Interceptor
@@ -31,7 +31,7 @@ class MicroRequestInterceptor : Interceptor {
         requestParameters["longitude"] = Config.loadRequestParameter("longitude")
 
         if(!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))){
-            requestParameters["loginToken"]=Config.loadRequestParameter("loginToken")
+            requestParameters["loginToken"]= Config.loadRequestParameter("loginToken")
         }
 
         return requestParameters

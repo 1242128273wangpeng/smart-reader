@@ -1,4 +1,4 @@
-package com.ding.basic.db.provider.impl
+package com.ding.basic.db.provider
 
 import android.content.Context
 import android.text.TextUtils
@@ -8,7 +8,6 @@ import com.ding.basic.db.migration.helper.MigrationDBOpenHeler
 import com.ding.basic.db.migration.helper.migrateTable
 import com.ding.basic.db.dao.*
 import com.ding.basic.db.database.BookDatabase
-import com.ding.basic.db.provider.BookDataProvider
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import java.util.*
@@ -22,7 +21,7 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
                                                  private var bookmarkDao: BookmarkDao,
                                                  private var historyDao: HistoryDao,
                                                  private var searchDao: SearchDao,
-                                                 private var userDao: UserDao) : BookDataProvider {
+                                                 private var userDao: UserDao) {
 
     companion object {
         private var database: BookDatabase? = null
@@ -109,12 +108,12 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
         }
     }
 
-    override fun checkBookSubscribe(book_id: String): Book? {
+    fun checkBookSubscribe(book_id: String): Book? {
         return bookDao.checkBookSubscribe(book_id)
     }
 
     @Synchronized
-    override fun insertBook(book: Book, context: Context): Long {
+    fun insertBook(book: Book, context: Context): Long {
         val MAX_COUNT = 49
         if (book == null || TextUtils.isEmpty(book.book_id) || TextUtils.isEmpty(book.book_source_id)) {
             Toast.makeText(context, "订阅失败，资源有误", Toast.LENGTH_SHORT).show()
@@ -143,7 +142,7 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
         }
     }
 
-    override fun updateBook(book: Book): Boolean {
+    fun updateBook(book: Book): Boolean {
         if (book.id <= 0) {
             val interimBook = bookDao.loadBook(book.book_id) ?: return false
             book.id = interimBook.id
@@ -151,12 +150,12 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
         return bookDao.updateBook(book) != -1
     }
 
-    override fun updateBooks(books: List<Book>): Boolean {
+    fun updateBooks(books: List<Book>): Boolean {
         return bookDao.updateBooks(books) != -1
     }
 
     @Synchronized
-    override fun deleteBook(book_id: String, context: Context): Boolean {
+    fun deleteBook(book_id: String, context: Context): Boolean {
         val result = bookDao.deleteBook(book_id) != -1
         ChapterDataProviderHelper.deleteDataBase(book_id, context)
         deleteBookFix(book_id)
@@ -164,97 +163,97 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
     }
 
     @Synchronized
-    override fun deleteBooks(books: List<Book>, context: Context) {
+    fun deleteBooks(books: List<Book>, context: Context) {
         books.forEach {
             deleteBook(it.book_id, context)
         }
     }
 
-    override fun deleteBooksById(books: List<Book>) {
+    fun deleteBooksById(books: List<Book>) {
         books.forEach {
             bookDao.deleteBookById(it.id)
         }
     }
 
-    override fun deleteShelfBooks() {
+    fun deleteShelfBooks() {
         return bookDao.deleteShelfBooks()
     }
 
-    override fun loadBook(book_id: String): Book? {
+    fun loadBook(book_id: String): Book? {
         return bookDao.loadBook(book_id)
     }
 
-    override fun loadBooks(): List<Book>? {
+    fun loadBooks(): List<Book>? {
         return bookDao.loadBooks()
     }
 
-    override fun loadReadBooks(): List<Book>? {
+    fun loadReadBooks(): List<Book>? {
         return bookDao.loadReadBooks()
     }
 
-    override fun loadBookCount(): Long {
+    fun loadBookCount(): Long {
         return bookDao.loadBookCount()
     }
 
-    override fun insertBooks(books: List<Book>) {
+    fun insertBooks(books: List<Book>) {
         bookDao.insertBooks(books)
     }
 
 
-    override fun loadBookShelfIDs(): String {
+    fun loadBookShelfIDs(): String {
         val stringBuilder = StringBuilder()
         return stringBuilder.toString()
     }
 
 
-    override fun insertBookFix(bookFix: BookFix) {
+    fun insertBookFix(bookFix: BookFix) {
         return bookFixDao.insertBookFix(bookFix)
     }
 
     @Synchronized
-    override fun deleteBookFix(id: String) {
+    fun deleteBookFix(id: String) {
         if (loadBookFix(id) != null) {
             bookFixDao.deleteBookFix(id)
         }
     }
 
-    override fun loadBookFixs(): List<BookFix>? {
+    fun loadBookFixs(): List<BookFix>? {
         return bookFixDao.loadBookFixs()
     }
 
-    override fun loadBookFix(book_id: String): BookFix? {
+    fun loadBookFix(book_id: String): BookFix? {
         return bookFixDao.loadBookFix(book_id)
     }
 
-    override fun updateBookFix(bookFix: BookFix) {
+    fun updateBookFix(bookFix: BookFix) {
         return bookFixDao.updateBookFix(bookFix)
     }
 
 
     @Synchronized
-    override fun deleteBookMark(ids: ArrayList<Int>) {
+    fun deleteBookMark(ids: ArrayList<Int>) {
         ids.forEach {
             bookmarkDao.deleteById(it)
         }
     }
 
     @Synchronized
-    override fun deleteBookMark(book_id: String) {
+    fun deleteBookMark(book_id: String) {
         bookmarkDao.deleteByBookId(book_id)
     }
 
     @Synchronized
-    override fun insertBookMark(bookMark: Bookmark) {
+    fun insertBookMark(bookMark: Bookmark) {
         bookmarkDao.insertBookmark(bookMark)
     }
 
     @Synchronized
-    override fun isBookMarkExist(book_id: String, sequence: Int, offset: Int): Boolean {
+    fun isBookMarkExist(book_id: String, sequence: Int, offset: Int): Boolean {
         return bookmarkDao.queryBookmarkCount(book_id, sequence, offset) > 0
     }
 
     @Synchronized
-    override fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
+    fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
         bookmarkDao.deleteByExatly(book_id, sequence, offset)
     }
     @Synchronized
@@ -263,22 +262,22 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
     }
 
     @Synchronized
-    override fun getBookMarks(book_id: String): ArrayList<Bookmark> {
+    fun getBookMarks(book_id: String): ArrayList<Bookmark> {
         return bookmarkDao.queryBookmarkByBookId(book_id) as ArrayList<Bookmark>
     }
 
     @Synchronized
-    override fun getHistoryCount(): Long {
+    fun getHistoryCount(): Long {
         return historyDao.getCount()
     }
 
     @Synchronized
-    override fun queryHistoryPaging(startNum: Long, limtNum: Long): ArrayList<HistoryInfo> {
+    fun queryHistoryPaging(startNum: Long, limtNum: Long): ArrayList<HistoryInfo> {
         return historyDao.queryByLimt(startNum, limtNum) as ArrayList<HistoryInfo>
     }
 
     @Synchronized
-    override fun deleteAllHistory() {
+    fun deleteAllHistory() {
         historyDao.deleteAllHistory()
     }
 
@@ -288,12 +287,12 @@ class BookDataProviderHelper private constructor(private var bookDao: BookDao,
     }
 
     @Synchronized
-    override fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
+    fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
         return historyDao.insertHistoryInfo(historyInfo) > 0
     }
 
     @Synchronized
-    override fun deleteSmallTimeHistory() {
+    fun deleteSmallTimeHistory() {
         historyDao.deleteSmallTime()
     }
 

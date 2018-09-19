@@ -2,7 +2,7 @@ package net.lzbook.kit.request;
 
 import android.util.Log;
 
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;

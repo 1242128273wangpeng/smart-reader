@@ -3,7 +3,7 @@ package net.lzbook.kit.utils;
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.net.repository.RequestRepositoryFactory;
 
 import android.content.Context;
 import android.os.Handler;

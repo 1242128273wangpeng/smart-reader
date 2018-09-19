@@ -1,11 +1,8 @@
 package net.lzbook.kit.constants;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 import com.ding.basic.util.IBuildConfigProvider;
-
-import net.lzbook.kit.R;
-import net.lzbook.kit.utils.ResourceUtil;
 
 public class ReplaceConstants {
 

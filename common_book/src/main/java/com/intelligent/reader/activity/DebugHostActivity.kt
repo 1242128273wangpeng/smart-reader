@@ -2,7 +2,7 @@ package com.intelligent.reader.activity
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson

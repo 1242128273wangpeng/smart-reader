@@ -1,4 +1,4 @@
-package com.ding.basic
+package com.ding.basic.net
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -89,7 +89,7 @@ object Config {
     }
 
     fun getContext(): Context? {
-        return Config.context
+        return context
     }
 
     fun insertWebViewHost(webViewHost: String) {
@@ -154,15 +154,15 @@ object Config {
         }
 
         val parameters = HashMap<String, String>()
-        parameters["os"] = Config.loadRequestParameter("os")
-        parameters["udid"] = Config.loadRequestParameter("udid")
-        parameters["version"] = Config.loadRequestParameter("version")
-        parameters["channelId"] = Config.loadRequestParameter("channelId")
-        parameters["packageName"] = Config.loadRequestParameter("packageName")
+        parameters["os"] = loadRequestParameter("os")
+        parameters["udid"] = loadRequestParameter("udid")
+        parameters["version"] = loadRequestParameter("version")
+        parameters["channelId"] = loadRequestParameter("channelId")
+        parameters["packageName"] = loadRequestParameter("packageName")
 
-        parameters["cityCode"] = Config.loadRequestParameter("cityCode")
-        parameters["latitude"] = Config.loadRequestParameter("latitude")
-        parameters["longitude"] = Config.loadRequestParameter("longitude")
+        parameters["cityCode"] = loadRequestParameter("cityCode")
+        parameters["latitude"] = loadRequestParameter("latitude")
+        parameters["longitude"] = loadRequestParameter("longitude")
 
         return URLBuilder.buildUrl(requestAPIHost, url, parameters)
     }
@@ -203,7 +203,7 @@ object Config {
     }
 
     fun insertPublicKey(publicKey: String) {
-        this.publicKey = publicKey
+        Config.publicKey = publicKey
 
         val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
         sharedPreferences?.edit()?.putString("Access_Public_Key", publicKey)?.apply()
@@ -221,7 +221,7 @@ object Config {
     }
 
     fun insertPrivateKey(privateKey: String) {
-        this.privateKey = privateKey
+        Config.privateKey = privateKey
 
         val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
         sharedPreferences?.edit()?.putString("Access_Private_Key", privateKey)?.apply()

@@ -1,15 +1,15 @@
-package com.ding.basic.repository
+package com.ding.basic.net.repository
 
 import android.annotation.SuppressLint
 import android.arch.persistence.room.EmptyResultSetException
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.db.provider.impl.BookDataProviderHelper
+import com.ding.basic.db.provider.BookDataProviderHelper
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.ResultCode
 import com.ding.basic.net.rx.CommonResultMapper
@@ -26,7 +26,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import net.lzbook.kit.data.book.*
-import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
+import com.ding.basic.db.provider.ChapterDataProviderHelper
+import com.ding.basic.db.repository.LocalRequestRepository
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
@@ -661,7 +662,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 for (book in it.data!!) {
                                     if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id) && !TextUtils.isEmpty(book.book_chapter_id)) {
 
-                                        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(context).loadBook(book.book_id)
+                                        val localBook = loadRequestRepositoryFactory(context).loadBook(book.book_id)
 
                                         if (localBook != null) {
                                             localBook.status = book!!.status   //更新书籍状态
@@ -679,7 +680,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             localBook.genre = book.genre
                                             localBook.score = book.score
 
-                                            RequestRepositoryFactory.loadRequestRepositoryFactory(context).updateBook(localBook)
+                                            loadRequestRepositoryFactory(context).updateBook(localBook)
                                         }
                                     }
                                 }

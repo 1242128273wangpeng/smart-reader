@@ -4,7 +4,7 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
-import com.ding.basic.repository.InternetRequestRepository
+import com.ding.basic.net.repository.InternetRequestRepository
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.utils.loge

@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.db.provider.impl.BookDataProviderHelper
+import com.ding.basic.db.provider.BookDataProviderHelper
 import com.ding.basic.util.DataCache
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil

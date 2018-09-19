@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ding.basic.net.service.RequestService;
+import com.ding.basic.net.api.service.RequestService;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;

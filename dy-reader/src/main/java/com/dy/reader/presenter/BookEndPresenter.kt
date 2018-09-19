@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.bean.*
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil

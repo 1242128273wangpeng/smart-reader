@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.net.repository.RequestRepositoryFactory;
 import com.dingyue.contract.router.BookRouter;
 
 

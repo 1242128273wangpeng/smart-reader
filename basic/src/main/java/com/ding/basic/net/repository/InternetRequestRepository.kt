@@ -1,13 +1,14 @@
-package com.ding.basic.repository
+package com.ding.basic.net.repository
 
 import android.content.Context
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
+import com.ding.basic.db.repository.LocalRequestRepository
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
-import com.ding.basic.net.service.RequestService
+import com.ding.basic.net.api.service.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook

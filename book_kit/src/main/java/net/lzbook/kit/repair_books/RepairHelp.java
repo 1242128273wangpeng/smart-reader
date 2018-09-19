@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.net.repository.RequestRepositoryFactory;
 import com.dingyue.contract.util.CommonUtil;
 
 import net.lzbook.kit.R;
@@ -17,7 +17,7 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.MyDialog;
-import com.ding.basic.db.provider.impl.ChapterDataProviderHelper;
+import com.ding.basic.db.provider.ChapterDataProviderHelper;
 import net.lzbook.kit.utils.BaseBookHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 

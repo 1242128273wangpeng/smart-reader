@@ -8,7 +8,7 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
@@ -23,7 +23,6 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.doAsync
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList

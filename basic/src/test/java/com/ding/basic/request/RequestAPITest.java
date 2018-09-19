@@ -1,6 +1,6 @@
 package com.ding.basic.request;
 
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 import com.ding.basic.bean.BasicResult;
 import com.ding.basic.bean.CacheTaskConfig;
 import com.ding.basic.net.api.RequestAPI;

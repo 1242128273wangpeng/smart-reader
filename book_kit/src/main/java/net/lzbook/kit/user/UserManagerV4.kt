@@ -11,12 +11,12 @@ import android.text.TextUtils
 import android.util.Base64
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.bean.QQSimpleInfo
-import com.ding.basic.db.provider.impl.BookDataProviderHelper
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.db.provider.BookDataProviderHelper
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.bitmapTransformByteArray

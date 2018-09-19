@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import com.ding.basic.bean.*
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.net.service.RequestService
+import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.router.BookRouter

@@ -8,8 +8,8 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.net.service.RequestService
+import com.ding.basic.net.repository.RequestRepositoryFactory
+import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.router.RouterConfig

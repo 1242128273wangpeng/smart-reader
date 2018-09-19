@@ -1,12 +1,11 @@
-package com.ding.basic.db.provider.impl
+package com.ding.basic.db.provider
 
 import android.content.Context
-import com.ding.basic.bean.*
+import com.ding.basic.bean.Chapter
 import com.ding.basic.db.dao.ChapterDao
-import com.ding.basic.db.provider.ChapterDataProvider
+import com.ding.basic.db.database.ChaptersDatabase
 import com.ding.basic.db.migration.helper.MigrationDBOpenHeler
 import com.ding.basic.db.migration.helper.migrateTable
-import com.ding.basic.db.database.ChaptersDatabase
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -15,7 +14,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by yuchao on 2018/3/16 0016.
  */
-class ChapterDataProviderHelper private constructor(private val chapterDao: ChapterDao) : ChapterDataProvider {
+class ChapterDataProviderHelper private constructor(private val chapterDao: ChapterDao) {
 
     companion object {
 
@@ -95,7 +94,7 @@ class ChapterDataProviderHelper private constructor(private val chapterDao: Chap
     }
 
     @Synchronized
-    override fun insertOrUpdateChapter(chapterList: List<Chapter>): Boolean {
+    fun insertOrUpdateChapter(chapterList: List<Chapter>): Boolean {
         if (chapterList.isNotEmpty()) {
             var isSuc = false
             if (getCount() > 0) {
@@ -134,22 +133,22 @@ class ChapterDataProviderHelper private constructor(private val chapterDao: Chap
     }
 
     @Synchronized
-    override fun deleteAllChapters() {
+    fun deleteAllChapters() {
         chapterDao.deleteAllChapters()
     }
 
     @Synchronized
-    override fun deleteChapters(sequence: Int) {
+    fun deleteChapters(sequence: Int) {
         chapterDao.deleteChapters(sequence)
     }
 
     @Synchronized
-    override fun updateChapter(chapter: Chapter): Boolean {
+    fun updateChapter(chapter: Chapter): Boolean {
         return chapterDao.updateChapter(chapter) > 0
     }
 
     @Synchronized
-    override fun getChapterById(chapter_id: String): Chapter? {
+    fun getChapterById(chapter_id: String): Chapter? {
         var chapter: Chapter? = null
         chapter = chapterDao.getChapterById(chapter_id)
         Logger.v("getChapterById, chapter.name = " + chapter?.name)
@@ -157,12 +156,12 @@ class ChapterDataProviderHelper private constructor(private val chapterDao: Chap
     }
 
     @Synchronized
-    override fun getCount(): Int {
+    fun getCount(): Int {
         return chapterDao.getCount()
     }
 
     @Synchronized
-    override fun queryAllChapters(): List<Chapter> {
+    fun queryAllChapters(): List<Chapter> {
         val chapters = arrayListOf<Chapter>()
         chapters.addAll(chapterDao.queryChapters())
         Logger.v("queryAllChapters, chapters.size = " + chapters.size)
@@ -170,11 +169,11 @@ class ChapterDataProviderHelper private constructor(private val chapterDao: Chap
     }
 
     @Synchronized
-    override fun queryLastChapter() = chapterDao.queryLastChapter()
+    fun queryLastChapter() = chapterDao.queryLastChapter()
 
 
     @Synchronized
-    override fun queryChapterBySequence(sequence: Int) = chapterDao.queryChapterBySequence(sequence)
+    fun queryChapterBySequence(sequence: Int) = chapterDao.queryChapterBySequence(sequence)
 
     /**
      * 根据章节sequence更新章节

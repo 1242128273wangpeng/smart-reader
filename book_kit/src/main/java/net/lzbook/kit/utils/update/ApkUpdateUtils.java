@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ding.basic.bean.ApplicationUpdate;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.net.repository.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.contract.util.CommonUtil;
 import com.orhanobut.logger.Logger;

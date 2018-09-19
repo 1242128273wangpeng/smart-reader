@@ -7,7 +7,7 @@ import net.lzbook.kit.cache.DataCleanManager;
 import android.os.Message;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.net.repository.RequestRepositoryFactory;
 
 import java.util.List;
 

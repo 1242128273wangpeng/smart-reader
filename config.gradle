@@ -4,7 +4,7 @@ void log(def str) {
 
 ext {
 
-    javaMaxHeapSize = '4G'
+    javaMaxHeapSize = '8G'
 
     compileSdkVersion = 27
 
@@ -41,7 +41,7 @@ ext {
     ]
 
     // 改完记得重新编译项目
-    def appName = "mfqbxssc"
+    def appName = "qbmfxsydq"
     defaultPublishConfig = appName + 'Debug'
     applicationId = appPackageIDConfig.get(appName)
 

@@ -8,8 +8,8 @@ import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.widget.Toast
 import com.ding.basic.bean.*
-import com.ding.basic.db.provider.impl.BookDataProviderHelper
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.db.provider.BookDataProviderHelper
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -31,7 +31,7 @@ import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.bean.ChapterErrorBean
-import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
+import com.ding.basic.db.provider.ChapterDataProviderHelper
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*

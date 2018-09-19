@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.ding.basic.Config
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.Config
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
@@ -20,7 +20,8 @@ import iyouqu.theme.BaseCacheableActivity
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.constants.Constants
-import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
+import com.ding.basic.db.provider.ChapterDataProviderHelper
+import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.LoadDataManager
 import net.lzbook.kit.utils.OpenUDID

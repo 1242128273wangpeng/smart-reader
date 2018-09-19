@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.widget.Toast
 import com.ding.basic.bean.Book
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import com.dingyue.contract.util.SharedPreUtil
 import io.reactivex.Observable

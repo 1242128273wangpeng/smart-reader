@@ -2,8 +2,8 @@ package com.intelligent.reader.cover;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Bookmark;
-import com.ding.basic.db.provider.impl.BookDataProviderHelper;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.db.provider.BookDataProviderHelper;
+import com.ding.basic.net.repository.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
 import com.intelligent.reader.DisposableAndroidViewModel;
 import com.orhanobut.logger.Logger;

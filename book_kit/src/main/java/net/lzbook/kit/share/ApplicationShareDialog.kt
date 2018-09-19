@@ -2,7 +2,7 @@ package net.lzbook.kit.share
 
 import android.app.Activity
 import android.view.*
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.rx.SchedulerHelper
 import com.dingyue.contract.util.showToastMessage
 
@@ -14,8 +14,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.text.TextUtils
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.dingyue.contract.util.SharedPreUtil
+import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.user.UserManagerV4
 import net.lzbook.kit.utils.AppUtils

@@ -1,4 +1,4 @@
-package com.ding.basic.repository
+package com.ding.basic.net.repository
 
 import com.ding.basic.bean.*
 import com.google.gson.JsonObject

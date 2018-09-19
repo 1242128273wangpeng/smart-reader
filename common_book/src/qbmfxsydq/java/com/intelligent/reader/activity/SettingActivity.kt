@@ -23,8 +23,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.ding.basic.Config
-import com.ding.basic.net.service.RequestService
+import com.ding.basic.net.Config
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -50,6 +50,7 @@ import java.util.HashMap
 
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
+import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.user.UserManagerV4

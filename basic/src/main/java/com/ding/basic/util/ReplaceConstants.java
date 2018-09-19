@@ -1,8 +1,7 @@
 package com.ding.basic.util;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ding.basic.Config;
-import com.ding.basic.R;
+import com.ding.basic.net.Config;
 
 
 public class ReplaceConstants {

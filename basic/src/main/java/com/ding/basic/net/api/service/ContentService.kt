@@ -1,4 +1,4 @@
-package com.ding.basic.net.service
+package com.ding.basic.net.api.service
 
 import com.ding.basic.bean.*
 import io.reactivex.Flowable

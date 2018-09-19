@@ -2,7 +2,7 @@ package net.lzbook.kit.dynamic
 
 import android.content.Context
 import com.baidu.mobstat.StatService
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.bean.AdControlByChannelBean
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.Map
@@ -11,8 +11,8 @@ import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
-import com.ding.basic.net.service.RequestService
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.dynamic.service.DynamicService
 import com.orhanobut.logger.Logger

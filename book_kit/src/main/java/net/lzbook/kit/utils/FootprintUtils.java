@@ -2,7 +2,7 @@ package net.lzbook.kit.utils;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.HistoryInfo;
-import com.ding.basic.db.provider.impl.BookDataProviderHelper;
+import com.ding.basic.db.provider.BookDataProviderHelper;
 
 import net.lzbook.kit.app.BaseBookApplication;
 

@@ -24,7 +24,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.UserEvent
-import com.ding.basic.net.service.RequestService
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -43,6 +43,7 @@ import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.util.PagerDesc
 import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
+import kotlinx.android.synthetic.qbmfxsydq.act_home.*
 import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage

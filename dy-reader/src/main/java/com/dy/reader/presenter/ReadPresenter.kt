@@ -14,7 +14,7 @@ import android.view.InflateException
 import android.widget.Toast
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -41,7 +41,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
-import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
+import com.ding.basic.db.provider.ChapterDataProviderHelper
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.SharedPreferencesUtils

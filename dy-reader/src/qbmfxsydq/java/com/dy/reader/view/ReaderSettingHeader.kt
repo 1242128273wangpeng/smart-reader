@@ -8,13 +8,14 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import com.ding.basic.db.provider.impl.BookDataProviderHelper
+import com.ding.basic.db.provider.BookDataProviderHelper
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
+import kotlinx.android.synthetic.qbmfxsydq.reader_option_header.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager

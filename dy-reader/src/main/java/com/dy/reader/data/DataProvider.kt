@@ -2,7 +2,7 @@ package com.dy.reader.data
 
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
 import com.dy.reader.ReadMediaManager

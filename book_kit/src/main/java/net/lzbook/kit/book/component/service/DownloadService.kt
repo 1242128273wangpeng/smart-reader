@@ -13,7 +13,7 @@ import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.CacheTaskConfig
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.PackageInfo
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.net.repository.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.DataCache
@@ -27,7 +27,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.*
 import net.lzbook.kit.data.bean.BookTask
-import com.ding.basic.db.provider.impl.ChapterDataProviderHelper
+import com.ding.basic.db.provider.ChapterDataProviderHelper
 import net.lzbook.kit.encrypt.v17.util.NovelException
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.runOnMain
