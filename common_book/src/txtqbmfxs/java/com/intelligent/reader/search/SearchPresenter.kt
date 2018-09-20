@@ -5,13 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestService
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.router.RouterConfig

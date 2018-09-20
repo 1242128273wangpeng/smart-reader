@@ -15,9 +15,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.*
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
