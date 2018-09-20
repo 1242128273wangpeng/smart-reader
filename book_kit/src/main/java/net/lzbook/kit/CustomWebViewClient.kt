@@ -54,7 +54,7 @@ class CustomWebViewClient(internal var context: Context?, internal var webView: 
     private var loadingWebViewError: (() -> Unit)? = null
 
     companion object {
-        val interceptHostList = mutableListOf("s.image.qingoo.cn", "sta-cntxtqbmfydreader.readzq.com")
+        val interceptHostList = mutableListOf("img.qingoo.cn", "zn-h5-dev.bookapi.cn", "zn-h5-dev.oss-cn-hangzhou.aliyuncs.com", "s.image.qingoo.cn")
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
