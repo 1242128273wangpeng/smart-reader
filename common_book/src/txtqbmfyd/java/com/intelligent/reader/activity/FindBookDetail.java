@@ -1,6 +1,8 @@
 package com.intelligent.reader.activity;
 
 
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -19,11 +21,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
-import com.ding.basic.Config;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestService;
+import com.ding.basic.net.Config;
+import com.ding.basic.net.api.service.RequestService;
 import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
@@ -45,8 +47,6 @@ import java.util.Map;
 
 import iyouqu.theme.FrameActivity;
 import swipeback.ActivityLifecycleHelper;
-
-import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 /**
  * WebView二级页面
