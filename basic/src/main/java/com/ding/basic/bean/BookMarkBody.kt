@@ -1,6 +1,5 @@
-package net.lzbook.kit.data.book
+package com.ding.basic.bean
 
-import com.ding.basic.bean.Bookmark
 import java.io.Serializable
 
 

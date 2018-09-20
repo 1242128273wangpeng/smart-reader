@@ -1,4 +1,4 @@
-package net.lzbook.kit.data.book
+package com.ding.basic.bean
 
 import java.io.Serializable
 

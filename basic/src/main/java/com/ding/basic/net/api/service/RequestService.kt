@@ -4,7 +4,7 @@ import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
-import net.lzbook.kit.data.book.UserMarkBook
+import com.ding.basic.bean.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess

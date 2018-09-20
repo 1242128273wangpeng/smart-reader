@@ -2,10 +2,15 @@ package com.ding.basic.db.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.TextUtils
+import android.widget.Toast
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.db.provider.BookDataProviderHelper
+import com.ding.basic.db.dao.*
+import com.ding.basic.db.database.BookDatabase
+import com.ding.basic.db.migration.helper.MigrationDBOpenHeler
+import com.ding.basic.db.migration.helper.migrateTable
 import com.ding.basic.db.provider.ChapterDataProviderHelper
 import com.ding.basic.net.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
@@ -16,25 +21,100 @@ import io.reactivex.Flowable
 import java.util.ArrayList
 
 /**
- * 本地数据库，数据对外提供类
+ * 本地数据
  */
-class LocalRequestRepository private constructor(private var context: Context) {
+class LocalRequestRepository private constructor(private var context: Context,
+                                                 private var bookDao: BookDao,
+                                                 private var bookFixDao: BookFixDao,
+                                                 private var bookmarkDao: BookmarkDao,
+                                                 private var historyDao: HistoryDao,
+                                                 private var searchDao: SearchDao,
+                                                 private var userDao: UserDao) {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var localRequestRepository: LocalRequestRepository? = null
+        private var database: BookDatabase? = null
 
         fun loadLocalRequestRepository(context: Context): LocalRequestRepository {
             if (localRequestRepository == null) {
                 synchronized(LocalRequestRepository::class) {
-                    if (localRequestRepository == null) {
-                        localRequestRepository = LocalRequestRepository(context)
+                    if (localRequestRepository == null || database?.isOpen != true) {
+                        database = BookDatabase.loadBookDatabase(context)
+                        localRequestRepository = LocalRequestRepository(context,
+                                database!!.bookDao(),
+                                database!!.fixBookDao(),
+                                database!!.bookmarkDao(),
+                                database!!.historyDao(),
+                                database!!.searchDao(),
+                                database!!.userDao())
                     }
                 }
             }
             return localRequestRepository!!
         }
     }
+
+    /**
+     * 升级数据库
+     */
+    fun upgradeFromOld(dbName: String): Flowable<Int> {
+        return Flowable.create<Int>({
+            try {
+                val oldDB = MigrationDBOpenHeler(context, dbName).writableDatabase
+
+                migrateTable(oldDB, "book", bookDao, Book::class.java)
+                it.onNext(60)
+
+                //其余几个表可能不存在
+                try {
+                    migrateTable(oldDB, "tb_history_info", historyDao, HistoryInfo::class.java)
+                    it.onNext(70)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                try {
+                    migrateTable(oldDB, "book_fix", bookFixDao, BookFix::class.java)
+                    it.onNext(80)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                try {
+                    migrateTable(oldDB, "search_recommend", searchDao, SearchRecommendBook.DataBean::class.java)
+                    it.onNext(90)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                try {
+                    migrateTable(oldDB, "user", userDao, LoginRespV4::class.java)
+                    it.onNext(95)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                try {
+                    migrateTable(oldDB, "book_mark", bookmarkDao, Bookmark::class.java)
+                    it.onNext(100)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                it.onComplete()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                it.onError(t)
+            }
+        }, BackpressureStrategy.BUFFER)
+    }
+
+    @Synchronized
+    fun release() {
+        localRequestRepository = null
+        database?.close()
+    }
+
 
     /**
      * 获取书籍目录
@@ -86,94 +166,138 @@ class LocalRequestRepository private constructor(private var context: Context) {
         }, BackpressureStrategy.BUFFER)
     }
 
+    /**
+     * 检查书籍是否存在
+     */
     fun checkBookSubscribe(book_id: String): Book? {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).checkBookSubscribe(book_id)
+        return bookDao.checkBookSubscribe(book_id)
     }
 
-    fun insertBook(book: Book): Long {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).insertBook(book, context)
+    @Synchronized
+    fun insertBook(book: Book?): Long {
+        val MAX_COUNT = 49
+        if (book == null || TextUtils.isEmpty(book.book_id) || TextUtils.isEmpty(book.book_source_id)) {
+            Toast.makeText(context, "订阅失败，资源有误", Toast.LENGTH_SHORT).show()
+            return 0
+        }
+        if (loadBookCount() > MAX_COUNT) {
+            Toast.makeText(context, "书架已满，请整理书架", Toast.LENGTH_SHORT).show()
+            return 0
+        } else if (checkBookSubscribe(book.book_id) != null) {
+            Toast.makeText(context, "已在书架中", Toast.LENGTH_SHORT).show()
+            return 0
+        } else if (TextUtils.isEmpty(book.book_id) || book.name == null || book.name == "") {
+            Toast.makeText(context, "订阅失败，资源有误", Toast.LENGTH_SHORT).show()
+            return 0
+        } else {
+            book.insert_time = System.currentTimeMillis()
+            val n = bookDao.insertBook(book)
+            return if (n > 0) {
+                if (book.sequence < -1) {
+                    book.sequence = -1
+                }
+                n
+            } else {
+                0
+            }
+        }
     }
 
     fun updateBook(book: Book): Boolean {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).updateBook(book)
+        if (book.id <= 0) {
+            val interimBook = bookDao.loadBook(book.book_id) ?: return false
+            book.id = interimBook.id
+        }
+        return bookDao.updateBook(book) != -1
     }
 
     fun updateBooks(books: List<Book>): Boolean {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).updateBooks(books)
+        return bookDao.updateBooks(books) != -1
     }
 
+    @Synchronized
     fun deleteBook(book_id: String): Boolean {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBook(book_id, context)
+        val result = bookDao.deleteBook(book_id) != -1
+        ChapterDataProviderHelper.deleteDataBase(book_id, context)
+        deleteBookFix(book_id)
+        return result
     }
 
+    @Synchronized
     fun deleteBooks(books: List<Book>) {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBooks(books, context)
+        books.forEach {
+            deleteBook(it.book_id)
+        }
     }
 
     fun deleteBooksById(books: List<Book>) {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBooksById(books)
+        books.forEach {
+            bookDao.deleteBookById(it.id)
+        }
     }
 
     fun deleteShelfBooks() {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteShelfBooks()
+        return bookDao.deleteShelfBooks()
     }
 
-
     fun loadBook(book_id: String): Book? {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadBook(book_id)
+        return bookDao.loadBook(book_id)
     }
 
     fun loadBooks(): List<Book>? {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadBooks()
+        return bookDao.loadBooks()
     }
 
     fun loadReadBooks(): List<Book>? {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadReadBooks()
+        return bookDao.loadReadBooks()
     }
 
     fun loadBookCount(): Long {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadBookCount()
+        return bookDao.loadBookCount()
     }
 
     fun insertBooks(books: List<Book>) {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).insertBooks(books)
+        bookDao.insertBooks(books)
     }
 
     fun loadBookShelfIDs(): String {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadBookShelfIDs()
+        val stringBuilder = StringBuilder()
+        return stringBuilder.toString()
     }
-
 
     fun insertBookFix(bookFix: BookFix) {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).insertBookFix(bookFix)
+        return bookFixDao.insertBookFix(bookFix)
     }
 
+    @Synchronized
     fun deleteBookFix(id: String) {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteBookFix(id)
+        if (loadBookFix(id) != null) {
+            bookFixDao.deleteBookFix(id)
+        }
     }
 
     fun loadBookFixs(): List<BookFix>? {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadBookFixs()
+        return bookFixDao.loadBookFixs()
     }
 
     fun loadBookFix(book_id: String): BookFix? {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).loadBookFix(book_id)
+        return bookFixDao.loadBookFix(book_id)
     }
 
     fun updateBookFix(bookFix: BookFix) {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).updateBookFix(bookFix)
+        return bookFixDao.updateBookFix(bookFix)
     }
 
     fun insertOrUpdate(user: LoginRespV4) {
-        BookDataProviderHelper.loadBookDataProviderHelper(context = context).insertOrUpdate(user)
+        userDao.insertOrUpdate(user)
     }
 
     fun queryLoginUser(): LoginRespV4 {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context = context).queryLoginUser()
+        return userDao.queryUserInfo()
     }
 
     fun deleteLoginUser() {
-        BookDataProviderHelper.loadBookDataProviderHelper(context = context).deleteLoginUser()
+        userDao.deleteUsers()
     }
 
     fun requestPushInfo(): Flowable<PushInfo>? {
@@ -205,56 +329,71 @@ class LocalRequestRepository private constructor(private var context: Context) {
         return null
     }
 
+    @Synchronized
     fun queryHistoryPaging(startNum: Long, limtNum: Long): ArrayList<HistoryInfo> {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context).queryHistoryPaging(startNum, limtNum)
+        return historyDao.queryByLimt(startNum, limtNum) as ArrayList<HistoryInfo>
     }
 
+    @Synchronized
     fun deleteAllHistory() {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteAllHistory()
+        historyDao.deleteAllHistory()
     }
 
+    @Synchronized
     fun insertHistoryInfo(hisInfo: HistoryInfo) {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).insertHistoryInfo(hisInfo)
+        historyDao.insertHistoryInfo(hisInfo)
     }
 
+    @Synchronized
     fun deleteAllBookMark() {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteAllBookMark()
+        bookmarkDao.deleteAllMarks()
     }
 
+    @Synchronized
     fun insertBookMark(bookMark: Bookmark) {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).insertBookMark(bookMark)
+        bookmarkDao.insertOrUpdate(bookMark)
     }
 
+    @Synchronized
     fun getBookMarks(book_id: String): ArrayList<Bookmark> {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context).getBookMarks(book_id)
+        return bookmarkDao.queryBookmarkByBookId(book_id) as ArrayList<Bookmark>
     }
 
+    @Synchronized
     fun deleteBookMark(book_id: String) {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id)
+        bookmarkDao.deleteByBookId(book_id)
     }
 
+    @Synchronized
     fun deleteBookMark(ids: ArrayList<Int>) {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(ids)
+        ids.forEach {
+            bookmarkDao.deleteById(it)
+        }
     }
 
+    @Synchronized
     fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteBookMark(book_id, sequence, offset)
+        bookmarkDao.deleteByExatly(book_id, sequence, offset)
     }
 
+    @Synchronized
     fun isBookMarkExist(book_id: String, sequence: Int, offset: Int): Boolean {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context).isBookMarkExist(book_id, sequence, offset)
+        return bookmarkDao.queryBookmarkCount(book_id, sequence, offset) > 0
     }
 
+    @Synchronized
     fun getHistoryCount(): Long {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context).getHistoryCount()
+        return historyDao.getCount()
     }
 
+    @Synchronized
     fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
-        return BookDataProviderHelper.loadBookDataProviderHelper(context).insertOrUpdateHistory(historyInfo)
+        return historyDao.insertHistoryInfo(historyInfo) > 0
     }
 
+    @Synchronized
     fun deleteSmallTimeHistory() {
-        BookDataProviderHelper.loadBookDataProviderHelper(context).deleteSmallTimeHistory()
+        historyDao.deleteSmallTime()
     }
 
 

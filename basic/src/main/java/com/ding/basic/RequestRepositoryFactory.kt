@@ -46,8 +46,9 @@ import java.util.concurrent.TimeUnit
  */
 class RequestRepositoryFactory private constructor(private val context: Context) {
 
-    companion object {
+    private var localRepository = LocalRequestRepository.loadLocalRequestRepository(context)
 
+    companion object {
         @Volatile
         @SuppressLint("StaticFieldLeak")
         private var requestRepositoryFactory: RequestRepositoryFactory? = null
@@ -72,10 +73,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         for (book in it.data?.coverList!!) {
                             if (!TextUtils.isEmpty(book.book_id)) {
 
-                                val localBook = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book.book_id)
+                                val localBook = localRepository.checkBookSubscribe(book.book_id)
 
                                 if (localBook == null) {
-                                    LocalRequestRepository.loadLocalRequestRepository(context).insertBook(book)
+                                    localRepository.insertBook(book)
                                 }
                             }
                         }
@@ -185,7 +186,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 requestSubscriber.onNext(result.data)
 
                                 synchronized(RequestRepositoryFactory::class.java) {
-                                    val localBook = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
+                                    val localBook = localRepository.loadBook(book_id)
 
                                     if (localBook != null && !TextUtils.isEmpty(localBook.book_id)) {
                                         if (TextUtils.isEmpty(localBook.book_chapter_id) && !TextUtils.isEmpty(result.data?.book_chapter_id)) {
@@ -208,7 +209,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int) {
-        LocalRequestRepository.loadLocalRequestRepository(context).requestBookCatalog(book_id, book_source_id, book_chapter_id)
+        localRepository.requestBookCatalog(book_id, book_source_id, book_chapter_id)
                 .flatMap { result ->
                     if (result.data == null || result.data!!.chapters == null || result.data!!.chapters!!.isEmpty()) {
                         Logger.d("本地暂无章节目录，封装网络请求！")
@@ -232,7 +233,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             chapter.book_chapter_id = result.data!!.book_chapter_id
                         }
 
-                        val book = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book_id)
+                        val book = localRepository.checkBookSubscribe(book_id)
 
                         if (book != null) {
                             val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id)
@@ -250,7 +251,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             if (lastChapter != null) {
                                 book.last_chapter = lastChapter
                             }
-                            LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+                            localRepository.updateBook(book)
                         } else {
                             var count = -1
                             resList.forEach {
@@ -318,12 +319,12 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             chapter.book_chapter_id = result.data!!.book_chapter_id
                         }
 
-                        val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(book_id)
+                        val book = localRepository.loadBook(book_id)
 
                         if (book != null) {
                             val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.deleteAllChapters()
-                            LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(book_id)
+                            localRepository.deleteBookMark(book_id)
 
                             chapterDaoHelp.insertOrUpdateChapter(result.data?.chapters!!)
 
@@ -344,7 +345,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                 book.last_chapter = lastChapter
 
-                                LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+                                localRepository.updateBook(book)
                             }
                         } else {
                             var count = -1
@@ -666,11 +667,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 for (book in it.data!!) {
                                     if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id) && !TextUtils.isEmpty(book.book_chapter_id)) {
 
-                                        val localBook = loadRequestRepositoryFactory(context).loadBook(book.book_id)
+                                        val localBook = loadBook(book.book_id)
 
                                         if (localBook != null) {
-                                            localBook.status = book!!.status   //更新书籍状态
-                                            localBook.book_chapter_id = book!!.book_chapter_id
+                                            localBook.status = book.status   //更新书籍状态
+                                            localBook.book_chapter_id = book.book_chapter_id
                                             localBook.name = book.name
                                             localBook.desc = book.desc
                                             localBook.book_type = book.book_type
@@ -684,7 +685,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                             localBook.genre = book.genre
                                             localBook.score = book.score
 
-                                            loadRequestRepositoryFactory(context).updateBook(localBook)
+                                            updateBook(localBook)
                                         }
                                     }
                                 }
@@ -707,17 +708,16 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({ result ->
                     if (result != null) {
                         if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
-                            val loadRepository = LocalRequestRepository.loadLocalRequestRepository(context)
                             val books: ArrayList<Book> = arrayListOf()
 
                             if (result.data?.fakeQingooBooks != null) {
                                 result.data?.fakeQingooBooks?.forEach {
                                     if (it.checkValueValid()) {
-                                        val book = loadRepository.loadBook(it.from)
+                                        val book = localRepository.loadBook(it.from)
                                         if (book != null) {
                                             book.book_id = it.to
 
-                                            loadRepository.updateBook(book)
+                                            localRepository.updateBook(book)
 
                                             ChapterDataProviderHelper.loadChapterDataProviderHelper(context, it.from).deleteAllChapters()
                                         }
@@ -726,7 +726,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
 
                             result.data?.coverList?.forEach {
-                                val book = loadRepository.checkBookSubscribe(it.book_id)
+                                val book = localRepository.checkBookSubscribe(it.book_id)
                                 if (book != null) {
                                     if (!TextUtils.isEmpty(it.book_chapter_id)) {
                                         book.book_chapter_id = it.book_chapter_id
@@ -771,7 +771,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 }
                             }
                             if (books.isNotEmpty()) {
-                                loadRepository.updateBooks(books)
+                                localRepository.updateBooks(books)
                                 requestSubscriber.onNext(true)
                             } else {
                                 requestSubscriber.onError(Throwable("获取默认书籍异常！"))
@@ -1078,9 +1078,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     private fun queryAllBook(): List<Book> {
-        val repository = LocalRequestRepository.loadLocalRequestRepository(context = context)
-        val extendsBooks = java.util.ArrayList<Book>()
-        repository.loadBooks()?.let { extendsBooks.addAll(it) }
+        val extendsBooks = ArrayList<Book>()
+        localRepository.loadBooks()?.let { extendsBooks.addAll(it) }
 
         extendsBooks.sort()
         return extendsBooks
@@ -1091,16 +1090,14 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 合并书架
      */
     private fun mergeBookShelf(data: List<UserBook>) {
-        val repository = LocalRequestRepository.loadLocalRequestRepository(context = context)
-        repository.deleteShelfBooks()
+        localRepository.deleteShelfBooks()
 
         if (data.isEmpty()) {
             return
         }
-
         for (book in data) {
             val saveBook = book.transToBook()
-            repository.insertBook(saveBook)
+            localRepository.insertBook(saveBook)
         }
     }
 
@@ -1158,8 +1155,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     @Suppress("SENSELESS_COMPARISON")
     private fun mergeBookMark(data: List<UserMarkBook>) {
-        val localRequestRepository = LocalRequestRepository.loadLocalRequestRepository(context)
-        localRequestRepository.deleteAllBookMark()
+        localRepository.deleteAllBookMark()
         if (data.isEmpty()) {
             return
         }
@@ -1189,7 +1185,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         }
         if (bookMarkList.isNotEmpty()) {
             for (item in bookMarkList) {
-                localRequestRepository.insertBookMark(item)
+                localRepository.insertBookMark(item)
             }
         }
 
@@ -1233,7 +1229,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      */
 
     fun queryLatestBookMark(bookId: String): ArrayList<Bookmark> {
-        return LocalRequestRepository.loadLocalRequestRepository(context).getBookMarks(bookId)
+        return localRepository.getBookMarks(bookId)
     }
 
     /**
@@ -1295,28 +1291,23 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 合并本地足迹
      */
     private fun mergeBookBrowe(data: List<UserBook>) {
-
-        val mBookDataHelper = LocalRequestRepository.loadLocalRequestRepository(context)
-        mBookDataHelper.deleteAllHistory()
+        localRepository.deleteAllHistory()
 
         if (data.isEmpty()) {
             return
         }
 
-
         for (remoteData in data) {
             val historyInfo = remoteData.transToHistoryInfo()
-            mBookDataHelper.insertHistoryInfo(historyInfo)
+            localRepository.insertHistoryInfo(historyInfo)
         }
-
-
     }
 
     /**
      *  获取上传本地足迹Flowable
      */
     fun getUploadBookBrowseFlowable(userId: String): Flowable<BasicResultV4<String>> {
-        val upLoadData = LocalRequestRepository.loadLocalRequestRepository(context).queryHistoryPaging(0, 200)
+        val upLoadData = localRepository.queryHistoryPaging(0, 200)
         val bookInfoBodyList = ArrayList<BookBrowseReqBody.BookInfoBody>()
         for (i in upLoadData.indices) {
             val upData = upLoadData[i]
@@ -1378,15 +1369,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         requestSubscriber.onComplete()
                     }
                 })
-
-
     }
 
-
     fun keepBookShelf() {
-        val repository = LocalRequestRepository.loadLocalRequestRepository(context = context)
-        repository.loadBooks()
-
+        localRepository.loadBooks()
     }
 
 
@@ -1606,56 +1592,56 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun checkBookSubscribe(book_id: String): Book? {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).checkBookSubscribe(book_id)
+        return localRepository.checkBookSubscribe(book_id)
     }
 
     fun insertBook(book: Book): Long {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).insertBook(book)
+        return localRepository.insertBook(book)
     }
 
     fun updateBook(book: Book): Boolean {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).updateBook(book)
+        return localRepository.updateBook(book)
     }
 
     fun updateBooks(books: List<Book>): Boolean {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).updateBooks(books)
+        return localRepository.updateBooks(books)
     }
 
     fun deleteBook(book_id: String): Boolean {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteBook(book_id)
+        return localRepository.deleteBook(book_id)
     }
 
     fun deleteBooks(books: List<Book>) {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteBooks(books)
+        return localRepository.deleteBooks(books)
     }
 
     fun deleteBooksById(books: List<Book>) {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteBooksById(books)
+        return localRepository.deleteBooksById(books)
     }
 
     fun deleteShelfBook() {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteShelfBooks()
+        return localRepository.deleteShelfBooks()
     }
 
     fun loadBook(book_id: String): Book? {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadBook(book_id)
+        return localRepository.loadBook(book_id)
     }
 
     fun loadBooks(): List<Book>? {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadBooks()
+        return localRepository.loadBooks()
     }
 
     fun loadReadBooks(): List<Book>? {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadReadBooks()
+        return localRepository.loadReadBooks()
     }
 
 
     fun loadBookCount(): Long {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadBookCount()
+        return localRepository.loadBookCount()
     }
 
     fun loadBookShelfIDs(): String {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadBookShelfIDs()
+        return localRepository.loadBookShelfIDs()
     }
 
     fun loadBookmarkList(book_id: String, requestSubscriber: RequestSubscriber<List<Bookmark>>) {
@@ -1664,35 +1650,35 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun insertBookFix(bookFix: BookFix) {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).insertBookFix(bookFix)
+        return localRepository.insertBookFix(bookFix)
     }
 
     fun deleteBookFix(id: String) {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).deleteBookFix(id)
+        return localRepository.deleteBookFix(id)
     }
 
     fun loadBookFixs(): List<BookFix>? {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadBookFixs()
+        return localRepository.loadBookFixs()
     }
 
     fun loadBookFix(book_id: String): BookFix? {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).loadBookFix(book_id)
+        return localRepository.loadBookFix(book_id)
     }
 
     fun updateBookFix(bookFix: BookFix) {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).updateBookFix(bookFix)
+        return localRepository.updateBookFix(bookFix)
     }
 
     fun insertOrUpdate(user: LoginRespV4) {
-        LocalRequestRepository.loadLocalRequestRepository(context = context).insertOrUpdate(user)
+        localRepository.insertOrUpdate(user)
     }
 
     fun queryLoginUser(): LoginRespV4 {
-        return LocalRequestRepository.loadLocalRequestRepository(context = context).queryLoginUser()
+        return localRepository.queryLoginUser()
     }
 
     fun deleteLoginUser() {
-        LocalRequestRepository.loadLocalRequestRepository(context = context).deleteLoginUser()
+        localRepository.deleteLoginUser()
     }
 
 
@@ -1708,7 +1694,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         if (fixBooks != null && fixBooks.isNotEmpty()) {
             fixBooks.forEach {
                 if (it != null && !TextUtils.isEmpty(it.book_id)) {
-                    val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
+                    val book = localRepository.loadBook(it.book_id)
                     if (book != null && !TextUtils.isEmpty(book.book_id)) {
                         if (book.list_version == -1 || book.c_version == -1) {
                             // 这里返回的version是后端按照书籍加入书架时间查找到的最新version
@@ -1729,7 +1715,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                             Logger.v("记录ListVersion和ContentVersion, 等待用户触发目录修复")
                         }
-                        LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+                        localRepository.updateBook(book)
                     }
                 }
             }
@@ -1740,7 +1726,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     .subscribeOn(Schedulers.io())
                     .filter { it.chapters != null && !TextUtils.isEmpty(it.book_id) }
                     .subscribe {
-                        val book = LocalRequestRepository.loadLocalRequestRepository(context).loadBook(it.book_id)
+                        val book = localRepository.loadBook(it.book_id)
                         if (it.chapters != null && it.chapters!!.isNotEmpty() && book != null) {
 
                             val chapterDaoHelp = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, it.book_id)
@@ -1791,7 +1777,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                 book.force_fix = 1
                                 book.list_version_fix = it.list_version
                             }
-                            LocalRequestRepository.loadLocalRequestRepository(context).updateBook(book)
+                            localRepository.updateBook(book)
 
                         }
                     }
@@ -1887,7 +1873,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestPushTags(udid: String): Flowable<PushInfo> {
-        val localFlowable = LocalRequestRepository.loadLocalRequestRepository(context)
+        val localFlowable = localRepository
                 .requestPushInfo()
         return if (localFlowable != null) {
             localFlowable
@@ -1908,7 +1894,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestBannerInfo(): Flowable<BannerInfo> {
-        val localFlowable = LocalRequestRepository.loadLocalRequestRepository(context)
+        val localFlowable = localRepository
                 .requestBannerTags()
         return if (localFlowable != null) {
             localFlowable
@@ -1956,51 +1942,51 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun deleteAllBookMark() {
-        LocalRequestRepository.loadLocalRequestRepository(context).deleteAllBookMark()
+        localRepository.deleteAllBookMark()
     }
 
     fun deleteAllHistory() {
-        LocalRequestRepository.loadLocalRequestRepository(context).deleteAllHistory()
+        localRepository.deleteAllHistory()
     }
 
     fun deleteBookMark(book_id: String) {
-        LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(book_id)
+        localRepository.deleteBookMark(book_id)
     }
 
     fun deleteBookMark(ids: ArrayList<Int>) {
-        LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(ids)
+        localRepository.deleteBookMark(ids)
     }
 
     fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
-        LocalRequestRepository.loadLocalRequestRepository(context).deleteBookMark(book_id, sequence, offset)
+        localRepository.deleteBookMark(book_id, sequence, offset)
     }
 
     fun getBookMarks(book_id: String): java.util.ArrayList<Bookmark> {
-        return LocalRequestRepository.loadLocalRequestRepository(context).getBookMarks(book_id)
+        return localRepository.getBookMarks(book_id)
     }
 
     fun isBookMarkExist(book_id: String, sequence: Int, offset: Int): Boolean {
-        return LocalRequestRepository.loadLocalRequestRepository(context).isBookMarkExist(book_id, sequence, offset)
+        return localRepository.isBookMarkExist(book_id, sequence, offset)
     }
 
     fun insertBookMark(bookMark: Bookmark) {
-        LocalRequestRepository.loadLocalRequestRepository(context).insertBookMark(bookMark)
+        localRepository.insertBookMark(bookMark)
     }
 
     fun getHistoryCount(): Long {
-        return LocalRequestRepository.loadLocalRequestRepository(context).getHistoryCount()
+        return localRepository.getHistoryCount()
     }
 
     fun insertOrUpdateHistory(historyInfo: HistoryInfo): Boolean {
-        return LocalRequestRepository.loadLocalRequestRepository(context).insertOrUpdateHistory(historyInfo)
+        return localRepository.insertOrUpdateHistory(historyInfo)
     }
 
     fun deleteSmallTimeHistory() {
-        LocalRequestRepository.loadLocalRequestRepository(context).deleteSmallTimeHistory()
+        localRepository.deleteSmallTimeHistory()
     }
 
     fun queryHistoryPaging(startNum: Long, limtNum: Long): java.util.ArrayList<HistoryInfo> {
-        return LocalRequestRepository.loadLocalRequestRepository(context).queryHistoryPaging(startNum, limtNum)
+        return localRepository.queryHistoryPaging(startNum, limtNum)
     }
 
     fun queryChapterBySequence(book_id: String, sequence: Int): Chapter? {
@@ -2035,4 +2021,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).updateChapterBySequence(chapter)
     }
 
+    /**
+     * 升级数据库
+     */
+    fun upgradeDBFromOld(dbName: String): Flowable<Int> {
+        return localRepository.upgradeFromOld(dbName)
+    }
 }
