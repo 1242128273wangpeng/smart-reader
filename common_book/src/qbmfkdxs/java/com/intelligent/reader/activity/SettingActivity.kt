@@ -12,8 +12,8 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
-import com.ding.basic.Config
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.Config
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
@@ -53,9 +53,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         }
     }
 
-    private val feedbackRunnable = Runnable({
+    private val feedbackRunnable = Runnable {
         FeedbackAPI.openFeedbackActivity()
-    })
+    }
 
 
     private var isFromPush = false

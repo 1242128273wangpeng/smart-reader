@@ -1,5 +1,7 @@
 package com.intelligent.reader.util;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -19,17 +21,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
-
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.Result;
 import com.ding.basic.bean.SearchAutoCompleteBean;
-import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.bean.SearchResult;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.contract.util.CommonUtil;
+import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SearchHisAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
@@ -53,8 +53,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,SearchHisAdapter.SearchClearCallBack{
     private static String TAG = SearchViewHelper.class.getSimpleName();
