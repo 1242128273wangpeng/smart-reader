@@ -10,16 +10,19 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
-import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
+import com.orhanobut.logger.Logger
+import kotlinx.android.synthetic.main.view_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.webview_layout_new.*
 
 import net.lzbook.kit.CustomWebViewClient
+import net.lzbook.kit.WebViewInterfaceObject
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
@@ -31,10 +34,6 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
     private var customWebViewClient: CustomWebViewClient? = null
 
     private var loadingPage: LoadingPage? = null
-
-    private var contentView: View? = null
-
-    private var jsInterfaceHelper: JSInterfaceHelper? = null
 
     private var viewVisible = false
     private var viewPrepared = false
@@ -64,6 +63,8 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
             this.url = bundle.getString("url")
             this.type = bundle.getString("type")
         }
+
+        Logger.e("打开WebView: $url")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -195,15 +196,13 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         web_view_content?.webViewClient = customWebViewClient
 
-        jsInterfaceHelper = JSInterfaceHelper(requireContext(), web_view_content)
+        web_view_content?.addJavascriptInterface(object : WebViewInterfaceObject(requireActivity()) {
 
-        if (jsInterfaceHelper != null) {
-            web_view_content?.addJavascriptInterface(jsInterfaceHelper, "J_search")
-        }
+            @JavascriptInterface
+            override fun startSearchActivity(data: String?) {
 
-        if (jsInterfaceHelper != null) {
-            fragmentCallback?.webJsCallback(jsInterfaceHelper!!)
-        }
+            }
+        }, "J_search")
     }
 
     /***
@@ -289,10 +288,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
      * **/
     private fun contentViewVisible() {
         if (type != null) {
-
-            if (jsInterfaceHelper == null && web_view_content != null) {
-                jsInterfaceHelper = JSInterfaceHelper(requireContext(), web_view_content)
-            }
+//            }
 
             if (type == "recommend") {
                 handleH5Statistics()
@@ -333,8 +329,8 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
      * 请求WebView数据
      * **/
     private fun requestWebViewData(url: String?) {
-        initWebViewCallback()
         startLoadingWebViewData(url)
+        initWebViewCallback()
     }
 
     /***
@@ -357,6 +353,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         if (url != null && url.isNotEmpty()) {
             try {
+                Logger.e("WebView加载地址: $url")
                 web_view_content?.loadUrl(url)
             } catch (exception: NullPointerException) {
                 exception.printStackTrace()
@@ -369,22 +366,24 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
      * 初始化WebView请求回调
      * **/
     private fun initWebViewCallback() {
-        if (contentView == null) {
+        if (web_view_content == null) {
             return
         }
 
         if (customWebViewClient != null) {
             customWebViewClient?.setLoadingWebViewStart {
-
+                Logger.e("WebView页面开始加载 $url")
             }
 
             customWebViewClient?.setLoadingWebViewFinish {
+                Logger.e("WebView页面加载结束: $url")
                 if (loadingPage != null) {
                     loadingPage?.onSuccessGone()
                 }
             }
 
             customWebViewClient?.setLoadingWebViewError {
+                Logger.e("WebView页面加载异常: $url")
                 if (loadingPage != null) {
                     loadingPage?.onErrorVisable()
                 }
