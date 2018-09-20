@@ -27,12 +27,13 @@ import java.util.HashMap
  * Mail crazylei911228@gmail.com
  * Date 2018/9/18 17:45
  */
-class WebViewInterfaceObject(var activity: Activity) {
+abstract class WebViewInterfaceObject(var activity: Activity) {
 
     @JavascriptInterface
-    fun buildRequestUrl(data: Any?): String {
-        if (data != null) {
-            var url = data as String
+    fun buildRequestUrl(data: String?): String? {
+        Logger.e("BuildRequestUrl: $data")
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+            var url = data
             var parameters: Map<String, String>? = null
 
             val array = url.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -47,68 +48,65 @@ class WebViewInterfaceObject(var activity: Activity) {
 
             return UrlUtils.buildWebUrl(url, parameters)
         } else {
-            return ""
+            return null
         }
     }
 
     @JavascriptInterface
-    fun startCoverActivity(data: Any?) {
-        if (data != null) {
-            if (!activity.isFinishing) {
-
-                if(CommonContract.isDoubleClick(System.currentTimeMillis())){
-                    return
-                }
-
-                try {
-                    val result = data as String
-
-                    val jsCover = Gson().fromJson(result, JSCover::class.java)
-
-                    if (jsCover?.book_id != null && jsCover.book_source_id != null && jsCover.book_chapter_id != null) {
-                        val bundle = Bundle()
-                        bundle.putString("book_id", jsCover.book_id)
-                        bundle.putString("book_source_id", jsCover.book_source_id)
-                        bundle.putString("book_chapter_id", jsCover.book_chapter_id)
-
-                        RouterUtil.navigation(activity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
-                    }
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
+    fun startCoverActivity(data: String?) {
+        if (data != null && !activity.isFinishing) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return
             }
-        } else {
 
+            try {
+                val cover = Gson().fromJson(data, JSCover::class.java)
+
+                if (cover?.book_id != null && cover.book_source_id != null && cover.book_chapter_id != null) {
+                    val bundle = Bundle()
+                    bundle.putString("book_id", cover.book_id)
+                    bundle.putString("book_source_id", cover.book_source_id)
+                    bundle.putString("book_chapter_id", cover.book_chapter_id)
+
+                    RouterUtil.navigation(activity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
+                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
         }
     }
 
     @JavascriptInterface
-    fun startTabulationActivity(data: Any?) {
-        if (data != null) {
-            if (!activity.isFinishing) {
-
-                if(CommonContract.isDoubleClick(System.currentTimeMillis())){
-                    return
-                }
-
-                try {
-                    val result = data as String
-
-                    val jsUrl = Gson().fromJson(result, JSUrl::class.java)
-
-                    if (jsUrl?.url != null && jsUrl.title != null) {
-                        val bundle = Bundle()
-                        bundle.putString("url", jsUrl.url)
-                        bundle.putString("title", jsUrl.title)
-
-                        RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
-                    }
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
+    fun startTabulationActivity(data: String?) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                return
             }
-        } else {
 
+            try {
+                val redirect = Gson().fromJson(data, JSRedirect::class.java)
+
+                if (redirect?.url != null && redirect.title != null) {
+                    val bundle = Bundle()
+                    bundle.putString("url", redirect.url)
+                    bundle.putString("title", redirect.title)
+
+                    if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
+                        when {
+                            redirect.from == "recommend" -> bundle.putString("from", "recommend")
+                            redirect.from == "ranking" -> bundle.putString("from", "ranking")
+                            redirect.from == "category" -> bundle.putString("from", "category")
+                            else -> bundle.putString("from", "other")
+                        }
+                    } else {
+                        bundle.putString("from", "other")
+                    }
+
+                    RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
         }
     }
 
@@ -207,6 +205,9 @@ class WebViewInterfaceObject(var activity: Activity) {
         }
     }
 
+    @JavascriptInterface
+    abstract fun startSearchActivity(data: String?)
+
     inner class JSCover : Serializable {
         var book_id: String? = null
 
@@ -215,9 +216,17 @@ class WebViewInterfaceObject(var activity: Activity) {
         var book_chapter_id: String? = null
     }
 
-    inner class JSUrl : Serializable {
+    inner class JSRedirect : Serializable {
         var url: String? = null
 
         var title: String? = null
+
+        var from: String? = null
+    }
+
+    inner class JSSearch : Serializable {
+        var word: String? = null
+
+        var type: String? = null
     }
 }
