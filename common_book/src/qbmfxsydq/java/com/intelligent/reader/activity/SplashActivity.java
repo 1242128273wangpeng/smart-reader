@@ -2,6 +2,8 @@ package com.intelligent.reader.activity;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
+import static com.dy.reader.Reader.context;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -413,7 +415,7 @@ public class SplashActivity extends FrameActivity {
         updateBookLastChapter();
 
         initializeDataFusion();
-
+        checkBookChapterCount();
         // 安装快捷方式
         new InstallShotCutTask().execute();
 
@@ -421,6 +423,42 @@ public class SplashActivity extends FrameActivity {
         if (UserManagerV4.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
+    }
+
+
+    /**
+     * 检查章节数是否为0
+     * 解决阅读进度不更新的问题
+     */
+    private void checkBookChapterCount(){
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+
+        boolean isCheckChapterCount = sharedPreUtil.getBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, false);
+
+        if (!isCheckChapterCount) {
+
+            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBooks();
+
+            if (bookList != null && bookList.size() > 0) {
+                for (Book book : bookList) {
+
+                    if (book.getChapter_count() <= 0 && !TextUtils.isEmpty(book.getBook_id())) {
+                        int chapterCount = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                context,
+                                book.getBook_id()).getCount();
+                        book.setChapter_count(chapterCount);
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, true);
+        }
+
     }
 
     private void initializeDataFusion() {
