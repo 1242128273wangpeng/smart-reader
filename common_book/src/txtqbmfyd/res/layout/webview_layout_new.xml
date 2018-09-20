@@ -83,17 +83,14 @@
                 android:layout_marginRight="16dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/nbar_search_nor_icon"/>
-
         </RelativeLayout>
-
     </RelativeLayout>
-
 
     <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_web_view_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title_layout">
+        android:layout_below="@id/rl_web_view_head">
 
         <com.intelligent.reader.widget.topshadow.TopShadowWebView
             android:id="@+id/web_view_content"
@@ -109,5 +106,4 @@
         android:scaleType="fitXY"
         android:src="@drawable/top_shadow_bg"
         android:visibility="gone"/>
-
 </RelativeLayout>
