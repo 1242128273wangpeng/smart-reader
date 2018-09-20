@@ -9,21 +9,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.utils.AbsRecyclerViewHolder;
-
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HistoryInfo;
-import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
 import com.intelligent.reader.util.EventBookStore;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -48,7 +47,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     private TextView mLoginInfo;
     private TextView mTypeInfoTV;
     private boolean currLoginState;
-    private BookDataProviderHelper mBookDataHelper;
+    private RequestRepositoryFactory requestRepositoryFactory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.his_into);
         setContentView(R.layout.activity_footprint);
         currLoginState = !UserManager.INSTANCE.isUserLogin();
-        mBookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(
+        requestRepositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext());
         initView();
         initListener();
@@ -121,7 +120,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
 
         int dataCount = 0;
         try {
-            dataCount = (int) mBookDataHelper.getHistoryCount();
+            dataCount = (int) requestRepositoryFactory.getHistoryCount();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,7 +156,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         }
 
         try {
-            mDataSet = mBookDataHelper.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
+            mDataSet = requestRepositoryFactory.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -237,7 +236,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
                 List<HistoryInfo> dataSet = null;
                 try {
-                    dataSet = mBookDataHelper.queryHistoryPaging((long)pagePosition, (long) pageSize);
+                    dataSet = requestRepositoryFactory.queryHistoryPaging((long)pagePosition, (long) pageSize);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -334,10 +333,11 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             dialog_comfire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mHisAdapter != null && mLoadMoreAdapter != null && mBookDataHelper != null) {
+                    if (mHisAdapter != null && mLoadMoreAdapter != null && requestRepositoryFactory
+                            != null) {
                         mHisAdapter.updateData(null);
                         mLoadMoreAdapter.notifyDataSetChanged();
-                        mBookDataHelper.deleteAllHistory();
+                        requestRepositoryFactory.deleteAllHistory();
                     }
                     myDialog.dismiss();
                 }

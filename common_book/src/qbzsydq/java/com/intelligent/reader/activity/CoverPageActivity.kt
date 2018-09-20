@@ -11,9 +11,9 @@ import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
@@ -33,7 +33,6 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
 import java.util.*
 import java.util.concurrent.Callable
-import kotlin.collections.ArrayList
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract {

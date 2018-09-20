@@ -22,7 +22,7 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -42,7 +42,6 @@ import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak

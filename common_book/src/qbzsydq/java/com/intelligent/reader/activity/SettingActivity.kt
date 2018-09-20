@@ -11,19 +11,12 @@ import android.os.Message
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.alibaba.android.arouter.facade.annotation.Route
-
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
@@ -31,7 +24,9 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.util.EventBookStore
-
+import iyouqu.theme.BaseCacheableActivity
+import iyouqu.theme.ThemeMode
+import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.ConsumeEvent
@@ -40,17 +35,12 @@ import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.UIHelper
+import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.update.ApkUpdateUtils
-
-import java.util.HashMap
-
-import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.ThemeMode
-import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
 import org.greenrobot.eventbus.EventBus
+import java.util.*
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
