@@ -30,7 +30,6 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.db.provider.ChapterDataProviderHelper;
 import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;
@@ -275,7 +274,7 @@ public class SplashActivity extends FrameActivity {
 
         final float weight = percent;
 
-        requestFactory.upgradeDBFromOld(bookDBName)
+        requestFactory.upgradeBookDBFromOld(bookDBName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
@@ -316,7 +315,7 @@ public class SplashActivity extends FrameActivity {
 
     private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
         if (!chapterDBList.isEmpty()) {
-            ChapterDataProviderHelper.Companion.upgradeFromOld(this, chapterDBList)
+            requestFactory.upgradeChapterDBFromOld(chapterDBList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Integer>() {

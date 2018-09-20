@@ -16,6 +16,7 @@ import com.ding.basic.net.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
 import com.ding.basic.util.getSharedObject
 import com.ding.basic.util.isSameDay
+import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import java.util.ArrayList
@@ -58,7 +59,7 @@ class LocalRequestRepository private constructor(private var context: Context,
     /**
      * 升级数据库
      */
-    fun upgradeFromOld(dbName: String): Flowable<Int> {
+    fun upgradeBookDBFromOld(dbName: String): Flowable<Int> {
         return Flowable.create<Int>({
             try {
                 val oldDB = MigrationDBOpenHeler(context, dbName).writableDatabase
@@ -115,6 +116,30 @@ class LocalRequestRepository private constructor(private var context: Context,
         database?.close()
     }
 
+    /**
+     * 升级chapter表
+     */
+    fun upgradeChapterDBFromOld(book_ids: List<String>): Flowable<Int> {
+        return Flowable.create<Int>({
+            try {
+                for (i in 0 until book_ids.size) {
+                    Logger.e("migrateDB book_chapter_${book_ids[i]}")
+                    val oldDB = MigrationDBOpenHeler(context, "book_chapter_${book_ids[i]}").writableDatabase
+                    val chapterDao = ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_ids[i]).chapterDao
+
+                    migrateTable(oldDB, "chapter", chapterDao, Chapter::class.java)
+
+                    it.onNext((100F * (i + 1) / book_ids.size).toInt())
+                }
+
+                it.onComplete()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                it.onError(t)
+            }
+
+        }, BackpressureStrategy.BUFFER)
+    }
 
     /**
      * 获取书籍目录

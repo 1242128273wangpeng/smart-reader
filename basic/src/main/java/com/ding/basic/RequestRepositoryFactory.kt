@@ -46,7 +46,8 @@ import java.util.concurrent.TimeUnit
  */
 class RequestRepositoryFactory private constructor(private val context: Context) {
 
-    private var localRepository = LocalRequestRepository.loadLocalRequestRepository(context)
+    private val localRepository = LocalRequestRepository.loadLocalRequestRepository(context)
+    private val internetRepository = InternetRequestRepository.loadInternetRequestRepository()
 
     companion object {
         @Volatile
@@ -66,7 +67,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestDefaultBooks(sex)!!
+        internetRepository.requestDefaultBooks(sex)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
                 .doOnNext {
                     if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
@@ -100,7 +101,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestApplicationUpdate(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<ApplicationUpdate>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestApplicationUpdate(parameters)!!
+        internetRepository.requestApplicationUpdate(parameters)!!
                 .compose(SchedulerHelper.schedulerIOHelper<JsonObject>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -122,7 +123,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestDynamicCheck(requestSubscriber: RequestSubscriber<BasicResult<Int>>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestDynamicCheck()
+        internetRepository.requestDynamicCheck()
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<Int>>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -138,7 +139,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestDynamicParameters(requestSubscriber: RequestSubscriber<Parameter>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestDynamicParameters()
+        internetRepository.requestDynamicParameters()
                 .compose(SchedulerHelper.schedulerIOHelper<Parameter>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -154,7 +155,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestAdControlDynamic(requestSubscriber: RequestSubscriber<AdControlByChannelBean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestAdControlDynamic()!!
+        internetRepository.requestAdControlDynamic()!!
                 .compose(SchedulerHelper.schedulerIOHelper<AdControlByChannelBean>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -170,7 +171,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<Book>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookDetail(book_id, book_source_id, book_chapter_id)!!
+        internetRepository.requestBookDetail(book_id, book_source_id, book_chapter_id)!!
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<Book>>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -213,7 +214,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .flatMap { result ->
                     if (result.data == null || result.data!!.chapters == null || result.data!!.chapters!!.isEmpty()) {
                         Logger.d("本地暂无章节目录，封装网络请求！")
-                        InternetRequestRepository.loadInternetRequestRepository().requestBookCatalog(book_id, book_source_id, book_chapter_id)
+                        internetRepository.requestBookCatalog(book_id, book_source_id, book_chapter_id)
                     } else {
                         Logger.d("本地章节目录正常！")
                         Flowable.create({ emitter ->
@@ -308,7 +309,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 用于换源操作，其他拉取目录请调用requestCatalog()方法
      * **/
     fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<List<Chapter>>, type: Int) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookCatalog(book_id, book_source_id, book_chapter_id)
+        internetRepository.requestBookCatalog(book_id, book_source_id, book_chapter_id)
                 .doOnNext { result ->
                     if (result != null && result.checkResultAvailable() && result.data?.chapters != null && result.data?.chapters!!.isNotEmpty()) {
 
@@ -389,7 +390,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String, requestSubscriber: RequestSubscriber<BookSource>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookSources(book_id, book_source_id, book_chapter_id)!!
+        internetRepository.requestBookSources(book_id, book_source_id, book_chapter_id)!!
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<BookSource>>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -409,7 +410,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestAutoComplete(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestAutoComplete(word)!!
+        internetRepository.requestAutoComplete(word)!!
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBean>())
                 .subscribe({ result ->
@@ -426,7 +427,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestSearchRecommend(bookIds: String, requestSubscriber: RequestSubscriber<SearchRecommendBook>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestSearchRecommend(bookIds)!!
+        internetRepository.requestSearchRecommend(bookIds)!!
                 .compose(SchedulerHelper.schedulerHelper<SearchRecommendBook>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -442,7 +443,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestAutoCompleteV4(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestAutoCompleteV4(word)!!
+        internetRepository.requestAutoCompleteV4(word)!!
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBeanYouHua>())
                 .subscribe({ result ->
@@ -459,7 +460,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestAutoCompleteV5(word: String, requestSubscriber: RequestSubscriber<SearchAutoCompleteBeanYouHua>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestAutoCompleteV5(word)!!
+        internetRepository.requestAutoCompleteV5(word)!!
                 .debounce(400, TimeUnit.MILLISECONDS)
                 .compose(SchedulerHelper.schedulerHelper<SearchAutoCompleteBeanYouHua>())
                 .subscribe({ result ->
@@ -476,7 +477,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestSearchOperationV4(requestSubscriber: RequestSubscriber<Result<SearchResult>>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestHotWordsV4()
+        internetRepository.requestHotWordsV4()
                 .compose(SchedulerHelper.schedulerHelper<Result<SearchResult>>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -492,7 +493,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestHotWords(requestSubscriber: RequestSubscriber<SearchHotBean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestHotWords()!!
+        internetRepository.requestHotWords()!!
                 .compose(SchedulerHelper.schedulerHelper<SearchHotBean>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -508,14 +509,14 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
-        return InternetRequestRepository.loadInternetRequestRepository().requestShareInformation()
+        return internetRepository.requestShareInformation()
     }
 
 
     fun requestChapterContent(chapter: Chapter): Flowable<Chapter> {
         val content = ChapterCacheUtil.checkChapterCacheExist(chapter)
         return if (content == null || content.isEmpty() || content == "null") {
-            InternetRequestRepository.loadInternetRequestRepository().requestChapterContent(chapter).map {
+            internetRepository.requestChapterContent(chapter).map {
                 when {
                     it.checkPrivateKeyExpire() -> {
                         requestAuthAccess(null)
@@ -562,7 +563,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     @Throws(IOException::class)
     @Synchronized
     fun requestChapterContentSync(chapter: Chapter): String {
-        val basicResult = InternetRequestRepository.loadInternetRequestRepository().requestChapterContentSync(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)?.execute()?.body()
+        val basicResult = internetRepository.requestChapterContentSync(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)?.execute()?.body()
         if (basicResult != null) {
             if (basicResult.checkPrivateKeyExpire()) {
                 if (requestAuthAccessSync()) {
@@ -584,7 +585,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestBookUpdate(checkBody: RequestBody, books: HashMap<String, Book>, requestSubscriber: RequestSubscriber<List<BookUpdate>>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookUpdate(checkBody)!!
+        internetRepository.requestBookUpdate(checkBody)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<UpdateBean>>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -653,7 +654,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun requestCoverBatch(checkBody: RequestBody) {
-        InternetRequestRepository.loadInternetRequestRepository().requestCoverBatch(checkBody)!!
+        internetRepository.requestCoverBatch(checkBody)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<List<Book>>>())
                 .subscribe({
                     if (it != null) {
@@ -703,7 +704,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestBookShelfUpdate(checkBody: RequestBody, requestSubscriber: RequestSubscriber<Boolean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookShelfUpdate(checkBody)!!
+        internetRepository.requestBookShelfUpdate(checkBody)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
                 .subscribe({ result ->
                     if (result != null) {
@@ -790,7 +791,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestFeedback(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<Boolean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestFeedback(parameters)!!
+        internetRepository.requestFeedback(parameters)!!
                 .compose(SchedulerHelper.schedulerIOHelper<NoBodyEntity>())
                 .subscribe({
                     Logger.e("反馈发送！")
@@ -803,7 +804,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun requestLoginAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<LoginResp>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestLoginAction(parameters)!!
+        internetRepository.requestLoginAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<LoginResp>())
                 .subscribeWith(object : ResourceSubscriber<LoginResp>() {
                     override fun onNext(result: LoginResp?) {
@@ -821,7 +822,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestSmsCode(mobile: String, requestSubscriber: RequestSubscriber<BasicResultV4<String>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestSmsCode(mobile)
                 ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
                 ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
@@ -842,7 +843,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     fun requestSmsLogin(smsBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
 
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestSmsLogin(smsBody)
                 ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -861,7 +862,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestLogout(requestSubscriber: RequestSubscriber<BasicResultV4<String>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestLogout()
                 ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
                 ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
@@ -880,7 +881,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun uploadUserAvatar(avatarBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .uploadUserAvatar(avatarBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -900,7 +901,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestUserNameState(requestSubscriber: RequestSubscriber<BasicResultV4<UserNameState>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestUserNameState()
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<UserNameState>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<UserNameState>>() {
@@ -919,7 +920,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun uploadUserGender(genderBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .uploadUserGender(genderBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -939,7 +940,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun uploadUserName(nameBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .uploadUserName(nameBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -959,7 +960,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun bindPhoneNumber(phoneBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .bindPhoneNumber(phoneBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -982,7 +983,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 请求用户书架 ,同步书架-----------------------------------------------------------------开始
      */
     fun keepUserBookShelf(accountId: String, onComplete: (() -> Unit)? = null) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestBookShelf(accountId)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<UserBook>>>())
                 .doOnNext { remoteBookShelf ->
@@ -1036,7 +1037,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
         val bookReqBody = getBookReqBody(accountId, bookList)
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookReqBody))
-        return InternetRequestRepository.loadInternetRequestRepository()
+        return internetRepository
                 .uploadBookshelf(body)
     }
 
@@ -1045,7 +1046,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 获取刷新token
      */
     fun getRefreshToken(requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .refreshToken()
                 ?.compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 ?.subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -1111,7 +1112,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      */
 
     fun keepBookMark(userId: String, onComplete: (() -> Unit)? = null) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestBookMarks(userId)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<UserMarkBook>>>())
                 .doOnNext { remoteBookMarks ->
@@ -1200,7 +1201,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         val bookMarkBody = getBookMarkBody(accountId, bookList)
         Log.d("keepBookMark", "upload data : " + bookMarkBody.toString())
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookMarkBody))
-        return InternetRequestRepository.loadInternetRequestRepository()
+        return internetRepository
                 .uploadBookMarks(body)
     }
 
@@ -1240,7 +1241,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 同步足迹-----------------------------------------------------------------开始
      */
     fun keepBookBrowse(userId: String, onComplete: (() -> Unit)? = null) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .requestFootPrint(userId)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<List<UserBook>>>())
                 .doOnNext { remoteBookBrowses ->
@@ -1320,9 +1321,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
         Log.d("keepBookBrowse", "upload data : " + bookBrowseReqBody.toString())
         val body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), Gson().toJson(bookBrowseReqBody))
-        return InternetRequestRepository.loadInternetRequestRepository()
-                .uploadFootPrint(body)
-
+        return internetRepository.uploadFootPrint(body)
     }
 
 
@@ -1332,7 +1331,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun thirdLogin(thirdBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .thirdLogin(thirdBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -1348,12 +1347,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         requestSubscriber.onComplete()
                     }
                 })
-
-
     }
 
     fun bindThirdAccount(accountBody: RequestBody, requestSubscriber: RequestSubscriber<BasicResultV4<LoginRespV4>>) {
-        InternetRequestRepository.loadInternetRequestRepository()
+        internetRepository
                 .bindThirdAccount(accountBody)
                 .compose(SchedulerHelper.schedulerHelper<BasicResultV4<LoginRespV4>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResultV4<LoginRespV4>>() {
@@ -1377,7 +1374,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun requestLogoutAction(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<JsonObject>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestLogoutAction(parameters)!!
+        internetRepository.requestLogoutAction(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<JsonObject>())?.subscribeWith(object : ResourceSubscriber<JsonObject>() {
                     override fun onNext(result: JsonObject?) {
                         requestSubscriber.onNext(result)
@@ -1395,7 +1392,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun requestRefreshToken(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<RefreshResp>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestRefreshToken(parameters)!!
+        internetRepository.requestRefreshToken(parameters)!!
                 .compose(SchedulerHelper.schedulerHelper<RefreshResp>())
                 .subscribeWith(object : ResourceSubscriber<RefreshResp>() {
                     override fun onNext(result: RefreshResp?) {
@@ -1413,7 +1410,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestUserInformation(token: String, appid: String, openid: String, requestSubscriber: RequestSubscriber<QQSimpleInfo>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestUserInformation(token, appid, openid)!!
+        internetRepository.requestUserInformation(token, appid, openid)!!
                 .compose(SchedulerHelper.schedulerHelper<QQSimpleInfo>())
                 .subscribeWith(object : ResourceSubscriber<QQSimpleInfo>() {
                     override fun onNext(result: QQSimpleInfo?) {
@@ -1431,8 +1428,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestWXAccessToken(token: String, appid: String, openid: String, authorizationCode: String, requestSubscriber: RequestSubscriber<WXAccess>) {
-        InternetRequestRepository.loadInternetRequestRepository()
-                .requestWXAccessToken(token, appid, openid, authorizationCode)
+        internetRepository.requestWXAccessToken(token, appid, openid, authorizationCode)
                 .compose(SchedulerHelper.schedulerHelper<WXAccess>())
                 .subscribeWith(object : ResourceSubscriber<WXAccess>() {
                     override fun onNext(result: WXAccess?) {
@@ -1450,8 +1446,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestWXUserInfo(token: String, openid: String, requestSubscriber: RequestSubscriber<WXSimpleInfo>) {
-        InternetRequestRepository.loadInternetRequestRepository()
-                .requestWXUserInfo(token, openid)
+        internetRepository.requestWXUserInfo(token, openid)
                 .compose(SchedulerHelper.schedulerHelper<WXSimpleInfo>())
                 .subscribeWith(object : ResourceSubscriber<WXSimpleInfo>() {
                     override fun onNext(result: WXSimpleInfo?) {
@@ -1470,7 +1465,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun requestCoverRecommend(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<CoverRecommendBean>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestCoverRecommend(book_id, recommend)!!
+        internetRepository.requestCoverRecommend(book_id, recommend)!!
                 .compose(SchedulerHelper.schedulerHelper<CoverRecommendBean>())
                 .subscribeWith(object : ResourceSubscriber<CoverRecommendBean>() {
                     override fun onNext(result: CoverRecommendBean?) {
@@ -1489,7 +1484,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
 
     fun requestBookRecommend(book_id: String, shelfBooks: String, requestSubscriber: RequestSubscriber<RecommendBooks>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookRecommend(book_id, shelfBooks)!!
+        internetRepository.requestBookRecommend(book_id, shelfBooks)!!
                 .compose(SchedulerHelper.schedulerHelper())
                 .subscribeWith(object : ResourceSubscriber<CommonResult<RecommendBooks>>() {
                     override fun onNext(result: CommonResult<RecommendBooks>?) {
@@ -1515,7 +1510,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 完结页推荐（兼容数据融合前的项目）
      */
     fun requestBookRecommendV4(book_id: String, recommend: String, requestSubscriber: RequestSubscriber<RecommendBooksEndResp>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestBookRecommendV4(book_id, recommend)!!
+        internetRepository.requestBookRecommendV4(book_id, recommend)!!
                 .compose(SchedulerHelper.schedulerHelper<RecommendBooksEndResp>())
                 .subscribeWith(object : ResourceSubscriber<RecommendBooksEndResp>() {
                     override fun onNext(result: RecommendBooksEndResp?) {
@@ -1537,7 +1532,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 该作者的其他作品推荐
      */
     fun requestAuthorOtherBookRecommend(author: String, book_id: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<RecommendBean>>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestAuthorOtherBookRecommend(author, book_id)!!
+        internetRepository.requestAuthorOtherBookRecommend(author, book_id)!!
                 .compose(SchedulerHelper.schedulerHelper())
                 .subscribeWith(object : ResourceSubscriber<CommonResult<java.util.ArrayList<RecommendBean>>>() {
                     override fun onNext(result: CommonResult<java.util.ArrayList<RecommendBean>>?) {
@@ -1563,7 +1558,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 搜索无结果页  订阅
      */
     fun requestSubBook(bookName: String, bookAuthor: String, requestSubscriber: RequestSubscriber<JsonObject>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestSubBook(bookName, bookAuthor)!!
+        internetRepository.requestSubBook(bookName, bookAuthor)!!
                 .compose(SchedulerHelper.schedulerHelper())
                 .subscribeWith(object : RequestSubscriber<JsonObject>() {
                     override fun requestResult(result: JsonObject?) {
@@ -1807,7 +1802,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
                               , type: Int, startChapterID: String
                               , requestSubscriber: RequestSubscriber<BasicResult<CacheTaskConfig>>) {
-        InternetRequestRepository.loadInternetRequestRepository().requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)!!
+        internetRepository.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)!!
                 .subscribeBy(
                         onNext = { ret ->
                             if (ret.checkPrivateKeyExpire()) {
@@ -1832,7 +1827,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     @Synchronized
     fun requestAuthAccess(callback: ((Boolean) -> Unit)?) {
-        InternetRequestRepository.loadInternetRequestRepository().requestAuthAccess()!!
+        internetRepository.requestAuthAccess()!!
                 .compose(SchedulerHelper.schedulerHelper<BasicResult<String>>())
                 .subscribeWith(object : ResourceSubscriber<BasicResult<String>>() {
                     override fun onNext(result: BasicResult<String>?) {
@@ -1878,7 +1873,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return if (localFlowable != null) {
             localFlowable
         } else {
-            InternetRequestRepository.loadInternetRequestRepository()
+            internetRepository
                     .requestPushTags(udid)
                     .map(CommonResultMapper())
                     .flatMap {
@@ -1899,7 +1894,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return if (localFlowable != null) {
             localFlowable
         } else {
-            InternetRequestRepository.loadInternetRequestRepository()
+            internetRepository
                     .requestBannerTags()
                     .map(CommonResultMapper())
                     .map {
@@ -1910,7 +1905,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestAuthAccessSync(): Boolean {
-        val result = InternetRequestRepository.loadInternetRequestRepository().requestAuthAccessSync().execute().body()
+        val result = internetRepository.requestAuthAccessSync().execute().body()
 
         if (result != null && result.checkResultAvailable()) {
             Logger.e("鉴权请求结果正常！")
@@ -1938,7 +1933,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
-        return InternetRequestRepository.loadInternetRequestRepository().downloadFont(fontName)
+        return internetRepository.downloadFont(fontName)
     }
 
     fun deleteAllBookMark() {
@@ -2024,7 +2019,12 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     /**
      * 升级数据库
      */
-    fun upgradeDBFromOld(dbName: String): Flowable<Int> {
-        return localRepository.upgradeFromOld(dbName)
+    fun upgradeBookDBFromOld(dbName: String): Flowable<Int> {
+        return localRepository.upgradeBookDBFromOld(dbName)
     }
+
+    fun upgradeChapterDBFromOld(book_ids: List<String>): Flowable<Int> {
+        return localRepository.upgradeChapterDBFromOld(book_ids)
+    }
+
 }

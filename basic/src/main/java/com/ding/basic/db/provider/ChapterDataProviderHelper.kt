@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by yuchao on 2018/3/16 0016.
  */
-class ChapterDataProviderHelper private constructor(private val chapterDao: ChapterDao) {
+class ChapterDataProviderHelper private constructor(val chapterDao: ChapterDao) {
 
     companion object {
 
