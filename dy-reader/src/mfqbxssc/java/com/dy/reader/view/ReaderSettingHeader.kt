@@ -167,7 +167,7 @@ class ReaderSettingHeader : FrameLayout {
         if (ReaderStatus.position.group == -1) {
             txt_reader_source.visibility = View.GONE
         } else {
-            if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+            if (ReaderStatus.book.fromQingoo()) {
                 txt_reader_source.text = "青果阅读"
                 txt_reader_source.visibility = View.VISIBLE
             } else {
