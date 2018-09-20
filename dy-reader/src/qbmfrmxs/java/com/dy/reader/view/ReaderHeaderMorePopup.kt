@@ -4,11 +4,13 @@ import android.content.Context
 import android.view.View
 import android.view.WindowManager
 import com.ding.basic.database.helper.BookDataProviderHelper
-import com.dingyue.contract.BasePopup
+
 import com.dy.reader.R
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfrmxs.popup_reader_option_header_more.view.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
+
+import net.lzbook.kit.base.BasePopup
 
 /**
  * Desc 请描述这个文件

@@ -16,8 +16,8 @@ import android.widget.TextView
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.util.DataCache
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import com.dy.reader.R
 import com.dy.reader.adapter.BaseRecyclerHolder
 import com.dy.reader.adapter.ListRecyclerAdapter
@@ -28,8 +28,8 @@ import kotlinx.android.synthetic.txtqbmfyd.item_read_bookmark.view.*
 import kotlinx.android.synthetic.txtqbmfyd.item_reader_catalog.view.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_catalog_mark.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_catalog_mark.view.*
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.repair_books.RepairHelp
+import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.SimpleDateFormat
 import java.util.concurrent.Callable

@@ -5,8 +5,9 @@ import android.graphics.Color
 import android.view.Gravity
 import com.dingyue.downloadmanager.R
 import kotlinx.android.synthetic.mfxsqbyd.popup_download_manager_sort.*
-import net.lzbook.kit.book.view.MyDialog
+
 import net.lzbook.kit.utils.SettingItemsHelper
+import net.lzbook.kit.widget.MyDialog
 
 /**
  * Desc 书籍排序

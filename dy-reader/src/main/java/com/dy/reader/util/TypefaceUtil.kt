@@ -1,7 +1,7 @@
 package com.dy.reader.util
 
 import android.graphics.Typeface
-import com.dingyue.contract.util.SharedPreUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.reader.service.FontDownLoadService
 import org.jetbrains.annotations.NotNull
 import java.io.File

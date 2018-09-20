@@ -1,7 +1,5 @@
 package com.intelligent.reader.util;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +36,6 @@ import com.ding.basic.bean.SearchResult;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.bookshelf.ShelfGridLayoutManager;
-import com.dingyue.contract.util.CommonUtil;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
@@ -49,15 +46,16 @@ import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.view.ScrollForGridView;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils;
+import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.widget.LoadingPage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,6 +65,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         SearchHistoryAdapter.onPositionClickListener,

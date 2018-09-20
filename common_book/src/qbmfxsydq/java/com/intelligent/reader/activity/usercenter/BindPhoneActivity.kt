@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.view.login.LoadingDialog
 import com.intelligent.reader.view.login.MobileNumberEditText
-import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_bind_phone.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.UserManagerV4
 
 /**
  * Date: 2018/7/31 18:21

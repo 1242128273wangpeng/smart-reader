@@ -6,11 +6,12 @@ import android.view.View
 import com.ding.basic.bean.Book
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbdzs.dialog_search_subbook.*
-import net.lzbook.kit.book.view.MyDialog
+
 import android.text.Selection.getSelectionEnd
 import android.text.Selection.getSelectionStart
 import android.text.Editable
-import com.dingyue.contract.util.CommonUtil
+
+import net.lzbook.kit.widget.MyDialog
 
 
 /**

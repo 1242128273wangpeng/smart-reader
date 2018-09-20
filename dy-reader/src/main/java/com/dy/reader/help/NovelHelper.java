@@ -14,7 +14,7 @@ import com.dy.reader.event.EventSetting;
 import com.dy.reader.listener.SourceClickListener;
 import com.dy.reader.setting.ReaderStatus;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;

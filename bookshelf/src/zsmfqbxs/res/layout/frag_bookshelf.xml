@@ -26,7 +26,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/bookshelf_head_setting_icon"/>
 
-        <net.lzbook.kit.book.view.FirstUsePointView
+        <net.lzbook.kit.widget.FirstUsePointView
             android:id="@+id/fup_head_setting"
             android:layout_width="6dp"
             android:layout_height="6dp"
@@ -69,7 +69,7 @@
     </RelativeLayout>
 
 
-    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+    <net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -82,7 +82,7 @@
             android:alwaysDrawnWithCache="false"
             android:clipToPadding="false"/>
 
-    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+    </net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout>
 
 
     <!--悬浮广告-->

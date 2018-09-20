@@ -7,12 +7,9 @@ import com.intelligent.reader.util.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.HWEditText
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.widget.HWEditText
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.CustomWebClient
-import net.lzbook.kit.utils.JSInterfaceHelper
+
 import net.lzbook.kit.utils.NetWorkUtils
 
 import android.content.res.Resources
@@ -37,12 +34,17 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.showToastMessage
+import net.lzbook.kit.base.activity.FrameActivity
+
 
 import java.util.HashMap
 
-import iyouqu.theme.FrameActivity
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.webview.CustomWebClient
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.widget.LoadingPage
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {

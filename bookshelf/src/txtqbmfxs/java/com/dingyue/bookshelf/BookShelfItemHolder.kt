@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
-import com.dingyue.contract.util.SharedPreUtil
+
 import kotlinx.android.synthetic.txtqbmfxs.item_bookshelf_book.view.*
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.repair_books.RepairHelp
+
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.sp.SharedPreUtil
 import java.text.MessageFormat
 
 /**

@@ -30,7 +30,7 @@
                     android:layout_marginLeft="14dp"
                     android:src="@drawable/home_head_setting"/>
 
-            <net.lzbook.kit.book.view.FirstUsePointView
+            <net.lzbook.kit.widget.FirstUsePointView
                     android:layout_width="6dp"
                     android:layout_height="6dp"
                     android:background="@color/color_red_point"
@@ -123,7 +123,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <net.lzbook.kit.book.view.NonSwipeViewPager
+    <net.lzbook.kit.widget.NonSwipeViewPager
             android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

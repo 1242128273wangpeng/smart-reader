@@ -8,7 +8,7 @@
     android:background="#FFFAFAFA"
     tools:ignore="RtlHardcoded">
 
-    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+    <net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,7 +20,7 @@
             android:alwaysDrawnWithCache="false"
             android:clipToPadding="false"
             android:paddingTop="10dp"/>
-    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+    </net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout>
 
     <ImageView
         android:id="@+id/img_download_float"

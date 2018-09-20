@@ -7,13 +7,14 @@ import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
 import java.util.*
 
@@ -24,7 +25,7 @@ import java.util.*
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
-class DisclaimerActivity : iyouqu.theme.FrameActivity() {
+class DisclaimerActivity : FrameActivity() {
 
 
     override fun onCreate(paramBundle: Bundle?) {

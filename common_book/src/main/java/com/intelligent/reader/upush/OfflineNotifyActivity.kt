@@ -9,7 +9,7 @@ import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.openPushActivity
 import org.android.agoo.common.AgooConstants
 import org.json.JSONObject
-import swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 
 
 /**

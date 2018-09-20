@@ -15,8 +15,9 @@ import android.preference.PreferenceManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.AppLog
+
 import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.logger.AppLog
 
 
 /**

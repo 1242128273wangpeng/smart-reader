@@ -2,7 +2,7 @@ package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService
+import net.lzbook.kit.service.CheckNovelUpdateService
 
 /**
  * Created by qiantao on 2017/11/14 0014

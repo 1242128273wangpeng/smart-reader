@@ -2,7 +2,7 @@ package com.intelligent.reader.read.page;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.Tools;
 
 import android.annotation.TargetApi;

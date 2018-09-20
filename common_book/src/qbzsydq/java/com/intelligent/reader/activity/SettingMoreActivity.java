@@ -17,17 +17,18 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.view.CustomDialog;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.SwitchButton;
-import net.lzbook.kit.book.view.TimePicker;
+import net.lzbook.kit.base.activity.BaseCacheableActivity;
+import net.lzbook.kit.bean.SettingItems;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.bean.SettingItems;
 import net.lzbook.kit.utils.SettingItemsHelper;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.widget.SwitchButton;
+import net.lzbook.kit.widget.TimePicker;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import iyouqu.theme.BaseCacheableActivity;
+
 
 public class SettingMoreActivity extends BaseCacheableActivity implements View.OnClickListener, SwitchButton.OnCheckedChangeListener {
 

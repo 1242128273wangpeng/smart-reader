@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.ding.basic.bean.Book
-import com.dingyue.contract.HolderType.Type_AD
-import com.dingyue.contract.HolderType.Type_Add
-import com.dingyue.contract.HolderType.Type_Book
-import com.dingyue.contract.HolderType.Type_Header_AD
+import net.lzbook.kit.constants.HolderType.Type_AD
+import net.lzbook.kit.constants.HolderType.Type_Add
+import net.lzbook.kit.constants.HolderType.Type_Book
+import net.lzbook.kit.constants.HolderType.Type_Header_AD
 import net.lzbook.kit.utils.AppUtils
 import java.util.*
 

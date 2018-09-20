@@ -15,9 +15,11 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
+
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.repair_books.RepairHelp
+import net.lzbook.kit.utils.book.RepairHelp
+
 
 /**
  * Desc 书架页item

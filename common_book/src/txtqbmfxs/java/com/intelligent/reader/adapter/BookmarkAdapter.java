@@ -10,15 +10,15 @@ import android.widget.TextView;
 import com.ding.basic.bean.Bookmark;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.book.adapter.AdapterBase;
-import net.lzbook.kit.data.bean.EventBookmark;
+import net.lzbook.kit.base.AdapterBase;
+import net.lzbook.kit.bean.EventBookmark;
 import net.lzbook.kit.utils.ResourceUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * 书签适配器

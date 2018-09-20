@@ -59,7 +59,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <net.lzbook.kit.book.view.EmptyRecyclerView
+    <net.lzbook.kit.widget.EmptyRecyclerView
             android:id="@+id/recycler_footprint"
             android:layout_below="@+id/rl_title_footprint"
             android:paddingTop="10dp"

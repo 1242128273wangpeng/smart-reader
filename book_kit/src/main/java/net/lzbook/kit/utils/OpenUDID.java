@@ -1,7 +1,9 @@
 package net.lzbook.kit.utils;
 
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.input.MultiInputStreamHelper;
+import net.lzbook.kit.utils.file.FileUtils;
+import net.lzbook.kit.utils.file.input.MultiInputStreamHelper;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import android.content.Context;
 import android.content.SharedPreferences;

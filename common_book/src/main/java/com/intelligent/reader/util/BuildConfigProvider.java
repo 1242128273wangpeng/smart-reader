@@ -5,7 +5,6 @@ import android.content.Context;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.util.IBuildConfigProvider;
 import com.ding.basic.util.ReplaceConstants;
-import com.dingyue.contract.router.RouterConfig;
 import com.intelligent.reader.BuildConfig;
 
 import org.jetbrains.annotations.NotNull;

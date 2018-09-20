@@ -8,14 +8,14 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.ding.basic.Config;
-import com.dingyue.contract.util.SharedPreUtil;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
 import com.dy.media.MediaConfig;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.LoadDataManager;
+import net.lzbook.kit.utils.book.LoadDataManager;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
 

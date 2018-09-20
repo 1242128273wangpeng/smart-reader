@@ -4,8 +4,9 @@ import android.content.Context
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.BasePopup
+
 import kotlinx.android.synthetic.qbzsydq.popup_remove_menu.view.*
+import net.lzbook.kit.base.BasePopup
 
 /**
  * Desc 书架编辑弹窗

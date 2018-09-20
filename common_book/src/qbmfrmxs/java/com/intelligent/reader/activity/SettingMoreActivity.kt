@@ -2,14 +2,17 @@ package com.intelligent.reader.activity
 
 import android.os.Bundle
 import com.intelligent.reader.R
+import com.intelligent.reader.R.id.*
 import com.intelligent.reader.widget.PushTimeDialog
-import iyouqu.theme.BaseCacheableActivity
+
 import kotlinx.android.synthetic.qbmfrmxs.act_setting_more.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.data.bean.SettingItems
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.SettingItems
+
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.logger.AppLog
 import java.util.*
 
 class SettingMoreActivity : BaseCacheableActivity() {

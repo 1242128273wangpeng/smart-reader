@@ -1,18 +1,5 @@
 package com.intelligent.reader.activity
 
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.intelligent.reader.R
-import com.intelligent.reader.adapter.CoverRecommendAdapter
-import com.intelligent.reader.view.MyScrollView
-
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.CoverPage
 
 import android.content.Intent
 import android.content.res.Resources
@@ -20,31 +7,40 @@ import android.os.Bundle
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.view.View
-import android.view.View.*
+import android.view.View.OnClickListener
 import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
+import com.intelligent.reader.R
+import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
-
-import java.text.DecimalFormat
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.concurrent.Callable
-
-import iyouqu.theme.BaseCacheableActivity
+import com.intelligent.reader.view.MyScrollView
 import kotlinx.android.synthetic.qbmfkdxs.act_book_cover.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.CoverPage
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
-import swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.widget.LoadingPage
+import java.text.DecimalFormat
+import java.util.*
+import java.util.concurrent.Callable
+
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener, MyScrollView.ScrollChangedListener {

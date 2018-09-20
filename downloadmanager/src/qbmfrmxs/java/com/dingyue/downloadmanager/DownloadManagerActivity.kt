@@ -10,18 +10,18 @@ import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-import com.dingyue.contract.CommonContract
-import com.dingyue.downloadmanager.contract.CacheManagerContract
-import iyouqu.theme.BaseCacheableActivity
-import kotlinx.android.synthetic.qbmfrmxs.act_download_manager.*
-import net.lzbook.kit.book.download.CallBackDownload
-import net.lzbook.kit.constants.Constants
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dingyue.downloadmanager.contract.BookHelperContract
+import com.dingyue.downloadmanager.contract.CacheManagerContract
+import kotlinx.android.synthetic.qbmfrmxs.act_download_manager.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.download.CallBackDownload
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.showToastMessage
 import net.lzbook.kit.utils.uiThread
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by qiantao on 2017/11/22 0022

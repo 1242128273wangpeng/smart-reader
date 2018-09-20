@@ -5,8 +5,9 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.BasePopup
+
 import kotlinx.android.synthetic.mfxsqbyd.popup_head_menu.view.*
+import net.lzbook.kit.base.BasePopup
 
 /**
  * Desc 请描述这个文件

@@ -12,7 +12,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.ding.basic.bean.Chapter
-import com.dingyue.contract.util.showToastMessage
+import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
 import com.dy.reader.data.DataProvider
@@ -30,8 +30,8 @@ import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadViewEnums
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.bean.ReadViewEnums
+import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import org.greenrobot.eventbus.EventBus

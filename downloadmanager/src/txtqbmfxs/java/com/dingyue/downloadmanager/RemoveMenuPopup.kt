@@ -3,8 +3,9 @@ package com.dingyue.downloadmanager
 import android.content.Context
 import android.view.View
 import android.view.WindowManager
-import com.dingyue.contract.BasePopup
+
 import kotlinx.android.synthetic.txtqbmfxs.popup_download_manager_editor.view.*
+import net.lzbook.kit.base.BasePopup
 
 /**
  * Desc 底部删除弹窗

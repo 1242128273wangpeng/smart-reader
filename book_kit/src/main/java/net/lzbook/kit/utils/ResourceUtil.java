@@ -1,6 +1,6 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 
 import android.app.Activity;

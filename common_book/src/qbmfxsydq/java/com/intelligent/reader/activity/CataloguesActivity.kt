@@ -7,11 +7,6 @@ import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.EventBookmark
-import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 
 import android.content.Intent
@@ -29,16 +24,21 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.dingyue.contract.router.RouterConfig
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CataloguesAdapter
 
 import java.util.concurrent.Callable
 
-import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_catalog.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.widget.MyDialog
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -119,8 +119,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             changeSortState(isPositive)
         }
 
-
-        EventBus.getDefault().register(this)
 
     }
 
@@ -371,12 +369,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             }
 
         }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         if (mCataloguesPresenter != null) {
             mCataloguesPresenter!!.removeHandler()
             mCataloguesPresenter!!.unRegisterRec()

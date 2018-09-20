@@ -44,9 +44,10 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.meituan.android.walle.WalleChannelReader;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import org.apache.http.conn.util.InetAddressUtils;
 

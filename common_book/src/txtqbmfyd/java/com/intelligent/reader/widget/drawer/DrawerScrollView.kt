@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.widget.ScrollView
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.logger.AppLog
 
 /**
  * Desc 请描述这个文件

@@ -27,37 +27,39 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
 import com.ding.basic.bean.LoginRespV4
 import com.ding.basic.request.RequestService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.usercenter.UserProfileActivity
 import com.intelligent.reader.util.EventBookStore
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.view.ConsumeEvent
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.book.view.SwitchButton
-import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.UIHelper
-import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
 
-import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.ThemeMode
+
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.utils.cache.DataCleanManager
+import net.lzbook.kit.utils.cache.UIHelper
+import net.lzbook.kit.utils.download.CacheManager
+
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.theme.ThemeMode
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.UserManagerV4
+import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.widget.ConsumeEvent
+import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.widget.SwitchButton
 import org.greenrobot.eventbus.EventBus
-import swipeback.ActivityLifecycleHelper
+
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)

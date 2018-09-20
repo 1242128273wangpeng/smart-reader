@@ -7,16 +7,14 @@ import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.EventBookmark
-import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.utils.AppLog
+
+
 import net.lzbook.kit.utils.StatServiceUtils
 
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
@@ -29,16 +27,24 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.dingyue.contract.router.RouterConfig
+import com.intelligent.reader.R.id.*
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CataloguesAdapter
+import com.taobao.accs.ACCSManager.setMode
 
 import java.util.concurrent.Callable
 
-import iyouqu.theme.BaseCacheableActivity
+
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbzsydq.act_catalog.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.widget.MyDialog
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -122,7 +128,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             changeSortState(isPositive)
         }
 
-        EventBus.getDefault().register(this)
 
     }
 
@@ -376,12 +381,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             }
 
         }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         if (mCataloguesPresenter != null) {
             mCataloguesPresenter!!.removeHandler()
             mCataloguesPresenter!!.unRegisterRec()

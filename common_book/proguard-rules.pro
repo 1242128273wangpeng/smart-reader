@@ -37,7 +37,7 @@
 -keep class net.lzbook.kit.data.update.**{*;}
 -keep class net.lzbook.kit.data.recommend.**{*;}
 -keep class net.lzbook.kit.net.Result {*;}
--keep class net.lzbook.kit.user.bean.**{*;}
+-keep class net.lzbook.kit.utils.user.bean.**{*;}
 -keep class com.ding.basic.bean.**{*;}
 
 -keep public class * extends com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
@@ -222,8 +222,8 @@
 -keep public class android.webkit.**
 -keep public class org.jsoup.**
 
--keep public class net.lzbook.kit.utils.JSInterfaceHelper { *; }
--keep public class net.lzbook.kit.utils.WebViewJsInterface { *; }
+-keep public class net.lzbook.kit.utils.webview.JSInterfaceHelper { *; }
+-keep public class net.lzbook.kit.utils.webview.WebViewJsInterface { *; }
 
 -keep class org.jsoup.** { *; }
 
@@ -348,10 +348,10 @@
 -keep public class com.intelligent.reader.activity.** { *; }
 -keep public class com.intelligent.reader.adapter.** { *; }
 -keep public class com.intelligent.reader.app.** { *; }
--keep public class net.lzbook.kit.cache.** { *; }
+-keep public class net.lzbook.kit.utils.cache.** { *; }
 -keep public class net.lzbook.kit.error.** { *; }
 -keep public class net.lzbook.kit.utils.popup.** { *; }
--keep public class net.lzbook.kit.book.download.CacheInfo { *; }
+-keep public class net.lzbook.kit.utils.download.CacheInfo { *; }
 -keep class kotlin.** { *; }
 -keep class kotlinx.** { *; }
 
@@ -367,7 +367,7 @@
 -dontwarn com.dycm_adsdk.**
 -keep class com.dycm_adsdk.** { *;}
 
--keep class net.lzbook.kit.data.bean.** {*;}
+-keep class net.lzbook.kit.bean.** {*;}
 
 -keep class com.dingyueads.sdk.** {
   public protected *;

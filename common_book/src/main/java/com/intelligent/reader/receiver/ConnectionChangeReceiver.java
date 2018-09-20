@@ -7,12 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.download.CacheManager;
-import net.lzbook.kit.dynamic.DynamicParameter;
-import net.lzbook.kit.dynamic.service.DynamicService;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.service.CheckNovelUpdateService;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.dynamic.DynamicParameter;
+import net.lzbook.kit.service.DynamicService;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 

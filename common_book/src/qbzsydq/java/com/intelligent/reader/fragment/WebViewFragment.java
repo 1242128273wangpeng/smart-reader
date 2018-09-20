@@ -21,25 +21,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dingyue.bookshelf.BookShelfLogger;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.ConsumeEvent;
-import net.lzbook.kit.book.view.FirstUsePointView;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.widget.ConsumeEvent;
+import net.lzbook.kit.widget.LoadingPage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
 
-import org.greenrobot.eventbus.EventBus;
+
 
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 

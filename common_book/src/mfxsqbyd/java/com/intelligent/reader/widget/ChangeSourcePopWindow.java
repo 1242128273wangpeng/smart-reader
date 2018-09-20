@@ -5,7 +5,7 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SourceAdapter;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.NightShadowView;
+import net.lzbook.kit.widget.NightShadowView;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -11,9 +11,10 @@ import android.widget.SeekBar
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.setting.ReaderSettings
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.txtqbdzs.dialog_reader_auto_read_option.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
 import org.greenrobot.eventbus.EventBus

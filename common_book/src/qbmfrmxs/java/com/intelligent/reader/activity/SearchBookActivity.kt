@@ -23,14 +23,21 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchView
 import com.intelligent.reader.util.SearchViewHelper
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.qbmfrmxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.*
+
+import com.intelligent.reader.R.id.search_result_content
+import com.intelligent.reader.R.id.search_result_input
 import com.intelligent.reader.util.SearchPresenter
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.webview.CustomWebClient
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)

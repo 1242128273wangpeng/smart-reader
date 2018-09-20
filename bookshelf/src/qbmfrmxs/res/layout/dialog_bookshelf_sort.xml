@@ -48,7 +48,7 @@
             android:text="@string/cancel"/>
     </LinearLayout>
 
-    <net.lzbook.kit.book.view.NightShadowView
+    <net.lzbook.kit.widget.NightShadowView
         android:layout_width="match_parent"
         android:layout_height="158dp"
         android:visibility="gone"/>

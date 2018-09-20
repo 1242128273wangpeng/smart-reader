@@ -3,7 +3,7 @@ package com.dingyue.downloadmanager
 import android.content.Context
 import android.view.View
 import android.view.WindowManager
-import com.dingyue.contract.BasePopup
+import net.lzbook.kit.base.BasePopup
 import kotlinx.android.synthetic.txtqbmfyd.popup_download_manager_editor.view.*
 
 /**

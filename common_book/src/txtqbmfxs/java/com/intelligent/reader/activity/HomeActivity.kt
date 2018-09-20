@@ -1,11 +1,11 @@
 package com.intelligent.reader.activity
 
+
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.*
 import android.content.res.Resources
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -23,11 +23,6 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.logger.HomeLogger
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
@@ -35,18 +30,26 @@ import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.view.PushSettingDialog
-import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
-import net.lzbook.kit.app.ActionConstants
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.service.CheckNovelUpdateService
+import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
-import net.lzbook.kit.utils.download.DownloadAPKService
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.book.LoadDataManager
+import net.lzbook.kit.utils.encrypt.MD5Utils
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.AntiShake
-import net.lzbook.kit.utils.update.ApkUpdateUtils
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import java.io.File
 import java.util.*
 

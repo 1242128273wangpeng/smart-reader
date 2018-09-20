@@ -1,10 +1,10 @@
 package com.dingyue.downloadmanager
 
 import com.ding.basic.bean.Book
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 

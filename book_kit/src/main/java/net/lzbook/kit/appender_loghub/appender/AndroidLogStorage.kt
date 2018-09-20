@@ -4,12 +4,12 @@ import android.content.Context
 import com.ding.basic.bean.LocalLog
 import com.ding.basic.dao.LocalLogDao
 import com.ding.basic.database.LocalLogDataBase
-import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.SharedPreUtil
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.ServerLog
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import java.util.concurrent.ConcurrentLinkedQueue

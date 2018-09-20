@@ -200,7 +200,7 @@
                         android:textColor="@color/color_text_most"
                         android:textSize="@dimen/text_size_14"/>
 
-                <net.lzbook.kit.book.view.SwitchButton
+                <net.lzbook.kit.widget.SwitchButton
                         android:id="@+id/bt_night_shift"
                         android:layout_width="45dp"
                         android:layout_height="30dp"
@@ -242,7 +242,7 @@
                         android:textColor="@color/color_text_most"
                         android:textSize="@dimen/text_size_14"/>
 
-                <net.lzbook.kit.book.view.SwitchButton
+                <net.lzbook.kit.widget.SwitchButton
                         android:id="@+id/bt_wifi_auto"
                         android:layout_width="45dp"
                         android:layout_height="30dp"
@@ -298,7 +298,7 @@
                         android:visibility="gone"
                         android:background="@color/color_divider"/>
 
-                <net.lzbook.kit.book.view.FirstUsePointView
+                <net.lzbook.kit.widget.FirstUsePointView
                         android:id="@+id/redpoint_setting_history"
                         android:layout_width="7dp"
                         android:layout_height="7dp"

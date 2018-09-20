@@ -1,12 +1,9 @@
 package com.intelligent.reader.activity;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,8 +33,6 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -46,24 +41,25 @@ import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.GenderHelper;
+import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
-import net.lzbook.kit.dynamic.DynamicParameter;
-import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.service.CheckNovelUpdateService;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-
-import com.intelligent.reader.util.ShieldManager;
-
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.dynamic.DynamicParameter;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,11 +74,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import iyouqu.theme.FrameActivity;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity implements GenderHelper.onGenderSelectedListener {

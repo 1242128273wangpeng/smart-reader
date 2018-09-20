@@ -23,7 +23,7 @@ import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.search.SearchView
 import com.intelligent.reader.view.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {

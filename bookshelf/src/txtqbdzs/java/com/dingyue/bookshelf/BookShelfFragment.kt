@@ -12,18 +12,21 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.RemoveMenuPopup
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.util.showToastMessage
+
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.txtqbdzs.frag_bookshelf.*
 import kotlinx.android.synthetic.txtqbdzs.bookshelf_refresh_header.view.*
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService
+import net.lzbook.kit.bean.BookUpdateResult
+import net.lzbook.kit.bean.UpdateCallBack
+
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.UpdateCallBack
-import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.service.CheckNovelUpdateService
+
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.toast.showToastMessage
 import java.util.*
 
 /**

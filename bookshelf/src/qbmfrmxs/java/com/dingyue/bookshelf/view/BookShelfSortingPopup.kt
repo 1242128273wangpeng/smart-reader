@@ -7,9 +7,10 @@ import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.BookShelfLogger
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.BasePopup
-import com.dingyue.contract.CommonContract
+
 import kotlinx.android.synthetic.qbmfrmxs.dialog_bookshelf_sort.view.*
+import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.utils.book.CommonContract
 
 /**
  * Desc 书籍排序

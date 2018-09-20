@@ -27,8 +27,8 @@
 //import net.lzbook.kit.app.BaseBookApplication
 //import net.lzbook.kit.book.view.LoadingPage
 //import net.lzbook.kit.constants.Constants
-//import net.lzbook.kit.data.bean.Bookmark
-//import net.lzbook.kit.data.bean.Chapter
+//import net.lzbook.kit.bean.Bookmark
+//import net.lzbook.kit.bean.Chapter
 //import net.lzbook.kit.repair_books.RepairHelp
 //import net.lzbook.kit.router.RouterConfig
 //import net.lzbook.kit.router.RouterUtil

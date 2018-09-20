@@ -3,12 +3,12 @@ package com.intelligent.reader.activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.ding.basic.Config
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.toast.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intelligent.reader.R
-import iyouqu.theme.BaseCacheableActivity
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug_host.*
 
 

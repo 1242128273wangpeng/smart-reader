@@ -21,8 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.baidu.mobstat.StatService;
-import com.dingyue.contract.util.CommonUtil;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.toast.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
@@ -30,19 +30,14 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.ExtensionsKt;
-import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 import java.lang.ref.WeakReference;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 public class WebViewFragment extends Fragment implements View.OnClickListener {
 

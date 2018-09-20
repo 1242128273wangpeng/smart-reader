@@ -1,8 +1,5 @@
 package com.intelligent.reader.search;
 
-import static net.lzbook.kit.statistic.StatisticKt.alilog;
-import static net.lzbook.kit.statistic.StatisticUtilKt.buildSearch;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,13 +14,9 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
-import com.ding.basic.bean.SearchRecommendBook;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
-import com.dingyue.contract.util.CommonUtil;
 import com.google.gson.JsonObject;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
@@ -32,18 +25,20 @@ import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.view.SearchSubBookDialog;
 import com.orhanobut.logger.Logger;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.statistic.model.Search;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.FootprintUtils;
-import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.book.FootprintUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.oneclick.AntiShake;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.statistic.model.Search;
+import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.utils.webview.UrlUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,6 +56,9 @@ import io.reactivex.disposables.Disposable;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
+
+import static net.lzbook.kit.utils.statistic.StatisticKt.alilog;
+import static net.lzbook.kit.utils.statistic.StatisticUtilKt.buildSearch;
 
 /**
  * Created by yuchao on 2017/8/2 0002.

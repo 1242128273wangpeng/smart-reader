@@ -16,21 +16,24 @@ import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
 import com.dingyue.bookshelf.view.RemoveMenuPopup
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.CommonUtil
+
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.mfxsqbyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfxsqbyd.frag_bookshelf.*
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService
+import net.lzbook.kit.bean.BookUpdateResult
+import net.lzbook.kit.bean.UpdateCallBack
+
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.UpdateCallBack
-import net.lzbook.kit.data.bean.BookUpdateResult
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+
+import net.lzbook.kit.service.CheckNovelUpdateService
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.CommonUtil
 import net.lzbook.kit.utils.uiThread
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {

@@ -21,7 +21,6 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
@@ -30,14 +29,15 @@ import com.intelligent.reader.adapter.SearchHistoryAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.view.TagContainerLayout
 import com.intelligent.reader.view.TagView
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.widget.LoadingPage
 import java.lang.ref.WeakReference
 import java.util.*
 

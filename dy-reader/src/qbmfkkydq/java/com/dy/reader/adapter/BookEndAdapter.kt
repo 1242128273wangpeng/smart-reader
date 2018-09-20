@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.Book
-import com.dingyue.contract.router.BookRouter
+
 import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
 import kotlinx.android.synthetic.qbmfkkydq.item_bookend_recommend.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.router.BookRouter
 import java.util.*
 import kotlin.collections.ArrayList
 

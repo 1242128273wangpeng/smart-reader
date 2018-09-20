@@ -10,10 +10,10 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.dingyue.contract.router.BookRouter
 import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.router.BookRouter
 import java.util.HashMap
 
 /**

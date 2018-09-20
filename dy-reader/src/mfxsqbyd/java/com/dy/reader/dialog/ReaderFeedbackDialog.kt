@@ -2,11 +2,13 @@ package com.dy.reader.dialog
 
 import android.view.Gravity
 import android.widget.CheckBox
-import com.dingyue.contract.util.showToastMessage
+
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import kotlinx.android.synthetic.mfxsqbyd.dialog_reader_feedback.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.widget.MyDialog
+
 
 /**
  * Desc 请描述这个文件

@@ -11,13 +11,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.request.RequestService
-import com.dingyue.contract.util.SharedPreUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.webview.UrlUtils
+
+
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.mfxsqbyd.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
 
 /**
@@ -29,7 +32,7 @@ import net.lzbook.kit.utils.AppUtils
 class CategoryFragment : Fragment() {
 
     private lateinit var mCategoryPageAdapter: CategoryPageAdapter
-    private val sharedPreUtil:SharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+    private val sharedPreUtil: SharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     private val titles = arrayOf("男频", "女频")
 

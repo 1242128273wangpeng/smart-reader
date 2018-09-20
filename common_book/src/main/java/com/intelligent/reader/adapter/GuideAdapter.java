@@ -2,7 +2,7 @@ package com.intelligent.reader.adapter;
 
 import com.intelligent.reader.fragment.GuideFragment;
 
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

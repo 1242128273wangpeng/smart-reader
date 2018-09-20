@@ -2,7 +2,7 @@ package com.intelligent.reader.activity;
 
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.utils.update.ApkUpdateUtils;
+import net.lzbook.kit.utils.ApkUpdateUtils;
 
 import android.content.Intent;
 import android.os.Bundle;

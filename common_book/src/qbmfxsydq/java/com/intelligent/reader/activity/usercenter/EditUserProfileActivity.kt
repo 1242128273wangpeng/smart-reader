@@ -7,13 +7,13 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.view.login.LoadingDialog
-import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_edit_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.UserManagerV4
 import java.util.regex.Pattern
 
 /**

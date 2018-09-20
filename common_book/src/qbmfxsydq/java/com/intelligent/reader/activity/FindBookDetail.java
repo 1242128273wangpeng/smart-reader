@@ -25,28 +25,28 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
-import com.dingyue.contract.CommonContract;
-import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.view.SelectSexDialog;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.download.CacheManager;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import iyouqu.theme.FrameActivity;
-import swipeback.ActivityLifecycleHelper;
+import net.lzbook.kit.utils.book.CommonContract;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.utils.webview.UrlUtils;
+import net.lzbook.kit.widget.LoadingPage;
 
 /**
  * WebView二级页面

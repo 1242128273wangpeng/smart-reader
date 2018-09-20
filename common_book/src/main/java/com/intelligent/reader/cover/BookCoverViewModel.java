@@ -2,20 +2,18 @@ package com.intelligent.reader.cover;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Bookmark;
-import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.intelligent.reader.DisposableAndroidViewModel;
 import com.orhanobut.logger.Logger;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lijun Lee

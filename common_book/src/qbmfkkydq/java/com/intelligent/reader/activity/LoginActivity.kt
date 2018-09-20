@@ -3,22 +3,21 @@ package com.intelligent.reader.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import com.dingyue.contract.util.debugToastShort
-import com.dingyue.contract.util.showToastMessage
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.intelligent.reader.R
-import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfkkydq.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.user.Platform
-import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.contract.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.debugToastShort
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.Platform
+import net.lzbook.kit.utils.user.UserManager
+import net.lzbook.kit.widget.MyDialog
 
 @Route(path = RouterConfig.LOGIN_ACTIVITY)
 class LoginActivity : FrameActivity() {

@@ -6,7 +6,6 @@ import com.intelligent.reader.presenter.search.SearchSCView
 import com.intelligent.reader.util.SearchViewHelper
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
 
 import android.content.res.Resources
 import android.os.Build
@@ -27,15 +26,19 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.search.SearchPresenter
+import kotlinx.android.synthetic.mfqbxssc.activity_search_book.*
 
 import java.util.HashMap
 
-import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.mfqbxssc.activity_search_book.*
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.webview.CustomWebClient
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.widget.LoadingPage
 
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)

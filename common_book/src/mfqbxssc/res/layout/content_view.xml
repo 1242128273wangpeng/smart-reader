@@ -29,7 +29,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/home_head_person_selector"/>
 
-            <net.lzbook.kit.book.view.FirstUsePointView
+            <net.lzbook.kit.widget.FirstUsePointView
                 android:id="@+id/redpoint_home_setting"
                 android:layout_width="7dp"
                 android:layout_height="7dp"
@@ -229,7 +229,7 @@
             android:textSize="@dimen/text_size_16"/>
     </RelativeLayout>
 
-    <net.lzbook.kit.book.view.NonSwipeViewPager
+    <net.lzbook.kit.widget.NonSwipeViewPager
         android:id="@+id/content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -12,9 +12,10 @@ import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.view.SignSeekBar
 import com.orhanobut.logger.Logger
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.qbmfrmxs.dialog_reader_auto_read_option.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
 import org.greenrobot.eventbus.EventBus

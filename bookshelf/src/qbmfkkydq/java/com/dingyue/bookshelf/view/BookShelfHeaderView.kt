@@ -15,15 +15,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
+
 import kotlinx.android.synthetic.qbmfkkydq.bookshelf_header_view.view.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
+
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.repair_books.RepairHelp
+
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 
 /**
  * Date: 2018/7/17 19:55

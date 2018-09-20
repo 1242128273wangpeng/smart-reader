@@ -13,7 +13,7 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dy.reader.activity.ReaderActivity;
 import com.intelligent.reader.activity.HomeActivity;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 
 public class DownBookClickReceiver extends BroadcastReceiver {
     public static final String action = "cn.txtzsydsq.reader.receiver.CLICK_DOWN_BOOK";

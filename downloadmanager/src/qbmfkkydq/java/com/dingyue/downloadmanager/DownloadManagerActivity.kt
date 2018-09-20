@@ -9,20 +9,20 @@ import android.view.Menu
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-import com.dingyue.contract.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
-import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkkydq.act_download_manager.*
 import kotlinx.android.synthetic.qbmfkkydq.item_download_manager_task_header.view.*
-import net.lzbook.kit.book.download.CallBackDownload
-import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.download.CallBackDownload
+import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
 
 /**

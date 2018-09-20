@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.dialog_read_source.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
 
 /**
  * Function：书籍封面转码阅读提示框

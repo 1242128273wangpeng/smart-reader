@@ -10,11 +10,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.mfxsqbyd.item_bookshelf_book.view.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
+
 import net.lzbook.kit.constants.Constants
 
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.repair_books.RepairHelp
+import net.lzbook.kit.utils.book.RepairHelp
+
 
 /**
  * Desc 书架页Item

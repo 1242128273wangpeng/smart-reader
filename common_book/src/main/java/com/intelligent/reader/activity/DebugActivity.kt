@@ -10,20 +10,20 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.toast.showToastMessage
 import com.intelligent.reader.R
 import com.umeng.message.MessageSharedPrefs
-import iyouqu.theme.BaseCacheableActivity
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug.*
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.book.view.SwitchButton
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.widget.SwitchButton
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.LoadDataManager
+import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.OpenUDID
 
 /**

@@ -1,6 +1,6 @@
 package net.lzbook.kit.utils.oneclick
 
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.logger.AppLog
 
 /**
  * Created by yuchao on 2017/12/25 0025.

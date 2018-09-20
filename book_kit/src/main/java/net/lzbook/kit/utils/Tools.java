@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import net.lzbook.kit.utils.logger.AppLog;
+
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

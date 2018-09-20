@@ -21,17 +21,17 @@ import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.PagerDesc;
 
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
-import net.lzbook.kit.utils.download.DownloadAPKService;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.service.DownloadAPKService;
 import net.lzbook.kit.utils.oneclick.AntiShake;
 
 import java.util.ArrayList;
 
-import iyouqu.theme.FrameActivity;
+import net.lzbook.kit.base.activity.FrameActivity;
 
 public class WelfareCenterActivity extends FrameActivity implements View.OnClickListener {
 

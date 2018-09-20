@@ -14,20 +14,20 @@ import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.dingyue.contract.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import iyouqu.theme.BaseCacheableActivity
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.data.bean.EventBookmark
-import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.bean.EventBookmark
+import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.logger.AppLog
 import java.util.*
 import java.util.concurrent.Callable
 

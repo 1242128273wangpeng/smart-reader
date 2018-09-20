@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.AppUtils;
 

@@ -2,9 +2,9 @@ package com.dy.reader.view
 
 import android.content.Context
 import android.view.WindowManager
-import com.dingyue.contract.BasePopup
 import com.dy.reader.R
 import kotlinx.android.synthetic.qbmfxsydq.popup_catalog_mark_delete.view.*
+import net.lzbook.kit.base.BasePopup
 
 
 /**

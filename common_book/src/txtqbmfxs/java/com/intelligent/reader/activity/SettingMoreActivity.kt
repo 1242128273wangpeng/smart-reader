@@ -2,19 +2,22 @@ package com.intelligent.reader.activity
 
 import android.os.Bundle
 import com.intelligent.reader.R
+import com.intelligent.reader.R.id.*
 import com.intelligent.reader.view.PushTimeDialog
 import com.umeng.message.IUmengCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
-import iyouqu.theme.BaseCacheableActivity
+
 import kotlinx.android.synthetic.txtqbmfxs.act_setting_more.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.SettingItems
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.SettingItems
-import net.lzbook.kit.utils.AppLog
+
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.logger.AppLog
 import java.util.*
 
 

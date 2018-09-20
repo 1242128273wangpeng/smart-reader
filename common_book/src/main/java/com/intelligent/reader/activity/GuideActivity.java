@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import iyouqu.theme.FrameActivity;
+import net.lzbook.kit.base.activity.FrameActivity;
 
 /**
  * guide 页面

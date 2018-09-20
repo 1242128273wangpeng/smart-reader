@@ -1,15 +1,12 @@
 package com.intelligent.reader.widget
 
 import android.app.Activity
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.dialog_confirm_layout.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
 
 /**
  * Desc 确认弹出框

@@ -7,9 +7,7 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import com.dingyue.contract.BasePopup
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
+
 import com.dy.reader.R
 import com.dy.reader.adapter.FontAdapter
 import com.dy.reader.helper.DrawTextHelper
@@ -19,7 +17,10 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.util.TypefaceUtil
 import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BasePopup
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.toast.showToastMessage
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

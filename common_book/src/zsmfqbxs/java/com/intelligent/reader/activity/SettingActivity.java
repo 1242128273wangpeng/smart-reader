@@ -1,7 +1,5 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,36 +24,38 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
 import com.ding.basic.bean.LoginResp;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
-import com.dingyue.contract.util.CommonUtil;
-import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.download.CacheManager;
-import net.lzbook.kit.book.view.ConsumeEvent;
-import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.book.view.SwitchButton;
-import net.lzbook.kit.cache.DataCleanManager;
+import net.lzbook.kit.base.activity.BaseCacheableActivity;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.ApkUpdateUtils;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.UIHelper;
-import net.lzbook.kit.utils.update.ApkUpdateUtils;
+import net.lzbook.kit.utils.cache.DataCleanManager;
+import net.lzbook.kit.utils.cache.UIHelper;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
+import net.lzbook.kit.utils.theme.ThemeMode;
+import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.widget.ConsumeEvent;
+import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.widget.SwitchButton;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.greenrobot.eventbus.EventBus;
-import iyouqu.theme.BaseCacheableActivity;
-import iyouqu.theme.ThemeMode;
-import swipeback.ActivityLifecycleHelper;
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener,

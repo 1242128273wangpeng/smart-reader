@@ -15,8 +15,9 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.qbmfrmxs.frag_classify.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.webview.UrlUtils
 
 
 /**

@@ -24,7 +24,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadViewEnums
+import net.lzbook.kit.bean.ReadViewEnums
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList

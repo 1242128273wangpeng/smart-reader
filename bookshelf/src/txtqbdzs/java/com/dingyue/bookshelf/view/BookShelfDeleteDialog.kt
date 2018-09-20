@@ -5,7 +5,8 @@ import android.view.View
 import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.txtqbdzs.dialog_bookshelf_delete.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
+
 
 /**
  * Desc 点击底部删除 弹出dialog

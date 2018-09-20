@@ -9,20 +9,20 @@ import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.util.TakePictureManager
 import com.intelligent.reader.view.BottomDialog
 import com.intelligent.reader.view.MenuItem
 import com.intelligent.reader.view.login.LoadingDialog
-import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_user_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.user.Platform
-import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.utils.logi
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.Platform
+import net.lzbook.kit.utils.user.UserManagerV4
+import net.lzbook.kit.widget.MyDialog
 import java.io.File
 
 /**

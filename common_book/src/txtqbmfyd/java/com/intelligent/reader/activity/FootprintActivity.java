@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 
 import com.baidu.mobstat.StatService;
@@ -22,10 +23,10 @@ import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.EmptyRecyclerView;
-import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.widget.EmptyRecyclerView;
+import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.utils.user.UserManager;
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class FootprintActivity extends iyouqu.theme.FrameActivity implements AbsRecyclerViewHolder.ShelfItemClickListener, AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
+public class FootprintActivity extends FrameActivity implements AbsRecyclerViewHolder.ShelfItemClickListener, AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
 
     private static final String TAG = FootprintActivity.class.getSimpleName();
     private EmptyRecyclerView mRecyclerView;

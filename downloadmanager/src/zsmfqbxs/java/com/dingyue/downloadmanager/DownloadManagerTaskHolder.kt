@@ -8,8 +8,8 @@ import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import kotlinx.android.synthetic.zsmfqbxs.item_download_manager_task.view.*
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.loge
 
 class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

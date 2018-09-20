@@ -91,7 +91,7 @@
         android:background="@color/dialog_line"
         android:layout_above="@id/bookstore_bottom"/>
 
-    <net.lzbook.kit.book.view.NonSwipeViewPager
+    <net.lzbook.kit.widget.NonSwipeViewPager
         android:id="@+id/bookstore_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

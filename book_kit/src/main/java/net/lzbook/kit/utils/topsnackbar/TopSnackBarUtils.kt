@@ -2,7 +2,7 @@ package net.lzbook.kit.utils.topsnackbar
 
 import android.support.annotation.StringRes
 import android.view.View
-import swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 
 /**
  * Created by yuchao on 2018/5/30 0030.

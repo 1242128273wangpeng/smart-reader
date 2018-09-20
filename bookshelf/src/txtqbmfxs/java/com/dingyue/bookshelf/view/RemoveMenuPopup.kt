@@ -2,10 +2,11 @@ package com.dingyue.bookshelf.view
 
 import android.content.Context
 import android.view.View
-import com.dingyue.contract.BasePopup
+
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.txtqbmfxs.popup_remove_menu.view.*
+import net.lzbook.kit.base.BasePopup
 
 /**
  * Desc 底部弹出 全选 删除

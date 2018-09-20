@@ -20,7 +20,6 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
@@ -28,13 +27,14 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout;
 
 import java.lang.ref.WeakReference;
 

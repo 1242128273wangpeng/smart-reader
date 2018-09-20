@@ -1,20 +1,5 @@
 package com.intelligent.reader.activity
 
-import com.baidu.mobstat.StatService
-import com.intelligent.reader.R
-import com.intelligent.reader.adapter.BookmarkAdapter
-import com.intelligent.reader.adapter.CatalogAdapter
-import com.intelligent.reader.presenter.catalogues.CataloguesContract
-import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
-import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.EventBookmark
-import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.StatServiceUtils
 
 import android.content.Intent
 import android.content.res.Resources
@@ -30,21 +15,30 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.dingyue.contract.router.RouterConfig
-
-import java.util.ArrayList
-import java.util.Collections
-import java.util.HashMap
-import java.util.concurrent.Callable
-
-import iyouqu.theme.BaseCacheableActivity
+import com.intelligent.reader.R
+import com.intelligent.reader.adapter.BookmarkAdapter
+import com.intelligent.reader.adapter.CatalogAdapter
+import com.intelligent.reader.presenter.catalogues.CataloguesContract
+import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
+import com.intelligent.reader.receiver.OffLineDownLoadReceiver
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbdzs.act_catalog.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookmark
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.antiShakeClick
-import org.greenrobot.eventbus.EventBus
+import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.widget.MyDialog
+import java.util.*
+import java.util.concurrent.Callable
 
 /**
  * CataloguesActivity
@@ -122,7 +116,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             changeSortState(isPositive)
         }
 
-        EventBus.getDefault().register(this)
 
     }
 
@@ -320,11 +313,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 e.printStackTrace()
             }
 
-        }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
         if (mCataloguesPresenter != null) {

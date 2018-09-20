@@ -22,7 +22,6 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
@@ -31,13 +30,14 @@ import com.intelligent.reader.presenter.search.SearchSCView
 import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.search.SearchViewPresenter
 import kotlinx.android.synthetic.mfqbxssc.search_hot_title_layout.view.*
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchHisAdapter.SearchClearCallBack, SearchSCView.View, RecommendBooksAdapter.RecommendItemClickListener {

@@ -97,7 +97,7 @@
                     android:src="@drawable/search_edit_clear"
                     android:visibility="visible"/>
 
-                <net.lzbook.kit.book.view.HWEditText
+                <net.lzbook.kit.widget.HWEditText
                     android:id="@+id/search_result_input"
                     style="@style/style_text_normal_plain"
                     android:layout_width="match_parent"

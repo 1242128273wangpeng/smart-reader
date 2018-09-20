@@ -12,8 +12,8 @@ import android.view.Window
 import android.view.WindowManager
 
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.mainLooperHandler
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.mainLooperHandler
 import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle

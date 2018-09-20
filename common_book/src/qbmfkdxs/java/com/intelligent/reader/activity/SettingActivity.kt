@@ -14,25 +14,25 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.ding.basic.Config
 import com.ding.basic.request.RequestService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.SharedPreUtil
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.view.ClearCacheDialog
-import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfkdxs.act_setting_user.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.view.SwitchButton
-import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.update.ApkUpdateUtils
-import swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.cache.DataCleanManager
+import net.lzbook.kit.utils.cache.UIHelper
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.theme.ThemeMode
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.widget.SwitchButton
 import java.util.*
 
 

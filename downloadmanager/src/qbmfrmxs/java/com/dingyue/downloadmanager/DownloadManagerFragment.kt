@@ -11,12 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.BookRouter
+
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import kotlinx.android.synthetic.qbmfrmxs.frag_download_manager.*
-import net.lzbook.kit.book.download.DownloadState
+
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.router.BookRouter
 
 /**
  * Desc 请描述这个文件

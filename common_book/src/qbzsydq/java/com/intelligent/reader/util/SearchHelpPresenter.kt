@@ -15,15 +15,20 @@ import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.dingyue.contract.IPresenter
+
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.app.BaseBookApplication
+
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.IPresenter
+
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils
+import net.lzbook.kit.widget.MyDialog
 import java.lang.ref.WeakReference
 import java.util.ArrayList
 import java.util.HashMap

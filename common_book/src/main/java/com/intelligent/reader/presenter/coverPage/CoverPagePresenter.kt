@@ -9,10 +9,10 @@ import android.widget.*
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.SharedPreUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.SearchBookActivity
@@ -23,13 +23,16 @@ import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.book.view.RecommendItemView
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.widget.RecommendItemView
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.book.BaseBookHelper
+import net.lzbook.kit.utils.book.BookCoverUtil
+import net.lzbook.kit.utils.logger.AppLog
 import java.util.*
 import kotlin.collections.ArrayList
 

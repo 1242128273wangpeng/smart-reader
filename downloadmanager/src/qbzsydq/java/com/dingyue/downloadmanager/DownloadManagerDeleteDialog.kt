@@ -3,7 +3,8 @@ package com.dingyue.downloadmanager
 import android.app.Activity
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.qbzsydq.dialog_download_manager_clear.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
+
 
 /**
  * Created by qiantao on 2017/11/22 0022

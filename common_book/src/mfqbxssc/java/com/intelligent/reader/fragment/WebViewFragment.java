@@ -20,19 +20,19 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
-import com.dingyue.contract.util.CommonUtil;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.NetWorkUtils;
 
 import java.lang.ref.WeakReference;

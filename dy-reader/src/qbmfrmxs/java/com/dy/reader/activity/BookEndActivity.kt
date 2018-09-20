@@ -7,11 +7,9 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.Source
-import com.dingyue.contract.router.BookRouter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
+import com.dy.reader.R.id.*
 import com.dy.reader.adapter.BookRecommendAdapter
 import com.dy.reader.dialog.BookEndChangeSourceDialog
 import com.dy.reader.listener.SourceClickListener
@@ -19,11 +17,17 @@ import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
-import iyouqu.theme.BaseCacheableActivity
+
 import kotlinx.android.synthetic.qbmfrmxs.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.CommonUtil.showToastMessage
+import net.lzbook.kit.widget.LoadingPage
+import org.antlr.v4.runtime.misc.MurmurHash.finish
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList

@@ -9,19 +9,18 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
-import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_header.view.*
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.showToastMessage
 import org.greenrobot.eventbus.EventBus
 
 class ReadSettingHeader : FrameLayout{

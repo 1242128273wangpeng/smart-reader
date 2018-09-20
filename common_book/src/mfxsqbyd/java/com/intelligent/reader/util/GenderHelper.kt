@@ -15,11 +15,12 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
-import com.dingyue.contract.util.SharedPreUtil
-import net.lzbook.kit.app.BaseBookApplication
+
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.sp.SharedPreUtil
 import java.util.HashMap
 
 /**
@@ -42,7 +43,7 @@ class GenderHelper(view: View) {
     private val mTxtStepIn: TextView = view.findViewById(R.id.tv_step_in)
     private val mLlGenderSection: LinearLayout = view.findViewById(R.id.ll_section_icon)
     lateinit var mGenderSelectedListener :onGenderSelectedListener
-    var shareUtil : SharedPreUtil ?= null
+    var shareUtil : SharedPreUtil?= null
 
     /*
      *动画持续时间

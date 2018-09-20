@@ -3,7 +3,6 @@ package com.intelligent.reader.app;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -12,7 +11,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
-import com.dingyue.contract.util.CommonUtil;
+import net.lzbook.kit.utils.toast.CommonUtil;
 import com.dy.media.MediaConfig;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
@@ -24,13 +23,11 @@ import com.reyun.tracking.sdk.Tracking;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.umeng.commonsdk.UMConfigure;
-import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UTrack;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
 
@@ -41,7 +38,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
-import swipeback.ActivityLifecycleHelper;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 
 
 public class BookApplication extends BaseBookApplication {

@@ -12,13 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.ding.basic.request.RequestService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
+
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment
 import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * Date: 2018/7/19 11:52

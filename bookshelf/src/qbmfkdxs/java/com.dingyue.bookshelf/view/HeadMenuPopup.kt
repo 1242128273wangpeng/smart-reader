@@ -2,12 +2,14 @@ package com.dingyue.bookshelf.view
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.support.v4.widget.PopupWindowCompat.showAsDropDown
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.BasePopup
+
 import kotlinx.android.synthetic.qbmfkdxs.popup_head_menu.view.*
+import net.lzbook.kit.base.BasePopup
 
 /**
  * Desc 顶部菜单弹窗

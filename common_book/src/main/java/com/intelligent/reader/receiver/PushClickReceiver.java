@@ -2,8 +2,8 @@ package com.intelligent.reader.receiver;
 
 import com.intelligent.reader.activity.HomeActivity;
 
-import net.lzbook.kit.utils.AppLog;
-import net.lzbook.kit.utils.CheckNovelUpdHelper;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.book.CheckNovelUpdHelper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

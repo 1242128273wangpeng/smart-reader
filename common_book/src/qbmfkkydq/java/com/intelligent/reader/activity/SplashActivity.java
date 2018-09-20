@@ -1,7 +1,5 @@
 package com.intelligent.reader.activity;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,27 +24,28 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.ShieldManager;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
-import net.lzbook.kit.book.download.CacheManager;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
-import net.lzbook.kit.dynamic.DynamicParameter;
-import net.lzbook.kit.user.UserManager;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.service.CheckNovelUpdateService;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.dynamic.DynamicParameter;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.user.UserManager;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import iyouqu.theme.FrameActivity;
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {

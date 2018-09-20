@@ -22,19 +22,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ding.basic.request.RequestService;
-import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.view.SelectSexDialog;
 
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.request.UrlUtils;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.utils.webview.UrlUtils;
+import net.lzbook.kit.widget.LoadingPage;
+
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

@@ -8,7 +8,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
-import com.dingyue.contract.CommonContract
+import net.lzbook.kit.utils.book.CommonContract
 import com.dy.reader.animation.AutoAnimation
 import com.dy.reader.animation.OverlapAnimation
 import com.dy.reader.event.EventLoading

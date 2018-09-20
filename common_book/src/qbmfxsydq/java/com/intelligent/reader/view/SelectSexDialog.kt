@@ -11,9 +11,9 @@ import android.widget.FrameLayout
 import com.intelligent.reader.R
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import net.lzbook.kit.book.view.MyDialog
 import kotlinx.android.synthetic.qbmfxsydq.dialog_select_sex.*
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.widget.MyDialog
 import java.util.concurrent.TimeUnit
 
 /**

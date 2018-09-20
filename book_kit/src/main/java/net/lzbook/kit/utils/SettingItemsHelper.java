@@ -1,7 +1,8 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.data.bean.SettingItems;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.bean.SettingItems;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import android.content.Context;
 import android.content.SharedPreferences;

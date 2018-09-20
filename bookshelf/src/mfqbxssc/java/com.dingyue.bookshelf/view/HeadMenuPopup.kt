@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.BasePopup
-import com.dingyue.contract.util.SharedPreUtil
 import kotlinx.android.synthetic.mfqbxssc.popup_head_menu.view.*
+import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.utils.sp.SharedPreUtil
 
 /**
  * Desc 顶部菜单弹窗

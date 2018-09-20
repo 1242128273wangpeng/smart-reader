@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfxsydq.dialog_search_subbook.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
 
 /**
  * Function：

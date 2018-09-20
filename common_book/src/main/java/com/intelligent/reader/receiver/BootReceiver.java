@@ -1,6 +1,6 @@
 package com.intelligent.reader.receiver;
 
-import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
+import net.lzbook.kit.service.CheckNovelUpdateService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

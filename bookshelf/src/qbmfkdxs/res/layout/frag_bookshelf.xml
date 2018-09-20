@@ -30,7 +30,7 @@
                 android:contentDescription="@string/module_name"
                 android:scaleType="fitXY"/>
 
-            <net.lzbook.kit.book.view.FirstUsePointView
+            <net.lzbook.kit.widget.FirstUsePointView
                 android:id="@+id/fup_head_personal"
                 android:layout_width="7dp"
                 android:layout_height="7dp"
@@ -131,7 +131,7 @@
 
     </RelativeLayout>
 
-    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+    <net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -146,7 +146,7 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"/>
 
-    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+    </net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout>
 
     <FrameLayout
         android:id="@+id/fl_ad_float"

@@ -15,7 +15,7 @@ import com.dy.reader.helper.DrawTextHelper
 import com.dy.reader.helper.INDEX_TEXTURE_ID
 import com.dy.reader.helper.glCheckErr
 import com.dy.reader.setting.ReaderSettings
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.runOnMain
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicBoolean

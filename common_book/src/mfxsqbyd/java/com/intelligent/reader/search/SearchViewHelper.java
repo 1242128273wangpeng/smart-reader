@@ -1,7 +1,5 @@
 package com.intelligent.reader.search;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,21 +35,20 @@ import com.ding.basic.bean.SearchResult;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.bookshelf.ShelfGridLayoutManager;
-import com.dingyue.contract.util.CommonUtil;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.view.ScrollForGridView;
 
-import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.SharedPreferencesUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils;
+import net.lzbook.kit.utils.toast.CommonUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,10 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Function：搜索辅助类

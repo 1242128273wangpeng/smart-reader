@@ -14,16 +14,19 @@ import android.widget.TextView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
-import com.dingyue.contract.IPresenter
+
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchView
-import net.lzbook.kit.app.BaseBookApplication
+
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.utils.SharedPreferencesUtils
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.IPresenter
+
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils
+import net.lzbook.kit.widget.MyDialog
 import java.lang.ref.WeakReference
 import java.util.*
 

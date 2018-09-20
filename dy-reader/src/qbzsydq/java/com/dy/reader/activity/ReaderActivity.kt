@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
@@ -14,11 +15,10 @@ import android.view.View
 import android.view.WindowManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
+
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
+import com.dy.reader.R.id.*
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
@@ -36,13 +36,18 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.qbzsydq.act_reader.*
 import kotlinx.android.synthetic.qbzsydq.reader_content.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.book.RepairHelp
+
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.webview.UrlUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

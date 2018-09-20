@@ -1,9 +1,9 @@
 package com.dingyue.bookshelf.contract
 
 import com.ding.basic.bean.Book
-import net.lzbook.kit.data.UpdateCallBack
-import net.lzbook.kit.data.bean.BookUpdateTaskData
-import net.lzbook.kit.utils.BaseBookHelper
+import net.lzbook.kit.bean.UpdateCallBack
+import net.lzbook.kit.bean.BookUpdateTaskData
+import net.lzbook.kit.utils.book.BaseBookHelper
 import java.util.ArrayList
 
 /**

@@ -21,10 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
-import com.dingyue.contract.util.CommonUtil;
-import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
@@ -32,14 +28,18 @@ import com.intelligent.reader.activity.SettingActivity;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.FirstUsePointView;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.widget.FirstUsePointView;
+import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout;
 
 import java.lang.ref.WeakReference;
 
@@ -151,15 +151,15 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
 
-                    RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
+                    RouterUtil.INSTANCE.navigation(getActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
                     if(bottomType ==2){
-                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
                     }else if(bottomType==3){
-                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
                     }else if(bottomType == 4){
-                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
                     }else{
-                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
+                        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH);
                     }
                 }
 

@@ -14,7 +14,6 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
-import com.dingyue.contract.util.preventClickShake
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
@@ -23,12 +22,14 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import iyouqu.theme.ThemeHelper
 import kotlinx.android.synthetic.qbmfxsydq.reader_option_bottom.view.*
 import kotlinx.android.synthetic.qbmfxsydq.reader_option_detail.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.theme.ThemeHelper
+import net.lzbook.kit.utils.toast.preventClickShake
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 

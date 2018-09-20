@@ -29,7 +29,7 @@
                     android:layout_marginLeft="14dp"
                     android:src="@mipmap/home_head_setting"/>
 
-            <net.lzbook.kit.book.view.FirstUsePointView
+            <net.lzbook.kit.widget.FirstUsePointView
                     android:layout_width="7dp"
                     android:layout_height="7dp"
                     android:background="@color/color_red_point"
@@ -122,7 +122,7 @@
     </RelativeLayout>
     <!--头布局4个tab的布局，不再用include是方便svn打包只用更改一个文件-->
     <!--双tab的头布局含有边框，不再用include是方便svn打包只用更改一个文件-->
-    <net.lzbook.kit.book.view.NonSwipeViewPager
+    <net.lzbook.kit.widget.NonSwipeViewPager
             android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

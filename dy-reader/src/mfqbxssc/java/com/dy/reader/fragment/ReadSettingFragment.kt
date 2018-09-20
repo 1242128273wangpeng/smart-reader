@@ -18,8 +18,8 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.mfqbxssc.frag_read_setting.*
+import net.lzbook.kit.base.activity.FrameActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

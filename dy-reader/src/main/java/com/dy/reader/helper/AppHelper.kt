@@ -9,10 +9,7 @@ import android.util.DisplayMetrics
 import android.view.ViewConfiguration
 import android.view.WindowManager
 import com.dy.reader.Reader
-import com.dy.reader.helper.AppHelper.displayMetrics
-import com.dy.reader.helper.AppHelper.workQueueThread
-import net.lzbook.kit.utils.AppLog
-import java.util.concurrent.ExecutorService
+import net.lzbook.kit.utils.logger.AppLog
 import java.util.concurrent.Executors
 
 @SuppressLint("StaticFieldLeak")

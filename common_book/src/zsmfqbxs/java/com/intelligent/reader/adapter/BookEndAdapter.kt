@@ -14,7 +14,7 @@ import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.read.help.BookHelper
 import com.intelligent.reader.view.RecommendBookImageView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.data.bean.Book
+import net.lzbook.kit.bean.Book
 import java.util.ArrayList
 import java.util.HashMap
 

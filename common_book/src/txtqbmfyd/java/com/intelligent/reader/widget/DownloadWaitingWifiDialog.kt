@@ -4,8 +4,8 @@ import android.app.Activity
 import android.view.Gravity
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.dialog_clear_cache.*
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.data.bean.BookTask
+import net.lzbook.kit.bean.BookTask
+import net.lzbook.kit.widget.MyDialog
 
 
 /**

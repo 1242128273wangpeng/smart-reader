@@ -19,18 +19,24 @@ import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.showToastMessage
+
 import com.intelligent.reader.R
+import com.intelligent.reader.R.id.*
 import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.search.SearchView
 import com.intelligent.reader.search.SearchViewHelper
 import com.orhanobut.logger.Logger
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.txtqbmfxs.act_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.base.activity.FrameActivity
+
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.webview.CustomWebClient
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 
 /**

@@ -9,7 +9,7 @@ import com.dy.reader.R
 import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.listener.SourceClickListener
 import kotlinx.android.synthetic.txtqbmfyd.dialog_reader_chang_source.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
 import java.util.*
 
 /**

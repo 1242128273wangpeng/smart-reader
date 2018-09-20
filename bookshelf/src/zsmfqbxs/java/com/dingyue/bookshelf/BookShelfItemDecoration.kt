@@ -7,7 +7,6 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
-import com.dingyue.contract.HolderType
 
 class BookShelfItemDecoration constructor(private var dividerHeight: Int, private var dividerColor: Int, private var dividerType: Int) : RecyclerView.ItemDecoration() {
 

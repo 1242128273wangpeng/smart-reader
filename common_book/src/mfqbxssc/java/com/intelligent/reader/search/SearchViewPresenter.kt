@@ -9,16 +9,18 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.AdapterView
 import com.ding.basic.bean.*
-import com.dingyue.contract.IPresenter
-import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.adapter.SearchSuggest
 import com.intelligent.reader.presenter.search.SearchSCView
-import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.sp.SharedPreferencesUtils
+import net.lzbook.kit.utils.toast.CommonUtil
 import java.util.*
 
 /**

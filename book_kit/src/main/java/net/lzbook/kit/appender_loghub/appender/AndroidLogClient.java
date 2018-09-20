@@ -4,7 +4,7 @@ package net.lzbook.kit.appender_loghub.appender;
 import net.lzbook.kit.appender_loghub.LOGClient;
 import net.lzbook.kit.appender_loghub.LogGroup;
 import net.lzbook.kit.appender_loghub.ServerLog;
-import net.lzbook.kit.utils.AppLog;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import java.util.HashMap;
 import java.util.List;

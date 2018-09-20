@@ -3,8 +3,8 @@ package com.intelligent.reader.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import net.lzbook.kit.user.UserManager
-import net.lzbook.kit.user.UserManagerV4
+import net.lzbook.kit.utils.user.UserManager
+import net.lzbook.kit.utils.user.UserManagerV4
 
 /**
  * Created by xian on 2017/6/20.

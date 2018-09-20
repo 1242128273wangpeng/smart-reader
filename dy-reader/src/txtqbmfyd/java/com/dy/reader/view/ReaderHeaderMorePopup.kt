@@ -2,7 +2,7 @@ package com.dy.reader.view
 
 import android.content.Context
 import android.view.WindowManager
-import com.dingyue.contract.BasePopup
+import net.lzbook.kit.base.BasePopup
 import com.dy.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.popup_reader_option_header_more.view.*
 

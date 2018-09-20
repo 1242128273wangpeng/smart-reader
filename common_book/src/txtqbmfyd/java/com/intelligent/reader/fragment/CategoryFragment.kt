@@ -15,7 +15,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.txtqbmfyd.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.utils.AppUtils
 
 /**

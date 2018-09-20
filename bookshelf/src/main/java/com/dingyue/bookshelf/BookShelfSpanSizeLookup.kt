@@ -1,7 +1,7 @@
 package com.dingyue.bookshelf
 
 import android.support.v7.widget.GridLayoutManager
-import com.dingyue.contract.HolderType
+import net.lzbook.kit.constants.HolderType
 
 /**
  * Desc 书架item比重

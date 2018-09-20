@@ -12,21 +12,24 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.SharedPreUtil
+
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.RecommendBooksAdapter
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.frag_search_book.*
-import net.lzbook.kit.app.BaseBookApplication
+
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.base.BaseBookApplication
+
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
 

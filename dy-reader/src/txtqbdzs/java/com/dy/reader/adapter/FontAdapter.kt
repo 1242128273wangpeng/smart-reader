@@ -4,11 +4,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dingyue.contract.util.SharedPreUtil
+
 import com.dy.reader.R
 import com.dy.reader.model.FontData
 import com.dy.reader.service.FontDownLoadService
 import kotlinx.android.synthetic.txtqbdzs.item_reader_option_font.view.*
+import net.lzbook.kit.utils.sp.SharedPreUtil
 
 /**
  * Function：字体包适配器

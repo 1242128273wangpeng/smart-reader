@@ -311,12 +311,12 @@
         </receiver>
 
         <service
-            android:name="net.lzbook.kit.utils.update.DownloadIntentService"
+            android:name="net.lzbook.kit.service.DownloadIntentService"
             android:enabled="true"
             android:exported="true"/>
 
         <service
-                android:name="net.lzbook.kit.dynamic.service.DynamicService"
+                android:name="net.lzbook.kit.service.DynamicService"
                 android:label="dynamicparameter"/>
 
         <!--统计SDK网络监听-->

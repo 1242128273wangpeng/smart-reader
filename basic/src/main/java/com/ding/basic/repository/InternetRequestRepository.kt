@@ -12,9 +12,9 @@ import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
-import net.lzbook.kit.user.bean.UserNameState
-import net.lzbook.kit.user.bean.WXAccess
-import net.lzbook.kit.user.bean.WXSimpleInfo
+import net.lzbook.kit.utils.user.bean.UserNameState
+import net.lzbook.kit.utils.user.bean.WXAccess
+import net.lzbook.kit.utils.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call

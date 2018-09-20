@@ -5,7 +5,8 @@ import android.view.Gravity
 import android.view.View
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkdxs.dialog_clear_cache.*
-import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.widget.MyDialog
+
 
 /**
  * Function：清除缓存

@@ -15,8 +15,8 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.MyDialog
-import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.utils.user.UserManager
 
 
 /**

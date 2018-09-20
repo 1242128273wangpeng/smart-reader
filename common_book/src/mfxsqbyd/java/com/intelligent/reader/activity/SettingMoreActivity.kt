@@ -3,11 +3,14 @@ package com.intelligent.reader.activity
 import android.os.Bundle
 import android.view.View
 import com.intelligent.reader.R
+import com.intelligent.reader.R.id.*
 import com.intelligent.reader.widget.PushTimeDialog
-import iyouqu.theme.BaseCacheableActivity
+
 import kotlinx.android.synthetic.mfxsqbyd.act_setting_more.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.data.bean.SettingItems
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.SettingItems
+
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*

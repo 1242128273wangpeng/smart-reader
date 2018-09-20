@@ -4,8 +4,8 @@ import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.dingyue.contract.IPresenter
-import com.dingyue.contract.util.SharedPreUtil
+import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.google.gson.Gson
 import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
@@ -14,12 +14,15 @@ import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
+import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.bean.ReadConfig
+import net.lzbook.kit.bean.ReadConfig
 import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.book.CheckNovelUpdHelper
+import net.lzbook.kit.utils.book.DeleteBookHelper
+import net.lzbook.kit.utils.book.LoadDataManager
 import okhttp3.MediaType
 import okhttp3.RequestBody
 

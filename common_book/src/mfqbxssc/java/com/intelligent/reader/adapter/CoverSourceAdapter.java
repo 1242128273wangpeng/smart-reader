@@ -2,7 +2,7 @@ package com.intelligent.reader.adapter;
 
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.data.bean.CoverPage;
+import net.lzbook.kit.bean.CoverPage;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.Tools;
 

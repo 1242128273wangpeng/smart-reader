@@ -1,4 +1,4 @@
-package net.lzbook.kit.user.bean
+package net.lzbook.kit.utils.user.bean
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable

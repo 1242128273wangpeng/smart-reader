@@ -4,9 +4,9 @@ import android.app.Activity
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
-import com.dingyue.contract.BasePopup
-import com.dingyue.contract.CommonContract
 import kotlinx.android.synthetic.mfqbxssc.popup_book_sorting.view.*
+import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.utils.book.CommonContract
 
 /**
  * Desc 书籍排序弹窗

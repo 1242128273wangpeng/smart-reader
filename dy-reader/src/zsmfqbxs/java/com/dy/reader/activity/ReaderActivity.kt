@@ -4,6 +4,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -15,9 +17,6 @@ import android.view.WindowManager
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
@@ -38,20 +37,23 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.view.NativeView
-import iyouqu.theme.BaseCacheableActivity
-import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.zsmfqbxs.act_reader.*
 import kotlinx.android.synthetic.zsmfqbxs.reader_content.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.repair_books.RepairHelp
-import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.user.UserManager
+import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.UserManager
+import net.lzbook.kit.utils.webview.UrlUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = RouterConfig.READER_ACTIVITY)
-class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
+class ReaderActivity() : BaseCacheableActivity(), SurfaceHolder.Callback, Parcelable {
 
     private var registerShareCallback = false
 
@@ -252,6 +254,12 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
 
         override fun onDrawerStateChanged(newState: Int) = Unit
+    }
+
+    constructor(parcel: Parcel) : this() {
+        registerShareCallback = parcel.readByte() != 0.toByte()
+        isResume = parcel.readByte() != 0.toByte()
+        lastOrientation = parcel.readInt()
     }
 
     override fun onResume() {
@@ -677,6 +685,26 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeByte(if (registerShareCallback) 1 else 0)
+        parcel.writeByte(if (isResume) 1 else 0)
+        parcel.writeInt(lastOrientation)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ReaderActivity> {
+        override fun createFromParcel(parcel: Parcel): ReaderActivity {
+            return ReaderActivity(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ReaderActivity?> {
+            return arrayOfNulls(size)
+        }
     }
 
 }

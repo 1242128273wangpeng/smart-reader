@@ -6,7 +6,10 @@ import android.app.FragmentManager
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.WindowManager
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventLoading
@@ -16,10 +19,10 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfkdxs.frag_read_setting.*
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.book.download.CallBackDownload
+import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.loge
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe

@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
 import android.support.annotation.RawRes
 import android.support.v4.content.ContextCompat
-import com.dingyue.contract.util.SharedPreUtil
+import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
