@@ -8,7 +8,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
@@ -105,7 +105,7 @@ class ReaderSettingHeader : FrameLayout {
 
             val readerHeaderMorePopup = ReaderHeaderMorePopup(context)
 
-            val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
+            val isMarkPage = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
 
             if (isMarkPage) {
                 readerHeaderMorePopup.insertBookmarkContent("删除书签")

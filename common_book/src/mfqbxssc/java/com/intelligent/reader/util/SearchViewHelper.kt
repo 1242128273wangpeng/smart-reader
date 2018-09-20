@@ -18,9 +18,9 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.RelativeLayout
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.*
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson

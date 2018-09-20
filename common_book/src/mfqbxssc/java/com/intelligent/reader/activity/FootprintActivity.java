@@ -9,22 +9,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.utils.AbsRecyclerViewHolder;
-
 import com.baidu.mobstat.StatService;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HistoryInfo;
-import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
 import com.intelligent.reader.util.EventBookStore;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -33,7 +32,10 @@ import java.util.List;
 import java.util.Map;
 
 
-public class FootprintActivity extends iyouqu.theme.FrameActivity implements AbsRecyclerViewHolder.ShelfItemClickListener, AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
+public class FootprintActivity extends iyouqu.theme.FrameActivity implements
+        AbsRecyclerViewHolder.ShelfItemClickListener,
+        AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad,
+        View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
 
     private static final String TAG = FootprintActivity.class.getSimpleName();
     private EmptyRecyclerView mRecyclerView;
@@ -49,7 +51,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     private TextView mLoginInfo;
     private TextView mTypeInfoTV;
     private boolean currLoginState;
-    private BookDataProviderHelper mBookDataHelper;
+    private RequestRepositoryFactory requestFactory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.his_into);
         setContentView(R.layout.activity_footprint);
         currLoginState = !UserManager.INSTANCE.isUserLogin();
-        mBookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(
+        requestFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext());
         initView();
         initListener();
@@ -129,7 +131,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
 
         int dataCount = 0;
         try {
-            dataCount = (int) mBookDataHelper.getHistoryCount();
+            dataCount = (int) requestFactory.getHistoryCount();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,7 +167,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         }
 
         try {
-            mDataSet = mBookDataHelper.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
+            mDataSet = requestFactory.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,7 +185,8 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
         mLoadMoreAdapter = new LoadMoreAdapterWrapper(mHisAdapter, this);
         mRecyclerView.setEmptyView(mEmptyView);
         mRecyclerView.setAdapter(mLoadMoreAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     private void initListener() {
@@ -227,7 +230,8 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             bundle.putString("book_source_id", info.getBook_source_id());
             intent.putExtras(bundle);
             startActivity(intent);
-            StatServiceUtils.statAppBtnClick(this.getApplicationContext(), StatServiceUtils.cover_into_his);
+            StatServiceUtils.statAppBtnClick(this.getApplicationContext(),
+                    StatServiceUtils.cover_into_his);
         }
     }
 
@@ -237,7 +241,8 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
     }
 
     @Override
-    public void load(final int pagePosition, final int pageSize, final LoadMoreAdapterWrapper.ILoadCallback callback) {
+    public void load(final int pagePosition, final int pageSize,
+            final LoadMoreAdapterWrapper.ILoadCallback callback) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -245,14 +250,15 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
                 List<HistoryInfo> dataSet = null;
                 try {
-                    dataSet = mBookDataHelper.queryHistoryPaging((long)pagePosition, (long) pageSize);
-                }catch (Exception e){
+                    dataSet = requestFactory.queryHistoryPaging((long) pagePosition,
+                            (long) pageSize);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 if (dataSet == null || dataSet.isEmpty() || dataSet.size() < pageSize) {
                     callback.onFailure();
-                }else{
+                } else {
                     mHisAdapter.appendData(dataSet);
                     callback.onSuccess();
                 }
@@ -270,7 +276,8 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             case R.id.book_history_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PERHISTORY_PAGE, StartLogClickUtil.BACK, data);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PERHISTORY_PAGE,
+                        StartLogClickUtil.BACK, data);
                 finish();
                 break;
             case R.id.book_history_clear:
@@ -280,7 +287,8 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
                 mLoginTV.setClickable(false);
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, 1);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HISTORYLOGIN);
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
+                        StartLogClickUtil.HISTORYLOGIN);
                 break;
             case R.id.footprint_empty_find:
                 Intent storeIntent = new Intent();
@@ -342,10 +350,11 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
             dialog_comfire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mHisAdapter != null && mLoadMoreAdapter != null && mBookDataHelper != null) {
+                    if (mHisAdapter != null && mLoadMoreAdapter != null && requestFactory
+                            != null) {
                         mHisAdapter.updateData(null);
                         mLoadMoreAdapter.notifyDataSetChanged();
-                        mBookDataHelper.deleteAllHistory();
+                        requestFactory.deleteAllHistory();
                     }
                     myDialog.dismiss();
                 }
