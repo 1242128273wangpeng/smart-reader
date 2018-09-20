@@ -255,7 +255,7 @@ object MediaControl : IMediaControl {
         if (restMediaRunnable == null) {
             restMediaRunnable = Runnable {
                 Log.e("3-1", "3-1广告监控函数 ：check")
-                if (restDialog == null && activity != null) {
+                if (restDialog == null) {
                     restDialog = Dialog(activity, R.style.custom_dialog)
                     restDialog?.apply {
 
@@ -276,7 +276,7 @@ object MediaControl : IMediaControl {
                         setOnShowListener {
 
                             findViewById<ImageView>(R.id.img_close).setOnClickListener {
-                                restDialog?.dismiss()
+                                dismiss()
                             }
 
                             PlatformSDK.adapp()?.dycmSplashAd(activity, "3-1", findViewById<RelativeLayout>(R.id.rl_ad), object : DYSplashCallBack {
@@ -287,16 +287,19 @@ object MediaControl : IMediaControl {
                                 override fun adDismissed() {
                                     Log.e("3-1", "3-1广告监控函数 ：adDismissed")
                                     restMediaHandler?.postDelayed({
-                                        if (restDialog?.isShowing == true)
-                                            restDialog?.dismiss()
+                                        if (activity != null && !activity.isFinishing && isShowing) {
+                                            dismiss()
+                                        }
+
                                     }, 200)
                                 }
 
                                 override fun adLoadFail(dyError: DyError?) {
                                     Log.e("3-1", "3-1广告监控函数 ：拉取失败")
                                     restMediaHandler?.postDelayed({
-                                        if (restDialog?.isShowing == true)
-                                            restDialog?.dismiss()
+                                        if (activity != null && !activity.isFinishing && isShowing) {
+                                            dismiss()
+                                        }
                                     }, 200)
                                 }
 
@@ -313,8 +316,8 @@ object MediaControl : IMediaControl {
                             })
                         }
 
-                        if(activity != null && !activity.isFinishing){
-                            restDialog?.show()
+                        if (activity != null && !activity.isFinishing && !isShowing) {
+                            show()
                         }
                     }
                 }
