@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.contract.util.SharedPreUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity

@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -20,12 +19,11 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
-import com.ding.basic.Config
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.Config
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
