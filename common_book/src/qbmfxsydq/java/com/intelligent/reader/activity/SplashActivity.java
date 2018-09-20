@@ -756,7 +756,11 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
+            try {
+                UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             //请求广告
             initAdSwitch();

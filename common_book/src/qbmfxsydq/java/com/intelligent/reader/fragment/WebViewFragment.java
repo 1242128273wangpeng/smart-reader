@@ -122,7 +122,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
             rl_head = (RelativeLayout) rootView.findViewById(R.id.rl_head);
             img_sex = rootView.findViewById(R.id.img_sex);
             img_shadow = rootView.findViewById(R.id.img_shadow);
-            if (Build.VERSION.SDK_INT >= 11) {
+            if (Build.VERSION.SDK_INT >= 11 && contentView != null) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
             if(img_sex != null){
@@ -130,32 +130,34 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                     @Override
                     public void onClick(View v) {
 
-                        if (selectSexDialog == null) {
-                            selectSexDialog = new SelectSexDialog(weakReference.get());
-                            selectSexDialog.setAniFinishedAction(WebViewFragment.this);
+                        if(weakReference.get() != null){
+                            if (selectSexDialog == null) {
+                                selectSexDialog = new SelectSexDialog(weakReference.get());
+                                selectSexDialog.setAniFinishedAction(WebViewFragment.this);
+                            }
+                            Map<String,String> data = new HashMap<>();
+                            //0 表示男  1 表示女
+                            if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
+                                data.put("type","2");
+                                sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
+                                img_sex.setImageResource(R.drawable.rank_gril_icon);
+                                selectSexDialog.show(false);
+                                String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
+                                        AppUtils.getPackageName());
+                                url = UrlUtils.buildWebUrl(uri, new HashMap());
+                                loadingData(url);
+                            } else {
+                                data.put("type","1");
+                                sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
+                                selectSexDialog.show(true);
+                                img_sex.setImageResource(R.drawable.rank_boy_icon);
+                                String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
+                                        AppUtils.getPackageName());
+                                url = UrlUtils.buildWebUrl(uri, new HashMap());
+                                loadingData(url);
+                            }
+                            StartLogClickUtil.upLoadEventLog(weakReference.get(),StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data);
                         }
-                        Map<String,String> data = new HashMap<>();
-                        //0 表示男  1 表示女
-                        if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
-                            data.put("type","2");
-                            sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
-                            img_sex.setImageResource(R.drawable.rank_gril_icon);
-                            selectSexDialog.show(false);
-                            String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
-                                    AppUtils.getPackageName());
-                            url = UrlUtils.buildWebUrl(uri, new HashMap());
-                            loadingData(url);
-                        } else {
-                            data.put("type","1");
-                            sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
-                            selectSexDialog.show(true);
-                            img_sex.setImageResource(R.drawable.rank_boy_icon);
-                            String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
-                                    AppUtils.getPackageName());
-                            url = UrlUtils.buildWebUrl(uri, new HashMap());
-                            loadingData(url);
-                        }
-                        StartLogClickUtil.upLoadEventLog(weakReference.get(),StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data);
 
                     }
                 });
@@ -230,7 +232,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
 
     public void loadWebData(String url) {
         AppLog.e(TAG, "loadWebData url: " + url);
-        if (fragmentCallback != null) {
+        if (fragmentCallback != null && contentView != null) {
             url = fragmentCallback.startLoad(contentView, url);
         }
         AppLog.e(TAG, "loadWebData url: " + url);
@@ -360,7 +362,10 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                     if (customWebClient != null) {
                         customWebClient.doClear();
                     }
-                    contentView.reload();
+                    if(contentView != null){
+                        contentView.reload();
+                    }
+
                 }
             });
         }
@@ -402,7 +407,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
 
     @Override
     public void onAniFinished() {
-        if (selectSexDialog != null) {
+        if (weakReference.get() != null && selectSexDialog != null) {
             if (selectSexDialog.isShow()) {
                 selectSexDialog.dismiss();
             }

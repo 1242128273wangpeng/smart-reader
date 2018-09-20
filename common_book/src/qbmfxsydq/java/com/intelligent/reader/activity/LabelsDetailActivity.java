@@ -253,25 +253,31 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 startActivity(intent);
                 break;
             case R.id.img_sex:
-                if(selectSexDialog == null){
-                    selectSexDialog = new SelectSexDialog(this);
-                    selectSexDialog.setAniFinishedAction(this);
+                if (!isFinishing()) {
+                    if (selectSexDialog == null) {
+                        selectSexDialog = new SelectSexDialog(this);
+                        selectSexDialog.setAniFinishedAction(this);
+                    }
+
+                    //0 表示男  1 表示女
+                    if (isMale) {
+                        isMale = false;
+                        img_sex.setImageResource(R.drawable.rank_gril_icon);
+                        selectSexDialog.show(false);
+                        currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
+                                AppUtils.getPackageName());
+                        loadWebData(currentUrl, currentTitle);
+                    } else {
+                        isMale = true;
+                        selectSexDialog.show(true);
+                        img_sex.setImageResource(R.drawable.rank_boy_icon);
+                        currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
+                                AppUtils.getPackageName());
+                        loadWebData(currentUrl, currentTitle);
+                    }
                 }
-                //0 表示男  1 表示女
-                if(isMale){
-                    isMale = false;
-                    img_sex.setImageResource(R.drawable.rank_gril_icon);
-                    selectSexDialog.show(false);
-                    currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}", AppUtils.getPackageName());
-                    loadWebData(currentUrl,currentTitle);
-                }else{
-                    isMale = true;
-                    selectSexDialog.show(true);
-                    img_sex.setImageResource(R.drawable.rank_boy_icon);
-                    currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}", AppUtils.getPackageName());
-                    loadWebData(currentUrl,currentTitle);
-                }
-                    break;
+
+               break;
 
         }
     }
@@ -433,7 +439,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                     if (loadingpage != null) {
                         loadingpage.onSuccessGone();
                     }
-                    addCheckSlide(find_detail_content);
+                    if(find_detail_content != null){
+                        addCheckSlide(find_detail_content);
+                    }
+
                 }
             });
         }
@@ -446,7 +455,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                     if (customWebClient != null) {
                         customWebClient.doClear();
                     }
-                    find_detail_content.reload();
+                    if(find_detail_content != null){
+                        find_detail_content.reload();
+                    }
+
                 }
             });
         }
@@ -788,7 +800,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
 
     @Override
     public void onAniFinished() {
-        if (selectSexDialog != null) {
+        if (!isFinishing() && selectSexDialog != null) {
             if (selectSexDialog.isShow()) {
                 selectSexDialog.dismiss();
             }
