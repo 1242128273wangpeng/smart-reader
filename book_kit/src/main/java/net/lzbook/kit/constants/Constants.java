@@ -366,7 +366,7 @@ public class Constants {
     public static int WIFI_AUTO_CACHE_COUNT = 20;
 
     public static final String SERARCH_HOT_WORD_YOUHUA = "search_hot_word_youhua";
-// 4个替壳 新版搜索热词,防止升级用户首次没网，从缓存拿数据时报错
+    // 4个替壳 新版搜索热词,防止升级用户首次没网，从缓存拿数据时报错
 
 
     //书架推荐书籍比例 智能：青果

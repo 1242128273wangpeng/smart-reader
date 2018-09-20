@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/book_shelf_rectangle"
+            android:background="@drawable/bg_book_rectangle"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"/>
 

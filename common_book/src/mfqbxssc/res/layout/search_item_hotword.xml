@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/tv_hotword"
-            android:src="@drawable/search_icon_re"
+            android:src="@drawable/icon_hot_re"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:id="@+id/iv_type"/>

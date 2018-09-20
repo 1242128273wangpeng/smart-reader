@@ -76,11 +76,11 @@ public class SearchHotWordAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(dataBean.getSuperscript())){
             holder.iv_type.setVisibility(View.VISIBLE);
             if(dataBean.getSuperscript().equals("热")){
-                holder.iv_type.setImageResource(R.drawable.search_icon_re);
+                holder.iv_type.setImageResource(R.drawable.icon_hot_re);
             }else if(dataBean.getSuperscript().equals("荐")){
-                holder.iv_type.setImageResource(R.drawable.search_icon_jian);
+                holder.iv_type.setImageResource(R.drawable.icon_hot_jian);
             }else if(dataBean.getSuperscript().equals("新")){
-                holder.iv_type.setImageResource(R.drawable.search_icon_xin);
+                holder.iv_type.setImageResource(R.drawable.icon_hot_xin);
             }
         }else{
             holder.iv_type.setVisibility(View.GONE);

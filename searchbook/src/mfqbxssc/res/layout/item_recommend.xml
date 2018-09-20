@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="6.5dp"
+              android:paddingRight="6.5dp"
+              android:paddingTop="16dp">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="99.2dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_book_rectangle"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/iv_url"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4.2dp"
+            android:layout_marginLeft="3.5dp"
+            android:layout_marginRight="3.5dp"
+            android:contentDescription="@string/icon"
+            android:scaleType="fitXY"
+            tools:src="@drawable/book_cover_default"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_book_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3.5dp"
+        android:layout_marginRight="3.5dp"
+        android:layout_marginTop="4.7dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_252B35"
+        android:textSize="12sp"
+        tools:text="name"/>
+
+    <TextView
+        android:id="@+id/tv_book_auther"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3.5dp"
+        android:layout_marginRight="3.5dp"
+        android:layout_marginTop="4.2dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_949AA5"
+        android:textSize="10sp"
+        tools:ignore="SmallSp"
+        tools:text="author"/>
+</LinearLayout>
+
+
+

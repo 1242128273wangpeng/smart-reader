@@ -384,7 +384,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL);
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true);
+                bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true);
                 RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
                 break;
             case R.id.rl_history_setting:

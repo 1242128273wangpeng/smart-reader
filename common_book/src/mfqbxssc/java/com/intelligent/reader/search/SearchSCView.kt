@@ -33,6 +33,7 @@ interface SearchSCView {
         fun setHotWordAdapter(hotWords: MutableList<HotWordBean>?)
         fun onSuggestBack()
         fun setEditText(text: String?)
+//       基类
         fun showLoading()
         fun dimissLoading()
     }

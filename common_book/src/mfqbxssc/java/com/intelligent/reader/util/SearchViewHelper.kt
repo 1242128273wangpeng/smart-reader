@@ -189,7 +189,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             override fun requestResult(value: SearchRecommendBook?) {
                 if (value != null && value.data != null) {
                     titleRecomDatas.clear()
-                    titleRecomDatas = value.data
+                    titleRecomDatas = value.data as MutableList<SearchRecommendBook.DataBean>
                     searchHotTitleLayout.relative_hot.setVisibility(View.VISIBLE)
                     if (titleRecomDatas.size > 8) {
                         searchHotTitleLayout.relative_hot1.setVisibility(View.VISIBLE)
@@ -222,13 +222,16 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             searchHotTitleLayout.list_recommed1.setAdapter(RecommendBooksAdapter(mContext, this@SearchViewHelper, recommendDatas2))
     }
 
+    /**
+     * JoannChen
+     */
     override fun onItemClick(view: View?, position: Int, datas: List<SearchRecommendBook.DataBean>) {
 
         val dataBean = datas[position]
         val data = HashMap<String, String>()
         data.put("rank", (position + 1).toString() + "")
         data.put("type", "1")
-        data.put("bookid", dataBean.bookId)
+        data.put("bookid", dataBean.bookId!!)
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HOTREADCLICK, data)
 
         mContext?.let {
@@ -246,6 +249,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     }
 
     /**
+     * JoannChen
      * 获取书架上的书Id
      */
     private fun getBookOnLineIds(): String {
@@ -295,7 +299,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
      */
     fun parseResult(value: SearchResult) {
         mHotWords.clear()
-        mHotWords = value.hotWords
+        mHotWords = value.hotWords!!
 
         if (searchHotWordAdapter == null) {
             searchHotWordAdapter = SearchHotWordAdapter(activity, mHotWords)

@@ -22,13 +22,12 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/app_name"
                     android:scaleType="fitXY"
-                    android:background="@drawable/book_shelf_rectangle"/>
+                    android:background="@drawable/bg_book_rectangle"/>
 
             <ImageView
                     android:id="@+id/iv_url"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:src="@drawable/bg_default_cover"
                     android:layout_marginRight="3.5dp"
                     android:layout_marginLeft="3.5dp"
                     android:layout_marginBottom="4.2dp"
