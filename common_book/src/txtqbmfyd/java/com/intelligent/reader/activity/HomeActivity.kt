@@ -96,9 +96,9 @@ class HomeActivity : BaseCacheableActivity(), CustomWebViewFragment.FragmentCall
     private var bookShelfFragment: BookShelfFragment? = null
 
     // webview精选页面
-    private val WEB_RECOMMEND = "/{packageName}/v3/recommend/index.do"
+    private val WEB_RECOMMEND = "/h5/{packageName}/recommend"
     // webview排行页面
-    private val WEB_RANK = "/{packageName}/v3/rank/index.do"
+    private val WEB_RANK = "/h5/{packageName}/rank"
 
     private val recommendFragmentCustom: CustomWebViewFragment by lazy {
         val fragment = CustomWebViewFragment()
