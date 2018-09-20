@@ -3,7 +3,7 @@ package com.dy.reader.view
 import android.content.Context
 import android.view.View
 import android.view.WindowManager
-import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.contract.BasePopup
 import com.dy.reader.R
 import com.dy.reader.setting.ReaderStatus
@@ -61,7 +61,7 @@ class ReaderHeaderMorePopup(context: Context, layout: Int = R.layout.popup_reade
     }
 
     fun show(view: View) {
-        val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)
+        val isMarkPage = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)
         if (isMarkPage) {
             insertBookmarkContent(false)
         } else {

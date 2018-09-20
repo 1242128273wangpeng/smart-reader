@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static android.view.KeyEvent.KEYCODE_BACK;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -25,12 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.database.helper.BookDataProviderHelper;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.media.MediaCode;
@@ -39,7 +40,6 @@ import com.dy.media.MediaLifecycle;
 import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
@@ -49,7 +49,6 @@ import net.lzbook.kit.book.component.service.CheckNovelUpdateService;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.data.db.help.ChapterDataProviderHelper;
 import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
@@ -76,8 +75,6 @@ import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
     private static String TAG = "SplashActivity";
@@ -90,6 +87,7 @@ public class SplashActivity extends FrameActivity {
     private TextView txt_upgrade;
     private ProgressBar progress_upgrade;
     private List<Book> books;
+    private RequestRepositoryFactory requestRepositoryFactory;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -217,6 +215,9 @@ public class SplashActivity extends FrameActivity {
             }
         }
 
+        requestRepositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -275,7 +276,7 @@ public class SplashActivity extends FrameActivity {
 
         final float weight = percent;
 
-        BookDataProviderHelper.Companion.upgradeFromOld(this, bookDBName)
+        requestRepositoryFactory.upgradeBookDBFromOld(bookDBName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
@@ -316,7 +317,7 @@ public class SplashActivity extends FrameActivity {
 
     private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
         if (!chapterDBList.isEmpty()) {
-            ChapterDaoHelper.Companion.upgradeFromOld(this, chapterDBList)
+            requestRepositoryFactory.upgradeChapterDBFromOld(chapterDBList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Integer>() {
@@ -423,16 +424,11 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void initializeDataFusion() {
-
-        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext());
-
-        books = loadRequest.loadBooks();
+        books = requestRepositoryFactory.loadBooks();
 
         if (books != null) {
 
             List<Book> upBooks = new ArrayList<>();
-
 
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
@@ -440,11 +436,11 @@ public class SplashActivity extends FrameActivity {
                 }
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
-                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                BookFix bookFix = requestRepositoryFactory.loadBookFix(book.getBook_id());
                 if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
-                    loadRequest.updateBook(book);
-                    loadRequest.deleteBookFix(book.getBook_id());
+                    requestRepositoryFactory.updateBook(book);
+                    requestRepositoryFactory.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -463,9 +459,7 @@ public class SplashActivity extends FrameActivity {
                     MediaType.parse("application/json; charset=utf-8")
                     , gson.toJson(upBooks));
 
-            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext())
-                    .requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
+           requestRepositoryFactory.requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
                         @Override
                         public void requestResult(Boolean result) {
                             if (result) {
@@ -506,23 +500,18 @@ public class SplashActivity extends FrameActivity {
 
         if (!isDataBaseRemark) {
 
-            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBooks();
+            List<Book> bookList = requestRepositoryFactory.loadBooks();
 
             if (bookList != null && bookList.size() > 0) {
 
                 for (Book book : bookList) {
-                    ChapterDaoHelper chapterDaoHelper =
-                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
 
-                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
+                    Chapter lastChapter = requestRepositoryFactory.queryLastChapter(book.getBook_id());
 
                     if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
                         book.setLast_chapter(lastChapter);
 
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                        requestRepositoryFactory.updateBook(book);
                     }
                 }
             }
@@ -732,20 +721,15 @@ public class SplashActivity extends FrameActivity {
             boolean b = sharedPreUtil.getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
 
             if (!b) {
-                List<Book> bookOnlineList =
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).loadBooks();
+                List<Book> bookOnlineList = requestRepositoryFactory.loadBooks();
                 if (bookOnlineList != null && bookOnlineList.size() > 0) {
                     for (int i = 0; i < bookOnlineList.size(); i++) {
                         Book iBook = bookOnlineList.get(i);
                         if (!TextUtils.isEmpty(iBook.getBook_id())) {
-                            ChapterDaoHelper bookChapterDao =
-                                    ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                            BookApplication.getGlobalContext(), iBook.getBook_id());
-                            Chapter lastChapter = bookChapterDao.queryLastChapter();
+                            Chapter lastChapter = requestRepositoryFactory.queryLastChapter(iBook.getBook_id());
                             if (lastChapter != null) {
                                 lastChapter.setBook_source_id(iBook.getBook_source_id());
-                                bookChapterDao.updateChapterBySequence(lastChapter);
+                                requestRepositoryFactory.updateChapterBySequence(iBook.getBook_id(), lastChapter);
                             }
                         }
                     }
