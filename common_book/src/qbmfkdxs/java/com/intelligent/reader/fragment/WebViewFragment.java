@@ -90,19 +90,19 @@ public class WebViewFragment extends Fragment {
         AppLog.e(TAG, "onCreateView");
         try {
             rootView = inflater.inflate(R.layout.webview_layout, container, false);
+            if (weakReference != null) {
+                AppUtils.disableAccessibility(weakReference.get());
+            }
+            initView();
+            initRefresh();
         } catch (InflateException e) {
             e.printStackTrace();
         }
-        if(weakReference != null){
-            AppUtils.disableAccessibility(weakReference.get());
-        }
-        initView();
-        initRefresh();
         return rootView;
     }
 
     private void setTitle() {
-        if (TYPE_RECOMM.equals(mTitle)){
+        if (TYPE_RECOMM.equals(mTitle)) {
             return;
         }
 
@@ -110,9 +110,9 @@ public class WebViewFragment extends Fragment {
             rl_head_other.setVisibility(View.VISIBLE);
         }
         if (txt_title != null && mTitle != null) {
-            if (TYPE_RANK.equals(mTitle)){
+            if (TYPE_RANK.equals(mTitle)) {
                 txt_title.setText("榜单");
-            } else if(TYPE_CATEGORY.equals(mTitle)){
+            } else if (TYPE_CATEGORY.equals(mTitle)) {
                 txt_title.setText("分类");
             }
         }
@@ -165,29 +165,25 @@ public class WebViewFragment extends Fragment {
             fragmentCallback.webJsCallback(jsInterfaceHelper);
         }
 
-        rl_head_recommend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (rl_head_recommend != null) {
+            rl_head_recommend.setOnClickListener(view -> {
                 RouterUtil.INSTANCE.navigation(requireActivity(),
                         RouterConfig.SEARCH_BOOK_ACTIVITY);
                 StartLogClickUtil.upLoadEventLog(requireActivity(),
                         StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
-            }
-        });
+            });
+        }
 
-        img_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RouterUtil.INSTANCE.navigation(requireActivity(),
-                        RouterConfig.SEARCH_BOOK_ACTIVITY);
-                if ("rank".equals(mTitle)) {
-                    StartLogClickUtil.upLoadEventLog(requireActivity(),
-                            StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
-                } else if ("category".equals(mTitle)) {
-                    StartLogClickUtil.upLoadEventLog(requireActivity(),
-                            StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
+        img_search.setOnClickListener(v -> {
+            RouterUtil.INSTANCE.navigation(requireActivity(),
+                    RouterConfig.SEARCH_BOOK_ACTIVITY);
+            if ("rank".equals(mTitle)) {
+                StartLogClickUtil.upLoadEventLog(requireActivity(),
+                        StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
+            } else if ("category".equals(mTitle)) {
+                StartLogClickUtil.upLoadEventLog(requireActivity(),
+                        StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH);
 
-                }
             }
         });
     }
@@ -226,12 +222,7 @@ public class WebViewFragment extends Fragment {
         }
 
         if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    loadingData(url);
-                }
-            });
+            handler.post(() -> loadingData(url));
         } else {
             loadingData(url);
         }
@@ -258,44 +249,30 @@ public class WebViewFragment extends Fragment {
         }
 
         if (customWebClient != null) {
-            customWebClient.setStartedAction(new CustomWebClient.onStartedCallback() {
-                @Override
-                public void onLoadStarted(String url) {
-                    AppLog.e(TAG, "onLoadStarted: " + url);
+            customWebClient.setStartedAction(url -> AppLog.e(TAG, "onLoadStarted: " + url));
+
+            customWebClient.setErrorAction(() -> {
+                AppLog.e(TAG, "onErrorReceived");
+                if (loadingpage != null) {
+                    loadingpage.onErrorVisable();
                 }
             });
 
-            customWebClient.setErrorAction(new CustomWebClient.onErrorCallback() {
-                @Override
-                public void onErrorReceived() {
-                    AppLog.e(TAG, "onErrorReceived");
-                    if (loadingpage != null) {
-                        loadingpage.onErrorVisable();
-                    }
-                }
-            });
-
-            customWebClient.setFinishedAction(new CustomWebClient.onFinishedCallback() {
-                @Override
-                public void onLoadFinished() {
-                    AppLog.e(TAG, "onLoadFinished");
-                    if (loadingpage != null) {
-                        loadingpage.onSuccessGone();
-                    }
+            customWebClient.setFinishedAction(() -> {
+                AppLog.e(TAG, "onLoadFinished");
+                if (loadingpage != null) {
+                    loadingpage.onSuccessGone();
                 }
             });
         }
 
         if (loadingpage != null) {
-            loadingpage.setReloadAction(new LoadingPage.reloadCallback() {
-                @Override
-                public void doReload() {
-                    AppLog.e(TAG, "doReload");
-                    if (customWebClient != null) {
-                        customWebClient.doClear();
-                    }
-                    contentView.reload();
+            loadingpage.setReloadAction(() -> {
+                AppLog.e(TAG, "doReload");
+                if (customWebClient != null) {
+                    customWebClient.doClear();
                 }
+                contentView.reload();
             });
         }
 
@@ -347,35 +324,37 @@ public class WebViewFragment extends Fragment {
 
         // 免费全本小说书城 推荐页添加下拉刷新
         if (!TextUtils.isEmpty(url) && rootView != null) {
-            swipeRefreshLayout = (SuperSwipeRefreshLayout) rootView.findViewById(R.id.bookshelf_refresh_view);
+            swipeRefreshLayout = rootView.findViewById(
+                    R.id.bookshelf_refresh_view);
             swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
             swipeRefreshLayout.setHeaderView(createHeaderView());
             swipeRefreshLayout.setTargetScrollWithLayout(true);
-            swipeRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+            swipeRefreshLayout.setOnPullRefreshListener(
+                    new SuperSwipeRefreshLayout.OnPullRefreshListener() {
 
-                @Override
-                public void onRefresh() {
-                    head_text_view.setText("正在刷新");
-                    head_image_view.setVisibility(View.GONE);
-                    head_pb_view.setVisibility(View.VISIBLE);
-                    checkUpdate();
-                }
+                        @Override
+                        public void onRefresh() {
+                            head_text_view.setText("正在刷新");
+                            head_image_view.setVisibility(View.GONE);
+                            head_pb_view.setVisibility(View.VISIBLE);
+                            checkUpdate();
+                        }
 
-                @Override
-                public void onPullDistance(int distance) {
-                    // pull distance
-                }
+                        @Override
+                        public void onPullDistance(int distance) {
+                            // pull distance
+                        }
 
-                @Override
-                public void onPullEnable(boolean enable) {
-                    head_pb_view.setVisibility(View.GONE);
-                    head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
-                    head_image_view.setVisibility(View.VISIBLE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        head_image_view.setRotation(enable ? 180 : 0);
-                    }
-                }
-            });
+                        @Override
+                        public void onPullEnable(boolean enable) {
+                            head_pb_view.setVisibility(View.GONE);
+                            head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
+                            head_image_view.setVisibility(View.VISIBLE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                                head_image_view.setRotation(enable ? 180 : 0);
+                            }
+                        }
+                    });
             if (url.contains("recommend")) {
                 swipeRefreshLayout.setPullToRefreshEnabled(true);
             } else {
@@ -387,10 +366,10 @@ public class WebViewFragment extends Fragment {
     private View createHeaderView() {
         View headerView = LayoutInflater.from(swipeRefreshLayout.getContext())
                 .inflate(R.layout.layout_head, null);
-        head_pb_view = (ProgressBar) headerView.findViewById(R.id.head_pb_view);
-        head_text_view = (TextView) headerView.findViewById(R.id.head_text_view);
+        head_pb_view = headerView.findViewById(R.id.head_pb_view);
+        head_text_view = headerView.findViewById(R.id.head_text_view);
         head_text_view.setText("下拉刷新");
-        head_image_view = (ImageView) headerView.findViewById(R.id.head_image_view);
+        head_image_view = headerView.findViewById(R.id.head_image_view);
         head_image_view.setVisibility(View.VISIBLE);
         head_image_view.setImageResource(R.drawable.pulltorefresh_down_arrow);
         head_pb_view.setVisibility(View.GONE);
@@ -414,16 +393,13 @@ public class WebViewFragment extends Fragment {
 
     private void loadData(final String s) {
         if (!TextUtils.isEmpty(s) && contentView != null) {
-            contentView.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        AppLog.e(TAG, "call back jsMethod s: " + s);
-                        contentView.loadUrl(s);
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                        weakReference.get().finish();
-                    }
+            contentView.post(() -> {
+                try {
+                    AppLog.e(TAG, "call back jsMethod s: " + s);
+                    contentView.loadUrl(s);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    weakReference.get().finish();
                 }
             });
         }
