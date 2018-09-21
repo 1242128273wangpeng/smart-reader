@@ -31,7 +31,6 @@ abstract class WebViewInterfaceObject(var activity: Activity) {
 
     @JavascriptInterface
     fun buildRequestUrl(data: String?): String? {
-        Logger.e("BuildRequestUrl: $data")
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             var url = data
             var parameters: Map<String, String>? = null
@@ -54,7 +53,7 @@ abstract class WebViewInterfaceObject(var activity: Activity) {
 
     @JavascriptInterface
     fun startCoverActivity(data: String?) {
-        if (data != null && !activity.isFinishing) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return
             }
@@ -77,63 +76,28 @@ abstract class WebViewInterfaceObject(var activity: Activity) {
     }
 
     @JavascriptInterface
-    fun startTabulationActivity(data: String?) {
+    fun insertBookShelf(data: String?): Boolean {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return
-            }
-
             try {
-                val redirect = Gson().fromJson(data, JSRedirect::class.java)
-
-                if (redirect?.url != null && redirect.title != null) {
-                    val bundle = Bundle()
-                    bundle.putString("url", redirect.url)
-                    bundle.putString("title", redirect.title)
-
-                    if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
-                        when {
-                            redirect.from == "recommend" -> bundle.putString("from", "recommend")
-                            redirect.from == "ranking" -> bundle.putString("from", "ranking")
-                            redirect.from == "category" -> bundle.putString("from", "category")
-                            else -> bundle.putString("from", "other")
-                        }
-                    } else {
-                        bundle.putString("from", "other")
-                    }
-
-                    RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
-                }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
-        }
-    }
-
-    @JavascriptInterface
-    fun insertBookShelf(data: Any?) {
-        if (data != null) {
-            try {
-                val result = data as String
-                val recommend = Gson().fromJson(result, RecommendBean::class.java)
+                val recommend = Gson().fromJson(data, RecommendBean::class.java)
 
                 val book = Book()
                 book.book_id = recommend.bookId
                 book.book_source_id = recommend.id
                 book.book_chapter_id = recommend.bookChapterId
+                book.uv = recommend.uv
                 book.name = recommend.bookName
-                book.author = recommend.authorName
                 book.desc = recommend.description
+                book.host = recommend.host
                 book.label = recommend.label
                 book.genre = recommend.genre
-                book.sub_genre = recommend.subGenre
-                book.img_url = recommend.sourceImageUrl
+                book.score = recommend.score
+                book.author = recommend.authorName
                 book.status = recommend.serialStatus
-                book.host = recommend.host
+                book.img_url = recommend.sourceImageUrl
+                book.sub_genre = recommend.subGenre
                 book.book_type = recommend.bookType
                 book.word_count = recommend.wordCountDescp
-                book.score = recommend.score
-                book.uv = recommend.uv
 
                 val chapter = Chapter()
                 chapter.name = recommend.lastChapterName
@@ -143,70 +107,69 @@ abstract class WebViewInterfaceObject(var activity: Activity) {
 
                 val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
 
-                if (succeed > 0) {
+                return if (succeed > 0) {
                     activity.applicationContext.showToastMessage("成功添加到书架！")
-
+                    true
                 } else {
-
+                    false
                 }
 
             } catch (exception: Exception) {
                 exception.printStackTrace()
+                return false
             }
         } else {
-
+            return false
         }
     }
 
     @JavascriptInterface
-    fun removeBookShelf(data: Any?) {
-        if (data != null) {
-            try {
-                val result = data as String
-
-                val delete = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(result)
+    fun removeBookShelf(data: String?): Boolean {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+            return try {
+                val delete = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(data)
 
                 if (delete) {
                     CacheManager.stop(data)
                     CacheManager.resetTask(data)
                     activity.applicationContext.showToastMessage("成功从书架中移除！")
-
+                    true
                 } else {
-
+                    false
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
+                false
             }
         } else {
-
+            return false
         }
     }
 
     @JavascriptInterface
-    fun loadBookShelfInfo(data: Any?) {
-        if (data != null) {
-            val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
-            val stringBuilder = StringBuilder()
+    fun loadBookShelfInfo(): String {
+        val stringBuilder = StringBuilder()
 
-            if (books != null && books.isNotEmpty()) {
-                for (i in books.indices) {
-                    val book = books[i]
-                    if (i > 0) {
-                        stringBuilder.append(",")
-                    }
-                    stringBuilder.append(book.book_id)
+        val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
+
+        if (books != null && books.isNotEmpty()) {
+            for (i in books.indices) {
+                val book = books[i]
+                if (i > 0) {
+                    stringBuilder.append(",")
                 }
+                stringBuilder.append(book.book_id)
             }
-
-            Logger.e("获取书架列表: " + stringBuilder.toString())
-
-        } else {
-
         }
+        Logger.e("获取书架列表: " + stringBuilder.toString())
+        return stringBuilder.toString()
     }
 
     @JavascriptInterface
     abstract fun startSearchActivity(data: String?)
+
+    @JavascriptInterface
+    abstract fun startTabulationActivity(data: String?)
 
     inner class JSCover : Serializable {
         var book_id: String? = null
