@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.google.gson.Gson
 import net.lzbook.kit.CustomWebViewClient
 import net.lzbook.kit.WebViewInterfaceObject
@@ -41,7 +42,7 @@ import java.util.*
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {
-    
+
     private var searchViewHelper: SearchViewHelper? = null
     private var handler: Handler? = Handler()
 
@@ -70,6 +71,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         //静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
         var isSatyHistory = false
     }
+
     override fun onJsSearch() {
         if (search_result_content != null) {
             search_result_content.clearView()
@@ -132,14 +134,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_content?.webViewClient = customWebViewClient
         }
 
-//        if (search_result_content != null) {
-//            jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
-//        }
-//
-//        if (jsInterfaceHelper != null && search_result_content != null) {
-//            search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
-//            mSearchPresenter?.initJSHelp(jsInterfaceHelper)
-//        }
         search_result_content?.addJavascriptInterface(object : WebViewInterfaceObject(this@SearchBookActivity) {
 
             @JavascriptInterface
@@ -161,6 +155,30 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                         mSearchPresenter?.setHotWordType(search?.word, search?.type)
                         mSearchPresenter?.startLoadData(0)
 
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+            }
+
+            @JavascriptInterface
+            override fun startTabulationActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+
+                    try {
+                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
+
+                        if (redirect?.url != null && redirect.title != null) {
+                            val bundle = Bundle()
+                            bundle.putString("url", redirect.url)
+                            bundle.putString("title", redirect.title)
+                            bundle.putString("from", "other")
+
+                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+                        }
                     } catch (exception: Exception) {
                         exception.printStackTrace()
                     }
@@ -221,7 +239,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun initData() {
         if (mSearchPresenter == null) {
-            mSearchPresenter = SearchPresenter( this, this)
+            mSearchPresenter = SearchPresenter(this, this)
         }
         val intent = intent
         if (intent != null) {
@@ -234,7 +252,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     }
 
-    private fun loadDataFromNet(isAuthor : Int) {
+    private fun loadDataFromNet(isAuthor: Int) {
 
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
@@ -348,17 +366,17 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     override fun onResume() {
         super.onResume()
         if (isSatyHistory && searchViewHelper != null && searchViewHelper?.getShowStatus() == true) {
-                val historyDates = Tools.getKeyWord()
+            val historyDates = Tools.getKeyWord()
 
-                if (search_result_input != null && !TextUtils.isEmpty(historyDates)) {
-                    search_result_input.requestFocus()
-                    search_result_input.setText(historyDates)
-                    //设置光标的索引
-                    val index = search_result_input.text
-                    search_result_input.setSelection(index.length)
-                    showSearchViews()
-                }
+            if (search_result_input != null && !TextUtils.isEmpty(historyDates)) {
+                search_result_input.requestFocus()
+                search_result_input.setText(historyDates)
+                //设置光标的索引
+                val index = search_result_input.text
+                search_result_input.setSelection(index.length)
+                showSearchViews()
             }
+        }
 
         StatService.onResume(this)
     }
@@ -697,7 +715,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         Tools.setUserSearchWord(s.toString())
     }
 
-    override fun OnHistoryClick(history: String?, searchType: String?,isAuthor: Int) {
+    override fun OnHistoryClick(history: String?, searchType: String?, isAuthor: Int) {
         if (mSearchPresenter == null) {
             mSearchPresenter = SearchPresenter(this, this)
         }

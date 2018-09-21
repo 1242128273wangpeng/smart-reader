@@ -3,7 +3,6 @@ package com.intelligent.reader.app;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -24,9 +23,7 @@ import com.reyun.tracking.sdk.Tracking;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.umeng.commonsdk.UMConfigure;
-import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UTrack;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
@@ -53,6 +50,7 @@ public class BookApplication extends BaseBookApplication {
     }
 
     private static final String TAG = "BookApplication";
+
     @Override
     public void onCreate() {
         super.onCreate();
