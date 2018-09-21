@@ -190,7 +190,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (chapterList != null && !chapterList!!.isEmpty()) {
                     var manager = recl_catalog_main.layoutManager
-                    if (manager is LinearLayoutManager) {
+                    if (manager is LinearLayoutManager && manager.findFirstVisibleItemPosition() >=0) {
 
                         char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
                     }

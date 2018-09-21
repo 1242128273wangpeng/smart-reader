@@ -122,7 +122,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         HomeLogger.uploadHomeBookListInformation()
 
         if (isShouldShowPushSettingDialog()) {
-            pushSettingDialog.show()
+            if(!isFinishing){
+                pushSettingDialog.show()
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                        StartLogClickUtil.POPUPMESSAGE)
+            }
         }
 
         if (UserManagerV4.isUserLogin) run {
