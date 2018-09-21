@@ -10,33 +10,27 @@ import android.net.http.SslError
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.text.TextUtils
-import android.util.Base64
 import android.view.View
 import android.webkit.*
 import android.webkit.WebSettings.LayoutAlgorithm
 import android.webkit.WebSettings.RenderPriority
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target.*
-import com.ding.basic.util.ReplaceConstants
+import com.dingyue.contract.util.SharedPreUtil
 
 import com.dingyue.contract.util.showToastMessage
-import com.orhanobut.logger.Logger
 
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
-import java.io.*
-import java.math.BigInteger
-import java.net.URL
-import java.security.MessageDigest
 
-class CustomWebViewClient(internal var context: Context?, internal var webView: WebView?) : WebViewClient() {
+class CustomWebViewClient(var context: Context?, internal var webView: WebView?) : WebViewClient() {
 
     private var loadingStartCount = 0
     private var loadingFinishCount = 0
 
     private var loadingErrorCount = 0
 
-    var webSettings: WebSettings? = null
+    private var webSettings: WebSettings? = null
+
+    private var customWebViewCache = CustomWebViewCache.loadCustomWebViewCache()
 
     /***
      * WebView加载开始监听
@@ -53,8 +47,12 @@ class CustomWebViewClient(internal var context: Context?, internal var webView: 
      * **/
     private var loadingWebViewError: (() -> Unit)? = null
 
+
     companion object {
-        val interceptHostList = mutableListOf("img.qingoo.cn", "zn-h5-dev.bookapi.cn", "zn-h5-dev.oss-cn-hangzhou.aliyuncs.com", "s.image.qingoo.cn")
+        private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
+        private val staticResourceRule = sharedPreUtil.getString(SharedPreUtil.AD_LIMIT_TIME_DAY)
+
+        val interceptHostList = staticResourceRule.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     }
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -182,7 +180,6 @@ class CustomWebViewClient(internal var context: Context?, internal var webView: 
             return if (!TextUtils.isEmpty(url) && schema != null && schema == "http" || schema == "https") {
                 val host = request.url.host
                 if (interceptHostList.contains(host)) {
-                    Logger.e("需要缓存的地址: $url")
                     handleInterceptRequest(view, request, url)
                 } else {
                     super.shouldInterceptRequest(view, request)
@@ -203,98 +200,17 @@ class CustomWebViewClient(internal var context: Context?, internal var webView: 
         val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
-        return if (mimeType == "image/jpeg" || mimeType == "image/png") {
-            handleImageRequest(view, request, url, mimeType)
+        return if (fileExtension.isNotEmpty()) {
+            if ((mimeType == "image/jpeg" || mimeType == "image/png")) {
+                customWebViewCache.handleImageRequest(url, mimeType)
+                        ?: super.shouldInterceptRequest(view, request)
+            } else {
+                customWebViewCache.handleOtherRequest(url, mimeType, fileExtension)
+                        ?: super.shouldInterceptRequest(view, request)
+            }
+
         } else {
-            handleOtherRequest(view, request, url, mimeType, fileExtension)
-        }
-    }
-
-    /***
-     * 处理图片拦截请求
-     * **/
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun handleImageRequest(view: WebView?, request: WebResourceRequest?, url: String, mimeType: String?): WebResourceResponse? {
-        try {
-            val cacheFile = Glide.with(context)
-                    .load(url)
-                    .downloadOnly(SIZE_ORIGINAL, SIZE_ORIGINAL)
-                    .get()
-
-            return try {
-                WebResourceResponse(mimeType, null, cacheFile.inputStream())
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                super.shouldInterceptRequest(view, request)
-            }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            return super.shouldInterceptRequest(view, request)
-        }
-    }
-
-    /***
-     * 处理其他拦截请求
-     * **/
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun handleOtherRequest(view: WebView?, request: WebResourceRequest?, url: String, mimeType: String?, fileExtension: String): WebResourceResponse? {
-        val fileName = loadCacheFileName(url, "MD5")
-        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
-
-        Logger.e("FilePath: $filePath")
-
-        val file = File(filePath)
-
-        if (file.exists()) {
-            return try {
-                Logger.e("从文件获取网络请求结果，网络请求地址: $url")
-                WebResourceResponse(mimeType, "UTF-8", file.inputStream())
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                super.shouldInterceptRequest(view, request)
-            }
-        } else {
-            return try {
-                val urlConnection = URL(url).openConnection()
-
-                val inputStream = urlConnection.getInputStream()
-
-                Logger.e("缓存网络请求地址: $url    缓存文件格式: $fileExtension")
-                cacheWebViewSource(inputStream, file)
-
-                WebResourceResponse(urlConnection.contentType, urlConnection.getHeaderField("encoding"), inputStream)
-            } catch (throwable: Throwable) {
-                throwable.printStackTrace()
-                super.shouldInterceptRequest(view, request)
-            }
-        }
-    }
-
-    /***
-     * 获取缓存文件名
-     * **/
-    private fun loadCacheFileName(url: String, method: String): String? {
-        return try {
-            val messageDigest = MessageDigest.getInstance(method)
-            messageDigest?.update(url.toByteArray())
-            BigInteger(1, messageDigest.digest()).toString(16)
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            Base64.encodeToString(url.toByteArray(), Base64.DEFAULT)
-        }
-    }
-
-    /***
-     * 缓存获取到的文件流
-     * **/
-    private fun cacheWebViewSource(inputStream: InputStream?, file: File?) {
-        var read: Int = -1
-        inputStream?.use { input ->
-            file?.outputStream().use {
-                while (input.read().also { read = it } != -1) {
-                    it?.write(read)
-                }
-            }
+            super.shouldInterceptRequest(view, request)
         }
     }
 
@@ -329,7 +245,7 @@ class CustomWebViewClient(internal var context: Context?, internal var webView: 
         }
 
         if (webSettings != null && databasePath != null && databasePath.isNotEmpty()) {
-            webSettings?.setDatabasePath(databasePath)
+            webSettings?.databasePath = databasePath
         }
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
