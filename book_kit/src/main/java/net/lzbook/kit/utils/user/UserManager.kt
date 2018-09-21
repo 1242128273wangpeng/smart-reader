@@ -15,10 +15,6 @@ import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.bitmapTransformByteArray
-import net.lzbook.kit.utils.toast.mainLooperHandler
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
@@ -42,11 +38,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.bean.user.LoginReq
+import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.log
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toMap
+import net.lzbook.kit.utils.toast.bitmapTransformByteArray
+import net.lzbook.kit.utils.toast.mainLooperHandler
+import net.lzbook.kit.utils.toast.showToastMessage
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -411,8 +412,7 @@ object UserManager : IWXAPIEventHandler {
                     when (resp.errCode) {
                         BaseResp.ErrCode.ERR_OK -> {
                             Logger.e("微信分享成功！")
-                            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-                            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                            SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
                         }
 
                         BaseResp.ErrCode.ERR_USER_CANCEL -> {
@@ -620,8 +620,7 @@ object UserManager : IWXAPIEventHandler {
 
         override fun onComplete(response: Any) {
             Logger.e("QQ分享成功！")
-            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+            SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
         }
 
         override fun onError(e: UiError) {

@@ -4,14 +4,15 @@ import android.content.Context
 import com.ding.basic.bean.LocalLog
 import com.ding.basic.dao.LocalLogDao
 import com.ding.basic.database.LocalLogDataBase
-import net.lzbook.kit.utils.toast.CommonUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.ServerLog
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.CommonUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -64,8 +65,7 @@ class AndroidLogStorage {
 
         }
 
-        val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
-        if (sp.getBoolean(SharedPreUtil.SHOW_TOAST_LOG, false)) { //打点Toast
+        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.SHOW_TOAST_LOG, false)) { //打点Toast
             CommonUtil.showToastMessage(serverLog.content.toString())
         }
 

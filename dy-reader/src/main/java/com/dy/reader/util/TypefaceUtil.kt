@@ -1,12 +1,12 @@
 package com.dy.reader.util
 
 import android.graphics.Typeface
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.reader.service.FontDownLoadService
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import org.jetbrains.annotations.NotNull
 import java.io.File
-
-import java.util.Hashtable
+import java.util.*
 
 /**
  * Created on 17/7/12.
@@ -33,8 +33,6 @@ object TypefaceUtil {
         }
     }
 
-    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-
     private fun initTypeface(name: String): Typeface? {
 
         return if (!typefaceTable.containsKey(name)) {
@@ -47,7 +45,7 @@ object TypefaceUtil {
                 typeface
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                sharedPreUtil.putString(SharedPreUtil.READER_TYPE_FACE, name)
+                SPUtils.putDefaultSharedString(SPKey.READER_TYPE_FACE, name)
                 Typeface.DEFAULT
             }
         } else {

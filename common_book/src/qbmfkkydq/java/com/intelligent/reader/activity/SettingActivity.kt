@@ -8,7 +8,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -30,7 +29,8 @@ import net.lzbook.kit.utils.cache.UIHelper
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.theme.StatusBarCompat
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.CommonUtil
@@ -165,7 +165,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
             bt_night_shift!!.isChecked = false
         }
 
-        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
+        bt_wifi_auto!!.isChecked = SPUtils.getDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, true)
 
     }
 
@@ -300,8 +300,6 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
 
     //夜间模式切换按钮的回调
     override fun onCheckedChanged(view: SwitchButton, isChecked: Boolean) {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-        val edit = sharedPreferences.edit()
         if (view.id == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE)
             ReaderSettings.instance.initValues()
@@ -318,8 +316,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
-            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
-            edit.apply()
+            SPUtils.putDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, isChecked)
             val data = HashMap<String, String>()
             data.put("type", if (isChecked) "1" else "0")
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)

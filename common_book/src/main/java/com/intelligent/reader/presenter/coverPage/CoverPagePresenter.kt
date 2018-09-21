@@ -5,34 +5,39 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.*
-import com.ding.basic.bean.*
+import android.widget.TextView
+import com.ding.basic.bean.Book
+import com.ding.basic.bean.CoverRecommendBean
+import com.ding.basic.bean.RecommendBean
+import com.ding.basic.bean.RecommendBooks
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.CommonUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.cover.*
+import com.intelligent.reader.cover.BookCoverViewModel
 import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.download.DownloadState
-import net.lzbook.kit.widget.MyDialog
-import net.lzbook.kit.widget.RecommendItemView
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.BookCoverUtil
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.widget.RecommendItemView
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -53,7 +58,6 @@ class CoverPagePresenter(private val book_id: String?,
     private var showMoreLabel: Boolean = false
 
     private var bookCoverUtil: BookCoverUtil? = null
-    private var sharePreUtil: SharedPreUtil? = null
     var bookCoverViewModel: BookCoverViewModel? = null
 
     var recommendList = ArrayList<RecommendBean>()
@@ -66,7 +70,6 @@ class CoverPagePresenter(private val book_id: String?,
 
     init {
         mRandom = Random()
-        sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
         bookCoverViewModel = BookCoverViewModel()
         bookCoverViewModel?.setBookCoverViewCallback(this)
 
@@ -588,11 +591,8 @@ class CoverPagePresenter(private val book_id: String?,
 
                     if (bean != null && bean.data != null
                             && bean!!.data!!.map != null) {
-                        if (sharePreUtil == null) {
-                            sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
-                        }
 
-                        val scale = sharePreUtil!!.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
+                        val scale = SPUtils.getOnlineConfigSharedString(SPKey.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
                         if (scale.size >= 2) {
                             if (!TextUtils.isEmpty(scale[0])) {
                                 addZNBooks(bean, Integer.parseInt(scale[0]))
@@ -709,14 +709,11 @@ class CoverPagePresenter(private val book_id: String?,
 
             recommendBookList.clear()
 
-            if (sharePreUtil == null) {
-                sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
-            }
             var scale: List<String>? = ArrayList<String>()
             if (AppUtils.getPackageName().equals("cn.txtqbmfyd.reader")) {
-                scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "2,2,0")?.split(",")
+                scale = SPUtils.getOnlineConfigSharedString(SPKey.RECOMMEND_BOOKCOVER, "2,2,0")?.split(",")
             } else {
-                scale = sharePreUtil?.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
+                scale = SPUtils.getOnlineConfigSharedString(SPKey.RECOMMEND_BOOKCOVER, "3,3,0")?.split(",")
             }
 
 

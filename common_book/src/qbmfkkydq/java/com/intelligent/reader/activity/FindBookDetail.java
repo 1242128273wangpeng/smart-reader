@@ -34,7 +34,8 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.book.CommonContract;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
@@ -68,7 +69,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private Handler handler;
-    private SharedPreUtil sharedPreUtil;
     private String fromType = "";
     private PagerDesc mPagerDesc;
     private int h5Margin;
@@ -100,8 +100,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             onBackPressed();
             return;
         }
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-        fromType = sharedPreUtil.getString(SharedPreUtil.HOME_FINDBOOK_SEARCH,
+        fromType =  SPUtils.INSTANCE.getDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH,
                 "other");
         AppUtils.disableAccessibility(this);
         initView();

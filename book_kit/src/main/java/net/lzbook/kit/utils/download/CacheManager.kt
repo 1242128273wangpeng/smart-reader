@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.LocalBroadcastManager
@@ -15,23 +14,25 @@ import android.widget.Toast
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
-import net.lzbook.kit.constants.ActionConstants
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.bean.BlockingLinkedHashMap
-import net.lzbook.kit.service.DownloadService
+import net.lzbook.kit.bean.BookTask
+import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.bean.BookTask
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.service.DownloadService
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.file.FileUtils
+import net.lzbook.kit.utils.runOnMain
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import java.io.File
 import java.io.IOException
 
@@ -529,7 +530,7 @@ object CacheManager {
 
     @Synchronized
     fun checkAutoStart() {
-        val autoStart = PreferenceManager.getDefaultSharedPreferences(app).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
+        val autoStart = SPUtils.getDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, true)
         if (checkService()) {
 
             if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {

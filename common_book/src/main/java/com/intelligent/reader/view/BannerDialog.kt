@@ -8,15 +8,14 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.ding.basic.bean.push.BannerInfo
-import com.ding.basic.util.editShared
-import com.ding.basic.util.getSharedObject
 import com.ding.basic.util.putObject
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.user.UserManager
+import net.lzbook.kit.widget.MyDialog
 
 
 /**
@@ -88,10 +87,10 @@ class BannerDialog(val activity: Activity) {
     }
 
     private fun updateBannerInfo() {
-        val bannerInfo = activity.getSharedObject(BannerInfo.KEY, BannerInfo::class.java)
+        val bannerInfo = SPUtils.getDefaultSharedObject(BannerInfo.KEY, BannerInfo::class.java)
                 ?: return
         bannerInfo.hasShowed = true
-        activity.editShared {
+        SPUtils.editDefaultShared  {
             putObject(BannerInfo.KEY, bannerInfo)
         }
     }

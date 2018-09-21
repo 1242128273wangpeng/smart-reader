@@ -15,9 +15,6 @@ import android.widget.Toast
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.media.MediaControl
 import com.dy.reader.R
 import com.dy.reader.Reader
@@ -37,15 +34,18 @@ import com.dy.reader.util.getNotchSize
 import com.dy.reader.util.isNotchScreen
 import com.dy.reader.util.xiaomiNotch
 import com.google.gson.Gson
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.service.DownloadService
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
-import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.service.DownloadService
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 
@@ -116,7 +116,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     private fun uploadSettingLog(act: ReaderActivity) {
         val sp = act.getSharedPreferences(READER_CONFIG, Context.MODE_PRIVATE)
-        val lastTime = sp.getLong(SharedPreUtil.READ_TODAY_FIRST_POST_SETTINGS, 0L)
+        val lastTime = sp.getLong(SPKey.READ_TODAY_FIRST_POST_SETTINGS, 0L)
         val currentTime = System.currentTimeMillis()
         val isSameDay = AppUtils.isToday(lastTime, currentTime)
         if (isSameDay) return
@@ -447,14 +447,10 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             myNovelHelper?.saveBookmark(ReaderStatus.book.book_id, ReaderStatus.position.group,
                     ReaderStatus.position.offset)
             // 统计阅读章节数
-            val spUtils = SharedPreferencesUtils(PreferenceManager
-                    .getDefaultSharedPreferences(readReference?.get()))
-            spUtils.putInt("readed_count", Constants.readedCount)
+            SPUtils.putDefaultSharedInt("readed_count", Constants.readedCount)
         }
 
 
-        // 保存正在阅读的书
-        val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         val book = ReaderStatus.book
         book.sequence = ReaderStatus.position.group
@@ -464,7 +460,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         book.readed = 1
 
         val books = Gson().toJson(book)
-        sp.putString(SharedPreUtil.CURRENT_READ_BOOK, books)
+        SPUtils.putDefaultSharedString(SPKey.CURRENT_READ_BOOK, books)
 
         StatService.onPause(act)
     }

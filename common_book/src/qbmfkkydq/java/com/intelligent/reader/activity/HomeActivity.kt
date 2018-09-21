@@ -49,7 +49,8 @@ import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.logger.PersonalLogger
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.showToastMessage
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
@@ -197,7 +198,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     private val fragmentTypeRecommend = 1 //推荐
     private val fragmentTypeRanking = 2 //分类
     private val fragmentTypeClassify = 3 //榜单
-    private lateinit var sharedPreUtil: SharedPreUtil
     private lateinit var apkUpdateUtils: ApkUpdateUtils
     private var bookShelfFragment: BookShelfFragment? = null
     private val recommendFragment: RecommendFragment by lazy {
@@ -234,7 +234,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_home)
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         initView()
         homePresenter.initParameters()
         homePresenter.initDownloadService()
@@ -309,15 +308,15 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     HomeLogger.uploadHomeBookShelfSelected()
                 }
                 fragmentTypeRecommend -> {
-                    sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
+                    SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "recommend")
                     HomeLogger.uploadHomeRecommendSelected()
                 }
                 fragmentTypeClassify -> {
-                    sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
+                    SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "class")
                     HomeLogger.uploadHomeCategorySelected()
                 }
                 fragmentTypeRanking -> {
-                    sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
+                    SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "top")
                     HomeLogger.uploadHomeRankSelected()
                 }
             }

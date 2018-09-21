@@ -10,9 +10,7 @@ import android.support.v4.app.NotificationManagerCompat
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.util.editShared
 import com.ding.basic.util.putObject
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
 import io.reactivex.BackpressureStrategy
@@ -22,7 +20,9 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import java.util.HashMap
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import java.util.*
 
 /**
  * Desc Push功能-扩展
@@ -44,7 +44,7 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                 val tags = pushInfo.tags ?: return@doOnNext
 
                 if (!pushInfo.isFromCache) {
-                    context.editShared {
+                    SPUtils.editDefaultShared {
                         putObject(PushInfo.KEY, pushInfo)
                     }
                 }
@@ -77,7 +77,7 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                         }
                     }
                     loge("zip result: $result")
-                    context.editShared {
+                    SPUtils.editDefaultShared {
                         putObject(BannerInfo.KEY, bannerInfo)
                     }
                     result
@@ -174,14 +174,12 @@ fun Activity.isShouldShowPushSettingDialog(): Boolean {
     val isNotifyEnable = NotificationManagerCompat.from(this)
             .areNotificationsEnabled()
     if (isNotifyEnable) return false
-    val shareKey = SharedPreUtil.PUSH_LATEST_SHOW_SETTING_DIALOG_TIME
-    val share = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-    val latestShowTime = share
-            .getLong(shareKey, 0)
+    val shareKey = SPKey.PUSH_LATEST_SHOW_SETTING_DIALOG_TIME
+    val latestShowTime = SPUtils.getDefaultSharedLong(shareKey, 0)
     val currentTime = System.currentTimeMillis()
     val time = currentTime - latestShowTime
     return if (time > 3 * 24 * 60 * 60 * 1000) {
-        share.putLong(shareKey, currentTime)
+        SPUtils.putDefaultSharedLong(shareKey, currentTime)
         true
     } else {
         false

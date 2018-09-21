@@ -1,11 +1,12 @@
 package net.lzbook.kit.utils.logger
 
 import com.ding.basic.repository.RequestRepositoryFactory
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
-import java.util.HashMap
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import java.util.*
 
 /**
  * Desc HomeActivity相关打点
@@ -23,8 +24,7 @@ object HomeLogger {
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
         if (books != null && books.isNotEmpty()) {
-            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-            val lastTime = sharedPreUtil.getLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS)
+            val lastTime = SPUtils.getDefaultSharedLong(SPKey.HOME_TODAY_FIRST_POST_BOOKIDS)
             val currentTime = System.currentTimeMillis()
 
             val isSameDay = AppUtils.isToday(lastTime, currentTime)
@@ -36,7 +36,7 @@ object HomeLogger {
                     bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
                     bookIdList.append(if (index == books.size-1) "" else "$")
                 }
-                sharedPreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_POST_BOOKIDS, currentTime)
+                SPUtils.putDefaultSharedLong(SPKey.HOME_TODAY_FIRST_POST_BOOKIDS, currentTime)
 
                 val data = HashMap<String, String>()
                 data["bookid"] = bookIdList.toString()

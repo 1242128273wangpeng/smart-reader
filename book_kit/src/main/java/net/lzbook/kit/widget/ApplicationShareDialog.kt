@@ -1,25 +1,26 @@
 package net.lzbook.kit.widget
 
 import android.app.Activity
-import android.view.*
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.rx.SchedulerHelper
-import net.lzbook.kit.utils.toast.showToastMessage
-
-import kotlinx.android.synthetic.main.dialog_share.*
-import net.lzbook.kit.R
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.utils.user.UserManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.text.TextUtils
+import android.view.Gravity
+import android.view.View
 import com.ding.basic.Config
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.rx.SchedulerHelper
+import kotlinx.android.synthetic.main.dialog_share.*
+import net.lzbook.kit.R
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.user.UserManagerV4
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
-import java.util.HashMap
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.UserManager
+import net.lzbook.kit.utils.user.UserManagerV4
+import java.util.*
 
 class ApplicationShareDialog(var activity: Activity?) {
 
@@ -118,9 +119,7 @@ class ApplicationShareDialog(var activity: Activity?) {
                                                 val clipData = ClipData.newPlainText("Label", url)
                                                 clipboardManager.primaryClip = clipData
                                                 activity?.showToastMessage("分享链接已经复制到剪贴板！")
-
-                                                val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-                                                sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                                                SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
                                             }
                                         }
                                     }else{
@@ -142,9 +141,7 @@ class ApplicationShareDialog(var activity: Activity?) {
                                                 val clipData = ClipData.newPlainText("Label", url)
                                                 clipboardManager.primaryClip = clipData
                                                 activity?.showToastMessage("分享链接已经复制到剪贴板！")
-
-                                                val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-                                                sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+                                                SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
                                             }
                                         }
                                     }

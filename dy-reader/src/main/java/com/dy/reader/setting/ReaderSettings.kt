@@ -6,7 +6,6 @@ import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
 import android.support.annotation.RawRes
 import android.support.v4.content.ContextCompat
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
@@ -15,15 +14,16 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.util.ThemeUtil
 import com.dy.reader.util.TypefaceUtil
+import com.google.gson.GsonBuilder
 import com.google.gson.InstanceCreator
+import com.google.gson.annotations.SerializedName
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.sp.SPKey
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Type
 import java.text.NumberFormat
-import com.google.gson.GsonBuilder
-import com.google.gson.annotations.SerializedName
 
 
 /**
@@ -113,7 +113,7 @@ class ReaderSettings {
         animation_mode = sp.getInt("page_mode", Constants.PAGE_MODE_DELAULT)
         isFullScreenRead = sp.getBoolean("full_screen_read", false)
         readThemeMode = sp.getInt("content_mode", 51)
-        fontTypeface = TypefaceUtil.getTypefaceCode(sp.getString(SharedPreUtil.READER_TYPE_FACE,
+        fontTypeface = TypefaceUtil.getTypefaceCode(sp.getString(SPKey.READER_TYPE_FACE,
                 FontDownLoadService.FONT_DEFAULT))
 
         isVolumeTurnover = sp.getBoolean("sound_turnover", true)

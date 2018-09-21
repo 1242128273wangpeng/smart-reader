@@ -3,13 +3,14 @@ package com.intelligent.reader.activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.ding.basic.Config
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intelligent.reader.R
-import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug_host.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.showToastMessage
 
 
 /**
@@ -21,8 +22,6 @@ import kotlinx.android.synthetic.main.activity_debug_host.*
  * </pre>
  */
 class DebugHostActivity : BaseCacheableActivity() {
-
-    private val sp = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
 
     private var list = ArrayList<String>()
     private var mAdapter: ArrayAdapter<String>? = null
@@ -65,28 +64,28 @@ class DebugHostActivity : BaseCacheableActivity() {
                 }
 
                 val type = when (intent.getStringExtra("type")) {
-                    SharedPreUtil.NOVEL_HOST -> {
+                    SPKey.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
-                        SharedPreUtil.NOVEL_HOST
+                        SPKey.NOVEL_HOST
                     }
-                    SharedPreUtil.WEBVIEW_HOST -> {
+                    SPKey.WEBVIEW_HOST -> {
                         Config.insertWebViewHost(et_input_host.text.toString())
-                        SharedPreUtil.WEBVIEW_HOST
+                        SPKey.WEBVIEW_HOST
                     }
-                    SharedPreUtil.UNION_HOST -> {
+                    SPKey.UNION_HOST -> {
                         Config.insertMicroAPIHost(et_input_host.text.toString())
-                        SharedPreUtil.UNION_HOST
+                        SPKey.UNION_HOST
                     }
-                    SharedPreUtil.CONTENT_HOST -> {
+                    SPKey.CONTENT_HOST -> {
                         Config.insertContentAPIHost(et_input_host.text.toString())
-                        SharedPreUtil.CONTENT_HOST
+                        SPKey.CONTENT_HOST
                     }
                     else -> {
                         ""
                     }
                 }
 
-                sp.putString(type, et_input_host.text.toString())
+                SPUtils.putOnlineConfigSharedString(type, et_input_host.text.toString())
 
                 finish()
             }
@@ -98,7 +97,7 @@ class DebugHostActivity : BaseCacheableActivity() {
 
     private fun getList(): ArrayList<String> {
 
-        val json = sp.getString(SharedPreUtil.HOST_LIST, "")
+        val json = SPUtils.getOnlineConfigSharedString(SPKey.HOST_LIST, "")
         if (json != "") {
 
             list = Gson().fromJson(json, object : TypeToken<List<String>>() {}.type)
@@ -111,7 +110,7 @@ class DebugHostActivity : BaseCacheableActivity() {
             list.add("https://unioncontent.bookapi.cn")
             list.add("https://uniontest.bookapi.cn")
 
-            sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(list))
+            SPUtils.putOnlineConfigSharedString(SPKey.HOST_LIST, Gson().toJson(list))
         }
 
         return list
@@ -125,7 +124,7 @@ class DebugHostActivity : BaseCacheableActivity() {
         list.add(0, host)
         mAdapter?.notifyDataSetChanged()
 
-        sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(list))
+        SPUtils.putOnlineConfigSharedString(SPKey.HOST_LIST, Gson().toJson(list))
     }
 
     /**
@@ -136,10 +135,10 @@ class DebugHostActivity : BaseCacheableActivity() {
         list.removeAt(position)
         mAdapter?.notifyDataSetChanged()
 
-        val spList = Gson().fromJson<ArrayList<String>>(sp.getString(SharedPreUtil.HOST_LIST, ""),
+        val spList = Gson().fromJson<ArrayList<String>>(SPUtils.getOnlineConfigSharedString(SPKey.HOST_LIST, ""),
                 object : TypeToken<List<String>>() {}.type)
         spList.removeAt(position)
-        sp.putString(SharedPreUtil.HOST_LIST, Gson().toJson(spList))
+        SPUtils.putOnlineConfigSharedString(SPKey.HOST_LIST, Gson().toJson(spList))
 
     }
 

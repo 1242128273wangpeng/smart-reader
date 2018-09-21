@@ -18,10 +18,6 @@ import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.bitmapTransformByteArray
-import net.lzbook.kit.utils.toast.mainLooperHandler
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import com.tencent.connect.share.QQShare
@@ -42,19 +38,24 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.UserConstants
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.bean.user.AvatarReq
 import net.lzbook.kit.bean.user.ThirdLoginReq
 import net.lzbook.kit.bean.user.ThirdLoginReq.Companion.CHANNEL_QQ
-import net.lzbook.kit.bean.user.AvatarReq
-import net.lzbook.kit.utils.user.bean.UserNameState
-import net.lzbook.kit.utils.user.bean.WXAccess
-import net.lzbook.kit.utils.user.bean.WXSimpleInfo
+import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logi
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.bitmapTransformByteArray
+import net.lzbook.kit.utils.toast.mainLooperHandler
+import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.user.bean.UserNameState
+import net.lzbook.kit.utils.user.bean.WXAccess
+import net.lzbook.kit.utils.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -952,8 +953,7 @@ object UserManagerV4 : IWXAPIEventHandler {
 
         override fun onComplete(response: Any) {
             Logger.e("QQ分享成功！")
-            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+            SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
         }
 
         override fun onError(e: UiError) {

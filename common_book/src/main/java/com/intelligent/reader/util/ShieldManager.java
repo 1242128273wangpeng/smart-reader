@@ -8,16 +8,17 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.ding.basic.Config;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
 import com.dy.media.MediaConfig;
 
 import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.book.LoadDataManager;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.utils.book.LoadDataManager;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
 
 /**
  * 屏蔽管理类
@@ -29,7 +30,6 @@ public class ShieldManager {
     public AMapLocationClientOption mLocationOption = null;
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
-    public SharedPreUtil sharedPreUtil;
     //声明定位回调监听器
     private Context context;
     public AMapLocationListener mLocationListener = new AMapLocationListener() {
@@ -96,14 +96,13 @@ public class ShieldManager {
         }
     };
 
-    public ShieldManager(Context context, SharedPreUtil sharedPreUtil) {
+    public ShieldManager(Context context) {
         this.context = context;
-        this.sharedPreUtil = sharedPreUtil;
     }
 
     private void initBook() {
         LoadDataManager loadDataManager = new LoadDataManager(context);
-        if (!sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS)) {
+        if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,false)) {
             // 首次安装新用户添加默认书籍
             loadDataManager.addDefaultBooks(Constants.SGENDER);
         }

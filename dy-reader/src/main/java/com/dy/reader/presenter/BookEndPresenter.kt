@@ -6,16 +6,17 @@ import android.os.Bundle
 import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.CommonUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.utils.ATManager
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.CommonUtil
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.HashMap
@@ -32,9 +33,6 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
 
     private var recommendIndex = 0
 
-    private val sharePreUtil: SharedPreUtil by lazy {
-        SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
-    }
 
     init {
         bookEndContractReference = WeakReference(contract)
@@ -196,7 +194,7 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
 
             recommendBookList.clear()
 
-            val scale = sharePreUtil.getString(SharedPreUtil.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
+            val scale = SPUtils.getOnlineConfigSharedString(SPKey.RECOMMEND_BOOKCOVER, "3,3,0").split(",")
 
             var znScale = 0
             var qgScale = 0

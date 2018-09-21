@@ -2,12 +2,12 @@ package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.sp.SPUtils
 import java.util.*
 
 /**
@@ -17,7 +17,6 @@ import java.util.*
  * Date 2018/5/11 10:33
  */
 object BookShelfLogger {
-    var shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
     /***
      * 书架点击更多
      * **/
@@ -183,7 +182,7 @@ object BookShelfLogger {
     fun uploadFirstOpenBooks() {
 
         //判断用户是否是当日首次打开应用,并上传书架的id
-        val lastTime = shareUtil.getLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
+        val lastTime = SPUtils.getDefaultSharedLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
         val currentTime = System.currentTimeMillis()
 
         val isSameDay = AppUtils.isToday(lastTime, currentTime)
@@ -199,7 +198,7 @@ object BookShelfLogger {
             data.put("bookid", bookIdList.toString())
             StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                     StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data)
-            shareUtil.putLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime)
+            SPUtils.putDefaultSharedLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime)
         }
     }
 

@@ -2,17 +2,16 @@ package net.lzbook.kit.utils.book;
 
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
 import com.orhanobut.logger.Logger;
 
-import net.lzbook.kit.constants.ActionConstants;
 import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.bean.ChapterErrorBean;
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils;
+import net.lzbook.kit.constants.ActionConstants;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,10 +20,8 @@ import java.util.HashMap;
 
 public class LoadDataManager {
 
-    private SharedPreferencesUtils sharedPreferencesUtils;
 
     public LoadDataManager(Context context) {
-        sharedPreferencesUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(context));
     }
 
     //初始化书架，添加默认书籍
@@ -34,7 +31,7 @@ public class LoadDataManager {
             @Override
             public void requestResult(Boolean result) {
                 if (result) {
-                    sharedPreferencesUtils.putBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS, true);
+                    SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS, true);
 
                     try {
                         Intent intent = new Intent(ActionConstants.ACTION_ADD_DEFAULT_SHELF);

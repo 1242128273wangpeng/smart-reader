@@ -4,8 +4,6 @@ import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.repository.RequestRepositoryFactory
-import net.lzbook.kit.base.IPresenter
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.google.gson.Gson
 import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
@@ -14,15 +12,19 @@ import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.bean.ReadConfig
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CheckNovelUpdHelper
 import net.lzbook.kit.utils.book.DeleteBookHelper
 import net.lzbook.kit.utils.book.LoadDataManager
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import okhttp3.MediaType
 import okhttp3.RequestBody
 
@@ -40,21 +42,19 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * 初始化参数
      * **/
     fun initParameters() {
-        val sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-//        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
         //初始化阅读页背景
-        if (sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE) < 50) {
+        if (SPUtils.getDefaultSharedInt(SPKey.CONTENT_MODE) < 50) {
             Constants.MODE = 51
             ReadConfig.MODE = 51
-            sharePreUtil.putInt(SharedPreUtil.CONTENT_MODE, Constants.MODE)
-            sharePreUtil.putInt(SharedPreUtil.CURRENT_NIGHT_MODE, Constants.MODE)
+            SPUtils.putDefaultSharedInt(SPKey.CONTENT_MODE, Constants.MODE)
+            SPUtils.putDefaultSharedInt(SPKey.CURRENT_NIGHT_MODE, Constants.MODE)
         } else {
-            Constants.MODE = sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE)
-            ReadConfig.MODE = sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE)
+            Constants.MODE = SPUtils.getDefaultSharedInt(SPKey.CONTENT_MODE)
+            ReadConfig.MODE = SPUtils.getDefaultSharedInt(SPKey.CONTENT_MODE)
         }
 
-        val firstTime = sharePreUtil.getLong(SharedPreUtil.HOME_TODAY_FIRST_OPEN_APP)
+        val firstTime = SPUtils.getDefaultSharedLong(SPKey.HOME_TODAY_FIRST_OPEN_APP)
         val currentTime = System.currentTimeMillis()
 
         //判断用户是否是当日首次打开应用
@@ -65,13 +65,13 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
         } else {
             //用户首次打开，记录当前时间
             Constants.is_user_today_first = true
-            sharePreUtil.putLong(SharedPreUtil.HOME_TODAY_FIRST_OPEN_APP, currentTime)
-            sharePreUtil.putBoolean(SharedPreUtil.HOME_IS_UPLOAD, false)
+            SPUtils.putDefaultSharedLong(SPKey.HOME_TODAY_FIRST_OPEN_APP, currentTime)
+            SPUtils.putDefaultSharedBoolean(SPKey.HOME_IS_UPLOAD, false)
             updateApplicationList()
             updateCoverBatch()
         }
 
-        Constants.upload_userinformation = sharePreUtil.getBoolean(SharedPreUtil.HOME_IS_UPLOAD)
+        Constants.upload_userinformation = SPUtils.getDefaultSharedBoolean(SPKey.HOME_IS_UPLOAD)
 
         loadDataManager = LoadDataManager(BookApplication.getGlobalContext())
 
@@ -89,7 +89,7 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
                 StartLogClickUtil.sendZnUserLog()
                 Constants.upload_userinformation = true
                 Constants.preVersionCode = currentVersionCode
-                sharePreUtil.putBoolean(Constants.IS_UPLOAD, Constants.upload_userinformation)
+                SPUtils.putDefaultSharedBoolean(Constants.IS_UPLOAD, Constants.upload_userinformation)
             }
         }
 

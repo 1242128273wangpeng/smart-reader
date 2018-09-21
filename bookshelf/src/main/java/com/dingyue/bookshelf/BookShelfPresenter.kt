@@ -10,19 +10,20 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
-import net.lzbook.kit.utils.book.CommonContract
-import net.lzbook.kit.base.IPresenter
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.service.CheckNovelUpdateService
-import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.bean.UpdateCallBack
+import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.bean.BookUpdateResult
+import net.lzbook.kit.bean.UpdateCallBack
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.utils.book.BaseBookHelper
+import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
@@ -314,8 +315,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
         // 清除当前阅读书籍状态
         if (bookCount.toInt() == size) {
-            val sp = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-            sp.putString(SharedPreUtil.CURRENT_READ_BOOK, "")
+            SPUtils.putDefaultSharedString(SPKey.CURRENT_READ_BOOK, "")
         }
 
         doAsync {
