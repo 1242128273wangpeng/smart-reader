@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height"
         android:layout_alignParentTop="true"
-        android:background="@color/top_navigation_bg_color">
+        android:background="@color/top_navigation_bg_color"
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:id="@+id/rl_recommend_head"

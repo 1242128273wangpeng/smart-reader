@@ -75,5 +75,7 @@ data class Map(
         var baidu_stat_id: String?,
         var DY_page_middle_ad_switch: String?,
         var DY_ad_old_request_switch: String?,
-        var user_tag_host: String?
+        var user_tag_host: String?,
+        var DY_static_resource_rule: String?,
+        var DY_web_static_resources: String?
 ) : Serializable
