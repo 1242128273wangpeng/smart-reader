@@ -15,13 +15,11 @@ import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
@@ -38,7 +36,10 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.antiShakeClick
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList

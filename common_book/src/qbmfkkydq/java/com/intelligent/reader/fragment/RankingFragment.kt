@@ -2,12 +2,10 @@ package com.intelligent.reader.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
