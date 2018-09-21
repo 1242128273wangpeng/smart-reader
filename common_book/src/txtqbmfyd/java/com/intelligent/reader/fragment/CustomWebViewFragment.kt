@@ -1,10 +1,10 @@
 package com.intelligent.reader.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -12,21 +12,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import android.webkit.WebView
+import com.dingyue.contract.CommonContract
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 
 import com.dingyue.contract.util.showToastMessage
+import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
-import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.view_refresh_header.view.*
-import kotlinx.android.synthetic.txtqbmfyd.webview_layout_new.*
+import kotlinx.android.synthetic.txtqbmfyd.webview_layout.*
 
 import net.lzbook.kit.CustomWebViewClient
 import net.lzbook.kit.WebViewInterfaceObject
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.JSInterfaceHelper
 import net.lzbook.kit.utils.NetWorkUtils
 
 open class CustomWebViewFragment : Fragment(), View.OnClickListener {
@@ -43,15 +44,10 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
     private var url: String? = ""
     private var type: String? = null
 
-    private var fragmentCallback: FragmentCallback? = null
+    private var handle = Handler()
 
     private val refreshHeader: View by lazy {
         LayoutInflater.from(srl_web_view_refresh.context).inflate(R.layout.view_refresh_header, null)
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        this.fragmentCallback = context as FragmentCallback?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,12 +59,10 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
             this.url = bundle.getString("url")
             this.type = bundle.getString("type")
         }
-
-        Logger.e("打开WebView: $url")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.webview_layout_new, container, false)
+        return inflater.inflate(R.layout.webview_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,7 +78,21 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
             handleLazyLoading()
         } else {
             if (!TextUtils.isEmpty(url)) {
-                requestWebViewData(url)
+                when (type) {
+                    "recommend" -> {
+                        requestWebViewData(url)
+                    }
+                    "rank" -> {
+                        handle.postDelayed({
+                            requestWebViewData(url)
+                        }, 2000)
+                    }
+                    "category_male" -> {
+                        handle.postDelayed({
+                            requestWebViewData(url)
+                        }, 2000)
+                    }
+                }
             }
         }
     }
@@ -138,12 +146,6 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-    }
-
-    interface FragmentCallback {
-        fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper)
-
-        fun startLoad(webView: WebView?, url: String): String
     }
 
     /***
@@ -201,6 +203,40 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
 
+            }
+
+            @JavascriptInterface
+            override fun startTabulationActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+
+                    try {
+                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
+
+                        if (redirect?.url != null && redirect.title != null) {
+                            val bundle = Bundle()
+                            bundle.putString("url", redirect.url)
+                            bundle.putString("title", redirect.title)
+
+                            if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
+                                when {
+                                    redirect.from == "recommend" -> bundle.putString("from", "recommend")
+                                    redirect.from == "ranking" -> bundle.putString("from", "ranking")
+                                    redirect.from == "category" -> bundle.putString("from", "category")
+                                    else -> bundle.putString("from", "other")
+                                }
+                            } else {
+                                bundle.putString("from", "other")
+                            }
+
+                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
             }
         }, "J_search")
     }
@@ -288,28 +324,9 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
      * **/
     private fun contentViewVisible() {
         if (type != null) {
-//            }
-
-            if (type == "recommend") {
-                handleH5Statistics()
-            }
-
-            if (type == "rank") {
-                handleH5Statistics()
-            }
-
             if (type == "category_female") {
                 handleLazyLoading()
             }
-        }
-    }
-
-    /***
-     * 通知H5打点
-     * **/
-    private fun handleH5Statistics() {
-        if (viewVisible && viewPrepared) {
-            web_view_content?.loadUrl("javascript:startEventFunc()")
         }
     }
 
@@ -353,7 +370,6 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         if (url != null && url.isNotEmpty()) {
             try {
-                Logger.e("WebView加载地址: $url")
                 web_view_content?.loadUrl(url)
             } catch (exception: NullPointerException) {
                 exception.printStackTrace()
@@ -372,18 +388,16 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         if (customWebViewClient != null) {
             customWebViewClient?.setLoadingWebViewStart {
-                Logger.e("WebView页面开始加载 $url")
+
             }
 
             customWebViewClient?.setLoadingWebViewFinish {
-                Logger.e("WebView页面加载结束: $url")
                 if (loadingPage != null) {
                     loadingPage?.onSuccessGone()
                 }
             }
 
             customWebViewClient?.setLoadingWebViewError {
-                Logger.e("WebView页面加载异常: $url")
                 if (loadingPage != null) {
                     loadingPage?.onErrorVisable()
                 }
