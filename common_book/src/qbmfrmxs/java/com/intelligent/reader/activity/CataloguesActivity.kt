@@ -9,10 +9,10 @@ import android.view.View
 import android.view.View.OnClickListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
