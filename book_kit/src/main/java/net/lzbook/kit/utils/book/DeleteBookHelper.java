@@ -1,14 +1,14 @@
 package net.lzbook.kit.utils.book;
 
-import net.lzbook.kit.service.DeleteBookIntentService;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.file.FileViewer;
-import net.lzbook.kit.utils.logger.AppLog;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+
+import net.lzbook.kit.service.DeleteBookIntentService;
+import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.file.FileUtils;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +29,6 @@ public class DeleteBookHelper {
     final String TAG = "DeletebookServiceHelper";
     private final long INTERVAL_DAY = AlarmManager.INTERVAL_DAY;
     Context mContext;
-    FileViewer fileViewer;
     long INTERVAL_DAY_TEST = 2 * 60 * 1000;
 
     public DeleteBookHelper(Context context) {
@@ -38,7 +37,7 @@ public class DeleteBookHelper {
     }
 
     public void init() {
-        fileViewer = new FileViewer(mContext);
+
     }
 
     // ===========================================================================
@@ -47,23 +46,21 @@ public class DeleteBookHelper {
     public void doDeleteHelper() {
         if (isTimeEffective(mContext)) {// TODO 执行删除前确认时间范围是否有效
             AppLog.d(TAG, "当前时间小于设定的最大时间，执行删除");
-            fileViewer.doDelete();
+            FileUtils.doDelete();
         } else {
             AppLog.d(TAG, "当前时间大于设定的最大时间，不执行删除");
         }
     }
 
     public void doRemoveCallbackHelper() {
-        fileViewer.setDeleteFailedCallback(new FileViewer.FileDeleteFailedCallback() {
+        FileUtils.setDeleteFailedCallback(new FileUtils.FileDeleteFailedCallback() {
 
             @Override
             public void getDeleteFailedPath(ArrayList<String> pathList) {
                 if (pathList != null) {
                     if (pathList.size() == 0) {
                         AppLog.d(TAG, "没有删除失败的文件，移除线程回调");
-                        if (fileViewer != null) {
-                            fileViewer.removeDeleteCall();
-                        }
+                        FileUtils.removeDeleteCall();
                     }
                 }
             }

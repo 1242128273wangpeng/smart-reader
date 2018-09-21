@@ -1,9 +1,11 @@
 package net.lzbook.kit.utils.file;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.StatFs;
+
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.logger.AppLog;
-
-import android.os.StatFs;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -16,12 +18,71 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * Desc   File操作工具
+ * Author yangweining
+ * Mail   weining_yang@dingyuegroup.cn
+ * Date   2018/9/21 16:25
+ */
 public class FileUtils {
 
-    private static final String TAG = FileUtils.class.getName();
+    private static final String TAG = "FileUtils";
     private static final int BUFFER_SIZE = 8192;
 
+
+    public final static String FILE_EXTENSION_SEPARATOR = ".";
+    public final static String FILE_EXTENSION_SUFFIX = "delete";
+    private static Handler mHandler = null;
+    private static FileDeleteFailedCallback deleteFailedCallback;
+    private static FileDeleteSuccessCallback deleteSuccessCallback;
+    private static List<String> delFailPath = new ArrayList<>();// 删除失败的目录
+    private static List<String> delSuccessPath = new ArrayList<>();// 删除失败的目录
+    private static HandlerThread thread = new HandlerThread("doDelete");
+    private static Runnable deleteFileTask = new Runnable() {
+
+        @Override
+        public void run() {
+            String failedPath = null;
+            String successPath = null;
+            AppLog.d(TAG, "deleteFileTask " + deleteFileTask.hashCode());
+            doDeleteFile(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);// 删除目录文件
+            ArrayList<String> faileds = new ArrayList<>();
+            faileds.addAll(delFailPath);
+            delFailPath.clear();
+            ArrayList<String> successs = new ArrayList<>();
+            successs.addAll(delSuccessPath);
+            delSuccessPath.clear();
+            if (faileds.size() > 0) {
+                for (String path : faileds) {
+                    doDeleteFile(path);
+                    failedPath = path;
+                    AppLog.d(TAG, "delete failed file path" + failedPath);
+                }
+            }
+            if (deleteFailedCallback != null && faileds.size() > 0) {
+                deleteFailedCallback.getDeleteFailedPath(faileds);
+            }
+
+            if (successs.size() > 0) {
+                for (String path : successs) {
+                    successPath = path;
+                    AppLog.d(TAG, "delete success file path" + successPath);
+                }
+            }
+            if (deleteSuccessCallback != null && successs.size() > 0) {
+                deleteSuccessCallback.getDeleteSuccessPath(successs);
+            }
+
+        }
+    };
+
+    /**
+     * 判断文件是否存在
+     * @param filePath
+     * @return
+     */
     public static boolean fileIsExist(String filePath) {
         if (filePath == null || filePath.length() < 1) {
             return false;
@@ -34,6 +95,11 @@ public class FileUtils {
         return true;
     }
 
+    /**
+     * 创建文件
+     * @param folderPath
+     * @return
+     */
     public static boolean createFolderIfNotExist(String folderPath) {
         if (!fileIsExist(folderPath)) {
             File file = new File(folderPath);
@@ -43,6 +109,11 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 读取文件
+     * @param filePath
+     * @return
+     */
     public static InputStream readFile(String filePath) {
         InputStream is = null;
         if (fileIsExist(filePath)) {
@@ -58,6 +129,11 @@ public class FileUtils {
         return is;
     }
 
+    /**
+     * 输入流转化为字节
+     * @param inputstream
+     * @return
+     */
     public static byte[] readBytes(InputStream inputstream) {
         if (inputstream == null) {
             return null;
@@ -96,6 +172,11 @@ public class FileUtils {
     }
 
 
+    /**
+     * 读取文件为字节
+     * @param filePath
+     * @return
+     */
     public static byte[] readBytes(String filePath) {
         InputStream inputstream = readFile(filePath);
         if (inputstream == null) {
@@ -134,6 +215,12 @@ public class FileUtils {
         return data;
     }
 
+    /**
+     * 将字节写入文件
+     * @param filePath
+     * @param bytes
+     * @return
+     */
     public static boolean writeByteFile(String filePath, byte[] bytes) {
         boolean success = true;
         File distFile = new File(filePath);
@@ -166,7 +253,11 @@ public class FileUtils {
         return success;
     }
 
-
+    /**
+     * 将对象序列化成文件
+     * @param filePath
+     * @param obj
+     */
     public static void serialize(String filePath, Object obj) {
         File distFile = new File(filePath);
         if (!distFile.getParentFile().exists()) {
@@ -201,6 +292,11 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 将文件反序列化为对象
+     * @param filePath
+     * @return
+     */
     public static Object deserialize(String filePath) {
 
         ObjectInputStream in = null;
@@ -222,6 +318,11 @@ public class FileUtils {
         return null;
     }
 
+    /**
+     * 删除文件
+     * @param dir
+     * @return
+     */
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -240,6 +341,10 @@ public class FileUtils {
         return dir.delete();
     }
 
+    /**
+     * 检查书籍存储空间
+     * @return
+     */
     public static boolean checkLeftSpace() {
         File file = new File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);
 
@@ -252,5 +357,155 @@ public class FileUtils {
         }
         StatFs statFs = new StatFs(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);
         return new Long((long) statFs.getAvailableBlocks()).longValue() * ((long) statFs.getBlockSize()) > 20971520;
+    }
+
+
+    /**
+     * 获取文件扩展名
+     * @param filePath
+     * @return
+     */
+    public static String getFileExtension(String filePath) {
+        if (isBlank(filePath)) {
+            return filePath;
+        }
+
+        int extenPosi = filePath.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+        int filePosi = filePath.lastIndexOf(File.separator);
+        if (extenPosi == -1) {
+            return "";
+        }
+        return (filePosi >= extenPosi) ? "" : filePath.substring(extenPosi + 1);
+    }
+
+    public static boolean isBlank(String str) {
+        return (str == null || str.trim().length() == 0);
+    }
+
+    /**
+     * 添加删除书籍存储文件任务
+     */
+    public static void doDelete() {
+        if (mHandler != null) {
+            mHandler.post(deleteFileTask);
+        } else {
+            thread.start();
+            mHandler = new Handler(thread.getLooper());
+            mHandler.post(deleteFileTask);
+        }
+    }
+
+    /**
+     * 设置书籍文件删除失败回调
+     * @param callback
+     */
+    public static void setDeleteFailedCallback(FileDeleteFailedCallback callback) {
+        deleteFailedCallback = callback;
+    }
+
+    /**
+     * 移除删除书籍存储文件任务
+     */
+    public static void removeDeleteCall() {
+        if (mHandler != null && null != deleteFileTask) {
+            mHandler.removeCallbacks(deleteFileTask);
+        }
+    }
+
+    /**
+     * 执行删除书籍存储文件
+     * @param root
+     */
+    private static void doDeleteFile(String root) {
+        File f = new File(root);// 一级目录
+        if (f != null && f.exists()) {
+
+            File[] files = f.listFiles(); // 子目录文件
+            if (files != null) {
+
+                for (int i = 0; i < files.length; i++) {
+                    String singlePath = files[i].getAbsolutePath();
+                    AppLog.d(TAG, " 删除时，检查的路径 " + files[i].getAbsolutePath());
+                    if (singlePath != null && isContented(singlePath)) {
+                        AppLog.d(TAG, " 删除的路径 " + files[i].getAbsolutePath());
+                        deleteFiles(files[i]);// 执行删除
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断文件是否满足删除条件
+     * @param singlePath
+     * @return
+     */
+    protected static boolean isContented(String singlePath) { // 最终路径是否满足条件
+        if (getFileExtension(singlePath).equals(FILE_EXTENSION_SUFFIX)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 递归删除文件
+     */
+    private static void deleteFiles(File singleFile) {
+        String path = null;
+
+        if (singleFile == null || !singleFile.exists()) {
+            return;
+        }
+
+//		if (!singleFile.isDirectory()) {//FIXME nullpointer
+//			return;
+//		}
+        if (singleFile.listFiles() == null) {
+            return;
+        }
+        try {
+            for (File f : singleFile.listFiles()) {
+                if (f != null && f.isFile()) {
+                    path = f.getAbsolutePath();
+                    if (path == null) {
+                        return;
+                    }
+                    if (f.delete()) {
+                        delSuccessPath.add(path);
+                    } else {
+
+                        delFailPath.add(path);
+                        AppLog.e(TAG, "file.delete() failed ");
+                    }
+                } else if (f != null && f.isDirectory()) {
+                    deleteFiles(f);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        path = singleFile.getAbsolutePath();
+        if (path == null) {
+            return;
+        }
+        if (singleFile.delete()) {
+            delSuccessPath.add(path);
+
+        } else {
+            delFailPath.add(path);
+            AppLog.e(TAG, "file.delete() failed ");
+
+        }
+    }
+
+    public interface FileDeleteFailedCallback {
+        public void getDeleteFailedPath(ArrayList<String> pathList);
+
+    }
+
+    public interface FileDeleteSuccessCallback {
+        public void getDeleteSuccessPath(ArrayList<String> pathList);
     }
 }
