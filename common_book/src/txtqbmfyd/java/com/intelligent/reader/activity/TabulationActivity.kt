@@ -15,7 +15,10 @@ import android.webkit.WebView
 
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
+import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.util.PagerDesc
 import com.orhanobut.logger.Logger
@@ -58,7 +61,6 @@ class TabulationActivity : FrameActivity() {
     private var fromType = ""
 
     private var supportSlide = true
-
 
     private val WEB_AUTHOR = "/h5/{packageName}/author"
 
@@ -165,145 +167,6 @@ class TabulationActivity : FrameActivity() {
         return ActivityLifecycleHelper.getActivities().size > 1 && supportSlide
     }
 
-//    private fun initJSHelp() {
-//        jsInterfaceHelper?.setOnSearchClick(JSInterfaceHelper.onSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-//                return@onSearchClick
-//            }
-//            try {
-//                val data = HashMap<String, String>()
-//                data["keyword"] = keyWord
-//                data["type"] = "1"//0 代表从分类过来 1 代表从FindBookDetail
-//                StartLogClickUtil.upLoadEventLog(this@TabulationActivity,
-//                        StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-//                        data)
-//
-//                val intent = Intent()
-//                intent.setClass(this@TabulationActivity, SearchBookActivity::class.java)
-//                intent.putExtra("word", keyWord)
-//                intent.putExtra("search_type", search_type)
-//                intent.putExtra("filter_type", filter_type)
-//                intent.putExtra("filter_word", filter_word)
-//                intent.putExtra("sort_type", sort_type)
-//                intent.putExtra("from_class", "findBookDetail")
-//                startActivity(intent)
-//                AppLog.i(TAG, "enterSearch success")
-//            } catch (e: Exception) {
-//                AppLog.e(TAG, "Search failed")
-//                e.printStackTrace()
-//            }
-//        })
-//
-//        jsInterfaceHelper?.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-//            AppLog.e(TAG, "doCover")
-//
-//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-//                return@onEnterCover
-//            }
-//            val data = HashMap<String, String>()
-//            data["BOOKID"] = book_id
-//            data["source"] = "WEBVIEW"
-//            StartLogClickUtil.upLoadEventLog(this@TabulationActivity,
-//                    StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
-//
-//
-//            val intent = Intent()
-//            intent.setClass(applicationContext, CoverPageActivity::class.java)
-//            val bundle = Bundle()
-//            bundle.putString("author", author)
-//            bundle.putString("book_id", book_id)
-//            bundle.putString("book_source_id", book_source_id)
-//            intent.putExtras(bundle)
-//            startActivity(intent)
-//        })
-//
-//        jsInterfaceHelper?.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-//            AppLog.e(TAG, "doAnotherWeb")
-//            val packageName = AppUtils.getPackageName()
-//            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-//                return@onAnotherWebClick
-//            }
-//            if ("cc.kdqbxs.reader" == packageName || "cn.txtkdxsdq.reader" == packageName) {
-//                try {
-//                    val intent = Intent()
-//                    intent.setClass(this@TabulationActivity, TabulationActivity::class.java)
-//                    intent.putExtra("url", url)
-//                    intent.putExtra("title", name)
-//                    startActivity(intent)
-//                    AppLog.e(TAG, "EnterAnotherWeb")
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//
-//            } else {
-//                try {
-//                    this.url = url
-//                    title = name
-//                    urls?.add(this.url)
-//                    titles?.add(title)
-//                    loadWebData(this.url, name)
-//                    //                    setTitle(name);
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//
-//            }
-//        })
-//
-//        if (isNeedInterceptSlide) {
-//            jsInterfaceHelper?.setOnH5PagerInfo { x, y, width, height -> pagerDesc = PagerDesc(y, x, x + width, y + height) }
-//
-//        }
-//
-//        jsInterfaceHelper?.setOnInsertBook { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
-//            AppLog.e(TAG, "doInsertBook")
-//            val book = genCoverBook(host, book_id, book_source_id, name, author, status,
-//                    category, imgUrl, last_chapter, chapter_count, updateTime, parameter,
-//                    extra_parameter, dex)
-//            val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(
-//                    BaseBookApplication.getGlobalContext()).insertBook(book) > 0
-//            if (succeed) {
-//                Toast.makeText(this@TabulationActivity.applicationContext,
-//                        R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//
-//        jsInterfaceHelper?.setOnDeleteBook { book_id ->
-//            AppLog.e(TAG, "doDeleteBook")
-//            RequestRepositoryFactory.loadRequestRepositoryFactory(
-//                    BaseBookApplication.getGlobalContext()).deleteBook(book_id)
-//            CacheManager.stop(book_id)
-//            CacheManager.resetTask(book_id)
-//            Toast.makeText(this@TabulationActivity.applicationContext,
-//                    R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show()
-//        }
-//    }
-
-//    protected fun genCoverBook(host: String, book_id: String, book_source_id: String, name: String,
-//                               author: String, status: String, category: String,
-//                               imgUrl: String, last_chapter: String, chapter_count: String, update_time: Long,
-//                               parameter: String, extra_parameter: String, dex: Int): Book {
-//        val book = Book()
-//        book.status = status
-//        book.update_date_fusion = 0
-//        book.book_id = book_id
-//        book.book_source_id = book_source_id
-//        book.name = name
-//        book.label = category
-//        book.author = author
-//        book.img_url = imgUrl
-//        book.host = host
-//        book.chapter_count = Integer.valueOf(chapter_count)
-//
-//        val lastChapter = Chapter()
-//        lastChapter.name = last_chapter
-//        lastChapter.update_time = update_time
-//        book.last_update_success_time = System.currentTimeMillis()
-//        return book
-//
-//    }
-
-
     /***
      * 初始化参数
      * **/
@@ -374,7 +237,51 @@ class TabulationActivity : FrameActivity() {
 
             }
 
+            @JavascriptInterface
+            override fun startTabulationActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+
+                    try {
+                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
+
+                        if (redirect?.url != null && redirect.title != null) {
+                            try {
+                                refreshTabulationContent(redirect.url, redirect.title)
+                            } catch (exception: Exception) {
+                                exception.printStackTrace()
+                            }
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+            }
+
         }, "J_search")
+    }
+
+    /***
+     *
+     * **/
+    private fun refreshTabulationContent(url: String?, title: String?) {
+        this.url = url
+        this.title = title
+
+        urls.add(this.url)
+        titles.add(title)
+
+        runOnMain {
+            if (loadingPage == null) {
+                loadingPage = LoadingPage(this, rl_tabulation_root, LoadingPage.setting_result)
+            } else {
+                loadingPage?.visibility = View.VISIBLE
+            }
+
+            requestWebViewData(this.url, this.title)
+        }
     }
 
     /***
@@ -449,7 +356,8 @@ class TabulationActivity : FrameActivity() {
                             val displayMetrics = resources.displayMetrics
 
                             var top = pagerDesc?.top ?: 0f
-                            var bottom = top + ((pagerDesc?.bottom ?: 0f) - (pagerDesc?.top ?: 0f))
+                            var bottom = top + ((pagerDesc?.bottom ?: 0f) - (pagerDesc?.top
+                                    ?: 0f))
 
                             top = ((top * displayMetrics.density).toInt() + margin).toFloat()
                             bottom = ((bottom * displayMetrics.density).toInt() + margin).toFloat()
