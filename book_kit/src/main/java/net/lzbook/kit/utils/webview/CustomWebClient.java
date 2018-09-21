@@ -1,7 +1,5 @@
 package net.lzbook.kit.utils.webview;
 
-import net.lzbook.kit.base.BaseBookApplication;
-
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -18,9 +16,10 @@ import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 
 public class CustomWebClient extends WebViewClient {
     private final static String TAG = "CustomWebClient";
@@ -58,7 +57,7 @@ public class CustomWebClient extends WebViewClient {
                 return true;
             } catch (Exception exception) {
                 if (exception instanceof ActivityNotFoundException) {
-                    CommonUtil.showToastMessage("未找到微信客户端，请先安装微信！");
+                    ToastUtil.INSTANCE.showToastMessage("未找到微信客户端，请先安装微信！");
                 }
                 exception.printStackTrace();
                 return true;
@@ -74,7 +73,7 @@ public class CustomWebClient extends WebViewClient {
                 return true;
             } catch (Exception exception) {
                 if (exception instanceof ActivityNotFoundException) {
-                    CommonUtil.showToastMessage("未找到支付宝客户端，请先安装支付宝！");
+                    ToastUtil.INSTANCE.showToastMessage("未找到支付宝客户端，请先安装支付宝！");
                 }
                 exception.printStackTrace();
                 return  super.shouldOverrideUrlLoading(view, url);

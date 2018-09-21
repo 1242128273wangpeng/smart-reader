@@ -16,17 +16,14 @@ import android.widget.Toast;
 import com.ding.basic.bean.ApplicationUpdate;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
-
-import net.lzbook.kit.service.DownloadIntentService;
-import net.lzbook.kit.utils.toast.CommonUtil;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.service.DownloadIntentService;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.widget.MyDialog;
-import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.NetWorkUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +69,7 @@ public class ApkUpdateUtils {
 
             @Override
             public void requestError(@NotNull String message) {
-                CommonUtil.showToastMessage(message);
+                ToastUtil.INSTANCE.showToastMessage(message);
             }
 
             @Override

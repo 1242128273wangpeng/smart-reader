@@ -11,24 +11,24 @@ import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestService
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.base.IPresenter
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.orhanobut.logger.Logger
 import io.reactivex.disposables.Disposable
 import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.book.FootprintUtils
 import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
-import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.book.FootprintUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
@@ -271,7 +271,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
             if (succeed > 0) {
-                mContext.showToastMessage(R.string.bookshelf_insert_success)
+                ToastUtil.showToastMessage(R.string.bookshelf_insert_success)
             }
         }
 
@@ -280,7 +280,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
             CacheManager.stop(book_id)
             CacheManager.resetTask(book_id)
-            mContext.showToastMessage(R.string.bookshelf_delete_success)
+            ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
         }
     }
 

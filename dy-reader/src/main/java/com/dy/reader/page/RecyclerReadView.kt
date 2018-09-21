@@ -12,7 +12,6 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.ding.basic.bean.Chapter
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
 import com.dy.reader.data.DataProvider
@@ -22,18 +21,19 @@ import com.dy.reader.event.EventSetting
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.helper.ReadSeparateHelper
 import com.dy.reader.mode.NovelLineBean
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
-import com.dy.reader.mode.NovelPageBean
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.bean.ReadViewEnums
-import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -581,7 +581,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                     // 顶部
                 } else if (mLastY - event.y < -20) {
                     if (ReaderStatus.position.group == -1) {
-                        context.applicationContext.showToastMessage(R.string.is_first_chapter)
+                        ToastUtil.showToastMessage(R.string.is_first_chapter)
                     }
                 }
             }
@@ -606,7 +606,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
     private fun smoothScrollUp(event: KeyEvent) {
         if (event.action == KeyEvent.ACTION_UP) {
             if (mLastVisiblePosition == 0) {
-                context.applicationContext.showToastMessage(R.string.is_first_chapter)
+                ToastUtil.showToastMessage(R.string.is_first_chapter)
                 return
             }
             recl_reader_content.smoothScrollBy(0, -AppUtils.dp2px(resources, 300f).toInt())

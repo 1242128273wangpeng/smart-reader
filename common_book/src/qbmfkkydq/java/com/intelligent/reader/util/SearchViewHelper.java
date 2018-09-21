@@ -52,7 +52,7 @@ import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
 import net.lzbook.kit.utils.sp.SPUtils;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.widget.LoadingPage;
 
 import org.jetbrains.annotations.NotNull;
@@ -582,7 +582,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
         } else {
             if (!hasNet) {
-                CommonUtil.showToastMessage("网络不给力哦");
+                ToastUtil.INSTANCE.showToastMessage("网络不给力哦");
             }
             tv_search_title.setVisibility(View.GONE);
             linear_root.setVisibility(View.GONE);

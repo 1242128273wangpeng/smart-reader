@@ -11,9 +11,6 @@ import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
@@ -27,16 +24,22 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.utils.theme.ThemeMode
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
-import net.lzbook.kit.utils.webview.UrlUtils
-import net.lzbook.kit.widget.ApplicationShareDialog
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.ResourceUtil
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.LoadDataManager
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.theme.ThemeMode
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.widget.ApplicationShareDialog
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
 import java.lang.Exception
@@ -151,7 +154,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_all)
 
                 if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                    context.applicationContext.showToastMessage(R.string.game_network_none)
+                    ToastUtil.showToastMessage(R.string.game_network_none)
                 } else {
 
                     BaseBookHelper.startDownBookTask(activity.get(), mBook, 0)
@@ -170,7 +173,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             readerCacheDialog.cacheCurrentStartListener = {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_from_now)
                 if (NetWorkUtils.getNetWorkType(context) == NetWorkUtils.NETWORK_NONE) {
-                    context.applicationContext.showToastMessage(R.string.game_network_none)
+                    ToastUtil.showToastMessage(R.string.game_network_none)
                 } else {
                     BaseBookHelper.startDownBookTask(activity.get(), mBook, sequence)
 
@@ -253,7 +256,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (sourcesList?.isNotEmpty() == true) {
             myNovelHelper?.showSourceDialog(sourcesList)
         } else {
-            activity.get()?.applicationContext?.showToastMessage("暂无其它来源")
+            ToastUtil.showToastMessage("暂无其它来源")
         }
     }
 
@@ -379,7 +382,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
         } else {
-            activity.get()?.applicationContext?.showToastMessage("无法查看原文链接")
+            ToastUtil.showToastMessage("无法查看原文链接")
         }
     }
 
@@ -447,7 +450,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     fun readFeedBack() {
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             if (ReaderStatus.position.group == -1) {
-                activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
+                ToastUtil.showToastMessage("请到错误章节反馈")
                 return
             }
             StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
@@ -470,7 +473,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     private fun submitFeedback(type: Int) {
         if (NetWorkUtils.getNetWorkType(activity?.get()) == NetWorkUtils.NETWORK_NONE) {
-            activity.get()?.applicationContext?.showToastMessage("网络异常")
+            ToastUtil.showToastMessage("网络异常")
             return
         }
         val chapterErrorBean = ChapterErrorBean()
@@ -488,7 +491,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        activity.get()?.applicationContext?.showToastMessage("已发送")
+                        ToastUtil.showToastMessage("已发送")
                     }, { e -> e.printStackTrace() })
             disposable.add(time)
             return
@@ -521,7 +524,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    activity.get()?.applicationContext?.showToastMessage("已发送")
+                    ToastUtil.showToastMessage("已发送")
                 }, { e -> e.printStackTrace() })
         disposable.add(time)
     }

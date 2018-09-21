@@ -17,7 +17,7 @@ import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.user.UserManagerV4
 import java.util.*
@@ -83,22 +83,22 @@ class ApplicationShareDialog(var activity: Activity?) {
     private fun requestShareInformation(platform: String) {
         val flowable = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestShareInformation()
         if (flowable == null) {
-            activity?.showToastMessage("请求分享信息失败，请稍后再试！")
+            ToastUtil.showToastMessage("请求分享信息失败，请稍后再试！")
             dismiss()
         } else {
             flowable.compose(SchedulerHelper.schedulerHelper())
                     .compose(SchedulerHelper.schedulerHelper())
                     .subscribe({
                         if (!it.checkResultAvailable()) {
-                            activity?.showToastMessage("请求分享信息失败，请稍后再试！")
+                            ToastUtil.showToastMessage("请求分享信息失败，请稍后再试！")
                         } else {
                             if (TextUtils.isEmpty(it.data?.desc) || TextUtils.isEmpty(it.data?.logo) || TextUtils.isEmpty(it.data?.title) || TextUtils.isEmpty(it.data?.clickUrl)) {
-                                activity?.showToastMessage("请求分享信息失败，请稍后再试！")
+                                ToastUtil.showToastMessage("请求分享信息失败，请稍后再试！")
                             } else {
                                 val url = Config.buildRequestUrl(it.data?.clickUrl)
 
                                 if (url == null || TextUtils.isEmpty(url)) {
-                                    activity?.showToastMessage("请求分享信息失败，请稍后再试！")
+                                    ToastUtil.showToastMessage("请求分享信息失败，请稍后再试！")
                                 } else {
                                     if("cc.quanben.novel" == AppUtils.getPackageName()){
                                         when (platform) {
@@ -118,7 +118,7 @@ class ApplicationShareDialog(var activity: Activity?) {
                                                 val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                                 val clipData = ClipData.newPlainText("Label", url)
                                                 clipboardManager.primaryClip = clipData
-                                                activity?.showToastMessage("分享链接已经复制到剪贴板！")
+                                                ToastUtil.showToastMessage("分享链接已经复制到剪贴板！")
                                                 SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
                                             }
                                         }
@@ -140,7 +140,7 @@ class ApplicationShareDialog(var activity: Activity?) {
                                                 val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                                 val clipData = ClipData.newPlainText("Label", url)
                                                 clipboardManager.primaryClip = clipData
-                                                activity?.showToastMessage("分享链接已经复制到剪贴板！")
+                                                ToastUtil.showToastMessage("分享链接已经复制到剪贴板！")
                                                 SPUtils.putDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION, true)
                                             }
                                         }
@@ -150,7 +150,7 @@ class ApplicationShareDialog(var activity: Activity?) {
                         }
                         dismiss()
                     }, {
-                        activity?.showToastMessage("请求分享信息失败，请稍后再试！")
+                        ToastUtil.showToastMessage("请求分享信息失败，请稍后再试！")
                         dismiss()
                     }, {
 

@@ -44,15 +44,11 @@ import net.lzbook.kit.bean.user.AvatarReq
 import net.lzbook.kit.bean.user.ThirdLoginReq
 import net.lzbook.kit.bean.user.ThirdLoginReq.Companion.CHANNEL_QQ
 import net.lzbook.kit.constants.UserConstants
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.log
-import net.lzbook.kit.utils.loge
-import net.lzbook.kit.utils.logi
+import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.bitmapTransformByteArray
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.toast.mainLooperHandler
-import net.lzbook.kit.utils.toast.showToastMessage
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
 import net.lzbook.kit.utils.user.bean.WXSimpleInfo
@@ -805,12 +801,12 @@ object UserManagerV4 : IWXAPIEventHandler {
         }
 
         if (mWXApi?.isWXAppInstalled == false) {
-            activity?.applicationContext?.showToastMessage("请先安装微信客户端，再进行分享操作！")
+            ToastUtil.showToastMessage("请先安装微信客户端，再进行分享操作！")
             return
         }
 
         if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
-            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
+            ToastUtil.showToastMessage("参数错误，请稍后再试！")
         }
 
         Observable.create<Bitmap> {
@@ -824,7 +820,7 @@ object UserManagerV4 : IWXAPIEventHandler {
         }.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ handleShareWechatAction(title, description, url, it, type) }, {
-                    activity?.applicationContext?.showToastMessage("参数异常，请稍后再试！")
+                   ToastUtil.showToastMessage("参数异常，请稍后再试！")
                 }, {
 
                 })
@@ -853,12 +849,12 @@ object UserManagerV4 : IWXAPIEventHandler {
         }
 
         if (mTencent?.isQQInstalled(activity?.applicationContext) == false) {
-            activity?.applicationContext?.showToastMessage("请先安装QQ客户端，再进行分享操作！")
+            ToastUtil.showToastMessage("请先安装QQ客户端，再进行分享操作！")
             return
         }
 
         if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
-            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
+            ToastUtil.showToastMessage("参数错误，请稍后再试！")
         }
 
         Observable.create<String> {
@@ -897,12 +893,12 @@ object UserManagerV4 : IWXAPIEventHandler {
         }
 
         if (mTencent?.isQQInstalled(activity?.applicationContext) == false) {
-            activity?.applicationContext?.showToastMessage("请先安装QQ客户端，再进行分享操作！")
+            ToastUtil.showToastMessage("请先安装QQ客户端，再进行分享操作！")
             return
         }
 
         if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
-            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
+            ToastUtil.showToastMessage("参数错误，请稍后再试！")
         }
 
         Observable.create<String> {

@@ -2,6 +2,7 @@ package net.lzbook.kit.utils
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -16,6 +17,7 @@ import android.widget.TextView
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
+import java.io.ByteArrayOutputStream
 import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -242,4 +244,32 @@ fun String.isNumeric(): Boolean {
     val pattern = Pattern.compile("[0-9]*")
     val isNum = pattern.matcher(this)
     return isNum.matches()
+}
+
+fun View.preventClickShake(listener: View.OnClickListener) {
+    this.setOnClickListener {
+        if (isClickable) {
+            listener.onClick(it)
+            postDelayed({
+                isClickable = true
+            }, 200)
+        }
+
+        isClickable = false
+    }
+}
+
+fun Bitmap.bitmapTransformByteArray(): ByteArray {
+    val byteArrayOutputStream = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+
+    val result = byteArrayOutputStream.toByteArray()
+
+    try {
+        byteArrayOutputStream.close()
+    } catch (exception: Exception) {
+        exception.printStackTrace()
+    }
+
+    return result
 }

@@ -26,7 +26,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -146,7 +146,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                CommonUtil.showToastMessage("网络不给力哦！", 0L)
+                ToastUtil.showToastMessage("网络不给力哦！", 0L)
             }
             view?.showLinearParent(false)
         }

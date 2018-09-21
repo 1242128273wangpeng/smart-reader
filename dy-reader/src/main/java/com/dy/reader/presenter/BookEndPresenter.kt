@@ -16,7 +16,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.HashMap
@@ -290,7 +290,7 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
         recommendList.clear()
 
         if (recommendBookList.size <= 6) {
-            CommonUtil.showToastMessage("没有书籍可换了~")
+            ToastUtil.showToastMessage("没有书籍可换了~")
         }
 
         for (i in recommendIndex until recommendIndex + 6) {

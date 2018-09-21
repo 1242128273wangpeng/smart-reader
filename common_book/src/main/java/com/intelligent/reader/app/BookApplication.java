@@ -11,7 +11,6 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
-import net.lzbook.kit.utils.toast.CommonUtil;
 import com.dy.media.MediaConfig;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
@@ -27,9 +26,11 @@ import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
-import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
+import net.lzbook.kit.utils.toast.ToastUtil;
 
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
@@ -38,7 +39,6 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
-import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 
 
 public class BookApplication extends BaseBookApplication {
@@ -95,7 +95,7 @@ public class BookApplication extends BaseBookApplication {
                    FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
                        @Override
                        public void onError(Context context, String errorMessage, ErrorCode code) {
-                           CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
+                           ToastUtil.INSTANCE.showToastMessage("ErrorMessage is: " + errorMessage);
                        }
                    });
                    // Feedback activity的回调

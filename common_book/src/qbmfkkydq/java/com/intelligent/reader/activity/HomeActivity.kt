@@ -51,7 +51,7 @@ import net.lzbook.kit.utils.logger.PersonalLogger
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.File
@@ -383,7 +383,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      * **/
     private fun checkUrlDevelop() {
         if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
-            this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
+            ToastUtil.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
 
@@ -415,7 +415,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      */
     private fun doubleClickFinish() {
         if (System.currentTimeMillis() - firstTime > 2000) {
-            this.showToastMessage(R.string.mian_click_tiwce_exit)
+            ToastUtil.showToastMessage(R.string.mian_click_tiwce_exit)
             firstTime = System.currentTimeMillis()
         } else {
             super.onBackPressed()

@@ -33,8 +33,7 @@ import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.theme.StatusBarCompat
 import net.lzbook.kit.utils.theme.ThemeMode
-import net.lzbook.kit.utils.toast.CommonUtil
-import net.lzbook.kit.utils.toast.CommonUtil.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.MyDialog
 import java.util.*
 
@@ -122,7 +121,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             } catch (e: Exception) {
-                CommonUtil.showToastMessage(R.string.menu_no_market)
+                ToastUtil.showToastMessage(R.string.menu_no_market)
             }
 
         }
@@ -148,7 +147,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache)
             if (clear_cache_size.text.equals("0B")) {
-                showToastMessage("缓存已清除")
+                ToastUtil.showToastMessage("缓存已清除")
             } else {
                 clearCacheDialog()
             }
@@ -239,7 +238,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
                         runOnUiThread({
                             dismissDialog()
                             clear_cache_size!!.text = "0B"
-                            showToastMessage("缓存已清除")
+                            ToastUtil.showToastMessage("缓存已清除")
                         })
                     }
                 }.start()

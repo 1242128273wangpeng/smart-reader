@@ -7,15 +7,15 @@ import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.FrameActivity
-import net.lzbook.kit.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.widget.MyDialog
 import java.util.*
 
 /**
@@ -129,7 +129,7 @@ class DisclaimerActivity : FrameActivity() {
             if ("鼎阅集团" == adminEditText.text.toString()) {
                 RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
             } else {
-                this.showToastMessage("身份验证失败")
+                ToastUtil.showToastMessage("身份验证失败")
             }
             dialog.dismiss()
         }

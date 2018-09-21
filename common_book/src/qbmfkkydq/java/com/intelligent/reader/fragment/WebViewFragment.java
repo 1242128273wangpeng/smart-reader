@@ -31,7 +31,7 @@ import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.widget.LoadingPage;
@@ -364,7 +364,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             swipeRefreshLayout.setRefreshing(false);
-            CommonUtil.showToastMessage("网络不给力");
+            ToastUtil.INSTANCE.showToastMessage("网络不给力");
             return;
         }
 

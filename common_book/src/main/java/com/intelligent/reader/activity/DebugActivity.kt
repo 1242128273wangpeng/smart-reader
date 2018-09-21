@@ -23,8 +23,7 @@ import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.CommonUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.SwitchButton
 
 /**
@@ -80,14 +79,14 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             R.id.btn_debug_device_copy -> {
                 if (!TextUtils.isEmpty(txt_device.text.toString())) {
                     AppUtils.copyText(txt_device.text.toString(), this)
-                    CommonUtil.showToastMessage(R.string.debug_copy_success)
+                    ToastUtil.showToastMessage(R.string.debug_copy_success)
                 }
 
             }
             R.id.btn_debug_udid_copy -> {
                 if (!TextUtils.isEmpty(txt_udid.text.toString())) {
                     AppUtils.copyText(txt_udid.text.toString(), this)
-                    CommonUtil.showToastMessage(R.string.debug_copy_success)
+                    ToastUtil.showToastMessage(R.string.debug_copy_success)
                 }
             }
 
@@ -252,7 +251,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      */
     private fun intentHostList(type: String) {
         if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-            this.showToastMessage("请先关闭动态参数")
+            ToastUtil.showToastMessage("请先关闭动态参数")
             return
         }
         val intent = Intent(this, DebugHostActivity::class.java)

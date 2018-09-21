@@ -8,9 +8,6 @@ import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.util.DataCache
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventReaderConfig
@@ -21,10 +18,13 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.subscribekt
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 
@@ -106,7 +106,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
         isChapterExist = DataCache.isChapterCached(chapter)
 
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                activity.applicationContext.showToastMessage(R.string.no_net)
+                ToastUtil.showToastMessage(R.string.no_net)
             return
         }
 

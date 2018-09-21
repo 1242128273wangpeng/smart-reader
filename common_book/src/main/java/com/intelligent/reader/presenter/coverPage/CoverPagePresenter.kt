@@ -35,7 +35,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.MyDialog
 import net.lzbook.kit.widget.RecommendItemView
 import java.util.*
@@ -211,7 +211,7 @@ class CoverPagePresenter(private val book_id: String?,
                 //移除书架的打点
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_book_remove)
 
-                CommonUtil.showToastMessage("成功从书架移除！")
+                ToastUtil.showToastMessage("成功从书架移除！")
 
                 val data = HashMap<String, String>()
                 data["type"] = "2"
@@ -248,13 +248,13 @@ class CoverPagePresenter(private val book_id: String?,
                         }
 
             } else {
-                CommonUtil.showToastMessage("已在书架中！")
+                ToastUtil.showToastMessage("已在书架中！")
             }
         } else {
             Logger.v("书籍未订阅！")
 
             if (coverDetail == null) {
-                CommonUtil.showToastMessage("书籍信息异常，请稍后再试！")
+                ToastUtil.showToastMessage("书籍信息异常，请稍后再试！")
             }
 
             coverDetail?.last_update_success_time = System.currentTimeMillis()
@@ -263,7 +263,7 @@ class CoverPagePresenter(private val book_id: String?,
 
             if (result <= 0) {
                 Logger.v("加入书架失败！")
-                CommonUtil.showToastMessage("加入书架失败！")
+                ToastUtil.showToastMessage("加入书架失败！")
             } else {
                 Logger.v("加入书架成功！")
 
@@ -273,7 +273,7 @@ class CoverPagePresenter(private val book_id: String?,
 
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
 
-                CommonUtil.showToastMessage("成功添加到书架！")
+                ToastUtil.showToastMessage("成功添加到书架！")
 
                 coverPageContract.insertBookShelfResult(true)
             }
@@ -375,7 +375,7 @@ class CoverPagePresenter(private val book_id: String?,
         }
         val downloadState = CacheManager.getBookStatus(coverDetail!!)
         if (downloadState != DownloadState.FINISH && downloadState != DownloadState.WAITTING && downloadState != DownloadState.DOWNLOADING) {
-            CommonUtil.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
+            ToastUtil.showToastMessage(activity.resources.getString(R.string.download_app_nofify_title))
         }
 
         val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
@@ -387,7 +387,7 @@ class CoverPagePresenter(private val book_id: String?,
 
             if (result > 0) {
                 coverPageContract.insertBookShelfResult(true)
-                CommonUtil.showToastMessage("成功添加到书架！")
+                ToastUtil.showToastMessage("成功添加到书架！")
 
                 BaseBookHelper.startDownBookTask(activity, coverDetail, 0)
             }

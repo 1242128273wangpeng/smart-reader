@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_debug_host.*
 import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 
 
 /**
@@ -50,7 +50,7 @@ class DebugHostActivity : BaseCacheableActivity() {
         // 长按删除子条目
         lv_host.setOnItemLongClickListener { _, _, position, _ ->
             delHost(position)
-            showToastMessage("删除成功！")
+            ToastUtil.showToastMessage("删除成功！")
             true
         }
 

@@ -11,16 +11,14 @@ import android.widget.TextView;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 
-import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.toast.CommonUtil;
-
 import net.lzbook.kit.R;
-import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.download.CacheManager;
-import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
-import net.lzbook.kit.utils.book.BaseBookHelper;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.toast.ToastUtil;
+import net.lzbook.kit.widget.MyDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +57,7 @@ public class RepairHelp {
                     if (NetWorkUtils.isNetworkAvailable(activity)) {
                         fixBook(book, fixCallBack);
                     } else {
-                        CommonUtil.showToastMessage("网络不给力，请检查网络连接");
+                        ToastUtil.INSTANCE.showToastMessage("网络不给力，请检查网络连接");
                     }
                     Map<String, String> data2 = new HashMap<>();
                     data2.put("type", "1");
@@ -204,7 +202,7 @@ public class RepairHelp {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                CommonUtil.showToastMessage("网络不给力，请检查网络连接");
+                                ToastUtil.INSTANCE.showToastMessage("网络不给力，请检查网络连接");
                             }
                         });
                     }

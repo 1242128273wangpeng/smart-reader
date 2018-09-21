@@ -12,7 +12,7 @@ import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -66,7 +66,7 @@ class AndroidLogStorage {
         }
 
         if (SPUtils.getOnlineConfigSharedBoolean(SPKey.SHOW_TOAST_LOG, false)) { //打点Toast
-            CommonUtil.showToastMessage(serverLog.content.toString())
+            ToastUtil.showToastMessage(serverLog.content.toString())
         }
 
         AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +

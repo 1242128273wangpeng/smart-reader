@@ -13,8 +13,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.debugToastShort
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.Platform
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.widget.MyDialog
@@ -31,7 +30,7 @@ class LoginActivity : FrameActivity() {
 
         ibtn_wechat.setOnClickListener {
             if (!UserManager.isPlatformEnable(Platform.WECHAT)) {
-                this.showToastMessage("请安装微信后重试！")
+                ToastUtil.showToastMessage("请安装微信后重试！")
                 return@setOnClickListener
             }
             if (flagLoginEnd) {
@@ -44,14 +43,14 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(ret.toString())
+                            ToastUtil.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
                         onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(t)
+                            ToastUtil.debugToastShort(t)
                         })
             }
         }
@@ -67,14 +66,14 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(ret.toString())
+                            ToastUtil.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
                         onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(t)
+                            ToastUtil.debugToastShort(t)
                         })
             }
         }

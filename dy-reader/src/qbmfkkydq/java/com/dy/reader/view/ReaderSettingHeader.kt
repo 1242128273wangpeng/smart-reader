@@ -9,21 +9,18 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
-
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfkkydq.reader_option_header.view.*
-
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BaseBookApplication
-
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 
 class ReaderSettingHeader : FrameLayout {
@@ -116,18 +113,18 @@ class ReaderSettingHeader : FrameLayout {
 
                 when (result) {
                     1 -> {
-                        context.applicationContext.showToastMessage("书签添加成功")
+                        ToastUtil.showToastMessage("书签添加成功")
                         readerHeaderMorePopup.insertBookmarkContent("删除书签")
                         data["type"] = "1"
                     }
                     2 -> {
-                        context.applicationContext.showToastMessage("书签已删除")
+                        ToastUtil.showToastMessage("书签已删除")
                         readerHeaderMorePopup.insertBookmarkContent("添加书签")
                         data["type"] = "2"
 
                     }
                     else -> {
-                        context.applicationContext.showToastMessage("书签添加失败")
+                        ToastUtil.showToastMessage("书签添加失败")
                     }
                 }
 
