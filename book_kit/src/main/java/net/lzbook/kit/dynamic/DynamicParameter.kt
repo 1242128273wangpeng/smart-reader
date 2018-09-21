@@ -14,6 +14,7 @@ import net.lzbook.kit.dynamic.service.DynamicService
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.CustomWebViewCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
@@ -234,6 +235,10 @@ class DynamicParameter(private val context: Context) {
 
         mShareUtilConfig.putString(SharedPreUtil.USER_TAG_HOST, map.user_tag_host)
 
+        mShareUtilConfig.putString(SharedPreUtil.DY_STATIC_RESOURCE_RULE, map.DY_static_resource_rule)
+
+        mShareUtilConfig.putString(SharedPreUtil.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
+
         // 保存动态参数校验版本号
         if (mCurVersion < mReqVersion) {
             mShareUtilDefault.putInt(SharedPreUtil.DYNAMIC_VERSION, mReqVersion)
@@ -265,6 +270,8 @@ class DynamicParameter(private val context: Context) {
 
         initApi()
 
+        initWebResource()
+
         setBaidu()
 
         setAdControl()
@@ -278,6 +285,24 @@ class DynamicParameter(private val context: Context) {
         setNetWorkLimit()
 
         AppLog.d("um_param", " real param ==> " + this.toString())
+    }
+
+    private fun initWebResource() {
+
+        val webStaticResources = mShareUtilConfig.getString(SharedPreUtil.DY_WEB_STATIC_RESOURCES)
+
+        if (webStaticResources.isNotEmpty()) {
+
+            val customWebViewCache = CustomWebViewCache.loadCustomWebViewCache()
+
+            val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            for (resource in resourceList) {
+                if (resource.isNotEmpty()) {
+                    customWebViewCache.checkWebViewResourceCached(resource)
+                }
+            }
+        }
     }
 
 
