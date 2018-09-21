@@ -14,11 +14,12 @@ public class ShelfGridLayoutManager extends GridLayoutManager {
     }
 
     public ShelfGridLayoutManager(Context context, int spanCount, int orientation,
-                                  boolean reverseLayout) {
+            boolean reverseLayout) {
         super(context, spanCount, orientation, reverseLayout);
     }
 
-    public ShelfGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ShelfGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -29,6 +30,8 @@ public class ShelfGridLayoutManager extends GridLayoutManager {
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
