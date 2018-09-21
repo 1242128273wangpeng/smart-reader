@@ -330,7 +330,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         DataProvider.clear()
         AppHelper.glSurfaceView = null
         mReadPresenter.onDestroy()
-        ReaderStatus.chapterList.clear()
+
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
 
