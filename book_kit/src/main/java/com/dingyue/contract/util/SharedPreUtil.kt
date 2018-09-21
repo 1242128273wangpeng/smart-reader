@@ -27,6 +27,9 @@ class SharedPreUtil(val type: Int) {
         // 当前阅读的书籍
         const val CURRENT_READ_BOOK = "current_read_book"
 
+        // 删除WebView缓存
+        const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
+
 
         /**
          * DebugActivity
