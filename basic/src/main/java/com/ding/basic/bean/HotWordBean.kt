@@ -18,16 +18,6 @@ class HotWordBean : Serializable {
     var color: String? = null
     var sort: Int = 0
 
-    override fun toString(): String {
-        return "HotWordBean{" +
-                "keywordType=" + keywordType +
-                ", keyword='" + keyword + '\'' +
-                ", superscript='" + superscript + '\'' +
-                ", color='" + color + '\'' +
-                ", sort=" + sort +
-                '}'
-    }
-
     companion object {
 
         @Expose
