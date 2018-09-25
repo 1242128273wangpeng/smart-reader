@@ -14,12 +14,11 @@
     <RelativeLayout
         android:id="@+id/rl_light"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="60dp">
 
         <TextView
             android:id="@+id/txt_reader_brightness"
             style="@style/reader_text_style"
-            android:layout_marginRight="0dp"
             android:text="@string/brightness"/>
 
         <SeekBar
@@ -33,10 +32,11 @@
             android:background="@drawable/reader_option_seek_bar_bg"
             android:maxHeight="2dp"
             android:minHeight="2dp"
+            android:layout_marginLeft="-5dp"
             android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
             android:splitTrack="false"
-            tools:progress="0"
-            android:thumb="@drawable/reader_option_seek_bar_thumb"/>
+            android:thumb="@drawable/reader_option_seek_bar_thumb"
+            tools:progress="0"/>
 
         <!--android:background="@drawable/reader_option_brightness_system_bg"-->
         <CheckBox
@@ -51,7 +51,6 @@
             android:checked="false"
             android:drawablePadding="6dp"
             android:drawableRight="@drawable/read_follow_system_selector"
-            android:paddingLeft="5dp"
             android:text="@string/follow_system"
             android:textColor="@drawable/reader_option_detail_txt_sel"
             android:textSize="12sp"/>
@@ -131,7 +130,7 @@
                 android:maxEms="4"
                 android:maxLines="1"
                 android:text="@string/default_font"
-                android:textColor="#989898"
+                android:textColor="#65FFFFFF"
                 android:textSize="14sp"/>
 
             <ImageView
@@ -358,7 +357,7 @@
         android:id="@+id/view_line"
         style="@style/reader_line_style"
         android:layout_below="@+id/ll_mode"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

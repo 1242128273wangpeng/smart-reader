@@ -58,7 +58,7 @@ object ThemeUtil {
                 readerSettings.readThemeMode == 60 ->
                     color = R.color.reading_text_color_tenth
                 readerSettings.readThemeMode == 61 ->
-                    color = R.color.reading_text_color_night
+                    color = R.color.reading_text_color_nightly
             }
             return color
         }
