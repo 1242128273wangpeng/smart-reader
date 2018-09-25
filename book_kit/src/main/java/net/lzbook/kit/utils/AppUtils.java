@@ -716,7 +716,8 @@ public class AppUtils {
                 || packageName.equals("cc.quanbennovel") //今日多看
                 || packageName.equals("cc.lianzainovel") //鸿雁替
                 || packageName.equals("cc.quanben.novel") //五步替
-                || packageName.equals("cc.mianfeinovel"); //阅微替
+                || packageName.equals("cc.mianfeinovel") //阅微替
+                || packageName.equals("cn.txtqbmfyd.reader"); //新壳1
     }
 
     public static boolean hasReYun() {
