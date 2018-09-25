@@ -105,6 +105,7 @@
                 android:minHeight="2dp"
                 android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
                 android:splitTrack="false"
+                tools:progress=""
                 android:thumb="@drawable/reader_option_seek_bar_thumb"/>
 
             <TextView

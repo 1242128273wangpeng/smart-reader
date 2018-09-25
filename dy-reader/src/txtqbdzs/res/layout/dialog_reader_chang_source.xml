@@ -33,6 +33,11 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="192dp"
+            android:fadeScrollbars="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarThumbVertical="@drawable/feedback_scrollbars_bg"
+            android:scrollbars="vertical"
             android:layout_marginTop="16dp">
 
             <LinearLayout

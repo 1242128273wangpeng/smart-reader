@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_reader_setting_detail"
     android:layout_width="match_parent"
@@ -14,6 +14,6 @@
 
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="112dp"/>
 
-</LinearLayout>
+</RelativeLayout>

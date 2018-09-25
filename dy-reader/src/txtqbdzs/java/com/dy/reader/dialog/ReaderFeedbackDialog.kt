@@ -37,7 +37,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_empty
+            checkedView?.isChecked = true
         }
 
         dialog.rl_feedback_reading_cache_error.setOnClickListener {
@@ -47,7 +48,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_reading_cache_error
+            checkedView?.isChecked = true
         }
 
         dialog.rl_feedback_chapter_content_repeat.setOnClickListener {
@@ -57,7 +59,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_content_repeat
+            checkedView?.isChecked = true
         }
 
         dialog.rl_feedback_chapter_sequence_error.setOnClickListener {
@@ -67,7 +70,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_sequence_error
+            checkedView?.isChecked = true
         }
 
         dialog.rl_feedback_chapter_content_error.setOnClickListener {
@@ -77,7 +81,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_content_error
+            checkedView?.isChecked = true
         }
 
         dialog.rl_feedback_typesetting_error.setOnClickListener {
@@ -87,7 +92,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_typesetting_error
+            checkedView?.isChecked = true
         }
 
         dialog.rl_feedback_cache_fail.setOnClickListener {
@@ -97,7 +103,8 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_cache_fail
+            checkedView?.isChecked = true
         }
 
 
