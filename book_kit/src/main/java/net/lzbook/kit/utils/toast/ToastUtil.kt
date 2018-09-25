@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit
 object ToastUtil {
     private var mToast: Toast? = null
     @JvmField
-    val mainHandler = Handler(Looper.getMainLooper())
+    val mainLooperHandler = Handler(Looper.getMainLooper())
 
     /***
      * 主线程运行
      * **/
     fun runOnMain(run: () -> Unit) {
-        mainHandler.post {
+        mainLooperHandler.post {
             run.invoke()
         }
     }

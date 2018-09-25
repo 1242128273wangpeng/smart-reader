@@ -29,7 +29,6 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.theme.ThemeHelper
-import net.lzbook.kit.utils.toast.preventClickShake
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 

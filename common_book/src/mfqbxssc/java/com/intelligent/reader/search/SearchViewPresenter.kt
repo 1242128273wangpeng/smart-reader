@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.AdapterView
@@ -17,10 +16,12 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import java.util.*
 
 /**
@@ -31,7 +32,6 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
     private var hotWords: MutableList<HotWordBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
-    private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var gson: Gson? = null
     private var authorsBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean> = ArrayList()
     private var labelBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.LabelBean> = ArrayList()
@@ -48,7 +48,6 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
 
     init {
         gson = Gson()
-        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext()))
     }
 
     fun initHistoryData(context: Context?) {
@@ -128,8 +127,8 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
      */
 
     fun getCacheDataFromShare(hasNet: Boolean) {
-        if (sharedPreferencesUtils != null && !TextUtils.isEmpty(sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD))) {
-            val cacheHotWords = sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD)
+        if ( !TextUtils.isEmpty(SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD))) {
+            val cacheHotWords = SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD)
             val searchResult = gson!!.fromJson(cacheHotWords, SearchResult::class.java)
             if (searchResult != null) {
                 parseResult(searchResult)
@@ -139,7 +138,7 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                CommonUtil.showToastMessage("网络不给力哦")
+                ToastUtil.showToastMessage("网络不给力哦")
             }
             view?.showLinearParent(false)
         }

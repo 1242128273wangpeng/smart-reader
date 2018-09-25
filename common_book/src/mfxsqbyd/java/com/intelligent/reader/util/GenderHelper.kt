@@ -1,27 +1,22 @@
 package com.intelligent.reader.util
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.intelligent.reader.R
-import android.animation.AnimatorSet
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import android.view.ViewGroup
-
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.DecelerateInterpolator
-import android.widget.LinearLayout
-
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.antiShakeClick
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import java.util.HashMap
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import java.util.*
 
 /**
  * 类描述：男女选择帮助类
@@ -43,7 +38,6 @@ class GenderHelper(view: View) {
     private val mTxtStepIn: TextView = view.findViewById(R.id.tv_step_in)
     private val mLlGenderSection: LinearLayout = view.findViewById(R.id.ll_section_icon)
     lateinit var mGenderSelectedListener :onGenderSelectedListener
-    var shareUtil : SharedPreUtil?= null
 
     /*
      *动画持续时间
@@ -54,7 +48,6 @@ class GenderHelper(view: View) {
     val mTxtAlphaDuration = 1000L
 
     init {
-        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         initListener()
     }
 
@@ -129,7 +122,7 @@ class GenderHelper(view: View) {
      * 文字的动画
      */
     fun setTxtAnimation(){
-        shareUtil?.putInt(SharedPreUtil.GENDER_TAG, Constants.SGENDER)
+        SPUtils.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SGENDER)
         mTxtStepIn.visibility = View.INVISIBLE
         mTxtDesc.visibility = View.INVISIBLE
         val txtAniSet = AnimatorSet()

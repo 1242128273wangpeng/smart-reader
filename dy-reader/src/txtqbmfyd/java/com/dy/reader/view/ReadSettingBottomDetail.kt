@@ -14,7 +14,6 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
-import net.lzbook.kit.utils.toast.preventClickShake
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting

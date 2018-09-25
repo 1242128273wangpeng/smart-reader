@@ -13,13 +13,13 @@ import android.view.WindowManager
 
 import com.alibaba.android.arouter.facade.annotation.Route
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.mainLooperHandler
 import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.activity_switch_ad.*
+import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler
 
 @Route(path = RouterConfig.SWITCH_AD_ACTIVITY)
 class SwitchADActivity : Activity() {

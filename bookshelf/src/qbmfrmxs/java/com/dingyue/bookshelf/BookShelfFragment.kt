@@ -15,25 +15,22 @@ import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
 import com.dingyue.bookshelf.view.RemoveMenuPopup
-
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.qbmfrmxs.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.qbmfrmxs.frag_bookshelf.*
 import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
-
 import net.lzbook.kit.constants.Constants
-
 import net.lzbook.kit.service.CheckNovelUpdateService
-import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
@@ -318,7 +315,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             srl_refresh.isRefreshing = false
 
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             return
         }
@@ -331,7 +328,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             srl_refresh.onRefreshComplete()
 
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             // 刷新间隔大于30秒直接请求更新，
@@ -391,7 +388,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (isAdded && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -423,7 +420,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             updateUI()
             bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
-            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_delete_success)
+            ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
         }
     }
 
@@ -433,7 +430,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         if (updateCount == 0) {
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             val bookName = firstBook?.book_name
@@ -441,13 +438,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
                 if (updateCount == 1 && activity != null) {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage(
+                        ToastUtil.showToastMessage(
                                 "《$bookName${activity?.getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",
                                 2000L)
                     }
                 } else {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage(
+                        ToastUtil.showToastMessage(
                                 "《$bookName${activity?.getString(R.string.bookshelf_books_update_more)}"
                                         + "$updateCount${activity?.getString(R.string.bookshelf_books_update_chapters)}",
                                 2000L)

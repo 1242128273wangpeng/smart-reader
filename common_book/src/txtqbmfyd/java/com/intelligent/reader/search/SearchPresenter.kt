@@ -12,12 +12,6 @@ import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestService
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.utils.book.CommonContract
-import net.lzbook.kit.base.IPresenter
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.FindBookDetail
@@ -26,16 +20,22 @@ import com.intelligent.reader.presenter.search.SearchView
 import com.orhanobut.logger.Logger
 import io.reactivex.disposables.Disposable
 import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.book.FootprintUtils
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.oneclick.OneClickUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.book.FootprintUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
-import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
@@ -58,10 +58,8 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
     private var searchSuggestCallBack: SearchSuggestCallBack? = null
     private var transmitBean: SearchAutoCompleteBeanYouHua? = null
     private var disposable: Disposable? = null
-    private var shareUtil: SharedPreUtil? = null
 
     init {
-        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
     }
     fun startSearchSuggestData(searchWord: String?) {
         var searchWord = searchWord
@@ -286,13 +284,13 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
         }
 
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
             try {
                 if (url.contains(RequestService.AUTHOR_V4)) {
-                    shareUtil!!.putString(Constants.FINDBOOK_SEARCH,
+                    SPUtils.putDefaultSharedString(Constants.FINDBOOK_SEARCH,
                             "author")//FindBookDetail 返回键时标识
                 }
                 val intent = Intent()
@@ -387,7 +385,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
             if (succeed > 0) {
-                mContext.showToastMessage(R.string.bookshelf_insert_success)
+                ToastUtil.showToastMessage(R.string.bookshelf_insert_success)
             }
         }
 
@@ -396,7 +394,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
             CacheManager.stop(book_id)
             CacheManager.resetTask(book_id)
-            mContext.showToastMessage(R.string.bookshelf_delete_success)
+            ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
         }
 
     }
@@ -440,7 +438,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
                 params.put("author", searchWord)
                 mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord
                 try {
-                    shareUtil?.putString(Constants.FINDBOOK_SEARCH, "author")//FindBookDetail 返回键时标识
+                    SPUtils.putDefaultSharedString(Constants.FINDBOOK_SEARCH, "author")//FindBookDetail 返回键时标识
                     SearchBookActivity.isSatyHistory= true
                     val intent = Intent()
                     intent.setClass(mContext, FindBookDetail::class.java)

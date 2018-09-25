@@ -42,14 +42,15 @@ import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.File
@@ -74,7 +75,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var guideDownload: Boolean = true
 
-    private lateinit var sharedPreUtil: SharedPreUtil
 
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
@@ -130,7 +130,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         setContentView(R.layout.act_home)
 
         versionCode = AppUtils.getVersionCode()
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         initView()
         initGuide()
@@ -251,19 +250,19 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
         }
 
         tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "top")
             HomeLogger.uploadHomeRankSelected()
         }
 
         tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "class")
             HomeLogger.uploadHomeCategorySelected()
         }
 
@@ -292,8 +291,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     private fun initGuide() {
-        val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
-        if (!sharedPreUtil.getBoolean(key)) {
+        val key = SPKey.BOOKSHELF_GUIDE_TAG
+        if (!SPUtils.getDefaultSharedBoolean(key)) {
             ll_guide_layout.visibility = View.VISIBLE
             iv_guide_remove.visibility = View.VISIBLE
             ll_guide_layout.setOnClickListener {
@@ -302,7 +301,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     iv_guide_remove.visibility = View.GONE
                     guideDownload = false
                 } else {
-                    sharedPreUtil.putBoolean(key, true)
+                    SPUtils.putDefaultSharedBoolean(key, true)
                     iv_guide_download.visibility = View.GONE
                     ll_guide_layout.visibility = View.GONE
                 }
@@ -380,7 +379,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun checkUrlDevelop() {
         if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
-            this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
+            ToastUtil.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
 
@@ -410,7 +409,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         BACK_COUNT++
 
         if (BACK_COUNT == 1) {
-            this.showToastMessage(R.string.mian_click_tiwce_exit)
+            ToastUtil.showToastMessage(R.string.mian_click_tiwce_exit)
         } else if (BACK_COUNT > 1 && !closed) {
             closed = true
             restoreSystemDisplayState()
@@ -449,7 +448,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
@@ -468,7 +467,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
 
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
 
@@ -485,7 +484,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         //为webview 加载广告提供回调
         jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onWebGameClick
                 }
                 var title = ""
@@ -508,7 +507,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             AppLog.e("福利中心", "下载游戏: $name : $url")
 
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onGameAppClick
                 }
                 val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)

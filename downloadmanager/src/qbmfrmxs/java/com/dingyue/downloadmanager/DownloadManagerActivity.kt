@@ -15,11 +15,11 @@ import com.dingyue.downloadmanager.contract.CacheManagerContract
 import kotlinx.android.synthetic.qbmfrmxs.act_download_manager.*
 import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CallBackDownload
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 
@@ -62,7 +62,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         val popup = DownloadManagerMenuPopup(this)
         popup.setOnEditClickListener {
             if (nbs_navigation.checkScrollState()) {
-                showToastMessage("当前页面位置不正确！")
+                ToastUtil.showToastMessage("当前页面位置不正确！")
             } else {
                 showMenu()
             }
@@ -99,7 +99,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload, Downl
         }
 
         txt_head_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_head_select_all.text == getString(R.string.select_all)) {

@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -47,8 +46,8 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.sp.SPUtils;
+import net.lzbook.kit.utils.toast.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,7 +87,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
     private SearchHelper mSearchHelper;
     private String suggest;
     private String searchType;
-    private SharedPreferencesUtils sharedPreferencesUtils;
     private Gson gson;
 
     private SearchCommonBeanYouHua searchCommonBean;
@@ -148,8 +146,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
     private void init(Context context, Activity activity, ViewGroup rootLayout, EditText
             searchEditText) {
         gson = new Gson();
-        sharedPreferencesUtils = new SharedPreferencesUtils(
-                PreferenceManager.getDefaultSharedPreferences(context));
         mContext = context;
         this.activity = activity;
         mRootLayout = rootLayout;
@@ -404,7 +400,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
                         if (value != null && value.getData() != null) {
                             linear_root.setVisibility(View.VISIBLE);
                             SearchResult result = value.getData();
-                            sharedPreferencesUtils.putString(Constants.SERARCH_HOT_WORD_YOUHUA,
+                            SPUtils.INSTANCE.putDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA,
                                     gson.toJson(result, SearchResult.class));
                             initHotWordList(result);
 
@@ -468,9 +464,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
     private void getCacheDataFromShare(boolean hasNet) {
         if (!TextUtils.isEmpty(
-                sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
-            String cacheHotWords = sharedPreferencesUtils.getString(
-                    Constants.SERARCH_HOT_WORD_YOUHUA);
+                SPUtils.INSTANCE.getDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA,""))) {
+            String cacheHotWords = SPUtils.INSTANCE.getDefaultSharedString(
+                    Constants.SERARCH_HOT_WORD_YOUHUA,"");
             SearchResult searchResult = gson.fromJson(cacheHotWords, SearchResult.class);
             if (searchResult != null) {
                 linear_root.setVisibility(View.VISIBLE);
@@ -481,7 +477,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
         } else {
             if (!hasNet) {
-                CommonUtil.showToastMessage("网络不给力哦");
+                ToastUtil.INSTANCE.showToastMessage("网络不给力哦");
             }
             linear_root.setVisibility(View.GONE);
         }

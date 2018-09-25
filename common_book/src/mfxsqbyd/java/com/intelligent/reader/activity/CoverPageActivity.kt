@@ -30,7 +30,7 @@ import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.LoadingPage
 import java.text.DecimalFormat
 import java.util.*
@@ -303,7 +303,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (loadingPage != null) {
             loadingPage?.onError()
         }
-        CommonUtil.showToastMessage("请求失败！")
+        ToastUtil.showToastMessage("请求失败！")
     }
 
     override fun showLoadingSuccess() {
@@ -385,7 +385,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             }
         } else {
-            CommonUtil.showToastMessage(R.string.book_cover_no_resource)
+            ToastUtil.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }

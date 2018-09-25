@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -16,21 +15,22 @@ import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import net.lzbook.kit.base.IPresenter
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.SearchBookActivity
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.widget.ConfirmDialog
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -42,7 +42,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
-    private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var gson: Gson? = null
     private var authorsBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean> = ArrayList()
     private var labelBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.LabelBean> = ArrayList()
@@ -57,7 +56,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
     init {
         gson = Gson()
-        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext()))
     }
 
     fun initHistoryData(context: Context?) {
@@ -148,16 +146,16 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
      * if hasn't net getData from sharepreferenecs cache
      */
     fun getCacheDataFromShare(hasNet: Boolean) {
-        if (!TextUtils.isEmpty(sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD))) {
+        if (!TextUtils.isEmpty(SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD))) {
             view?.showLinearParent(true)
             hotWords!!.clear()
-            val cacheHotWords = sharedPreferencesUtils!!.getString(Constants.SERARCH_HOT_WORD)
+            val cacheHotWords = SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD)
             val searchHotBean = gson!!.fromJson(cacheHotWords, SearchHotBean::class.java)
             parseResult(searchHotBean, false)
             AppLog.e("urlbean", cacheHotWords)
         } else {
             if (!hasNet) {
-                BookApplication.getGlobalContext().showToastMessage("网络不给力哦！", 0L)
+                ToastUtil.showToastMessage("网络不给力哦！", 0L)
             }
             view?.showLinearParent(false)
         }
@@ -173,11 +171,11 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             if (hotWords != null && hotWords!!.size >= 0) {
                 view?.showLinearParent(true)
                 if (hasNet) {
-                    sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, gson!!.toJson(value, SearchHotBean::class.java))
+                    SPUtils.putDefaultSharedString(Constants.SERARCH_HOT_WORD, gson!!.toJson(value, SearchHotBean::class.java))
                 }
                 view?.setHotWordAdapter(hotWords)
             } else {
-                sharedPreferencesUtils!!.putString(Constants.SERARCH_HOT_WORD, "")
+                SPUtils.putDefaultSharedString(Constants.SERARCH_HOT_WORD, "")
                 view?.showLinearParent(false)
             }
         }

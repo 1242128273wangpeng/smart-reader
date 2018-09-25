@@ -7,32 +7,26 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
-
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
-import com.dy.reader.R.id.*
 import com.dy.reader.adapter.BookEndAdapter
 import com.dy.reader.dialog.BookEndChangeSourceDialog
 import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
-
 import kotlinx.android.synthetic.qbmfkdxs.act_book_end.*
 import kotlinx.android.synthetic.qbmfkdxs.layout_book_end_new_books.*
 import kotlinx.android.synthetic.qbmfkdxs.layout_book_end_recommend_books.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.BaseCacheableActivity
-
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.logger.AppLog
-
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.CommonUtil.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.BookRecommender
 import net.lzbook.kit.widget.LoadingPage
-import org.antlr.v4.runtime.misc.MurmurHash.finish
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -91,7 +85,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 右上角换源按钮
         txt_change_source.setOnClickListener {
             if (sourceList.isEmpty()) {
-                showToastMessage("本书暂无其他来源")
+                ToastUtil.showToastMessage("本书暂无其他来源")
             } else {
                 changeSourceDialog.show(sourceList)
             }

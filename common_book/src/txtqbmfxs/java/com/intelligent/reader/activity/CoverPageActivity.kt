@@ -34,7 +34,7 @@ import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
@@ -267,7 +267,7 @@ class CoverPageActivity : BaseCacheableActivity(),
                 }
             }
         } else {
-            this.applicationContext.showToastMessage(R.string.book_cover_no_resource)
+            ToastUtil.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }

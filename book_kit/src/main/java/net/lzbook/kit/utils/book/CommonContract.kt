@@ -2,10 +2,10 @@ package net.lzbook.kit.utils.book
 
 import com.ding.basic.bean.Book
 import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.SettingItemsHelper
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.DownloadState
 import java.io.Serializable
 import java.util.*
 
@@ -76,34 +76,6 @@ object CommonContract {
             } else 0
         }
     }
-
-    /***
-     * 防止按钮两次点击
-     * **/
-    fun isDoubleClick(time: Long): Boolean {
-        val interval = time - lastClickTime
-        return if (interval > 800) {
-            lastClickTime = time
-            false
-        } else {
-            true
-        }
-    }
-
-    /***
-     * 防止阅读页音量键按钮两次点击
-     * **/
-    fun isVolumDoubleClick(time: Long): Boolean {
-        val interval = time - lastClickTime
-        return if (interval > 300) {
-            lastClickTime = time
-            false
-        } else {
-            true
-        }
-    }
-
-
     /***
      * 书架排序
      * **/

@@ -24,27 +24,27 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
-import net.lzbook.kit.utils.book.CommonContract;
-import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 
-import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.download.CacheManager;
-import net.lzbook.kit.widget.LoadingPage;
-import net.lzbook.kit.utils.webview.UrlUtils;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.oneclick.OneClickUtil;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
+import net.lzbook.kit.utils.webview.UrlUtils;
+import net.lzbook.kit.widget.LoadingPage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.lzbook.kit.base.activity.FrameActivity;
-import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 
 import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
@@ -69,7 +69,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private Handler handler;
-    private SharedPreUtil sharedPreUtil;
     private String fromType = "";
     private PagerDesc mPagerDesc;
     private int h5Margin;
@@ -101,8 +100,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             onBackPressed();
             return;
         }
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-        fromType = sharedPreUtil.getString(SharedPreUtil.HOME_FINDBOOK_SEARCH,
+        fromType = SPUtils.INSTANCE.getDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH,
                 "other");
         AppUtils.disableAccessibility(this);
         initView();
@@ -404,7 +402,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             @Override
             public void doSearch(String keyWord, String search_type, String filter_type,
                     String filter_word, String sort_type) {
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 try {
@@ -440,7 +438,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     final String parameter, final String extra_parameter) {
                 AppLog.e(TAG, "doCover");
 
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 Map<String, String> data = new HashMap<>();
@@ -467,7 +465,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             public void doAnotherWeb(String url, String name) {
                 AppLog.e(TAG, "doAnotherWeb");
                 String packageName = AppUtils.getPackageName();
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 if ("cc.kdqbxs.reader".equals(packageName)

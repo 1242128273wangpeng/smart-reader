@@ -21,20 +21,22 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.intelligent.reader.R
-import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.presenter.search.SearchView
+import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.util.SearchViewHelper
-import net.lzbook.kit.base.activity.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.widget.LoadingPage
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
@@ -539,7 +541,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     keyword = search_result_input!!.text.toString()
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-                    this.showToastMessage(R.string.search_click_check_isright)
+                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
                 } else {
                     hideInputMethod(search_result_input)
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim { it <= ' ' }) && searchViewHelper != null) {
@@ -689,7 +691,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 keyword = search_result_input!!.text.toString()
             }
             if (keyword != null && keyword.trim { it <= ' ' } == "") {
-                this.showToastMessage(R.string.search_click_check_isright)
+                ToastUtil.showToastMessage(R.string.search_click_check_isright)
             } else {
 
                 hideInputMethod(v)

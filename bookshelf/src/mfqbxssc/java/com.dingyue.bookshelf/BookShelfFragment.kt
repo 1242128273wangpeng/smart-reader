@@ -14,19 +14,22 @@ import com.dingyue.bookshelf.view.*
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.mfqbxssc.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfqbxssc.frag_bookshelf.*
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.bean.BookUpdateResult
+import net.lzbook.kit.bean.UpdateCallBack
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.service.CheckNovelUpdateService
-
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.widget.ApplicationShareDialog
 import net.lzbook.kit.widget.ConsumeEvent
 import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
@@ -73,7 +76,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         popup.onDetailClickListener = {
             if (bookShelfAdapter.selectedBooks.size == 0) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_detail_book_empty_prompt)
+                ToastUtil.showToastMessage(R.string.bookshelf_detail_book_empty_prompt)
             } else {
                 bookShelfDetailPopup.show(rl_content, bookShelfAdapter.selectedBooks)
             }
@@ -217,7 +220,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         txt_editor_select_all.setOnClickListener {
 
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_editor_select_all.text == getString(R.string.select_all)) {
@@ -248,8 +251,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
 
         if (!requireActivity().isFinishing) {
-            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-            val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+            val share = SPUtils.getDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION)
 
             if (share) {
                 view_head_prompt.visibility = View.GONE
@@ -341,7 +343,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             srl_refresh.isRefreshing = false
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             return
         }
@@ -353,7 +355,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (interval <= PULL_REFRESH_DELAY) {
             srl_refresh.onRefreshComplete()
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             // 刷新间隔大于30秒直接请求更新，
@@ -390,7 +392,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null && !activity!!.isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (isAdded) {
-                activity!!.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -428,7 +430,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
         if (updateCount == 0) {
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             val bookName = firstBook?.book_name
@@ -436,13 +438,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
                 if (updateCount == 1 && activity != null) {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage(
+                        ToastUtil.showToastMessage(
                                 "《$bookName${requireActivity().getString(R.string.bookshelf_book_update_chapter)}" + bookLastChapterName,
                                 2000L)
                     }
                 } else if (activity != null) {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage(
+                        ToastUtil.showToastMessage(
                                 "《$bookName${requireActivity().getString(R.string.bookshelf_books_update_more)}" + "$updateCount${requireActivity().getString(R.string.bookshelf_books_update_chapters)}",
                                 2000L)
                     }

@@ -33,8 +33,7 @@ import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.widget.FirstUsePointView;
@@ -66,7 +65,6 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     private TextView txt_head_title;
     private ImageView img_head_search;
     private ImageView img_head_download_manage;
-    private SharedPreUtil sharedPreUtil;
     private int bottomType;//青果打点搜索 2 推荐  3 榜单
 
     @Override
@@ -81,7 +79,6 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         AppLog.e(TAG, "----------->start");
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -503,7 +500,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             swipeRefreshLayout.setRefreshing(false);
-            CommonUtil.showToastMessage("网络不给力");
+            ToastUtil.INSTANCE.showToastMessage("网络不给力");
             return;
         }
 

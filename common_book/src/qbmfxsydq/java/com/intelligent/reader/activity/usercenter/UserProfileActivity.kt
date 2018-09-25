@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.intelligent.reader.R
@@ -14,12 +13,12 @@ import com.intelligent.reader.util.TakePictureManager
 import com.intelligent.reader.view.BottomDialog
 import com.intelligent.reader.view.MenuItem
 import com.intelligent.reader.view.login.LoadingDialog
-import kotlinx.android.synthetic.qbmfxsydq.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_user_profile.*
+import kotlinx.android.synthetic.qbmfxsydq.publish_hint_dialog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.utils.logi
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.Platform
 import net.lzbook.kit.utils.user.UserManagerV4
 import net.lzbook.kit.widget.MyDialog
@@ -68,16 +67,16 @@ class UserProfileActivity : BaseCacheableActivity() {
                         editIntent.putExtra("userName", txt_user_name.text)
                         startActivity(editIntent)
                     } else {
-                        showToastMessage("剩余 ${result!!.data!!.remainingDays} 天可修改昵称")
+                        ToastUtil.showToastMessage("剩余 ${result!!.data!!.remainingDays} 天可修改昵称")
                     }
                     loadingDialog.dismiss()
 
                 } else {
                     loadingDialog.dismiss()
                     if (result != null) {
-                        showToastMessage(result.message.toString())
+                        ToastUtil.showToastMessage(result.message.toString())
                     } else {
-                        showToastMessage(resources.getString(R.string.net_work_error))
+                        ToastUtil.showToastMessage(resources.getString(R.string.net_work_error))
                     }
 
                 }
@@ -158,7 +157,7 @@ class UserProfileActivity : BaseCacheableActivity() {
             }
 
             override fun failed(errorCode: Int, deniedPermissions: MutableList<String>?) {
-                showToastMessage("选择图片错误")
+                ToastUtil.showToastMessage("选择图片错误")
                 loadingDialog.dismiss()
             }
         })
@@ -178,7 +177,7 @@ class UserProfileActivity : BaseCacheableActivity() {
             }
 
             override fun failed(errorCode: Int, deniedPermissions: MutableList<String>?) {
-                showToastMessage("选择图片错误")
+                ToastUtil.showToastMessage("选择图片错误")
                 loadingDialog.dismiss()
             }
         })
@@ -199,9 +198,9 @@ class UserProfileActivity : BaseCacheableActivity() {
             } else {
                 loadingDialog.dismiss()
                 if (result != null) {
-                    showToastMessage(result.message!!)
+                    ToastUtil.showToastMessage(result.message!!)
                 } else {
-                    showToastMessage("网络不给力哦，请稍后再试")
+                    ToastUtil.showToastMessage("网络不给力哦，请稍后再试")
                 }
             }
 
@@ -233,9 +232,9 @@ class UserProfileActivity : BaseCacheableActivity() {
                         } else {
                             loadingDialog.dismiss()
                             if (result != null) {
-                                showToastMessage(result.message.toString())
+                                ToastUtil.showToastMessage(result.message.toString())
                             } else {
-                                showToastMessage(resources.getString(R.string.net_work_error))
+                                ToastUtil.showToastMessage(resources.getString(R.string.net_work_error))
                             }
 
                         }
@@ -258,7 +257,7 @@ class UserProfileActivity : BaseCacheableActivity() {
                     when (position) {
                         1 -> {
                             if (!UserManagerV4.isPlatformEnable(Platform.WECHAT)) {
-                                showToastMessage("请安装微信后重试")
+                                ToastUtil.showToastMessage("请安装微信后重试")
                                 return@setOnMenuClickListener
                             }
                             showProgressDialog()
@@ -308,12 +307,12 @@ class UserProfileActivity : BaseCacheableActivity() {
                 StartLogClickUtil.PROFILE, StartLogClickUtil.BINDOTHERLOGIN, data)
         UserManagerV4.thirdLogin(this, platform, true,
                 onSuccess = { it ->
-                    showToastMessage(getString(R.string.bind_success))
+                    ToastUtil.showToastMessage(getString(R.string.bind_success))
                     UserManagerV4.updateUser(it.data!!)
                     dismissProgressDialog()
                 },
                 onFailure = { t ->
-                    showToastMessage(t)
+                    ToastUtil.showToastMessage(t)
                     dismissProgressDialog()
                 })
     }

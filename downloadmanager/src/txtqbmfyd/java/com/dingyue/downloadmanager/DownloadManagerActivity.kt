@@ -9,17 +9,18 @@ import android.view.Menu
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-import net.lzbook.kit.utils.book.CommonContract
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
-import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_download_manager.*
 import kotlinx.android.synthetic.txtqbmfyd.item_download_manager_task_header.view.*
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
-import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -133,7 +134,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             finish()
         }
         txt_head_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_head_select_all.text == getString(R.string.select_all)) {

@@ -35,7 +35,7 @@ import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.widget.LoadingPage
@@ -551,7 +551,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                     keyword = search_result_input!!.text.toString()
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-                    this.showToastMessage(R.string.search_click_check_isright)
+                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
                 } else {
                     hideInputMethod(search_result_input)
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim { it <= ' ' }) && searchViewHelper != null) {
@@ -696,7 +696,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 keyword = search_result_input!!.text.toString()
             }
             if (keyword != null && keyword.trim { it <= ' ' } == "") {
-                this.showToastMessage(R.string.search_click_check_isright)
+                ToastUtil.showToastMessage(R.string.search_click_check_isright)
             } else {
                 searchViewHelper!!.mSearchViewPresenter!!.isFocus = false
                 hideInputMethod(v)

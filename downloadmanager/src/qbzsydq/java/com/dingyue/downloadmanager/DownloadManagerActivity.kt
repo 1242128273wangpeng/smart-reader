@@ -23,7 +23,7 @@ import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 
@@ -312,7 +312,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
             DownloadManagerLogger.uploadCacheManagerEditDelete(books)
         } else {
-            this.showToastMessage(R.string.download_manager_delete_empty)
+            ToastUtil.showToastMessage(R.string.download_manager_delete_empty)
         }
     }
 

@@ -9,18 +9,18 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_header.view.*
-import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
-import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 
 class ReadSettingHeader : FrameLayout{
@@ -87,14 +87,14 @@ class ReadSettingHeader : FrameLayout{
             val data = HashMap<String, String>()
             when (result) {
                 1 -> {
-                    v.context.applicationContext.showToastMessage("书签添加成功")
+                    ToastUtil.showToastMessage("书签添加成功")
                     isMarkPage = true
                     ibtn_reader_bookmark.isSelected = true
                     data["type"] = "1"
                     ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_checked_icon)
                 }
                 2 -> {
-                    v.context.applicationContext.showToastMessage("书签已删除")
+                    ToastUtil.showToastMessage("书签已删除")
                     isMarkPage = false
                     ibtn_reader_bookmark.isSelected = false
                     data["type"] = "2"
@@ -102,7 +102,7 @@ class ReadSettingHeader : FrameLayout{
 
                 }
                 else -> {
-                    v.context.applicationContext.showToastMessage("书签添加失败")
+                    ToastUtil.showToastMessage("书签添加失败")
                 }
             }
             StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)

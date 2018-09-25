@@ -5,7 +5,6 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
@@ -35,8 +34,8 @@ import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.LoadingPage
 import java.lang.ref.WeakReference
 import java.util.*
@@ -94,7 +93,6 @@ class SearchViewHelper(activity: Activity,
     private var mSearchEditText: EditText? = null
     internal var tv_clear_history_search_view: TextView? = null
 
-    private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var gson: Gson? = null
 
     private var mShouldShowHint = true
@@ -116,8 +114,6 @@ class SearchViewHelper(activity: Activity,
         mSearchEditText = searchEditText
 
         gson = Gson()
-        sharedPreferencesUtils = SharedPreferencesUtils(
-                PreferenceManager.getDefaultSharedPreferences(activity))
 
         showSearchHistory()
         initSuggestListView()
@@ -435,7 +431,7 @@ class SearchViewHelper(activity: Activity,
                     override fun requestResult(result: Result<SearchResult>?) {
                         result?.let {
                             val data = it.data
-                            sharedPreferencesUtils?.putString(Constants.SERARCH_HOT_WORD_YOUHUA, gson?.toJson(data, SearchResult::class.java))
+                            SPUtils.putDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA, gson?.toJson(data, SearchResult::class.java))
                             showHotWordsList(data)
                         }
 
@@ -521,8 +517,8 @@ class SearchViewHelper(activity: Activity,
      */
     fun getCacheDataFromShare(hasNet: Boolean) {
         if (!TextUtils.isEmpty(
-                sharedPreferencesUtils?.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
-            val cacheHotWords = sharedPreferencesUtils?.getString(
+                SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
+            val cacheHotWords =  SPUtils.getDefaultSharedString(
                     Constants.SERARCH_HOT_WORD_YOUHUA)
             val searchResult = gson?.fromJson(cacheHotWords, SearchResult::class.java)
             if (searchResult != null) {
@@ -533,7 +529,7 @@ class SearchViewHelper(activity: Activity,
 
         } else {
             if (!hasNet) {
-                CommonUtil.showToastMessage("网络不给力哦")
+                ToastUtil.showToastMessage("网络不给力哦")
             }
             initVisibilityView(isHotAndRecommendView = false)
         }

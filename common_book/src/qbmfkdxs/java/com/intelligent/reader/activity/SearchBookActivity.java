@@ -34,7 +34,7 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.widget.HWEditText;
@@ -551,7 +551,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                     keyword = search_result_input.getText().toString();
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim())) {
-                    CommonUtil.showToastMessage(R.string.search_click_check_isright);
+                    ToastUtil.INSTANCE.showToastMessage(R.string.search_click_check_isright);
                 } else {
                     hideInputMethod(search_result_input);
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim()) && searchViewHelper != null) {
@@ -690,7 +690,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 keyword = search_result_input.getText().toString();
             }
             if (keyword != null && keyword.trim().equals("")) {
-                CommonUtil.showToastMessage(R.string.search_click_check_isright);
+                ToastUtil.INSTANCE.showToastMessage(R.string.search_click_check_isright);
             } else {
 
                 hideInputMethod(v);

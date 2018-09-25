@@ -26,11 +26,11 @@ import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.user.UserManagerV4
 import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
-import java.util.HashMap
+import java.util.*
 
 /**
  * 书架页Fragment
@@ -265,7 +265,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             srl_refresh.isRefreshing = false
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             return
         }
@@ -277,7 +277,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (interval <= PULL_REFRESH_DELAY) {
             srl_refresh.onRefreshComplete()
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             // 刷新间隔大于30秒直接请求更新，
@@ -313,7 +313,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (isAdded && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -356,7 +356,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
         if (updateCount == 0) {
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             val bookName = firstBook?.book_name
@@ -364,12 +364,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
                 if (updateCount == 1) {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage("《$bookName${requireActivity().getString(R.string.bookshelf_book_update_chapter)}" + bookLastChapterName,
+                        ToastUtil.showToastMessage("《$bookName${requireActivity().getString(R.string.bookshelf_book_update_chapter)}" + bookLastChapterName,
                                 2000L)
                     }
                 } else {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage("《$bookName${requireActivity().getString(R.string.bookshelf_books_update_more)}" + "$updateCount${requireActivity().getString(R.string.bookshelf_books_update_chapters)}",
+                        ToastUtil.showToastMessage("《$bookName${requireActivity().getString(R.string.bookshelf_books_update_more)}" + "$updateCount${requireActivity().getString(R.string.bookshelf_books_update_chapters)}",
                                 2000L)
                     }
                 }

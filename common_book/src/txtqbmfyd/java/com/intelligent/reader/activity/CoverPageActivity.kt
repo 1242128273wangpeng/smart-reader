@@ -13,25 +13,25 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
-import net.lzbook.kit.utils.router.BookRouter
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
 import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
-import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.download.CallBackDownload
-import net.lzbook.kit.utils.download.DownloadState
-import net.lzbook.kit.widget.LoadingPage
-import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.download.CallBackDownload
+import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.widget.LoadingPage
 import java.text.DecimalFormat
 import java.text.MessageFormat
 import java.util.*
@@ -300,7 +300,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (loadingPage != null) {
             loadingPage?.onError()
         }
-        this.showToastMessage("请求失败！")
+        ToastUtil.showToastMessage("请求失败！")
     }
 
     override fun showLoadingSuccess() {
@@ -389,7 +389,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
         } else {
-            this.showToastMessage(R.string.book_cover_no_resource)
+            ToastUtil.showToastMessage(R.string.book_cover_no_resource)
 
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()

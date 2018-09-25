@@ -9,7 +9,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -33,9 +32,10 @@ import net.lzbook.kit.utils.cache.UIHelper
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.theme.ThemeMode
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.widget.ConsumeEvent
 import net.lzbook.kit.widget.MyDialog
@@ -210,7 +210,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             bt_night_shift!!.isChecked = false
         }
 
-        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
+        bt_wifi_auto!!.isChecked = SPUtils.getDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, true)
 
         startWelfareCenterAnim()
     }
@@ -399,7 +399,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                 } catch (e: Exception) {
-                    this.applicationContext.showToastMessage(R.string.menu_no_market)
+                    ToastUtil.showToastMessage(R.string.menu_no_market)
                 }
 
             }
@@ -573,8 +573,6 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
     //夜间模式切换按钮的回调
     override fun onCheckedChanged(view: SwitchButton, isChecked: Boolean) {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val edit = sharedPreferences.edit()
         if (view.id == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE)
             ReaderSettings.instance.initValues()
@@ -591,8 +589,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
-            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
-            edit.apply()
+            SPUtils.putDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, isChecked)
             val data = HashMap<String, String>()
             data["type"] = if (isChecked) "1" else "0"
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)

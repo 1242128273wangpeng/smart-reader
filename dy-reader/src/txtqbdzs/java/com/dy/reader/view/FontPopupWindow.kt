@@ -7,7 +7,6 @@ import android.support.v7.widget.SimpleItemAnimator
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-
 import com.dy.reader.R
 import com.dy.reader.adapter.FontAdapter
 import com.dy.reader.helper.DrawTextHelper
@@ -19,8 +18,9 @@ import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BasePopup
 import net.lzbook.kit.utils.loge
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -40,7 +40,6 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
     private val fontList = arrayListOf<FontData>()
     private val fontAdapter = FontAdapter(fontList)
     private val fontDownLoadService = FontDownLoadService()
-    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     var fontProgressMap: HashMap<String, Int>? = null
         get() {
@@ -76,7 +75,7 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                     TypefaceUtil.loadTypeface(typeface)?.let {
                         DrawTextHelper.setTypeFace(it)
                     }
-                    sharedPreUtil.putString(SharedPreUtil.READER_TYPE_FACE, data.name)
+                    SPUtils.putDefaultSharedString(SPKey.READER_TYPE_FACE, data.name)
 
                     uploadUseFontLog(typeface)
                 }
@@ -160,7 +159,7 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
                 loge("popup progress: ${event.progress}")
                 font.progress = -1
                 fontAdapter.notifyItemChanged(event.fontPosition)
-                context.showToastMessage("下载字体失败")
+                ToastUtil.showToastMessage("下载字体失败")
             }
         }
     }

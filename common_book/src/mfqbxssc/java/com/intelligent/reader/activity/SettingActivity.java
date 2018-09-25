@@ -1,17 +1,13 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
-
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,27 +22,31 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.baidu.mobstat.StatService;
 import com.bumptech.glide.Glide;
 import com.ding.basic.bean.LoginResp;
-
-import net.lzbook.kit.base.activity.BaseCacheableActivity;
-import net.lzbook.kit.utils.cache.UIHelper;
-import net.lzbook.kit.utils.download.CacheManager;
-import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.router.RouterUtil;
 import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.cache.DataCleanManager;
+import net.lzbook.kit.base.activity.BaseCacheableActivity;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
-import net.lzbook.kit.utils.theme.ThemeMode;
-import net.lzbook.kit.utils.toast.CommonUtil;
-import net.lzbook.kit.utils.user.Platform;
-import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.utils.ApkUpdateUtils;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.ApkUpdateUtils;
+import net.lzbook.kit.utils.cache.DataCleanManager;
+import net.lzbook.kit.utils.cache.UIHelper;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
+import net.lzbook.kit.utils.theme.ThemeMode;
+import net.lzbook.kit.utils.toast.ToastUtil;
+import net.lzbook.kit.utils.user.Platform;
+import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.widget.ConsumeEvent;
+import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.widget.SwitchButton;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,10 +55,8 @@ import java.util.Map;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
-import net.lzbook.kit.widget.ConsumeEvent;
-import net.lzbook.kit.widget.MyDialog;
-import net.lzbook.kit.widget.SwitchButton;
+
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -188,8 +186,8 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             bt_night_shift.setChecked(false);
         }
 
-        bt_wifi_auto.setChecked(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-                SharedPreUtil.AUTO_UPDATE_CAHCE, true));
+        bt_wifi_auto.setChecked(SPUtils.INSTANCE.getDefaultSharedBoolean(
+                SPKey.AUTO_UPDATE_CAHCE, true));
 
         startWelfareCenterAnim();
     }
@@ -377,7 +375,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } catch (Exception e) {
-                    CommonUtil.showToastMessage(R.string.menu_no_market);
+                    ToastUtil.INSTANCE.showToastMessage(R.string.menu_no_market);
                 }
                 break;
 
@@ -524,7 +522,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             public void onClick(View v) {
                 dismissDialog();
                 if (!UserManager.INSTANCE.isPlatformEnable(Platform.WECHAT)) {
-                    CommonUtil.showToastMessage("请安装微信后重试");
+                    ToastUtil.INSTANCE.showToastMessage("请安装微信后重试");
                     return;
                 }
                 if (flagLoginEnd) {
@@ -685,9 +683,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     //夜间模式切换按钮的回调
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                getApplicationContext());
-        SharedPreferences.Editor edit = sharedPreferences.edit();
         if (view.getId() == R.id.bt_night_shift) {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                     StartLogClickUtil.NIGHTMODE);
@@ -707,8 +702,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             ReaderSettings.Companion.getInstance().save();
             nightShift(isChecked, true);
         } else if (view.getId() == R.id.bt_wifi_auto) {
-            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked);
-            edit.apply();
+            SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, isChecked);
             Map<String, String> data = new HashMap<>();
             data.put("type", isChecked ? "1" : "0");
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,

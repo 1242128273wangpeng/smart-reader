@@ -40,15 +40,15 @@ import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.AntiShake
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import java.io.File
 import java.util.*
@@ -248,7 +248,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         BACK_COUNT++
 
         if (BACK_COUNT == 1) {
-            this.showToastMessage(R.string.mian_click_tiwce_exit)
+            ToastUtil.showToastMessage(R.string.mian_click_tiwce_exit)
         } else if (BACK_COUNT > 1 && !isClosed) {
             isClosed = true
             restoreSystemDisplayState()
@@ -286,7 +286,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@setOnSearchClick
                 }
                 val data = HashMap<String, String>()
@@ -311,7 +311,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             }
         }
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
@@ -330,7 +330,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
 
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
 
@@ -346,7 +346,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         //为webview 加载广告提供回调
         jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onWebGameClick
                 }
                 var title = ""
@@ -369,7 +369,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             AppLog.e("福利中心", "下载游戏: $name : $url")
 
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onGameAppClick
                 }
                 val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)

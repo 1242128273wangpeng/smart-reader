@@ -12,7 +12,7 @@ import com.intelligent.reader.view.login.LoadingDialog
 import kotlinx.android.synthetic.qbmfxsydq.act_edit_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.BaseCacheableActivity
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManagerV4
 import java.util.regex.Pattern
 
@@ -57,7 +57,7 @@ class EditUserProfileActivity : BaseCacheableActivity() {
                         UserManagerV4.updateUser(it)
                     }
                     loadingDialog.dismiss()
-                    showToastMessage(getString(R.string.edit_success))
+                    ToastUtil.showToastMessage(getString(R.string.edit_success))
                     finish()
 
                 } else {
@@ -66,9 +66,9 @@ class EditUserProfileActivity : BaseCacheableActivity() {
                             StartLogClickUtil.PROFILE, StartLogClickUtil.NICKNAME, data)
                     loadingDialog.dismiss()
                     if (result != null) {
-                        showToastMessage(result.message.toString())
+                        ToastUtil.showToastMessage(result.message.toString())
                     } else {
-                        showToastMessage(resources.getString(R.string.net_work_error))
+                        ToastUtil.showToastMessage(resources.getString(R.string.net_work_error))
                     }
                 }
 

@@ -11,7 +11,7 @@ import com.intelligent.reader.view.login.MobileNumberEditText
 import kotlinx.android.synthetic.qbmfxsydq.act_bind_phone.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.BaseCacheableActivity
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManagerV4
 
 /**
@@ -98,10 +98,10 @@ class BindPhoneActivity : BaseCacheableActivity() {
             etxt_verify_code.showKeyboard()
             UserManagerV4.requestSmsCode(number) { success, result ->
                 if (success) {
-                    showToastMessage(getString(R.string.fetch_sms_code_success))
+                    ToastUtil.showToastMessage(getString(R.string.fetch_sms_code_success))
 
                 } else {
-                    showToastMessage(result)
+                    ToastUtil.showToastMessage(result)
 
                 }
 
@@ -128,7 +128,7 @@ class BindPhoneActivity : BaseCacheableActivity() {
                     it.phone_number = result?.data?.phone_number
                     UserManagerV4.updateUser(it)
                 }
-                showToastMessage(getString(R.string.bind_success))
+                ToastUtil.showToastMessage(getString(R.string.bind_success))
                 loadingDialog.dismiss()
                 finish()
             }else{
@@ -137,9 +137,9 @@ class BindPhoneActivity : BaseCacheableActivity() {
                         StartLogClickUtil.PROFILE, StartLogClickUtil.BINDPHONE, data)
                 loadingDialog.dismiss()
                 if (result!=null){
-                    showToastMessage(result.message.toString())
+                    ToastUtil.showToastMessage(result.message.toString())
                 }else{
-                    showToastMessage(resources.getString(R.string.net_work_error))
+                    ToastUtil.showToastMessage(resources.getString(R.string.net_work_error))
                 }
 
             }

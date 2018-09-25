@@ -47,7 +47,7 @@ import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toMap
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.toast.mainLooperHandler
+import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 

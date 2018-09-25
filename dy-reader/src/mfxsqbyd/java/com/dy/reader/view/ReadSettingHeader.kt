@@ -19,8 +19,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.toast.CommonUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 
 class ReadSettingHeader : FrameLayout{
@@ -73,7 +72,7 @@ class ReadSettingHeader : FrameLayout{
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
 
             if (bookDownloadState == DownloadState.DOWNLOADING) {
-                CommonUtil.showToastMessage("正在缓存中")
+                ToastUtil.showToastMessage("正在缓存中")
 //                CacheManager.stop(ReaderStatus.book.book_id)
             } else {
                 presenter?.cache()
@@ -88,21 +87,21 @@ class ReadSettingHeader : FrameLayout{
             val data = HashMap<String, String>()
             when (result) {
                 1 -> {
-                    v.context.applicationContext.showToastMessage("书签添加成功")
+                    ToastUtil.showToastMessage("书签添加成功")
                     isMarkPage = true
                     ibtn_reader_bookmark.isSelected = true
                     ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_checked_icon)
                     data["type"] = "1"
                 }
                 2 -> {
-                    v.context.applicationContext.showToastMessage("书签已删除")
+                    ToastUtil.showToastMessage("书签已删除")
                     isMarkPage = false
                     ibtn_reader_bookmark.isSelected = false
                     ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_check_icon)
                     data["type"] = "0"
                 }
                 else -> {
-                    v.context.applicationContext.showToastMessage("书签添加失败")
+                    ToastUtil.showToastMessage("书签添加失败")
                 }
             }
         }

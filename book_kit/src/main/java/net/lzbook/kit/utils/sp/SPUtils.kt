@@ -150,7 +150,7 @@ object SPUtils {
         /**
          * 保存系统默认Shared String
          */
-        fun putDefaultSharedString(key: String, value: String = ""){
+        fun putDefaultSharedString(key: String, value: String? = ""){
             val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
             shared.edit().putString(key, value).apply()
         }

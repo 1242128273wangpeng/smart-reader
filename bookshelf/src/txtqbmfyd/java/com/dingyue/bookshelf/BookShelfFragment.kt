@@ -15,23 +15,25 @@ import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
 import com.dingyue.bookshelf.view.RemoveMenuPopup
-import net.lzbook.kit.utils.book.CommonContract
-import net.lzbook.kit.utils.router.BookRouter
-import net.lzbook.kit.utils.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.txtqbmfyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_bookshelf.*
 import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
-import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.oneclick.OneClickUtil
+import net.lzbook.kit.utils.router.BookRouter
+import net.lzbook.kit.utils.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
+import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
@@ -40,7 +42,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     }
 
     private val bookShelfPresenter: BookShelfPresenter by lazy { BookShelfPresenter(this) }
-    private val sharePre: SharedPreUtil by lazy { SharedPreUtil(SharedPreUtil.SHARE_DEFAULT) }
 
     private var latestLoadDataTime: Long = 0
 
@@ -166,7 +167,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     fun dimissPersonRed(){
         redpoint_home_setting?.visibility = View.GONE
-        sharePre.putBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,true)
+        SPUtils.putDefaultSharedBoolean(SPKey.BOOKSHELF_PERSON_RED,true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -175,7 +176,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         initRecyclerView()
 
-        if(sharePre.getBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,false)){
+        if(SPUtils.getDefaultSharedBoolean(SPKey.BOOKSHELF_PERSON_RED,false)){
             redpoint_home_setting?.visibility = View.GONE
         }
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
@@ -200,7 +201,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         img_head_personal.setOnClickListener {
             bookShelfInterface?.changeDrawerLayoutState()
             BookShelfLogger.uploadBookShelfPersonal()
-            sharePre.putBoolean(SharedPreUtil.BOOKSHELF_PERSON_RED,true)
+            SPUtils.putDefaultSharedBoolean(SPKey.BOOKSHELF_PERSON_RED,true)
             redpoint_home_setting.visibility = View.GONE
         }
 
@@ -215,7 +216,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
 
         txt_editor_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_editor_select_all.text == getString(R.string.select_all)) {
@@ -329,7 +330,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             srl_refresh.isRefreshing = false
 
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             return
         }
@@ -342,7 +343,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             srl_refresh.onRefreshComplete()
 
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             // 刷新间隔大于30秒直接请求更新，
@@ -398,7 +399,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         latestLoadDataTime = System.currentTimeMillis()
 
         if (isAdded) {
-            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
+            ToastUtil.showToastMessage(R.string.bookshelf_network_error, 2000L)
         }
 
         if (srl_refresh != null) {
@@ -427,7 +428,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         updateUI()
         bookShelfDeleteDialog.dismiss()
         dismissRemoveMenu()
-        requireActivity().applicationContext.showToastMessage(R.string.bookshelf_delete_success)
+        ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
@@ -436,7 +437,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         if (updateCount == 0) {
             if (isAdded) {
-                requireActivity().applicationContext.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
+                ToastUtil.showToastMessage(R.string.bookshelf_no_book_update, 2000L)
             }
         } else {
             val bookName = firstBook?.book_name
@@ -444,12 +445,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true) {
                 if (updateCount == 1 && activity != null) {
                     if (isAdded) {
-                        requireActivity().applicationContext.showToastMessage(
+                        ToastUtil.showToastMessage(
                                 "《$bookName${activity?.getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",
                                 2000L)
                     }
                 } else if (activity != null) {
-                    requireActivity().applicationContext.showToastMessage(
+                    ToastUtil.showToastMessage(
                             "《$bookName${activity?.getString(R.string.bookshelf_books_update_more)}"
                                     + "$updateCount${activity?.getString(R.string.bookshelf_books_update_chapters)}",
                             2000L)

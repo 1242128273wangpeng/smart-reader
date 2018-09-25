@@ -25,7 +25,7 @@ import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.BookRecommender
 import net.lzbook.kit.widget.LoadingPage
 import java.util.*
@@ -95,7 +95,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 右上角换源按钮
         txt_change_source.setOnClickListener {
             if (sourceList.isEmpty()) {
-                showToastMessage("本书暂无其他来源")
+                ToastUtil.showToastMessage("本书暂无其他来源")
             } else {
                 changeSourceDialog.show(sourceList)
             }

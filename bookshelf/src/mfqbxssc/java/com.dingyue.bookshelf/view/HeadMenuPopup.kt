@@ -6,7 +6,8 @@ import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.mfqbxssc.popup_head_menu.view.*
 import net.lzbook.kit.base.BasePopup
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 
 /**
  * Desc 顶部菜单弹窗
@@ -47,8 +48,7 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
     fun show(view: View) {
         showAsDropDown(view, 0, -(view.height + 30))
 
-        val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-        val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+        val share = SPUtils.getDefaultSharedBoolean(SPKey.APPLICATION_SHARE_ACTION)
 
         if (share) {
             contentView.view_app_share.visibility = View.GONE

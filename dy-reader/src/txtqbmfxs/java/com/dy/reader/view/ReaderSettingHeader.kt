@@ -20,7 +20,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 
 class ReaderSettingHeader : FrameLayout {
@@ -113,18 +113,18 @@ class ReaderSettingHeader : FrameLayout {
 
                 when (result) {
                     1 -> {
-                        context.applicationContext.showToastMessage("书签添加成功")
+                        ToastUtil.showToastMessage("书签添加成功")
                         readerHeaderMorePopup.insertBookmarkContent("删除书签")
                         data["type"] = "1"
                     }
                     2 -> {
-                        context.applicationContext.showToastMessage("书签已删除")
+                        ToastUtil.showToastMessage("书签已删除")
                         readerHeaderMorePopup.insertBookmarkContent("添加书签")
                         data["type"] = "2"
 
                     }
                     else -> {
-                        context.applicationContext.showToastMessage("书签添加失败")
+                        ToastUtil.showToastMessage("书签添加失败")
                     }
                 }
 

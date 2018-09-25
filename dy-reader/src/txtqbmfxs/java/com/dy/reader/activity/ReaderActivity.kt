@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
@@ -15,10 +14,8 @@ import android.view.View
 import android.view.WindowManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
-
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
-import com.dy.reader.R.id.*
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
 import com.dy.reader.dialog.AutoReadOptionDialog
@@ -36,17 +33,15 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-
 import kotlinx.android.synthetic.txtqbmfxs.act_reader.*
 import kotlinx.android.synthetic.txtqbmfxs.reader_content.*
 import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.RepairHelp
-
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -360,7 +355,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             mReadPresenter.updateOriginLog()
 
         } else {
-            this.applicationContext.showToastMessage("无法查看原文链接！")
+            ToastUtil.showToastMessage("无法查看原文链接！")
         }
     }
 

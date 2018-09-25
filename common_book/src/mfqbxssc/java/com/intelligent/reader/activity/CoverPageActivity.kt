@@ -36,9 +36,10 @@ import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.ApplicationShareDialog
 import net.lzbook.kit.widget.LoadingPage
 import java.text.DecimalFormat
@@ -325,7 +326,7 @@ class CoverPageActivity : BaseCacheableActivity(),
             }
 
         } else {
-            this.applicationContext.showToastMessage(R.string.book_cover_no_resource)
+            ToastUtil.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }
@@ -535,13 +536,12 @@ class CoverPageActivity : BaseCacheableActivity(),
     }
 
     private fun checkShowCoverPrompt() {
-        val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-        if (!sharedPreUtil.getBoolean(SharedPreUtil.COVER_SHARE_PROMPT)) {
+        if (!SPUtils.getDefaultSharedBoolean(SPKey.COVER_SHARE_PROMPT)) {
             fl_cover_share_prompt.visibility = VISIBLE
 
             fl_cover_share_prompt.setOnClickListener {
                 fl_cover_share_prompt.visibility = GONE
-                sharedPreUtil.putBoolean(SharedPreUtil.COVER_SHARE_PROMPT, true)
+                SPUtils.putDefaultSharedBoolean(SPKey.COVER_SHARE_PROMPT, true)
             }
         }
     }

@@ -18,8 +18,9 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 
 class ReaderSettingHeader : FrameLayout {
@@ -30,8 +31,7 @@ class ReaderSettingHeader : FrameLayout {
 
     var isOutAnimationRun = false
 
-    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-    private val guideSharedKey = AppUtils.getVersionCode().toString() + SharedPreUtil.READING_SETING_GUIDE_TAG
+    private val guideSharedKey = AppUtils.getVersionCode().toString() + SPKey.READING_SETING_GUIDE_TAG
 
     fun showMenu(flag: Boolean) {
         if (flag) {
@@ -56,7 +56,7 @@ class ReaderSettingHeader : FrameLayout {
 
         EventBus.getDefault().post(EventSetting(EventSetting.Type.FULL_WINDOW_CHANGE, !flag))
 
-        if (!sharedPreUtil.getBoolean(guideSharedKey)) {
+        if (!SPUtils.getDefaultSharedBoolean(guideSharedKey)) {
             view_guide.visibility = View.VISIBLE
             txt_reader_guide_option.visibility = View.VISIBLE
 
@@ -69,7 +69,7 @@ class ReaderSettingHeader : FrameLayout {
     private fun hideGuide() {
         view_guide.visibility = View.GONE
         txt_reader_guide_option.visibility = View.GONE
-        sharedPreUtil.putBoolean(guideSharedKey, true)
+        SPUtils.putDefaultSharedBoolean(guideSharedKey, true)
     }
 
     constructor(context: Context?) : super(context)
@@ -98,18 +98,18 @@ class ReaderSettingHeader : FrameLayout {
 
             when (result) {
                 1 -> {
-                    context.applicationContext.showToastMessage("书签添加成功")
+                    ToastUtil.showToastMessage("书签添加成功")
                     popup.insertBookmarkContent(false)
                     data["type"] = "1"
                 }
                 2 -> {
-                    context.applicationContext.showToastMessage("书签已删除")
+                    ToastUtil.showToastMessage("书签已删除")
                     popup.insertBookmarkContent(true)
                     data["type"] = "2"
 
                 }
                 else -> {
-                    context.applicationContext.showToastMessage("书签添加失败")
+                    ToastUtil.showToastMessage("书签添加失败")
                 }
             }
 

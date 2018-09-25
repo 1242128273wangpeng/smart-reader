@@ -1,8 +1,5 @@
 package com.intelligent.reader.util;
 
-import static net.lzbook.kit.utils.statistic.StatisticKt.alilog;
-import static net.lzbook.kit.utils.statistic.StatisticUtilKt.buildSearch;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,13 +17,6 @@ import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
-
-import net.lzbook.kit.base.BaseBookApplication;
-import net.lzbook.kit.utils.book.FootprintUtils;
-import net.lzbook.kit.utils.download.CacheManager;
-import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.router.RouterUtil;
 import com.google.gson.JsonObject;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
@@ -36,11 +26,17 @@ import com.intelligent.reader.view.SearchSubBookDialog;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.statistic.model.Search;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.book.FootprintUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.oneclick.AntiShake;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.statistic.model.Search;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
 
@@ -59,6 +55,9 @@ import java.util.Set;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
+
+import static net.lzbook.kit.utils.statistic.StatisticKt.alilog;
+import static net.lzbook.kit.utils.statistic.StatisticUtilKt.buildSearch;
 
 
 public class SearchHelper {
@@ -452,7 +451,7 @@ public class SearchHelper {
 
                     @Override
                     public void requestError(@NotNull String message) {
-                        CommonUtil.showToastMessage("订阅失败");
+                        ToastUtil.INSTANCE.showToastMessage("订阅失败");
                     }
                 });
     }

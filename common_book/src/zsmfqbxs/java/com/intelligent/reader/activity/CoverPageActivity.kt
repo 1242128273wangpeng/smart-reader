@@ -31,7 +31,7 @@ import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
-import net.lzbook.kit.utils.toast.CommonUtil.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
@@ -261,7 +261,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             book_cover_source_form?.setCompoundDrawables(null, null, null, null)
 
         } else {
-            showToastMessage(R.string.book_cover_no_resource)
+            ToastUtil.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }

@@ -1,7 +1,5 @@
 package com.intelligent.reader.activity;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,10 +30,6 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
-
-import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -43,23 +37,26 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
-import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.service.CheckNovelUpdateService;
-import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
-import net.lzbook.kit.utils.dynamic.DynamicParameter;
-import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.service.CheckNovelUpdateService;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-
-import com.intelligent.reader.util.ShieldManager;
-
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.dynamic.DynamicParameter;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
+import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -74,11 +71,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import net.lzbook.kit.base.activity.FrameActivity;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -87,7 +85,6 @@ public class SplashActivity extends FrameActivity {
     public int initialization_count = 0;
     public int complete_count = 0;
     public ViewGroup ad_view;
-    private SharedPreUtil sharedPreUtil;
 
     private TextView txt_upgrade;
     private ProgressBar progress_upgrade;
@@ -184,7 +181,7 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void initShield() {
-        ShieldManager shieldManager = new ShieldManager(getApplicationContext(), sharedPreUtil);
+        ShieldManager shieldManager = new ShieldManager(getApplicationContext());
         shieldManager.startAchieveUserLocation();
     }
 
@@ -510,13 +507,13 @@ public class SplashActivity extends FrameActivity {
         }
 
         //判断是否展示广告
-        if (sharedPreUtil != null) {
-            long limited_time = sharedPreUtil.getLong(
-                    SharedPreUtil.AD_LIMIT_TIME_DAY, 0L);
+//        if (sharedPreUtil != null) {
+            long limited_time = SPUtils.INSTANCE.getDefaultSharedLong(
+                    SPKey.AD_LIMIT_TIME_DAY, 0L);
             if (limited_time == 0) {
                 limited_time = System.currentTimeMillis();
                 try {
-                    sharedPreUtil.putLong(SharedPreUtil.AD_LIMIT_TIME_DAY,
+                    SPUtils.INSTANCE.putDefaultSharedLong(SPKey.AD_LIMIT_TIME_DAY,
                             limited_time);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -526,13 +523,13 @@ public class SplashActivity extends FrameActivity {
             AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
             AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
-            int user_index = sharedPreUtil.getInt(SharedPreUtil.USER_NEW_INDEX, 0);
+            int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
             boolean init_ad = false;
 
             if (user_index == 0) {
-                if (!sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
+                if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
                         false)) {
-                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, 1);
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 1);
                     init_ad = true;
                 } else {
                     init_ad = false;
@@ -544,7 +541,7 @@ public class SplashActivity extends FrameActivity {
                     }
                 }
             } else if (user_index == 1) {
-                if (sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
+                if (SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
                         false)) {
                     init_ad = true;
                 }
@@ -559,11 +556,11 @@ public class SplashActivity extends FrameActivity {
             }
 
             if (init_ad) {
-                int ad_limit_time_day = sharedPreUtil.getInt(
-                        SharedPreUtil.USER_NEW_AD_LIMIT_DAY, 0);
+                int ad_limit_time_day = SPUtils.INSTANCE.getDefaultSharedInt(
+                        SPKey.USER_NEW_AD_LIMIT_DAY, 0);
                 if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
                     ad_limit_time_day = Constants.ad_limit_time_day;
-                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_AD_LIMIT_DAY,
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_AD_LIMIT_DAY,
                             ad_limit_time_day);
                 }
 
@@ -572,7 +569,7 @@ public class SplashActivity extends FrameActivity {
                         .currentTimeMillis()) {
                     Constants.isHideAD = true;
                 } else {
-                    sharedPreUtil.putInt(SharedPreUtil.USER_NEW_INDEX, 2);
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
                     //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
                     if (Constants.new_app_ad_switch) {
                         Constants.isHideAD = false;
@@ -581,14 +578,14 @@ public class SplashActivity extends FrameActivity {
                     }
                 }
             }
-        } else {
-            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-            if (Constants.new_app_ad_switch) {
-                Constants.isHideAD = false;
-            } else {
-                Constants.isHideAD = true;
-            }
-        }
+//        } else {
+//            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+//            if (Constants.new_app_ad_switch) {
+//                Constants.isHideAD = false;
+//            } else {
+//                Constants.isHideAD = true;
+//            }
+//        }
         //强制关闭广告
 //        Constants.isHideAD = true;
     }
@@ -667,11 +664,7 @@ public class SplashActivity extends FrameActivity {
                 e.printStackTrace();
             }
 
-            if (sharedPreUtil == null) {
-                sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-            }
-
-            boolean b = sharedPreUtil.getBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
+            boolean b = SPUtils.INSTANCE.getDefaultSharedBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
 
             if (!b) {
                 List<Book> bookOnlineList =
@@ -713,20 +706,20 @@ public class SplashActivity extends FrameActivity {
             try {
                 // 统计阅读章节数
                 if (Constants.readedCount == 0) {
-                    Constants.readedCount = sharedPreUtil.getInt(
-                            SharedPreUtil.READED_CONT);
+                    Constants.readedCount = SPUtils.INSTANCE.getDefaultSharedInt(
+                            SPKey.READED_CONT,0);
                 }
 
                 //
                 DisplayMetrics dm = new DisplayMetrics();
                 SplashActivity.this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                sharedPreUtil.putInt(SharedPreUtil.SCREEN_WIDTH, dm.widthPixels);
-                sharedPreUtil.putInt(SharedPreUtil.SCREEN_HEIGHT, dm.heightPixels);
+               SPUtils.INSTANCE.putDefaultSharedInt(SPKey.SCREEN_WIDTH, dm.widthPixels);
+                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.SCREEN_HEIGHT, dm.heightPixels);
                 AppUtils.initDensity(getApplicationContext());
 
                 // 判断是否小说推送，检查小说是否更新
-                boolean isStarPush = sharedPreUtil.getBoolean(
-                        SharedPreUtil.SETTINGS_PUSH, true);
+                boolean isStarPush = SPUtils.INSTANCE.getDefaultSharedBoolean(
+                        SPKey.SETTINGS_PUSH, true);
                 if (isStarPush) {
                     CheckNovelUpdateService.startChkUpdService(getApplicationContext());
                 }
@@ -746,14 +739,11 @@ public class SplashActivity extends FrameActivity {
     class InstallShotCutTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            if (sharedPreUtil == null) {
-                sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-            }
-            boolean create = sharedPreUtil.getBoolean(SharedPreUtil.CREATE_SHOTCUT,
+            boolean create = SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.CREATE_SHOTCUT,
                     false);
             if (!create) {
                 checkAndInstallShotCut(SplashActivity.this);
-                sharedPreUtil.putBoolean(SharedPreUtil.CREATE_SHOTCUT, true);
+                SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.CREATE_SHOTCUT, true);
             }
             return null;
         }

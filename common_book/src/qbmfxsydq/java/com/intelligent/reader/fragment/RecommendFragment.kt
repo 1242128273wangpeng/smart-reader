@@ -15,9 +15,9 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.qbmfxsydq.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
@@ -29,7 +29,6 @@ import net.lzbook.kit.utils.webview.UrlUtils
 class RecommendFragment : Fragment() {
 
     private lateinit var mRecommendPageAdapter: RecommendPageAdapter
-    private val sharedPreUtil: SharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     private val titles = arrayOf("男生", "女生")
 
@@ -47,7 +46,7 @@ class RecommendFragment : Fragment() {
         mRecommendPageAdapter = RecommendPageAdapter(childFragmentManager)
         category_view_page.adapter = mRecommendPageAdapter
         tabstrip.setViewPager(category_view_page)
-        if(sharedPreUtil?.getInt(SharedPreUtil.RECOMMEND_SELECT_SEX) == 0){
+        if(SPUtils.getDefaultSharedInt(SPKey.RECOMMEND_SELECT_SEX) == 0){
             category_view_page.setCurrentItem(0, true)
         }else{
             category_view_page.setCurrentItem(1,true)
@@ -62,9 +61,9 @@ class RecommendFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 uploadTabSwitchLog(position)
                 if(position == 0){
-                    sharedPreUtil.putInt(SharedPreUtil.RECOMMEND_SELECT_SEX,0)
+                    SPUtils.putDefaultSharedInt(SPKey.RECOMMEND_SELECT_SEX,0)
                 }else{
-                    sharedPreUtil.putInt(SharedPreUtil.RECOMMEND_SELECT_SEX,1)
+                    SPUtils.putDefaultSharedInt(SPKey.RECOMMEND_SELECT_SEX,1)
                 }
             }
 

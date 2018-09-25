@@ -12,23 +12,18 @@ import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.RecommendBooksAdapter
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.frag_search_book.*
-
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BaseBookApplication
-
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
 import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
@@ -42,7 +37,6 @@ import java.util.concurrent.Callable
 class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickListener {
 
 
-    private var shareUtil: SharedPreUtil? = null
     private var hotWords: MutableList<HotWordBean>? = ArrayList()
     private var gson: Gson? = null
     private var books: MutableList<Book>? = ArrayList()
@@ -55,7 +49,6 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         gson = Gson()
         contentLayout = view.findViewById(R.id.ll_main);
         requestData()
@@ -190,7 +183,7 @@ class SearchBookFragment : Fragment(), RecommendBooksAdapter.RecommendItemClickL
 
     override fun onItemClick(view: View, position: Int) {
 
-        if(CommonContract.isDoubleClick(System.currentTimeMillis())){
+        if(OneClickUtil.isDoubleClick(System.currentTimeMillis())){
             return
         }
         val book = recommendBooks[position]

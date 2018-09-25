@@ -25,7 +25,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.theme.statusbar.impl.FlymeHelper
 import net.lzbook.kit.utils.theme.statusbar.impl.MIUIHelper
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.Platform
 import net.lzbook.kit.utils.user.UserManagerV4
 import okhttp3.RequestBody
@@ -54,7 +54,7 @@ class LoginActivity : FrameActivity() {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.LOGIN,
                     StartLogClickUtil.OTHERLOGIN, data)
             if (!UserManagerV4.isPlatformEnable(Platform.WECHAT)) {
-                showToastMessage("请安装微信后重试")
+                ToastUtil.showToastMessage("请安装微信后重试")
                 return@setOnClickListener
             }
             if (flagLoginEnd) {
@@ -70,7 +70,7 @@ class LoginActivity : FrameActivity() {
 
                             UserManagerV4.keepReadInfo {
                                 uploadLoginSuccessLog("1")
-                                showToastMessage(getString(R.string.login_success))
+                                ToastUtil.showToastMessage(getString(R.string.login_success))
                                 loadingDialog.dismiss()
                                 finish()
                             }
@@ -79,7 +79,7 @@ class LoginActivity : FrameActivity() {
                             uploadLoginErrorLog("1", t)
                             loadingDialog.dismiss()
                             flagLoginEnd = true
-                            showToastMessage(t)
+                            ToastUtil.showToastMessage(t)
                         })
 
 
@@ -103,7 +103,7 @@ class LoginActivity : FrameActivity() {
                             setLoginResult()
                             UserManagerV4.keepReadInfo {
                                 uploadLoginSuccessLog("2")
-                                showToastMessage(getString(R.string.login_success))
+                                ToastUtil.showToastMessage(getString(R.string.login_success))
                                 loadingDialog.dismiss()
                                 finish()
                             }
@@ -112,7 +112,7 @@ class LoginActivity : FrameActivity() {
                             uploadLoginErrorLog("2", t.toString())
                             loadingDialog.dismiss()
                             flagLoginEnd = true
-                            showToastMessage(t)
+                            ToastUtil.showToastMessage(t)
                         })
 
             }
@@ -188,9 +188,9 @@ class LoginActivity : FrameActivity() {
 
             UserManagerV4.requestSmsCode(number) { b, s ->
                 if (b) {
-                    showToastMessage(getString(R.string.fetch_sms_code_success))
+                    ToastUtil.showToastMessage(getString(R.string.fetch_sms_code_success))
                 } else {
-                    showToastMessage(s)
+                    ToastUtil.showToastMessage(s)
                 }
 
             }
@@ -239,7 +239,7 @@ class LoginActivity : FrameActivity() {
                 setLoginResult()
                 UserManagerV4.keepReadInfo{
                     uploadLoginSuccessLog("3")
-                    showToastMessage(getString(R.string.login_success))
+                    ToastUtil.showToastMessage(getString(R.string.login_success))
                     loadingDialog.dismiss()
                     data["status"] = "3"
                     StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
@@ -253,9 +253,9 @@ class LoginActivity : FrameActivity() {
                 StartLogClickUtil.upLoadEventLog(this@LoginActivity, StartLogClickUtil.LOGIN,
                         StartLogClickUtil.LOGIN, data)
                 if (result != null) {
-                    showToastMessage(result?.message!!)
+                    ToastUtil.showToastMessage(result?.message!!)
                 } else {
-                    showToastMessage("网络不给力哦，请稍后再试")
+                    ToastUtil.showToastMessage("网络不给力哦，请稍后再试")
                 }
                 loadingDialog.dismiss()
             }

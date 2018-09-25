@@ -48,7 +48,7 @@ import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.toast.mainLooperHandler
+import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
 import net.lzbook.kit.utils.user.bean.WXSimpleInfo

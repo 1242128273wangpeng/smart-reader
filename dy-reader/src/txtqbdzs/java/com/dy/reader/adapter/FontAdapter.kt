@@ -4,12 +4,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.dy.reader.R
 import com.dy.reader.model.FontData
 import com.dy.reader.service.FontDownLoadService
 import kotlinx.android.synthetic.txtqbdzs.item_reader_option_font.view.*
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 
 /**
  * Function：字体包适配器
@@ -21,11 +21,10 @@ class FontAdapter(var list: ArrayList<FontData>) : RecyclerView.Adapter<Recycler
 
     var onItemClickListener: ((data: FontData, position: Int) -> Unit)? = null
 
-    private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     private var curFontName: String = FontDownLoadService.FONT_DEFAULT
         get() {
-            field = sharedPreUtil.getString(SharedPreUtil.READER_TYPE_FACE, FontDownLoadService.FONT_DEFAULT)
+            field = SPUtils.getDefaultSharedString(SPKey.READER_TYPE_FACE, FontDownLoadService.FONT_DEFAULT)
             return field
         }
 

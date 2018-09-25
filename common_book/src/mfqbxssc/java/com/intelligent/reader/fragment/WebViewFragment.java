@@ -20,20 +20,20 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.router.RouterUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.widget.LoadingPage;
 import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout;
-import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.NetWorkUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -400,7 +400,7 @@ public class WebViewFragment extends Fragment {
 
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
             swipeRefreshLayout.setRefreshing(false);
-            CommonUtil.showToastMessage("网络不给力");
+            ToastUtil.INSTANCE.showToastMessage("网络不给力");
             return;
         }
 

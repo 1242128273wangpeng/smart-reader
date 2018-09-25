@@ -49,7 +49,6 @@ import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.cache.DataCleanManager
 import net.lzbook.kit.utils.cache.UIHelper
 import net.lzbook.kit.utils.download.CacheManager
@@ -57,11 +56,13 @@ import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.logger.PersonalLogger
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.theme.ThemeMode
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.File
@@ -93,8 +94,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     private var versionCode: Int = 0
 
     private var guideDownload: Boolean = true
-
-    private lateinit var sharedPreUtil: SharedPreUtil
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
     private var bookShelfFragment: BookShelfFragment? = null
@@ -155,7 +154,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         setContentView(R.layout.act_home)
 
         versionCode = AppUtils.getVersionCode()
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         initView()
 
@@ -270,12 +268,12 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             nightShift(isChecked, true)
         }
 
-        val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
+        val isAutoDownload = SPUtils.getDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, true)
 
         btn_auto_download.isChecked = isAutoDownload
 
         btn_auto_download.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreUtil.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
+            SPUtils.putDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, isChecked)
             PersonalLogger.uploadPersonalAutoCache(isChecked)
         }
 
@@ -301,7 +299,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             } catch (e: Exception) {
-                this.showToastMessage(R.string.menu_no_market)
+                ToastUtil.showToastMessage(R.string.menu_no_market)
             }
 
         }
@@ -350,21 +348,21 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         ll_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeRecommend)
             recommendFragment.setTitle(resources.getString(R.string.recommend))
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "recommend")
             HomeLogger.uploadHomeRecommendSelected()
         }
 
         // 搜索
         ll_tab_search.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeSearchBook)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "search")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "search")
             HomeLogger.uploadHomeSearch()
         }
 
         // 分类
         ll_tab_classify.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeClassify)
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "class")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "class")
             HomeLogger.uploadHomeCategorySelected()
         }
 
@@ -372,7 +370,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         ll_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeRanking)
             rankingFragment.setTitle(resources.getString(R.string.ranking))
-            sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "top")
+            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "top")
             HomeLogger.uploadHomeRankSelected()
         }
 
@@ -408,8 +406,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     }
 
     private fun initGuide() {
-        val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
-        if (!sharedPreUtil.getBoolean(key)) {
+        val key = SPKey.BOOKSHELF_GUIDE_TAG
+        if (!SPUtils.getDefaultSharedBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_remove.visibility = View.VISIBLE
             dl_home_content.lock()
@@ -419,7 +417,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                     img_guide_remove.visibility = View.GONE
                     guideDownload = false
                 } else {
-                    sharedPreUtil.putBoolean(key, true)
+                    SPUtils.putDefaultSharedBoolean(key, true)
                     img_guide_download.visibility = View.GONE
                     fl_guide_layout.visibility = View.GONE
                     dl_home_content.unlock()
@@ -498,7 +496,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
      * **/
     private fun checkUrlDevelop() {
         if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
-            this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
+            ToastUtil.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
 
@@ -542,7 +540,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         BACK_COUNT++
 
         if (BACK_COUNT == 1) {
-            this.showToastMessage(R.string.mian_click_tiwce_exit)
+            ToastUtil.showToastMessage(R.string.mian_click_tiwce_exit)
         } else if (BACK_COUNT > 1 && !closed) {
             closed = true
             restoreSystemDisplayState()
@@ -725,7 +723,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@setOnSearchClick
                 }
                 val data = HashMap<String, String>()
@@ -750,7 +748,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             }
         }
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
@@ -769,7 +767,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
 
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
 
@@ -785,7 +783,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         //为webview 加载广告提供回调
         jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onWebGameClick
                 }
                 var title = if (TextUtils.isEmpty(name)) {
@@ -807,7 +805,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             AppLog.e("福利中心", "下载游戏: $name : $url")
 
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onGameAppClick
                 }
                 val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)

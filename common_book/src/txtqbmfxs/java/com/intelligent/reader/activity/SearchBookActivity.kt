@@ -19,21 +19,20 @@ import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
-
 import com.intelligent.reader.R
-import com.intelligent.reader.R.id.*
 import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.search.SearchView
 import com.intelligent.reader.search.SearchViewHelper
 import com.orhanobut.logger.Logger
-
 import kotlinx.android.synthetic.txtqbmfxs.act_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.FrameActivity
-
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.widget.LoadingPage
@@ -366,7 +365,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         if (TextUtils.isEmpty(keyword)) return
 
         if (TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-            this.applicationContext.showToastMessage(R.string.search_click_check_isright)
+            ToastUtil.showToastMessage(R.string.search_click_check_isright)
         } else {
             hideInputMethod(etxt_search_input)
 
@@ -573,7 +572,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             val keyword = etxt_search_input!!.text.toString()
 
             if (keyword.trim { it <= ' ' } == "") {
-                this.showToastMessage(R.string.search_click_check_isright)
+                ToastUtil.showToastMessage(R.string.search_click_check_isright)
             } else {
                 mSearchViewHelper?.isFocus = false
 

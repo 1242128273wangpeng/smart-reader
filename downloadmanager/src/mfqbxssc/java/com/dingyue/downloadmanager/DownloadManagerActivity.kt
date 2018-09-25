@@ -20,10 +20,11 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 
@@ -138,7 +139,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             dismissMenu()
         }
         txt_head_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_head_select_all.text == getString(R.string.select_all)) {
@@ -333,7 +334,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
             DownloadManagerLogger.uploadCacheManagerEditDelete(books)
         } else {
-            this.showToastMessage(R.string.download_manager_delete_empty)
+            ToastUtil.showToastMessage(R.string.download_manager_delete_empty)
         }
     }
 

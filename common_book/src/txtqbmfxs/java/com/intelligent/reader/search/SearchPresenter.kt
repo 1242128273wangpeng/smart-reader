@@ -21,17 +21,17 @@ import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.book.FootprintUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.UnsupportedEncodingException
@@ -54,10 +54,9 @@ class SearchPresenter(private val mContext: SearchBookActivity,
 
     private var searchSuggestCallBack: SearchSuggestCallBack? = null
     private var transmitBean: SearchAutoCompleteBeanYouHua? = null
-    private var shareUtil: SharedPreUtil? = null
 
     init {
-        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+
     }
 
     private inner class WordInfo {
@@ -257,12 +256,12 @@ class SearchPresenter(private val mContext: SearchBookActivity,
         }
 
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             try {
                 if (url.contains(RequestService.AUTHOR_V4)) {
-                    shareUtil!!.putString(Constants.FINDBOOK_SEARCH,
+                 SPUtils.putDefaultSharedString(Constants.FINDBOOK_SEARCH,
                             "author")//FindBookDetail 返回键时标识
                 }
                 val intent = Intent()
@@ -352,7 +351,7 @@ class SearchPresenter(private val mContext: SearchBookActivity,
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
             if (succeed > 0) {
-                mContext.showToastMessage(R.string.bookshelf_insert_success)
+                ToastUtil.showToastMessage(R.string.bookshelf_insert_success)
             }
         }
 
@@ -360,7 +359,7 @@ class SearchPresenter(private val mContext: SearchBookActivity,
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
             CacheManager.stop(book_id)
             CacheManager.resetTask(book_id)
-            mContext.showToastMessage(R.string.bookshelf_delete_success)
+            ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
         }
     }
 

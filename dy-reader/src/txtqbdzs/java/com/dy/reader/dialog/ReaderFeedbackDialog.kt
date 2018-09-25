@@ -1,13 +1,10 @@
 package com.dy.reader.dialog
 
 import android.widget.CheckBox
-import android.widget.FrameLayout
-
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
-import com.dy.reader.setting.ReaderSettings
 import kotlinx.android.synthetic.txtqbdzs.dialog_reader_feedback.*
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.MyDialog
 
 
@@ -105,7 +102,7 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
 
         dialog.btn_feedback_submit.setOnClickListener {
             if (checkedPosition == -1) {
-                readerActivity.applicationContext.showToastMessage("请选择错误类型！")
+                ToastUtil.showToastMessage("请选择错误类型！")
             } else {
                 submitListener?.invoke(checkedPosition)
             }

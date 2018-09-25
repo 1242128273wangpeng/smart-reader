@@ -32,7 +32,7 @@ import net.lzbook.kit.utils.oneclick.AntiShake;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.statistic.model.Search;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
 
@@ -380,7 +380,7 @@ public class SearchHelper {
                 long succeed = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                         BaseBookApplication.getGlobalContext()).insertBook(book);
                 if (succeed > 0) {
-                    CommonUtil.showToastMessage(
+                    ToastUtil.INSTANCE.showToastMessage(
                             R.string.bookshelf_insert_success);
                 }
             }
@@ -394,7 +394,7 @@ public class SearchHelper {
                         BaseBookApplication.getGlobalContext()).deleteBook(book_id);
                 CacheManager.INSTANCE.stop(book_id);
                 CacheManager.INSTANCE.resetTask(book_id);
-                CommonUtil.showToastMessage(R.string.bookshelf_delete_success);
+                ToastUtil.INSTANCE.showToastMessage(R.string.bookshelf_delete_success);
             }
         });
     }

@@ -5,19 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import com.intelligent.reader.R
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.user.Platform
-import net.lzbook.kit.utils.user.UserManager
-import net.lzbook.kit.utils.StatServiceUtils
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.mfqbxssc.act_login.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.debugToastShort
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.user.Platform
+import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.widget.MyDialog
 
 @Route(path = RouterConfig.LOGIN_ACTIVITY)
@@ -32,7 +31,7 @@ class LoginActivity : FrameActivity() {
 
         ibtn_wechat.setOnClickListener {
             if (!UserManager.isPlatformEnable(Platform.WECHAT)) {
-                this.showToastMessage("请安装微信后重试！")
+                ToastUtil.showToastMessage("请安装微信后重试！")
                 return@setOnClickListener
             }
             if (flagLoginEnd) {
@@ -45,14 +44,14 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(ret.toString())
+                            ToastUtil.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
                         onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(t)
+                            ToastUtil.debugToastShort(t)
                         })
             }
         }
@@ -68,14 +67,14 @@ class LoginActivity : FrameActivity() {
                         onSuccess = { ret ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(ret.toString())
+                            ToastUtil.debugToastShort(ret.toString())
                             setLoginResult()
                             finish()
                         },
                         onFailure = { t ->
                             dismissProgressDialog()
                             flagLoginEnd = true
-                            this.debugToastShort(t)
+                            ToastUtil.debugToastShort(t)
                         })
             }
         }

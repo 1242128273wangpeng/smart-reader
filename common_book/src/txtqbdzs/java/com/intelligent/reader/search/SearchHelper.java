@@ -36,7 +36,7 @@ import net.lzbook.kit.utils.oneclick.AntiShake;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.statistic.model.Search;
-import net.lzbook.kit.utils.toast.CommonUtil;
+import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
 
@@ -472,7 +472,7 @@ public class SearchHelper {
 
                     @Override
                     public void requestError(@NotNull String message) {
-                        CommonUtil.showToastMessage("订阅失败");
+                        ToastUtil.INSTANCE.showToastMessage("订阅失败");
                     }
                 });
     }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.content.res.Resources
-import android.preference.PreferenceManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
@@ -35,8 +34,8 @@ import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.widget.LoadingPage
 import java.util.*
 
@@ -67,7 +66,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
     private var titleRecomDatas: MutableList<SearchRecommendBook.DataBean> = ArrayList()
     private var recommendDatas1: MutableList<SearchRecommendBook.DataBean> = ArrayList()
     private var recommendDatas2: MutableList<SearchRecommendBook.DataBean> = ArrayList()
-    private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var searchHotWordAdapter: SearchHotWordAdapter? = null
     private var gson: Gson? = null
 
@@ -84,7 +82,6 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         if (mContext != null)
             mResources = mContext!!.resources
 
-        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(context))
         mSearchViewPresenter = SearchViewPresenter(this)
 
         initHisListView()
@@ -164,7 +161,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
                         if (value != null && value.data != null) {
                             searchHotTitleLayout.linear_root.setVisibility(View.VISIBLE)
                             val result = value.data
-                            sharedPreferencesUtils?.putString(Constants.SERARCH_HOT_WORD_YOUHUA, gson?.toJson(result, SearchResult::class.java))
+                            SPUtils.putDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA, gson?.toJson(result, SearchResult::class.java))
                             parseResult(result)
 
                         } else {
@@ -272,8 +269,8 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
      * if hasn't net getHotWord from sharepreferenecs cache
      */
     fun getCacheDataFromShare(hasNet: Boolean) {
-        if (!TextUtils.isEmpty(sharedPreferencesUtils?.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
-            val cacheHotWords = sharedPreferencesUtils?.getString(Constants.SERARCH_HOT_WORD_YOUHUA)
+        if (!TextUtils.isEmpty(SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
+            val cacheHotWords = SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA)
             val searchResult = gson?.fromJson(cacheHotWords, SearchResult::class.java)
             if (searchResult != null) {
                 searchHotTitleLayout.linear_root.setVisibility(View.VISIBLE)
@@ -284,7 +281,7 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
 
         } else {
             if (!hasNet) {
-                CommonUtil.showToastMessage("网络不给力哦")
+                ToastUtil.showToastMessage("网络不给力哦")
             }
             searchHotTitleLayout.linear_root.setVisibility(View.GONE)
         }

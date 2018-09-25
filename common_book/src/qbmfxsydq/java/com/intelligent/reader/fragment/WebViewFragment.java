@@ -30,12 +30,12 @@ import com.intelligent.reader.view.SelectSexDialog;
 
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.sp.SharedPreUtil;
+import net.lzbook.kit.utils.sp.SPKey;
+import net.lzbook.kit.utils.sp.SPUtils;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
 import net.lzbook.kit.widget.LoadingPage;
-
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -61,7 +61,6 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
     private View img_shadow;
     private int count = 0;
     private SelectSexDialog selectSexDialog;
-    private SharedPreUtil sharedPreUtil;
     private ImageView img_sex;
     public PagerDesc mPagerDesc;
     private int h5Margin;
@@ -100,7 +99,6 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
         if (weakReference != null) {
             AppUtils.disableAccessibility(weakReference.get());
         }
-        sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         initView();
         return rootView;
     }
@@ -133,8 +131,8 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         selectSexDialog.setAniFinishedAction(WebViewFragment.this);
                     }
                     //0 表示男  1 表示女
-                    if (sharedPreUtil.getInt(SharedPreUtil.RANK_SELECT_SEX, 0) == 0) {
-                        sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 1);
+                    if (SPUtils.INSTANCE.getDefaultSharedInt(SPKey.RANK_SELECT_SEX, 0) == 0) {
+                        SPUtils.INSTANCE.putDefaultSharedInt(SPKey.RANK_SELECT_SEX, 1);
                         img_sex.setImageResource(R.drawable.rank_gril_icon);
                         selectSexDialog.show(false);
                         String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
@@ -142,7 +140,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         url = UrlUtils.buildWebUrl(uri, new HashMap());
                         loadingData(url);
                     } else {
-                        sharedPreUtil.putInt(SharedPreUtil.RANK_SELECT_SEX, 0);
+                        SPUtils.INSTANCE.putDefaultSharedInt(SPKey.RANK_SELECT_SEX, 0);
                         selectSexDialog.show(true);
                         img_sex.setImageResource(R.drawable.rank_boy_icon);
                         String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",

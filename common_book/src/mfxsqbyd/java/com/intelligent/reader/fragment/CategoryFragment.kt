@@ -1,5 +1,6 @@
 package com.intelligent.reader.fragment
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,17 +12,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.request.RequestService
-import net.lzbook.kit.utils.sp.SharedPreUtil
-import net.lzbook.kit.utils.webview.UrlUtils
-
-
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.mfxsqbyd.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * @desc 书城-分类
@@ -32,7 +31,6 @@ import net.lzbook.kit.utils.AppUtils
 class CategoryFragment : Fragment() {
 
     private lateinit var mCategoryPageAdapter: CategoryPageAdapter
-    private val sharedPreUtil: SharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     private val titles = arrayOf("男频", "女频")
 
@@ -49,7 +47,7 @@ class CategoryFragment : Fragment() {
         }
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         category_view_page.adapter = mCategoryPageAdapter
-        when(sharedPreUtil?.getInt(SharedPreUtil.GENDER_TAG)){
+        when(SPUtils.getDefaultSharedInt(SPKey.GENDER_TAG)){
             Constants.SGIRL -> { category_view_page.setCurrentItem(1, false)}
             else -> {
                 category_view_page.setCurrentItem(0, false)

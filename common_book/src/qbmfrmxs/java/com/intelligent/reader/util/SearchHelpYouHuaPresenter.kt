@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -14,18 +13,14 @@ import android.widget.TextView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
-
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchView
-
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.base.IPresenter
-
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
-import net.lzbook.kit.utils.sp.SharedPreferencesUtils
 import net.lzbook.kit.widget.MyDialog
 import java.lang.ref.WeakReference
 import java.util.*
@@ -38,7 +33,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
-    private var sharedPreferencesUtils: SharedPreferencesUtils? = null
     private var gson: Gson? = null
     private var authorsBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean> = ArrayList()
     private var labelBean: MutableList<SearchAutoCompleteBeanYouHua.DataBean.LabelBean> = ArrayList()
@@ -47,7 +41,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
     init {
         gson = Gson()
-        sharedPreferencesUtils = SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext()))
     }
 
     fun initHistoryData(context: Context?) {

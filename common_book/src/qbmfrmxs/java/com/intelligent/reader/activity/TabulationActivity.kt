@@ -25,11 +25,12 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.base.activity.FrameActivity
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SharedPreUtil
+import net.lzbook.kit.utils.sp.SPKey
+import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
@@ -56,7 +57,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
     private var loadingPage: LoadingPage? = null
 
-    private var sharedPreUtil: SharedPreUtil? = null
 
     private var backClickCount: Int = 0
 
@@ -107,11 +107,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
             }
         }
 
-        if (sharedPreUtil == null) {
-            sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-        }
-
-        fromType = sharedPreUtil?.getString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "other")
+        fromType = SPUtils.getDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "other")
 
         initView()
 
@@ -411,7 +407,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
     private fun initJSHelp() {
         jsInterfaceHelper?.setOnSearchClick(JSInterfaceHelper.onSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onSearchClick
             }
             try {
@@ -441,7 +437,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
         jsInterfaceHelper?.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
             AppLog.e(TAG, "doCover")
 
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
             val data = HashMap<String, String>()
@@ -464,7 +460,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
         jsInterfaceHelper?.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
             AppLog.e(TAG, "doAnotherWeb")
             val packageName = AppUtils.getPackageName()
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             if ("cc.kdqbxs.reader" == packageName || "cn.txtkdxsdq.reader" == packageName) {

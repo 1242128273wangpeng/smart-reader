@@ -26,10 +26,12 @@ import com.intelligent.reader.util.SearchViewHelper
 import kotlinx.android.synthetic.qbmfxsydq.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.base.activity.FrameActivity
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.CommonUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.widget.LoadingPage
@@ -472,7 +474,7 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
                     keyword = search_result_input!!.text.toString()
                 }
                 if (keyword != null && TextUtils.isEmpty(keyword.trim { it <= ' ' })) {
-                    CommonUtil.showToastMessage(R.string.search_click_check_isright)
+                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
                 } else {
                     hideInputMethod(search_result_input)
                     if (keyword != null && !TextUtils.isEmpty(keyword.trim { it <= ' ' }) && mSearchViewHelper != null) {
@@ -621,7 +623,7 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
             val keyword = search_result_input!!.text.toString()
 
             if (keyword.trim { it <= ' ' } == "") {
-                CommonUtil.showToastMessage(R.string.search_click_check_isright)
+                ToastUtil.showToastMessage(R.string.search_click_check_isright)
             } else {
                 mSearchViewHelper?.isFocus = false
 

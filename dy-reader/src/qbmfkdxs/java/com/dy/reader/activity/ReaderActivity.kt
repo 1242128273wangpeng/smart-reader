@@ -43,7 +43,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.showToastMessage
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.webview.UrlUtils
 import org.greenrobot.eventbus.EventBus
@@ -387,7 +387,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             mReadPresenter.updateOriginLog()
 
         } else {
-            this.applicationContext.showToastMessage("无法查看原文链接！")
+            ToastUtil.showToastMessage("无法查看原文链接！")
         }
     }
 

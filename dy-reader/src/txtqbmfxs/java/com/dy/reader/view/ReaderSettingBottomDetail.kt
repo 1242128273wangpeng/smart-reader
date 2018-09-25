@@ -33,8 +33,9 @@ import net.lzbook.kit.utils.ResourceUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.onEnd
+import net.lzbook.kit.utils.preventClickShake
 import net.lzbook.kit.utils.theme.ThemeHelper
-import net.lzbook.kit.utils.toast.preventClickShake
+
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 
