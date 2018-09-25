@@ -4,12 +4,15 @@
     <string name="everyone_is_searching">大家都在搜</string>
     <string name="want_to_read_and_read">想读就读</string>
     <string name="full_station_free">全站免费</string>
+    <string name="search_history">搜索历史</string>
+
 
     <string name="bookshelf">书架</string>
     <string name="bookstore">书城</string>
     <string name="recommend">精选</string>
     <string name="ranking">榜单</string>
     <string name="category">分类</string>
+    <string name="search">搜索</string>
 
     <string name="catalog_positive">正序</string>
     <string name="catalog_negative">倒序</string>

@@ -2,10 +2,12 @@
 <resources>
 
     <item name="btn_back" type="id"/>
-    <item name="img_back" type="id"/><!--返回按钮-->
-    <item name="img_clear" type="id"/><!--清除按钮-->
-    <item name="rl_title" type="id"/><!--标题栏布局-->
+    <item name="img_back" type="id"/>
+    <item name="img_clear" type="id"/>
+    <item name="rl_title" type="id"/>
 
+
+    <!--******************************************************-->
 
     <!-- PullToRefreshGridview-->
     <item name="gridview" type="id"/>
