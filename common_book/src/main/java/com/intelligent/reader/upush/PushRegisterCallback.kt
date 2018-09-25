@@ -38,7 +38,7 @@ class PushRegisterCallback(private val context: Context)
     }
 
     override fun onFailure(p0: String?, p1: String?) {
-
+        loge("deviceToken", "$p0  $p1")
     }
 
 }

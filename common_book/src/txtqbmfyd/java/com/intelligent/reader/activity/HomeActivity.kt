@@ -43,6 +43,7 @@ import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
+import com.intelligent.reader.widget.PushSettingDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import com.reyun.tracking.sdk.Tracking
 import io.reactivex.Observable
@@ -53,6 +54,7 @@ import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
@@ -140,6 +142,15 @@ class HomeActivity : BaseCacheableActivity(),
         dialog
     }
 
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+        }
+        lifecycle.addObserver(dialog)
+        dialog
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -168,6 +179,10 @@ class HomeActivity : BaseCacheableActivity(),
         homePresenter.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
+
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+        }
     }
 
     override fun onResume() {

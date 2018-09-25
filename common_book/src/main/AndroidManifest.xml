@@ -319,13 +319,6 @@
                 android:name="net.lzbook.kit.dynamic.service.DynamicService"
                 android:label="dynamicparameter"/>
 
-        <!--统计SDK网络监听-->
-        <receiver android:name="com.dingyue.statistics.receiver.NetworkChangeReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>
