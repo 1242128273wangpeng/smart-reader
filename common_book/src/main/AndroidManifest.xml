@@ -204,14 +204,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
-        <!-- 找书页面 -->
-        <activity
-            android:name=".activity.SearchBookActivity"
-            android:configChanges="keyboard"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeTranslucent"
-            android:windowSoftInputMode="adjustNothing"/>
+        <!--&lt;!&ndash; 找书页面 &ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name=".activity.SearchBookActivity"-->
+            <!--android:configChanges="keyboard"-->
+            <!--android:launchMode="singleTop"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/AppThemeTranslucent"-->
+            <!--android:windowSoftInputMode="adjustNothing"/>-->
         <activity
             android:name=".activity.WelfareCenterActivity"
             android:configChanges="keyboard"
