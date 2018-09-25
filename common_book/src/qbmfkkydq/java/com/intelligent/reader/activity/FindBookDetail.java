@@ -31,9 +31,9 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.base.activity.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.book.CommonContract;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.oneclick.OneClickUtil;
 import net.lzbook.kit.utils.sp.SPKey;
 import net.lzbook.kit.utils.sp.SPUtils;
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
@@ -402,7 +402,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             @Override
             public void doSearch(String keyWord, String search_type, String filter_type,
                     String filter_word, String sort_type) {
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 try {
@@ -438,7 +438,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     final String parameter, final String extra_parameter) {
                 AppLog.e(TAG, "doCover");
 
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 Map<String, String> data = new HashMap<>();
@@ -465,7 +465,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             public void doAnotherWeb(String url, String name) {
                 AppLog.e(TAG, "doAnotherWeb");
                 String packageName = AppUtils.getPackageName();
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 if ("cc.kdqbxs.reader".equals(packageName)

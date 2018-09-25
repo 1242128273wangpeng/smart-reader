@@ -8,17 +8,13 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.View
-import net.lzbook.kit.utils.book.CommonContract
-import com.dy.reader.animation.AutoAnimation
-import com.dy.reader.animation.OverlapAnimation
+import com.dy.reader.animation.*
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.animation.CurlAnimation
-import com.dy.reader.animation.IGLAnimation
-import com.dy.reader.animation.TranslationAnimation
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.microedition.khronos.egl.EGLConfig
@@ -240,14 +236,14 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
     fun onKeyEvent(event: KeyEvent): Boolean {
         return when {
             event.keyCode == KeyEvent.KEYCODE_VOLUME_UP && this.visibility == View.VISIBLE -> {
-                if(!CommonContract.isVolumDoubleClick(System.currentTimeMillis())){
+                if(!OneClickUtil.isVolumDoubleClick(System.currentTimeMillis())){
                     onClickLife()
                 }
 
                 true
             }
             event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN && this.visibility == View.VISIBLE -> {
-                if(!CommonContract.isVolumDoubleClick(System.currentTimeMillis())){
+                if(!OneClickUtil.isVolumDoubleClick(System.currentTimeMillis())){
                     onClickRight()
                 }
 

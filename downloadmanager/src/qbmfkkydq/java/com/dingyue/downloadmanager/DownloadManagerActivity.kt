@@ -20,6 +20,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -136,7 +137,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             finish()
         }
         txt_head_select_all.setOnClickListener {
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@setOnClickListener
             }
             if (txt_head_select_all.text == getString(R.string.select_all)) {

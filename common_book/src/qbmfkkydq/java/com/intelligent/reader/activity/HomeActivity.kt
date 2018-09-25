@@ -43,11 +43,11 @@ import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.utils.ApkUpdateUtils
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.logger.PersonalLogger
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
@@ -71,7 +71,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@setOnSearchClick
                 }
                 val data = HashMap<String, String>()
@@ -96,7 +96,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             }
         }
         jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onAnotherWebClick
             }
             AppLog.e(TAG, "doAnotherWeb")
@@ -115,7 +115,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
 
         jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
 
@@ -131,7 +131,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         //为webview 加载广告提供回调
         jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onWebGameClick
                 }
                 val title = if (TextUtils.isEmpty(name)) {
@@ -153,7 +153,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             AppLog.e("福利中心", "下载游戏: $name : $url")
 
             try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onGameAppClick
                 }
                 val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
