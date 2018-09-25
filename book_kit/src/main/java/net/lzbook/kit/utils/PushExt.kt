@@ -12,6 +12,8 @@ import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.editShared
 import com.ding.basic.util.putObject
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
@@ -194,7 +196,13 @@ fun Context.openPushActivity(msg: UMessage) {
     loge("umsg.activity: ${msg.activity}")
     intent.setClassName(this, msg.activity)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    startActivity(intent)
+    try {
+        startActivity(intent)
+    } catch (e: Exception) {
+        if (this is Activity) {
+            RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY)
+        }
+    }
     uploadPushLog(msg)
 }
 
