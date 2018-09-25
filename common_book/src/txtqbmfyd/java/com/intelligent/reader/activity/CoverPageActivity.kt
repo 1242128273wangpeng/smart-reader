@@ -30,10 +30,8 @@ import net.lzbook.kit.constants.ReplaceConstants
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.CommonUtil
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.utils.AppLog
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
+import swipeback.ActivityLifecycleHelper
 import java.text.DecimalFormat
 import java.text.MessageFormat
 import java.util.*
@@ -52,6 +50,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var bookId: String? = null
     private var bookSourceId: String? = null
     private var bookChapterId: String = ""
+
+    private var isFromPush = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +97,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             if (intent.hasExtra("book_chapter_id")) {
                 bookChapterId = intent.getStringExtra("book_chapter_id")
             }
+            isFromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
 
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
@@ -449,5 +450,17 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun showRecommendFail() {
 
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        if (isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
     }
 }
