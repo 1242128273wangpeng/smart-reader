@@ -51,7 +51,7 @@
     <color name="reading_backdrop_sixth">#111111</color>
 
     <!--color_night-->
-    <color name="reading_text_color_night">#CC9B9B9B</color>
+    <color name="reading_text_color_nightly">#CC9B9B9B</color>
     <color name="reading_operation_text_color_night">#309B9B9B</color>
     <color name="reading_backdrop_nightly">#333333</color>
 
