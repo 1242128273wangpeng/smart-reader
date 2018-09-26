@@ -9,7 +9,7 @@ import android.view.Gravity
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkdxs.dialog_push_setting.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

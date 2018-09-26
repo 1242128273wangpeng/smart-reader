@@ -679,7 +679,7 @@ android {
 
             //修改微信回到的包名 修改
 //=============================================================
-//            def wxentry = new File("common_book/src/main/java/com/intelligent/reader/activity/WXEntryActivity.kt")
+//            def wxentry = new File("book_kit/src/main/java/net/lzbook/kit/ui/activity/WXEntryActivity.kt")
 ////            System.err.println(wxentry.getAbsolutePath())
 //            def lines = wxentry.readLines()
 //            lines.set(0, "package ${variant.applicationId}.wxapi")

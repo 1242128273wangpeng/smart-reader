@@ -7,7 +7,7 @@ import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.setting.ReaderSettings
 import kotlinx.android.synthetic.txtqbmfxs.dialog_reader_feedback.*
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

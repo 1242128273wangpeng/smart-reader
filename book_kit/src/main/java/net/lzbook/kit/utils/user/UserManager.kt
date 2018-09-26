@@ -37,7 +37,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.user.LoginReq
 import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.utils.AppUtils

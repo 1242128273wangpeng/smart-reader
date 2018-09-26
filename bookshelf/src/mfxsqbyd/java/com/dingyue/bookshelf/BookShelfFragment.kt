@@ -32,7 +32,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 

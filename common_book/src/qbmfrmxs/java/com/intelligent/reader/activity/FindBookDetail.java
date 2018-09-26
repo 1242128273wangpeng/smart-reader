@@ -39,7 +39,7 @@ import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
-import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.ui.widget.LoadingPage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

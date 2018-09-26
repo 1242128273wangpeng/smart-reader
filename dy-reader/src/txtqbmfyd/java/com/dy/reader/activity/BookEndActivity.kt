@@ -23,7 +23,7 @@ import com.dy.reader.setting.ReaderStatus
 import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.constants.Constants
 import java.util.*
 import java.util.concurrent.Callable

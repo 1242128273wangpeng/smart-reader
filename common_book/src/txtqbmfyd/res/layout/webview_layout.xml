@@ -88,7 +88,7 @@
     </RelativeLayout>
 
 
-    <net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
+    <net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/bookshelf_refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"/>
-    </net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout>
+    </net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout>
 
     <ImageView
         android:id="@+id/img_head_shadow"

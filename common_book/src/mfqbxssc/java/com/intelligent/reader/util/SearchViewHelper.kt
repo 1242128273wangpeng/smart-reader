@@ -36,7 +36,7 @@ import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import java.util.*
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchHisAdapter.SearchClearCallBack, SearchSCView.View, RecommendBooksAdapter.RecommendItemClickListener {

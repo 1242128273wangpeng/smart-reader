@@ -1,13 +1,5 @@
 package net.lzbook.kit.utils.book;
 
-import net.lzbook.kit.constants.ActionConstants;
-import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.widget.RecommendItemView;
-import com.ding.basic.bean.Book;
-import com.ding.basic.bean.HistoryInfo;
-
-import net.lzbook.kit.bean.RecommendItem;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,6 +8,14 @@ import android.content.IntentFilter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.ding.basic.bean.Book;
+import com.ding.basic.bean.HistoryInfo;
+
+import net.lzbook.kit.bean.RecommendItem;
+import net.lzbook.kit.constants.ActionConstants;
+import net.lzbook.kit.ui.widget.RecommendItemView;
+import net.lzbook.kit.utils.logger.AppLog;
 
 import java.util.ArrayList;
 

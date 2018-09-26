@@ -24,8 +24,8 @@ import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.user.UserManager;
-import net.lzbook.kit.widget.EmptyRecyclerView;
-import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.ui.widget.EmptyRecyclerView;
+import net.lzbook.kit.ui.widget.MyDialog;
 
 import java.util.HashMap;
 import java.util.List;

@@ -8,7 +8,7 @@ import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.bookshelf.BookShelfPresenter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 

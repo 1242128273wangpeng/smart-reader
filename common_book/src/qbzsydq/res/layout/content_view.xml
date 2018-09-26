@@ -122,7 +122,7 @@
     </RelativeLayout>
     <!--头布局4个tab的布局，不再用include是方便svn打包只用更改一个文件-->
     <!--双tab的头布局含有边框，不再用include是方便svn打包只用更改一个文件-->
-    <net.lzbook.kit.widget.NonSwipeViewPager
+    <net.lzbook.kit.ui.widget.NonSwipeViewPager
             android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

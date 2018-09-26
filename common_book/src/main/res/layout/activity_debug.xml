@@ -60,7 +60,7 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_start_params"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/btn_debug_start_params"
                     style="@style/Debug_Widget_View"
                     app:sb_checked="true"
@@ -80,7 +80,7 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_pre_show_ad"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/btn_debug_pre_show_ad"
                     style="@style/Debug_Widget_View"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
@@ -99,7 +99,7 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_reset_book_shelf"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/btn_debug_reset_book_shelf"
                     style="@style/Debug_Widget_View"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
@@ -118,7 +118,7 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_update_chapter"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/btn_debug_update_chapter"
                     style="@style/Debug_Widget_View"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
@@ -137,7 +137,7 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_show_toast"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/btn_debug_show_toast"
                     style="@style/Debug_Widget_View"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"

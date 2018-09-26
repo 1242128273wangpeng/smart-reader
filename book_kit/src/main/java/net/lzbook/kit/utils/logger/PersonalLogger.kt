@@ -1,6 +1,6 @@
 package net.lzbook.kit.utils.logger
 
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
 

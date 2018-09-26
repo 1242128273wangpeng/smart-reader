@@ -3,7 +3,7 @@ package net.lzbook.kit.appender_loghub;
 
 import com.ding.basic.bean.LocalLog;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.common.PLItemKey;
 import net.lzbook.kit.utils.user.DeviceID;
 import net.lzbook.kit.utils.logger.AppLog;

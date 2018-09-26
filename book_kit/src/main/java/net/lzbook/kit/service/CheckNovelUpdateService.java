@@ -28,7 +28,7 @@ import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.constants.ActionConstants;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.bean.UpdateCallBack;

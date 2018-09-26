@@ -2,7 +2,7 @@ package net.lzbook.kit.utils.statistic.model
 
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.statistic.alilog.Log
 import net.lzbook.kit.utils.user.DeviceID
 import net.lzbook.kit.utils.user.UserManager

@@ -116,7 +116,7 @@
                             android:paddingLeft="20dp"
                             android:text="@string/push"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                             android:id="@+id/push_message_checkbox"
                             android:layout_width="50dp"
                             android:layout_height="30dp"
@@ -152,7 +152,7 @@
                             android:paddingLeft="20dp"
                             android:text="@string/setting_push_sound"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                             android:id="@+id/push_sound_checkbox"
                             android:layout_width="50dp"
                             android:layout_height="30dp"
@@ -200,7 +200,7 @@
                             android:textColor="@color/primary"
                             android:textSize="10.0sp"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                             android:id="@+id/push_time_checkbox"
                             android:layout_width="50dp"
                             android:layout_height="30dp"

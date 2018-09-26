@@ -129,7 +129,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.WXEntryActivity"
+            android:name="net.lzbook.kit.ui.activity.WXEntryActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
@@ -139,7 +139,7 @@
             android:name="${PACKAGE_NAME}.wxapi.WXEntryActivity"
             android:enabled="true"
             android:exported="true"
-            android:targetActivity=".activity.WXEntryActivity"/>
+            android:targetActivity="net.lzbook.kit.ui.activity.WXEntryActivity"/>
 
         <!-- 书架页 发现页 -->
         <activity
@@ -167,12 +167,12 @@
 
         <!--调试界面-->
         <activity
-            android:name=".activity.DebugActivity"
+            android:name="net.lzbook.kit.ui.activity.DebugActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
         <activity
-            android:name=".activity.DebugHostActivity"
+            android:name="net.lzbook.kit.ui.activity.DebugHostActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"
             android:windowSoftInputMode="adjustPan"/>
@@ -200,7 +200,7 @@
 
         <!-- 下载apk失败页面 -->
         <activity
-            android:name=".activity.DownloadErrorActivity"
+            android:name="net.lzbook.kit.ui.activity.DownloadErrorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
@@ -213,7 +213,7 @@
             android:theme="@style/AppThemeTranslucent"
             android:windowSoftInputMode="adjustNothing"/>
         <activity
-            android:name=".activity.WelfareCenterActivity"
+            android:name="net.lzbook.kit.ui.activity.WelfareCenterActivity"
             android:configChanges="keyboard"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -221,19 +221,19 @@
             android:windowSoftInputMode="adjustNothing"/>
 
         <activity
-            android:name=".upush.OfflineNotifyActivity"
+            android:name="net.lzbook.kit.ui.activity.OfflineNotifyActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Start"/>
 
         <!-- 推送 -->
-        <receiver android:name=".receiver.PushClickReceiver">
+        <receiver android:name="net.lzbook.kit.receiver.PushClickReceiver">
             <intent-filter>
                 <action android:name="${PACKAGE_NAME}.CLICK_BOOK_UPDATE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.DownBookClickReceiver">
+        <receiver android:name="net.lzbook.kit.receiver.DownBookClickReceiver">
             <intent-filter>
                 <action android:name="${PACKAGE_NAME}.receiver.CLICK_DOWN_BOOK"/>
             </intent-filter>
@@ -250,7 +250,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
         <activity
-            android:name=".activity.GuideActivity"
+            android:name="net.lzbook.kit.ui.activity.GuideActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
         <activity
@@ -267,7 +267,7 @@
             android:theme="@style/AppThemeTranslucent"/>
 
         <activity
-            android:name=".activity.GoToCoverOrReadActivity"
+            android:name="net.lzbook.kit.ui.activity.GoToCoverOrReadActivity"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:taskAffinity=".gotocoverorreadactivity">
@@ -294,17 +294,17 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <activity
-            android:name=".activity.SwitchADActivity"
+            android:name="net.lzbook.kit.ui.activity.SwitchADActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- 微信回调activity -->
 
-        <receiver android:name=".receiver.ConnectionChangeReceiver">
+        <receiver android:name="net.lzbook.kit.receiver.ConnectionChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.BootReceiver">
+        <receiver android:name="net.lzbook.kit.receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

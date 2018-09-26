@@ -4,6 +4,7 @@ package com.intelligent.reader.activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -15,28 +16,37 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.ding.basic.repository.RequestRepositoryFactory
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
-import com.intelligent.reader.presenter.catalogues.CataloguesContract
-import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
-import com.intelligent.reader.receiver.OffLineDownLoadReceiver
+import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbmfkkydq.act_catalog.*
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.bean.EventBookmark
+import net.lzbook.kit.bean.OfflineDownloadEvent
+import net.lzbook.kit.presenter.catalogues.CataloguesContract
+import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
+import net.lzbook.kit.receiver.OffLineDownLoadReceiver
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.widget.LoadingPage
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.utils.router.RouterUtil
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -92,6 +102,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var downLoadReceiver: OffLineDownLoadReceiver? = null
     private var mCataloguesPresenter: CataloguesPresenter? = null
 
+    private var transformReadDialog: TransformReadDialog?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
@@ -116,7 +128,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             changeSortState(isPositive)
         }
 
-
+        EventBus.getDefault().register(this)
 
     }
 
@@ -197,6 +209,31 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
         if (book != null) {
             mCataloguesPresenter = CataloguesPresenter(this, book!!, this, this, fromCover)
+            transformReadDialog=TransformReadDialog(this)
+
+            transformReadDialog?.insertContinueListener {
+                val data = HashMap<String, String>()
+                data["type"] = "1"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                intoReadingActivity()
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
+
+            transformReadDialog?.insertCancelListener {
+                val data = HashMap<String, String>()
+                data["type"] = "2"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
         }
 
         getChapterData()
@@ -206,6 +243,47 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
 
     }
+
+    /***
+     * 进入阅读页
+     * **/
+    private fun intoReadingActivity() {
+        if (TextUtils.isEmpty(book!!.book_id)) {
+            return
+        }
+
+        val bundle = Bundle()
+
+        val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book!!.book_id)
+
+        if (localBook != null) {
+            if (book!!.sequence != -2) {
+                bundle.putInt("sequence", localBook.sequence)
+                bundle.putInt("offset", localBook.offset)
+            } else {
+                bundle.putInt("sequence", -1)
+                bundle.putInt("offset", 0)
+            }
+
+            bundle.putSerializable("book", localBook)
+        } else {
+            bundle.putSerializable("book", book)
+        }
+
+        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+    }
+
+   override fun showReadDialog(){
+        if (!this.isFinishing) {
+            if (!transformReadDialog!!.isShow()) {
+                transformReadDialog!!.show()
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
+        }
+    }
+
 
     private fun getChapterData() {
         if (book != null) {
@@ -315,15 +393,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             }
 
         }
-
         if (mCataloguesPresenter != null) {
             mCataloguesPresenter!!.removeHandler()
             mCataloguesPresenter!!.unRegisterRec()
         }
+        EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
-
-    fun notifyChangeDownLoad() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun notifyChangeDownLoad(event:OfflineDownloadEvent) {
         if (mCatalogAdapter != null) {
             mCatalogAdapter!!.notifyDataSetChanged()
         }

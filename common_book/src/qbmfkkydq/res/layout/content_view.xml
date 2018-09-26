@@ -418,7 +418,7 @@
         </RelativeLayout>
     </RelativeLayout>
     
-    <net.lzbook.kit.widget.NonSwipeViewPager
+    <net.lzbook.kit.ui.widget.NonSwipeViewPager
             android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

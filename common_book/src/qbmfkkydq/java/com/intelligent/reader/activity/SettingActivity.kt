@@ -14,13 +14,14 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.SwitchButton
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfkkydq.act_setting_user.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.ApkUpdateUtils
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -34,7 +35,6 @@ import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.theme.StatusBarCompat
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.MyDialog
 import java.util.*
 
 

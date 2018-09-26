@@ -22,7 +22,7 @@ import net.lzbook.kit.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.webview.UrlUtils;
-import net.lzbook.kit.widget.NonSwipeViewPager;
+import net.lzbook.kit.ui.widget.NonSwipeViewPager;
 
 import java.util.HashMap;
 import java.util.Map;

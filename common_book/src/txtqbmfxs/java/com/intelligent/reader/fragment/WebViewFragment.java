@@ -32,8 +32,8 @@ import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
-import net.lzbook.kit.widget.LoadingPage;
-import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout;
+import net.lzbook.kit.ui.widget.LoadingPage;
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout;
 
 import java.lang.ref.WeakReference;
 

@@ -2,7 +2,7 @@ package net.lzbook.kit.utils.logger
 
 import com.ding.basic.repository.RequestRepositoryFactory
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils

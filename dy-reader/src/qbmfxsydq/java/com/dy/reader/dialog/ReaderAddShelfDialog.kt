@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.Gravity
 import com.dy.reader.R
 import kotlinx.android.synthetic.qbmfxsydq.dialog_reader_add_shelf.*
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 /**
  * Desc 请描述这个文件

@@ -24,8 +24,8 @@ import com.intelligent.reader.util.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.widget.EmptyRecyclerView;
-import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.ui.widget.EmptyRecyclerView;
+import net.lzbook.kit.ui.widget.MyDialog;
 import net.lzbook.kit.utils.user.UserManager;
 import net.lzbook.kit.utils.StatServiceUtils;
 

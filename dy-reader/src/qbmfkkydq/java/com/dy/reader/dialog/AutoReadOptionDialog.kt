@@ -13,7 +13,7 @@ import com.dy.reader.setting.ReaderSettings
 
 import kotlinx.android.synthetic.qbmfkkydq.dialog_reader_auto_read_option.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
 import org.greenrobot.eventbus.EventBus

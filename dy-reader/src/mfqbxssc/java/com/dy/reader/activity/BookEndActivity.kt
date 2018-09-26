@@ -28,7 +28,7 @@ import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.BookRecommender
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList

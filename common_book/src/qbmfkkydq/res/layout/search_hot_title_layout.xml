@@ -17,7 +17,7 @@
         android:paddingRight="@dimen/dimen_margin_16"
         android:text="大家都在搜"/>
 
-    <com.intelligent.reader.view.ScrollForGridView
+    <net.lzbook.kit.ui.widget.ScrollForGridView
         android:id="@+id/grid_hot_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

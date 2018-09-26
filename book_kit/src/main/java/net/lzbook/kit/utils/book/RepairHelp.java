@@ -13,12 +13,12 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.toast.ToastUtil;
-import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.ui.widget.MyDialog;
 
 import java.util.HashMap;
 import java.util.Map;

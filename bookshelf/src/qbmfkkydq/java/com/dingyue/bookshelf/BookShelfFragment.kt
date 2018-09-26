@@ -23,6 +23,7 @@ import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.rvextension.HFRecyclerControl
 import net.lzbook.kit.service.CheckNovelUpdateService
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
@@ -31,7 +32,6 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
 import java.util.*
 
 /**

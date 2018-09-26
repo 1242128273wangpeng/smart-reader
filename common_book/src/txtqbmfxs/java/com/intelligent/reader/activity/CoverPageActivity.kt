@@ -35,7 +35,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -108,6 +108,8 @@ class CoverPageActivity : BaseCacheableActivity(),
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
+    private var transformReadDialog: TransformReadDialog?=null
+    private var coverDetail: Book? = null
 
     private var isFromPush = false
 
@@ -162,8 +164,132 @@ class CoverPageActivity : BaseCacheableActivity(),
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
+            transformReadDialog=TransformReadDialog(this)
+
+            transformReadDialog?.insertContinueListener {
+                val data = HashMap<String, String>()
+                data["type"] = "1"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                intoReadingActivity()
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
+
+            transformReadDialog?.insertCancelListener {
+                val data = HashMap<String, String>()
+                data["type"] = "2"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
         } else {
             onBackPressed()
+        }
+    }
+
+    /***
+     * 进入阅读页
+     * **/
+    private fun intoReadingActivity() {
+        if (coverDetail == null || TextUtils.isEmpty(coverDetail!!.book_id)) {
+            return
+        }
+
+        val bundle = Bundle()
+        val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
+
+        if (book != null) {
+
+            if (coverDetail != null && coverDetail?.last_chapter != null) {
+                book.last_chapter = coverDetail?.last_chapter
+            }
+
+            if (book.sequence != -2) {
+                bundle.putInt("sequence", book.sequence)
+                bundle.putInt("offset", book.offset)
+            } else {
+                bundle.putInt("sequence", -1)
+                bundle.putInt("offset", 0)
+            }
+
+//            updateBookInformation()
+
+            bundle.putSerializable("book", book)
+        } else {
+            bundle.putSerializable("book", coverDetail)
+        }
+
+        RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, bundle, flags)
+    }
+
+    /***
+     * 处理跳转阅读页请求
+     * **/
+    override fun handleReadingAction(coverDetail: Book?) {
+        this.coverDetail=coverDetail
+        if (this.isFinishing) {
+            return
+        }
+
+        if (!this.isFinishing) {
+            if (!transformReadDialog!!.isShow()) {
+                transformReadDialog!!.show()
+            }
+
+
+        }
+    }
+
+    /***
+     * 处理跳转目录操作
+     * **/
+    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean,coverDetail: Book?) {
+        if (coverDetail != null) {
+
+            val bundle = Bundle()
+            bundle.putInt("sequence", sequence)
+            bundle.putBoolean("fromCover", true)
+            bundle.putBoolean("is_last_chapter", indexLast)
+            bundle.putSerializable("cover", coverDetail)
+
+            intent.setClass(this, CataloguesActivity::class.java)
+            intent.putExtras(bundle)
+
+            this.startActivity(intent)
+        }
+    }
+    override fun showCleanDialog():Dialog{
+        val cleanDialog = MyDialog(this, R.layout.dialog_download_clean)
+        cleanDialog.setCanceledOnTouchOutside(false)
+        cleanDialog.setCancelable(false)
+        cleanDialog.findViewById<TextView>(R.id.dialog_msg).setText(R.string.tip_cleaning_cache)
+        cleanDialog.show()
+        return cleanDialog
+    }
+
+    /***
+     * 判断是否跳转到搜索页
+     * **/
+    override  fun checkStartSearchActivity(view: View) {
+        val intent = Intent()
+        if (view is RecommendItemView) {
+            intent.putExtra("word", view.title)
+            intent.putExtra("search_type", "0")
+            intent.putExtra("filter_type", "0")
+            intent.putExtra("filter_word", "ALL")
+            intent.putExtra("sort_type", "0")
+            intent.setClass(this, SearchBookActivity::class.java)
+            this.startActivity(intent)
+            return
         }
     }
 

@@ -105,7 +105,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     private val bannerDialog: BannerDialog by lazy {
-         BannerDialog(this)
+         BannerDialog(this,Intent(activity, FindBookDetail::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

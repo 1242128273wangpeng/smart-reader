@@ -32,7 +32,7 @@ import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
-import net.lzbook.kit.widget.SwitchButton
+import net.lzbook.kit.ui.widget.SwitchButton
 import java.util.*
 
 

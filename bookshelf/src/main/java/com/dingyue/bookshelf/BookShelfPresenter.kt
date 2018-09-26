@@ -12,8 +12,8 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants

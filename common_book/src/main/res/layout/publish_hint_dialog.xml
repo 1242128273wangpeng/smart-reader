@@ -94,7 +94,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/container"

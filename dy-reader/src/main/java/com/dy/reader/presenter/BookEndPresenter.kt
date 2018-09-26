@@ -9,7 +9,7 @@ import com.ding.basic.request.RequestSubscriber
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.ATManager
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.router.RouterConfig

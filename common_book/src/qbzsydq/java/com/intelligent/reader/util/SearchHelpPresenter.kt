@@ -26,7 +26,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.sp.SPUtils
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 import java.lang.ref.WeakReference
 import java.util.*
 

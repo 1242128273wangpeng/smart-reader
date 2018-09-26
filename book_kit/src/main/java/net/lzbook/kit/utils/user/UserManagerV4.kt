@@ -39,7 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.user.AvatarReq
 import net.lzbook.kit.bean.user.ThirdLoginReq
 import net.lzbook.kit.bean.user.ThirdLoginReq.Companion.CHANNEL_QQ

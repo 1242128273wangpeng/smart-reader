@@ -6,7 +6,7 @@ import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import kotlinx.android.synthetic.mfxsqbyd.dialog_reader_feedback.*
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

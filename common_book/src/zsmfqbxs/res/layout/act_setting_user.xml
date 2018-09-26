@@ -391,7 +391,7 @@
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/bt_night_shift"
                     android:layout_width="45dp"
                     android:layout_height="30dp"
@@ -563,7 +563,7 @@
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/bt_wifi_auto"
                     android:layout_width="45dp"
                     android:layout_height="30dp"

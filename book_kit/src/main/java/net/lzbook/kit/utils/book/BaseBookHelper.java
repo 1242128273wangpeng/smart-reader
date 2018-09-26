@@ -16,13 +16,13 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.util.DataCache;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.download.DownloadState;
 import net.lzbook.kit.utils.file.FileUtils;
-import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.ui.widget.MyDialog;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.bean.UpdateCallBack;
 import net.lzbook.kit.bean.BookUpdateTaskData;

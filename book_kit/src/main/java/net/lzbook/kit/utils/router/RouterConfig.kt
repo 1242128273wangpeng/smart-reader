@@ -18,7 +18,7 @@ object RouterConfig {
 
     const val LOGIN_ACTIVITY = "/common_book/LoginActivity"
 
-    const val DEBUG_ACTIVITY = "/common_book/DebugActivity"
+    const val DEBUG_ACTIVITY = "/book_kit/DebugActivity"
 
     const val SEARCH_BOOK_ACTIVITY = "/common_book/SearchBookActivity"
 

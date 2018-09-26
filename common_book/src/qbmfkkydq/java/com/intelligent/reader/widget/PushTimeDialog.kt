@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.dialog_push_time.*
 import net.lzbook.kit.bean.SettingItems
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

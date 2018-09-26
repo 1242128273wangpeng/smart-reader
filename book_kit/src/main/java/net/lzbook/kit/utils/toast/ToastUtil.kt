@@ -6,7 +6,7 @@ import android.support.annotation.StringRes
 import android.widget.Toast
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.msDebuggAble
 import net.lzbook.kit.utils.topsnackbar.TopSnackBarUtils

@@ -1,7 +1,7 @@
 package net.lzbook.kit.utils.book
 
 import com.ding.basic.bean.Book
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.download.CacheManager

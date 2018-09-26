@@ -64,7 +64,7 @@
             app:onPressChangeAlpha="true"/>
     </RelativeLayout>
 
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:visibility="gone"/>

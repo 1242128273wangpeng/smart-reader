@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.txtqbmfyd.item_read_bookmark.view.*
 import kotlinx.android.synthetic.txtqbmfyd.item_reader_catalog.view.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_catalog_mark.*
 import kotlinx.android.synthetic.txtqbmfyd.frag_catalog_mark.view.*
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
 import java.text.SimpleDateFormat

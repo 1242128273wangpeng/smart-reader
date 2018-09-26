@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.book.FootprintUtils

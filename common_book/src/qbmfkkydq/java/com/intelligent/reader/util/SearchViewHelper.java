@@ -42,18 +42,18 @@ import com.intelligent.reader.adapter.SearchHistoryAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
-import com.intelligent.reader.view.ScrollForGridView;
-import com.intelligent.reader.widget.ConfirmDialog;
+import net.lzbook.kit.ui.widget.ScrollForGridView;
+import net.lzbook.kit.ui.widget.ConfirmDialog;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
 import net.lzbook.kit.utils.sp.SPUtils;
 import net.lzbook.kit.utils.toast.ToastUtil;
-import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.ui.widget.LoadingPage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

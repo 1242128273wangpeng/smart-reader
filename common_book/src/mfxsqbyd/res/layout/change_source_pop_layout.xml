@@ -58,7 +58,7 @@
 
     </RelativeLayout>
 
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
             android:id="@+id/nightShadowView"
             android:layout_width="match_parent"
             android:visibility="gone"

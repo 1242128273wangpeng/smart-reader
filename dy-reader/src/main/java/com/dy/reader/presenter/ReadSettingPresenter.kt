@@ -25,7 +25,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.AppUtils
@@ -39,7 +39,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
-import net.lzbook.kit.widget.ApplicationShareDialog
+import net.lzbook.kit.ui.widget.ApplicationShareDialog
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
 import java.lang.Exception

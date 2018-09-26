@@ -89,7 +89,7 @@
         </LinearLayout>
     </LinearLayout>
     
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

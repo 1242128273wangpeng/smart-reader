@@ -88,7 +88,7 @@
 
     </RelativeLayout>
 
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="300dp"
         android:layout_height="174dp"
         android:layout_centerInParent="true"

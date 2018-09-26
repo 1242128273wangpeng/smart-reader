@@ -1,6 +1,6 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.bean.SettingItems;
 import net.lzbook.kit.utils.logger.AppLog;
 

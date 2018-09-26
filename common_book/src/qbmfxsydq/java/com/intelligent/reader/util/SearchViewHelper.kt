@@ -36,7 +36,7 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import java.lang.ref.WeakReference
 import java.util.*
 

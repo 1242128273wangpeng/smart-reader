@@ -17,7 +17,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.Platform
 import net.lzbook.kit.utils.user.UserManager
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 @Route(path = RouterConfig.LOGIN_ACTIVITY)
 class LoginActivity : FrameActivity() {

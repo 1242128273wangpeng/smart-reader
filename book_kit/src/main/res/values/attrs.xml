@@ -85,4 +85,49 @@
         <!--<attr name="onPressBackground" format="color|reference"/>-->
         <!--<attr name="onUnableBackground" format="color|reference"/>-->
     </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="flFlow" format="boolean"/>
+        <attr name="flChildSpacing" format="enum|dimension">
+            <enum name="auto" value="-65536"/>
+        </attr>
+        <attr name="flChildSpacingForLastRow" format="enum|dimension">
+            <enum name="auto" value="-65536"/>
+            <enum name="align" value="-65537"/>
+        </attr>
+        <attr name="flRowSpacing" format="enum|dimension">
+            <enum name="auto" value="-65536"/>
+        </attr>
+        <attr name="flRtl" format="boolean"/>
+        <attr name="flMaxRows" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="FlymeTabStrip">
+        <!-- 指示器高度 -->
+        <attr name="indicatorHeight" format="dimension" />
+        <!-- 指示器滑动条颜色 -->
+        <attr name="indicatorColor" format="color" />
+        <!-- 指示器左右间距 -->
+        <attr name="indicatorMargin" format="dimension" />
+        <!-- 指示器文字颜色 -->
+        <attr name="indicatorTextColor" format="color" />
+        <!-- 指示器文字大小 -->
+        <attr name="indicatorTextSize" format="dimension" />
+        <!-- 指示器文字被选中后的大小 -->
+        <attr name="selectedIndicatorTextSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableTextView">
+        <attr name="maxCollapsedLines"
+            format="integer"/>
+        <attr name="animDuration"
+            format="integer"/>
+        <attr name="animAlphaStart"
+            format="float"/>
+        <attr name="expandDrawable"
+            format="reference"/>
+        <attr name="collapseDrawable"
+            format="reference"/>
+    </declare-styleable>
+
 </resources>

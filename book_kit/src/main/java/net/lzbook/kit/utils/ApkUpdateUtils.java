@@ -20,10 +20,10 @@ import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.service.DownloadIntentService;
 import net.lzbook.kit.utils.toast.ToastUtil;
-import net.lzbook.kit.widget.MyDialog;
+import net.lzbook.kit.ui.widget.MyDialog;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

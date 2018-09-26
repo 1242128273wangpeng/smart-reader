@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.Gravity
 import com.dy.reader.R
 import kotlinx.android.synthetic.qbzsydq.dialog_reader_auto_read.*
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

@@ -31,7 +31,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/remove_delete_normal"
-            android:onClick="clickView"
             android:text="重新下载"
             android:textColor="#fffbf4"
             />

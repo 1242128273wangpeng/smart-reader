@@ -24,7 +24,7 @@ import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.widget.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import java.util.*
 
 /**

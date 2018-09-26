@@ -4,10 +4,10 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import net.lzbook.kit.ui.widget.LoginInvalidDialog
+import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import com.intelligent.reader.view.login.LoginInvalidDialog
-import net.lzbook.kit.utils.loge
 
 /**
  * Desc 登录失效

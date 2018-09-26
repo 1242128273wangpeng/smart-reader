@@ -27,7 +27,7 @@ import net.lzbook.kit.base.activity.BaseCacheableActivity
 
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import org.antlr.v4.runtime.misc.MurmurHash.finish
 import java.util.*
 import java.util.concurrent.Callable

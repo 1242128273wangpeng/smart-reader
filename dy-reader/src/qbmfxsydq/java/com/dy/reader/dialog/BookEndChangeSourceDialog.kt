@@ -7,7 +7,7 @@ import com.dy.reader.R
 import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.listener.SourceClickListener
 import kotlinx.android.synthetic.main.dialog_book_end_change_source.*
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 /**
  * Desc 请描述这个文件

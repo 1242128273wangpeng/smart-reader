@@ -1,8 +1,7 @@
 package net.lzbook.kit.utils.cache;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.utils.download.CacheManager;
-import net.lzbook.kit.utils.cache.DataCleanManager;
 
 import android.os.Message;
 

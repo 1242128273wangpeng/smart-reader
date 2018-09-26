@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ding.basic.Config;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.utils.AppUtils;

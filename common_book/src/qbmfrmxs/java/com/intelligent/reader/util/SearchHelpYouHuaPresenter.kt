@@ -21,7 +21,7 @@ import net.lzbook.kit.base.BaseBookApplication
 import net.lzbook.kit.base.IPresenter
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 import java.lang.ref.WeakReference
 import java.util.*
 

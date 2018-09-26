@@ -1,8 +1,5 @@
 package net.lzbook.kit.utils;
 
-import static android.content.Context.BATTERY_SERVICE;
-import static android.content.Context.TELEPHONY_SERVICE;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -44,7 +41,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.meituan.android.walle.WalleChannelReader;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.logger.AppLog;
@@ -75,6 +72,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.TELEPHONY_SERVICE;
 
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
@@ -1313,5 +1313,48 @@ public class AppUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 根据图片名字获取ID
+     * @param context
+     * @param name
+     * @return
+     */
+    public static int getDrawableByName(Context context,String name){
+        try {
+            return context.getResources().getIdentifier(name,
+                    "drawable", context.getPackageName());
+        }catch (Exception e){
+            return -1;
+        }
+    }
+
+    /**
+     * 根据资源名字获取ID
+     * @param paramContext
+     * @param paramString
+     * @return
+     */
+    public static int getResourceId(Context paramContext, String paramString) {
+        try {
+            return paramContext.getResources().getIdentifier(paramString, "id", paramContext.getPackageName());
+        }catch (Exception e){
+            return -1;
+        }
+    }
+    /**
+     * 根据layout名字获取ID
+     * @param paramContext
+     * @param paramString
+     * @return
+     */
+    public static int getLayoutId(Context paramContext, String paramString) {
+        try {
+            return paramContext.getResources().getIdentifier(paramString, "layout",
+                    paramContext.getPackageName());
+        }catch (Exception e){
+            return -1;
+        }
     }
 }

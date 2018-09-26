@@ -15,22 +15,22 @@ import com.dy.media.MediaConfig;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
 import com.intelligent.reader.BuildConfig;
-import com.intelligent.reader.upush.PushMessageHandler;
-import com.intelligent.reader.upush.PushNotificationHandler;
-import com.intelligent.reader.upush.PushRegisterCallback;
 import com.reyun.tracking.sdk.Tracking;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.PushAgent;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.OpenUDID;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.toast.ToastUtil;
+import net.lzbook.kit.utils.upush.PushMessageHandler;
+import net.lzbook.kit.utils.upush.PushNotificationHandler;
+import net.lzbook.kit.utils.upush.PushRegisterCallback;
 
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;

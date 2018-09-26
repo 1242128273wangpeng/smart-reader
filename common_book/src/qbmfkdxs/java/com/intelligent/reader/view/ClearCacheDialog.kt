@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.view.View
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkdxs.dialog_clear_cache.*
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

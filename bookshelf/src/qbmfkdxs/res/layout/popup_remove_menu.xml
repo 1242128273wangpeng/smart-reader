@@ -24,7 +24,7 @@
         android:textColor="@drawable/bookshelf_remove_delete_color_sel"
         android:textSize="16sp"/>
 
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/btn_remove_delete"

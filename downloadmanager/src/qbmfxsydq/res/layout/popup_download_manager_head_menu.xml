@@ -51,7 +51,7 @@
             android:textSize="13sp"/>
     </LinearLayout>
 
-    <net.lzbook.kit.widget.NightShadowView
+    <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="145dp"
         android:layout_height="150dp"
         android:layout_marginLeft="12dp"

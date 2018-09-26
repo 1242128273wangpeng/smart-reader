@@ -312,7 +312,7 @@
                         android:paddingRight="@dimen/padding_12"
                         android:text="@string/night_shift"/>
                 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                         android:id="@+id/bt_night_shift"
                         android:layout_width="45dp"
                         android:layout_height="30dp"
@@ -358,7 +358,7 @@
                         android:paddingRight="@dimen/padding_12"
                         android:text="@string/setting_wifi_auto"/>
 
-                <net.lzbook.kit.widget.SwitchButton
+                <net.lzbook.kit.ui.widget.SwitchButton
                         android:id="@+id/bt_wifi_auto"
                         android:layout_width="45dp"
                         android:layout_height="30dp"

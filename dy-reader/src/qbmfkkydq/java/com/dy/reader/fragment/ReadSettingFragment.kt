@@ -20,7 +20,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 
 import kotlinx.android.synthetic.qbmfkkydq.frag_read_setting.*
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.download.CallBackDownload
 
 import org.greenrobot.eventbus.EventBus

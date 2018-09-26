@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.dialog_read_source.*
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 /**
  * Desc 封面页转码阅读

@@ -4,7 +4,7 @@ import android.content.Context
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import net.lzbook.kit.utils.book.CommonContract
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.book.BaseBookHelper
 import java.util.*
 

@@ -1,7 +1,7 @@
 package com.dingyue.downloadmanager
 
 import android.app.Activity
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 /**
  * Created by qiantao on 2017/11/22 0022

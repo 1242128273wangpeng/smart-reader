@@ -5,7 +5,7 @@ import com.ding.basic.bean.LocalLog
 import com.ding.basic.dao.LocalLogDao
 import com.ding.basic.database.LocalLogDataBase
 import net.lzbook.kit.appender_loghub.ServerLog
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils

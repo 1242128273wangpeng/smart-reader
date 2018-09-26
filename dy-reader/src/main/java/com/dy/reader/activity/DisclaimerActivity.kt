@@ -10,12 +10,12 @@ import com.baidu.mobstat.StatService
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.widget.MyDialog
 import java.util.*
 
 /**

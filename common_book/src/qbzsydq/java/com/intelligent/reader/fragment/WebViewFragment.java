@@ -34,7 +34,7 @@ import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.widget.ConsumeEvent;
-import net.lzbook.kit.widget.LoadingPage;
+import net.lzbook.kit.ui.widget.LoadingPage;
 
 import org.greenrobot.eventbus.EventBus;
 

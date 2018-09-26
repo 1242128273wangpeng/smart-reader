@@ -13,7 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.qbmfxsydq.dialog_select_sex.*
 import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 import java.util.concurrent.TimeUnit
 
 /**

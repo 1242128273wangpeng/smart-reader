@@ -26,10 +26,11 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.ShieldManager;
+import net.lzbook.kit.utils.ShieldManager;
 
-import net.lzbook.kit.base.BaseBookApplication;
-import net.lzbook.kit.base.activity.FrameActivity;
+import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.ui.activity.GuideActivity;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.service.CheckNovelUpdateService;

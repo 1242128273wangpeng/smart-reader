@@ -1,6 +1,7 @@
 package net.lzbook.kit.utils.router
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 
 import com.alibaba.android.arouter.launcher.ARouter
@@ -32,7 +33,7 @@ object RouterUtil {
     /**
      * 构建标准的路由请求
      */
-    fun navigation(activity: Activity, path: String) {
+    fun navigation(activity: Context, path: String) {
         ARouter.getInstance()
                 .build(path)
                 .navigation(activity)
@@ -42,7 +43,7 @@ object RouterUtil {
      * 构建携带动画的路由请求
      */
 
-    fun navigationWithTransition(activity: Activity, path: String, enterAnim: Int =
+    fun navigationWithTransition(activity: Context, path: String, enterAnim: Int =
     android.R.anim.slide_in_left, exitAnim: Int = android.R.anim.slide_out_right) {
         ARouter.getInstance()
                 .build(path)
@@ -54,7 +55,7 @@ object RouterUtil {
      * 构建标准的路由请求
      */
     @JvmStatic
-    fun navigation(activity: Activity, path: String, bundle: Bundle) {
+    fun navigation(activity: Context, path: String, bundle: Bundle) {
         ARouter.getInstance()
                 .build(path)
                 .with(bundle)
@@ -68,14 +69,14 @@ object RouterUtil {
                 .navigation(activity, code)
     }
 
-    fun navigation(activity: Activity, path: String, flags: Int) {
+    fun navigation(activity: Context, path: String, flags: Int) {
         ARouter.getInstance()
                 .build(path)
                 .withFlags(flags)
                 .navigation(activity)
     }
 
-    fun navigation(activity: Activity, path: String, bundle: Bundle, flags: Int) {
+    fun navigation(activity: Context, path: String, bundle: Bundle, flags: Int) {
         ARouter.getInstance()
                 .build(path)
                 .with(bundle)

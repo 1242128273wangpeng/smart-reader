@@ -5,7 +5,7 @@ import android.view.Gravity
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.dialog_push_time.*
 import net.lzbook.kit.bean.SettingItems
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 /**
  * Desc 推送时间设置

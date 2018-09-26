@@ -100,7 +100,7 @@
                         android:layout_marginLeft="20dp"
                         android:text="@string/book_update_push"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                         android:id="@+id/btn_book_update_push"
                         android:layout_width="50dp"
                         android:layout_height="30dp"
@@ -137,7 +137,7 @@
                         android:layout_marginLeft="20dp"
                         android:text="@string/umeng_push"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                         android:id="@+id/btn_umeng_push"
                         android:layout_width="50dp"
                         android:layout_height="30dp"
@@ -180,7 +180,7 @@
                         android:layout_marginLeft="20dp"
                         android:text="@string/setting_push_sound"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                         android:id="@+id/btn_push_sound"
                         android:layout_width="50dp"
                         android:layout_height="30dp"
@@ -228,7 +228,7 @@
                         android:textColor="@color/moresetting_push_text_color"
                         android:textSize="10.0sp"/>
 
-                    <net.lzbook.kit.widget.SwitchButton
+                    <net.lzbook.kit.ui.widget.SwitchButton
                         android:id="@+id/btn_push_time"
                         android:layout_width="50dp"
                         android:layout_height="30dp"

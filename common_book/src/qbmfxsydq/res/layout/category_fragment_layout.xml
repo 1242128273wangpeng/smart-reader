@@ -15,7 +15,7 @@
             android:background="#ffffff">
 
 
-        <com.intelligent.reader.widget.FlymeTabStrip
+        <net.lzbook.kit.ui.widget.FlymeTabStrip
                 android:id="@+id/tabstrip"
                 app:indicatorHeight="3dp"
                 app:indicatorColor="@color/theme_primary"

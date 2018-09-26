@@ -68,11 +68,5 @@ dependencies {
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
 
     api project(':resource')
-    if(rootProject.ext.hasad) {
-        System.err.println("reader hasad")
-        api "com.dy.media:hasad:${rootProject.ext.media_version}"
-    }else{
-        System.err.println("reader noad")
-        api "com.dy.media:noad:${rootProject.ext.media_version}"
-    }
+
 }

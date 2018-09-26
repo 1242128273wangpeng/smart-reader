@@ -7,7 +7,7 @@ import com.intelligent.reader.util.SearchView
 import com.intelligent.reader.util.SearchViewHelper
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.widget.HWEditText
+import net.lzbook.kit.ui.widget.HWEditText
 import net.lzbook.kit.utils.AppUtils
 
 import net.lzbook.kit.utils.NetWorkUtils
@@ -44,7 +44,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
 class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener, TextWatcher, OnEditorActionListener, SearchView.AvtView {

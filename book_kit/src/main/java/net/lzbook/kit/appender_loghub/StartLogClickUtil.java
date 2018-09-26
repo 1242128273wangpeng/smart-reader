@@ -11,7 +11,7 @@ import android.util.Log;
 import com.ding.basic.bean.LocalLog;
 import com.logcat.sdk.LogEncapManager;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.appender.AndroidLogClient;
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage;
 import net.lzbook.kit.appender_loghub.common.PLItemKey;

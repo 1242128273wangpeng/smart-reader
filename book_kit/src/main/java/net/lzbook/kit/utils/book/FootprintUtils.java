@@ -4,7 +4,7 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.HistoryInfo;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 
 
 /**

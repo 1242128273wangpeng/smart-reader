@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.qbmfrmxs.webview_layout.*
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 
 
 open class WebViewFragment : Fragment() {

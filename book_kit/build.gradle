@@ -25,6 +25,7 @@ dependencies {
 
     //    compile 'com.aliyun.ams:alicloud-android-utils:1.0.3'
     compile "com.alibaba:arouter-api:$arouter_api_version"
+    kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
     compile "android.arch.lifecycle:extensions:$arch_version"
     compile "android.arch.lifecycle:runtime:$arch_version"
 
@@ -47,6 +48,14 @@ dependencies {
     // 百度移动统计SDK
     implementation files('libs/Baidu_Mtj_3.9.1.0.jar')
     implementation files('libs/open_sdk_r6008_lite.jar')
+
+    if(rootProject.ext.hasad) {
+        System.err.println("reader hasad")
+        api "com.dy.media:hasad:${rootProject.ext.media_version}"
+    }else{
+        System.err.println("reader noad")
+        api "com.dy.media:noad:${rootProject.ext.media_version}"
+    }
 }
 
 configurations.all {
@@ -70,6 +79,18 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+
+        kapt {
+            arguments {
+                arg("moduleName", project.getName())
+            }
+        }
 
         javaCompileOptions {
             annotationProcessorOptions {

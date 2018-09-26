@@ -24,7 +24,7 @@ import net.lzbook.kit.base.activity.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
@@ -78,6 +78,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
     private var scrollState: Int = 0
     private var downLoadReceiver: OffLineDownLoadReceiver? = null
     private var cataloguesPresenter: CataloguesPresenter? = null
+    private var transformReadDialog: TransformReadDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +97,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             isPositive = false
             changeSortState(isPositive)
         }
-
+        EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
@@ -140,10 +141,76 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
                 iv_fixbook.visibility = View.GONE
             }
             cataloguesPresenter = CataloguesPresenter(this, it, this, this, fromCover)
+
+            transformReadDialog=TransformReadDialog(this)
+
+            transformReadDialog?.insertContinueListener {
+                val data = HashMap<String, String>()
+                data["type"] = "1"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                intoReadingActivity()
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
+
+            transformReadDialog?.insertCancelListener {
+                val data = HashMap<String, String>()
+                data["type"] = "2"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
         }
 
         getChapterData()
         cataloguesPresenter?.loadBookMark()
+    }
+
+    /***
+     * 进入阅读页
+     * **/
+    private fun intoReadingActivity() {
+        if (TextUtils.isEmpty(book!!.book_id)) {
+            return
+        }
+
+        val bundle = Bundle()
+
+        val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book!!.book_id)
+
+        if (localBook != null) {
+            if (book!!.sequence != -2) {
+                bundle.putInt("sequence", localBook.sequence)
+                bundle.putInt("offset", localBook.offset)
+            } else {
+                bundle.putInt("sequence", -1)
+                bundle.putInt("offset", 0)
+            }
+
+            bundle.putSerializable("book", localBook)
+        } else {
+            bundle.putSerializable("book", book)
+        }
+
+        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+    }
+
+    override fun showReadDialog(){
+        if (!this.isFinishing) {
+            if (!transformReadDialog!!.isShow()) {
+                transformReadDialog!!.show()
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
+        }
     }
 
     private fun getChapterData() {
@@ -224,9 +291,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             cataloguesPresenter!!.removeHandler()
             cataloguesPresenter!!.unRegisterRec()
         }
+        EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun notifyChangeDownLoad() {
         cataloguesAdapter.notifyDataSetChanged()
     }

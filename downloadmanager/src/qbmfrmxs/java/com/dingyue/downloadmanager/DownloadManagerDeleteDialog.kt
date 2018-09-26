@@ -2,7 +2,7 @@ package com.dingyue.downloadmanager
 
 import android.app.Activity
 import android.widget.FrameLayout
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

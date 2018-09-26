@@ -28,7 +28,7 @@ import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.widget.LoadingPage
+import net.lzbook.kit.ui.widget.LoadingPage
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -66,6 +66,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     private var cataloguesPresenter: CataloguesPresenter? = null
 
+    private var transformReadDialog: TransformReadDialog?=null
+
     private var bookDownloadState: DownloadState = DownloadState.NOSTART
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,6 +86,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             isPositive = false
             changeSortState(isPositive)
         }
+        EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
@@ -143,6 +146,32 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
         if (book != null) {
             cataloguesPresenter = CataloguesPresenter(this, book!!, this, this, fromCover)
+
+            transformReadDialog=TransformReadDialog(this)
+
+            transformReadDialog?.insertContinueListener {
+                val data = HashMap<String, String>()
+                data["type"] = "1"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                intoReadingActivity()
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
+
+            transformReadDialog?.insertCancelListener {
+                val data = HashMap<String, String>()
+                data["type"] = "2"
+
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+
+                if (!this.isFinishing) {
+                    transformReadDialog?.dismiss()
+                }
+            }
         }
 
         cataloguesPresenter?.registerRec()
@@ -151,6 +180,47 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
         if (cataloguesPresenter != null) {
             cataloguesPresenter!!.loadBookMark()
+        }
+    }
+
+
+    /***
+     * 进入阅读页
+     * **/
+    private fun intoReadingActivity() {
+        if (TextUtils.isEmpty(book!!.book_id)) {
+            return
+        }
+
+        val bundle = Bundle()
+
+        val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book!!.book_id)
+
+        if (localBook != null) {
+            if (book!!.sequence != -2) {
+                bundle.putInt("sequence", localBook.sequence)
+                bundle.putInt("offset", localBook.offset)
+            } else {
+                bundle.putInt("sequence", -1)
+                bundle.putInt("offset", 0)
+            }
+
+            bundle.putSerializable("book", localBook)
+        } else {
+            bundle.putSerializable("book", book)
+        }
+
+        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+    }
+
+    override fun showReadDialog(){
+        if (!this.isFinishing) {
+            if (!transformReadDialog!!.isShow()) {
+                transformReadDialog!!.show()
+            }
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }
     }
 
@@ -243,10 +313,12 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             cataloguesPresenter?.removeHandler()
             cataloguesPresenter?.unRegisterRec()
         }
+        EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
 
-    fun notifyChangeDownLoad() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun notifyChangeDownLoad(event:OfflineDownloadEvent) {
 
     }
 

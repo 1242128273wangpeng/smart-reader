@@ -215,4 +215,25 @@
     <string name="share_loading_prompt">正在获取分享信息...</string>
     <string name="loading_text">精彩内容正在加载...</string>
 
+
+    <string name="download_app_nofify_title">缓存已开始</string>
+    <string name="debug_start_params">启用动态参数</string>
+    <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
+    <string name="debug_reset_book_shelf">重置获取默认书架</string>
+    <string name="debug_update_chapter">更新章节</string>
+    <string name="debug_show_toast">打点Toast</string>
+
+    <string name="debug_api_host">智能API接口:</string>
+    <string name="debug_web_host">WebView接口:</string>
+    <string name="debug_micro_host">微服务API接口:</string>
+    <string name="debug_micro_content_host">微服务内容接口:</string>
+    <string name="debug_copy_udid">一键复制UDID</string>
+    <string name="debug_copy_device">一键复制 \n DeviceToken</string>
+    <string name="debug_copy_success">一键复制成功</string>
+
+    <string name="debug_input_host">https://</string>
+    <string name="choice_host">host选择</string>
+    <string name="debug_mode">调试模式</string>
+    <string name="save">保存</string>
+    <string name="icon">图片</string>
 </resources>

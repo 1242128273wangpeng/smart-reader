@@ -3,7 +3,7 @@ package net.lzbook.kit.utils.dynamic
 import android.app.ActivityManager
 import android.content.Context
 import net.lzbook.kit.service.DynamicService
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 
 
 /**

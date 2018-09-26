@@ -22,7 +22,7 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.bean.SettingItems;
 import net.lzbook.kit.utils.SettingItemsHelper;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.widget.SwitchButton;
+import net.lzbook.kit.ui.widget.SwitchButton;
 import net.lzbook.kit.widget.TimePicker;
 
 import java.util.HashMap;

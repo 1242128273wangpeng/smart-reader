@@ -1,6 +1,6 @@
 package net.lzbook.kit.utils.user;
 
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import com.ding.basic.bean.Book;
 

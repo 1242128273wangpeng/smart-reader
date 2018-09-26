@@ -35,7 +35,7 @@ import com.dy.reader.util.isNotchScreen
 import com.dy.reader.util.xiaomiNotch
 import com.google.gson.Gson
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.service.DownloadService

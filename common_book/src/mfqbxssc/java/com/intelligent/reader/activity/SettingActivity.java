@@ -45,8 +45,8 @@ import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.user.Platform;
 import net.lzbook.kit.utils.user.UserManager;
 import net.lzbook.kit.widget.ConsumeEvent;
-import net.lzbook.kit.widget.MyDialog;
-import net.lzbook.kit.widget.SwitchButton;
+import net.lzbook.kit.ui.widget.MyDialog;
+import net.lzbook.kit.ui.widget.SwitchButton;
 
 import org.greenrobot.eventbus.EventBus;
 

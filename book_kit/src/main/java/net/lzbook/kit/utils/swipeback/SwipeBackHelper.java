@@ -22,7 +22,7 @@ import net.lzbook.kit.utils.logger.AppLog;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.lzbook.kit.base.activity.FrameActivity;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
 
 /**
  * Desc 滑动返回辅助类

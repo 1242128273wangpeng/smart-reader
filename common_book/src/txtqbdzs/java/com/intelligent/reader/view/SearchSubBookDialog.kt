@@ -11,7 +11,7 @@ import android.text.Selection.getSelectionEnd
 import android.text.Selection.getSelectionStart
 import android.text.Editable
 
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 
 
 /**

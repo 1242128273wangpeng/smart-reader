@@ -21,7 +21,7 @@ import net.lzbook.kit.utils.logi
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.Platform
 import net.lzbook.kit.utils.user.UserManagerV4
-import net.lzbook.kit.widget.MyDialog
+import net.lzbook.kit.ui.widget.MyDialog
 import java.io.File
 
 /**
