@@ -3,11 +3,15 @@
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <solid android:color="#383838"/>
-            <corners android:radius="5.0dip"/>
+            <corners android:radius="45dp"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
-        <clip
-            android:drawable="@color/reader_seek_bar_drawable"/>
+        <clip>
+            <shape>
+                <solid android:color="@color/reader_seek_bar_drawable"/>
+                <corners android:radius="45dp"/>
+            </shape>
+        </clip>
     </item>
 </layer-list>

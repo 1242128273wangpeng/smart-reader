@@ -30,74 +30,81 @@ class ReaderFeedbackDialog(readerActivity: ReaderActivity) {
         dialog.setCanceledOnTouchOutside(true)
         dialog.setCancelable(true)
 
-        dialog.cb_feedback_chapter_empty.setOnClickListener {
+        dialog.rl_feedback_chapter_empty.setOnClickListener {
             checkedPosition = 1
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_empty
+            checkedView?.isChecked = true
         }
 
-        dialog.cb_feedback_reading_cache_error.setOnClickListener {
+        dialog.rl_feedback_reading_cache_error.setOnClickListener {
             checkedPosition = 2
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_reading_cache_error
+            checkedView?.isChecked = true
         }
 
-        dialog.cb_feedback_chapter_content_repeat.setOnClickListener {
+        dialog.rl_feedback_chapter_content_repeat.setOnClickListener {
             checkedPosition = 3
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_content_repeat
+            checkedView?.isChecked = true
         }
 
-        dialog.cb_feedback_chapter_sequence_error.setOnClickListener {
+        dialog.rl_feedback_chapter_sequence_error.setOnClickListener {
             checkedPosition = 4
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_sequence_error
+            checkedView?.isChecked = true
         }
 
-        dialog.cb_feedback_chapter_content_error.setOnClickListener {
+        dialog.rl_feedback_chapter_content_error.setOnClickListener {
             checkedPosition = 5
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_chapter_content_error
+            checkedView?.isChecked = true
         }
 
-        dialog.cb_feedback_typesetting_error.setOnClickListener {
+        dialog.rl_feedback_typesetting_error.setOnClickListener {
             checkedPosition = 6
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_typesetting_error
+            checkedView?.isChecked = true
         }
 
-        dialog.cb_feedback_cache_fail.setOnClickListener {
+        dialog.rl_feedback_cache_fail.setOnClickListener {
             checkedPosition = 7
 
             if (checkedView != null) {
                 checkedView?.isChecked = false
             }
 
-            checkedView = it as CheckBox?
+            checkedView = dialog.cb_feedback_cache_fail
+            checkedView?.isChecked = true
         }
 
 

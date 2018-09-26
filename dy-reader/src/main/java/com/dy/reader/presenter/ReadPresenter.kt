@@ -130,11 +130,21 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         params["font"] = settings.fontSize.toString()
         params["fontsetting"] = TypefaceUtil.loadTypefaceTag(settings.fontTypeface)
         params["background"] = settings.readThemeMode.toString()
-        params["readgap"] = settings.readInterlineaSpace.toString()
+        params["readgap"] = formatSpaceGapType(settings.readInterlineaSpace).toString()
         params["pageturn"] = settings.animation_mode.toString()
 
         StartLogClickUtil.upLoadEventLog(act, StartLogClickUtil.READPAGE_PAGE
                 , StartLogClickUtil.DEFAULTSETTING)
+    }
+
+    private fun formatSpaceGapType(space: Float): Int {
+        return when (space) {
+            0.2f -> 4
+            0.3f -> 3
+            0.4f -> 2
+            0.5f -> 1
+            else -> 3
+        }
     }
 
     fun loadData(useReadStatus: Boolean = false) {
@@ -297,8 +307,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         AppHelper.screenDensity = dm.density
         AppHelper.screenScaledDensity = dm.scaledDensity
 
-        if(isNotchScreen(Reader.context)){
-            if(xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape){
+        if (isNotchScreen(Reader.context)) {
+            if (xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape) {
                 AppHelper.screenWidth -= getNotchSize(Reader.context)
             }
         }
@@ -493,7 +503,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
 
         // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
-        if(goToBookEndCount == 0){
+        if (goToBookEndCount == 0) {
             //发送章节消费
             StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
                     if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )

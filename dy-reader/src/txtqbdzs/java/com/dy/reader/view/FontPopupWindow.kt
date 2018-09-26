@@ -51,10 +51,10 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
 
     init {
 
-        fontList.add(FontData(FontDownLoadService.FONT_DEFAULT, null, 100))
-        fontList.add(FontData(FontDownLoadService.FONT_SIYUAN_SONG, R.drawable.font_2))
-        fontList.add(FontData(FontDownLoadService.FONT_ZHUSHITI, R.drawable.font_4))
-        fontList.add(FontData(FontDownLoadService.FONT_SIYUAN_HEI, R.drawable.font_5))
+        fontList.add(FontData(FontDownLoadService.FONT_DEFAULT, null, "", 100))
+        fontList.add(FontData(FontDownLoadService.FONT_SIYUAN_SONG, R.drawable.font_2, "11.3M"))
+        fontList.add(FontData(FontDownLoadService.FONT_ZHUSHITI, R.drawable.font_4, "4.3M"))
+        fontList.add(FontData(FontDownLoadService.FONT_SIYUAN_HEI, R.drawable.font_5, "16.6M"))
 
         contentView.recyclerView.adapter = fontAdapter
         val itemAnimator = contentView.recyclerView.itemAnimator

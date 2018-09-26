@@ -17,6 +17,11 @@
         android:textColor="#616161"
         android:textSize="14sp"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#ECECEC"/>
+
     <TextView
         android:id="@+id/reader_cache_current_start"
         android:layout_width="match_parent"
@@ -26,6 +31,11 @@
         android:text="@string/cache_start_current"
         android:textColor="#616161"
         android:textSize="14sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#ECECEC"/>
 
     <TextView
         android:id="@+id/reader_cache_cancel"

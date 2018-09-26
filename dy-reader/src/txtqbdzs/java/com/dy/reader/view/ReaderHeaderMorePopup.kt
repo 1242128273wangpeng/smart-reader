@@ -31,6 +31,9 @@ class ReaderHeaderMorePopup(context: Context, layout: Int = R.layout.popup_reade
 
     init {
 
+//        popupWindow.isOutsideTouchable = true
+        popupWindow.isFocusable = true
+
         contentView.ll_header_more_content.requestFocus()
 
         contentView.ll_change_source.setOnClickListener {

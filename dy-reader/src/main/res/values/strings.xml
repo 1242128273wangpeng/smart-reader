@@ -78,6 +78,7 @@
 
     <string name="catalog">目录</string>
     <string name="bookmark">书签</string>
+    <string name="bookmark_empty">没有书签</string>
 
     <string name="auto_read_speed">自动翻页速度:</string>
 

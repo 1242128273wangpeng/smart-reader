@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_reader_setting_detail"
@@ -12,24 +12,19 @@
 
 
     <LinearLayout
+        android:id="@+id/ll_bg"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="16dp"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/background"
-            android:textColor="#65FFFFFF"
-            android:textSize="10sp"/>
+            style="@style/reader_text_style"
+            android:text="@string/background"/>
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:scrollbars="none">
 
@@ -101,8 +96,10 @@
 
 
     <LinearLayout
+        android:id="@+id/ll_light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_bg"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -113,7 +110,7 @@
             <TextView
                 android:id="@+id/txt_reader_brightness"
                 style="@style/reader_text_style"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="3dp"
                 android:text="@string/brightness"/>
 
             <SeekBar
@@ -129,7 +126,8 @@
                 android:minHeight="2dp"
                 android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
                 android:splitTrack="false"
-                android:thumb="@drawable/reader_option_seek_bar_thumb"/>
+                android:thumb="@drawable/reader_option_seek_bar_thumb"
+                tools:progress="20"/>
 
             <!--android:background="@drawable/reader_option_brightness_system_bg"-->
             <CheckBox
@@ -230,8 +228,10 @@
 
 
     <LinearLayout
+        android:id="@+id/ll_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_light"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -246,7 +246,7 @@
                 android:text="@string/text_size"/>
 
             <LinearLayout
-                android:layout_width="160dp"
+                android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_weight="2"
                 android:background="@drawable/reader_option_group_border_bg"
@@ -261,19 +261,18 @@
                     android:gravity="center"
                     android:text="A-"
                     android:textColor="#65FFFFFF"
-                    android:textSize="12sp"/>
+                    android:textSize="15sp"/>
 
                 <TextView
                     android:id="@+id/txt_reader_font_size"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
                     android:background="#FF383838"
                     android:gravity="center"
-                    android:textColor="#65FFFFFF"
-                    android:textSize="12sp"
-                    tools:text="16"/>
+                    android:textColor="#CBCBCB"
+                    android:textSize="18sp"
+                    tools:text="18"/>
 
                 <TextView
                     android:id="@+id/txt_reader_font_increase"
@@ -284,7 +283,7 @@
                     android:gravity="center"
                     android:text="A+"
                     android:textColor="#65FFFFFF"
-                    android:textSize="12sp"/>
+                    android:textSize="15sp"/>
 
             </LinearLayout>
 
@@ -373,16 +372,17 @@
 
 
     <View
+        android:id="@+id/view_line"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginBottom="13dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/ll_text"
         android:layout_marginTop="20dp"
         android:background="#FF282828"/>
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@+id/view_line"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="5dp"
         android:gravity="center_vertical"
@@ -408,4 +408,9 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <net.lzbook.kit.book.view.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="226dp"
+        android:visibility="gone"/>
+
+</RelativeLayout>
