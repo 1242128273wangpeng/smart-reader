@@ -44,8 +44,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             txt_read_progress.text = "未读"
         }
 
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
+        if (book.waitingCataFix()) {
             img_book_update.visibility = View.VISIBLE
             txt_read_progress.text = "章节已修复至最新"
         } else {

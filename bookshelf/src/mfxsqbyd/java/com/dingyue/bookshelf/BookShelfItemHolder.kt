@@ -43,8 +43,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             book.sequence = book.chapter_count - 1
         }
 
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
+        if (book.waitingCataFix()) {
             img_book_status.visibility = View.VISIBLE
             img_book_status.setImageResource(R.drawable.bookshelf_item_book_update_icon)
 //            txt_book_latest_chapter.text = "章节已修复至最新"
