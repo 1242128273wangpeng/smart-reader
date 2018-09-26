@@ -299,7 +299,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         srl_web_view_refresh?.onRefreshComplete()
 
-        handleRefreshContentData("javascript:refreshNew()")
+        handleRefreshContentData("Vue.refreshNew()")
     }
 
     /***
