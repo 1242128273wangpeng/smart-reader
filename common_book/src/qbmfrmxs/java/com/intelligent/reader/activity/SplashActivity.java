@@ -200,6 +200,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
+        initializeDataFusion()
 
         startInitTask();
         // 安装快捷方式
@@ -208,6 +209,28 @@ public class SplashActivity extends FrameActivity {
         StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
         if (UserManager.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
+        }
+    }
+
+    private void initializeDataFusion() {
+
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
+
+        if (books != null) {
+            for (Book book : books) {
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
+                }
+            }
+
         }
     }
 

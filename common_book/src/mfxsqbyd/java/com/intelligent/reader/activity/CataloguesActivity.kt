@@ -29,6 +29,7 @@ import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -170,6 +171,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
         loadingPage.onError()
     }
 
+    @Subscribe
     fun onEvent(eventBookmark: EventBookmark) {
         if (eventBookmark.type == EventBookmark.type_delete) {
             AppLog.e(TAG, "eventBookmark:" + eventBookmark.bookmark.id + " name:" + eventBookmark.bookmark.chapter_name)
