@@ -18,7 +18,6 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
@@ -54,7 +53,6 @@ import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
@@ -97,7 +95,7 @@ class HomeActivity : BaseCacheableActivity(),
     // webview排行页面
     private val WEB_RANK = "/h5/{packageName}/rank"
 
-    private val recommendFragmentCustom: CustomWebViewFragment by lazy {
+    private val recommendFragment: CustomWebViewFragment by lazy {
         val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
@@ -107,7 +105,7 @@ class HomeActivity : BaseCacheableActivity(),
         fragment
     }
 
-    private val rankingFragmentCustom: CustomWebViewFragment by lazy {
+    private val rankingFragment: CustomWebViewFragment by lazy {
         val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
@@ -611,8 +609,8 @@ class HomeActivity : BaseCacheableActivity(),
                     }
                     bookShelfFragment
                 }
-                1 -> recommendFragmentCustom
-                2 -> rankingFragmentCustom
+                1 -> recommendFragment
+                2 -> rankingFragment
                 3 -> categoryFragment
                 else -> null
             }
