@@ -1,6 +1,6 @@
 package com.ding.basic.bean
 
-import com.ding.basic.request.ResultCode
+import com.ding.basic.net.ResultCode
 import java.io.Serializable
 
 class BasicResult<T> : Serializable {

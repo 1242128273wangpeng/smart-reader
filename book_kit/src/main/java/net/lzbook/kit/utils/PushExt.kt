@@ -9,7 +9,8 @@ import android.provider.Settings
 import android.support.v4.app.NotificationManagerCompat
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.util.editShared
 import com.ding.basic.util.putObject
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage

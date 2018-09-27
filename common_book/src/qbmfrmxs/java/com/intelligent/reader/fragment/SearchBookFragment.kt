@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RelativeLayout
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.*
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.google.gson.Gson
 import com.intelligent.reader.R

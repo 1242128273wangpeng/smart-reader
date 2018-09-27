@@ -9,8 +9,10 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverRecommendBean
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooks
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import android.widget.*
+import com.ding.basic.bean.*
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe

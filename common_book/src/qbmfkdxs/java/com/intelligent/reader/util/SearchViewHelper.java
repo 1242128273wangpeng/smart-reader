@@ -18,13 +18,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.Result;
 import com.ding.basic.bean.SearchAutoCompleteBean;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.bean.SearchResult;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.SearchHisAdapter;
@@ -32,16 +32,16 @@ import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.Tools;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.sp.SPUtils;
 import net.lzbook.kit.utils.toast.ToastUtil;
-import net.lzbook.kit.ui.widget.LoadingPage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

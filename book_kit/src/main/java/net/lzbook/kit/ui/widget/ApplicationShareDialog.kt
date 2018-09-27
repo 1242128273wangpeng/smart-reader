@@ -1,18 +1,21 @@
 package net.lzbook.kit.ui.widget
 
 import android.app.Activity
+import android.view.*
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.rx.SchedulerHelper
+
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import com.ding.basic.Config
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.rx.SchedulerHelper
 import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
+import com.ding.basic.net.Config
+import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.sp.SPKey

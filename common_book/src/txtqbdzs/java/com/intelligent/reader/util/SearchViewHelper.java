@@ -1,5 +1,7 @@
 package com.intelligent.reader.util;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.Result;
@@ -32,8 +35,7 @@ import com.ding.basic.bean.SearchHotBean;
 import com.ding.basic.bean.SearchOperations;
 import com.ding.basic.bean.SearchRecommendBook;
 import com.ding.basic.bean.SearchResult;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
 import com.dingyue.bookshelf.ShelfGridLayoutManager;
 import com.google.gson.Gson;
 import com.intelligent.reader.R;
@@ -64,8 +66,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack, SearchHistoryAdapter.onPositionClickListener
         , RecommendBooksAdapter.RecommendItemClickListener {

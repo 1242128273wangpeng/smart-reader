@@ -1,5 +1,10 @@
 package net.lzbook.kit.utils.webview;
 
+import com.ding.basic.bean.Book;
+import com.ding.basic.RequestRepositoryFactory;
+
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -7,7 +12,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.app.base.BaseBookApplication;

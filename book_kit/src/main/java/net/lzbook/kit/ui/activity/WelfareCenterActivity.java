@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mobstat.StatService;
-import com.ding.basic.request.RequestService;
+import com.ding.basic.net.api.service.RequestService;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.base.BaseBookApplication;

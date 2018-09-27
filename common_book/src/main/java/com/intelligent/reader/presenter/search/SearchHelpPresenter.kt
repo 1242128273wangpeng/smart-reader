@@ -11,8 +11,8 @@ import android.widget.AdapterView
 import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import net.lzbook.kit.ui.widget.ConfirmDialog
@@ -110,7 +110,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         } else {
             view?.showLoading()
 
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<com.ding.basic.bean.SearchHotBean>() {
+            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<SearchHotBean>() {
                 override fun requestResult(result: SearchHotBean?) {
                     parseResult(result, true)
                     view?.dimissLoading()

@@ -2,8 +2,6 @@ package com.dy.reader.setting
 
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.LocalRequestRepository
-import com.dy.reader.Reader
 import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
 import com.dy.reader.page.Position

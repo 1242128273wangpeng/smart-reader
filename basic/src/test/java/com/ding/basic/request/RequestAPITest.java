@@ -1,16 +1,15 @@
 package com.ding.basic.request;
 
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 import com.ding.basic.bean.BasicResult;
 import com.ding.basic.bean.CacheTaskConfig;
+import com.ding.basic.net.api.RequestAPI;
 
 import org.junit.Before;
 
 import java.util.HashMap;
 
 import io.reactivex.functions.Consumer;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by xian on 18-3-26.

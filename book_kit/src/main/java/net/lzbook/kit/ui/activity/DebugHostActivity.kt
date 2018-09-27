@@ -2,10 +2,12 @@ package net.lzbook.kit.ui.activity
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_debug_host.*
+import net.lzbook.kit.R.id.iv_back
+import net.lzbook.kit.R.id.lv_host
 import net.lzbook.kit.R
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.sp.SPKey

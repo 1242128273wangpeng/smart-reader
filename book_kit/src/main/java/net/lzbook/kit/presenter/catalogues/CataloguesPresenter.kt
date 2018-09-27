@@ -11,10 +11,10 @@ import android.widget.TextView
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.database.helper.BookDataProviderHelper
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.rx.SchedulerHelper
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -22,7 +22,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.model.BookCoverViewModel
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.NetWorkUtils
@@ -301,7 +300,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
     fun doDeleteBookmarks(list: ArrayList<Int>) {
 
-        val bookHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+        val bookHelper = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
         bookHelper.deleteBookMark(list)
         val marks = bookHelper.getBookMarks(book.book_id)
         bookmarkList.clear()

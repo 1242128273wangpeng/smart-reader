@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.utils.router.RouterConfig;

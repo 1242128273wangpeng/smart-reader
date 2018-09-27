@@ -4,9 +4,10 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
-import com.ding.basic.repository.InternetRequestRepository
+import com.ding.basic.RequestRepositoryFactory
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.loge
 import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
@@ -38,7 +39,7 @@ class FontDownLoadService : IntentService("font_download_service") {
 
         EventBus.getDefault().postSticky(Event(fontName, 0, fontPosition, STATUS_DOWNLOADING))
 
-        InternetRequestRepository.loadInternetRequestRepository(this)
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .downloadFont(fontName)
                 .observeOn(Schedulers.io())
                 .subscribeBy(onNext = {

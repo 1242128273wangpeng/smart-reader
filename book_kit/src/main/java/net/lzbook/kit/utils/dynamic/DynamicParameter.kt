@@ -2,13 +2,17 @@ package net.lzbook.kit.utils.dynamic
 
 import android.content.Context
 import com.baidu.mobstat.StatService
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.ding.basic.bean.AdControlByChannelBean
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.*
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
+import com.ding.basic.net.api.RequestAPI
+import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.RequestRepositoryFactory
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -83,7 +87,7 @@ class DynamicParameter(private val context: Context) {
      */
     fun requestCheck() {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                .requestDynamicCheck(object :RequestSubscriber<BasicResult<Int>>() {
+                .requestDynamicCheck(object : RequestSubscriber<BasicResult<Int>>() {
                     override fun requestResult(result: BasicResult<Int>?) {
                         if (result?.data != null) {
                             mReqVersion = result.data!!

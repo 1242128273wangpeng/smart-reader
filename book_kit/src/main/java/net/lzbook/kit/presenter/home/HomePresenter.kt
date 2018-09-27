@@ -3,7 +3,7 @@ package net.lzbook.kit.presenter.home
 import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable

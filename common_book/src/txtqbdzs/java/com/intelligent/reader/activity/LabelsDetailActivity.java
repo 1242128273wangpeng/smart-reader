@@ -20,24 +20,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
-import com.ding.basic.Config;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestService;
+import com.ding.basic.net.Config;
+import com.ding.basic.net.api.service.RequestService;
 import com.intelligent.reader.R;
-import net.lzbook.kit.bean.PagerDesc;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.ui.activity.base.FrameActivity;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.bean.PagerDesc;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
+import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.oneclick.AntiShake;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
-import net.lzbook.kit.ui.widget.LoadingPage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

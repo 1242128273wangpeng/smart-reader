@@ -5,13 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestService
-import com.ding.basic.request.RequestSubscriber
+
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.api.service.RequestService
+
 import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity

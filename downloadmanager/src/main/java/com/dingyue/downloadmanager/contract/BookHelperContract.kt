@@ -2,7 +2,7 @@ package com.dingyue.downloadmanager.contract
 
 import android.content.Context
 import com.ding.basic.bean.Book
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.book.BaseBookHelper

@@ -1,6 +1,6 @@
 package com.ding.basic.util;
 
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 
 import android.content.res.Resources;
 import android.util.Log;

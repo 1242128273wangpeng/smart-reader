@@ -10,12 +10,11 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.AbsListView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.view.TransformReadDialog
@@ -255,7 +254,7 @@ class CataloguesActivity : BaseCacheableActivity(), View.OnClickListener, Catalo
             bundle.putSerializable("book", book)
         }
 
-        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+        RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
     override fun showReadDialog(){

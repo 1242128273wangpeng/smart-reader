@@ -1,10 +1,10 @@
 package com.dingyue.bookshelf.childmvp
 
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.rx.SchedulerHelper
 import com.dingyue.bookshelf.BookShelfPresenter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

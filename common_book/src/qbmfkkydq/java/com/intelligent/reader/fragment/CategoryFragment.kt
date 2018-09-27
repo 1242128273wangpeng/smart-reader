@@ -7,8 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.request.RequestService
-
+import com.ding.basic.net.api.service.RequestService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.frag_category_layout.*
 

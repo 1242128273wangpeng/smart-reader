@@ -18,12 +18,12 @@ import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
+
 import com.intelligent.reader.R
-import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
 import com.intelligent.reader.view.TransformReadDialog
 import net.lzbook.kit.presenter.catalogues.CataloguesContract
@@ -49,6 +49,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import java.util.concurrent.Callable
+import com.intelligent.reader.adapter.BookmarkAdapter
 
 /**
  * CataloguesActivity
@@ -271,7 +272,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             bundle.putSerializable("book", book)
         }
 
-        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+        RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
     override fun showReadDialog(){

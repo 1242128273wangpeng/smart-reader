@@ -24,8 +24,8 @@ import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
-import com.ding.basic.Config
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.Config
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle

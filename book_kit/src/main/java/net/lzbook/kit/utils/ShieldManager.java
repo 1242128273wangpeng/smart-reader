@@ -7,7 +7,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 import com.dy.media.MediaConfig;
 
 import net.lzbook.kit.app.base.BaseBookApplication;

@@ -20,19 +20,17 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.repository.RequestRepositoryFactory;
 import com.intelligent.reader.R;
-import com.intelligent.reader.app.BookApplication;
-import net.lzbook.kit.utils.ShieldManager;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.service.CheckNovelUpdateService;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
+import net.lzbook.kit.utils.ShieldManager;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
@@ -53,6 +51,7 @@ public class SplashActivity extends FrameActivity {
     public int initialization_count = 0;
     public int complete_count = 0;
     public ViewGroup ad_view;
+    private RequestRepositoryFactory requestRepositoryFactory;
 
 
     public static void checkAndInstallShotCut(Context ctt) {
@@ -175,6 +174,9 @@ public class SplashActivity extends FrameActivity {
                 return;
             }
         }
+
+        requestRepositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -416,20 +418,15 @@ public class SplashActivity extends FrameActivity {
             boolean b = SPUtils.INSTANCE.getDefaultSharedBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
 
             if (!b) {
-                List<Book> bookOnlineList =
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).loadBooks();
+                List<Book> bookOnlineList = requestRepositoryFactory.loadBooks();
                 if (bookOnlineList != null && bookOnlineList.size() > 0) {
                     for (int i = 0; i < bookOnlineList.size(); i++) {
                         Book iBook = bookOnlineList.get(i);
                         if (!TextUtils.isEmpty(iBook.getBook_id())) {
-                            ChapterDaoHelper bookChapterDao =
-                                    ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                            BookApplication.getGlobalContext(), iBook.getBook_id());
-                            Chapter lastChapter = bookChapterDao.queryLastChapter();
+                            Chapter lastChapter = requestRepositoryFactory.queryLastChapter(iBook.getBook_id());
                             if (lastChapter != null) {
                                 lastChapter.setBook_source_id(iBook.getBook_source_id());
-                                bookChapterDao.updateChapterBySequence(lastChapter);
+                                requestRepositoryFactory.updateChapterBySequence(iBook.getBook_id(), lastChapter);
                             }
                         }
                     }

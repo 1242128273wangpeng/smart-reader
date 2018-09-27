@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.ding.basic.bean.LoginResp
 import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.bean.RefreshResp
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger

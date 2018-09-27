@@ -3,12 +3,11 @@ package net.lzbook.kit.utils.router
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
-import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.book.FootprintUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -106,8 +105,8 @@ object BookRouter {
 
     private fun isCached(book: Book): Boolean {
         val index = Math.max(0, book.sequence)
-        val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id)
-        val chapter = bookChapterDao.queryChapterBySequence(index) ?: return false
+        val chapter = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).queryChapterBySequence(book.book_id, index)
+                ?: return false
 
         return DataCache.isChapterCached(chapter)
     }

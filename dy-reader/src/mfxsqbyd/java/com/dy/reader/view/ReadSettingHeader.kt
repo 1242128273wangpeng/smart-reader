@@ -8,13 +8,16 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import com.ding.basic.database.helper.BookDataProviderHelper
+
+import com.ding.basic.RequestRepositoryFactory
+
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_header.view.*
 import net.lzbook.kit.app.base.BaseBookApplication
+
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
@@ -64,7 +67,7 @@ class ReadSettingHeader : FrameLayout{
             presenter?.back()
         }
 
-        var isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
+        var isMarkPage = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
 
         ibtn_reader_bookmark.isSelected = isMarkPage
 
@@ -170,7 +173,7 @@ class ReadSettingHeader : FrameLayout{
     }
 
     fun updateStatus() {
-        val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
+        val isMarkPage = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
 
         if (ibtn_reader_bookmark != null && ibtn_reader_bookmark.visibility == View.VISIBLE) { 
             if (isMarkPage) {

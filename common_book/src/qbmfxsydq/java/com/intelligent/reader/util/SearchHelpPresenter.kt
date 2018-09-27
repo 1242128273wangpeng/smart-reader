@@ -12,8 +12,8 @@ import android.widget.TextView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger

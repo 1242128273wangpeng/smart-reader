@@ -10,9 +10,12 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestService
-import com.ding.basic.request.RequestSubscriber
+
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.bean.*
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.api.service.RequestService
+
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.SearchBookActivity
@@ -20,6 +23,7 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.constants.Constants
+
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.logger.AppLog

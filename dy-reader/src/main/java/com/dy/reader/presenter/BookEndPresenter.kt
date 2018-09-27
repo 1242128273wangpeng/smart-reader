@@ -4,8 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.bean.*
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
+
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

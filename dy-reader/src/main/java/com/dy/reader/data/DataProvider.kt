@@ -2,9 +2,9 @@ package com.dy.reader.data
 
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.rx.SchedulerHelper
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
 import com.dy.reader.event.EventLoading

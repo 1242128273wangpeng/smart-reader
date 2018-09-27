@@ -6,7 +6,7 @@ import net.lzbook.kit.utils.download.CacheManager;
 import android.os.Message;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
+import com.ding.basic.RequestRepositoryFactory;
 
 import java.util.List;
 

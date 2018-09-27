@@ -17,8 +17,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.ding.basic.Config
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.Config
+import com.ding.basic.net.api.service.RequestService
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.usercenter.UserProfileActivity

@@ -3,8 +3,8 @@ package net.lzbook.kit.utils.book;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.RequestRepositoryFactory;
+import com.ding.basic.net.RequestSubscriber;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;

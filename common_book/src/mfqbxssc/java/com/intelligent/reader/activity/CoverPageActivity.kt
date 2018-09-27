@@ -15,10 +15,10 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.api.service.RequestService
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R

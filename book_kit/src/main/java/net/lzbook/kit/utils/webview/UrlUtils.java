@@ -2,7 +2,7 @@ package net.lzbook.kit.utils.webview;
 
 import android.util.Log;
 
-import com.ding.basic.Config;
+import com.ding.basic.net.Config;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;

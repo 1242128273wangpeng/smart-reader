@@ -10,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestService;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.net.api.service.RequestService;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.activity.FindBookDetail;

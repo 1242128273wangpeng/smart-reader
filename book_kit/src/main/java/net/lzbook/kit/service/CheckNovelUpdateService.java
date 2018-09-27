@@ -20,8 +20,8 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookUpdate;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
-import com.ding.basic.repository.RequestRepositoryFactory;
-import com.ding.basic.request.RequestSubscriber;
+import com.ding.basic.RequestRepositoryFactory;
+import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -34,7 +34,6 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.bean.UpdateCallBack;
 import net.lzbook.kit.bean.BookUpdateResult;
 import net.lzbook.kit.bean.BookUpdateTaskData;
-import net.lzbook.kit.data.db.help.ChapterDaoHelper;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.book.CheckNovelUpdHelper;
@@ -617,27 +616,24 @@ public class CheckNovelUpdateService extends Service {
     }
 
     public BookUpdate changeChapters(BookUpdate bookUpdate) {
+        RequestRepositoryFactory repositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext());
         if (bookUpdate != null && !TextUtils.isEmpty(bookUpdate.getBook_id())) {
-            Book book = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(bookUpdate.getBook_id());
+            Book book = repositoryFactory.loadBook(bookUpdate.getBook_id());
 
             BookUpdate resUpdate = null;
 
             if (book != null && bookUpdate.getChapterList() != null && bookUpdate.getChapterList().size() > 0) {
-                ChapterDaoHelper bookChapterDao =
-                        ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                BaseBookApplication.getGlobalContext(), book.getBook_id());
                 // 增加更新章节
-                bookChapterDao.insertOrUpdateChapter(bookUpdate.getChapterList());
+                repositoryFactory.insertOrUpdateChapter(book.getBook_id(), bookUpdate.getChapterList());
                 // 更新书架信息
                 Chapter lastChapter = bookUpdate.getChapterList().get(bookUpdate.getChapterList().size() - 1);
 
-                book.setChapter_count(bookChapterDao.getCount());
+                book.setChapter_count(repositoryFactory.getChapterCount(book.getBook_id()));
                 book.setLast_chapter(lastChapter);
                 book.setUpdate_status(1);
 
                 // 没有返回更新章节的书籍更新book.last_updateUpdateTime, 有更新的书籍更新对应信息
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).updateBook(book);
+                repositoryFactory.updateBook(book);
 
                 // 返回bookUpdate
                 resUpdate = new BookUpdate();

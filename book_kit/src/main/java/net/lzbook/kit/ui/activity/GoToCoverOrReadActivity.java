@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ding.basic.bean.Book;
-import com.ding.basic.repository.RequestRepositoryFactory;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.router.BookRouter;
+import com.ding.basic.RequestRepositoryFactory;
 
 
 public class GoToCoverOrReadActivity extends Activity {

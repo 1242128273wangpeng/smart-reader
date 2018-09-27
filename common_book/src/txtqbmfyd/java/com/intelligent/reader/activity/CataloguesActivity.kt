@@ -10,29 +10,28 @@ import android.view.View.OnClickListener
 import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.RequestRepositoryFactory
-import net.lzbook.kit.utils.router.RouterConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.view.TransformReadDialog
-import net.lzbook.kit.presenter.catalogues.CataloguesContract
-import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
-import net.lzbook.kit.receiver.OffLineDownLoadReceiver
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.bean.OfflineDownloadEvent
+import net.lzbook.kit.presenter.catalogues.CataloguesContract
+import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
+import net.lzbook.kit.receiver.OffLineDownLoadReceiver
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -210,7 +209,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             bundle.putSerializable("book", book)
         }
 
-        RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
+        RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
     override fun showReadDialog(){

@@ -16,10 +16,14 @@ import android.widget.*
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
-import com.ding.basic.Config
+
+import com.ding.basic.net.Config
+
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import net.lzbook.kit.bean.EventBookStore
+import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
+
 import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.activity.WelfareCenterActivity

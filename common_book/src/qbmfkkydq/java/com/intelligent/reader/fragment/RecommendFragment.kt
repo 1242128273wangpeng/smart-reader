@@ -5,13 +5,11 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.widget.NestedScrollView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.api.service.RequestService
 
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment

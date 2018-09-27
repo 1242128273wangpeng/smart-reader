@@ -8,9 +8,8 @@ import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.widget.Toast
 import com.ding.basic.bean.*
-import com.ding.basic.database.helper.BookDataProviderHelper
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestSubscriber
+import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.RequestSubscriber
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
@@ -27,7 +26,6 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.ChapterErrorBean
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.ResourceUtil
@@ -40,6 +38,9 @@ import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.ui.widget.ApplicationShareDialog
+import com.ding.basic.db.provider.ChapterDataProviderHelper
+
+import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
 import java.lang.Exception
@@ -54,7 +55,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     private val font_count = 50
 
-    val mBookDataHelper = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext())
+    private val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
 
     private var activity: WeakReference<ReaderActivity>
 
@@ -69,8 +70,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     override fun showCatalogActivity(source: Source?) {
         if (source != null && !TextUtils.isEmpty(source.book_source_id) && ReaderStatus.book != null) {
-            if ((RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null)) {
-                val iBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
+            if ((requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) != null)) {
+                val iBook = requestRepositoryFactory.loadBook(ReaderStatus.book.book_id)
                 if (iBook != null && source.book_source_id != iBook.book_source_id) {
                     //弹出切源提示
                     val map2 = java.util.HashMap<String, String>()
@@ -85,7 +86,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     private fun intoCatalogActivity(source: Source, changeSource: Boolean) {
-        var book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(ReaderStatus.book.book_id)
+        var book = requestRepositoryFactory.loadBook(ReaderStatus.book.book_id)
 
         if (book != null) {
             book.host = source.host
@@ -118,7 +119,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     fun cache() {
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) == null && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book) <= 0) {
+        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) == null && requestRepositoryFactory.insertBook(ReaderStatus.book) <= 0) {
             return
         }
         if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
@@ -236,7 +237,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
 
             if (ReaderStatus.book != null && !TextUtils.isEmpty(ReaderStatus.book.book_id)) {
-                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestBookSources(ReaderStatus.book.book_id, ReaderStatus.book.book_source_id, ReaderStatus.book.book_chapter_id, object : RequestSubscriber<BookSource>() {
+                requestRepositoryFactory.requestBookSources(ReaderStatus.book.book_id, ReaderStatus.book.book_source_id, ReaderStatus.book.book_chapter_id, object : RequestSubscriber<BookSource>() {
                     override fun requestResult(result: BookSource?) {
                         if (result != null) {
                             this@ReadSettingPresenter.onGetSourceList(result.items as ArrayList<Source>?)
@@ -273,11 +274,11 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             return 0
         }
 
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) == null && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book) <= 0) {
+        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) == null && requestRepositoryFactory.insertBook(ReaderStatus.book) <= 0) {
             return 0
         }
 
-        if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
+        if (!requestRepositoryFactory.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
             logMap.put("bookid",ReaderStatus.book?.book_id)
@@ -325,7 +326,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 content_text = content_text.substring(0, font_count)
             }
             bookMark.chapter_content = content_text
-            mBookDataHelper.insertBookMark(bookMark)
+            requestRepositoryFactory.insertBookMark(bookMark)
             return 1
         } else {
             var logMap = HashMap<String, String>()
@@ -333,7 +334,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap.put("bookid", ReaderStatus.book!!.book_id)
             logMap.put("chapterid", ReaderStatus.chapterId.toString())
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
-            mBookDataHelper.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
+            requestRepositoryFactory.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }
     }
@@ -482,9 +483,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         chapterErrorBean.author = getEncode(book.author!!)
         chapterErrorBean.channelCode = if (book.fromQingoo()) "1" else "2"
         var currChapter: Chapter? = null
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {
-            val bookChapterDao = ChapterDaoHelper.loadChapterDataProviderHelper(BaseBookApplication.getGlobalContext(), book.book_id!!)
-            currChapter = bookChapterDao.queryChapterBySequence(ReaderStatus.position.group)
+        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) != null) {
+            currChapter = requestRepositoryFactory.queryChapterBySequence(ReaderStatus.book.book_id , ReaderStatus.position.group)
         }
         if (currChapter == null) {
             val time = Observable.timer(1000, TimeUnit.MILLISECONDS)

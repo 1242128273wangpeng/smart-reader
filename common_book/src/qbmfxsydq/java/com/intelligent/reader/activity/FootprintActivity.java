@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HistoryInfo;
-import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
 import net.lzbook.kit.ui.adapter.base.BaseAdapter;
 import net.lzbook.kit.ui.adapter.HisAdapter;
@@ -48,7 +48,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
     private TextView mLoginInfo;
     private TextView mTypeInfoTV;
     private boolean currLoginState;
-    private BookDataProviderHelper mBookDataHelper;
+    private RequestRepositoryFactory requestRepositoryFactory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
         StatServiceUtils.statAppBtnClick(this, StatServiceUtils.his_into);
         setContentView(R.layout.activity_footprint);
         currLoginState = !UserManagerV4.INSTANCE.isUserLogin();
-        mBookDataHelper = BookDataProviderHelper.Companion.loadBookDataProviderHelper(
+        requestRepositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext());
         initView();
         initListener();
@@ -121,7 +121,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
 
         int dataCount = 0;
         try {
-            dataCount = (int) mBookDataHelper.getHistoryCount();
+            dataCount = (int) requestRepositoryFactory.getHistoryCount();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,7 +157,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
         }
 
         try {
-            mDataSet = mBookDataHelper.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
+            mDataSet = requestRepositoryFactory.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -237,7 +237,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
                 List<HistoryInfo> dataSet = null;
                 try {
-                    dataSet = mBookDataHelper.queryHistoryPaging((long)pagePosition, (long) pageSize);
+                    dataSet = requestRepositoryFactory.queryHistoryPaging((long)pagePosition, (long) pageSize);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -334,10 +334,11 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
             dialog_comfire.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mHisAdapter != null && mLoadMoreAdapter != null && mBookDataHelper != null) {
+                    if (mHisAdapter != null && mLoadMoreAdapter != null && requestRepositoryFactory
+                            != null) {
                         mHisAdapter.updateData(null);
                         mLoadMoreAdapter.notifyDataSetChanged();
-                        mBookDataHelper.deleteAllHistory();
+                        requestRepositoryFactory.deleteAllHistory();
                     }
                     myDialog.dismiss();
                 }

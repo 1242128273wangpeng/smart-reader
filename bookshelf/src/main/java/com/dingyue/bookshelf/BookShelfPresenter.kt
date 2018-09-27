@@ -8,7 +8,7 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.RequestRepositoryFactory
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl

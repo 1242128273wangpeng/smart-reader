@@ -11,10 +11,10 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ding.basic.Config;
+import com.ding.basic.RequestRepositoryFactory;
+import com.ding.basic.net.Config;
 import com.ding.basic.bean.LoginResp;
 import com.ding.basic.bean.LoginRespV4;
-import com.ding.basic.database.helper.BookDataProviderHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.download.CacheManager;
@@ -65,9 +65,6 @@ public abstract class BaseBookApplication extends Application {
 
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
                     StartLogClickUtil.APPINIT);
-
-            //加载数据库
-            BookDataProviderHelper.Companion.loadBookDataProviderHelper(this);
 
             Config.INSTANCE.beginInit(this);
         }

@@ -23,7 +23,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
-import com.ding.basic.Config
+import com.ding.basic.net.Config
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle
