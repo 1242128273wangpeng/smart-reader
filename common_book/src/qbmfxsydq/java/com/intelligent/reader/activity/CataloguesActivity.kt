@@ -1,46 +1,52 @@
 package com.intelligent.reader.activity
 
-import com.baidu.mobstat.StatService
-import com.intelligent.reader.R
-import com.intelligent.reader.presenter.catalogues.CataloguesContract
-import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
-import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.StatServiceUtils
-
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.*
 import android.widget.AbsListView.OnScrollListener
+import android.widget.Button
+import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CataloguesAdapter
-
-import java.util.concurrent.Callable
-
+import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_catalog.*
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
+import net.lzbook.kit.bean.OfflineDownloadEvent
+import net.lzbook.kit.presenter.catalogues.CataloguesContract
+import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
+import net.lzbook.kit.receiver.OffLineDownLoadReceiver
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.ui.widget.MyDialog
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.ui.widget.MyDialog
+import net.lzbook.kit.utils.router.RouterUtil
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
+import java.util.concurrent.Callable
 
 /**
  * CataloguesActivity
@@ -443,7 +449,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun notifyChangeDownLoad(event:OfflineDownloadEvent)  {
+    fun notifyChangeDownLoad(event: OfflineDownloadEvent)  {
         if (mCataloguesAdapter != null) {
             mCataloguesAdapter.notifyDataSetChanged()
         }

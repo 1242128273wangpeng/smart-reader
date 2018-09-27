@@ -15,11 +15,12 @@ import com.ding.basic.Config
 import com.ding.basic.request.RequestService
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.util.EventBookStore
+import net.lzbook.kit.bean.EventBookStore
 import com.intelligent.reader.view.ClearCacheDialog
 import kotlinx.android.synthetic.qbmfkdxs.act_setting_user.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.WelfareCenterActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.cache.DataCleanManager
 import net.lzbook.kit.utils.cache.UIHelper

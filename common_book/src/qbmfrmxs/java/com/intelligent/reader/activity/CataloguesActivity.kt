@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
@@ -15,13 +16,15 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
-import com.intelligent.reader.presenter.catalogues.CataloguesContract
-import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
-import com.intelligent.reader.receiver.OffLineDownLoadReceiver
+import com.intelligent.reader.view.TransformReadDialog
+import net.lzbook.kit.presenter.catalogues.CataloguesContract
+import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
+import net.lzbook.kit.receiver.OffLineDownLoadReceiver
 import kotlinx.android.synthetic.qbmfrmxs.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.bean.OfflineDownloadEvent
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.download.CacheManager
@@ -29,6 +32,10 @@ import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.router.RouterUtil
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -318,7 +325,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun notifyChangeDownLoad(event:OfflineDownloadEvent) {
+    fun notifyChangeDownLoad(event: OfflineDownloadEvent) {
 
     }
 

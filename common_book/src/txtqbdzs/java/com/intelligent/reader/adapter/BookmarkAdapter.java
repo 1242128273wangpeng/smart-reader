@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.ding.basic.bean.Bookmark;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.base.AdapterBase;
+import net.lzbook.kit.ui.adapter.base.AdapterBase;
 import net.lzbook.kit.bean.EventBookmark;
 import net.lzbook.kit.utils.ResourceUtil;
 

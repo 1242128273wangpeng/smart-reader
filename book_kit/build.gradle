@@ -24,7 +24,7 @@ dependencies {
     compile 'com.aliyun.ams:alicloud-android-ut:5.1.0'
 
     //    compile 'com.aliyun.ams:alicloud-android-utils:1.0.3'
-    compile "com.alibaba:arouter-api:$arouter_api_version"
+    implementation "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
     compile "android.arch.lifecycle:extensions:$arch_version"
     compile "android.arch.lifecycle:runtime:$arch_version"

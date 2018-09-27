@@ -19,8 +19,8 @@ import com.intelligent.reader.adapter.SearchSuggest
 import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.presenter.search.SearchSCView
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.book.FootprintUtils

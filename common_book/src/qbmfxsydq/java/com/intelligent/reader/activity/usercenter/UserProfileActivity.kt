@@ -16,7 +16,7 @@ import com.intelligent.reader.view.login.LoadingDialog
 import kotlinx.android.synthetic.qbmfxsydq.act_user_profile.*
 import kotlinx.android.synthetic.qbmfxsydq.publish_hint_dialog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.logi
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.Platform

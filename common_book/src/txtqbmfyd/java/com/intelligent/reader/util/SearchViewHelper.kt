@@ -21,7 +21,7 @@ import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.search.SearchHelpYouHuaPresenter
 import com.intelligent.reader.search.SearchPresenter
 import com.intelligent.reader.search.SearchView
-import com.intelligent.reader.view.ScrollForGridView
+import net.lzbook.kit.ui.widget.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils

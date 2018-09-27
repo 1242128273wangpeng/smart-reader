@@ -14,7 +14,7 @@ import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_header.view.*
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState

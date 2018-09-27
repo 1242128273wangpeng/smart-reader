@@ -34,7 +34,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 
 
 import java.util.HashMap

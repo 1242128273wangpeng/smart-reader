@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.mfqbxssc.activity_search_book.*
 
 import java.util.HashMap
 
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig

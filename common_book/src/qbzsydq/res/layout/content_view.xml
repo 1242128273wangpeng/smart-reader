@@ -29,7 +29,7 @@
                     android:layout_marginLeft="14dp"
                     android:src="@mipmap/home_head_setting"/>
 
-            <net.lzbook.kit.widget.FirstUsePointView
+            <net.lzbook.kit.ui.widget.FirstUsePointView
                     android:layout_width="7dp"
                     android:layout_height="7dp"
                     android:background="@color/color_red_point"

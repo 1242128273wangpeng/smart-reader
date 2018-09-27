@@ -1,5 +1,6 @@
 package com.intelligent.reader.activity
 
+import android.app.Dialog
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.View.*
+import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
@@ -17,20 +19,24 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.coverPage.CoverPageContract
-import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.qbzsydq.act_book_cover.*
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.activity.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.presenter.coverPage.CoverPageContract
+import net.lzbook.kit.presenter.coverPage.CoverPagePresenter
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.ui.widget.MyDialog
+import net.lzbook.kit.ui.widget.RecommendItemView
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.ui.widget.LoadingPage
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -100,7 +106,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
-            transformReadDialog=TransformReadDialog(this)
+            transformReadDialog= TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
                 val data = HashMap<String, String>()
@@ -201,7 +207,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             this.startActivity(intent)
         }
     }
-    override fun showCleanDialog():Dialog{
+    override fun showCleanDialog(): Dialog {
         val cleanDialog = MyDialog(this, R.layout.dialog_download_clean)
         cleanDialog.setCanceledOnTouchOutside(false)
         cleanDialog.setCancelable(false)

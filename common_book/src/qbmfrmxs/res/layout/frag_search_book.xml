@@ -53,7 +53,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_container"
         >
-        <com.intelligent.reader.view.MyScrollView
+        <net.lzbook.kit.ui.widget.MyScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
@@ -73,7 +73,7 @@
                     android:text="@string/search_hot"
                     />
 
-                <com.intelligent.reader.view.ScrollForGridView
+                <net.lzbook.kit.ui.widget.ScrollForGridView
                     android:id="@+id/sfgv_hot_word"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                     />
             </RelativeLayout>
 
-        </com.intelligent.reader.view.MyScrollView>
+        </net.lzbook.kit.ui.widget.MyScrollView>
 
     </RelativeLayout>
     <View

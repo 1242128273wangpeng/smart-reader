@@ -14,7 +14,7 @@ import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.router.BookRouter
 
 class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {

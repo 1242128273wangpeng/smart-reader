@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.PagerDesc;
+import net.lzbook.kit.bean.PagerDesc;
 
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;

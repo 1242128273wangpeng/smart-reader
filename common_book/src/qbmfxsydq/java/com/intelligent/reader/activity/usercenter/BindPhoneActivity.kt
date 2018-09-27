@@ -10,7 +10,7 @@ import com.intelligent.reader.view.login.LoadingDialog
 import com.intelligent.reader.view.login.MobileNumberEditText
 import kotlinx.android.synthetic.qbmfxsydq.act_bind_phone.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManagerV4
 

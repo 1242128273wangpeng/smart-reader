@@ -18,7 +18,7 @@
 //import com.intelligent.reader.presenter.search.SearchView
 //import com.intelligent.reader.search.SearchHotWordAdapter
 //import com.intelligent.reader.search.SearchSuggestAdapter
-//import com.intelligent.reader.view.ScrollForGridView
+//import net.lzbook.kit.ui.widget.ScrollForGridView
 //import net.lzbook.kit.appender_loghub.StartLogClickUtil
 //import net.lzbook.kit.book.view.LoadingPage
 //import net.lzbook.kit.data.search.SearchAutoCompleteBean

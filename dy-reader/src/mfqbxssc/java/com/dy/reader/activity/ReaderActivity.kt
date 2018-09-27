@@ -37,8 +37,8 @@ import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.view.NativeView
 import kotlinx.android.synthetic.mfqbxssc.act_reader.*
 import kotlinx.android.synthetic.mfqbxssc.reader_content.*
-import net.lzbook.kit.base.activity.BaseCacheableActivity
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig

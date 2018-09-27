@@ -22,7 +22,7 @@
             android:textColor="#303135"
             android:textSize="17sp"/>
 
-        <com.intelligent.reader.view.ScrollForGridView
+        <net.lzbook.kit.ui.widget.ScrollForGridView
             android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

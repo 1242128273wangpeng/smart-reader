@@ -26,7 +26,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/bookshelf_head_setting_icon"/>
 
-        <net.lzbook.kit.widget.FirstUsePointView
+        <net.lzbook.kit.ui.widget.FirstUsePointView
             android:id="@+id/fup_head_setting"
             android:layout_width="6dp"
             android:layout_height="6dp"

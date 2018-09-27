@@ -15,7 +15,7 @@ import com.intelligent.reader.view.login.LoadingDialog
 import com.intelligent.reader.view.login.MobileNumberEditText
 import kotlinx.android.synthetic.qbmfxsydq.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.bean.user.ThirdLoginReq.Companion.CHANNEL_QQ
 import net.lzbook.kit.bean.user.ThirdLoginReq.Companion.CHANNEL_WX
 import net.lzbook.kit.constants.Constants

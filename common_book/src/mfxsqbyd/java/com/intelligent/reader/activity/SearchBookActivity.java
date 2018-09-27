@@ -25,7 +25,7 @@ import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.search.SearchViewHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.activity.FrameActivity;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.Tools;

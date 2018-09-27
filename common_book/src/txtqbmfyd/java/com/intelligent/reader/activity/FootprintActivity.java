@@ -9,18 +9,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.base.BaseBookApplication;
-import net.lzbook.kit.base.activity.FrameActivity;
+import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 
 import com.baidu.mobstat.StatService;
 import com.ding.basic.bean.HistoryInfo;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.intelligent.reader.R;
-import com.intelligent.reader.adapter.paging.BaseAdapter;
-import com.intelligent.reader.adapter.paging.HisAdapter;
-import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
-import com.intelligent.reader.util.EventBookStore;
+import net.lzbook.kit.ui.adapter.base.BaseAdapter;
+import net.lzbook.kit.ui.adapter.HisAdapter;
+import net.lzbook.kit.ui.adapter.LoadMoreAdapterWrapper;
+import net.lzbook.kit.bean.EventBookStore;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.logger.AppLog;

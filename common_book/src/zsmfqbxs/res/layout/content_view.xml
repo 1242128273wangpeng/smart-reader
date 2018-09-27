@@ -30,7 +30,7 @@
                     android:layout_marginLeft="14dp"
                     android:src="@drawable/home_head_setting"/>
 
-            <net.lzbook.kit.widget.FirstUsePointView
+            <net.lzbook.kit.ui.widget.FirstUsePointView
                     android:layout_width="6dp"
                     android:layout_height="6dp"
                     android:background="@color/color_red_point"

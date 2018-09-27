@@ -16,7 +16,7 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfxsydq.frag_read_setting.*
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

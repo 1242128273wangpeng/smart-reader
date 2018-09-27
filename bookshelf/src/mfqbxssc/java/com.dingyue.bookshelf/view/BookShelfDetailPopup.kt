@@ -8,7 +8,7 @@ import com.ding.basic.bean.Book
 import com.dingyue.bookshelf.BookShelfDetailAdapter
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.mfqbxssc.popup_book_detail.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 书籍详情弹窗

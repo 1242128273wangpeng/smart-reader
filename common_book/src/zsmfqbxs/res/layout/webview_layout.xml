@@ -22,7 +22,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/home_head_setting"/>
 
-        <net.lzbook.kit.widget.FirstUsePointView
+        <net.lzbook.kit.ui.widget.FirstUsePointView
             android:id="@+id/fupv_head_setting"
             android:layout_width="6dp"
             android:layout_height="6dp"

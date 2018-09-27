@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.baidu.mobstat.StatService
 import com.intelligent.reader.R
 import com.intelligent.reader.widget.PushTimeDialog
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_setting_more.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.SettingItems

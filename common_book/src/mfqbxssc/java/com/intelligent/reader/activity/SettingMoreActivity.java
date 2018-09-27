@@ -2,16 +2,16 @@ package com.intelligent.reader.activity;
 
 import com.baidu.mobstat.StatService;
 import com.intelligent.reader.R;
-import com.intelligent.reader.view.CustomDialog;
+import net.lzbook.kit.ui.widget.CustomDialog;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.activity.BaseCacheableActivity;
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.bean.SettingItems;
 import net.lzbook.kit.utils.SettingItemsHelper;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.ui.widget.SwitchButton;
-import net.lzbook.kit.widget.TimePicker;
+import net.lzbook.kit.ui.widget.TimePicker;
 
 import android.app.Dialog;
 import android.content.Context;

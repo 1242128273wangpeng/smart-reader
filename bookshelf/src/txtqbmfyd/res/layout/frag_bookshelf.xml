@@ -30,7 +30,7 @@
             android:src="@drawable/bookshelf_head_personal_icon"
             app:onPressChangeAlpha="true"/>
 
-        <net.lzbook.kit.widget.FirstUsePointView
+        <net.lzbook.kit.ui.widget.FirstUsePointView
             android:id="@+id/redpoint_home_setting"
             android:layout_width="7dp"
             android:layout_height="7dp"

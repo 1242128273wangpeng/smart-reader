@@ -6,7 +6,7 @@ import android.view.WindowManager
 import com.dy.reader.R
 
 import kotlinx.android.synthetic.txtqbmfxs.popup_catalog_mark_delete.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 请描述这个文件

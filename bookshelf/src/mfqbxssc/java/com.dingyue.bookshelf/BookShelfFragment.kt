@@ -30,8 +30,8 @@ import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.widget.ApplicationShareDialog
-import net.lzbook.kit.widget.ConsumeEvent
+import net.lzbook.kit.ui.widget.ApplicationShareDialog
+import net.lzbook.kit.ui.widget.ConsumeEvent
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import org.greenrobot.eventbus.EventBus
 

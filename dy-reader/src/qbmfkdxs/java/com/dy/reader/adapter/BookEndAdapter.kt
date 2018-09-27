@@ -16,7 +16,7 @@ import com.dy.reader.view.RecommendBookImageView
 import kotlinx.android.synthetic.qbmfkdxs.item_book_end_recommend.view.*
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.router.BookRouter
 import java.util.*
 import kotlin.collections.ArrayList

@@ -19,7 +19,7 @@ import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.frag_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig

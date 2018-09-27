@@ -2,6 +2,7 @@ package com.intelligent.reader.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.text.TextUtils
 import android.view.InflateException
@@ -9,29 +10,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AbsListView
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.RelativeLayout
-import android.widget.TextView
-import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.StatServiceUtils
-
-import com.intelligent.reader.R
-import com.intelligent.reader.adapter.SearchHotWordAdapter
-import com.intelligent.reader.adapter.SearchSuggestAdapter
-
-import com.intelligent.reader.view.ScrollForGridView
-
-import android.content.Context.INPUT_METHOD_SERVICE
-import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
+import com.intelligent.reader.R
+import com.intelligent.reader.adapter.SearchHotWordAdapter
+import com.intelligent.reader.adapter.SearchSuggestAdapter
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.ui.widget.ScrollForGridView
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.StatServiceUtils
 
 
 class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText: EditText, private val mSearchPresenter: SearchPresenter?) : SearchPresenter.SearchSuggestCallBack, SearchView.HelpView {

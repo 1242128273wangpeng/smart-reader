@@ -9,7 +9,7 @@ import com.dingyue.bookshelf.BookShelfLogger
 import com.dingyue.bookshelf.R
 
 import kotlinx.android.synthetic.mfxsqbyd.dialog_bookshelf_sort.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 import net.lzbook.kit.utils.book.CommonContract
 
 /**

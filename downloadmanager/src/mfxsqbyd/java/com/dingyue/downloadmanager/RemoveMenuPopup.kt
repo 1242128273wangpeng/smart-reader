@@ -6,7 +6,7 @@ import android.view.WindowManager
 import anet.channel.util.Utils.context
 
 import kotlinx.android.synthetic.mfxsqbyd.popup_download_manager_editor.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 底部删除弹窗

@@ -17,8 +17,8 @@ import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.presenter.search.SearchView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.ui.widget.MyDialog

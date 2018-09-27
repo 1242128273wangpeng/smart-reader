@@ -71,7 +71,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/rl_title_book_cover">
 
-        <com.intelligent.reader.view.MyScrollView
+        <net.lzbook.kit.ui.widget.MyScrollView
             android:id="@+id/book_cover_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -349,7 +349,7 @@
                         android:textSize="@dimen/cover_book_text_title_size"
                         android:textStyle="bold"/>
 
-                    <com.intelligent.reader.view.ExpandableTextView
+                    <net.lzbook.kit.ui.widget.ExpandableTextView
                         android:id="@+id/book_cover_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -383,9 +383,9 @@
                             android:textColor="@color/cover_profile_des_color"
                             android:textSize="12sp"
                             />
-                    </com.intelligent.reader.view.ExpandableTextView>
+                    </net.lzbook.kit.ui.widget.ExpandableTextView>
 
-                    <com.intelligent.reader.view.FlowLayout
+                    <net.lzbook.kit.ui.widget.FlowLayout
                         android:id="@+id/flowlayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -397,7 +397,7 @@
                         app:flChildSpacing="auto"
                         app:flRowSpacing="4dp">
 
-                    </com.intelligent.reader.view.FlowLayout>
+                    </net.lzbook.kit.ui.widget.FlowLayout>
                 </RelativeLayout>
 
                 <View
@@ -503,7 +503,7 @@
 
             </LinearLayout>
 
-        </com.intelligent.reader.view.MyScrollView>
+        </net.lzbook.kit.ui.widget.MyScrollView>
 
         <ImageView
             android:id="@+id/bottom_shadow"

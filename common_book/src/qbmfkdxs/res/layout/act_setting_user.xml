@@ -159,7 +159,7 @@
                     android:text="@string/setting_history_page"
                     android:textColor="@color/color_text_most"/>
 
-                <net.lzbook.kit.widget.FirstUsePointView
+                <net.lzbook.kit.ui.widget.FirstUsePointView
                     android:id="@+id/redpoint_setting_history"
                     android:layout_width="7dp"
                     android:layout_height="7dp"

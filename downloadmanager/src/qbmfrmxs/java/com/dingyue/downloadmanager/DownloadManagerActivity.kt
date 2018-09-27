@@ -13,7 +13,7 @@ import com.ding.basic.bean.Book
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import kotlinx.android.synthetic.qbmfrmxs.act_download_manager.*
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.oneclick.OneClickUtil

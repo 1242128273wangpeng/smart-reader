@@ -8,7 +8,7 @@ import com.intelligent.reader.widget.PushTimeDialog
 
 import kotlinx.android.synthetic.mfxsqbyd.act_setting_more.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.bean.SettingItems
 
 import net.lzbook.kit.utils.SettingItemsHelper

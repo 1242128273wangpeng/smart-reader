@@ -17,8 +17,8 @@ import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.FindBookDetail
 import com.intelligent.reader.activity.SearchBookActivity
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.book.FootprintUtils

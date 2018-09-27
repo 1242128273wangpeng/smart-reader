@@ -36,7 +36,7 @@ import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
-import net.lzbook.kit.widget.FirstUsePointView;
+import net.lzbook.kit.ui.widget.FirstUsePointView;
 import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout;
 

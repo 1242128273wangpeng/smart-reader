@@ -18,7 +18,7 @@ import com.ding.basic.request.RequestService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.webview.UrlUtils;

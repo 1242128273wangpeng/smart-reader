@@ -18,12 +18,12 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestService
 import com.intelligent.reader.R
-import com.intelligent.reader.util.PagerDesc
+import net.lzbook.kit.bean.PagerDesc
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.act_tabulation.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.logger.AppLog

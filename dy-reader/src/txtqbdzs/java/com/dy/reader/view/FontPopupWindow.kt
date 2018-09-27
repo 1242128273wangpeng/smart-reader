@@ -16,7 +16,7 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.util.TypefaceUtil
 import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils

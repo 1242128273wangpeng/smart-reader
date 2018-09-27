@@ -16,7 +16,7 @@ import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
 import kotlinx.android.synthetic.qbmfxsydq.act_download_manager.*
 import kotlinx.android.synthetic.qbmfxsydq.item_download_manager_task_header.view.*
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState

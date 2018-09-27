@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.WindowManager
 import com.dy.reader.R
 import kotlinx.android.synthetic.qbmfxsydq.popup_reader_option_header_more.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 请描述这个文件

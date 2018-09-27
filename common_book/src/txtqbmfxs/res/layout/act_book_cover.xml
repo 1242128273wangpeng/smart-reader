@@ -104,7 +104,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <com.intelligent.reader.view.MyScrollView
+        <net.lzbook.kit.ui.widget.MyScrollView
             android:id="@+id/book_cover_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -351,7 +351,7 @@
                         android:textColor="@color/cover_profile_title_color"
                         android:textSize="14sp"/>
 
-                    <com.intelligent.reader.view.ExpandableTextView
+                    <net.lzbook.kit.ui.widget.ExpandableTextView
                         android:id="@+id/book_cover_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -385,7 +385,7 @@
                             android:paddingRight="16dp"
                             android:text="展开"
                             android:textColor="@color/color_black_727272"/>
-                    </com.intelligent.reader.view.ExpandableTextView>
+                    </net.lzbook.kit.ui.widget.ExpandableTextView>
                 </RelativeLayout>
 
 
@@ -432,7 +432,7 @@
                     android:clipToPadding="false"
                     android:paddingBottom="30dp"/>
             </LinearLayout>
-        </com.intelligent.reader.view.MyScrollView>
+        </net.lzbook.kit.ui.widget.MyScrollView>
     </RelativeLayout>
 
     <FrameLayout

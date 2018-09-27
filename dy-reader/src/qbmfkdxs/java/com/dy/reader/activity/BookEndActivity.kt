@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.qbmfkdxs.act_book_end.*
 import kotlinx.android.synthetic.qbmfkdxs.layout_book_end_new_books.*
 import kotlinx.android.synthetic.qbmfkdxs.layout_book_end_recommend_books.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig

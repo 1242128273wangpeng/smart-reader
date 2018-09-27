@@ -172,7 +172,7 @@
                     android:layout_marginTop="@dimen/dimen_margin_18"
                     android:text="内容简介"/>
 
-                <com.intelligent.reader.view.ExpandableTextView
+                <net.lzbook.kit.ui.widget.ExpandableTextView
                     android:id="@+id/book_cover_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -205,13 +205,13 @@
                         android:paddingRight="16dp"
                         android:text="展开"
                         android:textColor="@color/color_black_727272"/>
-                </com.intelligent.reader.view.ExpandableTextView>
+                </net.lzbook.kit.ui.widget.ExpandableTextView>
 
                 <!--——————————————————————内容简介结束——————————————————————-->
 
                 <!--——————————————————————标签流——————————————————————-->
 
-                <com.intelligent.reader.view.FlowLayout
+                <net.lzbook.kit.ui.widget.FlowLayout
                     android:id="@+id/flowLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -221,7 +221,7 @@
                     android:paddingTop="2dp"
                     app:flChildSpacing="auto"
                     app:flRowSpacing="4dp">
-                </com.intelligent.reader.view.FlowLayout>
+                </net.lzbook.kit.ui.widget.FlowLayout>
 
                 <View
                     android:id="@+id/line2"
@@ -303,7 +303,7 @@
                     android:text="该作者的其他作品"
                     android:visibility="gone"/>
 
-                <com.intelligent.reader.view.MyRecyclerView
+                <net.lzbook.kit.ui.widget.MyRecyclerView
                     android:id="@+id/recycler_view_author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -331,7 +331,7 @@
                     android:text="读过这本书的人还读过"
                     android:visibility="gone"/>
 
-                <com.intelligent.reader.view.MyRecyclerView
+                <net.lzbook.kit.ui.widget.MyRecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

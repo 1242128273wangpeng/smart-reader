@@ -30,7 +30,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_head_personal_sel"/>
 
-            <net.lzbook.kit.widget.FirstUsePointView
+            <net.lzbook.kit.ui.widget.FirstUsePointView
                 android:id="@+id/fup_head_personal"
                 android:layout_width="7dp"
                 android:layout_height="7dp"

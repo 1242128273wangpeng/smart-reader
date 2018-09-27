@@ -29,7 +29,7 @@ import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.view.TagContainerLayout
 import com.intelligent.reader.view.TagView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils

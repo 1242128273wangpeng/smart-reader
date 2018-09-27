@@ -19,10 +19,11 @@ import com.bumptech.glide.Glide
 import com.ding.basic.Config
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.util.EventBookStore
+import net.lzbook.kit.bean.EventBookStore
 import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.WelfareCenterActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.ApkUpdateUtils
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -37,7 +38,7 @@ import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
-import net.lzbook.kit.widget.ConsumeEvent
+import net.lzbook.kit.ui.widget.ConsumeEvent
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.ui.widget.SwitchButton
 import org.greenrobot.eventbus.EventBus

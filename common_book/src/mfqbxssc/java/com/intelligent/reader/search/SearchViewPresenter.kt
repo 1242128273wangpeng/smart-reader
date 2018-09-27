@@ -13,8 +13,8 @@ import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.adapter.SearchSuggest
 import com.intelligent.reader.presenter.search.SearchSCView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils

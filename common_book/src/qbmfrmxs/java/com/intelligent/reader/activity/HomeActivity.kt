@@ -32,9 +32,6 @@ import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.ClassifyFragment
 import com.intelligent.reader.fragment.SearchBookFragment
 import com.intelligent.reader.fragment.WebViewFragment
-import com.intelligent.reader.presenter.home.HomePresenter
-import com.intelligent.reader.presenter.home.HomeView
-import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import io.reactivex.Observable
@@ -44,10 +41,15 @@ import kotlinx.android.synthetic.qbmfrmxs.home_drawer_layout_main.*
 import kotlinx.android.synthetic.qbmfrmxs.home_drawer_layout_menu.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
+import net.lzbook.kit.presenter.home.HomePresenter
+import net.lzbook.kit.presenter.home.HomeView
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
+import net.lzbook.kit.ui.activity.DownloadErrorActivity
+import net.lzbook.kit.ui.activity.WelfareCenterActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.cache.DataCleanManager
 import net.lzbook.kit.utils.cache.UIHelper

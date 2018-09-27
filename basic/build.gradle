@@ -14,9 +14,13 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        kapt {
+            arguments {
+                arg("moduleName", project.getName())
+            }
+        }
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
                 includeCompileClasspath true
             }
         }
@@ -77,5 +81,6 @@ dependencies {
 
     compile 'org.greenrobot:eventbus:3.1.1'
     implementation "com.alibaba:arouter-api:$arouter_api_version"
+    kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
 
 }

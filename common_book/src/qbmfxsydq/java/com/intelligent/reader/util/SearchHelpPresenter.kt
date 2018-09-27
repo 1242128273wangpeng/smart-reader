@@ -18,8 +18,8 @@ import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.IPresenter
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils

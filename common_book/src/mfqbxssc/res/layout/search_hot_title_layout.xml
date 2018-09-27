@@ -27,7 +27,7 @@
                     android:textColor="@color/color_search_recommend_title1"
                     android:layout_height="wrap_content"/>
 
-            <com.intelligent.reader.view.ScrollForGridView
+            <net.lzbook.kit.ui.widget.ScrollForGridView
                     android:id="@+id/gridView"
                     android:listSelector="@android:color/transparent"
                     android:scrollbars="none"

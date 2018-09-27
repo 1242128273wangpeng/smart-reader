@@ -212,7 +212,7 @@
                             android:textColor="@color/cover_profile_title_color"
                             android:textSize="14sp"/>
 
-                    <com.intelligent.reader.view.ExpandableTextView
+                    <net.lzbook.kit.ui.widget.ExpandableTextView
                             android:id="@+id/book_cover_description"
                             android:layout_width="match_parent"
                             android:layout_marginTop="@dimen/dimen_margin_10"
@@ -246,7 +246,7 @@
                                 android:layout_marginTop="@dimen/dimen_radius_10"
                                 android:text="展开"
                                 android:background="@android:color/transparent"/>
-                    </com.intelligent.reader.view.ExpandableTextView>
+                    </net.lzbook.kit.ui.widget.ExpandableTextView>
                 </RelativeLayout>
 
                 <View

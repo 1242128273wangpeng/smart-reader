@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 import kotlinx.android.synthetic.txtqbmfyd.popup_remove_menu.view.*
 
 /**

@@ -25,9 +25,10 @@ import com.ding.basic.request.RequestService;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.PagerDesc;
 import com.intelligent.reader.view.SelectSexDialog;
 
+import net.lzbook.kit.bean.PagerDesc;
+import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.sp.SPKey;
@@ -35,7 +36,6 @@ import net.lzbook.kit.utils.sp.SPUtils;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
-import net.lzbook.kit.ui.widget.LoadingPage;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

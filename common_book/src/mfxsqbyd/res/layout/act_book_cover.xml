@@ -299,7 +299,7 @@
                 </LinearLayout>
 
 
-                <com.intelligent.reader.view.ExpandTextView
+                <net.lzbook.kit.ui.widget.ExpandTextView
                         android:id="@+id/book_cover_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -329,7 +329,7 @@
                             android:layout_alignParentBottom="true"
                             android:paddingBottom="@dimen/expand_collapse_padding_bottom"
                             android:src="@drawable/icon_close_text"/>
-                </com.intelligent.reader.view.ExpandTextView>
+                </net.lzbook.kit.ui.widget.ExpandTextView>
 
 
                 <RelativeLayout
@@ -404,7 +404,7 @@
                 </LinearLayout>
 
 
-                <com.intelligent.reader.view.ScrollForListView
+                <net.lzbook.kit.ui.widget.ScrollForListView
                         android:id="@+id/book_recommend_lv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -11,7 +11,7 @@ import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.mfqbxssc.act_login.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil

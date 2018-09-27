@@ -43,10 +43,10 @@ import com.intelligent.reader.adapter.SearchHistoryAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
 import com.intelligent.reader.search.SearchHelper;
-import com.intelligent.reader.view.ScrollForGridView;
+import net.lzbook.kit.ui.widget.ScrollForGridView;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.BaseBookApplication;
+import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;

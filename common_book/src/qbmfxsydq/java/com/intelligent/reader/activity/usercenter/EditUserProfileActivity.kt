@@ -11,7 +11,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.view.login.LoadingDialog
 import kotlinx.android.synthetic.qbmfxsydq.act_edit_profile.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManagerV4
 import java.util.regex.Pattern

@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import kotlinx.android.synthetic.mfxsqbyd.item_bookshelf_book.view.*
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 
 import net.lzbook.kit.constants.Constants
 

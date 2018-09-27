@@ -25,7 +25,7 @@ import com.intelligent.reader.util.SearchHelper
 import com.intelligent.reader.util.SearchViewHelper
 import kotlinx.android.synthetic.qbmfxsydq.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.FrameActivity
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.Tools

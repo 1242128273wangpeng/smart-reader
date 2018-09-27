@@ -8,9 +8,9 @@ import com.ding.basic.database.helper.BookDataProviderHelper
 import com.dy.reader.R
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfrmxs.popup_reader_option_header_more.view.*
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 请描述这个文件

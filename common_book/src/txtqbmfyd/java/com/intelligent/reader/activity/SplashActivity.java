@@ -37,12 +37,12 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.ShieldManager;
+import net.lzbook.kit.utils.ShieldManager;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.base.BaseBookApplication;
-import net.lzbook.kit.base.activity.FrameActivity;
+import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;

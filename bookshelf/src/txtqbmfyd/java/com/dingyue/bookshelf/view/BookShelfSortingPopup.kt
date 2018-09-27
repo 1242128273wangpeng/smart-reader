@@ -7,7 +7,7 @@ import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.BookShelfLogger
 import com.dingyue.bookshelf.R
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 import net.lzbook.kit.utils.book.CommonContract
 import kotlinx.android.synthetic.txtqbmfyd.dialog_bookshelf_sort.view.*
 

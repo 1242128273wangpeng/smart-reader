@@ -29,7 +29,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/home_head_person_selector"/>
 
-            <net.lzbook.kit.widget.FirstUsePointView
+            <net.lzbook.kit.ui.widget.FirstUsePointView
                 android:id="@+id/redpoint_home_setting"
                 android:layout_width="7dp"
                 android:layout_height="7dp"

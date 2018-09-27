@@ -17,7 +17,7 @@ import com.intelligent.reader.adapter.SearchHistoryAdapter
 import com.intelligent.reader.adapter.SearchHotWordAdapter
 import com.intelligent.reader.adapter.SearchSuggestAdapter
 import com.intelligent.reader.presenter.search.SearchView
-import com.intelligent.reader.view.ScrollForGridView
+import net.lzbook.kit.ui.widget.ScrollForGridView
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 
 import net.lzbook.kit.utils.AppUtils

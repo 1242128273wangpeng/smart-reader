@@ -5,7 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.mfqbxssc.popup_remove_menu.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 书架编辑弹窗

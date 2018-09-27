@@ -11,7 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.intelligent.reader.R
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.sp.SPKey

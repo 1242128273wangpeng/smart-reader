@@ -1,6 +1,7 @@
 package com.intelligent.reader.activity
 
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -11,6 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.bumptech.glide.Glide
@@ -19,12 +21,13 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.coverPage.CoverPageContract
-import com.intelligent.reader.presenter.coverPage.CoverPagePresenter
+import com.intelligent.reader.view.TransformReadDialog
+import net.lzbook.kit.presenter.coverPage.CoverPageContract
+import net.lzbook.kit.presenter.coverPage.CoverPagePresenter
 import kotlinx.android.synthetic.zsmfqbxs.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.BaseBookApplication
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.download.CacheManager
@@ -33,6 +36,9 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.ui.widget.MyDialog
+import net.lzbook.kit.ui.widget.RecommendItemView
+import net.lzbook.kit.utils.router.RouterUtil
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -214,7 +220,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             this.startActivity(intent)
         }
     }
-    override fun showCleanDialog():Dialog{
+    override fun showCleanDialog(): Dialog {
         val cleanDialog = MyDialog(this, R.layout.dialog_download_clean)
         cleanDialog.setCanceledOnTouchOutside(false)
         cleanDialog.setCancelable(false)

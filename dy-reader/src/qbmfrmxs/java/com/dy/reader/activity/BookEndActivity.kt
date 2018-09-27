@@ -18,7 +18,7 @@ import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig

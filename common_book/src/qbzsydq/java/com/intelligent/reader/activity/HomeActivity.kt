@@ -19,6 +19,9 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+
+
+
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
@@ -28,16 +31,18 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
-import com.intelligent.reader.presenter.home.HomePresenter
-import com.intelligent.reader.presenter.home.HomeView
-import com.intelligent.reader.util.EventBookStore
+import net.lzbook.kit.presenter.home.HomePresenter
+import net.lzbook.kit.presenter.home.HomeView
+import net.lzbook.kit.bean.EventBookStore
 import kotlinx.android.synthetic.qbzsydq.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.base.activity.BaseCacheableActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
+import net.lzbook.kit.ui.activity.DownloadErrorActivity
+import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.utils.ATManager
 import net.lzbook.kit.utils.AnimationHelper
 import net.lzbook.kit.utils.ApkUpdateUtils

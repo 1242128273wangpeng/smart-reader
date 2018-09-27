@@ -5,7 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.qbmfkdxs.popup_book_sorting.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 import net.lzbook.kit.utils.book.CommonContract
 
 /**

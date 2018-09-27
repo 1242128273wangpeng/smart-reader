@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import com.dingyue.bookshelf.R
 
 import kotlinx.android.synthetic.qbmfkdxs.popup_head_menu.view.*
-import net.lzbook.kit.base.BasePopup
+import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
  * Desc 顶部菜单弹窗
