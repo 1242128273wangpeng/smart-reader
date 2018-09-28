@@ -91,12 +91,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
         val bundle = intent.extras ?: return
         initData(bundle)
 
-        initCatalogAndBookmark()
         if (fromEnd) {
             isPositive = false
             changeSortState(isPositive)
         }
-
     }
 
     private fun initUI() {
@@ -148,9 +146,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
 
     private fun getChapterData() {
         if (book != null) {
-
-            loadingPage.onSuccess()
-            loadingPage.setCustomBackgroud()
             cataloguesPresenter?.requestCatalogList(changeSource)
 
             loadingPage.isCategory = true
@@ -266,11 +261,17 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
                 if (chapterList.isNotEmpty()) {
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                     isPositive = !isPositive
-                    Collections.reverse(chapterList)
+
+                    if(!is_last_chapter){
+                        Collections.reverse(chapterList)
+                    }else{
+                        is_last_chapter = false
+                    }
 
                     cataloguesAdapter.setData(chapterList)
                     cataloguesAdapter.notifyDataSetChanged()
                     changeSortState(isPositive)
+                    catalog_recyceler_main.scrollToPosition(0)
                 }
             }
             R.id.iv_fixbook -> cataloguesPresenter?.fixBook()
@@ -322,27 +323,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
     override fun requestCatalogSuccess(chapterList: ArrayList<Chapter>) {
         this.chapterList = chapterList
         loadingPage.onSuccess()
+
+        initCatalogAndBookmark()
+
         catalog_chapter_count!!.text = "共" + chapterList.size + "章"
 
         if (fromEnd) {
             isPositive = false
             Collections.reverse(chapterList)
         }
-
-        cataloguesAdapter.setData(chapterList)
-
-        //设置选中的条目
-        val position: Int = if (is_last_chapter) {
-            chapterList.size
-        } else {
-            sequence
-        }
-
-        catalog_recyceler_main.scrollToPosition(position)
-
-        catalog_recyceler_main.scrollToPosition(0)
-
-        cataloguesAdapter.setSelectedItem(position)
     }
 
     override fun requestCatalogError() {
