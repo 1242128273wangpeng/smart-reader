@@ -25,6 +25,13 @@
             android:src="@drawable/nbar_back_icon"
             expandableTextView:onPressChangeAlpha="true"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="@style/style_text_huge_dark"
+            android:text="书籍详情"/>
+
         <ImageView
             android:id="@+id/book_cover_download_iv"
             android:layout_width="wrap_content"
