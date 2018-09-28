@@ -413,11 +413,11 @@ public class SplashActivity extends FrameActivity {
 
         initializeDataFusion();
 
-//        if(!sharedPreUtil.getBoolean(SharedPreUtil.DEL_WEBVIEW_CACHE,false)){
-//            deleteFile(getCacheDir());
-//            deleteFile(new File(getCacheDir().getParentFile(), "app_webview"));
-//            sharedPreUtil.putBoolean(SharedPreUtil.DEL_WEBVIEW_CACHE,true);
-//        }
+        if(!sharedPreUtil.getBoolean(SharedPreUtil.DEL_WEBVIEW_CACHE,false)){
+            deleteFile(getCacheDir());
+            deleteFile(new File(getCacheDir().getParentFile(), "app_webview"));
+            sharedPreUtil.putBoolean(SharedPreUtil.DEL_WEBVIEW_CACHE,true);
+        }
 
 
         // 安装快捷方式
@@ -429,19 +429,19 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
-//    private void deleteFile(File file) {
-//        if (file.isDirectory()) {
-//            File[] files = file.listFiles();
-//            for (File f : files) {
-//                deleteFile(f);
-//            }
-//            file.delete();//如要保留文件夹，只删除文件，请注释这行
-//            Log.d("SplashActivity", "files " + file.getAbsolutePath());
-//        } else if (file.exists()) {
-//            file.delete();
-//            Log.d("SplashActivity", "files " + file.getAbsolutePath());
-//        }
-//    }
+    private void deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                deleteFile(f);
+            }
+            file.delete();//如要保留文件夹，只删除文件，请注释这行
+            Log.d("SplashActivity", "files " + file.getAbsolutePath());
+        } else if (file.exists()) {
+            file.delete();
+            Log.d("SplashActivity", "files " + file.getAbsolutePath());
+        }
+    }
 
     private void initializeDataFusion() {
 
