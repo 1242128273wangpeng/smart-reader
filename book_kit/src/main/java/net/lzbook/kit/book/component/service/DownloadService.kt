@@ -101,7 +101,10 @@ class DownloadService : Service(), Runnable {
                 if (bookChapterDao.getCount() <= 0) {
                     requestBookCatalog(task)
                 } else {
-                    downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
+                    try {
+                        downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
+                    } catch (e: Exception) {
+                    }
                 }
             } else {
                 synchronized(lock) {
@@ -125,7 +128,10 @@ class DownloadService : Service(), Runnable {
                     override fun requestResult(result: List<Chapter>?) {
                         if (result != null) {
                             if (result.isNotEmpty()) {
-                                downBook(bookTask, result, bookChapterDao)
+                                try {
+                                    downBook(bookTask, result, bookChapterDao)
+                                } catch (e: Exception) {
+                                }
                             } else {
                                 CacheManager.innerListener.onTaskFailed(bookTask.book_id,
                                         IllegalArgumentException("server return null chapter list"))

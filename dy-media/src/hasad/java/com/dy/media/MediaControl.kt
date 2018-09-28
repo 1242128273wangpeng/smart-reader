@@ -287,16 +287,19 @@ object MediaControl : IMediaControl {
                                 override fun adDismissed() {
                                     Log.e("3-1", "3-1广告监控函数 ：adDismissed")
                                     restMediaHandler?.postDelayed({
-                                        if (isShowing)
+                                        if (activity != null && !activity.isFinishing && isShowing) {
                                             dismiss()
+                                        }
+
                                     }, 200)
                                 }
 
                                 override fun adLoadFail(dyError: DyError?) {
                                     Log.e("3-1", "3-1广告监控函数 ：拉取失败")
                                     restMediaHandler?.postDelayed({
-                                        if (isShowing)
+                                        if (activity != null && !activity.isFinishing && isShowing) {
                                             dismiss()
+                                        }
                                     }, 200)
                                 }
 
@@ -313,7 +316,9 @@ object MediaControl : IMediaControl {
                             })
                         }
 
-                        show()
+                        if (activity != null && !activity.isFinishing && !isShowing) {
+                            show()
+                        }
                     }
                 }
             }

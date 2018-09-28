@@ -122,7 +122,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         HomeLogger.uploadHomeBookListInformation()
 
         if (isShouldShowPushSettingDialog()) {
-            pushSettingDialog.show()
+            if(!isFinishing){
+                pushSettingDialog.show()
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                        StartLogClickUtil.POPUPMESSAGE)
+            }
         }
 
         if (UserManagerV4.isUserLogin) run {
@@ -625,7 +629,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
                 if (bookShelfFragment != null) {
-                    bookShelfFragment?.updateUI()
+                    try {
+                        bookShelfFragment?.updateUI()
+                    }catch (e:Exception){
+                    }
                 }
             } else if (intent.action == ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS) {
                 val bundle = intent.extras
