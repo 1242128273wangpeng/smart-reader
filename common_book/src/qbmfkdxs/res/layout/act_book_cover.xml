@@ -267,7 +267,8 @@
                                         android:isIndicator="true"
                                         android:stepSize="0.1"
                                         android:layout_centerVertical="true"
-                                        style="@style/GlimmerRatingbar"/>
+                                        style="@style/GlimmerRatingbar"
+                                        />
 
                                 <TextView
                                         android:id="@+id/tv_score"
