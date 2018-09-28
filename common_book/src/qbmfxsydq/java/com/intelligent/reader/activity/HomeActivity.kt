@@ -32,8 +32,8 @@ import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.home.HomePresenter
-import net.lzbook.kit.presenter.home.HomeView
+import net.lzbook.kit.presenter.HomePresenter
+import net.lzbook.kit.view.HomeView
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.bean.PagerDesc
 import com.intelligent.reader.view.PushSettingDialog

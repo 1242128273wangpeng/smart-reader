@@ -19,8 +19,8 @@ import com.ding.basic.bean.RecommendBean
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog
-import net.lzbook.kit.presenter.coverPage.CoverPageContract
-import net.lzbook.kit.presenter.coverPage.CoverPagePresenter
+import net.lzbook.kit.view.CoverPageContract
+import net.lzbook.kit.presenter.CoverPagePresenter
 import kotlinx.android.synthetic.mfxsqbyd.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication

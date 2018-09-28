@@ -26,8 +26,8 @@ import com.ding.basic.bean.Chapter
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CatalogAdapter
 import com.intelligent.reader.view.TransformReadDialog
-import net.lzbook.kit.presenter.catalogues.CataloguesContract
-import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
+import net.lzbook.kit.view.CataloguesContract
+import net.lzbook.kit.presenter.CataloguesPresenter
 import net.lzbook.kit.receiver.OffLineDownLoadReceiver
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbdzs.act_catalog.*

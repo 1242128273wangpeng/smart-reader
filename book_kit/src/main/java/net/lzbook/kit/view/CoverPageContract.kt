@@ -1,4 +1,4 @@
-package net.lzbook.kit.presenter.coverPage
+package net.lzbook.kit.view
 
 import android.app.Dialog
 import android.content.Intent

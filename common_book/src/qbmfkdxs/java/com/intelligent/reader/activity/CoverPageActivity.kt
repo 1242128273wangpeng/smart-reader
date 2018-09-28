@@ -22,8 +22,8 @@ import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog
-import net.lzbook.kit.presenter.coverPage.CoverPageContract
-import net.lzbook.kit.presenter.coverPage.CoverPagePresenter
+import net.lzbook.kit.view.CoverPageContract
+import net.lzbook.kit.presenter.CoverPagePresenter
 import net.lzbook.kit.ui.widget.MyScrollView
 import kotlinx.android.synthetic.qbmfkdxs.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

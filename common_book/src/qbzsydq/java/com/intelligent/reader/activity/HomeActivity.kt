@@ -31,8 +31,8 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.home.HomePresenter
-import net.lzbook.kit.presenter.home.HomeView
+import net.lzbook.kit.presenter.HomePresenter
+import net.lzbook.kit.view.HomeView
 import net.lzbook.kit.bean.EventBookStore
 import kotlinx.android.synthetic.qbzsydq.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

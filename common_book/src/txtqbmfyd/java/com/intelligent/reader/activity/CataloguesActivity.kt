@@ -23,8 +23,8 @@ import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.bean.OfflineDownloadEvent
-import net.lzbook.kit.presenter.catalogues.CataloguesContract
-import net.lzbook.kit.presenter.catalogues.CataloguesPresenter
+import net.lzbook.kit.view.CataloguesContract
+import net.lzbook.kit.presenter.CataloguesPresenter
 import net.lzbook.kit.receiver.OffLineDownLoadReceiver
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage

@@ -1,4 +1,4 @@
-package net.lzbook.kit.presenter.coverPage
+package net.lzbook.kit.presenter
 
 import android.app.Activity
 import android.content.Intent
@@ -9,8 +9,6 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverRecommendBean
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooks
-import android.widget.*
-import com.ding.basic.bean.*
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.orhanobut.logger.Logger
@@ -34,6 +32,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.view.CoverPageContract
 import java.util.*
 import kotlin.collections.ArrayList
 

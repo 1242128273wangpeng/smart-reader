@@ -1,4 +1,4 @@
-package net.lzbook.kit.presenter.catalogues
+package net.lzbook.kit.presenter
 
 import android.app.Activity
 import android.content.Intent
@@ -34,6 +34,7 @@ import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.view.CataloguesContract
 import java.util.HashMap
 import kotlin.collections.ArrayList
 import kotlin.collections.set

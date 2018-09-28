@@ -25,8 +25,8 @@ import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.presenter.coverPage.CoverPageContract
-import net.lzbook.kit.presenter.coverPage.CoverPagePresenter
+import net.lzbook.kit.view.CoverPageContract
+import net.lzbook.kit.presenter.CoverPagePresenter
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.MyDialog

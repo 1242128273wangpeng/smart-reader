@@ -1,4 +1,4 @@
-package net.lzbook.kit.presenter.catalogues
+package net.lzbook.kit.view
 
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter

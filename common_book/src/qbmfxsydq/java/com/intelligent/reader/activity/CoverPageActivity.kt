@@ -22,8 +22,8 @@ import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
-import net.lzbook.kit.presenter.coverPage.CoverPageContract
-import net.lzbook.kit.presenter.coverPage.CoverPagePresenter
+import net.lzbook.kit.view.CoverPageContract
+import net.lzbook.kit.presenter.CoverPagePresenter
 import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.qbmfxsydq.act_book_cover.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

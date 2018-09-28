@@ -1,4 +1,4 @@
-package net.lzbook.kit.presenter.home
+package net.lzbook.kit.presenter
 
 import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
@@ -24,6 +24,7 @@ import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
+import net.lzbook.kit.view.HomeView
 import okhttp3.MediaType
 import okhttp3.RequestBody
 

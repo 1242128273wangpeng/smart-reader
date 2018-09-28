@@ -27,8 +27,8 @@ import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.home.HomePresenter
-import net.lzbook.kit.presenter.home.HomeView
+import net.lzbook.kit.presenter.HomePresenter
+import net.lzbook.kit.view.HomeView
 import com.intelligent.reader.view.PushSettingDialog
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil

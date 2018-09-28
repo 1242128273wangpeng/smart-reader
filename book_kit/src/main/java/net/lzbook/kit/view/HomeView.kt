@@ -1,4 +1,4 @@
-package net.lzbook.kit.presenter.home
+package net.lzbook.kit.view
 
 /**
  * Desc HomeFragment - view

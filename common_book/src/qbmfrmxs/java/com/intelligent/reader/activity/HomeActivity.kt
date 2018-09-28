@@ -43,8 +43,8 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
-import net.lzbook.kit.presenter.home.HomePresenter
-import net.lzbook.kit.presenter.home.HomeView
+import net.lzbook.kit.presenter.HomePresenter
+import net.lzbook.kit.view.HomeView
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
