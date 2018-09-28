@@ -269,7 +269,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
             })
 
             if (type.equals("recommend")) {
-                srl_web_view_refresh?.setPullToRefreshEnabled(false)
+                srl_web_view_refresh?.setPullToRefreshEnabled(true)
             } else {
                 srl_web_view_refresh?.setPullToRefreshEnabled(false)
             }
@@ -299,7 +299,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         srl_web_view_refresh?.onRefreshComplete()
 
-        handleRefreshContentData("refreshNew()")
+        handleRefreshContentData("javascript:refreshNew()")
     }
 
     /***
