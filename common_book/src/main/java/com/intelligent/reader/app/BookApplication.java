@@ -84,85 +84,102 @@ public class BookApplication extends BaseBookApplication {
             registerActivityLifecycleCallbacks(ActivityLifecycleHelper.build());
             setRxJavaErrorHandler();
         }
-        initHandler.sendEmptyMessageDelayed(1,1500);
+        registerPushAgent();
+        initHandler.sendEmptyMessageDelayed(1, 1500);
     }
 
-    private Handler initHandler=new Handler(){
+    private Handler initHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-           if(msg.what==1){
-               if (AppUtils.isMainProcess(BookApplication.this)) {
-                   // 自定义ErrorCallback
-                   FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
-                       @Override
-                       public void onError(Context context, String errorMessage, ErrorCode code) {
-                           CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
-                       }
-                   });
-                   // Feedback activity的回调
-                   FeedbackAPI.addLeaveCallback(new Callable() {
-                       @Override
-                       public Object call() throws Exception {
-                           Log.d("DemoApplication", "custom leave callback");
-                           return null;
-                       }
-                   });
+            if (msg.what == 1) {
+                if (AppUtils.isMainProcess(BookApplication.this)) {
+                    // 自定义ErrorCallback
+                    FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
+                        @Override
+                        public void onError(Context context, String errorMessage, ErrorCode code) {
+                            CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
+                        }
+                    });
+                    // Feedback activity的回调
+                    FeedbackAPI.addLeaveCallback(new Callable() {
+                        @Override
+                        public Object call() throws Exception {
+                            Log.d("DemoApplication", "custom leave callback");
+                            return null;
+                        }
+                    });
 
-                   FeedbackAPI.init(BookApplication.this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
-                           ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
-               }
-               try {
-                   ApplicationInfo appInfo = getPackageManager()
-                           .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                   String umengAppkey = appInfo.metaData.getString("UMENG_APPKEY");
-                   String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
-                   if(!AppUtils.hasReYun()){
-                       String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
-                       AppLog.e("reyun",reyunAppKey);
-                       Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),reyunAppKey,"_default_");
-                   }
+                    FeedbackAPI.init(BookApplication.this,
+                            ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
+                            ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
+                }
 
-                   // 友盟推送初始化
-                   if (!AppUtils.hasUPush()) return;
+                try {
+                    ApplicationInfo appInfo = getPackageManager()
+                            .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
 
-                   if (pushSecret != null) {
-                       UMConfigure.init(BookApplication.this, umengAppkey, AppUtils.getChannelId(),
-                               1, pushSecret);
-                       AppLog.e(TAG, "pushSecret: " + pushSecret);
-                   }
+                    if (!AppUtils.hasReYun()) {
+                        String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
+                        AppLog.e("reyun", reyunAppKey);
+                        Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
+                                reyunAppKey, "_default_");
+                    }
 
-                   String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
-                   AppLog.e(TAG, "xiaomiId: " + xiaomiId);
+                    // 友盟推送初始化
+                    if (!AppUtils.hasUPush()) return;
 
-                   String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
-                   AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
+                    String xiaomiId = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_ID");
+                    AppLog.e(TAG, "xiaomiId: " + xiaomiId);
 
-                   // 小米通道
-                   if (xiaomiId != null && xiaomiKey != null) {
-                       MiPushRegistar.register(BookApplication.this, xiaomiId.replace("String", ""),
-                               xiaomiKey.replace("String", ""));
-                   }
+                    String xiaomiKey = appInfo.metaData.getString("UMENG_PUSH_XIAOMI_KEY");
+                    AppLog.e(TAG, "xiaomiKey: " + xiaomiKey);
 
-                   final PushAgent pushAgent = PushAgent.getInstance(BookApplication.this);
-                   pushAgent.setResourcePackageName("net.lzbook.kit");
-                   //注册推送服务
-                   pushAgent.register(new PushRegisterCallback(BookApplication.this));
-                   //消息送达处理
-                   pushAgent.setMessageHandler(new PushMessageHandler());
-                   //消息点击处理
-                   pushAgent.setNotificationClickHandler(new PushNotificationHandler());
-                   //最多显示3条通知
-                   pushAgent.setDisplayNotificationNumber(3);
+                    // 小米通道
+                    if (xiaomiId != null && xiaomiKey != null) {
+                        MiPushRegistar.register(BookApplication.this,
+                                xiaomiId.replace("String", ""),
+                                xiaomiKey.replace("String", ""));
+                    }
 
-                   // 华为通道
-                   HuaWeiRegister.register(BookApplication.this);
-
-               } catch (Exception e) {
-                   e.printStackTrace();
-               }
-           }
+                    // 华为通道
+                    HuaWeiRegister.register(BookApplication.this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     };
+
+
+    private void registerPushAgent() {
+        if (!AppUtils.hasUPush()) return;
+
+        try {
+            ApplicationInfo appInfo = getPackageManager()
+                    .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            AppLog.e(TAG, "register umeng push agent");
+            String umengAppkey = appInfo.metaData.getString("UMENG_APPKEY");
+            String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
+            if (pushSecret != null) {
+                UMConfigure.init(BookApplication.this, umengAppkey, AppUtils.getChannelId(),
+                        1, pushSecret);
+                AppLog.e(TAG, "pushSecret: " + pushSecret);
+            }
+            final PushAgent pushAgent = PushAgent.getInstance(BookApplication.this);
+            pushAgent.setResourcePackageName("net.lzbook.kit");
+            //注册推送服务
+            pushAgent.register(new PushRegisterCallback(BookApplication.this));
+            //消息送达处理
+            pushAgent.setMessageHandler(new PushMessageHandler());
+            //消息点击处理
+            pushAgent.setNotificationClickHandler(new PushNotificationHandler());
+            //最多显示3条通知
+            pushAgent.setDisplayNotificationNumber(3);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),
