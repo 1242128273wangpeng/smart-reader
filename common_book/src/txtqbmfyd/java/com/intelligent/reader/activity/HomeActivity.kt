@@ -41,12 +41,16 @@ import com.intelligent.reader.fragment.CustomWebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.view.BannerDialog
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.PushSettingDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import com.reyun.tracking.sdk.Tracking
+import com.umeng.message.PushAgent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.txtqbmfyd.act_home.*
@@ -61,6 +65,8 @@ import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.update.ApkUpdateUtils
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -149,6 +155,10 @@ class HomeActivity : BaseCacheableActivity(),
         dialog
     }
 
+    private val bannerDialog: BannerDialog by lazy {
+        BannerDialog(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -181,6 +191,8 @@ class HomeActivity : BaseCacheableActivity(),
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
         }
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onResume() {
@@ -229,6 +241,7 @@ class HomeActivity : BaseCacheableActivity(),
             exception.printStackTrace()
         }
         fixInputMethodManagerLeak(applicationContext)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -710,6 +723,23 @@ class HomeActivity : BaseCacheableActivity(),
         } else {
             dl_home_content.openMenu()
         }
+    }
+
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
     }
 
     companion object {
