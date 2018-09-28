@@ -109,9 +109,9 @@ public abstract class BaseBookHelper {
             final MyDialog myDialog = new MyDialog((Activity) context, R.layout.publish_hint_dialog);
             myDialog.setCanceledOnTouchOutside(false);
             myDialog.setCancelable(false);
-            Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
-            Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
-            TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
+            Button btn_cancle_clear_cache = myDialog.findViewById(R.id.publish_stay);
+            Button btn_confirm_clear_cache = myDialog.findViewById(R.id.publish_leave);
+            TextView publish_content = myDialog.findViewById(R.id.publish_content);
             ((TextView) myDialog.findViewById(R.id.dialog_title)).setText(R.string.prompt);
             publish_content.setText(R.string.tip_network_mobile);
             btn_cancle_clear_cache.setOnClickListener(new OnClickListener() {
