@@ -13,7 +13,7 @@ interface BookShelfView {
 
     fun onBookListQuery(books: List<Book>?)
 
-    fun onBookDelete()
+    fun onBookDelete(onlyDeleteCache: Boolean)
 
     fun onSuccessUpdateHandle(updateCount: Int = 0, firstBook: BookUpdate? = null)
 
