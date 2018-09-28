@@ -19,7 +19,7 @@ import com.ding.basic.util.isSameDay
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import java.util.ArrayList
+import java.util.*
 
 /**
  * 本地数据
@@ -421,5 +421,55 @@ class LocalRequestRepository private constructor(private var context: Context,
         historyDao.deleteSmallTime()
     }
 
+    fun queryChapterBySequence(book_id: String, sequence: Int): Chapter? {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).queryChapterBySequence(sequence)
+    }
 
+    fun getChapterCount(book_id: String): Int {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).getCount()
+    }
+
+    fun queryAllChapters(book_id: String): List<Chapter> {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).queryAllChapters()
+    }
+
+    fun queryLastChapter(book_id: String): Chapter? {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).queryLastChapter()
+    }
+
+    fun deleteChapters(book_id: String, sequence: Int) {
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).deleteChapters(sequence)
+    }
+
+    fun deleteAllChapters(book_id: String) {
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).deleteAllChapters()
+    }
+
+    fun insertOrUpdateChapter(book_id: String, chapterList: List<Chapter>): Boolean {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).insertOrUpdateChapter(chapterList)
+    }
+
+    fun updateChapterBySequence(book_id: String, chapter: Chapter) {
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).updateChapterBySequence(chapter)
+    }
+
+    fun getChapterById(book_id: String,chapter_id: String): Chapter?{
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).getChapterById(chapter_id)
+    }
+
+    fun updateChapter(book_id: String,chapter: Chapter):Boolean{
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).updateChapter(chapter)
+    }
+
+    fun updateBookChapterId(book_id: String,book_chapter_id: String){
+         ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).updateBookChapterId(book_chapter_id)
+    }
+
+    fun updateBookSourceId(book_id: String,book_source_id: String){
+        ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).updateBookSourceId(book_source_id)
+    }
+
+    fun getCount(book_id:String): Int {
+        return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).getCount()
+    }
 }
