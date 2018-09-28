@@ -41,7 +41,12 @@ import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.util.PagerDesc
+import com.intelligent.reader.view.BannerDialog
 import com.intelligent.reader.view.PushSettingDialog
+import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfxsydq.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -55,6 +60,8 @@ import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import swipeback.ActivityLifecycleHelper
 import java.io.File
 import java.util.*
@@ -134,6 +141,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     uploadReadInfo()
             )
         }
+
+        EventBus.getDefault().register(this)
     }
 
     private val pushSettingDialog: PushSettingDialog by lazy {
@@ -143,6 +152,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
         lifecycle.addObserver(dialog)
         dialog
+    }
+
+    private val bannerDialog: BannerDialog by lazy {
+        BannerDialog(this)
     }
 
     override fun onResume() {
@@ -202,6 +215,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
         fixInputMethodManagerLeak(applicationContext)
         MediaLifecycle.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 
@@ -695,6 +709,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     override fun changeDrawerLayoutState() {
 
+    }
+
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
     }
 
     companion object {
