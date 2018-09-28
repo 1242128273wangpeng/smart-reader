@@ -306,7 +306,12 @@ public class CheckNovelUpdateService extends Service {
                 checkOnCancel(bookUpdateTaskData, updateResult);
                 return;
             }
-            handleCheckBookUpdate(checkUpdateBooks, bookUpdateTaskData, updateResult);
+            //部分4.2 手机报 retrofit 动态代理问题 java.lang.reflect.UndeclaredThrowableException at $Proxy2.a(Native Method)
+            try {
+                handleCheckBookUpdate(checkUpdateBooks, bookUpdateTaskData, updateResult);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             UPDATE_OWN_SUCCESS = true;
         }

@@ -15,6 +15,11 @@ import android.widget.FrameLayout
  */
 
 object MediaControl : IMediaControl {
+    override fun dycmNativeAd(context: Activity?, adLocalId: String, view: ViewGroup?, resultSuccessCallback: (views: List<ViewGroup>?) -> Unit, resultFailCallback: (errorCode: Int) -> Unit) {
+    }
+
+    override fun dycmNativeAd(context: Activity?, adLocalId: String, height: Int, width: Int, resultSuccessCallback: (views: List<ViewGroup>?) -> Unit, resultFailCallback: (errorCode: Int) -> Unit) {
+    }
 
     override fun loadSwitchScreenMedia(context: Context, layout: FrameLayout,
                                        callback: (resultCode: Int) -> Unit) {
@@ -45,15 +50,6 @@ object MediaControl : IMediaControl {
         return 0
     }
 
-    override fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                              resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit) {
-
-    }
-
-    override fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
-                              resultCalback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit) {
-
-    }
 
     override fun startRestMedia(activity: Activity) {}
 
