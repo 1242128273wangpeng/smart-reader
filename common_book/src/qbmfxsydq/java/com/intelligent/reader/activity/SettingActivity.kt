@@ -26,8 +26,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
 import com.ding.basic.bean.LoginRespV4
+import com.ding.basic.request.RequestService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
@@ -40,7 +42,6 @@ import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.StatServiceUtils
@@ -49,12 +50,14 @@ import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbmfxsydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.user.UserManagerV4
+import org.greenrobot.eventbus.EventBus
+import swipeback.ActivityLifecycleHelper
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -130,6 +133,8 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     private var txt_login_des: TextView? = null
     private var img_welfare: ImageView? = null
     private var rl_welfare: RelativeLayout? = null
+    private var isFromPush = false
+
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -223,7 +228,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             bt_night_shift!!.isChecked = false
         }
 
-        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
 
         startWelfareCenterAnim()
     }
@@ -352,6 +357,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         if (bt_wifi_auto != null) {
             bt_wifi_auto!!.setOnCheckedChangeListener(this)
         }
+        rl_qrcode?.antiShakeClick(this)
     }
 
     private fun initData() {
@@ -480,6 +486,14 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 logoutDialog()
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.LOGOUT)
             }
+            R.id.rl_qrcode -> {
+                val welfareIntent = Intent()
+                val uri = RequestService.QR_CODE.replace("{packageName}", AppUtils.getPackageName())
+                welfareIntent.putExtra("url", UrlUtils.buildWebUrl(uri, HashMap()))
+                welfareIntent.putExtra("title", "和朋友一起读书")
+                welfareIntent.setClass(this@SettingActivity, WelfareCenterActivity::class.java)
+                startActivity(welfareIntent)
+            }
             else -> {
             }
         }//                finish();
@@ -600,6 +614,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_SWITCH_THEME)
         themIntent.putExtras(bundle)
         startActivity(themIntent)
+        finish()
     }
 
     private fun dismissDialog() {
@@ -628,7 +643,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
-            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
+            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
             edit.apply()
             val data = HashMap<String, String>()
             data["type"] = if (isChecked) "1" else "0"
@@ -681,6 +696,19 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             clear_cache_size!!.text = result
         }
 
+    }
+
+    override fun finish() {
+        super.finish()
+        //离线消息 跳转到主页
+        val isThemeChange = currentThemeMode != mThemeHelper.mode || isStyleChanged
+        if (!isThemeChange && isFromPush && ActivityLifecycleHelper.getActivities().size <= 1) {
+            startActivity(Intent(this, SplashActivity::class.java))
+        }
+    }
+
+    override fun supportSlideBack(): Boolean {
+        return ActivityLifecycleHelper.getActivities().size > 1
     }
 
     companion object {

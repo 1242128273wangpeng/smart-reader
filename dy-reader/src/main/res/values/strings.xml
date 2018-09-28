@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="use">使用</string>
+    <string name="download">下载</string>
+
     <string name="loading_read_page">精彩内容即将呈现...</string>
 
     <string name="read_brightness_night">亮度</string>
@@ -74,6 +78,7 @@
 
     <string name="catalog">目录</string>
     <string name="bookmark">书签</string>
+    <string name="bookmark_empty">没有书签</string>
 
     <string name="auto_read_speed">自动翻页速度:</string>
 
@@ -91,6 +96,8 @@
 
     <string name="brightness">亮度</string>
     <string name="system">系统</string>
+    <string name="follow_system">跟随系统</string>
+    <string name="default_font">默认字体</string>
     <string name="text_size">字号</string>
     <string name="background">背景</string>
     <string name="spacing">间距</string>
@@ -138,6 +145,6 @@
     <string name="auto_read_prompt">翻页太麻烦，开启自动阅读</string>
     <string name="not_receive_prompt">不再接收此提示</string>
 
-    <string name="add_shelf_prompt">喜欢就加入书架吧！</string>
+    <string name="add_shelf_prompt">喜欢就加入书架吧～</string>
 
 </resources>

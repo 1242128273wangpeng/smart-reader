@@ -25,8 +25,7 @@ import com.dy.reader.mode.NovelLineBean
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
-import com.intelligent.reader.read.mode.NovelPageBean
-import com.orhanobut.logger.Logger
+import com.dy.reader.mode.NovelPageBean
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -449,7 +448,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
                 if(ReaderStatus.position.group < mOriginDataList[position].lines[0].sequence){
                     //发送章节消费
                     StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )
+                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position?.groupChildCount.toString() )
                     ReaderStatus.startTime = System.currentTimeMillis()/1000L
                 }
                 ReaderStatus.position.index = getCurrentChapterPage(position)

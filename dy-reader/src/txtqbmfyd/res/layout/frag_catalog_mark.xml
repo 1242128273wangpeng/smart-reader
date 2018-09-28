@@ -62,7 +62,7 @@
                 android:paddingRight="15dp"
                 android:paddingTop="2dp"
                 android:text="@string/reverse_order"
-                android:textColor="@drawable/catalog_mark_order_txt_sel"
+                android:textColor="@color/color_gray_858C96"
                 android:textSize="12sp"/>
         </RelativeLayout>
 
@@ -151,7 +151,7 @@
                 android:checked="true"
                 android:gravity="center"
                 android:text="@string/catalog"
-                android:textColor="@drawable/catalog_mark_option_txt_sel"
+                android:textColor="@drawable/reader_option_group_txt_sel"
                 android:textSize="16sp"/>
 
             <View
@@ -171,7 +171,7 @@
                 android:checked="false"
                 android:gravity="center"
                 android:text="@string/bookmark"
-                android:textColor="@drawable/catalog_mark_option_txt_sel"
+                android:textColor="@drawable/reader_option_group_txt_sel"
                 android:textSize="16sp"/>
         </RadioGroup>
 
@@ -192,10 +192,5 @@
 
     <net.lzbook.kit.book.view.NightShadowView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/rl_content_container"
-        android:layout_alignLeft="@+id/rl_content_container"
-        android:layout_alignRight="@+id/rl_content_container"
-        android:layout_alignTop="@+id/rl_content_container"
-        />
+        android:layout_height="match_parent"/>
 </FrameLayout>

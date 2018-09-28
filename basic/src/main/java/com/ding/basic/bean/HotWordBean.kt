@@ -1,6 +1,7 @@
 package com.ding.basic.bean
 
 import com.google.gson.annotations.Expose
+import java.io.Serializable
 
 
 /**
@@ -9,23 +10,13 @@ import com.google.gson.annotations.Expose
  * Created by JoannChen on 2018/7/19 0019 16:20
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
-class HotWordBean {
+class HotWordBean : Serializable {
 
     var keywordType: Int = 0
     var keyword: String? = null
     var superscript: String? = null
     var color: String? = null
     var sort: Int = 0
-
-    override fun toString(): String {
-        return "HotWordBean{" +
-                "keywordType=" + keywordType +
-                ", keyword='" + keyword + '\'' +
-                ", superscript='" + superscript + '\'' +
-                ", color='" + color + '\'' +
-                ", sort=" + sort +
-                '}'
-    }
 
     companion object {
 

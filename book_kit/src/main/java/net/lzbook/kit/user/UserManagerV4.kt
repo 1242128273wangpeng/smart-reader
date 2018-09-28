@@ -6,8 +6,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Bundle
+import android.text.TextUtils
 import android.util.Base64
 import com.alibaba.fastjson.JSON
+import com.bumptech.glide.Glide
 import com.ding.basic.Config
 import com.ding.basic.bean.BasicResultV4
 import com.ding.basic.bean.LoginRespV4
@@ -15,30 +18,44 @@ import com.ding.basic.bean.QQSimpleInfo
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
-import com.ding.basic.rx.SchedulerHelper
+import com.dingyue.contract.util.SharedPreUtil
+import com.dingyue.contract.util.bitmapTransformByteArray
+import com.dingyue.contract.util.mainLooperHandler
+import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
+import com.tencent.connect.share.QQShare
+import com.tencent.connect.share.QzoneShare
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
 import com.tencent.mm.opensdk.modelmsg.SendAuth
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject
 import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
-import de.greenrobot.event.EventBus
-import io.reactivex.subscribers.ResourceSubscriber
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.R
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.data.user.ThirdLoginReq
 import net.lzbook.kit.data.user.ThirdLoginReq.Companion.CHANNEL_QQ
-import net.lzbook.kit.user.bean.*
+import net.lzbook.kit.user.bean.AvatarReq
+import net.lzbook.kit.user.bean.UserNameState
+import net.lzbook.kit.user.bean.WXAccess
+import net.lzbook.kit.user.bean.WXSimpleInfo
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.log
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logi
 import okhttp3.RequestBody
 import org.json.JSONObject
-import swipeback.ActivityLifecycleHelper
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -102,7 +119,7 @@ object UserManagerV4 : IWXAPIEventHandler {
 
             mInitCallback = callback
 
-            if (context.packageManager != null) {
+            if (context.packageManager != null && context.packageName != null) {
                 val appInfo = context.packageManager
                         .getApplicationInfo(context.packageName,
                                 PackageManager.GET_META_DATA)
@@ -127,7 +144,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     log("registerApp", registerApp)
 
                     try {
-                        mTencent = Tencent.createInstance(qqAppID, context.getApplicationContext())
+                        mTencent = Tencent.createInstance(qqAppID, context.applicationContext)
                     } catch (exception: ExceptionInInitializerError) {
                         exception.printStackTrace()
                     }
@@ -141,8 +158,6 @@ object UserManagerV4 : IWXAPIEventHandler {
                         mUserState.set(true)
                         Config.insertRequestParameter("loginToken", user!!.token!!)
                         mInitCallback?.invoke(true)
-//                mOriginBookShelfData = queryAllBook()
-//                mOriginBookMarksData = getBookMarkBody(user?.accountId ?: "", queryAllBook())
                     } else {
                         mInitCallback?.invoke(false)
                     }
@@ -152,6 +167,30 @@ object UserManagerV4 : IWXAPIEventHandler {
             callback?.invoke(true)
         }
     }
+
+    fun refreshToken(callBack: (() -> Unit)? = null) {
+        loge("refreshToken")
+        RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+                .getRefreshToken(object : RequestSubscriber<BasicResultV4<LoginRespV4>>() {
+                    override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
+                        if (result?.checkResultAvailable()!!) {
+                            user?.let {
+                                user?.token = result.data?.token
+                                onLogin(it)
+                                callBack?.invoke()
+                            }
+                        } else {
+                            callBack?.invoke()
+                        }
+                    }
+
+                    override fun requestError(message: String) {
+                        callBack?.invoke()
+                    }
+
+                })
+    }
+
 
     /**
      * 检测第三方登录平台是否可用
@@ -334,36 +373,26 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 登出上传操作---------------------开始
      */
-    private fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
+    fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
         user?.let {
             val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
             repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)
-                    .compose(SchedulerHelper.schedulerHelper<BasicResultV4<String>>())
+                    .subscribeOn(Schedulers.io())
                     .flatMap {
                         repositoryFactory.getUploadBookMarkFlowable(user!!.account_id)
                     }
                     .flatMap {
                         repositoryFactory.getUploadBookBrowseFlowable(user!!.account_id)
                     }
-                    .subscribeWith(object : ResourceSubscriber<BasicResultV4<String>>() {
-                        override fun onError(t: Throwable?) {
-                            onComplete?.invoke(false)
-
-                        }
-
-                        override fun onNext(t: BasicResultV4<String>?) {
-                            onComplete?.invoke(true)
-                        }
-
-                        override fun onComplete() {
-
-                        }
-
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        onComplete?.invoke(true)
+                    }, {
+                        onComplete?.invoke(false)
+                    }, {
+                        Logger.e("UpUserReadInfo: onComplete")
                     })
-
         }
-
-
     }
 
     /**
@@ -446,7 +475,7 @@ object UserManagerV4 : IWXAPIEventHandler {
                     override fun requestResult(result: BasicResultV4<LoginRespV4>?) {
                         if (result?.checkResultAvailable()!!) {
                             onLogin(result.data!!)
-                            successCallback!!.invoke(result)
+                            successCallback?.invoke(result)
                             if (Platform.QQ == platform) {
                                 sharedPreferences?.edit()
                                         ?.putString(LOGIN_METHOD, CHANNEL_QQ)
@@ -734,17 +763,15 @@ object UserManagerV4 : IWXAPIEventHandler {
 
         user?.let {
 
-            requestFactory.keepUserBookShelf(user!!.account_id,
-                    {
-                        requestFactory.keepBookMark(user!!.account_id, {
+            requestFactory.keepUserBookShelf(user!!.account_id, {
 
-                            requestFactory.keepBookBrowse(user!!.account_id, onComplete)
+                requestFactory.keepBookMark(user!!.account_id, {
 
-                        })
-                    })
+                    requestFactory.keepBookBrowse(user!!.account_id, onComplete)
+
+                })
+            })
         }
-
-
     }
 
 
@@ -758,5 +785,178 @@ object UserManagerV4 : IWXAPIEventHandler {
         return Base64.encodeToString(bytes, Base64.DEFAULT)
     }
 
+    /**************************** 分享 ****************************/
 
+
+    fun shareWechat(activity: Activity?, title: String, description: String, url: String, image: String) {
+        handleShareWechat(activity, title, description, url, image, SendMessageToWX.Req.WXSceneSession)
+    }
+
+    fun shareWechatCircle(activity: Activity?, title: String, description: String, url: String, image: String) {
+        handleShareWechat(activity, title, description, url, image, SendMessageToWX.Req.WXSceneTimeline)
+    }
+
+    private fun handleShareWechat(activity: Activity?, title: String, description: String, url: String, image: String, type: Int) {
+        if (mWXApi == null) {
+            mWXApi = WXAPIFactory.createWXAPI(activity?.applicationContext, wxAppID, true)
+            mWXApi?.registerApp(wxAppID)
+        }
+
+        if (mWXApi?.isWXAppInstalled == false) {
+            activity?.applicationContext?.showToastMessage("请先安装微信客户端，再进行分享操作！")
+            return
+        }
+
+        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
+            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
+        }
+
+        Observable.create<Bitmap> {
+            val bitmap = Glide.with(activity?.applicationContext)
+                    .load(image)
+                    .asBitmap()
+                    .centerCrop()
+                    .into(100, 100)
+                    .get()
+            it.onNext(bitmap)
+        }.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ handleShareWechatAction(title, description, url, it, type) }, {
+                    activity?.applicationContext?.showToastMessage("参数异常，请稍后再试！")
+                }, {
+
+                })
+    }
+
+    private fun handleShareWechatAction(title: String, description: String, url: String, bitmap: Bitmap, scene: Int) {
+        val wxWebpageObject = WXWebpageObject()
+        wxWebpageObject.webpageUrl = url
+
+        val wxMediaMessage = WXMediaMessage(wxWebpageObject)
+
+        wxMediaMessage.title = title
+        wxMediaMessage.thumbData = bitmap.bitmapTransformByteArray()
+        wxMediaMessage.description = description
+
+        val req = SendMessageToWX.Req()
+        req.transaction = buildTransaction(AppUtils.getPackageName())
+        req.message = wxMediaMessage
+        req.scene = scene
+        mWXApi?.sendReq(req)
+    }
+
+    fun shareQQ(activity: Activity?, title: String, description: String, url: String, image: String) {
+        if (mTencent == null) {
+            mTencent = Tencent.createInstance(qqAppID, activity?.applicationContext)
+        }
+
+        if (mTencent?.isQQInstalled(activity?.applicationContext) == false) {
+            activity?.applicationContext?.showToastMessage("请先安装QQ客户端，再进行分享操作！")
+            return
+        }
+
+        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
+            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
+        }
+
+        Observable.create<String> {
+            it.onNext(image)
+        }.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val params = Bundle()
+                    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT)
+                    params.putString(QQShare.SHARE_TO_QQ_TITLE, title)
+
+                    if (!TextUtils.isEmpty(description)) {
+                        params.putString(QQShare.SHARE_TO_QQ_SUMMARY, description)
+                    }
+
+                    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url)
+                    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, it)
+                    params.putString(QQShare.SHARE_TO_QQ_APP_NAME, activity?.getString(R.string.app_name))
+                    params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE)
+
+                    handleShareQQAction(activity, params)
+                }
+    }
+
+    private fun handleShareQQAction(activity: Activity?, params: Bundle) {
+        mainLooperHandler.post {
+            if (activity != null) {
+                mTencent?.shareToQQ(activity, params, shareListener)
+            }
+        }
+    }
+
+    fun shareQzone(activity: Activity?, title: String, description: String, url: String, image: String) {
+
+        if (mTencent == null) {
+            mTencent = Tencent.createInstance(qqAppID, activity?.applicationContext)
+        }
+
+        if (mTencent?.isQQInstalled(activity?.applicationContext) == false) {
+            activity?.applicationContext?.showToastMessage("请先安装QQ客户端，再进行分享操作！")
+            return
+        }
+
+        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(image)) {
+            activity?.applicationContext?.showToastMessage("参数错误，请稍后再试！")
+        }
+
+        Observable.create<String> {
+            it.onNext(image)
+        }.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val params = Bundle()
+
+                    params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT)
+                    params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title)
+
+                    if (!TextUtils.isEmpty(description)) {
+                        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, description)
+                    }
+
+                    params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url)
+
+                    val imgUrlList = ArrayList<String>()
+                    imgUrlList.add(it)
+
+                    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList)
+
+                    handleShareQzoneAction(activity, params)
+                }
+    }
+
+    private fun handleShareQzoneAction(activity: Activity?, params: Bundle) {
+        mainLooperHandler.post {
+            if (activity != null) {
+                mTencent?.shareToQzone(activity, params, shareListener)
+            }
+        }
+    }
+
+    private fun buildTransaction(message: String?): String {
+        return if (message == null) System.currentTimeMillis().toString() else message + System.currentTimeMillis()
+    }
+
+    fun registerQQShareCallBack(requestCode: Int, resultCode: Int, data: Intent?) {
+        Tencent.onActivityResultData(requestCode, resultCode, data, shareListener)
+    }
+
+    private val shareListener = object : IUiListener {
+        override fun onCancel() {
+            Logger.e("QQ分享取消！")
+        }
+
+        override fun onComplete(response: Any) {
+            Logger.e("QQ分享成功！")
+            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            sharedPreUtil.putBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION, true)
+        }
+
+        override fun onError(e: UiError) {
+            Logger.e("QQ分享失败: " + e.errorDetail + " : " + e.errorMessage)
+        }
+    }
 }

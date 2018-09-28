@@ -42,12 +42,12 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:paddingRight="16dp"
-                android:src="@mipmap/nbar_search_nor_icon"/>
+                android:src="@drawable/nbar_search_nor_icon"/>
         </RelativeLayout>
     </RelativeLayout>
 
-    <wendu.dsbridge.DWebView
-        android:id="@+id/bwv_tabulation_result"
+    <WebView
+        android:id="@+id/wv_tabulation_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_tabulation_header"/>

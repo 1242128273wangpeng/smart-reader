@@ -13,11 +13,7 @@ import android.widget.TextView;
 import com.ding.basic.bean.HotWordBean;
 import com.intelligent.reader.R;
 
-
-import net.lzbook.kit.data.search.SearchHotBean;
-
 import java.util.List;
-import java.util.Random;
 
 /**
  * 热词实体类
@@ -35,8 +31,8 @@ public class SearchHotWordAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         if (list != null && list.size() != 0) {
-            if (list.size() >= 9) {
-                return 9;
+            if (list.size() >= 6) {
+                return 6;
             } else {
                 return list.size();
             }
@@ -70,7 +66,7 @@ public class SearchHotWordAdapter extends BaseAdapter {
         HotWordBean dataBean = list.get(position);
         holder.tvHotWord.setText(dataBean.getKeyword());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.tvHotWord.setBackground(getHotWordBgColor(hotWordBgColor[position]));
+            holder.tvHotWord.setBackground(getHotWordBgColor(hotWordBgColor[position % 6]));
         }
 
         return convertView;

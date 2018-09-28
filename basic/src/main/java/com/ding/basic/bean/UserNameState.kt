@@ -1,6 +1,7 @@
 package net.lzbook.kit.user.bean
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /**
  * Desc 用户名可编辑剩余天数
@@ -14,4 +15,4 @@ data class UserNameState(
 
         @SerializedName("can_modify")
         val isCanBeModified: Int // 1 可编辑   0 不可编辑
-)
+): Serializable

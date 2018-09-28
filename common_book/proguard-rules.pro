@@ -40,6 +40,8 @@
 -keep class net.lzbook.kit.user.bean.**{*;}
 -keep class com.ding.basic.bean.**{*;}
 
+-keep public class * extends com.tencent.mm.opensdk.openapi.IWXAPIEventHandler
+
 ##---------------End: proguard configuration for Gson  ----------
 
 ##---------------Begin: proguard configuration for ALiFeedBack  ----------
@@ -458,14 +460,8 @@ public protected *;
 -keep class com.ta.** {*;}
 -dontwarn com.ta.**
 
-#greenDAO
--keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-    public static java.lang.String TABLENAME;
-}
 -keep class **$Properties
 
-# If you do not use SQLCipher:
--dontwarn org.greenrobot.greendao.database.**
 # If you do not use Rx:
 -dontwarn rx.**
 
@@ -537,3 +533,40 @@ public *;
 -dontwarn com.moat.**
 # skip AVID classes
 -keep class com.integralads.avid.library.* {*;}
+
+
+#头条SDK
+-keep class com.bytedance.sdk.openadsdk.** { *; }
+-keep class com.androidquery.callback.** {*;}
+-keep class com.bytedance.sdk.openadsdk.service.TTDownloadProvider
+
+# ijk
+-keep class tv.danmaku.ijk.** { *; }
+-dontwarn tv.danmaku.ijk.**
+-keep class com.dueeeke.videoplayer.** { *; }
+-dontwarn com.dueeeke.videoplayer.**
+
+-keep class cn.dycm.ad.** {*;}
+
+# inmobi.**
+-keepattributes SourceFile,LineNumberTable
+-keep class com.inmobi.** { *; }
+-keep public class com.google.android.gms.**
+-dontwarn com.google.android.gms.**
+-dontwarn com.squareup.picasso.**
+-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient{
+public *;
+}
+-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient$Info{
+public *;
+}
+# skip the Picasso library classes
+-keep class com.squareup.picasso.** {*;}
+-dontwarn com.squareup.picasso.**
+-dontwarn com.squareup.okhttp.**
+# skip Moat classes
+-keep class com.moat.** {*;}
+-dontwarn com.moat.**
+# skip AVID classes
+-keep class com.integralads.avid.library.* {*;}
+

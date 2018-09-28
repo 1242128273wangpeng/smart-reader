@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@mipmap/tab_category_sel_icon"
+    <item android:drawable="@drawable/tab_category_sel_icon"
           android:state_selected="true"/>
-    <item android:drawable="@mipmap/tab_category_unsel_icon"/>
+    <item android:drawable="@drawable/tab_category_unsel_icon"/>
 </selector>

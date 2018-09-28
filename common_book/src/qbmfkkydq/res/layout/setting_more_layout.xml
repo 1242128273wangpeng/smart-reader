@@ -329,5 +329,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_setting_title"
             android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+            android:src="@drawable/top_shadow"/>
 </RelativeLayout>

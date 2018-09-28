@@ -8,5 +8,7 @@ import java.io.Serializable
  */
 class CoverList: Serializable {
 
+    var fakeQingooBooks: List<FakeBook>? = null
+
     var coverList: List<Book>? = null
 }

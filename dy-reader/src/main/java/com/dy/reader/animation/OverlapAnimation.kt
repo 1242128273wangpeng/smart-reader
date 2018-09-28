@@ -11,7 +11,9 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.flip.Status
 import com.dy.reader.helper.AppHelper
-import com.intelligent.reader.reader.v2.TranslationAnimation
+import com.dy.reader.helper.INDEX_TEXTURE_ID
+import com.dy.reader.helper.glCheckErr
+import com.dy.reader.helper.loadTexture
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -167,7 +169,7 @@ class OverlapAnimation(glSurfaceView: GLSurfaceView) : TranslationAnimation(glSu
                     shadowindex)
             GLES20.glDisable(GLES20.GL_BLEND)
 
-            com.intelligent.reader.reader.v2.glCheckErr()
+            glCheckErr()
         }
     }
 
@@ -183,7 +185,7 @@ class OverlapAnimation(glSurfaceView: GLSurfaceView) : TranslationAnimation(glSu
 
         drawable.draw(canvas)
 
-        var id = com.intelligent.reader.reader.v2.loadTexture(bitmap)[com.intelligent.reader.reader.v2.INDEX_TEXTURE_ID]
+        var id = loadTexture(bitmap)[INDEX_TEXTURE_ID]
 
         bitmap.recycle()
 

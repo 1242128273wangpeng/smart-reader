@@ -64,7 +64,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != 0) {
                     if (firstVisibleItemPosition == -1) {
-                        img_catalog_order.visibility = View.GONE
+                        img_catalog_order.visibility = View.VISIBLE
                     }else{
                         img_catalog_order.visibility = View.VISIBLE
                     }

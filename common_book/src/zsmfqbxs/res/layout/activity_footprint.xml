@@ -20,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:fitsSystemWindows="true"
             android:clipToPadding="true"
-            android:background="@color/top_navigation_bg_color">
+            android:background="@color/primary">
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:gravity="center"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/icon_back_left"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center_vertical"
                     android:text="足迹"
-                    android:textColor="@color/top_navigation_text_color"
+                    android:textColor="@color/white"
                     android:textSize="18sp"/>
 
             <TextView
@@ -54,7 +54,7 @@
                     android:text="清空"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:textColor="@color/footprint_title_clear_color"
+                    android:textColor="@color/white"
                     android:textSize="14sp"/>
         </RelativeLayout>
     </RelativeLayout>
@@ -94,7 +94,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_alignParentBottom="true"
-                android:textColor="@color/footprint_empty_find_color1"
+                android:textColor="@color/primary"
                 android:background="@drawable/footprint_empty_find_bg1"
                 android:layout_marginBottom="70dp"
                 android:layout_marginRight="45dp"
@@ -142,7 +142,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_alignParentBottom="true"
-                android:textColor="@color/footprint_empty_find_color1"
+                android:textColor="@color/primary"
                 android:background="@drawable/footprint_empty_find_bg1"
                 android:layout_marginTop="17dp"
                 android:layout_marginBottom="70dp"
@@ -157,5 +157,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_title_footprint"
             android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+            android:src="@drawable/top_shadow"/>
 </RelativeLayout>

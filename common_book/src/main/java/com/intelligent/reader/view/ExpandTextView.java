@@ -308,10 +308,14 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
     public void setText(CharSequence text) {
         mRelayout = true;
         SpannableStringBuilder spannableString = new SpannableStringBuilder();
-        spannableString.append("简介：");
+        if(!"cc.quanben.novel".equals(AppUtils.getPackageName())){
+            spannableString.append("简介：");
+        }
         spannableString.append(text);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#212832"));
-        spannableString.setSpan(colorSpan, 0, 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        if(!"cc.quanben.novel".equals(AppUtils.getPackageName())){
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#212832"));
+            spannableString.setSpan(colorSpan, 0, 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        }
         mTv.setText(spannableString);
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }

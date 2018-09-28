@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import com.dy.reader.data.DataProvider
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.reader.v2.GLPage
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 
@@ -71,9 +70,9 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
         AppHelper.glSurfaceView?.requestRender()
     }
 
-    lateinit var leftPage:GLPage
-    lateinit var currentPage:GLPage
-    lateinit var rightPage:GLPage
+    lateinit var leftPage: GLPage
+    lateinit var currentPage: GLPage
+    lateinit var rightPage: GLPage
 
     var isReady = false
         private set

@@ -25,6 +25,7 @@ import net.lzbook.kit.repair_books.RepairHelp
 
 class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_bookshelf_book, parent, false)) {
+
     fun bind(book: Book, bookshelfItemListener: BookShelfAdapter.BookShelfItemListener,
              contains: Boolean, remove: Boolean) = with(itemView) {
         if (!TextUtils.isEmpty(book.name)) {
@@ -41,9 +42,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             } else {
                 txt_book_unread_chapters.visibility = View.VISIBLE
                 if(book.sequence >= 0){
-                    txt_book_unread_chapters.text = (book.sequence + 1).toString() + "/" + book.last_chapter!!.serial_number + "章"
+                    txt_book_unread_chapters.text = ((book.sequence + 1).toString() + "/" + book.last_chapter!!.serial_number + "章")
                 }else{
-                    txt_book_unread_chapters.text = "0" + "/" + book.last_chapter!!.serial_number + "章"
+                    txt_book_unread_chapters.text = ("0" + "/" + book.last_chapter!!.serial_number + "章")
                 }
             }
         }
@@ -53,8 +54,7 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
          * 并且章节信息变更为：章节已修复至最新（列表书架显示，九宫格书架只显示更新角标）
          * 目录修复：如用户未点击更新弹窗的同步按钮，则书籍封面上的更新角标和更新文案一直存在
          */
-        val sp = BaseBookApplication.getGlobalContext().getSharedPreferences(Constants.SHAREDPREFERENCES_KEY, 0)
-        if (RepairHelp.isShowFixBtn(context, book.book_id) && sp.getBoolean(book.book_id, true)) {
+        if (book.waitingCataFix()) {
             img_book_status_update.visibility = View.VISIBLE
         }else{
             when {
@@ -74,20 +74,20 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         }
 
         if (txt_book_last_update_time != null && book.last_chapter != null) {
-            txt_book_last_update_time.text = Tools.compareTime(AppUtils.formatter, book
-                    .last_chapter!!.update_time) + "更新"
+            txt_book_last_update_time.text = (Tools.compareTime(AppUtils.formatter, book
+                    .last_chapter!!.update_time) + "更新")
         }
 
         if ((!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL)) {
             Glide.with(itemView.context.applicationContext)
                     .load(book.img_url)
-                    .placeholder(R.drawable.common_book_cover_default_icon)
-                    .error(R.drawable.common_book_cover_default_icon)
+                    .placeholder(R.drawable.book_cover_default)
+                    .error(R.drawable.book_cover_default)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img_book_cover)
         } else {
             Glide.with(itemView.context.applicationContext)
-                    .load(R.drawable.common_book_cover_default_icon)
+                    .load(R.drawable.book_cover_default)
                     .into(img_book_cover)
         }
 
@@ -98,9 +98,9 @@ class BookShelfItemHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             img_book_status_update.visibility = View.GONE
 
             if (contains) {
-                img_item_select_state.setImageResource(R.drawable.bookshelf_item_delete_checked_icon)
+                img_item_select_state.setImageResource(R.drawable.bookshelf_delete_checked)
             } else {
-                img_item_select_state.setImageResource(R.drawable.bookshelf_item_delete_unchecked_icon)
+                img_item_select_state.setImageResource(R.drawable.bookshelf_delete_unchecked)
             }
         } else {
             img_item_select_state.visibility = View.GONE

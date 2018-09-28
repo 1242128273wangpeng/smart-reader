@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.ding.basic.Config;
 import com.ding.basic.bean.LoginResp;
+import com.ding.basic.bean.LoginRespV4;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -21,6 +22,7 @@ import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.encrypt.v17.URLBuilder;
 import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ExtensionsKt;
 import net.lzbook.kit.utils.LogcatHelper;
@@ -30,7 +32,6 @@ import java.util.HashMap;
 
 
 public abstract class BaseBookApplication extends Application {
-    public static Context sCtx;
     private static BaseBookApplication g_context;
     private static DisplayMetrics dm;
     private static URLBuilderIntterface urlBuilderIntterface;
@@ -56,14 +57,14 @@ public abstract class BaseBookApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.sCtx = this;
         loge(this, "onCreate");
 
-		if (AppUtils.isMainProcess(this)) {
+        if (AppUtils.isMainProcess(this)) {
 
             CacheManager.INSTANCE.checkService();
 
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.APPINIT);
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
+                    StartLogClickUtil.APPINIT);
 
             //加载数据库
             BookDataProviderHelper.Companion.loadBookDataProviderHelper(this);
@@ -74,19 +75,19 @@ public abstract class BaseBookApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context base) {
-        this.sCtx = this;
         super.attachBaseContext(base);
         loge(this, "attachBaseContext");
 
-        Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =(getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!= 0;
+        Constants.SHOW_LOG = ExtensionsKt.msDebuggAble =
+                (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         //分割dex防止方法数过多
         MultiDex.install(this);
-        initData();
+        g_context = this;
         initARouter();
+        initData();
     }
 
     private void initData() {
-        g_context = this;
         dm = getResources().getDisplayMetrics();
 
         Constants.init(BaseBookApplication.this);
@@ -138,12 +139,20 @@ public abstract class BaseBookApplication extends Application {
 
         parameters.put("cityCode", "");
 
-        LoginResp userInfo = UserManager.INSTANCE.getMUserInfo();
-
         String loginToken = null;
 
-        if (null != userInfo) {
-            loginToken = userInfo.getLogin_token();
+        if ("cc.quanben.novel".equals(packageName)) {
+            LoginRespV4 userInfo = UserManagerV4.INSTANCE.getUser();
+
+            if (null != userInfo) {
+                loginToken = userInfo.getToken();
+            }
+        } else {
+            LoginResp userInfo = UserManager.INSTANCE.getMUserInfo();
+
+            if (null != userInfo) {
+                loginToken = userInfo.getLogin_token();
+            }
         }
 
         if (loginToken == null) {

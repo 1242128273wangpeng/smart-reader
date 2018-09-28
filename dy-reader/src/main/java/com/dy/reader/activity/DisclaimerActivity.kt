@@ -2,13 +2,19 @@ package com.dy.reader.activity
 
 import android.os.Bundle
 import android.os.SystemClock
+import android.view.Gravity
+import android.widget.Button
+import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.book.view.MyDialog
+import net.lzbook.kit.utils.AppUtils
 import java.util.*
 
 /**
@@ -92,9 +98,42 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
             it[it.size - 1] = SystemClock.uptimeMillis()
             if (SystemClock.uptimeMillis() - it[0] <= 5000) {//5秒内连续点击。
                 mHits = null    //这里说明一下，我们在进来以后需要还原状态，否则如果点击过快，第六次，第七次 都会不断进来触发该效果。重新开始计数即可
-                RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
+
+                if ("DEBUG" == AppUtils.getChannelId()) {
+                    RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
+                } else {
+                    showAdminDialog()
+                }
             }
         }
+    }
+
+    /**
+     * 展示管理员权限对话框
+     */
+    private fun showAdminDialog() {
+        val dialog = MyDialog(this, R.layout.layout_debug, Gravity.CENTER)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setCancelable(true)
+        dialog.show()
+
+        val cancelBtn = dialog.findViewById<Button>(R.id.btn_cancel)
+        val confirmBtn = dialog.findViewById<Button>(R.id.btn_confirm)
+        val adminEditText = dialog.findViewById<EditText>(R.id.edit_admin)
+
+        cancelBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        confirmBtn.setOnClickListener {
+            if ("鼎阅集团" == adminEditText.text.toString()) {
+                RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
+            } else {
+                this.showToastMessage("身份验证失败")
+            }
+            dialog.dismiss()
+        }
+
+
     }
 
     override fun onResume() {

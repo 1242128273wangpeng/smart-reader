@@ -73,17 +73,19 @@
         android:id="@+id/srl_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rl_head">
+        android:layout_below="@id/rl_head">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recl_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:alwaysDrawnWithCache="false"
-            android:clipToPadding="false"
-            />
+            android:clipToPadding="false"/>
 
     </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+
+
+    <!--悬浮广告-->
 
     <FrameLayout
         android:id="@+id/fl_ad_float"

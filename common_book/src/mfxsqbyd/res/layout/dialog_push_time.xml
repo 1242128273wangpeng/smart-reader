@@ -18,7 +18,7 @@
             android:layout_height="50dp"
             android:gravity="center"
             android:text="时间设置"
-            android:textSize="@dimen/text_big18_size"/>
+            android:textSize="18sp"/>
 
         <LinearLayout
             android:id="@+id/ll_num_pickers"
@@ -38,7 +38,7 @@
                 android:layout_width="52dp"
                 android:layout_height="130dp"
                 app:np_dividerColor="@color/dialog_line"
-                app:np_dividerThickness="@dimen/dimen_line"
+                app:np_dividerThickness="0.5dp"
                 app:np_dividerDistance="31dp"
                 app:np_formatter="%02d"
                 app:np_max="23"
@@ -62,7 +62,7 @@
                 android:layout_width="52dp"
                 android:layout_height="130dp"
                 app:np_dividerColor="@color/dialog_line"
-                app:np_dividerThickness="@dimen/dimen_line"
+                app:np_dividerThickness="0.5dp"
                 app:np_dividerDistance="31dp"
                 app:np_formatter="%02d"
                 app:np_max="59"
@@ -88,7 +88,7 @@
                 android:layout_width="52dp"
                 android:layout_height="130dp"
                 app:np_dividerColor="@color/dialog_line"
-                app:np_dividerThickness="@dimen/dimen_line"
+                app:np_dividerThickness="0.5dp"
                 app:np_dividerDistance="31dp"
                 app:np_formatter="%02d"
                 app:np_max="23"
@@ -112,7 +112,7 @@
                 android:layout_width="52dp"
                 android:layout_height="130dp"
                 app:np_dividerColor="@color/dialog_line"
-                app:np_dividerThickness="@dimen/dimen_line"
+                app:np_dividerThickness="0.5dp"
                 app:np_dividerDistance="31dp"
                 app:np_formatter="%02d"
                 app:np_max="59"
@@ -141,7 +141,7 @@
         <LinearLayout
             android:id="@+id/ll_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_50"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
@@ -152,7 +152,7 @@
 
             <View
                 style="@style/style_setting_line_view"
-                android:layout_width="@dimen/dimen_line"
+                android:layout_width="0.5dp"
                 android:layout_height="match_parent"/>
 
             <Button

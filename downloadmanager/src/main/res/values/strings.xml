@@ -24,9 +24,7 @@
     <string name="not_cache">未缓存</string>
 
     <string name="edit_cache">编辑缓存</string>
-    <string name="sort_for_update_time">按更新时间排序</string>
-    <string name="sort_for_reading_time">按最后阅读排序</string>
-    <string name="sort_for_read_time">按最近阅读排序</string>
+
     <string name="sort_for_select">排序选择</string>
     <string name="default_title">正义的秘密</string>
     <string name="default_message">有人说过,衡量一个作家是否优秀,就看他能不能担负起社会责任.东野吾做到了.</string>
@@ -38,4 +36,7 @@
     <string name="download_manager_empty_prompt">当前无缓存</string>
 
     <string name="download_manager_delete_empty">您还没有选择书籍</string>
+
+
+
 </resources>

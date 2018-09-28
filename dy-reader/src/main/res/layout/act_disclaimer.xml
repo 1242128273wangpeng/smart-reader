@@ -47,7 +47,7 @@
         android:layout_below="@id/rl_disclaimer"
         android:contentDescription="@string/module_name"
         android:scaleType="fitXY"
-        android:src="@drawable/title_shadow"/>
+        android:src="@drawable/top_shadow"/>
 
     <ScrollView
         android:layout_width="match_parent"

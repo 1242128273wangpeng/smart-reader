@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.InflateException
-import android.view.View
 import android.widget.Toast
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
@@ -29,9 +28,12 @@ import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
+import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
+import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.TypefaceUtil
 import com.dy.reader.util.getNotchSize
 import com.dy.reader.util.isNotchScreen
 import com.dy.reader.util.xiaomiNotch
@@ -47,10 +49,9 @@ import net.lzbook.kit.utils.SharedPreferencesUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
-import java.util.*
 
 /**
- * Created by yuchao on 2017/11/14 0014.
+ * Created by yuchao on 2017/11/14 0014
  */
 open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack {
 
@@ -66,20 +67,12 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     var myNovelHelper: NovelHelper? = null
     private var is_dot_orientation = false// 横竖屏打点
     var time_text: CharSequence? = null
+    var goToBookEndCount = 0 //标记上下阅读时 最后一页到完结页会发送多个的event
     var versionCode: Int = 0
         get() = 0
     private var readReference: WeakReference<ReaderActivity>? = null
 
     var currentThemeMode: String? = null
-
-//    private val handler = Handler(Looper.getMainLooper())
-
-//    private val readerRestDialog: ReaderRestDialog? by lazy {
-//        readReference?.get()?.let {
-//            ReaderRestDialog(it)
-//        }
-//        null
-//    }
 
     init {
         readReference = WeakReference(act)
@@ -92,16 +85,9 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         ReaderSettings.instance.loadParams()
 
         sp = PreferenceManager.getDefaultSharedPreferences(readReference?.get()?.applicationContext)
-//        ReaderSettings.animation_mode = sp?.getInt("page_mode", Constants.PAGE_MODE_DELAULT) ?: Constants.PAGE_MODE_DELAULT
-//        ReaderSettings.FULL_SCREEN_READ = sp?.getBoolean("full_screen_read", false) ?: false
-//        ReaderSettings.MODE = 0
-//        ReaderSettings.MODE = sp?.getInt("content_mode", 51) ?: 51
-//        Constants.isSlideUp = ReaderSettings.animation_mode == 3
-//        Constants.isVolumeTurnover = sp?.getBoolean("sound_turnover", true) ?: true
         AppLog.e("getAdsStatus", "novel_onCreate")
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
-//        autoSpeed = ReaderStatus.autoReadSpeed()!!
         myNovelHelper = NovelHelper(readReference?.get())
         myNovelHelper?.setOnHelperCallBack(this)
 
@@ -113,7 +99,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
         initBookState()
-        if (!ReaderSettings.instance.isLandscape) {
+        if (!ReaderSettings.instance.isLandscape && !AppUtils.isNeedAdControl(Constants.ad_control_reader)) {
             MediaControl.startRestMedia(act)
         }
 //        MediaControl.startRestMedia {
@@ -125,6 +111,40 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 //                readerRestDialog?.show(view)
 //            })
 //        }
+
+        uploadSettingLog(act)
+    }
+
+    private fun uploadSettingLog(act: ReaderActivity) {
+        val sp = act.getSharedPreferences(READER_CONFIG, Context.MODE_PRIVATE)
+        val lastTime = sp.getLong(SharedPreUtil.READ_TODAY_FIRST_POST_SETTINGS, 0L)
+        val currentTime = System.currentTimeMillis()
+        val isSameDay = AppUtils.isToday(lastTime, currentTime)
+        if (isSameDay) return
+
+        val settings: ReaderSettings = Gson().fromJson(sp.getString(READER_CONFIG, "{}"),
+                ReaderSettings::class.java) ?: return
+
+        val params = HashMap<String, String>()
+        params["lightvalue"] = settings.screenBrightness.toString()
+        params["font"] = settings.fontSize.toString()
+        params["fontsetting"] = TypefaceUtil.loadTypefaceTag(settings.fontTypeface)
+        params["background"] = settings.readThemeMode.toString()
+        params["readgap"] = formatSpaceGapType(settings.readInterlineaSpace).toString()
+        params["pageturn"] = settings.animation_mode.toString()
+
+        StartLogClickUtil.upLoadEventLog(act, StartLogClickUtil.READPAGE_PAGE
+                , StartLogClickUtil.DEFAULTSETTING)
+    }
+
+    private fun formatSpaceGapType(space: Float): Int {
+        return when (space) {
+            0.2f -> 4
+            0.3f -> 3
+            0.4f -> 2
+            0.5f -> 1
+            else -> 3
+        }
     }
 
     fun loadData(useReadStatus: Boolean = false) {
@@ -239,7 +259,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                 ReaderSettings.instance.isLandscape = false
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             } else if (sp?.getInt("screen_mode", 3) == Configuration.ORIENTATION_LANDSCAPE && readReference?.get()?.getResources()!!
-                    .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                            .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
                 }
@@ -287,8 +307,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         AppHelper.screenDensity = dm.density
         AppHelper.screenScaledDensity = dm.scaledDensity
 
-        if(isNotchScreen(Reader.context)){
-            if(xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape){
+        if (isNotchScreen(Reader.context)) {
+            if (xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape) {
                 AppHelper.screenWidth -= getNotchSize(Reader.context)
             }
         }
@@ -408,6 +428,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isAutoBrightness) {
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
+        goToBookEndCount = 0
         StatService.onResume(act)
     }
 
@@ -452,8 +473,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         book.chapter_count = ReaderStatus.chapterCount
         book.last_read_time = System.currentTimeMillis()
         book.readed = 1
-        RequestRepositoryFactory.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).updateBook(book)
 
         val books = Gson().toJson(book)
         sp.putString(SharedPreUtil.CURRENT_READ_BOOK, books)
@@ -472,14 +491,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
         MediaControl.stopRestMedia()
 
-//        try {
-//            if (readerRestDialog != null && readerRestDialog!!.isShowing()) {
-//                readerRestDialog?.dismiss()
-//            }
-//        } catch (e: Exception) {
-//
-//        }
-
     }
 
     fun goToBookEnd() {
@@ -489,6 +500,14 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
         if (ReaderStatus.position.group != ReaderStatus.chapterList.size - 1) {
             return
+        }
+
+        // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
+        if (goToBookEndCount == 0) {
+            //发送章节消费
+            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
+                    if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )
+            goToBookEndCount++
         }
 
         val bundle = Bundle()

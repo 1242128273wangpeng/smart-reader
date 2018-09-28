@@ -95,7 +95,7 @@ public class CatalogAdapter extends BaseAdapter {
         }*/
 
         if (chapter.getSequence() == selectedItem) {
-            textColor = R.color.directory_current_chapter_text_color;
+            textColor = R.color.primary;
             viewCache.getChapterName().setTextColor(resources.getColor(textColor));
         } else {
             if (chapterExist) {

@@ -10,15 +10,14 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestService
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
-import com.dy.reader.setting.ReaderStatus
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CoverPageActivity
 import com.intelligent.reader.activity.FindBookDetail
@@ -29,8 +28,6 @@ import io.reactivex.disposables.Disposable
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
-import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.statistic.alilog
 import net.lzbook.kit.statistic.buildSearch
@@ -44,6 +41,7 @@ import java.net.URLDecoder
 import java.util.*
 
 /**
+ * SearchCommonBean和SearchCommonBeanYouHua合并
  * Created by yuchao on 2017/8/2 0002.
  */
 class SearchPresenter(private val mContext: Activity, override var view: SearchView.AvtView?) : IPresenter<SearchView.AvtView> {
@@ -293,7 +291,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
             }
             AppLog.e(TAG, "doAnotherWeb")
             try {
-                if (url.contains(URLBuilderIntterface.AUTHOR_V4)) {
+                if (url.contains(RequestService.AUTHOR_V4)) {
                     shareUtil!!.putString(Constants.FINDBOOK_SEARCH,
                             "author")//FindBookDetail 返回键时标识
                 }
@@ -440,7 +438,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
 
                 val params = HashMap<String, String>()
                 params.put("author", searchWord)
-                mUrl = URLBuilderIntterface.AUTHOR_V4 + "?author=" + searchWord
+                mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord
                 try {
                     shareUtil?.putString(Constants.FINDBOOK_SEARCH, "author")//FindBookDetail 返回键时标识
                     SearchBookActivity.isSatyHistory= true
@@ -467,7 +465,7 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
                 params.put("wordType", searchType ?: "")
                 params.put("searchEmpty", "1")
                 AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType")
-                mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V4, params)
+                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params)
             }
 
         }

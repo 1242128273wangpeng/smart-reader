@@ -28,7 +28,6 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.*
@@ -122,9 +121,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
             getCacheDataFromShare(false)
         } else {
             view?.showLoading()
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
-
-
 
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestHotWords(object : RequestSubscriber<SearchHotBean>() {
                 override fun requestResult(result: SearchHotBean?) {
@@ -143,8 +139,6 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
                 }
             })
 
-
-            AppLog.e("url", UrlUtils.getBookNovelDeployHost() + "===" + NetWorkUtils.getNetWorkTypeNew(context))
         }
     }
 
@@ -189,7 +183,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
 
 
     fun showDialog(activity: Activity?) {
-        if (activity != null && !activity!!.isFinishing) {
+        if (activity != null && !activity.isFinishing) {
             val dialog = ConfirmDialog(activity)
             dialog.setTitle(activity.getString(R.string.prompt))
             dialog.setContent(activity.getString(R.string.determine_clear_serach_history))
@@ -197,7 +191,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
                 val data = HashMap<String, String>()
                 data.put("type", "1")
                 StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
-                mSearchHandler?.sendEmptyMessage(10)
+                mSearchHandler.sendEmptyMessage(10)
                 view?.onHistoryClear()
                 dialog.dismiss()
             }
@@ -244,7 +238,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         authorsBean.clear()
         labelBean.clear()
         bookNameBean.clear()
-        if (transmitBean != null && transmitBean.data != null) {
+        if (transmitBean.data != null) {
             if (transmitBean.data!!.authors != null) {
                 authorsBean = transmitBean.data!!.authors as MutableList<SearchAutoCompleteBeanYouHua.DataBean.AuthorsBean>
             }
@@ -258,8 +252,7 @@ class SearchHelpYouHuaPresenter(override var view: SearchView.HelpView?) : IPres
         for (item in suggestList) {
             mSuggestList!!.add(item)
         }
-        if (mSearchHandler == null)
-            return
+
         mSearchHandler.post {
             view?.onSuggestBack()
         }

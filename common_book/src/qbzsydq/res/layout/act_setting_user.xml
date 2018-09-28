@@ -268,7 +268,7 @@
                     android:id="@+id/v_gap1"
                     android:layout_width="match_parent"
                     android:visibility="gone"
-                    android:layout_height="@dimen/margin_12"
+                    android:layout_height="@dimen/dimen_margin_12"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_lv_gap"/>
 
@@ -292,7 +292,7 @@
                         android:drawableRight="@mipmap/my_more"
                         android:textColor="@color/color_text_most"
                         android:drawableLeft="@mipmap/setting_bbs_icon"
-                        android:drawablePadding="@dimen/padding_14"
+                        android:drawablePadding="@dimen/dimen_margin_14"
                         android:paddingLeft="@dimen/padding_12"
                         android:paddingRight="@dimen/padding_12"
                         android:text="@string/bookshelf_community"/>
@@ -309,7 +309,7 @@
                     android:id="@+id/v_gap2"
                     android:layout_width="match_parent"
                     android:visibility="gone"
-                    android:layout_height="@dimen/margin_12"
+                    android:layout_height="@dimen/dimen_margin_12"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_lv_gap"/>
 
@@ -317,7 +317,7 @@
                     android:id="@+id/rl_style_change"
                     android:layout_width="match_parent"
                     android:visibility="gone"
-                    android:layout_height="@dimen/dimen_height_45">
+                    android:layout_height="@dimen/dimen_45">
 
                 <View
                         android:id="@+id/v_divider3"
@@ -332,7 +332,7 @@
                         android:layout_centerVertical="true"
                         android:drawableLeft="@mipmap/setting_skin_icon"
                         android:textColor="@color/color_text_most"
-                        android:drawablePadding="@dimen/padding_14"
+                        android:drawablePadding="@dimen/dimen_margin_14"
                         android:paddingLeft="@dimen/padding_12"
                         android:paddingRight="@dimen/padding_12"
                         android:text="@string/style_change"/>

@@ -34,7 +34,7 @@
                     android:gravity="center"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/top_back"/>
             
             <TextView
                     android:layout_width="wrap_content"
@@ -134,5 +134,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_title_footprint"
             android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+            android:src="@drawable/top_shadow"/>
 </RelativeLayout>

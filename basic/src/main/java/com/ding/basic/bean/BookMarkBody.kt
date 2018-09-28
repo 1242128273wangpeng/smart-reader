@@ -1,6 +1,7 @@
 package net.lzbook.kit.data.book
 
 import com.ding.basic.bean.Bookmark
+import java.io.Serializable
 
 
 /**
@@ -12,20 +13,20 @@ import com.ding.basic.bean.Bookmark
 data class BookMarkBody(
         var accountId: String,
         var list: List<UserMarkBook>
-)
+): Serializable
 
 data class UserMarkBook(
         var bookId: String,
         var bookSourceId: String,
         var marks: List<UserMark>
-)
+): Serializable
 
 data class UserMark(
         var chapterName: String,
         var offset: Int,
         var sequence: Int,
         var markContent: String,
-        var addTimeStr: String) {
+        var addTimeStr: String): Serializable {
 
     companion object {
         fun create(bookmark: Bookmark): UserMark =

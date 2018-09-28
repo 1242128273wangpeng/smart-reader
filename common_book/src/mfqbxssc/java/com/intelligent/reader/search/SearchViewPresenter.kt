@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter.search
+package com.intelligent.reader.search
 
 import android.content.Context
 import android.content.Intent
@@ -7,22 +7,22 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
 import com.ding.basic.bean.*
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.CommonUtil
 import com.google.gson.Gson
 import com.intelligent.reader.activity.CoverPageActivity
+import com.intelligent.reader.adapter.SearchSuggest
+import com.intelligent.reader.presenter.search.SearchSCView
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.*
 import net.lzbook.kit.utils.*
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
- * Created by yuchao on 2017/12/1 0001.
+ * Created by yuchao on 2017/12/1 0001
  */
 class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<SearchSCView.View> {
     private var mSuggestList: MutableList<SearchSuggest>? = ArrayList()
@@ -282,7 +282,9 @@ class SearchViewPresenter(override var view: SearchSCView.View?) : IPresenter<Se
                 val intent = Intent()
                 intent.setClass(context, CoverPageActivity::class.java)
                 val bundle = Bundle()
-                bundle.putSerializable(Constants.REQUEST_ITEM, book)
+                intent.putExtra(Constants.BOOK_ID, book.book_id)
+                intent.putExtra(Constants.BOOK_SOURCE_ID, book.book_source_id)
+                intent.putExtra(Constants.BOOK_CHAPTER_ID, book.book_chapter_id)
                 intent.putExtras(bundle)
                 context?.startActivity(intent)
                 addHistoryWord(suggest)

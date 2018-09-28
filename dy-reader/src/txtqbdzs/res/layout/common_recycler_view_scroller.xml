@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -8,12 +9,14 @@
 
     <ImageView
         android:id="@+id/img_scroller"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="44dp"
+        android:layout_height="57dp"
         android:contentDescription="@string/module_name"
-        android:paddingLeft="8dp"
-        android:paddingStart="8dp"
-        android:src="@drawable/recycler_view_scroller_sel"/>
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp"
+        android:src="@drawable/recycler_view_scroller_icon"
+        app:onPressChangeAlpha="true"
+        tools:ignore="MissingPrefix,RtlHardcoded"/>
 </merge>

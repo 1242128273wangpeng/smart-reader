@@ -2,6 +2,8 @@ package com.intelligent.reader.activity;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
+import static com.dy.reader.Reader.context;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -41,7 +43,6 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParameter;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -51,6 +52,7 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManagerV4;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -410,9 +412,10 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-//        updateBookLastChapter();
+        updateBookLastChapter();
 
         initializeDataFusion();
+        checkBookChapterCount();
 
         // 安装快捷方式
         new InstallShotCutTask().execute();
@@ -423,10 +426,49 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
+
+
+    /**
+     * 检查章节数是否为0
+     * 解决阅读进度不更新的问题
+     */
+    private void checkBookChapterCount(){
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+
+        boolean isCheckChapterCount = sharedPreUtil.getBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, false);
+
+        if (!isCheckChapterCount) {
+
+            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBooks();
+
+            if (bookList != null && bookList.size() > 0) {
+                for (Book book : bookList) {
+
+                    if (book.getChapter_count() <= 0 && !TextUtils.isEmpty(book.getBook_id())) {
+                        int chapterCount = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                context,
+                                book.getBook_id()).getCount();
+                        book.setChapter_count(chapterCount);
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, true);
+        }
+
+    }
+
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -436,6 +478,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -746,7 +796,11 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
+            try {
+                UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             //请求广告
             initAdSwitch();

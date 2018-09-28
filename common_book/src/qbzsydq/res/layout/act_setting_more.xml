@@ -45,7 +45,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:paddingRight="@dimen/padding_14"
+                    android:paddingRight="@dimen/dimen_margin_14"
                     android:text="@string/menu_feedback"
                     android:textColor="@color/color_gray_9a9a9a"
                     android:textSize="14sp"
@@ -221,7 +221,7 @@
 
             <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_12"
+                    android:layout_height="@dimen/dimen_margin_12"
                     android:background="@color/color_divider_item"/>
 
             <View

@@ -153,7 +153,7 @@
                     android:layout_gravity="right|top"
                     android:layout_marginTop="@dimen/dimen_margin_40"
                     android:scaleType="fitXY"
-                    android:src="@drawable/icon_bookshelf_guide_cache"
+                    android:src="@drawable/bookshelf_guide_cache"
                     android:visibility="gone"
                     />
 
@@ -165,7 +165,7 @@
                     android:scaleType="fitXY"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="60dp"
-                    android:src="@drawable/icon_bookshelf_guide_delete_books"
+                    android:src="@drawable/bookshelf_guide_delete_books"
                     android:visibility="gone"
                     />
         </FrameLayout>

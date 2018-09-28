@@ -25,7 +25,6 @@ import com.intelligent.reader.adapter.CatalogAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.zsmfqbxs.act_catalog.*
@@ -37,6 +36,7 @@ import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.antiShakeClick
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -92,7 +92,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
 
         colorSelected = resources.getColor(R.color.theme_primary_ffffff)
-        colorNormal = resources.getColor(R.color.theme_primary)
+        colorNormal = resources.getColor(R.color.primary)
 
         initUI()
         initListener()
@@ -406,7 +406,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         if (tv_catalog_novel_sort != null && iv_catalog_novel_sort != null) {
             if (b) {
                 tv_catalog_novel_sort!!.setText(R.string.catalog_negative)
-                sortIcon = R.mipmap.dir_sort_negative
+                sortIcon = R.drawable.icon_sort_negative
                 //正序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
 
@@ -414,7 +414,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
             } else {
                 tv_catalog_novel_sort!!.setText(R.string.catalog_positive)
-                sortIcon = R.mipmap.dir_sort_positive
+                sortIcon = R.drawable.icon_sort_positive
                 iv_catalog_novel_sort!!.setImageResource(sortIcon)
                 //倒序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)

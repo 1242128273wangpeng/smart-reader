@@ -9,10 +9,9 @@ import android.graphics.drawable.GradientDrawable
 import android.support.annotation.IdRes
 import android.util.AttributeSet
 import android.widget.TextView
-import de.greenrobot.event.EventBus
 import net.lzbook.kit.utils.log
-import net.lzbook.kit.utils.safeRegist
-import net.lzbook.kit.utils.safeUnregist
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
 
@@ -26,6 +25,7 @@ class FirstUsePointView : TextView {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    @Subscribe
     fun onEvent(event: ConsumeEvent) {
         if (event.id == id) {
             setBackgroundColor(Color.TRANSPARENT)
@@ -34,12 +34,12 @@ class FirstUsePointView : TextView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        EventBus.getDefault().safeRegist(this)
+        EventBus.getDefault().register(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        EventBus.getDefault().safeUnregist(this)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onPreDraw(): Boolean {
@@ -72,20 +72,24 @@ class FirstUseManager(val context: Context) {
     init {
         preferences = context.getSharedPreferences("first_use_preferences", Context.MODE_PRIVATE)
         val version = preferences.getString("VERSION", "")
-        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
-        if (!version.equals(versionName, true)) {
-            val editor = preferences.edit()
-            editor.clear()
+        try {
+            val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+            if (!version.equals(versionName, true)) {
+                val editor = preferences.edit()
+                editor.clear()
 
-            editor.putString("VERSION", versionName)
-            val properties = Properties()
-            properties.load(context.assets.open("config/first_use.properties"))
-            val propertyNames = properties.propertyNames() as Enumeration<String>
-            propertyNames
-                    .toList().forEach {
-                editor.putBoolean(it, properties[it].toString().toBoolean())
+                editor.putString("VERSION", versionName)
+                val properties = Properties()
+                properties.load(context.assets.open("config/first_use.properties"))
+                val propertyNames = properties.propertyNames() as Enumeration<String>
+                propertyNames
+                        .toList().forEach {
+                            editor.putBoolean(it, properties[it].toString().toBoolean())
+                        }
+                editor.apply()
             }
-            editor.apply()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -102,6 +106,7 @@ class FirstUseManager(val context: Context) {
         return preferences.getBoolean(key, false)
     }
 
+    @Subscribe
     fun onEvent(event: ConsumeEvent) {
         consumeFirstUse(event.id)
     }
@@ -131,7 +136,7 @@ class FirstUseManager(val context: Context) {
         fun getInstance(context: Context): FirstUseManager {
             if (msFirstUserManager == null) {
                 msFirstUserManager = FirstUseManager(context.applicationContext)
-                EventBus.getDefault().safeRegist(msFirstUserManager!!)
+                EventBus.getDefault().register(msFirstUserManager!!)
             }
             return msFirstUserManager!!
         }

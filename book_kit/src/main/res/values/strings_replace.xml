@@ -14,6 +14,10 @@
 
     <string name="book_novel_deploy_host">http://mWXApi.wubutianxia.com:8090</string>
     <string name="book_webview_host">http://bookwebview.wubutianxia.com:8090</string>
+
+    <string name="micro_api_host">https://unionapi.bookapi.cn</string>
+    <string name="content_api_host">https://unioncontent.bookapi.cn</string>
+
     <string name="database_name">novel.db</string>
 
     <string name="baidu_stat_id">542233ee41</string>

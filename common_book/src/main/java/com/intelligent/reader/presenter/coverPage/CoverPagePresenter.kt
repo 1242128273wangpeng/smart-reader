@@ -337,23 +337,21 @@ class CoverPagePresenter(private val book_id: String?,
             val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(coverDetail!!.book_id)
 
             if (book != null) {
-
-
                 //从H5页面直接添加书籍时部分字段补全
-                book.status = coverDetail!!.status   //更新书籍状态
-                book.book_chapter_id = coverDetail!!.book_chapter_id
-                book.name = coverDetail!!.name
-                book.desc = coverDetail!!.desc
-                book.book_type = coverDetail!!.book_type
                 book.book_id = coverDetail!!.book_id
-                book.host = coverDetail!!.host
-                book.author = coverDetail!!.author
                 book.book_source_id = coverDetail!!.book_source_id
-                book.img_url = coverDetail!!.img_url
-                book.label = coverDetail!!.label
-                book.sub_genre = coverDetail!!.sub_genre
-                book.chapters_update_index = coverDetail!!.chapters_update_index
-                book.genre = coverDetail!!.genre
+                book.book_chapter_id = coverDetail!!.book_chapter_id
+
+                book.status = coverDetail?.status   //更新书籍状态
+                book.name = coverDetail?.name
+                book.desc = coverDetail?.desc
+                book.book_type = coverDetail?.book_type
+                book.host = coverDetail?.host
+                book.author = coverDetail?.author
+                book.img_url = coverDetail?.img_url
+                book.label = coverDetail?.label
+                book.sub_genre = coverDetail?.sub_genre
+                book.genre = coverDetail?.genre
                 book.score = coverDetail!!.score
 
                 val result = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
@@ -816,9 +814,9 @@ class CoverPagePresenter(private val book_id: String?,
 
         recommendList.clear()
 
-        for (i in recommendIndex until recommendIndex + recommendCount) {
-            recommendList.add(recommendBookList[i])
-        }
+        (recommendIndex until recommendIndex + recommendCount)
+                .filter { recommendBookList.size > it }
+                .forEach { recommendList.add(recommendBookList[it]) }
 
         recommendIndex += recommendCount
 

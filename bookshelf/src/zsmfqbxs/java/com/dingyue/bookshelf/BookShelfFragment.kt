@@ -5,32 +5,31 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dingyue.contract.CommonContract
-import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
-import kotlinx.android.synthetic.zsmfqbxs.frag_bookshelf.*
 import kotlinx.android.synthetic.zsmfqbxs.bookshelf_refresh_header.view.*
+import kotlinx.android.synthetic.zsmfqbxs.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.uiThread
+import org.greenrobot.eventbus.EventBus
 
 /**
  * Desc
@@ -260,6 +259,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, false)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
+                BookShelfLogger.uploadFirstOpenBooks()
             }
             if(bookShelfPresenter.iBookList.isNotEmpty()){
                 BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)

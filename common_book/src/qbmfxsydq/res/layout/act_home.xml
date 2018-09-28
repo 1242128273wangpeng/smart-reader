@@ -17,24 +17,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/ll_home_tab"
-            android:layout_below="@id/content_head"
             android:background="#FAFAFA"
             android:flipInterval="30"
             android:persistentDrawingCache="animation" />
 
-        <View
+        <!--<View-->
+            <!--android:id="@+id/view_bottom_divider"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:layout_above="@+id/ll_home_tab"-->
+            <!--android:background="#E8E8E8" />-->
+
+        <ImageView
             android:id="@+id/view_bottom_divider"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="7dp"
             android:layout_above="@+id/ll_home_tab"
-            android:background="#E8E8E8" />
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_shadow"/>
 
         <LinearLayout
             android:id="@+id/ll_home_tab"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:background="#FAFAFA"
+            android:background="#ffffff"
             android:baselineAligned="false"
             android:orientation="horizontal">
 

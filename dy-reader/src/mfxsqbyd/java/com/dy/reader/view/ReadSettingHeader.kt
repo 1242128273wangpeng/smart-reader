@@ -100,13 +100,12 @@ class ReadSettingHeader : FrameLayout{
                     isMarkPage = false
                     ibtn_reader_bookmark.isSelected = false
                     ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_check_icon)
-                    data["type"] = "2"
+                    data["type"] = "0"
                 }
                 else -> {
                     v.context.applicationContext.showToastMessage("书签添加失败")
                 }
             }
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
         }
 
 

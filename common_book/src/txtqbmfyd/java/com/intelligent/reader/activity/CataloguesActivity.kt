@@ -20,7 +20,6 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -98,7 +97,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             changeSortState(isPositive)
         }
 
-        EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
@@ -220,12 +218,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             }
 
         }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         chapterList.clear()
 
         if (cataloguesPresenter != null) {
@@ -290,7 +282,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
     private fun changeSortState(b: Boolean) {
         if (b) {
             tv_catalog_novel_sort.setText(R.string.catalog_negative)
-            sortIcon = R.mipmap.dir_sort_negative
+            sortIcon = R.drawable.dir_sort_negative
             //正序的统计
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
 
@@ -298,7 +290,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
 
         } else {
             tv_catalog_novel_sort.setText(R.string.catalog_positive)
-            sortIcon = R.mipmap.dir_sort_positive
+            sortIcon = R.drawable.dir_sort_positive
 //                iv_catalog_novel_sort!!.setImageResource(sortIcon)
             //倒序的统计
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)

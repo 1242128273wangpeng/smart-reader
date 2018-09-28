@@ -128,7 +128,7 @@
                         android:layout_marginRight="16dp"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/padding_10"
-                        android:paddingTop="@dimen/padding_23">
+                        android:paddingTop="23dp">
 
                         <FrameLayout
                             android:layout_width="74dp"
@@ -200,7 +200,7 @@
                                     android:includeFontPadding="false"
                                     android:text="-连载中"
                                     android:textColor="@color/cover_profile_des_color"
-                                    android:textSize="@dimen/cover_page_author_text"/>
+                                    android:textSize="13sp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -216,7 +216,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="作者："
                                     android:textColor="@color/cover_profile_des_color"
-                                    android:textSize="@dimen/cover_page_author_text"/>
+                                    android:textSize="13sp"/>
 
                                 <TextView
                                     android:id="@+id/book_cover_author"
@@ -224,7 +224,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="望语"
                                     android:textColor="@color/cover_profile_des_color"
-                                    android:textSize="@dimen/cover_page_author_text"/>
+                                    android:textSize="13sp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -277,7 +277,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/padding_8">
+                        android:paddingLeft="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -311,10 +311,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_4"
+                            android:layout_marginLeft="4dp"
                             android:text="更新："
                             android:textColor="@color/cover_profile_des_color"
-                            android:textSize="@dimen/cover_page_author_text"/>
+                            android:textSize="13sp"/>
 
                         <TextView
                             android:id="@+id/book_cover_update_time"
@@ -322,7 +322,7 @@
                             android:layout_height="wrap_content"
                             android:text="2 天前"
                             android:textColor="@color/cover_profile_des_color"
-                            android:textSize="@dimen/cover_page_author_text"/>
+                            android:textSize="13sp"/>
                     </LinearLayout>
 
                     <View
@@ -346,7 +346,7 @@
                         android:layout_marginTop="@dimen/dimen_margin_18"
                         android:drawableLeft="@mipmap/cover_profile_icon"
                         android:drawablePadding="@dimen/padding_6"
-                        android:paddingLeft="@dimen/padding_8"
+                        android:paddingLeft="8dp"
                         android:text="内容简介"
                         android:textColor="@color/cover_profile_title_color"
                         android:textSize="14sp"/>
@@ -458,5 +458,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_title_book_cover"
         android:scaleType="fitXY"
-        android:src="@mipmap/top_shadow"/>
+        android:src="@drawable/top_shadow"/>
 </RelativeLayout>

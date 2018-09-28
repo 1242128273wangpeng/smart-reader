@@ -2,6 +2,9 @@ package net.lzbook.kit.appender_loghub;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -64,6 +67,7 @@ public class StartLogClickUtil {
     public static final String PAGE_SHELF = "SHELF";
     //书架页功能
     public static final String ACTION_SHELF_MORE = "MORE";
+    public static final String ACTION_SHELF_SHARE = "SHARE";
     public static final String ACTION_SHELF_SEARCH = "SEARCH";
     public static final String ACTION_SHELF_PERSONAL = "PERSONAL";
     public static final String ACTION_SHELF_BOOK_SORT = "BOOKSORT";
@@ -71,6 +75,8 @@ public class StartLogClickUtil {
     public static final String ACTION_SHELF_TO_BOOK_CITY = "TOBOOKCITY";
     public static final String ACTION_SHELF_CACHE_MANAGE = "CACHEMANAGE";
     public static final String ACTION_SHELF_LONG_TIME_BOOK_SHELF_EDIT = "LONGTIMEBOOKSHELFEDIT";
+    public static final String POPUPMESSAGE = "POPUPMESSAGE";
+
 
     //书架编辑页面
     public static final String PAGE_SHELF_EDIT = "SHELFEDIT";
@@ -85,6 +91,7 @@ public class StartLogClickUtil {
     //书架排序弹窗功能
     public static final String ACTION_SHELF_SORT_CANCEL = "CANCLE";
     public static final String ACTION_SHELF_SORT_BOOK_SORT = "BOOKSORT";
+    public static final String USERINFO = "USERINFO";//用户信息同步（书架书籍、书签、阅读历史）
 
     //福利中心
     public static final String ADPAGE = "ADPAGE";   //屏幕左上方点击返回按钮
@@ -167,8 +174,15 @@ public class StartLogClickUtil {
     public static final String PROCTCOL_PAGE = "PROCTCOL";//使用协议
     public static final String PERHELP_PAGE = "PERHELP";//帮助与反馈
     public static final String PERHISTORY_PAGE = "PERHISTORY";//浏览足迹
-    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍end页
     public static final String AUTHORPAGE_PAGE = "AUTHORPAGE";//作者主页
+    public static final String BOOKENDPAGE_PAGE = "BOOKENDPAGE";//书籍完结页
+    public static final String READFINISH_PAGE = "READFINISH";//完结页（新壳2新添加）
+
+    public static final String PAGE_SHARE = "SHAREPAGE";//分享弹窗
+    public static final String ACTION_SHARE = "SHARE";//分享
+    public static final String ACTION_CANCEL = "CANCEL";//分享
+
+
 
     //PUSH
     public static final String PUSHRECEIVE = "PUSHRECEIVE";//通知送达
@@ -205,9 +219,16 @@ public class StartLogClickUtil {
     public static final String TOBOOKCITY = "TOBOOKCITY";//空白页点击跳转书城
     public static final String LONGTIMEBOOKSHELFEDIT = "LONGTIMEBOOKSHELFEDIT";//长按编辑书架
     public static final String VERSIONUPDATE2 = "VERSIONUPDATE";//点击更新
-    public static final String POPUPMESSAGE = "POPUPMESSAGE"; //弹出「开启消息通知」弹窗
-    public static final String POPUPNOWOPEN = "POPUPNOWOPEN"; //弹窗点击现在开启
-    public static final String POPUPCLOSE = "POPUPCLOSE"; //关闭弹窗
+
+    //主页
+    public static final String POPUPEXPOSE = "POPUPEXPOSE";// 通知权限弹窗展现
+    public static final String POPUPCLOSE = "POPUPCLOSE";// 通知权限弹窗关闭
+    public static final String POPUPNOWOPEN = "POPUPNOWOPEN";// 通知权限弹窗点击现在开启
+    public static final String POPUPSET = "POPUPSET";// 通知权限弹窗前往系统设置页
+
+    public static final String BANNER_POPUP_SHOW = "BANNERPOPUPSHOW"; //活动弹窗曝光
+    public static final String BANNER_POPUP_CLICK = "BANNERPOPUPCLICK"; //活动弹窗点击
+    public static final String BANNER_POPUP_CLOSE = "BANNERPOPUPCLOSE"; //活动弹窗关闭
 
     //书架编辑页
     public static final String SELECTALL1 = "SELECTALL";//全选
@@ -308,6 +329,8 @@ public class StartLogClickUtil {
     public static final String POPUPSHELFADDCANCLE = "POPUPSHELFADDCANCLE";//阅读页加入书架弹窗取消
     public static final String SET = "SET";//点击阅读页内设置
     public static final String DEFAULTSETTING = "DEFAULTSETTINGS";//点击阅读页内设置
+    public static final String FONTSETTING = "FONTSETTING";//字体设置
+    public static final String FONTDOWNLOAD = "FONTDOWNLOAD";//字体下载
 
     //'阅读页设置
     public static final String LIGHTEDIT = "LIGHTEDIT";//点击亮度调整
@@ -353,6 +376,8 @@ public class StartLogClickUtil {
     public static final String QG_BDY_SEARCH = "SEARCH";//点击搜索
     public static final String QG_BDY_BOOKCLICK = "BOOKCLICK";//点击搜索
     public static final String QG_BDY_MORE = "MORE";//点击搜索
+    public static final String QG_SWITCHTAB = "SWITCHTAB";//点击搜索
+
 
 
     //青果分类页
@@ -373,24 +398,76 @@ public class StartLogClickUtil {
 
     private static List<String> prePageList = new ArrayList<>();
 
+    private static Handler handler;
+
+    static{
+        HandlerThread handlerThread=new HandlerThread("upload-event-log-thread");
+        handlerThread.start();
+        handler=new Handler(handlerThread.getLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                if(msg.what==0) {
+                    String[] data = (String[]) msg.obj;
+                    if (data != null && data.length == 2) {
+                        String pageCode = data[0];
+                        String identify = data[1];
+                        final ServerLog log = getCommonLog();
+                        log.putContent("code", identify);//点击事件唯一标识
+                        log.putContent("page_code", pageCode);
+                        log.putContent("pre_page_code", getPrePageCode(pageCode));
+                        AppLog.e("log", log.getContent().toString());
+                        if (identify.equals(APPINIT)) log.setEventType(LocalLog.getMINORITY());
+
+                        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
+                    }
+                }else if(msg.what==1){
+                    Object[] data=(Object[])msg.obj;
+                    if(data!=null&&data.length==3) {
+                        String pageCode = (String) data[0];
+                        String identify = (String) data[1];
+                        Map<String, String> extraParam = (Map<String, String>) data[2];
+                        final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
+
+                        log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
+                        log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
+                        log.putContent("code", identify);//点击事件唯一标识
+                        log.putContent("page_code", pageCode);
+
+                        upLoadUserInfo(log);
+
+                        log.putContent("os", "android");//手机操作系统
+                        log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
+                        log.putContent("network", NetWorkUtils.NETTYPE);//网络状况
+                        log.putContent("longitude", Constants.longitude + "");//经度
+                        log.putContent("latitude", Constants.latitude + "");//纬度
+                        log.putContent("city_info", Constants.adCityInfo);//城市
+                        log.putContent("location_detail", Constants.adLocationDetail);//具体位置信息
+                        log.putContent("pre_page_code", getPrePageCode(pageCode));
+
+                        //事件对应的额外的参数部分
+
+                        if (extraParam != null) {
+                            log.putContent("data", FormatUtil.forMatMap(extraParam));
+                        }
+                        AppLog.e("log", log.getContent().toString());
+                        AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
+
+                    }
+                }
+            }
+        };
+    }
+
 
     //上传普通的点击事件
     public static void upLoadEventLog(Context context, String pageCode, String identify) {
         if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
-        final ServerLog log = getCommonLog();
-
-
-        log.putContent("code", identify);//点击事件唯一标识
-        log.putContent("page_code", pageCode);
-        log.putContent("pre_page_code", getPrePageCode(pageCode));
-
-
-        AppLog.e("log", log.getContent().toString());
-        if (identify.equals(APPINIT)) log.setEventType(LocalLog.getMINORITY());
-
-        AndroidLogStorage.getInstance().accept(log, context);
+        if(handler!=null){
+            Message message=handler.obtainMessage(0,new String[]{pageCode,identify});
+            handler.sendMessage(message);
+        }
     }
 
 
@@ -428,7 +505,7 @@ public class StartLogClickUtil {
            } else {
                log.putContent("uid", "");
            }
-       }else{
+       } else {
            if (UserManager.INSTANCE.isUserLogin()) {
                log.putContent("uid", UserManager.INSTANCE.getMUserInfo().getUid());//用户中心唯一标识
            } else {
@@ -463,32 +540,10 @@ public class StartLogClickUtil {
         if (!Constants.dy_ad_new_statistics_switch || context == null) {
             return;
         }
-        final ServerLog log = new ServerLog(PLItemKey.ZN_APP_EVENT);
-
-        log.putContent("project", PLItemKey.ZN_APP_EVENT.getProject());
-        log.putContent("logstore", PLItemKey.ZN_APP_EVENT.getLogstore());
-        log.putContent("code", identify);//点击事件唯一标识
-        log.putContent("page_code", pageCode);
-
-        upLoadUserInfo(log);
-
-        log.putContent("os", "android");//手机操作系统
-        log.putContent("log_time", System.currentTimeMillis() + "");//日志产生时间（毫秒数）
-        log.putContent("network", NetWorkUtils.NETTYPE);//网络状况
-        log.putContent("longitude", Constants.longitude + "");//经度
-        log.putContent("latitude", Constants.latitude + "");//纬度
-        log.putContent("city_info", Constants.adCityInfo);//城市
-        log.putContent("location_detail", Constants.adLocationDetail);//具体位置信息
-        log.putContent("pre_page_code", getPrePageCode(pageCode));
-
-        //事件对应的额外的参数部分
-
-        if (extraParam != null) {
-            log.putContent("data", FormatUtil.forMatMap(extraParam));
+        if(handler!=null){
+            Message message=handler.obtainMessage(1,new Object[]{pageCode,identify,extraParam});
+            handler.sendMessage(message);
         }
-        AppLog.e("log", log.getContent().toString());
-        AndroidLogStorage.getInstance().accept(log, context);
-
     }
 
     //上传用户App列表
@@ -500,7 +555,7 @@ public class StartLogClickUtil {
         upLoadUserInfo(log);
         log.putContent("apps", applist);
         log.putContent("time", System.currentTimeMillis() + "");
-        AppLog.e("log", log.getContent().toString());
+        AppLog.e("app_list", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
     }
 
@@ -529,6 +584,7 @@ public class StartLogClickUtil {
         parameters.put("city_info", Constants.adCityInfo);
         parameters.put("location_detail", Constants.adLocationDetail);
         parameters.put("logstore", "zn_user");
+
         AppLog.e("zn_user", parameters.toString());
         LogEncapManager.getInstance().sendLog(parameters, "zn_user");
     }

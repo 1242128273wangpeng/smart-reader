@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_16">
+    android:paddingTop="@dimen/dimen_margin_16">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
         android:layout_marginRight="@dimen/dimen_margin_18"
         android:layout_marginTop="@dimen/dimen_margin_16"
         android:gravity="center"
-        android:horizontalSpacing="@dimen/dimen_height_30"
+        android:horizontalSpacing="@dimen/dimen_margin_30"
         android:numColumns="3"
         android:scrollbars="none" />
 

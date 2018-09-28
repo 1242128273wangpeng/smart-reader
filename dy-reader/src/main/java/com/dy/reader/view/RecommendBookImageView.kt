@@ -83,7 +83,7 @@ class RecommendBookImageView: RelativeLayout {
         //初始化图片内容
         icon_selector?.layoutParams = selectorParams
 
-        bg?.setBackgroundResource(R.drawable.book_cover_default_icon)
+        bg?.setBackgroundResource(R.drawable.book_cover_default)
         icon_selector?.setBackgroundDrawable(mSelectorImg)
         if(!mIconSelectorIsShow){
             icon_selector.visibility= View.GONE

@@ -106,7 +106,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
         isChapterExist = DataCache.isChapterCached(chapter)
 
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-                activity.applicationContext.showToastMessage(R.string.no_net)
+            activity.applicationContext.showToastMessage(R.string.no_net)
             return
         }
 

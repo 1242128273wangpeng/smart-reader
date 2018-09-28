@@ -20,7 +20,7 @@ import java.util.List;
  * 创建人：Zach
  * 创建时间：2017/11/2 0002
  */
-
+@Deprecated
 abstract class RecommendBookStrategy {
 
     RecommendBooksResp bookBeans ;

@@ -506,7 +506,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 //        mTextColor = R.color.color_theme_alpha
         book_cover_bookshelf!!.setTextColor(Color.parseColor("#4C2AD1BE"))
         book_cover_bookshelf!!.isEnabled = false
-        book_cover_bookshelf!!.setText(R.string.book_cover_havein_bookshelf)
+        book_cover_bookshelf!!.setText(R.string.have_in_bookshelf)
 //        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
         //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
@@ -517,7 +517,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private fun initializeInsertShelfButton() {
 //        mBackground = R.drawable.cover_bottom_btn_add_bg
 //        mTextColor = R.color.color_theme_alpha
-        book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+        book_cover_bookshelf!!.setText(R.string.add_bookshelf)
         book_cover_bookshelf!!.setTextColor(Color.parseColor("#FF2AD1BE"))
         book_cover_bookshelf!!.isEnabled = true
 //        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))

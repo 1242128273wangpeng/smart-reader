@@ -20,7 +20,6 @@
 
         <ImageView
                 android:id="@+id/iv_shadow"
-
                 android:layout_width="35dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
@@ -39,9 +38,6 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/search_label_icon"/>
     </RelativeLayout>
-
-
-
 
     <TextView
             android:id="@+id/tv_search_item_2"

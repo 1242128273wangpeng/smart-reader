@@ -135,6 +135,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_head"
         android:scaleType="fitXY"
-        android:src="@drawable/download_manager_head_shadow"
+        android:src="@drawable/top_shadow"
         android:visibility="gone"/>
 </RelativeLayout>

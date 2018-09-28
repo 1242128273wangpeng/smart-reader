@@ -157,7 +157,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             }
         }
 
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_CASHEALL, data)
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_SHELFEDIT, data)
     }
 
 
@@ -179,6 +179,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             if (!transformReadDialog.isShow()) {
                 transformReadDialog.show()
             }
+            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }
     }
 

@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.ding.basic.bean.Book
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
+import com.dingyue.contract.util.SharedPreUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
@@ -26,15 +27,14 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.data.bean.BookTask
-import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.*
 import java.io.File
 import java.io.IOException
 
 
 /**
+ * 缓存管理类
  * Created by Danny on 2017/12/17.
  */
 object CacheManager {
@@ -66,7 +66,10 @@ object CacheManager {
         }
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
+            try {
+                downloadService = (service as DownloadService.MyBinder).service
+            } catch (e: Exception) {
+            }
             freshBooksAsync(true)
         }
     }
@@ -99,7 +102,7 @@ object CacheManager {
                 val data = HashMap<String, String>()
                 data.put("status", "2")
                 data.put("reason", t.javaClass.simpleName + ":" + t.message)
-                data.put("bookId", bookTask.book.book_id!!)
+                data.put("bookId", bookTask.book.book_id)
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
                 data.put(str, obj)
@@ -160,7 +163,7 @@ object CacheManager {
 
                 val data = HashMap<String, String>()
                 data.put("status", "1")
-                data.put("bookId", bookTask.book.book_id!!)
+                data.put("bookId", bookTask.book.book_id)
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
                 data.put(str, obj)
@@ -232,7 +235,7 @@ object CacheManager {
 
     private fun showFinishNotify(book: Book) {
 
-        var notifyIntent: Intent? = null
+        val notifyIntent: Intent?
         try {
             notifyIntent = Intent(app, Class.forName("com.intelligent.reader.activity.GoToCoverOrReadActivity"))
         } catch (e: Exception) {
@@ -268,12 +271,12 @@ object CacheManager {
     private fun restroeTaskInfo(book: Book): BookTask {
         val count = book.chapter_count
         val preferences = app.getSharedPreferences(DOWN_INDEX + book.book_id, 0)
-        var start: Int = -1
+        var start: Int
         var state: DownloadState
         var cacheSize: Int
-        var progress: Int
+        val progress: Int
         val bookTask: BookTask
-        if (preferences.getAll().isEmpty()) {
+        if (preferences.all.isEmpty()) {
             start = app.getSharedPreferences(DOWN_INDEX, 0).getInt(book.book_id, -1)
 
             if (start > 0) {
@@ -291,7 +294,7 @@ object CacheManager {
                 }
                 cacheSize = 0
                 if (list != null) {
-                    cacheSize = (list as Array<Any>).size
+                    cacheSize = (list as Array<*>).size
                 }
                 progress = if (count != 0) Math.min(cacheSize * 100 / count, 100) else 0
                 if (state == DownloadState.FINISH && progress != 100) {
@@ -360,14 +363,11 @@ object CacheManager {
 
     @Synchronized
     fun getBookStatus(book: Book): DownloadState {
-        if (book.book_id == null) {
-            return DownloadState.NOSTART
-        }
 
-        if (workMap.containsKey(book.book_id!!)) {
-            return workMap[book.book_id!!]!!.state
+        return if (workMap.containsKey(book.book_id)) {
+            workMap[book.book_id]!!.state
         } else {
-            return getBookTask(book).state
+            getBookTask(book).state
         }
     }
 
@@ -396,7 +396,7 @@ object CacheManager {
                 if (needRefreshProgress && bookTask.state != DownloadState.DOWNLOADING && bookTask.state != DownloadState.WAITTING && bookTask.state != DownloadState.WAITTING_WIFI) {
 
                     workMap.put(book_id, restroeTaskInfo(book))
-                }else{
+                } else {
                     //避免其他地方修改书籍信息时不同步的问题
                     //TODO 修复转成kotlin后clone的问题
                     bookTask.book = book
@@ -411,7 +411,7 @@ object CacheManager {
         }
     }
 
-    fun freshBooksAsync(needRefreshProgress: Boolean, callback:(() ->Unit)? = null){
+    fun freshBooksAsync(needRefreshProgress: Boolean, callback: (() -> Unit)? = null) {
         Observable.create<Boolean> {
 
             freshBooks(needRefreshProgress)
@@ -424,7 +424,7 @@ object CacheManager {
                         onNext = {
                             callback?.invoke()
                         },
-                        onError = {it.printStackTrace()}
+                        onError = { it.printStackTrace() }
                 )
     }
 
@@ -444,8 +444,10 @@ object CacheManager {
                 }
             }
 
-            synchronized(downloadService!!.lock) {
-                downloadService!!.lock.notify()
+            if(downloadService != null){
+                synchronized(downloadService!!.lock) {
+                    downloadService!!.lock.notify()
+                }
             }
 
             return true
@@ -529,13 +531,8 @@ object CacheManager {
 
     @Synchronized
     fun checkAutoStart() {
-        val autoStart = PreferenceManager.getDefaultSharedPreferences(app).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+        val autoStart = PreferenceManager.getDefaultSharedPreferences(app).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
         if (checkService()) {
-//            Observable.create<Boolean> { emi ->
-//                freshBooks(true)
-//                emi.onNext(true)
-//                emi.onComplete()
-//            }.subscribeOn(Schedulers.io()).subscribe()
 
             if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_WIFI) {
                 workMap.values.forEach {
@@ -554,8 +551,10 @@ object CacheManager {
                 }
             }
 
-            synchronized(downloadService!!.lock) {
-                downloadService!!.lock.notify()
+            if(downloadService != null){
+                synchronized(downloadService!!.lock) {
+                    downloadService!!.lock.notify()
+                }
             }
         }
 

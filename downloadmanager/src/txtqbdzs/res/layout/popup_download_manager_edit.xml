@@ -7,18 +7,10 @@
     android:background="#FAFAFA"
     android:gravity="center_vertical">
 
-    <View
-        android:id="@+id/v_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/download_manager_bottom_shadow_bg"/>
-
     <LinearLayout
         android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/v_shadow"
         android:orientation="horizontal">
 
         <RelativeLayout

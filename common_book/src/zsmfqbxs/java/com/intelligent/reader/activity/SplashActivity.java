@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,7 +42,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParameter;
+import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -51,13 +52,11 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-
-import com.intelligent.reader.util.ShieldManager;
-
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -410,7 +409,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-//        updateBookLastChapter();
+        updateBookLastChapter();
 
         initializeDataFusion();
 
@@ -425,8 +424,10 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -436,6 +437,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -486,6 +495,7 @@ public class SplashActivity extends FrameActivity {
 
     /***
      * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
+     * 只针对全本追书阅读器
      * **/
     private void updateBookLastChapter() {
         if (sharedPreUtil == null) {
@@ -580,6 +590,12 @@ public class SplashActivity extends FrameActivity {
             AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
             AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
+             /*
+             * FIXME  user_index
+             * 0: 新用户：无广告
+             * 1：新用户：两天内无广告
+             * 2：老用户：显示广告
+             */
             int user_index = sharedPreUtil.getInt(SharedPreUtil.USER_NEW_INDEX, 0);
             boolean init_ad = false;
 
@@ -662,6 +678,11 @@ public class SplashActivity extends FrameActivity {
     @Override
     protected void onDestroy() {
 
+        try {
+            handler.removeCallbacksAndMessages(null);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         MediaLifecycle.INSTANCE.onDestroy();
 
         super.onDestroy();

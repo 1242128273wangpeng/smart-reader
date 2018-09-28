@@ -1,6 +1,7 @@
 package com.dingyue.bookshelf.view
 
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
@@ -25,12 +26,12 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
         popupWindow.isFocusable = true
         popupWindow.isOutsideTouchable = false
 
-        contentView.ll_download_manager.setOnClickListener {
+        contentView.txt_download_manager.setOnClickListener {
             dismiss()
             downloadListener?.invoke()
         }
 
-        contentView.ll_book_sorting.setOnClickListener {
+        contentView.txt_book_sorting.setOnClickListener {
             dismiss()
             sortingListener?.invoke()
         }
@@ -46,6 +47,8 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
     }
 
     fun show(view: View) {
-        showAsDropDown(view)
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        popupWindow.showAtLocation(view, Gravity.TOP,location[0],location[1])
     }
 }

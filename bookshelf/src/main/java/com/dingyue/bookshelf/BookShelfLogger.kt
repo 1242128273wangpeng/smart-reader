@@ -91,6 +91,14 @@ object BookShelfLogger {
     }
 
     /***
+     * 书架点击应用分享
+     * **/
+    fun uploadBookShelfShare() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
+    }
+
+    /***
      * 书架长按进入书架编辑状态
      * **/
     fun uploadBookShelfLongClickBookShelfEdit() {
@@ -166,7 +174,7 @@ object BookShelfLogger {
      * **/
     fun uploadBookShelfEditSelectAll(all: Boolean) {
         val data = HashMap<String, String>()
-        data["type"] = if (all) "2" else "1"
+        data["type"] = if (all) "1" else "2"
 
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_SELECT_ALL, data)
@@ -180,8 +188,8 @@ object BookShelfLogger {
 
         val isSameDay = AppUtils.isToday(lastTime, currentTime)
         if (!isSameDay) {
-            val bookIdList = StringBuilder()
             val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
+            val bookIdList = StringBuilder()
             books?.forEachIndexed { index, book ->
                 bookIdList.append(book.book_id)
                 bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读

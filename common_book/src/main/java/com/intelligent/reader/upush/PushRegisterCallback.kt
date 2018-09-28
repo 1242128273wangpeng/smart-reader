@@ -1,13 +1,12 @@
 package com.intelligent.reader.upush
 
 import android.content.Context
-import com.dingyue.contract.util.SharedPreUtil
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
-import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.EVENT_UPDATE_TAG
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.loge
-import net.lzbook.kit.utils.updateTags
+import org.greenrobot.eventbus.EventBus
 
 /**
  * Desc 友盟消息推送注册回调
@@ -24,28 +23,17 @@ class PushRegisterCallback(private val context: Context)
         val pushAgent = PushAgent.getInstance(context)
 
         //注册成功会返回device token
-        loge("deviceToken: " + deviceToken)
+        loge("deviceToken: $deviceToken")
 
 
         //设置别名
-        loge("udid: " + udid)
+        loge("udid: $udid")
         pushAgent.setAlias(udid, "UDID", { isSuccess, message ->
             loge("setAlias：$isSuccess  message: $message")
         })
 
         //更新标签
-        val share = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-        val latestUpdateTime = share.getLong(SharedPreUtil.PUSH_TAG_LATEST_UPDATE_TIME, 0)
-        val currentTime = System.currentTimeMillis()
-        val isSameDay = AppUtils.isToday(latestUpdateTime, currentTime)
-        if (!isSameDay) {
-            pushAgent.updateTags(context, udid) { isSuccess ->
-                loge("更新用户标签完成: $isSuccess")
-                if (isSuccess) {
-                    share.putLong(SharedPreUtil.PUSH_TAG_LATEST_UPDATE_TIME, currentTime)
-                }
-            }
-        }
+        EventBus.getDefault().postSticky(EVENT_UPDATE_TAG)
 
     }
 

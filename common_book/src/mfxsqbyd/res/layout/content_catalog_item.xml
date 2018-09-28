@@ -34,7 +34,7 @@
             android:layout_centerVertical="true"
             android:textColor="@color/color_gray_9C9C9C"
             android:text="已缓存"
-            android:textSize="@dimen/small_size_12"
+            android:textSize="12sp"
             android:textStyle="normal"/>
 
     <View

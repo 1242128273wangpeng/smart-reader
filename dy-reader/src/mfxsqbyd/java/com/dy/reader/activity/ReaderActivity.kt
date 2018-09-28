@@ -256,8 +256,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         if (hasFocus && !ReaderStatus.isMenuShow) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
-        } else if (ReaderSettings.instance.animation == GLReaderView.AnimationType.LIST) {
-            window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
 
@@ -274,14 +272,36 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
-            if(keyCode == KeyEvent.KEYCODE_BACK ){
-                onBackPressed()
+            if(keyCode == KeyEvent.KEYCODE_MENU) {
+
+                if (ReaderSettings.instance.isAutoReading) {
+
+                    if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                        val fragment = fragmentManager.findFragmentByTag("auto")
+
+                        if (fragment == null) {
+                            AutoReadOptionDialog().show(fragmentManager, "auto")
+                        } else {
+                            if (fragment is AutoReadOptionDialog) {
+                                fragment.dismissAllowingStateLoss()
+                            }
+                        }
+                    }
+                } else {
+                    if (ReaderStatus.isMenuShow) {
+                        mReadSettingFragment.show(false)
+                        ReaderStatus.isMenuShow = false
+                    } else {
+                        mReadSettingFragment.show(true)
+                        ReaderStatus.isMenuShow = true
+                    }
+
+                }
                 true
-            }else{
+
+            } else{
                 super.onKeyDown(keyCode, event)
             }
-
-
 
 
 
@@ -564,7 +584,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark)
+                ReadMediaManager.requestAd(adType, adMark,AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }

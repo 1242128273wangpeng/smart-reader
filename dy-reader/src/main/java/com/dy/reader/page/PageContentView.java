@@ -7,9 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.dy.reader.helper.DrawTextHelper;
-import com.intelligent.reader.read.mode.NovelPageBean;
-
-import net.lzbook.kit.utils.AppLog;
+import com.dy.reader.mode.NovelPageBean;
 
 
 /**

@@ -80,6 +80,6 @@
         android:maxLines="1"
         android:text="@string/app_name"
         android:textColor="@color/color_gray_b3b3b3"
-        android:textSize="@dimen/dimen_text_10" />
+        android:textSize="10sp" />
 
 </RelativeLayout>

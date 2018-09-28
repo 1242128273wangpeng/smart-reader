@@ -1,21 +1,24 @@
 package com.dy.media
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import com.dycm_adsdk.PlatformSDK
+import com.dycm_adsdk.bean.DyError
 import com.dycm_adsdk.callback.AbstractCallback
-import com.dycm_adsdk.callback.ResultCode
-import com.dycm_adsdk.utils.DyLogUtils
+import com.dycm_adsdk.callback.AdMultiResultCallBack
+import com.dycm_adsdk.callback.AdResultCallBack
+import com.dycm_adsdk.callback.DYSplashCallBack
 import com.dycm_adsdk.view.NativeView
-import org.json.JSONException
-import org.json.JSONObject
 
 
 /**
@@ -29,93 +32,67 @@ object MediaControl : IMediaControl {
 
     override fun loadSwitchScreenMedia(context: Context, layout: FrameLayout,
                                        callback: (resultCode: Int) -> Unit) {
+
         if (PlatformSDK.config()?.getAdSwitch("11-1") == true) {
-            PlatformSDK.adapp()?.dycmSplashAd(context, "11-1", layout, object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, jsonResult: String?) {
-                    super.onResult(adswitch, jsonResult)
-                    if (!adswitch) return
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            val resultCode = ResultCode.parser(jsonObject.getInt("state_code"))
-                            when (resultCode) {
-                                ResultCode.AD_REQ_SUCCESS -> {
-                                    //广告请求成功
-                                    DyLogUtils.dd("AD_REQ_SUCCESS" + jsonResult)
-                                    callback(MediaCode.MEDIA_SUCCESS)
-                                }
-                                ResultCode.AD_REQ_FAILED -> {
-                                    //广告请求失败
-                                    DyLogUtils.dd("AD_REQ_FAILED" + jsonResult)
-                                    callback(MediaCode.MEDIA_FAILED)
-                                }
-                                ResultCode.AD_ONCLICKED_CODE -> {
-                                    //开屏页面点击
-                                    DyLogUtils.dd("AD_ONCLICKED_CODE" + jsonResult)
-                                }
-                                ResultCode.AD_DISMISSED_CODE -> {
-                                    //开屏页面关闭
-                                    callback(MediaCode.MEDIA_DISMISS)
-                                }
-                                ResultCode.AD_ONTICK_CODE -> {
-                                    //剩余显示时间
-                                    DyLogUtils.dd("AD_ONTICK_CODE" + jsonResult)
-                                }
-                                else -> {
-                                }
-                            }
-                        }
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
+            PlatformSDK.adapp()?.dycmSplashAd(context as Activity?, "11-1", layout, object : DYSplashCallBack {
+                override fun adExposure() {
 
                 }
+
+                override fun adDismissed() {
+                    //开屏页面关闭
+                    callback(MediaCode.MEDIA_DISMISS)
+                }
+
+                override fun adLoadFail(dyError: DyError?) {
+                    // 广告请求失败
+                    callback(MediaCode.MEDIA_FAILED)
+                }
+
+                override fun adLoadSuccess() {
+                    //广告请求成功
+                    callback(MediaCode.MEDIA_SUCCESS)
+                }
+
+                override fun adClicked() {
+
+                }
+
+                override fun adTick(var1: Long) {
+
+                }
+
             })
         }
     }
 
     override fun loadSplashMedia(context: Context, layout: ViewGroup,
                                  callback: (resultCode: Int) -> Unit) {
-        PlatformSDK.adapp()?.dycmSplashAd(context, "10-1", layout, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, jsonResult: String?) {
-                if (adswitch) {
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
-                                    //广告请求成功
-                                    callback(MediaCode.MEDIA_SUCCESS)
-                                    DyLogUtils.dd("AD_REQ_SUCCESS $jsonResult")
-                                }
-                                ResultCode.AD_REQ_FAILED -> {
-                                    //广告请求失败
-                                    DyLogUtils.dd("AD_REQ_FAILED $jsonResult")
-                                    callback(MediaCode.MEDIA_FAILED)
-                                }
-                                ResultCode.AD_DISMISSED_CODE -> {
-                                    //开屏页面关闭
-                                    callback(MediaCode.MEDIA_DISMISS)
-                                }
-                                ResultCode.AD_ONCLICKED_CODE -> {
-                                    //开屏页面点击
-                                    DyLogUtils.dd("AD_ONCLICKED_CODE $jsonResult")
-                                }
-                                ResultCode.AD_ONTICK_CODE -> {
-                                    //剩余显示时间
-                                    DyLogUtils.dd("AD_ONTICK_CODE $jsonResult")
-                                }
-                                else -> {
-                                }
-                            }
-                        }
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
+        PlatformSDK.adapp()?.dycmSplashAd(context as Activity, "10-1", layout, object : DYSplashCallBack {
+            override fun adExposure() {
+            }
 
-                } else {
-                    callback(MediaCode.MEDIA_DISABLE)
-                }
+            override fun adDismissed() {
+                //开屏页面关闭
+                callback(MediaCode.MEDIA_DISMISS)
+            }
+
+            override fun adLoadFail(dyError: DyError?) {
+                //广告请求失败
+                callback(MediaCode.MEDIA_FAILED)
+            }
+
+            override fun adLoadSuccess() {
+                //广告请求成功
+                callback(MediaCode.MEDIA_SUCCESS)
+            }
+
+            override fun adClicked() {
+
+            }
+
+            override fun adTick(var1: Long) {
+
             }
         })
     }
@@ -130,29 +107,18 @@ object MediaControl : IMediaControl {
                                           headerMediaCallback: IMediaControl.HeaderMediaCallback) {
         doAsync {
             PlatformSDK.adapp()?.dycmNativeAd(activity, "1-1", null, object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                    super.onResult(adswitch, views, jsonResult)
-                    if (!adswitch) return
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
-                                    if (views != null && views.isNotEmpty()) {
-                                        activity.uiThread {
-                                            headerMediaCallback.requestMediaSuccess(views[0])
-                                        }
-                                    }
-                                }
-                                else -> {
-
-                                }
-                            }
+                override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                    if (views != null && views.isNotEmpty()) {
+                        activity.uiThread {
+                            headerMediaCallback.requestMediaSuccess(views[0])
                         }
-                    } catch (exception: JSONException) {
-                        exception.printStackTrace()
                     }
                 }
+
+                override fun adLoadFail(dyError: DyError?) {
+
+                }
+
             })
         }
     }
@@ -160,39 +126,26 @@ object MediaControl : IMediaControl {
     override fun loadBookShelfFloatMedia(activity: Activity, viewGroup: ViewGroup?) {
         doAsync {
             PlatformSDK.adapp()?.dycmNativeAd(activity, "1-2", null, object : AbstractCallback() {
-                override fun onResult(adSwitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                    super.onResult(adSwitch, views, jsonResult)
-                    Log.e("书架广告", "书架悬浮广告请求：" + views?.size)
-                    if (!adSwitch) return
-
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
-                                    if (views != null && views.isNotEmpty()) {
-                                        activity.uiThread {
-                                            if (viewGroup != null) {
-                                                viewGroup.visibility = View.VISIBLE
-                                                viewGroup.removeAllViews()
-                                                viewGroup.addView(views[0])
-                                            }
-                                        }
-                                    }
-                                }
-                                else -> {
-                                    activity.uiThread {
-                                        if (viewGroup != null) {
-                                            viewGroup.visibility = View.GONE
-                                        }
-                                    }
-                                }
+                override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                    if (views != null && views.isNotEmpty()) {
+                        activity.uiThread {
+                            if (viewGroup != null) {
+                                viewGroup.visibility = View.VISIBLE
+                                viewGroup.removeAllViews()
+                                viewGroup.addView(views[0])
                             }
                         }
-                    } catch (exception: JSONException) {
-                        exception.printStackTrace()
                     }
                 }
+
+                override fun adLoadFail(dyError: DyError?) {
+                    activity.uiThread {
+                        if (viewGroup != null) {
+                            viewGroup.visibility = View.GONE
+                        }
+                    }
+                }
+
             })
         }
     }
@@ -200,44 +153,53 @@ object MediaControl : IMediaControl {
     override fun loadBookShelMedia(activity: Activity, count: Int,
                                    mediaCallback: IMediaControl.MediaCallback) {
         doAsync {
-            PlatformSDK.adapp()?.dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AbstractCallback() {
-                override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                    if (!adswitch) {
-                        return
-                    }
-
-                    try {
-                        val jsonObject = JSONObject(jsonResult)
-                        if (jsonObject.has("state_code")) {
-                            when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                                ResultCode.AD_REQ_SUCCESS -> {
-                                    Log.e("书架广告", "书架广告请求成功：" + views?.size)
-                                    if (views != null && views.isNotEmpty()) {
-                                        activity.uiThread {
-                                            mediaCallback.requestMediaSuccess(views)
-                                        }
-                                    }
-                                }
-                                ResultCode.AD_REPAIR_SUCCESS -> {
-                                    Log.e("书架广告", "书架广告补余成功：" + views?.size)
-                                    if (views != null && views.isNotEmpty()) {
-                                        activity.uiThread {
-                                            mediaCallback.requestMediaRepairSuccess(views)
-                                        }
-                                    }
-                                }
-                                else -> {
-
-                                }
-                            }
+            PlatformSDK.adapp()?.dycmNativeAd(activity, "1-1", RelativeLayout(activity), object : AdMultiResultCallBack {
+                override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                    Log.e("书架广告", "书架广告请求成功：" + views?.size)
+                    if (views != null && views.isNotEmpty()) {
+                        activity.uiThread {
+                            mediaCallback.requestMediaSuccess(views)
                         }
-                    } catch (exception: JSONException) {
-                        exception.printStackTrace()
                     }
                 }
+
+                override fun adSupplLoadSuccess(views: MutableList<ViewGroup>?) {
+                    Log.e("书架广告", "书架广告补余成功：" + views?.size)
+                    if (views != null && views.isNotEmpty()) {
+                        activity.uiThread {
+                            mediaCallback.requestMediaRepairSuccess(views)
+                        }
+                    }
+                }
+
+                override fun adLoadFail(dyError: DyError?) {
+
+                }
+
             }, count)
         }
     }
+
+    override fun loadBookShelMedia2(activity: Activity, mediaCallback: IMediaControl.MediaCallback) {
+        doAsync {
+            PlatformSDK.adapp()?.dycmNativeAd(activity, "1-1", null, object : AdResultCallBack {
+                override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                    Log.e("书架广告", "书架广告请求成功：" + views?.size)
+                    if (views != null && views.isNotEmpty()) {
+                        activity.uiThread {
+                            mediaCallback.requestMediaSuccess(views)
+                        }
+                    }
+                }
+
+                override fun adLoadFail(dyError: DyError?) {
+
+                }
+
+            })
+        }
+    }
+
 
     override fun getAdSwitch(ad_mark_id: String) =
             PlatformSDK.config()?.getAdSwitch(ad_mark_id) ?: false
@@ -245,34 +207,43 @@ object MediaControl : IMediaControl {
     override fun getChapterFrequency(): Int =
             PlatformSDK.config()?.chapter_limit ?: 0
 
-    override fun dycmNativeAd(context: Context?, adLocalId: String, view: ViewGroup?,
-                              resultCallback: (switch: Boolean, List<ViewGroup>?, jsonResult: String?) -> Unit) {
+    override fun dycmNativeAd(context: Activity?, adLocalId: String, view: ViewGroup?,
+                              resultSuccessCallback: (List<ViewGroup>?) -> Unit, resultFailCallback: (errorCode: Int) -> Unit) {
         PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, view, object : MediaAbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                super.onResult(adswitch, view, jsonResult)
-                resultCallback.invoke(adswitch, views, jsonResult)
+            override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                resultSuccessCallback.invoke(views)
+            }
+
+            override fun adLoadFail(dyError: DyError) {
+                resultFailCallback.invoke(dyError.getErrorCode())
             }
         })
     }
 
-    override fun dycmNativeAd(context: Context?, adLocalId: String, height: Int, width: Int,
-                              resultCallback: (switch: Boolean, views: List<ViewGroup>?, jsonResult: String?) -> Unit) {
-        PlatformSDK.adapp()?.dycmNativeAd(context, adLocalId, height, width, object : MediaAbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                resultCallback.invoke(adswitch, views, jsonResult)
+    override fun dycmNativeAd(context: Activity?, adLocalId: String, height: Int, width: Int,
+                              resultSuccessCallback: (views: List<ViewGroup>?) -> Unit, resultFailCallback: (errorCode: Int) -> Unit) {
+        PlatformSDK.adapp()?.dycmNativeAd(context as Activity, adLocalId, height, width, object : MediaAbstractCallback() {
+            override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                resultSuccessCallback.invoke(views)
             }
+
+            override fun adLoadFail(dyError: DyError) {
+                resultFailCallback.invoke(dyError.getErrorCode())
+            }
+
         })
     }
-
 
 
     private var restMediaRunnable: Runnable? = null
 
     private var restMediaHandler: Handler? = null
 
-    override fun startRestMedia(onTime: () -> Unit) {
+    private var restDialog: Dialog? = null
+
+    override fun startRestMedia(activity: Activity) {
         if (PlatformSDK.config() == null) return
+//        val runtime = 30000L
         val runtime = if (PlatformSDK.config().restAd_sec == 0) {
             30.times(60000).toLong()
         } else {
@@ -283,39 +254,80 @@ object MediaControl : IMediaControl {
         }
         if (restMediaRunnable == null) {
             restMediaRunnable = Runnable {
-                onTime.invoke()
-                restMediaHandler?.postDelayed(restMediaRunnable, runtime)
-            }
-            restMediaHandler?.postDelayed(restMediaRunnable, runtime)
-        }
-    }
+                Log.e("3-1", "3-1广告监控函数 ：check")
+                if (restDialog == null) {
+                    restDialog = Dialog(activity, R.style.custom_dialog)
+                    restDialog?.apply {
 
-    override fun loadRestMedia(activity: Activity?, onSuccess: (view: View?) -> Unit) {
-        PlatformSDK.adapp()?.dycmNativeAd(activity, "3-1", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>?, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) return
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS -> {
-                                onSuccess.invoke(views?.get(0))
+                        setContentView(R.layout.dialog_reader_rest)
+                        val window = window
+                        val params = window.attributes
+                        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+                        params.height = ViewGroup.LayoutParams.MATCH_PARENT
+                        params.gravity = Gravity.CENTER
+                        window.attributes = params
+                        setCanceledOnTouchOutside(false)
+                        setOnDismissListener {
+                            restMediaHandler?.removeCallbacksAndMessages(null)
+                            restMediaHandler?.postDelayed(restMediaRunnable, runtime)
+                            restDialog = null
+                        }
+
+                        setOnShowListener {
+
+                            findViewById<ImageView>(R.id.img_close).setOnClickListener {
+                                dismiss()
                             }
-                            ResultCode.AD_REQ_FAILED -> {
-                            }
-                            else -> {
-                            }
+
+                            PlatformSDK.adapp()?.dycmSplashAd(activity, "3-1", findViewById<RelativeLayout>(R.id.rl_ad), object : DYSplashCallBack {
+                                override fun adExposure() {
+                                    Log.e("3-1", "3-1广告监控函数 ：adExposure")
+                                }
+
+                                override fun adDismissed() {
+                                    Log.e("3-1", "3-1广告监控函数 ：adDismissed")
+                                    restMediaHandler?.postDelayed({
+                                        if (activity != null && !activity.isFinishing && isShowing) {
+                                            dismiss()
+                                        }
+
+                                    }, 200)
+                                }
+
+                                override fun adLoadFail(dyError: DyError?) {
+                                    Log.e("3-1", "3-1广告监控函数 ：拉取失败")
+                                    restMediaHandler?.postDelayed({
+                                        if (activity != null && !activity.isFinishing && isShowing) {
+                                            dismiss()
+                                        }
+                                    }, 200)
+                                }
+
+                                override fun adLoadSuccess() {
+                                }
+
+                                override fun adClicked() {
+
+                                }
+
+                                override fun adTick(var1: Long) {
+                                    Log.e("3-1", "3-1广告监控函数 ：" + var1)
+                                }
+                            })
+                        }
+
+                        if (activity != null && !activity.isFinishing && !isShowing) {
+                            show()
                         }
                     }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
                 }
             }
-        })
+        }
+        restMediaHandler?.postDelayed(restMediaRunnable, runtime)
     }
 
     override fun stopRestMedia() {
+        restDialog = null
         restMediaRunnable = null
         restMediaHandler?.removeCallbacksAndMessages(null)
         restMediaHandler = null
@@ -340,56 +352,29 @@ object MediaControl : IMediaControl {
     }
 
     override fun loadBookEndMedia(context: Context, onCall: (view: View?, isSuccess: Boolean) -> Unit) {
-        PlatformSDK.adapp()?.dycmNativeAd(context, "9-1", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                onCall.invoke(views[0], true)
-                            }
-                            else -> {
-                                onCall.invoke(null, false)
-                            }
-                        }
-                    }
-                } catch (exception: JSONException) {
-                    exception.printStackTrace()
-                }
+        PlatformSDK.adapp()?.dycmNativeAd(context as Activity, "9-1", null, object : AbstractCallback() {
+            override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                onCall.invoke(views?.get(0), true)
             }
+
+            override fun adLoadFail(dyError: DyError?) {
+//                onCall.invoke(null, false)
+            }
+
         })
     }
 
     override fun loadBookCoverAd(activity: Activity?, onCall: (view: View?) -> Unit) {
+
         PlatformSDK.adapp()?.dycmNativeAd(activity, "1-4", null, object : AbstractCallback() {
-            override fun onResult(adswitch: Boolean, views: List<ViewGroup>, jsonResult: String?) {
-                super.onResult(adswitch, views, jsonResult)
-                if (!adswitch) {
-                    return
-                }
-                try {
-                    val jsonObject = JSONObject(jsonResult)
-                    if (jsonObject.has("state_code")) {
-                        when (ResultCode.parser(jsonObject.getInt("state_code"))) {
-                            ResultCode.AD_REQ_SUCCESS
-                            -> {
-                                onCall.invoke(views[0])
-                            }
-                            else -> {
-                                onCall.invoke(null)
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
+            override fun adLoadSuccess(views: MutableList<ViewGroup>?) {
+                onCall.invoke(views?.get(0))
             }
+
+            override fun adLoadFail(dyError: DyError?) {
+//                onCall.invoke(null)
+            }
+
         })
     }
 }

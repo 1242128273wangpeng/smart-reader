@@ -1,6 +1,5 @@
 package com.dy.reader.presenter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,7 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.StringRes
 import android.text.TextUtils
-import android.widget.*
+import android.widget.Toast
 import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
@@ -32,10 +31,10 @@ import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
@@ -277,7 +276,9 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
+            logMap.put("bookid",ReaderStatus.book?.book_id)
+            logMap.put("chapterid",ReaderStatus?.chapterId)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
@@ -327,7 +328,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap.put("type", "2")
             logMap.put("bookid", ReaderStatus.book!!.book_id)
             logMap.put("chapterid", ReaderStatus.chapterId.toString())
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
             mBookDataHelper.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }
@@ -381,6 +382,20 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
     }
 
+    fun showShareDialog() {
+        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
+        
+        if (activity.get() != null && !activity.get()!!.isFinishing) {
+            val applicationShareDialog = ApplicationShareDialog(activity.get())
+            applicationShareDialog.show()
+
+            val activity = this.activity.get()
+
+            if (activity is ReaderActivity) {
+//                activity.registerShareCallback(true)
+            }
+        }
+    }
 
     fun chageNightMode(mode: Int = 0, useLightMode: Boolean = true) {
         val data = java.util.HashMap<String, String>()
@@ -404,7 +419,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             data.put("type", "1")
             StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         }
-        ReaderSettings.instance.save()
+//        ReaderSettings.instance.save()
 
         changeNight()
     }
@@ -434,7 +449,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
                 return
             }
-
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
             val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
             readerFeedbackDialog.insertSubmitListener {

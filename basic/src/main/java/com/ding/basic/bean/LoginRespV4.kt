@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey
 import android.support.annotation.NonNull
 import com.ding.basic.database.migration.FieldMigration
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /**
  * Date: 2018/7/27 16:51
@@ -14,7 +15,7 @@ import com.google.gson.annotations.SerializedName
  * Desc: 登录接口返回数据，用户信息， v4 接口
  */
 @Entity(tableName = "user")
-class LoginRespV4 {
+class LoginRespV4 : Serializable {
     @PrimaryKey
     @ColumnInfo(name = "account_id")
     var account_id: String = ""

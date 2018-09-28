@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
@@ -28,6 +29,7 @@ import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.view.ReaderDeleteBookmarkPopup
 import kotlinx.android.synthetic.txtqbdzs.frag_catalog_mark.*
 import kotlinx.android.synthetic.txtqbdzs.item_reader_bookmark.view.*
+import kotlinx.android.synthetic.txtqbdzs.item_reader_catalog.view.*
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.utils.StatServiceUtils
@@ -52,14 +54,6 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dividerCatalog = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
-        val dividerBookmark = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
-
-        dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
-        dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
-
-        recl_catalog_content.addItemDecoration(dividerCatalog)
-        recl_mark_content.addItemDecoration(dividerBookmark)
 
         val catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_reader_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->
@@ -72,7 +66,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != 0) {
                     if (firstVisibleItemPosition == -1) {
-                        ckb_catalog_order.visibility = View.GONE
+                        ckb_catalog_order.visibility = View.VISIBLE
                     }else{
                         ckb_catalog_order.visibility = View.VISIBLE
                     }
@@ -91,32 +85,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             presenter.gotoBookMark(requireActivity(), v.tag as Bookmark)
         }
 
-        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v: View ->
-            view_content_mask.visibility = View.VISIBLE
-
-            val transX = requireActivity().window.decorView.width - rl_book_content.width
-
-            val deleteBookmarkPopup = ReaderDeleteBookmarkPopup(requireActivity())
-
-            deleteBookmarkPopup.deleteBookmarkListener = {
-                presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
-                deleteBookmarkPopup.dismiss()
-            }
-
-            deleteBookmarkPopup.clearBookmarkListener = {
-                presenter.deleteAllBookMark(requireActivity())
-                deleteBookmarkPopup.dismiss()
-            }
-
-            deleteBookmarkPopup.dismissList = {
-                view_content_mask.visibility = View.GONE
-            }
-
-            deleteBookmarkPopup.showAtLocation(view_content_mask, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
-
+        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v ->
+            presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
             true
         }
 
+        checkHead(true)
 
         recl_mark_content.adapter = bookmarkAdapter
         recl_mark_content.layoutManager = object : LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false) {
@@ -149,34 +123,46 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             presenter.onClickFixBook(requireActivity())
         }
 
-        rg_catalog_mark.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.rbtn_catalog -> {
-                    ckb_catalog_order.visibility = View.VISIBLE
-                    presenter.loadCatalog(reverse)
-                }
-                R.id.rbtn_bookmark -> {
-                    ckb_catalog_order.visibility = View.GONE
-                    presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
-                }
-                else -> {
-
-                }
-            }
+        rl_catalog.setOnClickListener {
+            checkHead(true)
+            ckb_catalog_order.visibility = View.VISIBLE
+            rl_book_content.visibility = View.VISIBLE
+            presenter.loadCatalog(reverse)
         }
 
-        ckb_catalog_order.setOnClickListener {
-            reverse = !reverse
-            if (reverse) {
+        rl_bookmark.setOnClickListener {
+            checkHead(false)
+            ckb_catalog_order.visibility = View.GONE
+            rl_book_content.visibility = View.GONE
+            presenter.loadBookMark(requireActivity(), 1)//用于标识只有为1的时候才打点书签
+        }
+
+
+        ckb_catalog_order.setOnCheckedChangeListener { buttonView, isChecked ->
+            reverse = isChecked
+            if (isChecked) {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_dx_btn)
             } else {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_catalog_click_zx_btn)
             }
-            ckb_catalog_order.setText(if (!reverse) R.string.catalog_negative else R.string.catalog_positive)
-            presenter.loadCatalog(reverse)
+            presenter.loadCatalog(isChecked)
         }
+
     }
 
+    private fun checkHead(isCheckCatalog: Boolean) {
+        if (isCheckCatalog) {
+            txt_catalog.isSelected = true
+            view_catalog.isSelected = true
+            txt_bookmark.isSelected = false
+            view_bookmark.isSelected = false
+        } else {
+            txt_catalog.isSelected = false
+            view_catalog.isSelected = false
+            txt_bookmark.isSelected = true
+            view_bookmark.isSelected = true
+        }
+    }
 
     fun loadData() {
         if (recl_catalog_content.visibility == View.VISIBLE) {
@@ -238,14 +224,14 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     private var loadingPage: LoadingPage? = null
 
     override fun setChangeAble(enable: Boolean) {
-        rbtn_bookmark.isClickable = enable
-        rbtn_catalog.isClickable = enable
+        rl_bookmark.isClickable = enable
+        rl_catalog.isClickable = enable
     }
 
     override fun onLoading() {
         loadingPage?.onSuccess()
         if (!dataLoaded) {
-            loadingPage = LoadingPage(requireActivity(), view as FrameLayout)
+            loadingPage = LoadingPage(requireActivity(), view as RelativeLayout)
             loadingPage!!.setCustomBackgroud()
             loadingPage!!.setReloadAction(Callable<Void> {
                 presenter.loadCatalog(false)
@@ -270,24 +256,22 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                     onItemClick?.onClick(v)
                 }
 
-                val textView = (itemView as TextView)
-
-                textView.text = "${data.name}"
+                itemView.txt_chapter_name.text = "${data.name}"
 
                 val chapterExist = DataCache.isChapterCached(data)
 
                 var color: Int
 
                 color = when {
-                    chapterExist -> Color.parseColor("#E5000000")
-                    else -> Color.parseColor("#4C000000")
+                    chapterExist -> Color.parseColor("#616161")
+                    else -> Color.parseColor("#B9B9B9")
                 }
 
                 if (data.name?.equals(ReaderStatus.chapterName) == true) {
-                    color = Color.parseColor("#CCC2B282")
+                    color = Color.parseColor("#3ECC96")
                 }
 
-                textView.setTextColor(color)
+                itemView.txt_chapter_name.setTextColor(color)
             }
         }
     }
@@ -302,14 +286,16 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         override fun onBindData(position: Int, data: Bookmark, editMode: Boolean) {
             if (itemView != null) {
                 itemView.tag = data
+                itemView.txt_delete_mark.tag = data
 
                 itemView.isClickable = true
-                itemView.setOnClickListener { v ->
-                    onItemClick?.onClick(v)
+                itemView.setOnClickListener {
+                    onItemClick?.onClick(it)
                 }
-                itemView.setOnLongClickListener { v ->
-                    onItemLongClick?.onLongClick(v) ?: false
+                itemView.txt_delete_mark.setOnClickListener { v ->
+                    onItemLongClick?.onLongClick(v)
                 }
+
 
                 (itemView.txt_bookmark_title as TextView).text = "${data.chapter_name}"
                 (itemView.txt_bookmark_content as TextView).text = "${data.chapter_content}"

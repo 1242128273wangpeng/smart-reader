@@ -6,9 +6,10 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.mode.NovelLineBean
 import com.dy.reader.setting.ReaderSettings
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelPageBean
 import java.util.ArrayList
 import com.dy.reader.setting.ReaderStatus
+import com.dy.reader.util.TypefaceUtil
 
 /**
  *  阅读页绘制辅助类
@@ -25,6 +26,7 @@ object DrawTextHelper {
         textPaint.isDither = true
         textPaint.color = Color.RED
         textPaint.textSize = readerSettings.FONT_CHAPTER_SIZE * AppHelper.screenScaledDensity
+        textPaint.typeface = TypefaceUtil.loadTypeface(readerSettings.fontTypeface)
         textPaint
     }
 
@@ -40,6 +42,36 @@ object DrawTextHelper {
                 R.color.reading_backdrop_first
             } else {
                 R.color.reading_text_color_first
+            }
+        } else if (readerSettings.readThemeMode == 511) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_blue
+            }
+        } else if (readerSettings.readThemeMode == 512) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_pink
+            }
+        } else if (readerSettings.readThemeMode == 513) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_green
+            }
+        } else if (readerSettings.readThemeMode == 514) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_dark
+            }
+        } else if (readerSettings.readThemeMode == 515) {
+            color = if (type == 0) {
+                R.color.reading_backdrop_second
+            } else {
+                R.color.reading_text_color_dim
             }
         } else if (readerSettings.readThemeMode == 52) {
             color = if (type == 0) {
@@ -73,9 +105,9 @@ object DrawTextHelper {
             }
         } else if (readerSettings.readThemeMode == 61) {
             color = if (type == 0) {
-                R.color.reading_backdrop_night
+                R.color.reading_backdrop_nightly
             } else {
-                R.color.reading_text_color_night
+                R.color.reading_text_color_nightly
             }
         } else {
             color = if (type == 0) {
@@ -371,4 +403,8 @@ object DrawTextHelper {
         }
     }
 
+    fun setTypeFace(textTypeface: Typeface){
+//        textPaint.color = Color.GREEN
+        textPaint.typeface = textTypeface
+    }
 }

@@ -6,6 +6,6 @@
           android:color="@color/color_white_ffffff"/>
     
     <item android:state_pressed="true"
-          android:color="@color/color_red_882f46"/><!--是否按下，如一个按钮触摸或者点击,true按下-->
+          android:color="@color/primary"/><!--是否按下，如一个按钮触摸或者点击,true按下-->
 
 </selector>

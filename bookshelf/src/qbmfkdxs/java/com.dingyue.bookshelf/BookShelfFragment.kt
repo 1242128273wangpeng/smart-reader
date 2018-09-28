@@ -21,7 +21,6 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.qbmfkdxs.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.qbmfkdxs.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -31,6 +30,7 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.*
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 书架页Fragment
@@ -279,10 +279,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
+            BookShelfLogger.uploadFirstOpenBooks()
         }
-        if(bookShelfPresenter.iBookList.isNotEmpty()){
-            BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
-        }
+
     }
 
     /**
@@ -336,7 +335,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun onException(exception: Exception) {
         if (activity != null && !requireActivity().isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
-            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_refresh_network_problem, 2000L)
+            requireActivity().applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
             }

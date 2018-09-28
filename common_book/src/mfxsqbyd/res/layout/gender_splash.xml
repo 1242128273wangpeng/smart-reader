@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/color_white"
+                android:clickable="true">
+
+    <TextView
+        android:id="@+id/tv_step_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="28dp"
+        android:layout_marginTop="34dp"
+        android:text="跳过"
+        android:paddingLeft="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingRight="10dp"
+        android:textColor="#73666D77"
+        android:background="@drawable/activity_splash_txt_step_in_sel"
+        android:textSize="13sp"
+        />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_step_in"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="58dp"
+        android:text="请选择你的性别"
+        android:textColor="@color/color_black"
+        android:textSize="26sp"
+        />
+
+    <TextView
+        android:id="@+id/tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_step_in"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="58dp"
+        android:text="即将进入..."
+        android:textColor="@color/color_black"
+        android:textSize="26sp"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        android:text="我们会根据你的性别推荐热书"
+        android:textColor="@color/color_gray_808080"
+        android:textSize="14sp"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_section_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+
+
+        <RelativeLayout
+            android:id="@+id/rl_section_boy"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginRight="35dp"
+            android:layout_marginLeft="35dp"
+            android:background="@drawable/activity_splash_boy_bg"
+            >
+            <RelativeLayout
+                android:id="@+id/rl_boy"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txt_boy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="23sp"
+                    android:textColor="#ffffff"
+                    android:text="@string/splash_boy"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_boy"
+                    android:layout_marginTop="8dp"
+                    android:textSize="14sp"
+                    android:textColor="#ccffffff"
+                    android:text="@string/splash_boy_type"/>
+            </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/iv_boy_sel"
+                android:layout_toRightOf="@+id/rl_boy"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_marginLeft="32dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/activity_splash_icon_boy_default_sel"
+                />
+
+            <ImageView
+                android:id="@+id/tv_boy_sel"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignBottom="@id/iv_boy_sel"
+                android:layout_marginBottom="5dp"
+                android:layout_alignRight="@+id/iv_boy_sel"
+                android:layout_marginLeft="-10dp"
+                android:src="@drawable/activity_splash_txt_boy_sel"
+                />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_section_girl"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="35dp"
+            android:layout_marginLeft="35dp"
+            android:background="@drawable/activity_splash_girl_bg"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            >
+        <RelativeLayout
+            android:id="@+id/rl_girl"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txt_girl"
+                android:textSize="23sp"
+                android:textColor="#ffffff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/splash_girl"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#ccffffff"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_girl"
+                android:text="@string/splash_girl_type"/>
+        </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_girl_sel"
+                android:layout_width="84dp"
+                android:layout_toRightOf="@+id/rl_girl"
+                android:layout_height="84dp"
+                android:layout_marginLeft="32dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/activity_splash_icon_girl_default_sel"
+                />
+
+            <ImageView
+                android:id="@+id/tv_girl_sel"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignBottom="@id/iv_girl_sel"
+                android:layout_marginBottom="5dp"
+                android:layout_alignRight="@+id/iv_girl_sel"
+                android:layout_marginLeft="-10dp"
+                android:src="@drawable/activity_splash_txt_girl_sel"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

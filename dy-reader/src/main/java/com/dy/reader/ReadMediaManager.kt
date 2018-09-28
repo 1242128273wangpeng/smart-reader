@@ -6,17 +6,16 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.reader.helper.AppHelper
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.read.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.Closeable
 import java.lang.ref.WeakReference
 import java.util.*
@@ -69,7 +68,7 @@ object ReadMediaManager {
                         frequency: Int = MediaControl.getChapterFrequency()
     ): ArrayList<NovelPageBean> {
         removeOldAd(group)
-        if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3) return page
+        if (Constants.isHideAD || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE || page.size < 3 || AppUtils.isNeedAdControl(Constants.ad_control_reader)) return page
 
 
         //check 5-2 or 6-2 adView

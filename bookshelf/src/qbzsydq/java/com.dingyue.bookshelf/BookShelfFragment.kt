@@ -18,7 +18,6 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.qbzsydq.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.qbzsydq.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -30,6 +29,7 @@ import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.uiThread
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 书架页Fragment
@@ -244,6 +244,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
+            BookShelfLogger.uploadFirstOpenBooks()
         }
         if(bookShelfPresenter.iBookList.isNotEmpty()){
             BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)

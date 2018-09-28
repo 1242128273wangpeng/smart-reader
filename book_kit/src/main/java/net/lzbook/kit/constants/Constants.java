@@ -98,10 +98,75 @@ public class Constants {
     public static final int COLOR = 2;
     public static final int STYLE = 3;
 
+    public static final String BAIDU_STAT_ID = "baidu_stat_id";
+    //章节末广告开关
+    public static final String DY_PAGE_MIDDLE_AD_SWITCH = "DY_page_middle_ad_switch";
+    //章节末广告间隔
+    public static final String NATIVE_AD_PAGE_INTERSTITIAL_COUNT = "DY_mid_page_frequence";
+    //章节内广告间隔（章数）
+    public static final String NATIVE_AD_PAGE_GAP_IN_CHAPTER = "DY_in_chapter_frequence";
+    //章节内要展现广告限制的最小页数
+    public static final String NATIVE_AD_PAGE_IN_CHAPTER_LIMIT = "DY_page_in_chapter_limit";
+    ////新的用户广告请求开关
+    public static final String DY_AD_NEW_REQUEST_SWITCH = "DY_ad_new_request_switch";
+    // 新的统计开关
+    public static final String DY_AD_NEW_STATISTICS_SWITCH = "Dy_ad_new_statistics_switch";
+    // 阅读页翻页统计开关
+    public static final String DY_READPAGE_STATISTICS_SWITCH = "Dy_readPage_statistics_switch";
+    // 阅读页上下翻页展示广告开关
+    public static final String DY_AD_READPAGE_SLIDE_SWITCH_NEW = "Dy_ad_readPage_slide_switch_new";
+    //老的广告统计开关key
+    public static final String DY_AD_OLD_REQUEST_SWITCH = "DY_ad_old_request_switch";
+    //广告总开关
+    public static final String DY_AD_SWITCH = "DY_ad_switch";
+    //新用户不显示广告的时间
+    public static final String DY_ADFREE_NEW_USER = "DY_adfree_new_user";
+    //开屏广告开关
+    public static final String DY_SPLASH_AD_SWITCH = "DY_splash_ad_switch";
+    //书架广告开关
+    public static final String DY_SHELF_AD_SWITCH = "DY_shelf_ad_switch";
+    //九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+    public static final String BOOK_SHELF_STATE = "book_shelf_state";
+    //书架1-2广告开关
+    public static final String DY_SHELF_BOUNDARY_SWITCH = "DY_shelf_boundary_switch";
+    //书架广告频率
+    public static final String DY_SHELF_AD_FREQ = "DY_shelf_ad_freq";
+    //章节末广告开关
+    public static final String DY_PAGE_END_AD_SWITCH = "DY_page_end_ad_switch";
+    //章节末广告频率
+    public static final String DY_PAGE_END_AD_FREQ = "DY_page_end_ad_freq";
+    //书末广告开关
+    public static final String DY_BOOK_END_AD_SWITCH = "DY_book_end_ad_switch";
+    //休息页广告开关
+    public static final String DY_REST_AD_SWITCH = "DY_rest_ad_switch";
+    //休息页广告休息时间
+    public static final String DY_REST_AD_SEC = "DY_rest_ad_sec";
+    //是否启用新版章节末UI
+    public static final String DY_IS_NEW_READING_END = "DY_is_new_reading_end";
+    //新壳广告开关
+    public static final String NEW_APP_AD_SWITCH = "new_app_ad_switch";
+    //书籍封面页推荐位智能，青果书籍配比
+    public static final String RECOMMEND_BOOKCOVER = "recommend_bookcover";
+
+    public static final String DY_ACTIVITED_SWITCH_AD = "DY_activited_switch_ad";
+    public static final String DY_SWITCH_AD_SEC = "DY_switch_ad_sec";
+    public static final String DY_SWITCH_AD_CLOSE_SEC = "DY_switch_ad_close_sec";
+    public static final String AD_LIMIT_TIME_DAY = "ad_limit_time_day";
+    public static final String PUSH_KEY = "push_key";
+    public static final String BAIDU_EXAMINE = "baidu_examine";
+    public static final String USER_TRANSFER_FIRST = "user_transfer_first";
+    public static final String USER_TRANSFER_SECOND = "user_transfer_second";
+
+    public static final String CHANNEL_LIMIT = "channel_limit";
+
+    public static final String DAY_LIMIT = "day_limit";
 
     public static final String BAN_GIDS = "ban_gids";
     public static final String ADD_DEFAULT_BOOKS = "add_default_books";
     public static final String NETWORK_LIMIT = "network_limit";
+
+    //新的用户广告数据搜集接口域名获取key
+    public static String DY_AD_NEW_REQUEST_DOMAIN_NAME = "DY_ad_new_request_domain_name";
 
     public static final String HOME_GUIDE_TAG = "home_guide_tag";
     public static final String BOOKSHELF_GUIDE_TAG = "bookshelf_guide_tag";
@@ -291,6 +356,7 @@ public class Constants {
     public static String PACKAGE_MD5 = "";
     //1是开启  0是关闭
     public static int isNoNetRead = 0;
+    public static String noNetReadNumber = "noNetReadNumber";
 
     //是否是在下载管理页面
     public static boolean isDownloadManagerActivity = false;
@@ -345,6 +411,27 @@ public class Constants {
      */
     public static int book_shelf_state = 1;
 
+    /**
+     *广告分渠道，分版本，分广告位控制
+     * @param context
+     */
+
+    public static String ad_control_status = "0"; //广告分渠道控制  0表示关 1表示开
+    public static String ad_control_pkg = ""; //广告分渠道控制   包名
+    public static String ad_control_channelId = "";//广告分渠道控制 渠道号
+    public static String ad_control_version = "";//广告分渠道控制 app版本号
+    public static String ad_control_adTpye = "";//广告分渠道控制  广告位类型  0全部 1 福利中心 2书架页1-1  3书架页1-2  4阅读页广告 5 福利中心和书架页1-2
+
+    public static String ad_control_welfare= "1"; //广告分渠道控制广告位  1福利中心
+    public static String ad_control_shelf_normal = "2"; //广告分渠道控制广告位   2书架页1-1
+    public static String ad_control_shelf_float = "3";//广告分渠道控制广告位  3书架页1-2
+    public static String ad_control_reader = "4";//广告分渠道控制广告位     4阅读页广告
+    public static String ad_control_welfare_shelf = "5";//广告分渠道控制广告位     5福利中心和书架页1-2
+    public static String ad_control_other = "6";//广告分渠道控制广告位    4其他广告
+
+
+
+
 
     /*
      * 初始化
@@ -355,7 +442,7 @@ public class Constants {
         if (!isSdCard) {
             SDCARD_PATH = "mnt/sdcard";
         }
-        File dir = new File(SDCARD_PATH + ResourceUtil.getStringById(R.string.app_path));
+        File dir = new File(ReplaceConstants.getReplaceConstants().APP_PATH);
         if (!dir.exists()) {
             try {
                 dir.mkdirs();

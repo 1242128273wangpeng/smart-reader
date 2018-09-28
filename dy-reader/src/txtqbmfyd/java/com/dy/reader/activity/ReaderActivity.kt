@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.txtqbmfyd.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -48,7 +49,9 @@ import org.greenrobot.eventbus.ThreadMode
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
-    
+
+    private var registerShareCallback = false
+
     private val mReadSettingFragment by lazy {
         val readSettingFragment = ReadSettingFragment()
         readSettingFragment.fm = fragmentManager
@@ -105,7 +108,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
 
         RepairHelp.showFixMsg(this, ReaderStatus.book, {
-            if (!this!!.isFinishing) {
+            if (!this.isFinishing) {
                 RouterUtil.navigation(this, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             }
         })
@@ -216,6 +219,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, extras)
             }
         }
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
     }
 
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
@@ -238,6 +245,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onResume() {
         super.onResume()
         isResume = true
+        registerShareCallback = false
         glSurfaceView.onResume()
         // 设置全屏
         when (!Constants.isFullWindowRead) {
@@ -338,7 +346,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_READING_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -386,8 +394,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             if (ReaderStatus.position.group > -1) {
                 rl_reader_bottom.visibility = View.VISIBLE
                 rl_reader_header.visibility = View.VISIBLE
-                txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
+                txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
+                txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
                 if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
                     txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
                     EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_SUCCESS, null))
@@ -396,7 +404,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 rl_reader_bottom.visibility = View.GONE
                 rl_reader_header.visibility = View.GONE
             }
-            mReadPresenter?.checkManualDialogShow()
+            mReadPresenter.checkManualDialogShow()
         } else if (event.type == EventLoading.Type.RETRY) {
             showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
         } else if (event.type == EventLoading.Type.SUCCESS) {
@@ -541,7 +549,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.loadAdComplete = null
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
-                        val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
+                        (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
                         pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
@@ -561,7 +569,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark)
+                ReadMediaManager.requestAd(adType, adMark,AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -596,6 +604,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     fun showLoadingDialog(type: LoadingDialogFragment.DialogType, retry: (() -> Unit)? = null) {
         mLoadingFragment.show(type, retry)
+    }
+
+    fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
     }
 
     override fun supportSlideBack(): Boolean = false

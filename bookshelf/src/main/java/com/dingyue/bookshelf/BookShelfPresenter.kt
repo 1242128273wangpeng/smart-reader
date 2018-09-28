@@ -115,8 +115,12 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
         if (books != null) {
-            iBookList.removeAll {
-                it.item_type != 2
+            if(isList){
+                iBookList.removeAll {
+                    it.item_type != 2
+                }
+            }else{
+                iBookList.clear()
             }
 
             if (books.isEmpty()) {
@@ -259,6 +263,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * 获取九宫格顶部广告
      * **/
     private fun requestShelfHeaderAD(activity: Activity) {
+        MediaControl.insertBookShelfMediaType(false)
         MediaControl.loadBookShelfHeaderMedia(activity, object : IMediaControl.HeaderMediaCallback {
             override fun requestMediaSuccess(viewGroup: ViewGroup?) {
                 if (viewGroup != null) {

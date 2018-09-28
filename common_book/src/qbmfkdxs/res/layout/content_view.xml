@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bookshelf"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recommend"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ranking"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -153,7 +153,7 @@
             android:layout_gravity="right|top"
             android:layout_marginTop="@dimen/dimen_margin_40"
             android:scaleType="fitXY"
-            android:src="@drawable/icon_bookshelf_guide_cache"
+            android:src="@drawable/bookshelf_guide_cache"
             android:visibility="gone"/>
 
         <ImageView
@@ -164,7 +164,7 @@
             android:layout_marginBottom="60dp"
             android:layout_marginLeft="@dimen/dimen_padding_28"
             android:scaleType="fitXY"
-            android:src="@drawable/icon_bookshelf_guide_delete_books"
+            android:src="@drawable/bookshelf_guide_delete_books"
             android:visibility="gone"/>
     </FrameLayout>
 </RelativeLayout>

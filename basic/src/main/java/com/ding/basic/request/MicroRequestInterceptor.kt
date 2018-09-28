@@ -40,14 +40,6 @@ class MicroRequestInterceptor : Interceptor {
         return requestParameters
     }
 
-    private fun initRequestToken(request: Request, params: Map<String, String>): String {
-        val requestTag = Token.encodeRequestTag(URLDecoder.decode(request.url().encodedPath(), "UTF-8"))
-        val parametersMap = Token.encodeParameters(params)
-
-        val token = Token.loadRequestToken(requestTag, parametersMap)
-        return URLEncoder.encode(token, "UTF-8")
-    }
-
     private fun initRequestUrl(request: Request, params: Map<String, String>): String? {
         val requestTag = Token.encodeRequestTag(URLDecoder.decode(request.url().encodedPath(), "UTF-8"))
         val parametersMap = Token.encodeParameters(params)

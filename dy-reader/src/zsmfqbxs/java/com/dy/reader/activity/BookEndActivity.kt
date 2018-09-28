@@ -3,6 +3,7 @@ package com.dy.reader.activity
 import android.os.Bundle
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
@@ -67,12 +68,21 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         initListener()
         initIntent()
         initData()
-
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
     private fun initListener() {
 
         iv_back.setOnClickListener {
@@ -101,12 +111,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             finish()
         }
 
         //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             finish()
         }
         //喜欢这本书的人还喜欢（换一换）

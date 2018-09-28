@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/web_content_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -40,7 +41,8 @@
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/recommend_title_search_icon"
-                    app:onPressChangeAlpha="true"/>
+                    app:onPressChangeAlpha="true"
+                    tools:ignore="MissingPrefix"/>
 
                 <TextView
                     style="@style/style_text_normal_weak"
@@ -79,7 +81,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
                 android:scaleType="fitXY"
-                android:src="@mipmap/nbar_search_nor_icon"/>
+                android:src="@drawable/nbar_search_nor_icon"/>
 
         </RelativeLayout>
 

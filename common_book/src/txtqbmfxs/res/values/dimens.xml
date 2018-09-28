@@ -8,4 +8,11 @@
 
     <dimen name="cover_book_text_title_size">16sp</dimen>
     <dimen name="cover_book_height">124dp</dimen>
+    <dimen name="dimen_height_0.5">0.5dp</dimen>
+    <dimen name="margin_22">22dp</dimen>
+    <dimen name="margin_5">5dp</dimen>
+    <dimen name="padding_16">16dp</dimen>
+    <dimen name="padding_14">14dp</dimen>
+    <dimen name="dimen_text_10">10sp</dimen>
+    <dimen name="small_size_12">12sp</dimen>
 </resources>

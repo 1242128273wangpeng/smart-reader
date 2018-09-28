@@ -2,6 +2,7 @@ package com.intelligent.reader.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.Config
@@ -10,16 +11,20 @@ import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
+import com.umeng.message.MessageSharedPrefs
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.LoadDataManager
+import net.lzbook.kit.utils.OpenUDID
 
 /**
  * <pre>
@@ -53,6 +58,12 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${sp.getString(SharedPreUtil.CONTENT_HOST, "")}】")
 
         btn_debug_start_params.isChecked = sp.getBoolean(SharedPreUtil.START_PARAMS, true)
+        txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+        if (AppUtils.hasUPush()) {
+            txt_device.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).deviceToken
+        } else {
+            txt_device.visibility = View.GONE
+        }
     }
 
     override fun onClick(v: View) {
@@ -69,6 +80,19 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             }
             R.id.tv_micro_content -> {
                 intentHostList(SharedPreUtil.CONTENT_HOST)
+            }
+            R.id.btn_debug_device_copy -> {
+                if (!TextUtils.isEmpty(txt_device.text.toString())) {
+                    AppUtils.copyText(txt_device.text.toString(), this)
+                    CommonUtil.showToastMessage(R.string.debug_copy_success)
+                }
+
+            }
+            R.id.btn_debug_udid_copy -> {
+                if (!TextUtils.isEmpty(txt_udid.text.toString())) {
+                    AppUtils.copyText(txt_udid.text.toString(), this)
+                    CommonUtil.showToastMessage(R.string.debug_copy_success)
+                }
             }
 
         }
@@ -124,6 +148,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         tv_web.setOnClickListener(this)
         tv_micro.setOnClickListener(this)
         tv_micro_content.setOnClickListener(this)
+        btn_debug_device_copy.setOnClickListener(this)
+        btn_debug_udid_copy.setOnClickListener(this)
 
 
     }

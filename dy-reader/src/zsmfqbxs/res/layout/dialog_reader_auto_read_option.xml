@@ -35,7 +35,7 @@
             android:id="@+id/txt_auto_read_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#CE3D3E"
+            android:textColor="#C2B282"
             android:textSize="16sp"
             tools:text="8"/>
     </LinearLayout>

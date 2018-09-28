@@ -10,12 +10,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.search.SearchCommonBean;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;
 
+import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.intelligent.reader.R;
 
 /**
@@ -24,14 +23,14 @@ import com.intelligent.reader.R;
 public class SearchSuggestAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<SearchCommonBean> mData;
+    private List<SearchCommonBeanYouHua> mData;
     private String editInput="";
     //item的类型
     public static final int ITEM_VIEW_TYPE_DATA = 0;
     public static final int ITEM_VIEW_MARGEN_ONE = 1;
     public static final int ITEM_VIEW_MARGEN_TWO = 2;
     private static final int ITEM_VIEW_TYPE_COUNT = 3;
-    public SearchSuggestAdapter(Context context, List<SearchCommonBean> mData, String editInput) {
+    public SearchSuggestAdapter(Context context, List<SearchCommonBeanYouHua> mData, String editInput) {
         this.mContext = context;
         this.mData = mData;
         this.editInput = editInput;
@@ -71,7 +70,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         } else {
             hodler = (ViewHolder) convertView.getTag();
         }
-        SearchCommonBean bean = mData.get(position);
+        SearchCommonBeanYouHua bean = mData.get(position);
         String type = bean.getWordtype();
         if(type.equals("authorType")){
             hodler.iv_type.setImageResource(R.drawable.search_author);

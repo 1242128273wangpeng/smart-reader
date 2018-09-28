@@ -4,10 +4,10 @@ import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.intelligent.reader.app.BookApplication
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
+import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -104,7 +104,11 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
                     MediaType.parse("application/json; charset=utf-8"),
                     loadUpdateParameters(books))
 
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
+            //部分4.2 手机报 retrofit 动态代理问题 java.lang.reflect.UndeclaredThrowableException at $Proxy2.a(Native Method)
+            try {
+                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
+            } catch (e: Exception) {
+            }
         }
     }
 

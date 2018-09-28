@@ -5,7 +5,10 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ClipboardManager;
+import android.content.ComponentCallbacks;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +18,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -572,6 +576,7 @@ public class AppUtils {
         return ip;
     }
 
+
     //如果连接的是移动网络
     private static String getLocalIpAddress() {
         try {
@@ -710,6 +715,7 @@ public class AppUtils {
                 || packageName.equals("cc.kdqbxs.reader") //快读替
                 || packageName.equals("cc.quanbennovel") //今日多看
                 || packageName.equals("cc.lianzainovel") //鸿雁替
+                || packageName.equals("cc.quanben.novel") //五步替
                 || packageName.equals("cc.mianfeinovel"); //阅微替
     }
 
@@ -808,7 +814,11 @@ public class AppUtils {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point();
-        display.getSize(point);
+
+        if (null != display) {
+            display.getSize(point);
+        }
+
         int width = point.x;
         int height = point.y;
         metric = width + height + "";
@@ -1175,8 +1185,8 @@ public class AppUtils {
                         + ".com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D"
                         + key));
 
-            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
-            // .FLAG_ACTIVITY_NEW_TASK)
+        // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
+        // .FLAG_ACTIVITY_NEW_TASK)
         try {
             activity.startActivity(intent);
             return true;
@@ -1187,5 +1197,120 @@ public class AppUtils {
 
         }
 
+    }
+
+    /**
+     * 一键复制粘贴
+     */
+
+    public static void copyText(String content, Context context) {
+
+        try {
+            String finalContent = content.trim();
+            int sdk = Build.VERSION.SDK_INT;
+            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                android.text.ClipboardManager clipboard =
+                        (android.text.ClipboardManager) context.getSystemService(
+                                Context.CLIPBOARD_SERVICE);
+                clipboard.setText(finalContent);
+            } else {
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(
+                        Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip_data = android.content.ClipData.newPlainText(
+                        "TSMS", finalContent);
+                clipboard.setPrimaryClip(clip_data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private static float sNoncompatDensity;
+    private static float sNoncompatScaleDensity;
+
+    /**
+     * 屏幕适配修改属性
+     * @param activity
+     * @param application
+     */
+    public static void setCustomDensity(final Activity activity, final Application application){
+        try {
+            DisplayMetrics displayMetrics = application.getResources().getDisplayMetrics();
+            if (sNoncompatDensity == 0) {
+                sNoncompatDensity = displayMetrics.density;
+                sNoncompatScaleDensity = displayMetrics.scaledDensity;
+                application.registerComponentCallbacks(new ComponentCallbacks() {
+                    @Override
+                    public void onConfigurationChanged(Configuration newConfig) {
+                        if (newConfig != null && newConfig.fontScale > 0) {
+                            sNoncompatScaleDensity = application.getResources().getDisplayMetrics().scaledDensity;
+                        }
+                    }
+
+                    @Override
+                    public void onLowMemory() {
+
+                    }
+                });
+            }
+            float targetDensity = displayMetrics.widthPixels / 360;
+            float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
+            int targetDensityDpi = (int) (160 * targetDensity);
+
+            displayMetrics.density = targetDensity;
+            displayMetrics.scaledDensity = targetScaleDensity;
+            displayMetrics.densityDpi = targetDensityDpi;
+
+            DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
+            activityDisplayMetrics.density = targetDensity;
+            activityDisplayMetrics.scaledDensity = targetScaleDensity;
+            activityDisplayMetrics.densityDpi = targetDensityDpi;
+        }catch (Throwable e){
+            AppLog.e("setCustomDensity:"+e.getMessage());
+        }
+
+    }
+
+    /**
+     * 是否需要开启广告分渠道，分版本，分广告位控制
+     * @param adSpaceType  广告位类型
+     * @return
+     */
+
+    public static boolean isNeedAdControl(String adSpaceType){
+        AppLog.e("dynamic",getPackageName()+getChannelId()+getVersionName());
+        if(!TextUtils.isEmpty(Constants.ad_control_status) && Constants.ad_control_status.equals("1")){
+            if(Constants.ad_control_pkg.equals(getPackageName()) && Constants.ad_control_channelId.toLowerCase().equals(getChannelId().toLowerCase())
+                    && Constants.ad_control_version.equals(getVersionName())){
+                if("0".equals(Constants.ad_control_adTpye)){ //全部广告位
+                    return true;
+                }else if("1".equals(Constants.ad_control_adTpye)){ // 福利中心
+                    if(adSpaceType.equals(Constants.ad_control_welfare)){
+                        return true;
+                    }
+                }else if("2".equals(Constants.ad_control_adTpye)){//书架页 1-1
+                    if(adSpaceType.equals(Constants.ad_control_shelf_normal)){
+                        return true;
+                    }
+                }else if("3".equals(Constants.ad_control_adTpye)){ //书架页  1-2
+                    if(adSpaceType.equals(Constants.ad_control_shelf_float)){
+                        return true;
+                    }
+                }else if("4".equals(Constants.ad_control_adTpye)){ //阅读页
+                    if(adSpaceType.equals(Constants.ad_control_reader)){
+                        return true;
+                    }
+                }else if("5".equals(Constants.ad_control_adTpye)){ //福利中心和书架页 1-2
+                    if(adSpaceType.equals(Constants.ad_control_welfare_shelf)){
+                        return true;
+                    }
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -35,7 +35,7 @@
                 android:layout_alignParentRight="true"
                 android:scaleType="fitXY"
                 app:onPressChangeAlpha="true"
-                android:src="@mipmap/nbar_search_nor_icon"
+                android:src="@drawable/nbar_search_nor_icon"
                 tools:ignore="MissingPrefix"/>
 
     </RelativeLayout>

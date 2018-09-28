@@ -18,6 +18,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,6 +55,7 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,14 +110,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
-
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new LayoutInflaterFactory() {
             @Override
             public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
                 return createViewWithPressState(parent, name, context, attrs);
             }
         });
-
         super.onCreate(paramBundle);
 
         lifecycleRegistry = new LifecycleRegistry(this);
@@ -130,7 +130,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (isDarkStatusBarText) {
+            if (isDarkStatusBarText || shouldLightStatusBase()) {
                 isMIUISupport = new MIUIHelper().setStatusBarLightMode(this, true);
                 isFlymeSupport = new FlymeHelper().setStatusBarLightMode(this, true);
                 if (isMIUISupport || isFlymeSupport) {
@@ -143,17 +143,28 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            if (isDarkStatusBarText) {
+            if (isDarkStatusBarText || shouldLightStatusBase()) {
                 getWindow().getDecorView().setSystemUiVisibility(getWindow().getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
 
         initThemeHelper();
         initTheme();
-
+        //设置屏幕适配属性
+        AppUtils.setCustomDensity(this,BaseBookApplication.getGlobalContext());
         //友盟推送
         if (AppUtils.hasUPush()) {
-            PushAgent.getInstance(this).onAppStart();
+            final WeakReference<FrameActivity> weakReference=new WeakReference(FrameActivity.this);
+            new AsyncTask(){
+                @Override
+                protected Object doInBackground(Object[] objects) {
+                    if(weakReference!=null&&weakReference.get()!=null) {
+                        PushAgent.getInstance(weakReference.get()).onAppStart();
+                    }
+                    return null;
+                }
+            }.execute();
+
         }
 
     }
@@ -252,6 +263,10 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         } else {
             isDarkStatusBarText = false;
         }
+    }
+
+    public boolean shouldLightStatusBase(){
+        return false;
     }
 
     /**
@@ -415,7 +430,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             }
         }
 
-        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
+        if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE && !AppUtils.isNeedAdControl(Constants.ad_control_other)) {
             boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
             if (isShowSwitchSplash) {
                 getWindow().getDecorView().postDelayed(new Runnable() {

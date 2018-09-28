@@ -1,4 +1,3 @@
-
 package com.intelligent.reader.activity
 
 import android.content.Intent
@@ -134,11 +133,11 @@ class CataloguesActivity : BaseCacheableActivity(), View.OnClickListener, Catalo
             }
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (chapterList != null && !chapterList!!.isEmpty()) {
-                    var manager = recl_catalog_content.layoutManager
-                    if (manager is LinearLayoutManager){
+                if (!chapterList.isEmpty()) {
+                    val manager = recl_catalog_content.layoutManager
+                    if (manager is LinearLayoutManager) {
 
-                        char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
+                        char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList[manager.findFirstVisibleItemPosition()].sequence + 1)
                     }
 
                 }
@@ -300,6 +299,7 @@ class CataloguesActivity : BaseCacheableActivity(), View.OnClickListener, Catalo
 
             R.id.img_catalog_sort ->
                 if (chapterList.isNotEmpty()) {
+
                     //书签点击的统计
                     isPositive = !isPositive
                     chapterList.reverse()
@@ -308,6 +308,8 @@ class CataloguesActivity : BaseCacheableActivity(), View.OnClickListener, Catalo
                     cataloguesAdapter.notifyDataSetChanged()
 
                     changeSortState(isPositive)
+
+                    recl_catalog_content.scrollToPosition(0)
                 }
             R.id.img_fix_book -> if (cataloguesPresenter != null) {
                 cataloguesPresenter?.fixBook()

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/download_manager_head_menu_bg"
+    android:background="@drawable/bookshelf_head_popup_bg"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:id="@+id/txt_edit"
             android:layout_width="125dp"
             android:layout_height="50dp"
-            android:background="@drawable/download_manager_head_menu_first_sel"
+            android:background="@drawable/bookshelf_head_menu_top_sel"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:soundEffectsEnabled="true"
@@ -33,7 +33,7 @@
             android:id="@+id/txt_time_sorting"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/download_manager_head_menu_second_sel"
+            android:background="@drawable/bookshelf_head_menu_center_sel"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:soundEffectsEnabled="true"
@@ -45,7 +45,7 @@
             android:id="@+id/txt_recent_read_sorting"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/download_manager_head_menu_third_sel"
+            android:background="@drawable/bookshelf_head_menu_bottom_sel"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:soundEffectsEnabled="true"

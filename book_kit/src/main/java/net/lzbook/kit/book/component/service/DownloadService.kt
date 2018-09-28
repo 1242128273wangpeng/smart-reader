@@ -101,7 +101,10 @@ class DownloadService : Service(), Runnable {
                 if (bookChapterDao.getCount() <= 0) {
                     requestBookCatalog(task)
                 } else {
-                    downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
+                    try {
+                        downBook(task, bookChapterDao.queryAllChapters(), bookChapterDao)
+                    } catch (e: Exception) {
+                    }
                 }
             } else {
                 synchronized(lock) {
@@ -125,7 +128,10 @@ class DownloadService : Service(), Runnable {
                     override fun requestResult(result: List<Chapter>?) {
                         if (result != null) {
                             if (result.isNotEmpty()) {
-                                downBook(bookTask, result, bookChapterDao)
+                                try {
+                                    downBook(bookTask, result, bookChapterDao)
+                                } catch (e: Exception) {
+                                }
                             } else {
                                 CacheManager.innerListener.onTaskFailed(bookTask.book_id,
                                         IllegalArgumentException("server return null chapter list"))
@@ -358,7 +364,20 @@ class DownloadService : Service(), Runnable {
                     data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
                     data.put("url1", fileUrlList.get(0))
                     data.put("url2", fileUrlList.last())
-                    data.put("url3", url);
+                    data.put("url3", url)
+                    data.put("starttime", "" + startParseTime)
+                    data.put("endtime", "" + System.currentTimeMillis())
+                    data.put("times", "" + (System.currentTimeMillis() - startParseTime))
+                    StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.RESOLVEPACKE, data)
+                } catch (e:OutOfMemoryError){
+                    val data = HashMap<String, String>()
+                    data.put("STATUS", "2")
+                    data.put("reason", e.javaClass.simpleName + ":" + e.message)
+                    data.put("bookid", task.book.book_id!!)
+                    data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
+                    data.put("url1", fileUrlList.get(0))
+                    data.put("url2", fileUrlList.last())
+                    data.put("url3", url)
                     data.put("starttime", "" + startParseTime)
                     data.put("endtime", "" + System.currentTimeMillis())
                     data.put("times", "" + (System.currentTimeMillis() - startParseTime))

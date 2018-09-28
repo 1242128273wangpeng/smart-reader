@@ -67,7 +67,7 @@
             android:layout_marginBottom="8dip"
             android:text="@string/app_name"
             android:textColor="@color/color_gray_b3b3b3"
-            android:textSize="@dimen/dimen_text_10"/>
+            android:textSize="10sp"/>
     <TextView
         android:id="@+id/item_ad_title"
         android:layout_width="wrap_content"

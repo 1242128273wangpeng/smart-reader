@@ -33,7 +33,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_centerVertical="true"
-                android:background="@mipmap/bookshelf_icon_search_copy"/>
+                android:background="@drawable/bookshelf_icon_search_copy"/>
 
             <TextView
                 android:layout_width="wrap_content"

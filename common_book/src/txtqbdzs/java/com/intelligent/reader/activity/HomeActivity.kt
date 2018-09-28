@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.Config
 import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
@@ -33,6 +34,7 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
@@ -154,24 +156,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPMESSAGE)
         }
 
     }
 
-    override fun onResume() {
-        super.onResume()
 
-        this.changeHomePagerIndex(currentIndex)
-
-        StatService.onResume(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        StatService.onPause(this)
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -192,13 +181,26 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        this.changeHomePagerIndex(currentIndex)
+        StatService.onResume(this)
+        MediaLifecycle.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+        MediaLifecycle.onPause()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         AndroidLogStorage.getInstance().clear()
 
         this.unregisterReceiver(homeBroadcastReceiver)
-
+        MediaLifecycle.onDestroy()
         try {
             setContentView(R.layout.common_empty)
         } catch (exception: Resources.NotFoundException) {
@@ -379,7 +381,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
+        if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }

@@ -18,6 +18,7 @@
         <RelativeLayout
             android:id="@+id/rl_container"
             android:layout_width="match_parent"
+            android:visibility="visible"
             android:layout_height="198dp">
 
             <TextView
@@ -39,24 +40,6 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6dp"
                 android:text="@string/bookshelf_delete_dialog_content"/>
-
-            <CheckBox
-                android:id="@+id/ckb_delete_cache"
-                style="@style/style_text_normal_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_below="@id/txt_delete_prompt"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="12dp"
-                android:button="@drawable/bookshelf_delete_check_box_sel"
-                android:checked="false"
-                android:paddingEnd="0dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="0dp"
-                android:paddingStart="8dp"
-                android:text="@string/bookshelf_delete_dialog_check"/>
-
 
             <LinearLayout
                 android:id="@+id/ll_delete_option"

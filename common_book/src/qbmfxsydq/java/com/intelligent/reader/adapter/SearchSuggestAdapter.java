@@ -117,6 +117,8 @@ public class SearchSuggestAdapter extends BaseAdapter {
                             Glide.with(mContext).load(bean.getImage_url()).placeholder(
                                     R.drawable.search_default_book_cover).error(
                                     (R.drawable.search_default_book_cover)).into(hodler.iv_icon);
+                        }else{
+                            hodler.iv_icon.setImageResource(R.drawable.search_default_book_cover);
                         }
                         hodler.iv_type.setImageResource(R.drawable.search_book);
                     }

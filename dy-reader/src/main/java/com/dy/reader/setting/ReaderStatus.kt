@@ -2,12 +2,10 @@ package com.dy.reader.setting
 
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.repository.LocalRequestRepository
-import com.dy.reader.Reader
 import com.dy.reader.data.DataProvider
 import com.dy.reader.event.EventLoading
-import com.dy.reader.page.Position
 import com.dy.reader.page.PageManager
+import com.dy.reader.page.Position
 import org.greenrobot.eventbus.EventBus
 import kotlin.properties.Delegates
 
@@ -26,8 +24,6 @@ object ReaderStatus {
         chapterList.clear()
         PageManager.clear()
         DataProvider.clear()
-
-
     }
 
 
@@ -39,10 +35,10 @@ object ReaderStatus {
     var currentChapter: Chapter? = null
         private set
         get() {
-            if (position != null && position.group >= 0 && position.group < chapterList.size) {
-                return chapterList[position.group]
+            return if (position.group >= 0 && position.group < chapterList.size) {
+                chapterList[position.group]
             } else {
-                return null
+                null
             }
         }
 
@@ -50,10 +46,10 @@ object ReaderStatus {
     var chapterName: String = ""
         private set
         get() {
-            if (position != null && position.group >= 0 && position.group < chapterList.size) {
-                return chapterList[position.group].name ?: ""
+            return if (position.group >= 0 && position.group < chapterList.size) {
+                chapterList[position.group].name ?: ""
             } else {
-                return ""
+                ""
             }
         }
 
@@ -61,10 +57,10 @@ object ReaderStatus {
     var chapterId: String = ""
         private set
         get() {
-            if (position != null && position.group >= 0 && position.group < chapterList.size) {
-                return chapterList[position.group].chapter_id
+            return if (position.group >= 0 && position.group < chapterList.size) {
+                chapterList[position.group].chapter_id
             } else {
-                return ""
+                ""
             }
         }
 
@@ -78,7 +74,7 @@ object ReaderStatus {
 
     var position: Position = Position(book_id = "")
         set(value) {
-            if (!field.equals(value)) {
+            if (field != value) {
                 field = value
                 EventBus.getDefault().post(EventLoading(EventLoading.Type.PROGRESS_CHANGE))
             }

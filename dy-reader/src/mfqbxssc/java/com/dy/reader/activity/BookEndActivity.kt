@@ -28,6 +28,7 @@ import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.user.BookRecommender
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 import java.util.concurrent.Callable
@@ -69,8 +70,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         initListener()
         initIntent()
         initData()
-
-        if (!Constants.isHideAD) {
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
+        if (!Constants.isHideAD && !AppUtils.isNeedAdControl(Constants.ad_control_other)) {
             initBookEndAD()
         }
     }
@@ -112,12 +113,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             finish()
         }
 
         //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             finish()
         }
         //喜欢这本书的人还喜欢（换一换）

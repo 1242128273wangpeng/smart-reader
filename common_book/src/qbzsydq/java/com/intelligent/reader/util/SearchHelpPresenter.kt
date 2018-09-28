@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.ding.basic.bean.SearchAutoCompleteBean
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.SearchCommonBeanYouHua
 import com.ding.basic.bean.SearchHotBean
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
@@ -22,7 +23,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.ArrayList
@@ -33,7 +33,7 @@ import java.util.HashMap
  */
 class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<SearchView.HelpView> {
 
-    private var mSuggestList: MutableList<SearchCommonBean>? = ArrayList()
+    private var mSuggestList: MutableList<SearchCommonBeanYouHua>? = ArrayList()
     private var hotWords: MutableList<SearchHotBean.DataBean>? = ArrayList()
     private var suggest: String? = null
     private var searchType: String? = null
@@ -220,7 +220,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), mHistoryDatas)
     }
 
-    fun result(result: List<SearchCommonBean>) {
+    fun result(result: List<SearchCommonBeanYouHua>) {
         if (mSuggestList == null)
             return
         mSuggestList!!.clear()
@@ -237,7 +237,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
 
     }
 
-    fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua) {
+    fun onSearchResult(suggestList: List<SearchCommonBeanYouHua>, transmitBean: SearchAutoCompleteBeanYouHua) {
         if (mSuggestList == null) {
             return
         }
@@ -278,7 +278,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
             when (msg.what) {
                 10 -> helper.clearHistory()
 
-                20 -> helper.result(msg.obj as ArrayList<SearchCommonBean>)
+                20 -> helper.result(msg.obj as ArrayList<SearchCommonBeanYouHua>)
 
                 else -> {
                 }
@@ -339,7 +339,7 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         return searchType
     }
 
-    fun getSuggestData(): MutableList<SearchCommonBean>? {
+    fun getSuggestData(): MutableList<SearchCommonBeanYouHua>? {
         return mSuggestList
     }
 

@@ -385,8 +385,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -396,6 +398,14 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
