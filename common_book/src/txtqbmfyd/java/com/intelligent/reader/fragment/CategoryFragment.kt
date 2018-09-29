@@ -1,6 +1,5 @@
 package com.intelligent.reader.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -11,8 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.request.RequestService
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.txtqbmfyd.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.request.UrlUtils
@@ -36,8 +36,7 @@ class CategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         content_head_search.setOnClickListener {
-            val intent = Intent(activity, SearchBookActivity::class.java)
-            startActivity(intent)
+            RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
             StartLogClickUtil.upLoadEventLog(activity,
                     StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
         }

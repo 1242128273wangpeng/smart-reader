@@ -554,15 +554,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 data["type"] = "0"//0 代表从分类过来
                 StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
 
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
-                intent.putExtra("word", keyWord)
-                intent.putExtra("search_type", search_type)
-                intent.putExtra("filter_type", filter_type)
-                intent.putExtra("filter_word", filter_word)
-                intent.putExtra("sort_type", sort_type)
-                intent.putExtra("from_class", "fromClass")//是否从分类来
-                startActivity(intent)
+                this.enterSearch(
+                        keyWord, search_type, filter_type, filter_word, sort_type,
+                        "fromClass")
+
                 AppLog.e("kkk", "$search_type===")
 
             } catch (e: Exception) {
