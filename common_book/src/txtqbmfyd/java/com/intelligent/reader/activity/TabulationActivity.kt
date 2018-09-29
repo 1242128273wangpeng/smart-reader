@@ -17,7 +17,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.intelligent.reader.util.PagerDesc
@@ -32,8 +31,8 @@ import java.util.HashMap
 
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_tabulation.*
-import net.lzbook.kit.CustomWebViewClient
-import net.lzbook.kit.WebViewInterfaceObject
+import com.dingyue.contract.web.CustomWebClient
+import com.dingyue.contract.web.JSInterfaceObject
 import net.lzbook.kit.utils.*
 import swipeback.ActivityLifecycleHelper
 
@@ -48,7 +47,7 @@ class TabulationActivity : FrameActivity() {
 
     private var fromPush = false
 
-    private var customWebViewClient: CustomWebViewClient? = null
+    private var customWebClient: CustomWebClient? = null
 
     private var pagerDesc: PagerDesc? = null
 
@@ -219,18 +218,18 @@ class TabulationActivity : FrameActivity() {
         loadingPage = LoadingPage(this, rl_tabulation_root, LoadingPage.setting_result)
 
         if (web_tabulation_content != null) {
-            customWebViewClient = CustomWebViewClient(this, web_tabulation_content)
+            customWebClient = CustomWebClient(this, web_tabulation_content)
         }
 
-        customWebViewClient?.initWebViewSetting()
+        customWebClient?.initWebViewSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             web_tabulation_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        web_tabulation_content?.webViewClient = customWebViewClient
+        web_tabulation_content?.webViewClient = customWebClient
 
-        web_tabulation_content?.addJavascriptInterface(object : WebViewInterfaceObject(this@TabulationActivity) {
+        web_tabulation_content?.addJavascriptInterface(object : JSInterfaceObject(this@TabulationActivity) {
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
@@ -427,8 +426,8 @@ class TabulationActivity : FrameActivity() {
      * 处理WebView请求
      * **/
     private fun handleLoadingWebViewData(url: String?) {
-        if (customWebViewClient != null) {
-            customWebViewClient?.initParameter()
+        if (customWebClient != null) {
+            customWebClient?.initParameter()
         }
 
         if (url != null && url.isNotEmpty()) {
@@ -449,12 +448,12 @@ class TabulationActivity : FrameActivity() {
             return
         }
 
-        if (customWebViewClient != null) {
-            customWebViewClient?.setLoadingWebViewStart {
+        if (customWebClient != null) {
+            customWebClient?.setLoadingWebViewStart {
                 Logger.e("WebView页面开始加载 $it")
             }
 
-            customWebViewClient?.setLoadingWebViewFinish {
+            customWebClient?.setLoadingWebViewFinish {
                 Logger.e("WebView页面加载结束！")
                 if (loadingPage != null) {
                     loadingPage?.onSuccessGone()
@@ -462,7 +461,7 @@ class TabulationActivity : FrameActivity() {
                 requestWebViewPager(web_tabulation_content)
             }
 
-            customWebViewClient?.setLoadingWebViewError {
+            customWebClient?.setLoadingWebViewError {
                 Logger.e("WebView页面加载异常！")
                 if (loadingPage != null) {
                     loadingPage?.onErrorVisable()
@@ -472,8 +471,8 @@ class TabulationActivity : FrameActivity() {
 
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebViewClient != null) {
-                    customWebViewClient?.initParameter()
+                if (customWebClient != null) {
+                    customWebClient?.initParameter()
                 }
                 web_tabulation_content?.reload()
             })
