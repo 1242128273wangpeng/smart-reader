@@ -54,6 +54,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     }
 
+    public JSInterfaceHelper() {
+        handler = new Handler();
+    }
+
     public void setBookString(String strings) {
         this.strings = strings;
     }
