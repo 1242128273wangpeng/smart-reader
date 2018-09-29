@@ -14,7 +14,7 @@ import net.lzbook.kit.dynamic.service.DynamicService
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.CustomWebViewCache
+import com.dingyue.contract.web.WebResourceCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
@@ -293,7 +293,7 @@ class DynamicParameter(private val context: Context) {
 
         if (webStaticResources.isNotEmpty()) {
 
-            val customWebViewCache = CustomWebViewCache.loadCustomWebViewCache()
+            val customWebViewCache = WebResourceCache.loadCustomWebViewCache()
 
             val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 

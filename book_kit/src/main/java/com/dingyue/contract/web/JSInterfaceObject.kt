@@ -1,4 +1,4 @@
-package net.lzbook.kit
+package com.dingyue.contract.web
 
 import android.app.Activity
 import android.os.Bundle
@@ -28,7 +28,7 @@ import java.util.HashMap
  * Mail crazylei911228@gmail.com
  * Date 2018/9/18 17:45
  */
-abstract class WebViewInterfaceObject(var activity: Activity) {
+abstract class JSInterfaceObject(var activity: Activity) {
 
     @JavascriptInterface
     fun buildRequestUrl(data: String?): String? {
