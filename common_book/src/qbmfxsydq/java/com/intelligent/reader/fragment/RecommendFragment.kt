@@ -1,6 +1,5 @@
 package com.intelligent.reader.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -38,8 +37,9 @@ class RecommendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rl_head_search.setOnClickListener {
-            val intent = Intent(activity, SearchBookActivity::class.java)
-            startActivity(intent)
+
+            RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
+
             StartLogClickUtil.upLoadEventLog(activity,
                     StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_FL_SEARCH)
         }

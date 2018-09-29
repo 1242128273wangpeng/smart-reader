@@ -15,6 +15,7 @@ import net.lzbook.kit.utils.AppUtils;
 import java.lang.reflect.Constructor;
 
 /**
+ * 浏览足迹
  * Created by yuchao on 2017/6/17 0017.
  */
 public class HisAdapter extends BaseAdapter<HistoryInfo> {

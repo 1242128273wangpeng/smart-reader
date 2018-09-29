@@ -3,7 +3,6 @@ package com.intelligent.reader.fragment.scroll;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +23,6 @@ import android.widget.TextView;
 
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.fragment.WebViewFragment;
 import com.intelligent.reader.view.scroll.ScrollWebView;
@@ -257,12 +255,7 @@ public class ScrollWebFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.content_head_search:
-                Intent intent = new Intent(getActivity(), SearchBookActivity.class);
-                try {
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
                 break;
             case R.id.content_download_manage:
                 try {

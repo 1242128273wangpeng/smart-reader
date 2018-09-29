@@ -72,9 +72,6 @@ android {
 
         resConfigs "zh"
 
-        ndk {
-            abiFilters 'armeabi-v7a'
-        }
 //        System.err.println("project.properties = ${project.getProperties()}")
 
 
@@ -883,6 +880,7 @@ dependencies {
     implementation "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
     implementation project(':bookshelf')
+    implementation project(':searchbook')
     implementation project(':downloadmanager')
     implementation project(':dy-reader')
     implementation files('libs/tracking1.3.0.jar')

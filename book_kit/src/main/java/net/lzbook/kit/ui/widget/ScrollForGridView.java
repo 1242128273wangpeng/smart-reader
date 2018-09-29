@@ -5,9 +5,10 @@ import android.util.AttributeSet;
 import android.widget.GridView;
 
 /**
+ * 迁移至book-kit下
  * Created by Administrator on 2017\9\5 0005.
  */
-
+@Deprecated
 public class ScrollForGridView extends GridView {
 
 

@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
@@ -145,22 +144,16 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 title_layout.setVisibility(View.GONE);
             }
 
-            rl_recommend_search.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(WebViewFragment.this.context, SearchBookActivity.class));
-                    StartLogClickUtil.upLoadEventLog(context,
-                            StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
-                }
+            rl_recommend_search.setOnClickListener(v -> {
+                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
+                StartLogClickUtil.upLoadEventLog(context,
+                        StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH);
             });
 
-            img_ranking_search.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(WebViewFragment.this.context, SearchBookActivity.class));
-                    StartLogClickUtil.upLoadEventLog(context,
-                            StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
-                }
+            img_ranking_search.setOnClickListener(v -> {
+                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
+                StartLogClickUtil.upLoadEventLog(context,
+                        StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH);
             });
         }
 
@@ -360,20 +353,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.content_head_search:
-                Intent intent = new Intent(getActivity(), SearchBookActivity.class);
-                try {
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                RouterUtil.INSTANCE.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY);
                 break;
-//            case R.id.content_download_manage:
-//                try {
-//                    RouterUtil.INSTANCE.navigation(RouterConfig.DOWNLOAD_MANAGER_ACTIVITY);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//                break;
         }
     }
 

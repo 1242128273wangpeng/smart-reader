@@ -23,6 +23,12 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.Config;
 import com.ding.basic.net.api.service.RequestService;
+import com.ding.basic.RequestRepositoryFactory;
+import com.ding.basic.net.api.service.RequestService;
+import com.dingyue.contract.CommonContract;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.view.SelectSexDialog;
 
@@ -41,6 +47,9 @@ import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
+import net.lzbook.kit.utils.webview.CustomWebClient;
+import net.lzbook.kit.utils.EnterUtilKt;
+import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -238,9 +247,8 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                             StartLogClickUtil.SEARCH, postData);
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(this, SearchBookActivity.class);
-                startActivity(intent);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
+
                 break;
             case R.id.img_sex:
                 if(selectSexDialog == null){
@@ -459,15 +467,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                             StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
                             data);
 
-                    Intent intent = new Intent();
-                    intent.setClass(LabelsDetailActivity.this, SearchBookActivity.class);
-                    intent.putExtra("word", keyWord);
-                    intent.putExtra("search_type", search_type);
-                    intent.putExtra("filter_type", filter_type);
-                    intent.putExtra("filter_word", filter_word);
-                    intent.putExtra("sort_type", sort_type);
-                    intent.putExtra("from_class", "findBookDetail");
-                    startActivity(intent);
+                    EnterUtilKt.enterSearch(LabelsDetailActivity.this,
+                            keyWord, search_type, filter_type, filter_word, sort_type,
+                            "findBookDetail");
+
                     AppLog.i(TAG, "enterSearch success");
                 } catch (Exception e) {
                     AppLog.e(TAG, "Search failed");

@@ -25,6 +25,7 @@ object RouterUtil {
     const val FROM_DISCLAIMER_PAGE = "from_disclaimer_page"
 
     // 调转封面页传参
+    const val AUTHOR = "author"
     const val BOOK_ID = "book_id"
     const val BOOK_SOURCE_ID = "book_source_id"
     const val BOOK_CHAPTER_ID = "book_chapter_id"

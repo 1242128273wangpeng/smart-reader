@@ -25,6 +25,11 @@ public class SearchCommonBeanYouHua implements Serializable {
     private String bookType;
     private int isAuthor;
 
+    /**
+     * 本地字段：0书籍 1分割线
+     */
+    public int viewType = 0;
+
     public int getIsAuthor() {
         return isAuthor;
     }

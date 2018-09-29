@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverRecommendBean
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooks
-import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
@@ -20,12 +20,14 @@ import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.model.BookCoverViewModel
+import net.lzbook.kit.ui.widget.RecommendItemView
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.BookCoverUtil
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
+import net.lzbook.kit.utils.enterSearch
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -395,7 +397,11 @@ class CoverPagePresenter(private val book_id: String?,
      * 判断是否跳转到搜索页
      * **/
     fun checkStartSearchActivity(view: View) {
-        coverPageContract.checkStartSearchActivity(view)
+        if (view is RecommendItemView) {
+            activity.enterSearch(
+                    word = view.title, search_type = "0", filter_type = "0", filter_word = "ALL", sort_type = "0")
+            return
+        }
     }
 
     /***

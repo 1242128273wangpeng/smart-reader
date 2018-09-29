@@ -1,20 +1,16 @@
 package net.lzbook.kit.utils.webview;
 
-import com.ding.basic.bean.Book;
-import com.ding.basic.RequestRepositoryFactory;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.logger.AppLog;
 
 import java.util.HashMap;
@@ -55,6 +51,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         this.webView = webView;
         handler = new Handler();
 
+    }
+
+    public JSInterfaceHelper() {
+        handler = new Handler();
     }
 
     public void setBookString(String strings) {

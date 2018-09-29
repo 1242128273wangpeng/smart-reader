@@ -216,9 +216,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                             StartLogClickUtil.SEARCH, postData);
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(this, SearchBookActivity.class);
-                startActivity(intent);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
                 break;
 
         }
@@ -413,15 +411,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                             StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
                             data);
 
-                    Intent intent = new Intent();
-                    intent.setClass(FindBookDetail.this, SearchBookActivity.class);
-                    intent.putExtra("word", keyWord);
-                    intent.putExtra("search_type", search_type);
-                    intent.putExtra("filter_type", filter_type);
-                    intent.putExtra("filter_word", filter_word);
-                    intent.putExtra("sort_type", sort_type);
-                    intent.putExtra("from_class", "findBookDetail");
-                    startActivity(intent);
+                    EnterUtilKt.enterSearch(FindBookDetail.this,
+                            keyWord, search_type, filter_type, filter_word, sort_type,
+                            "findBookDetail");
+
                     AppLog.i(TAG, "enterSearch success");
                 } catch (Exception e) {
                     AppLog.e(TAG, "Search failed");

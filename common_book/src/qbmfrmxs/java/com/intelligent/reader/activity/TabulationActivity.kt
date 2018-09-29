@@ -231,9 +231,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
                     }
                 }
 
-                val intent = Intent()
-                intent.setClass(this, SearchBookActivity::class.java)
-                startActivity(intent)
+                RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
             }
         }
     }
@@ -420,15 +418,10 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
                         StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
                         data)
 
-                val intent = Intent()
-                intent.setClass(this@TabulationActivity, SearchBookActivity::class.java)
-                intent.putExtra("word", keyWord)
-                intent.putExtra("search_type", search_type)
-                intent.putExtra("filter_type", filter_type)
-                intent.putExtra("filter_word", filter_word)
-                intent.putExtra("sort_type", sort_type)
-                intent.putExtra("from_class", "findBookDetail")
-                startActivity(intent)
+                this.enterSearch(
+                        keyWord, search_type, filter_type, filter_word, sort_type,
+                        "findBookDetail")
+
                 AppLog.i(TAG, "enterSearch success")
             } catch (e: Exception) {
                 AppLog.e(TAG, "Search failed")

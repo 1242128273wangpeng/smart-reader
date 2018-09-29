@@ -261,4 +261,14 @@
     <color name="color_gray_eaeaea">#eaeaea</color>
     <color name="color_gray_989797">#989797</color>
 
+
+    <color name="color_F4F4F4">#F4F4F4</color>
+    <color name="color_F0F0F0">#F0F0F0</color>
+    <color name="color_ADB4BE">#ADB4BE</color>
+    <color name="color_949AA5">#949AA5</color>
+    <color name="color_555555">#555555</color>
+    <color name="color_5D646E">#5D646E</color>
+    <color name="color_252B35">#252B35</color>
+    <color name="color_212832">#212832</color>
+    <color name="color_323232">#323232</color>
 </resources>

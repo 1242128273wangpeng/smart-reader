@@ -48,17 +48,17 @@ android {
     flavorDimensions "default"
 
     productFlavors {
-        mfqbxssc {}
-        qbmfkdxs {}
-        qbzsydq {}
-        txtqbdzs {}
+        mfqbxssc  {}
+        qbmfkdxs  {}
+        qbzsydq   {}
+        txtqbdzs  {}
         txtqbmfxs {}
         txtqbmfyd {}
-        zsmfqbxs {}
-        qbmfrmxs {}
-        qbmfkkydq{}
-        qbmfxsydq{}
-        mfxsqbyd {}
+        zsmfqbxs  {}
+        qbmfrmxs  {}
+        qbmfkkydq {}
+        qbmfxsydq {}
+        mfxsqbyd  {}
     }
 }
 

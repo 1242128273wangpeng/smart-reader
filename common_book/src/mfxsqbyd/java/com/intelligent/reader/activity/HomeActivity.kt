@@ -75,7 +75,7 @@ import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
-        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface , SwitchButton.OnCheckedChangeListener{
+        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface, SwitchButton.OnCheckedChangeListener {
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
@@ -101,13 +101,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        var uri:String = ""
-        when(SPUtils.getDefaultSharedInt(SPKey.GENDER_TAG)){
-            Constants.SBOY -> { uri = RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName())}
-            Constants.SGIRL -> { uri = RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName())}
-            else -> {
-                 uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
-            }
+        val uri = when (SPUtils.getDefaultSharedInt(SPKey.GENDER_TAG)) {
+            Constants.SBOY -> RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName())
+            Constants.SGIRL -> RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName())
+            else -> RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
         }
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
@@ -347,7 +344,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         txt_disclaimer_statement.setOnClickListener {
             PersonalLogger.uploadPersonalDisclaimer()
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_DISCLAIMER_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         }
 
@@ -530,15 +527,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 data["type"] = "0"//0 代表从分类过来
                 StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
 
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
-                intent.putExtra("word", keyWord)
-                intent.putExtra("search_type", search_type)
-                intent.putExtra("filter_type", filter_type)
-                intent.putExtra("filter_word", filter_word)
-                intent.putExtra("sort_type", sort_type)
-                intent.putExtra("from_class", "fromClass")//是否从分类来
-                startActivity(intent)
+                val bundle = Bundle()
+                bundle.putString("word", keyWord)
+                bundle.putString("search_type", search_type)
+                bundle.putString("filter_type", filter_type)
+                bundle.putString("filter_word", filter_word)
+                bundle.putString("sort_type", sort_type)
+                bundle.putString("from_class", "fromClass")//是否从分类来
+                RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY, bundle)
                 AppLog.e("kkk", "$search_type===")
 
             } catch (e: Exception) {
@@ -565,7 +561,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
 
-        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
+        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { _, book_id, book_source_id, _, _, _, _ ->
             if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return@onEnterCover
             }
@@ -585,11 +581,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return@onWebGameClick
                 }
-                var title = ""
-                if (TextUtils.isEmpty(name)) {
-                    title = AppUtils.getPackageName()
+                val title = if (TextUtils.isEmpty(name)) {
+                    AppUtils.getPackageName()
                 } else {
-                    title = name
+                    name
                 }
                 val welfareIntent = Intent()
                 welfareIntent.putExtra("url", url)
@@ -720,7 +715,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
 //                setNightMode(true)
-            } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
+            } else if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }

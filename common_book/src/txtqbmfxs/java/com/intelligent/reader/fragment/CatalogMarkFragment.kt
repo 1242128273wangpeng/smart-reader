@@ -24,7 +24,7 @@
 //import com.quduquxie.network.DataCache
 //import kotlinx.android.synthetic.txtqbmfxs.pop_catalog_mark_delete.view.*
 //import kotlinx.android.synthetic.txtqbmfxs.read_catalog_mark_layout.view.*
-//import net.lzbook.kit.app.BaseBookApplication
+//import net.lzbook.kit.app.base.BaseBookApplication
 //import net.lzbook.kit.book.view.LoadingPage
 //import net.lzbook.kit.constants.Constants
 //import net.lzbook.kit.bean.Bookmark
