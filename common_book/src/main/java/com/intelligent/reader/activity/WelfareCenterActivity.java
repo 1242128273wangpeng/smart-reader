@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.baidu.mobstat.StatService;
 import com.ding.basic.request.RequestService;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.util.PagerDesc;
@@ -219,10 +221,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
                 clickBackBtn();
                 break;
             case R.id.welfare_center_search:
-                Intent intent = new Intent();
-                intent.setClass(this, SearchBookActivity.class);
-                startActivity(intent);
-//                SearchBookActivity.Companion.setSatyHistory(false);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
                 break;
         }
     }

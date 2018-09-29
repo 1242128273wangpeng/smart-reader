@@ -13,9 +13,9 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.util.SharedPreUtil
+import net.lzbook.kit.utils.enterSearch
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.CataloguesActivity
-import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.cover.*
 import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
@@ -450,15 +450,9 @@ class CoverPagePresenter(private val book_id: String?,
      * 判断是否跳转到搜索页
      * **/
     fun checkStartSearchActivity(view: View) {
-        val intent = Intent()
         if (view is RecommendItemView) {
-            intent.putExtra("word", view.title)
-            intent.putExtra("search_type", "0")
-            intent.putExtra("filter_type", "0")
-            intent.putExtra("filter_word", "ALL")
-            intent.putExtra("sort_type", "0")
-            intent.setClass(activity, SearchBookActivity::class.java)
-            activity.startActivity(intent)
+            activity.enterSearch(
+                    word = view.title, search_type = "0", filter_type = "0", filter_word = "ALL", sort_type = "0")
             return
         }
     }
