@@ -167,6 +167,11 @@ class SharedPreUtil(val type: Int) {
         const val CONTENT_MODE = "content_mode"  //当前阅读页背景
 
         /**
+         * CoverPageActivity
+         */
+        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
+
+        /**
          * SettingActivity
          */
         const val CURRENT_NIGHT_MODE = "current_night_mode" //当前是否是夜间模式

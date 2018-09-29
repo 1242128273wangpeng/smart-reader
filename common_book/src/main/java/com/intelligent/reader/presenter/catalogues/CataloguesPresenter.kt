@@ -15,9 +15,11 @@ import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.contract.util.showToastMessage
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.cover.BookCoverViewModel
 import com.intelligent.reader.view.TransformReadDialog
@@ -26,6 +28,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.dialog_read_source.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
@@ -122,7 +125,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                     CacheManager.freshBook(book.book_id, false)
                     it.onNext(true)
                     it.onComplete()
-                }.subscribeOn(Schedulers.io()).subscribe {  }
+                }.subscribeOn(Schedulers.io()).subscribe { }
             }
 
             override fun requestError(message: String) {
@@ -175,10 +178,15 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
         }
     }
 
-    fun showReadDialog(){
+    fun showReadDialog() {
         if (!activity.isFinishing) {
             if (!transformReadDialog.isShow()) {
-                transformReadDialog.show()
+                val isChecked = activity.getSharedBoolean(SharedPreUtil.NOT_SHOW_NEXT_TIME, false)
+                if (isChecked) {
+                    intoReadingActivity()
+                } else {
+                    transformReadDialog.show()
+                }
             }
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }
