@@ -35,8 +35,8 @@ import net.lzbook.kit.book.view.LoadingPage
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.google.gson.Gson
-import net.lzbook.kit.CustomWebViewClient
-import net.lzbook.kit.WebViewInterfaceObject
+import com.dingyue.contract.web.CustomWebClient
+import com.dingyue.contract.web.JSInterfaceObject
 import net.lzbook.kit.utils.*
 import java.util.*
 
@@ -46,7 +46,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var searchViewHelper: SearchViewHelper? = null
     private var handler: Handler? = Handler()
 
-    private var customWebViewClient: CustomWebViewClient? = null
+    private var customWebClient: CustomWebClient? = null
 
     internal var isSearch = false
     //记录是否退出当前界面,for:修复退出界面时出现闪影
@@ -123,18 +123,18 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
         if (search_result_content != null) {
-            customWebViewClient = CustomWebViewClient(this, search_result_content)
+            customWebClient = CustomWebClient(this, search_result_content)
         }
 
-        if (search_result_content != null && customWebViewClient != null) {
-            customWebViewClient?.initWebViewSetting()
+        if (search_result_content != null && customWebClient != null) {
+            customWebClient?.initWebViewSetting()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
-            search_result_content?.webViewClient = customWebViewClient
+            search_result_content?.webViewClient = customWebClient
         }
 
-        search_result_content?.addJavascriptInterface(object : WebViewInterfaceObject(this@SearchBookActivity) {
+        search_result_content?.addJavascriptInterface(object : JSInterfaceObject(this@SearchBookActivity) {
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
@@ -299,8 +299,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     }
 
     private fun loadingData(url: String) {
-        if (customWebViewClient != null) {
-            customWebViewClient?.initParameter()
+        if (customWebClient != null) {
+            customWebClient?.initParameter()
         }
         AppLog.e(TAG, "LoadingData ==> " + url)
         if (!TextUtils.isEmpty(url) && search_result_content != null) {
@@ -320,8 +320,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             return
         }
 
-        if (customWebViewClient != null) {
-            customWebViewClient?.setLoadingWebViewStart { url ->
+        if (customWebClient != null) {
+            customWebClient?.setLoadingWebViewStart { url ->
                 AppLog.e(TAG, "onLoadStarted: " + url)
                 if (mSearchPresenter == null) {
                     mSearchPresenter = SearchPresenter(this@SearchBookActivity, this@SearchBookActivity)
@@ -329,7 +329,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 mSearchPresenter?.setStartedAction()
             }
 
-            customWebViewClient?.setLoadingWebViewError {
+            customWebClient?.setLoadingWebViewError {
                 AppLog.e(TAG, "onErrorReceived")
                 if (loadingPage != null) {
                     AppLog.e(TAG, "loadingPage != Null")
@@ -337,7 +337,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 }
             }
 
-            customWebViewClient?.setLoadingWebViewFinish {
+            customWebClient?.setLoadingWebViewFinish {
                 AppLog.e(TAG, "onLoadFinished")
                 if (mSearchPresenter == null) {
                     mSearchPresenter = SearchPresenter(this@SearchBookActivity, this@SearchBookActivity)
@@ -355,8 +355,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
                 AppLog.e(TAG, "doReload")
-                if (customWebViewClient != null) {
-                    customWebViewClient?.initParameter()
+                if (customWebClient != null) {
+                    customWebClient?.initParameter()
                 }
                 search_result_content?.reload()
             })

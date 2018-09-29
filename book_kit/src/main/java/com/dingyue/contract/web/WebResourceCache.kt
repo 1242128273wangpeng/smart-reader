@@ -1,4 +1,4 @@
-package net.lzbook.kit
+package com.dingyue.contract.web
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -25,26 +25,26 @@ import java.io.*
  * Mail crazylei911228@gmail.com
  * Date 2018/9/20 16:38
  */
-class CustomWebViewCache {
+class WebResourceCache {
 
     companion object {
 
         @Volatile
         @SuppressLint("StaticFieldLeak")
-        private var customWebViewCache: CustomWebViewCache? = null
+        private var webResourceCache: WebResourceCache? = null
 
         @Volatile
         private var cachingResource = ArrayList<String>()
 
-        fun loadCustomWebViewCache(): CustomWebViewCache {
-            if (customWebViewCache == null) {
-                synchronized(CustomWebViewCache::class.java) {
-                    if (customWebViewCache == null) {
-                        customWebViewCache = CustomWebViewCache()
+        fun loadCustomWebViewCache(): WebResourceCache {
+            if (webResourceCache == null) {
+                synchronized(WebResourceCache::class.java) {
+                    if (webResourceCache == null) {
+                        webResourceCache = WebResourceCache()
                     }
                 }
             }
-            return customWebViewCache!!
+            return webResourceCache!!
         }
     }
 
@@ -82,7 +82,7 @@ class CustomWebViewCache {
             null
         } else {
             val fileName = loadCacheFileName(url, "MD5")
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "" + fileExtension
 
             val file = File(filePath)
 
@@ -123,7 +123,7 @@ class CustomWebViewCache {
             val fileName = loadCacheFileName(url, "MD5")
             val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
 
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "" + fileExtension
 
             val file = File(filePath)
 
