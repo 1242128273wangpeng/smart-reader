@@ -24,6 +24,8 @@ import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
 
@@ -35,6 +37,7 @@ import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.EnterUtilKt;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.oneclick.AntiShake;
 
@@ -224,9 +227,8 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                         break;
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(this, SearchBookActivity.class);
-                startActivity(intent);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
+
                 break;
         }
     }
@@ -452,15 +454,10 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                             StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
                             data);
 
-                    Intent intent = new Intent();
-                    intent.setClass(LabelsDetailActivity.this, SearchBookActivity.class);
-                    intent.putExtra("word", keyWord);
-                    intent.putExtra("search_type", search_type);
-                    intent.putExtra("filter_type", filter_type);
-                    intent.putExtra("filter_word", filter_word);
-                    intent.putExtra("sort_type", sort_type);
-                    intent.putExtra("from_class", "findBookDetail");
-                    startActivity(intent);
+                    EnterUtilKt.enterSearch(LabelsDetailActivity.this,
+                            keyWord, search_type, filter_type, filter_word, sort_type,
+                            "findBookDetail");
+
                     AppLog.i(TAG, "enterSearch success");
                 } catch (Exception e) {
                     AppLog.e(TAG, "Search failed");
