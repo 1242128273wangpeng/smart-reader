@@ -23,8 +23,8 @@ import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.main.view_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.webview_layout.*
 
-import net.lzbook.kit.CustomWebViewClient
-import net.lzbook.kit.WebViewInterfaceObject
+import com.dingyue.contract.web.CustomWebClient
+import com.dingyue.contract.web.JSInterfaceObject
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
@@ -32,7 +32,7 @@ import net.lzbook.kit.utils.NetWorkUtils
 
 open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
-    private var customWebViewClient: CustomWebViewClient? = null
+    private var customWebClient: CustomWebClient? = null
 
     private var loadingPage: LoadingPage? = null
 
@@ -188,17 +188,17 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         loadingPage = LoadingPage(requireActivity(), web_view_root)
 
-        customWebViewClient = CustomWebViewClient(requireContext(), web_view_content)
+        customWebClient = CustomWebClient(requireContext(), web_view_content)
 
-        customWebViewClient?.initWebViewSetting()
+        customWebClient?.initWebViewSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             web_view_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        web_view_content?.webViewClient = customWebViewClient
+        web_view_content?.webViewClient = customWebClient
 
-        web_view_content?.addJavascriptInterface(object : WebViewInterfaceObject(requireActivity()) {
+        web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
@@ -366,7 +366,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
      * 处理WebView请求
      * **/
     private fun handleLoadingWebViewData(url: String?) {
-        customWebViewClient?.initParameter()
+        customWebClient?.initParameter()
 
         if (url != null && url.isNotEmpty()) {
             try {
@@ -386,18 +386,18 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
             return
         }
 
-        if (customWebViewClient != null) {
-            customWebViewClient?.setLoadingWebViewStart {
+        if (customWebClient != null) {
+            customWebClient?.setLoadingWebViewStart {
 
             }
 
-            customWebViewClient?.setLoadingWebViewFinish {
+            customWebClient?.setLoadingWebViewFinish {
                 if (loadingPage != null) {
                     loadingPage?.onSuccessGone()
                 }
             }
 
-            customWebViewClient?.setLoadingWebViewError {
+            customWebClient?.setLoadingWebViewError {
                 if (loadingPage != null) {
                     loadingPage?.onErrorVisable()
                 }
@@ -406,8 +406,8 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebViewClient != null) {
-                    customWebViewClient?.initParameter()
+                if (customWebClient != null) {
+                    customWebClient?.initParameter()
                 }
                 web_view_content?.reload()
             })
