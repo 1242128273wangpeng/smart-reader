@@ -1,4 +1,4 @@
-package net.lzbook.kit
+package com.dingyue.contract.web
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -21,7 +21,7 @@ import com.dingyue.contract.util.showToastMessage
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 
-class CustomWebViewClient(var context: Context?, internal var webView: WebView?) : WebViewClient() {
+class CustomWebClient(var context: Context?, internal var webView: WebView?) : WebViewClient() {
 
     private var loadingStartCount = 0
     private var loadingFinishCount = 0
@@ -30,7 +30,7 @@ class CustomWebViewClient(var context: Context?, internal var webView: WebView?)
 
     private var webSettings: WebSettings? = null
 
-    private var customWebViewCache = CustomWebViewCache.loadCustomWebViewCache()
+    private var customWebViewCache = WebResourceCache.loadCustomWebViewCache()
 
     /***
      * WebView加载开始监听
