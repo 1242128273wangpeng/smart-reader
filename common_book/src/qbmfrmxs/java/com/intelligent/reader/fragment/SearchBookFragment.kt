@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.qbmfrmxs.frag_search_book.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 import java.util.concurrent.Callable
