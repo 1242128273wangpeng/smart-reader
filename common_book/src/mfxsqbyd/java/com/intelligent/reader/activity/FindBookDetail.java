@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.baidu.mobstat.StatService;
 import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
@@ -26,6 +27,8 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
 import com.dingyue.contract.CommonContract;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.util.PagerDesc;
@@ -38,6 +41,7 @@ import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
+import net.lzbook.kit.utils.EnterUtilKt;
 import net.lzbook.kit.utils.JSInterfaceHelper;
 
 import java.util.ArrayList;
@@ -50,6 +54,7 @@ import swipeback.ActivityLifecycleHelper;
 /**
  * WebView二级页面
  */
+@Route(path = RouterConfig.FIND_BOOK_DETAIL_ACTIVITY)
 public class FindBookDetail extends FrameActivity implements View.OnClickListener {
 
     private static String TAG = FindBookDetail.class.getSimpleName();
@@ -121,7 +126,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_detail_content = findViewById(R.id.rank_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(RequestService.AUTHOR_V4)||currentUrl.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
+                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);
@@ -170,7 +176,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     @Override
     public boolean shouldLightStatusBase() {
-        if("cc.quanben.novel".equals(AppUtils.getPackageName())){
+        if ("cc.quanben.novel".equals(AppUtils.getPackageName())) {
             return true;
         }
         return super.shouldLightStatusBase();
@@ -217,9 +223,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                             StartLogClickUtil.SEARCH, postData);
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(this, SearchBookActivity.class);
-                startActivity(intent);
+                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
                 break;
 
         }
@@ -414,15 +418,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                             StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
                             data);
 
-                    Intent intent = new Intent();
-                    intent.setClass(FindBookDetail.this, SearchBookActivity.class);
-                    intent.putExtra("word", keyWord);
-                    intent.putExtra("search_type", search_type);
-                    intent.putExtra("filter_type", filter_type);
-                    intent.putExtra("filter_word", filter_word);
-                    intent.putExtra("sort_type", sort_type);
-                    intent.putExtra("from_class", "findBookDetail");
-                    startActivity(intent);
+                    EnterUtilKt.enterSearch(FindBookDetail.this,
+                            keyWord, search_type, filter_type, filter_word, sort_type,
+                            "findBookDetail");
+
                     AppLog.i(TAG, "enterSearch success");
                 } catch (Exception e) {
                     AppLog.e(TAG, "Search failed");

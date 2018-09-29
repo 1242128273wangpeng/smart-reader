@@ -92,7 +92,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/title_layout">
 
-        <com.intelligent.reader.widget.topshadow.TopShadowWebView
+        <net.lzbook.kit.widget.topshadow.TopShadowWebView
             android:id="@+id/web_content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
