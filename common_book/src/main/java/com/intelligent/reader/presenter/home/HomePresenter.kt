@@ -104,7 +104,11 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
                     MediaType.parse("application/json; charset=utf-8"),
                     loadUpdateParameters(books))
 
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
+            //部分4.2 手机报 retrofit 动态代理问题 java.lang.reflect.UndeclaredThrowableException at $Proxy2.a(Native Method)
+            try {
+                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
+            } catch (e: Exception) {
+            }
         }
     }
 

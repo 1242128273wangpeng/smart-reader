@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -509,6 +510,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                         genderHelper.jumpAnimation();
                         mStepInFlag = true;
                         Constants.SGENDER = Constants.SDEFAULT;
+                        SharedPreUtil sp = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+                        sp.putInt("gender", Constants.SGENDER);
                         initData();
                     }
                 });

@@ -66,7 +66,10 @@ object CacheManager {
         }
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            downloadService = (service as DownloadService.MyBinder).service
+            try {
+                downloadService = (service as DownloadService.MyBinder).service
+            } catch (e: Exception) {
+            }
             freshBooksAsync(true)
         }
     }
@@ -441,8 +444,10 @@ object CacheManager {
                 }
             }
 
-            synchronized(downloadService!!.lock) {
-                downloadService!!.lock.notify()
+            if(downloadService != null){
+                synchronized(downloadService!!.lock) {
+                    downloadService!!.lock.notify()
+                }
             }
 
             return true
@@ -546,8 +551,10 @@ object CacheManager {
                 }
             }
 
-            synchronized(downloadService!!.lock) {
-                downloadService!!.lock.notify()
+            if(downloadService != null){
+                synchronized(downloadService!!.lock) {
+                    downloadService!!.lock.notify()
+                }
             }
         }
 
