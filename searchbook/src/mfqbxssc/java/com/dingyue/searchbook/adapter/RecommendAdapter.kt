@@ -10,7 +10,7 @@ import android.widget.TextView
 import anet.channel.util.Utils.context
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.SearchRecommendBook
-import com.example.searchbook.R
+import com.dingyue.searchbook.R
 
 
 /**
@@ -21,20 +21,23 @@ import com.example.searchbook.R
  */
 class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
                        private val recommendItemClickListener: RecommendItemClickListener) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        RecyclerView.Adapter<RecommendAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent.context
         return ViewHolder(
                 LayoutInflater.from(context).inflate(
-                        R.layout.item_recommend, parent, false), recommendItemClickListener)
+                        R.layout.item_recommend, parent, false),recommendItemClickListener)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecommendAdapter.ViewHolder, position: Int) {
         val book = books[position]
+        holder.dataBean = book
+        holder.index = position
         holder.tv_book_name.text = book.bookName
         holder.tv_book_author.text = book.authorName
-        if (holder.iv_url != null && !TextUtils.isEmpty(book.sourceImageUrl)) {
+        if (!TextUtils.isEmpty(book.sourceImageUrl)) {
             Glide.with(context).load(book.sourceImageUrl).placeholder(
                     net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error(R.drawable.icon_book_cover_default)
@@ -51,25 +54,28 @@ class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
     }
 
     interface RecommendItemClickListener {
-        fun onRecommendItemClick(view: View, position: Int, books: List<SearchRecommendBook.DataBean>)
+        fun onRecommendItemClick(view: View, position: Int,dataBean:SearchRecommendBook.DataBean)
     }
 
 
-    class ViewHolder(itemView: View, private val recommendItemClickListener: RecommendItemClickListener?) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    class ViewHolder(
+            itemView: View,
+            recommendItemClickListener: RecommendItemClickListener?) : RecyclerView.ViewHolder(itemView){
+
         val iv_url: ImageView
         val tv_book_name: TextView
         val tv_book_author: TextView
-
+        var index = 0
+        var dataBean:SearchRecommendBook.DataBean? = null
         init {
-            itemView.setOnClickListener(this)
             iv_url = itemView.findViewById(R.id.iv_url)
             tv_book_name = itemView.findViewById(R.id.tv_book_name)
             tv_book_author = itemView.findViewById(R.id.tv_book_auther)
-
-        }
-
-        override fun onClick(v: View) {
-            recommendItemClickListener?.onRecommendItemClick(v, position = 0, books)
+            itemView.setOnClickListener({
+               if (dataBean!= null){
+                   recommendItemClickListener?.onRecommendItemClick(it,index,dataBean!!)
+               }
+            })
         }
     }
 

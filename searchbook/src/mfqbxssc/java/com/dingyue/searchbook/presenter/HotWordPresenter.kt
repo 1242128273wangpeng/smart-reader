@@ -2,7 +2,9 @@ package com.dingyue.searchbook.presenter
 
 import com.ding.basic.bean.SearchRecommendBook
 import com.ding.basic.bean.SearchResult
-import com.dingyue.searchbook.IResultListener
+import com.dingyue.searchbook.interfaces.OnKeyWordListener
+import com.dingyue.searchbook.interfaces.OnResultListener
+import com.dingyue.searchbook.model.HistoryModel
 import com.dingyue.searchbook.model.HotWordModel
 import com.dingyue.searchbook.view.IHotWordView
 
@@ -13,7 +15,7 @@ import com.dingyue.searchbook.view.IHotWordView
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019
  */
-class HotWordPresenter(var hotView: IHotWordView?) : BasePresenter {
+class HotWordPresenter(var hotWordView: IHotWordView?) : BasePresenter, OnKeyWordListener {
 
     //从标签和作者的webView页面返回是否保留焦点
     var isFocus = true
@@ -21,33 +23,40 @@ class HotWordPresenter(var hotView: IHotWordView?) : BasePresenter {
     var isBackSearch = false
 
     var hotWordModel: HotWordModel? = null
+    var historyModel: HistoryModel? = null
 
     override fun onCreate() {
         hotWordModel = HotWordModel()
+        historyModel = HistoryModel()
     }
 
     override fun onDestroy() {
-        hotView = null
+        hotWordView = null
         hotWordModel = null
+        historyModel = null
     }
 
     fun loadHotWordData() {
-        hotWordModel?.loadHotWordData(object : IResultListener<SearchResult> {
+        hotWordModel?.loadHotWordData(object : OnResultListener<SearchResult> {
             override fun onSuccess(result: SearchResult) {
-                hotView?.hideLoading()
-                hotView?.showHotWordList(result.hotWords ?: arrayListOf())
+                hotWordView?.hideLoading()
+                hotWordView?.showHotWordList(result.hotWords ?: arrayListOf())
             }
         })
     }
 
-    fun loadRecommendData(){
-        hotWordModel?.loadRecommendData(object :IResultListener<ArrayList<SearchRecommendBook.DataBean>>{
+    fun loadRecommendData() {
+        hotWordModel?.loadRecommendData(object : OnResultListener<ArrayList<SearchRecommendBook.DataBean>> {
             override fun onSuccess(result: ArrayList<SearchRecommendBook.DataBean>) {
-                hotView?.hideLoading()
-                hotView?.showRecommendFreeList(result)
+                hotWordView?.hideLoading()
+                hotWordView?.showRecommendList(result)
             }
 
         })
+    }
+
+    override fun onKeyWord(keyword: String?) {
+        historyModel?.addHistoryWord(keyword)
     }
 
 
