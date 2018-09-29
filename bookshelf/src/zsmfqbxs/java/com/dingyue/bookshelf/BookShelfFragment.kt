@@ -261,9 +261,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                 bookShelfAdapter.notifyDataSetChanged()
                 BookShelfLogger.uploadFirstOpenBooks()
             }
-            if(bookShelfPresenter.iBookList.isNotEmpty()){
-                BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
-            }
         }
     }
 
@@ -359,14 +356,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (isAdded && !requireActivity().isFinishing) {
             updateUI()
             bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
-            CommonUtil.showToastMessage(R.string.bookshelf_delete_success)
+            CommonUtil.showToastMessage(if(onlyDeleteCache) R.string.bookshelf_delete_cache_success else R.string.bookshelf_delete_success)
         }
     }
+
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
         if (requireActivity().isFinishing) {
