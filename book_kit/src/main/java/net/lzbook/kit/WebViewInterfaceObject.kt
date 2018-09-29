@@ -14,6 +14,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 
 import net.lzbook.kit.request.UrlUtils
@@ -164,6 +165,21 @@ abstract class WebViewInterfaceObject(var activity: Activity) {
         Logger.e("获取书架列表: " + stringBuilder.toString())
         return stringBuilder.toString()
     }
+
+    @JavascriptInterface
+    fun statisticsWebInformation(data: String?) {
+        if (data != null && !data.isNullOrEmpty()) {
+            val parameters = UrlUtils.getDataParams(data)
+            //截取页面编码
+            val pageCode = parameters["page_code"]
+            parameters.remove("page_code")
+            //截取功能编码
+            val functionCode = parameters["func_code"]
+            parameters.remove("func_code")
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), pageCode, functionCode, parameters)
+        }
+    }
+
 
     @JavascriptInterface
     abstract fun startSearchActivity(data: String?)
