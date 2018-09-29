@@ -13,7 +13,6 @@ import com.ding.basic.bean.SearchRecommendBook
 interface IHotWordView : IBaseView {
 
     fun showHotWordList(hotWordList: ArrayList<HotWordBean>)//展示热词列表
-    fun showRecommendFreeList(recommendList: ArrayList<SearchRecommendBook.DataBean>)//全站免费列表
-    fun showRecommendWantList(recommendList: ArrayList<SearchRecommendBook.DataBean>)//想读就读列表
+    fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>)//全站免费列表
 
 }

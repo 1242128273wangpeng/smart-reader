@@ -1,4 +1,4 @@
-package com.dingyue.searchbook
+package com.dingyue.searchbook.interfaces
 
 
 /**
@@ -7,7 +7,7 @@ package com.dingyue.searchbook
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019 23:04
  */
-interface IResultListener<in T> {
+interface OnResultListener<in T> {
 
     fun onSuccess(result: T)
     fun onFail(){}

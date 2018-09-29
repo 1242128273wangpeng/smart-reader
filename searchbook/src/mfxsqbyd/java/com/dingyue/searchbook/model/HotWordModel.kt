@@ -7,7 +7,7 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.util.editShared
 import com.ding.basic.util.getSharedString
-import com.dingyue.searchbook.IResultListener
+import com.dingyue.searchbook.interfaces.OnResultListener
 import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
@@ -26,7 +26,7 @@ class HotWordModel {
     /**
      * 加载热词
      */
-    fun loadHotWordData(listener: IResultListener<SearchResult>) {
+    fun loadHotWordData(listener: OnResultListener<SearchResult>) {
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestSearchOperationV4(
@@ -58,7 +58,7 @@ class HotWordModel {
     /**
      * 加载推荐书籍
      */
-    fun loadRecommendData(listener: IResultListener<ArrayList<SearchRecommendBook.DataBean>>) {
+    fun loadRecommendData(listener: OnResultListener<ArrayList<SearchRecommendBook.DataBean>>) {
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestSearchRecommend(
@@ -72,7 +72,7 @@ class HotWordModel {
                    if (data.size > 8) {
                        searchHotTitleLayout.relative_hot1.setVisibility(View.VISIBLE)
                    }*/
-                    listener.onSuccess(data!!)
+                    listener.onSuccess(data as ArrayList<SearchRecommendBook.DataBean>)
                 }
 
             }
@@ -109,7 +109,7 @@ class HotWordModel {
     /**
      * if hasn't net getHotWord from SharePreference cache
      */
-    private fun loadCacheDataFromShare(listener: IResultListener<SearchResult>) {
+    private fun loadCacheDataFromShare(listener: OnResultListener<SearchResult>) {
         val cacheHotWords = BaseBookApplication.getGlobalContext().getSharedString(Constants.SERARCH_HOT_WORD_YOUHUA)
 
         if (cacheHotWords.isNotEmpty()) {

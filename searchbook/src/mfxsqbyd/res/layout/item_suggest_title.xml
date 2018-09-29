@@ -8,11 +8,14 @@
               android:clickable="false"
               android:orientation="vertical">
 
+    <!--数据类型标题：图书、作者、标签-->
+
     <TextView
         android:id="@+id/tv_desc"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/dimen_margin_16"
+        android:layout_marginStart="@dimen/dimen_margin_16"
         android:gravity="center_vertical"
         android:textColor="#ADB4BE"
         android:textSize="14sp"
