@@ -15,7 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-
+import com.dingyue.searchbook.SearchBookActivity
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog
@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.qbmfrmxs.act_book_cover.*
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.ReplaceConstants
-import net.lzbook.kit.view.CoverPageContract
 import net.lzbook.kit.presenter.CoverPagePresenter
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
@@ -39,6 +38,7 @@ import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.view.CoverPageContract
 import java.text.MessageFormat
 import java.util.*
 import java.util.concurrent.Callable

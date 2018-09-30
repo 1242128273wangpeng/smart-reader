@@ -3,7 +3,6 @@ package com.intelligent.reader.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,14 +26,16 @@ import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.widget.topshadow.TopShadowWebView;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.ui.widget.LoadingPage;
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
-import net.lzbook.kit.ui.widget.LoadingPage;
-import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout;
 
 import java.lang.ref.WeakReference;
 

@@ -91,7 +91,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <net.lzbook.kit.widget.topshadow.TopShadowScrollView
+        <com.intelligent.reader.widget.topshadow.TopShadowScrollView
                 android:id="@+id/book_cover_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -412,7 +412,7 @@
                         android:listSelector="@color/transparent"
                         android:divider="@null"/>
             </LinearLayout>
-        </net.lzbook.kit.widget.topshadow.TopShadowScrollView>
+        </com.intelligent.reader.widget.topshadow.TopShadowScrollView>
 
         <ImageView
                 android:id="@+id/img_bottom_shadow"

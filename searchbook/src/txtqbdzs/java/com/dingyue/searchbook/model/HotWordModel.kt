@@ -4,7 +4,7 @@ import com.ding.basic.bean.Result
 import com.ding.basic.bean.SearchRecommendBook
 import com.ding.basic.bean.SearchResult
 import com.ding.basic.RequestRepositoryFactory
-import e com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.util.editShared
 import com.ding.basic.util.getSharedString
 import com.dingyue.searchbook.interfaces.OnResultListener

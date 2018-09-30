@@ -11,10 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.net.api.service.RequestService
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.qbmfxsydq.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.sp.SPKey
 import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.webview.UrlUtils

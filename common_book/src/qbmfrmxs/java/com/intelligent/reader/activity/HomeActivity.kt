@@ -26,11 +26,11 @@ import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.ClassifyFragment
-import com.intelligent.reader.fragment.SearchBookFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.widget.ClearCacheDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
@@ -44,7 +44,6 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.presenter.HomePresenter
-import net.lzbook.kit.view.HomeView
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
@@ -67,6 +66,7 @@ import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.view.HomeView
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -125,8 +125,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         fragment
     }
 
-    private val searchBookFragment: SearchBookFragment by lazy {
-        val fragment = SearchBookFragment()
+    private val searchBookFragment: HotWordFragment by lazy {
+        val fragment = HotWordFragment()
         fragment
     }
 

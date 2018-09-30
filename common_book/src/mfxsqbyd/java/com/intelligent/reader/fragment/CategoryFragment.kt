@@ -15,8 +15,6 @@ import android.view.ViewGroup
 
 import com.ding.basic.net.api.service.RequestService
 
-import com.ding.basic.net.api.service.RequestService
-import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.utils.enterSearch
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.mfxsqbyd.category_fragment_layout.*

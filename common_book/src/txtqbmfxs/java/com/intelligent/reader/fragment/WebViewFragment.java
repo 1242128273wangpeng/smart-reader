@@ -24,14 +24,16 @@ import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 
+import net.lzbook.kit.ui.widget.LoadingPage;
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
-import net.lzbook.kit.ui.widget.LoadingPage;
-import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout;
 
 import java.lang.ref.WeakReference;
 

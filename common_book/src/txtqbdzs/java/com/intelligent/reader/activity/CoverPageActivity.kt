@@ -26,6 +26,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 
 import com.ding.basic.net.api.service.RequestService
+import com.dingyue.searchbook.SearchBookActivity
 
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R

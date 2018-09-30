@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity
 
+
+
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -19,9 +21,6 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-
-
-
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
@@ -31,22 +30,18 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.HomePresenter
-import net.lzbook.kit.view.HomeView
-import net.lzbook.kit.bean.EventBookStore
 import kotlinx.android.synthetic.qbzsydq.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
+import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
 import net.lzbook.kit.ui.activity.WelfareCenterActivity
-import net.lzbook.kit.utils.ATManager
-import net.lzbook.kit.utils.AnimationHelper
-import net.lzbook.kit.utils.ApkUpdateUtils
-import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.AppLog
@@ -58,6 +53,7 @@ import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.view.HomeView
 import java.io.File
 import java.util.*
 

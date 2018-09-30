@@ -2,13 +2,13 @@ package com.dingyue.searchbook.view
 
 
 /**
- * Desc：
+ * Desc：自动补全结果集
  * Author：JoannChen
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/9/25 0025 16:40
  */
 interface ISuggestView : IBaseView {
 
-    fun showSuggestList(suggestList: MutableList<Any>)//展示自动补全列表
+    fun showSuggestList(suggestList: MutableList<Any>)
 
 }
