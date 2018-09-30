@@ -191,10 +191,10 @@
                 android:layout_height="35dp"
                 android:layout_gravity="right"
                 android:layout_margin="20dp"
-                android:background="@drawable/book_cover_search_catalog"
+                android:background="@color/primary"
                 android:gravity="center"
                 android:text="@string/debug_copy_udid"
-                android:textColor="@color/color_text_most"/>
+                android:textColor="@color/color_323232"/>
 
 
             <TextView
@@ -208,10 +208,10 @@
                 android:layout_height="35dp"
                 android:layout_gravity="right"
                 android:layout_margin="20dp"
-                android:background="@drawable/book_cover_search_catalog"
+                android:background="@color/primary"
                 android:gravity="center"
                 android:text="@string/debug_copy_device"
-                android:textColor="@color/color_text_most"/>
+                android:textColor="@color/color_323232"/>
 
         </LinearLayout>
     </ScrollView>
