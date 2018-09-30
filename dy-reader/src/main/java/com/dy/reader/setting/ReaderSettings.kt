@@ -47,6 +47,9 @@ class ReaderSettings {
         private val preferences by lazy {
             Reader.context.getSharedPreferences(READER_CONFIG, Context.MODE_PRIVATE)
         }
+
+        const val DEFAULT_BRIGHTNESS = 20
+        const val NOT_SET_BRIGHTNESS = -1
     }
 
     private class GsonCreator : InstanceCreator<ReaderSettings> {
@@ -59,7 +62,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND,CHAPTER_SUCCESS,
+        GO_TO_BOOKEND, CHAPTER_SUCCESS, ADDSHLEF_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 
@@ -125,7 +128,7 @@ class ReaderSettings {
 
         isAutoBrightness = sharedPreferences.getBoolean("auto_brightness", true)
         isFullScreenRead = sharedPreferences.getBoolean("full_screen_read", false)
-        screenBrightness = sharedPreferences.getInt("screen_bright", -1)
+        screenDayBrightness = sharedPreferences.getInt("screen_bright", -1)
         readLightThemeMode = sharedPreferences.getInt("current_light_mode", 51)
         readThemeMode = sharedPreferences.getInt("content_mode", 51)
 
@@ -263,13 +266,55 @@ class ReaderSettings {
         }
 
     @SerializedName(value = "isAutoBrightness")
-    var isAutoBrightness = true
+    var isDayAutoBrightness = true
+
+    @SerializedName(value = "isNightAutoBrightness")
+    var isNightAutoBrightness = false
+
+    @Transient
+    var isAutoBrightness = false
+        get() {
+            return if (readThemeMode == 61) {
+                isNightAutoBrightness
+            } else {
+                isDayAutoBrightness
+            }
+        }
+        set(value) {
+            if (readThemeMode == 61) {
+                isNightAutoBrightness = value
+            } else {
+                isDayAutoBrightness = value
+            }
+            field = value
+        }
 
     @SerializedName(value = "isVolumeTurnover")
     var isVolumeTurnover = true
 
     @SerializedName(value = "screenBrightness")
-    var screenBrightness = 10
+    var screenDayBrightness = NOT_SET_BRIGHTNESS
+
+    @SerializedName(value = "screenNightBrightness")
+    var screenNightBrightness = NOT_SET_BRIGHTNESS
+
+    @Transient
+    var screenBrightness = 0
+        get() {
+            return if (readThemeMode == 61) {
+                screenNightBrightness
+            } else {
+                screenDayBrightness
+            }
+        }
+        set(value) {
+            if (readThemeMode == 61) {
+                screenNightBrightness = value
+            } else {
+                screenDayBrightness = value
+            }
+            field = value
+        }
 
     @SerializedName(value = "fontColor")
     @ColorInt
@@ -431,17 +476,10 @@ class ReaderSettings {
             }
         }
 
-    /**
-     * 用来暂存日间模式下用户选择的背景
-     */
     @SerializedName(value = "readLightThemeMode")
     var readLightThemeMode = 51
 
-    /**
-     * 阅读模式背景
-     * 51：默认背景
-     * 61：夜间模式
-     */
+    //阅读模式 背景
     @SerializedName(value = "readThemeMode")
     var readThemeMode: Int = 0
         set(value) {
