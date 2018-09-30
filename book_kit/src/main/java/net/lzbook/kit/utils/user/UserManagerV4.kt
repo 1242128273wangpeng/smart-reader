@@ -44,8 +44,8 @@ import net.lzbook.kit.bean.user.ThirdLoginReq
 import net.lzbook.kit.bean.user.ThirdLoginReq.Companion.CHANNEL_QQ
 import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler
 import net.lzbook.kit.utils.user.bean.UserNameState

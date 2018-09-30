@@ -31,8 +31,8 @@ import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper

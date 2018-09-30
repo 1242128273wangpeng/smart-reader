@@ -31,8 +31,8 @@ import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.file.FileUtils
 import net.lzbook.kit.utils.runOnMain
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import java.io.File
 import java.io.IOException
 

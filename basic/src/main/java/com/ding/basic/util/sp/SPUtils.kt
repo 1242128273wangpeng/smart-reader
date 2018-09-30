@@ -1,10 +1,10 @@
-package net.lzbook.kit.utils.sp
+package com.ding.basic.util.sp
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.text.TextUtils
+import com.ding.basic.net.Config
 import com.google.gson.Gson
-import net.lzbook.kit.app.base.BaseBookApplication
 
 /**
  * Desc   SharedPreference操作工具
@@ -17,7 +17,7 @@ object SPUtils {
          * 系统默认Shared 批量操作
          */
         fun editDefaultShared(job: SharedPreferences.Editor.() -> Unit) {
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             val editor = shared.edit()
             editor.job()
             editor.apply()
@@ -27,7 +27,7 @@ object SPUtils {
          * 在线配置Shared 批量操作
          */
         fun editOnlineConfigShared(job: SharedPreferences.Editor.() -> Unit) {
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             val editor = shared.edit()
             editor.job()
             editor.apply()
@@ -37,7 +37,7 @@ object SPUtils {
          * 获取系统默认Shared Boolean
          */
         fun getDefaultSharedBoolean(key: String, defValue: Boolean = false): Boolean {
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             return shared.getBoolean(key, defValue)
         }
 
@@ -45,7 +45,7 @@ object SPUtils {
          * 获取系统默认Shared Int
          */
         fun getDefaultSharedInt(key: String, defValue: Int = 0): Int {
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             return shared.getInt(key, defValue)
         }
 
@@ -53,7 +53,7 @@ object SPUtils {
          * 获取系统默认Shared String
          */
         fun getDefaultSharedString(key: String, defValue: String = ""): String {
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             return shared.getString(key, defValue)
         }
 
@@ -61,7 +61,7 @@ object SPUtils {
          * 获取系统默认Shared Long
          */
         fun getDefaultSharedLong(key: String, defValue: Long = 0L): Long {
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             return shared.getLong(key, defValue)
         }
 
@@ -86,7 +86,7 @@ object SPUtils {
          * 获取在线配置Shared Boolean
          */
         fun getOnlineConfigSharedBoolean(key: String, defValue: Boolean = false): Boolean {
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             return shared.getBoolean(key, defValue)
         }
 
@@ -94,7 +94,7 @@ object SPUtils {
          * 获取在线配置Shared Int
          */
         fun getOnlineConfigSharedInt(key: String, defValue: Int = 0): Int {
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             return shared.getInt(key, defValue)
         }
 
@@ -102,7 +102,7 @@ object SPUtils {
          * 获取在线配置Shared String
          */
         fun getOnlineConfigSharedString(key: String, defValue: String = ""): String {
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             return shared.getString(key, defValue)
         }
 
@@ -110,7 +110,7 @@ object SPUtils {
          * 获取在线配置Shared Long
          */
         fun getOnlineConfigSharedLong(key: String, defValue: Long = 0L): Long {
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             return shared.getLong(key, defValue)
         }
 
@@ -135,7 +135,7 @@ object SPUtils {
          * 保存系统默认Shared Long
          */
         fun putDefaultSharedBoolean(key: String, value: Boolean = false){
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             shared.edit().putBoolean(key, value).apply()
         }
 
@@ -143,7 +143,7 @@ object SPUtils {
          * 保存系统默认Shared Int
          */
         fun putDefaultSharedInt(key: String, value: Int = 0){
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             shared.edit().putInt(key, value).apply()
         }
 
@@ -151,7 +151,7 @@ object SPUtils {
          * 保存系统默认Shared String
          */
         fun putDefaultSharedString(key: String, value: String? = ""){
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             shared.edit().putString(key, value).apply()
         }
 
@@ -159,7 +159,7 @@ object SPUtils {
          * 保存系统默认Shared Long
          */
         fun putDefaultSharedLong(key: String, value: Long = 0L) {
-            val shared = PreferenceManager.getDefaultSharedPreferences(BaseBookApplication.getGlobalContext())
+            val shared = PreferenceManager.getDefaultSharedPreferences(Config.getContext())
             shared.edit().putLong(key, value).apply()
         }
 
@@ -176,7 +176,7 @@ object SPUtils {
          * 保存在线配置Shared Boolean
          */
         fun putOnlineConfigSharedBoolean(key: String, value: Boolean = false){
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             shared.edit().putBoolean(key, value).apply()
         }
 
@@ -184,7 +184,7 @@ object SPUtils {
          * 保存在线配置Shared Int
          */
         fun putOnlineConfigSharedInt(key: String, value: Int = 0){
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             shared.edit().putInt(key, value).apply()
         }
 
@@ -192,7 +192,7 @@ object SPUtils {
          * 保存在线配置Shared String
          */
         fun putOnlineConfigSharedString(key: String, value: String?){
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             shared.edit().putString(key, value).apply()
         }
 
@@ -200,7 +200,7 @@ object SPUtils {
          * 保存在线配置Shared Long
          */
         fun putOnlineConfigSharedLong(key: String, value: Long = 0L) {
-            val shared = BaseBookApplication.getGlobalContext().getSharedPreferences(SPKey.SHAREDPREFERENCES_KEY, 0)
+            val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
             shared.edit().putLong(key, value).apply()
         }
 

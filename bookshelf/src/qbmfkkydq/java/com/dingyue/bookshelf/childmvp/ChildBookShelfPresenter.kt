@@ -9,8 +9,8 @@ import com.dingyue.bookshelf.BookShelfPresenter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 
 /**
  * Date: 2018/7/19 19:54

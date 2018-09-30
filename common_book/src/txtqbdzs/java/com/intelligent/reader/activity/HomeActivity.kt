@@ -50,8 +50,8 @@ import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
@@ -293,7 +293,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     private fun initGuide() {
-        val key = SPKey.BOOKSHELF_GUIDE_TAG
+        val key = SPKey.getBOOKSHELF_GUIDE_TAG()
         if (!SPUtils.getDefaultSharedBoolean(key)) {
             ll_guide_layout.visibility = View.VISIBLE
             iv_guide_remove.visibility = View.VISIBLE

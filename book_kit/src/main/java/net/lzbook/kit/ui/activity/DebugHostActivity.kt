@@ -6,12 +6,10 @@ import com.ding.basic.net.Config
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_debug_host.*
-import net.lzbook.kit.R.id.iv_back
-import net.lzbook.kit.R.id.lv_host
 import net.lzbook.kit.R
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 
 

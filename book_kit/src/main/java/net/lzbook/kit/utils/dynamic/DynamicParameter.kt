@@ -24,8 +24,8 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.isNumeric
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import java.util.*
 
 class DynamicParameter(private val context: Context) {

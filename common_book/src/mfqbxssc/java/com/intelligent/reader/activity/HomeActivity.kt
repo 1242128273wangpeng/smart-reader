@@ -55,8 +55,8 @@ import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
@@ -268,7 +268,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     private fun initGuide() {
-        val key = SPKey.BOOKSHELF_GUIDE_TAG
+        val key = SPKey.getBOOKSHELF_GUIDE_TAG()
         if (!SPUtils.getDefaultSharedBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_download.visibility = View.VISIBLE

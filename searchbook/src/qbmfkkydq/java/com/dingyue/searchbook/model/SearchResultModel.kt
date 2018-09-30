@@ -7,7 +7,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
-import com.ding.basic.util.editShared
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
@@ -159,7 +159,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 try {
                     if (url?.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName())) == true) {
                         //FindBookDetail 返回键时标识
-                        BaseBookApplication.getGlobalContext().editShared {
+                        SPUtils.editDefaultShared {
                             putString(Constants.FINDBOOK_SEARCH, "author")
                         }
                     }
@@ -384,7 +384,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 mUrl = RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()) + "?author=" + searchWord
                 try {
                     //FindBookDetail 返回键时标识
-                    BaseBookApplication.getGlobalContext().editShared {
+                    SPUtils.editDefaultShared {
                         putString(Constants.FINDBOOK_SEARCH, "author")
                     }
                     val bundle = Bundle()

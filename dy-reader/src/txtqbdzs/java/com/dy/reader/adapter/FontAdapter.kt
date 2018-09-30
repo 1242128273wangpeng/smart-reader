@@ -8,8 +8,8 @@ import com.dy.reader.R
 import com.dy.reader.model.FontData
 import com.dy.reader.service.FontDownLoadService
 import kotlinx.android.synthetic.txtqbdzs.item_reader_option_font.view.*
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 
 /**
  * Function：字体包适配器

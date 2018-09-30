@@ -1,31 +1,30 @@
 package com.dingyue.searchbook.model
 
+
 import android.content.Intent
 import android.os.Bundle
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
-import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.api.service.RequestService
-import com.ding.basic.util.editShared
-
-import com.dingyue.searchbook.interfaces.OnSearchResult
-import com.dingyue.searchbook.interfaces.OnResultListener
-import com.dingyue.searchbook.JSInterface
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.R
+import com.dingyue.searchbook.interfaces.OnResultListener
+import com.dingyue.searchbook.interfaces.OnSearchResult
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.book.FootprintUtils
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
 
 
@@ -161,7 +160,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 try {
                     if (url?.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName())) == true) {
                         //FindBookDetail 返回键时标识
-                        BaseBookApplication.getGlobalContext().editShared {
+                        SPUtils.editDefaultShared {
                             putString(Constants.FINDBOOK_SEARCH, "author")
                         }
                     }
@@ -386,7 +385,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 mUrl = RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()) + "?author=" + searchWord
                 try {
                     //FindBookDetail 返回键时标识
-                    BaseBookApplication.getGlobalContext().editShared {
+                    SPUtils.editDefaultShared {
                         putString(Constants.FINDBOOK_SEARCH, "author")
                     }
                     val bundle = Bundle()

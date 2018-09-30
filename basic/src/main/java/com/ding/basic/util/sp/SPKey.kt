@@ -1,6 +1,8 @@
-package net.lzbook.kit.utils.sp
+package com.ding.basic.util.sp
 
-import net.lzbook.kit.utils.AppUtils
+import com.alibaba.android.arouter.launcher.ARouter
+import com.ding.basic.util.IBuildConfigProvider
+import com.ding.basic.util.ReplaceConstants.BUILD_CONFIG_PROVIDER
 
 class SPKey {
     companion object {
@@ -9,7 +11,11 @@ class SPKey {
         val SHARE_DEFAULT = 0  // 保存的是默认地址
         @JvmField
         val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
-        val SHAREDPREFERENCES_KEY = "onlineconfig_agent_online_setting_" + AppUtils.getPackageName()
+
+        fun getSHAREDPREFERENCES_KEY():String{
+            val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
+            return "onlineconfig_agent_online_setting_" + buidCofig.getPackageName()
+        }
 
         // 当前阅读的书籍
         const val CURRENT_READ_BOOK = "current_read_book"
@@ -155,7 +161,11 @@ class SPKey {
         /**
          * Bookshelf
          */
-        val BOOKSHELF_GUIDE_TAG = AppUtils.getVersionCode().toString() + "bookshelf_guide_tag" //书架引导  和versionCode拼接
+       //书架引导  和versionCode拼接
+        fun getBOOKSHELF_GUIDE_TAG():String{
+            val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
+            return buidCofig.getVersionCode().toString() + "bookshelf_guide_tag"
+        }
         const val BOOKSHELF_ISSHOW_CHANGE_GUIDE = "isShowChangAnGuide" //判断是否显示长按删除书籍引导  快读替 新版引导页
         const val BOOKSHELF_BOOK_RACKUP_DATETIME = "bookRackUpdateTime"
         const val BOOKSHELF_PERSON_RED = "bookshelf_preson_red" //用于书架页上的红点显示隐藏

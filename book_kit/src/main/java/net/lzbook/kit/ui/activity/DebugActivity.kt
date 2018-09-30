@@ -5,16 +5,15 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
-
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
-
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.umeng.message.MessageSharedPrefs
 import kotlinx.android.synthetic.main.activity_debug.*
-import net.lzbook.kit.R.id.tv_api
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
@@ -24,8 +23,6 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 
 /**

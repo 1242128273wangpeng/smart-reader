@@ -22,8 +22,8 @@ import net.lzbook.kit.utils.book.CheckNovelUpdHelper
 import net.lzbook.kit.utils.book.DeleteBookHelper
 import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.view.HomeView
 import okhttp3.MediaType
 import okhttp3.RequestBody

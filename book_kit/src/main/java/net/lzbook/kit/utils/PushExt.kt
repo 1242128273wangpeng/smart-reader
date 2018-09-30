@@ -7,11 +7,11 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.support.v4.app.NotificationManagerCompat
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
-import com.ding.basic.RequestRepositoryFactory
-import com.ding.basic.util.editShared
-import com.ding.basic.util.putObject
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
 import io.reactivex.BackpressureStrategy
@@ -21,8 +21,6 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
 import java.util.*
 
 /**
@@ -46,7 +44,7 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
 
                 if (!pushInfo.isFromCache) {
                     SPUtils.editDefaultShared {
-                        putObject(PushInfo.KEY, pushInfo)
+                        SPUtils.putDefaultSharedObject(PushInfo.KEY, pushInfo)
                     }
                 }
 
@@ -79,7 +77,7 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                     }
                     loge("zip result: $result")
                     SPUtils.editDefaultShared {
-                        putObject(BannerInfo.KEY, bannerInfo)
+                        SPUtils.putDefaultSharedObject(BannerInfo.KEY, bannerInfo)
                     }
                     result
                 }

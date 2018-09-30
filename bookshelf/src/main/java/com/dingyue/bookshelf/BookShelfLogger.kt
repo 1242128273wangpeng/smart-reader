@@ -7,7 +7,7 @@ import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPUtils
 import java.util.*
 
 /**

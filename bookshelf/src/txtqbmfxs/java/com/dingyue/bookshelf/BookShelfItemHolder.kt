@@ -13,7 +13,7 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.book.RepairHelp
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPUtils
 import java.text.MessageFormat
 
 /**

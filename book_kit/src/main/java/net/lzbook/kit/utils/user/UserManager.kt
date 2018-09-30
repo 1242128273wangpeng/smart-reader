@@ -43,8 +43,8 @@ import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.bitmapTransformByteArray
 import net.lzbook.kit.utils.log
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toMap
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler

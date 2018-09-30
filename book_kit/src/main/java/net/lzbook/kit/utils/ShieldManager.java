@@ -14,8 +14,8 @@ import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.book.LoadDataManager;
 import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.sp.SPKey;
-import net.lzbook.kit.utils.sp.SPUtils;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 
 /**
  * 屏蔽管理类

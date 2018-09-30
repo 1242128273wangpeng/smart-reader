@@ -6,8 +6,8 @@ import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import kotlinx.android.synthetic.mfqbxssc.popup_head_menu.view.*
 import net.lzbook.kit.ui.widget.base.BasePopup
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 
 /**
  * Desc 顶部菜单弹窗

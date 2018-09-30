@@ -55,8 +55,8 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.sp.SPKey;
-import net.lzbook.kit.utils.sp.SPUtils;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;

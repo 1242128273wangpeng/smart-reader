@@ -25,6 +25,8 @@ import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.UserEvent
 import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle
@@ -32,20 +34,19 @@ import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.HomePresenter
-import net.lzbook.kit.view.HomeView
-import net.lzbook.kit.bean.EventBookStore
-import net.lzbook.kit.bean.PagerDesc
 import com.intelligent.reader.view.PushSettingDialog
 import kotlinx.android.synthetic.qbmfxsydq.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookStore
+import net.lzbook.kit.bean.PagerDesc
 import net.lzbook.kit.constants.ActionConstants
+import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
 import net.lzbook.kit.ui.activity.WelfareCenterActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.encrypt.MD5Utils
@@ -53,14 +54,13 @@ import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.user.UserManagerV4
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.view.HomeView
 import java.io.File
 import java.util.*
 
@@ -286,7 +286,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     private fun initGuide() {
-        val key = SPKey.BOOKSHELF_GUIDE_TAG
+        val key = SPKey.getBOOKSHELF_GUIDE_TAG()
         if (!SPUtils.getDefaultSharedBoolean(key)) {
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_remove.visibility = View.VISIBLE

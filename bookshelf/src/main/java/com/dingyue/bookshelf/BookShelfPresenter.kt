@@ -22,8 +22,8 @@ import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList

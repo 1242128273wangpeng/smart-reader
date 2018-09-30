@@ -14,8 +14,8 @@ import com.ding.basic.db.migration.helper.migrateTable
 import com.ding.basic.db.provider.ChapterDataProviderHelper
 import com.ding.basic.net.ResultCode
 import com.ding.basic.util.ChapterCacheUtil
-import com.ding.basic.util.getSharedObject
 import com.ding.basic.util.isSameDay
+import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -326,7 +326,7 @@ class LocalRequestRepository private constructor(private var context: Context,
     }
 
     fun requestPushInfo(): Flowable<PushInfo>? {
-        val pushInfo = context.getSharedObject(PushInfo.KEY, PushInfo::class.java)
+        val pushInfo = SPUtils.getDefaultSharedObject(PushInfo.KEY, PushInfo::class.java)
         if (pushInfo != null) {
             val isSameDay = isSameDay(pushInfo.updateMillSecs, System.currentTimeMillis())
             if (isSameDay) {
@@ -341,7 +341,7 @@ class LocalRequestRepository private constructor(private var context: Context,
     }
 
     fun requestBannerTags(): Flowable<BannerInfo>? {
-        val bannerInfo = context.getSharedObject(BannerInfo.KEY, BannerInfo::class.java)
+        val bannerInfo = SPUtils.getDefaultSharedObject(BannerInfo.KEY, BannerInfo::class.java)
         if (bannerInfo != null) {
             val isSameDay = isSameDay(bannerInfo.updateMillSecs, System.currentTimeMillis())
             if (isSameDay) {

@@ -18,7 +18,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.InstanceCreator
 import com.google.gson.annotations.SerializedName
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.sp.SPKey
+import com.ding.basic.util.sp.SPKey
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream

@@ -2,8 +2,8 @@ package com.dy.reader.util
 
 import android.graphics.Typeface
 import com.dy.reader.service.FontDownLoadService
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import org.jetbrains.annotations.NotNull
 import java.io.File
 import java.util.*

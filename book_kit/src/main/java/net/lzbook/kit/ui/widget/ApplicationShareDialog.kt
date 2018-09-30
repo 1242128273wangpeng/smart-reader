@@ -1,7 +1,6 @@
 package net.lzbook.kit.ui.widget
 
 import android.app.Activity
-import android.view.*
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.rx.SchedulerHelper
 
@@ -15,11 +14,10 @@ import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
 import com.ding.basic.net.Config
-import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.sp.SPKey
-import net.lzbook.kit.utils.sp.SPUtils
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.user.UserManagerV4

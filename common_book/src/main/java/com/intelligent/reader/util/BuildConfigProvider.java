@@ -74,4 +74,15 @@ public class BuildConfigProvider implements IBuildConfigProvider {
     public String getContentApiHost() {
         return BuildConfig.content_api_host;
     }
+
+    @NotNull
+    @Override
+    public String getPackageName() {
+        return BuildConfig.APPLICATION_ID;
+    }
+
+    @Override
+    public int getVersionCode() {
+        return BuildConfig.VERSION_CODE;
+    }
 }

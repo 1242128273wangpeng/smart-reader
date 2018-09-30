@@ -10,8 +10,8 @@ import com.orhanobut.logger.Logger;
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.bean.ChapterErrorBean;
 import net.lzbook.kit.constants.ActionConstants;
-import net.lzbook.kit.utils.sp.SPKey;
-import net.lzbook.kit.utils.sp.SPUtils;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

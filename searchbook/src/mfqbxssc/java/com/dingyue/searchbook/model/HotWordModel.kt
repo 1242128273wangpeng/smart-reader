@@ -5,8 +5,9 @@ import com.ding.basic.bean.Result
 import com.ding.basic.bean.SearchRecommendBook
 import com.ding.basic.bean.SearchResult
 import com.ding.basic.net.RequestSubscriber
-import com.ding.basic.util.editShared
-import com.ding.basic.util.getSharedString
+import com.ding.basic.util.sp.SPUtils
+
+
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.google.gson.Gson
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -35,7 +36,7 @@ class HotWordModel {
                     override fun requestResult(result: Result<SearchResult>?) {
                         if (result != null && result.data != null) {
                             val data = result.data
-                            BaseBookApplication.getGlobalContext().editShared {
+                            SPUtils.editDefaultShared {
                                 putString(Constants.SERARCH_HOT_WORD_YOUHUA, mGson.toJson(data, SearchResult::class.java))
                             }
 
@@ -110,7 +111,7 @@ class HotWordModel {
      * if hasn't net getHotWord from SharePreference cache
      */
     private fun loadCacheDataFromShare(listener: OnResultListener<SearchResult>) {
-        val cacheHotWords = BaseBookApplication.getGlobalContext().getSharedString(Constants.SERARCH_HOT_WORD_YOUHUA)
+        val cacheHotWords = SPUtils.getDefaultSharedString(Constants.SERARCH_HOT_WORD_YOUHUA)
 
         if (cacheHotWords.isNotEmpty()) {
             val searchResult = mGson.fromJson(cacheHotWords, SearchResult::class.java)

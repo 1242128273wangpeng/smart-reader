@@ -13,4 +13,6 @@ interface IBuildConfigProvider :IProvider{
     fun getAlifeedbackSecret():String
     fun getMicroApiHost():String
     fun getContentApiHost():String
+    fun getPackageName():String
+    fun getVersionCode():Int
 }
