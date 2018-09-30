@@ -13,6 +13,7 @@
     <string name="download_pager_dialog_deletemessage">本小说缓存吗?</string>
     <string name="download_pager_dialog_deletemessage_first">》等</string>
     <string name="download_pager_dialog_deletemessage_after">》小说缓存吗?</string>
+    <string name="determine_clear_all_file_cache">确定清除包括下载书籍在内的所有 \n 缓存吗？</string>
 
 
     <string name="toast_cache_complete">《%1$s》缓存完成</string>
