@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--调试模式界面字体-->
+
+    <style name="Debug_Widget_Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">@dimen/dimen_margin_14</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color_323232</item>
+    </style>
+
+    <!--调试模式界面字体-->
+
+    <style name="Debug_Widget_Text_Wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">@dimen/dimen_margin_14</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color_323232</item>
+    </style>
+
+    <!--调试模式界面button-->
+
+    <style name="Debug_Widget_View">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
     <style name="CircleProgressBar">
         <item name="android:indeterminateOnly">true</item>
         <item name="android:indeterminateDrawable">@drawable/progress_circle</item>
@@ -96,4 +130,123 @@
         <item name="android:windowEnterAnimation">@anim/home_clear_cache_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/home_clear_cache_exit_anim</item>
     </style>
+
+
+    <!--huge-->
+    <style name="style_text_huge_dark">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="style_text_huge_plain">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <style name="style_text_huge_light">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <style name="style_text_huge_weak">
+        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+    <!--huge-->
+
+    <!--large-->
+    <style name="style_text_large_dark">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="style_text_large_plain">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <style name="style_text_large_light">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <style name="style_text_large_weak">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+    <!--large-->
+
+    <!--great-->
+    <style name="style_text_great_dark">
+        <item name="android:textSize">@dimen/text_size_great</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+    <!--great-->
+
+    <!--normal-->
+    <style name="style_text_normal_dark">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="style_text_normal_plain">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <style name="style_text_normal_light">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <style name="style_text_normal_weak">
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+    <!--normal-->
+
+    <!--small-->
+    <style name="style_text_small_dark">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="style_text_small_plain">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <style name="style_text_small_light">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <style name="style_text_small_weak">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+    <!--small-->
+
+    <!--tiny-->
+    <style name="style_text_tiny_dark">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="style_text_tiny_plain">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_plain</item>
+    </style>
+
+    <style name="style_text_tiny_light">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_light</item>
+    </style>
+
+    <style name="style_text_tiny_weak">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
+        <item name="android:textColor">@color/text_color_weak</item>
+    </style>
+    <!--tiny-->
+
 </resources>

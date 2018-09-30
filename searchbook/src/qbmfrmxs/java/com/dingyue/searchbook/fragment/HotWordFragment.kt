@@ -21,6 +21,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
 import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import java.util.*
 
 
@@ -30,35 +31,32 @@ import java.util.*
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019 22:05
  */
-@Route(path = RouterConfig.HOT_WORD_FRAGMENT)
 class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
 
-    private var mView: View? = null
-
     var onSearchInputClick: OnSearchInputClick? = null
+    var onResultListener: OnResultListener<String>? = null
 
+    private var hotWordAdapter: HotWordAdapter? = null
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
 
-    var onResultListener: OnResultListener<String>? = null
-
-    private var hotWordAdapter: HotWordAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_hotword, container, false)
+        return inflater.inflate(R.layout.fragment_hotword, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
         hotWordPresenter.loadRecommendData()
 
-
-//        rl_recommend_search.setOnClickListener {
-//            onSearchInputClick?.onSearchClick()
-//        }
-
-        return mView
+        rl_recommend_search.setOnClickListener {
+            RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
+        }
     }
-
 
     override fun showLoading() {
     }
@@ -134,4 +132,5 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
     interface OnSearchInputClick {
         fun onSearchClick()
     }
+
 }
