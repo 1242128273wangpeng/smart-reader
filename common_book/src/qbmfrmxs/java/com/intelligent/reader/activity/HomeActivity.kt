@@ -33,11 +33,11 @@ import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.ClassifyFragment
-import com.intelligent.reader.fragment.SearchBookFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -121,8 +121,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         fragment
     }
 
-    private val searchBookFragment: SearchBookFragment by lazy {
-        val fragment = SearchBookFragment()
+    private val searchBookFragment: HotWordFragment by lazy {
+        val fragment = HotWordFragment()
         fragment
     }
 

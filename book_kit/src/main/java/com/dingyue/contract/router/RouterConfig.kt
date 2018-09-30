@@ -20,7 +20,6 @@ object RouterConfig {
 
     const val DEBUG_ACTIVITY = "/common_book/DebugActivity"
 
-    const val SEARCH_BOOK_ACTIVITY = "/searchbook/SearchBookActivity"
     const val FIND_BOOK_DETAIL_ACTIVITY = "/common_book/FindBookDetail"
 
     const val CATALOGUES_ACTIVITY = "/common_book/CataloguesActivity"
@@ -47,4 +46,11 @@ object RouterConfig {
 
     const val DOWNLOAD_MANAGER_ACTIVITY = "/downloadmanager/DownloadManagerActivity"
 
+    /**
+     * search_book
+     */
+
+    const val SEARCH_BOOK_ACTIVITY = "/searchbook/SearchBookActivity"
+
+    const val HOT_WORD_FRAGMENT = "/searchbook/HotWordFragment"
 }

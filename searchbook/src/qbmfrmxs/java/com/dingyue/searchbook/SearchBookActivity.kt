@@ -18,7 +18,7 @@ import com.dingyue.searchbook.fragment.SearchResultFragment
 import com.dingyue.searchbook.fragment.SuggestFragment
 import com.dingyue.searchbook.interfaces.OnResultListener
 import iyouqu.theme.FrameActivity
-import kotlinx.android.synthetic.mfqbxssc.activity_search_book.*
+import kotlinx.android.synthetic.qbmfrmxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
@@ -75,20 +75,26 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
             }
             search_result_focus.id
             -> {
-                search_result_focus.visibility = View.GONE
-                search_result_default.visibility = View.VISIBLE
-
-                search_result_input.requestFocus()
-                showSoftKeyboard(search_result_input)
-
-                showFragment(historyFragment)
-                historyFragment.loadHistoryRecord()
+                showHistoryFragment()
             }
             search_result_btn.id -> {
                 showFragment(searchResultFragment)
                 searchResultFragment.loadKeyWord(search_result_input.text.toString())
             }
         }
+    }
+
+    fun showHistoryFragment() {
+
+        search_result_focus.visibility = View.GONE
+        search_result_default.visibility = View.VISIBLE
+
+        search_result_input.requestFocus()
+        showSoftKeyboard(search_result_input)
+
+        showFragment(historyFragment)
+        historyFragment.loadHistoryRecord()
+
     }
 
     override fun onKeyWord(keyword: String?) {
@@ -108,6 +114,13 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         supportFragmentManager.beginTransaction().add(R.id.search_result_hint, searchResultFragment)
                 .hide(searchResultFragment).commit()
 
+        hotWordFragment.onSearchInputClick = object : HotWordFragment.OnSearchInputClick {
+            override fun onSearchClick() {
+                showHistoryFragment()
+            }
+
+        }
+
     }
 
     private fun initListener() {
@@ -121,7 +134,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_btn.setOnClickListener(this)
 
         historyFragment.onKeyWordListener = this
-        hotWordFragment.onResultListener = object :OnResultListener<String> {
+        hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
                 showFragment(searchResultFragment)
                 searchResultFragment.loadKeyWord(result)

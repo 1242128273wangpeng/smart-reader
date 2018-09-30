@@ -1,7 +1,5 @@
 package com.dingyue.searchbook.adapter
 
-import android.graphics.Color
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,38 +38,38 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         val context = parent.context
         val hotView: View
         val holder: ViewHolder
-
         if (convertView == null) {
             hotView = LayoutInflater.from(context).inflate(R.layout.item_hot_word, parent, false)
             holder = ViewHolder()
-            holder.hotWordText = hotView.findViewById<View>(R.id.tv_hotword) as TextView
-            holder.typeImg = hotView.findViewById<View>(R.id.iv_type) as ImageView
+            holder.txt_hot_word = hotView.findViewById<View>(R.id.txt_hotword) as TextView
+            holder.img_hot_rank = hotView.findViewById<View>(R.id.img_hot_rank) as ImageView
             hotView.tag = holder
         } else {
             hotView = convertView
             holder = convertView.tag as ViewHolder
         }
+
         val dataBean = list[position]
-        holder.hotWordText.text = dataBean.keyword
-        if (!TextUtils.isEmpty(dataBean.superscript)) {
-            holder.typeImg.visibility = View.VISIBLE
-            when (dataBean.superscript) {
-                "热" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_hot)
-                "荐" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_recommend)
-                "新" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_new)
-            }
-        } else {
-            holder.typeImg.visibility = View.GONE
-        }
-        if (!TextUtils.isEmpty(dataBean.color)) {
-            holder.hotWordText.setTextColor(Color.parseColor(dataBean.color))
-        }
+        holder.txt_hot_word.text = dataBean.keyword
+        setHotShowType(holder.img_hot_rank, position)
         return hotView
+
     }
 
     private inner class ViewHolder {
-        lateinit var hotWordText: TextView
-        lateinit var typeImg: ImageView
+        lateinit var txt_hot_word: TextView
+        lateinit var img_hot_rank: ImageView
+    }
+
+    private fun setHotShowType(bubbleIv: ImageView, position: Int) {
+        when (position) {
+            0 -> bubbleIv.setImageResource(R.drawable.search_img_hot_1)
+            1 -> bubbleIv.setImageResource(R.drawable.search_img_hot_2)
+            2 -> bubbleIv.setImageResource(R.drawable.search_img_hot_3)
+            3 -> bubbleIv.setImageResource(R.drawable.search_img_hot_4)
+            4 -> bubbleIv.setImageResource(R.drawable.search_img_hot_5)
+            5 -> bubbleIv.setImageResource(R.drawable.search_img_hot_6)
+        }
     }
 
 }
