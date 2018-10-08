@@ -30,8 +30,6 @@ import kotlin.collections.ArrayList
  */
 class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
 
-    private var mView: View? = null
-
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
@@ -40,16 +38,16 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
 
     private var hotWordAdapter: HotWordAdapter? = null
 
-    private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_hotword, container, false)
+        return inflater.inflate(R.layout.fragment_hotword, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
         hotWordPresenter.loadRecommendData()
-        return mView
     }
-
 
     override fun showLoading() {
     }
@@ -60,27 +58,20 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {
 
         hotWordAdapter = HotWordAdapter(hotWordList)
-        gridView.adapter = hotWordAdapter
+        grid_hotWord.adapter = hotWordAdapter
 
         onHotWordItemClick(hotWordList)
     }
 
     override fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>) {
 
-        recommendFreeList.clear()
-        recommendList.forEachIndexed { index, dataBean ->
-            if (index < 8) {
-                recommendFreeList.add(dataBean)
-            }
-        }
-
-        list_recommend.layoutManager = GridLayoutManager(context, 4)
-        list_recommend.adapter = RecommendAdapter(recommendFreeList, this@HotWordFragment)
+        list_recommend.layoutManager = GridLayoutManager(context, 1)
+        list_recommend.adapter = RecommendAdapter(recommendList, this@HotWordFragment)
 
     }
 
     private fun onHotWordItemClick(hotWordList: ArrayList<HotWordBean>) {
-        gridView.setOnItemClickListener { _, _, position, _ ->
+        grid_hotWord.setOnItemClickListener { _, _, position, _ ->
             StatServiceUtils.statAppBtnClick(context,
                     StatServiceUtils.b_search_click_allhotword)
 

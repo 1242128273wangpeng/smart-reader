@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="@color/transparent"
-        android:divider="@color/transparent"/>
+        android:divider="@color/color_E8E8E8"
+        android:dividerHeight="1dp"/>
 
 </LinearLayout>

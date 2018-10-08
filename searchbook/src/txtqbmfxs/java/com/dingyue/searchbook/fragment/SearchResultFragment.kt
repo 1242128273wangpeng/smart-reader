@@ -9,17 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
-import android.webkit.WebSettings
 import android.webkit.WebViewClient
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import com.dingyue.searchbook.JSInterface
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
 import kotlinx.android.synthetic.txtqbmfxs.fragment_search_result.view.*
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.webview.WebViewJsInterface
 
 
 /**
@@ -49,7 +47,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-    override fun obtainJSInterface(jsInterface: JSInterfaceHelper) {
+    override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             mView?.search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
@@ -67,6 +65,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         mView?.search_result_content?.settings?.javaScriptEnabled = true
         mView?.search_result_content?.settings?.domStorageEnabled = true
         mView?.search_result_content?.addJavascriptInterface(jsInterface, "J_search")
+
     }
 
 

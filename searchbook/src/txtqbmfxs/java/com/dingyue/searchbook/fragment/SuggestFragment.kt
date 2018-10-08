@@ -27,7 +27,6 @@ import java.util.HashMap
  */
 class SuggestFragment : Fragment(), ISuggestView {
 
-    private var mView: View? = null
     private lateinit var mKeyWord: String
 
     private var itemGapViewCount = 0 // 用于打点 记录自动补全的type不为 书籍，作者，标签
@@ -39,9 +38,12 @@ class SuggestFragment : Fragment(), ISuggestView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_listview, container, false)
+        return inflater.inflate(R.layout.fragment_listview, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         suggestPresenter.onCreate()
-        return mView
     }
 
     override fun showLoading() {
