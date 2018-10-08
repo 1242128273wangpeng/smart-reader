@@ -51,6 +51,13 @@ class HistoryModel {
     }
 
 
+    fun clearHistory() {
+        historyList?.let {
+            it.clear()
+            Tools.saveHistoryWord(BaseBookApplication.getGlobalContext(), historyList)
+        }
+    }
+
     fun clearHistory(index: Int) {
         historyList?.let {
             if (index < it.size) {

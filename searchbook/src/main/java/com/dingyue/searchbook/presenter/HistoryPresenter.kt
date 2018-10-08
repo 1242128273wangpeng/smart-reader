@@ -29,9 +29,13 @@ class HistoryPresenter(private var iHistoryView: IHistoryView?) : BasePresenter 
 
     }
 
+    fun removeHistoryRecord(){
+        historyModel?.clearHistory()
+    }
 
     fun removeHistoryRecord(index:Int){
             historyModel?.clearHistory(index)
     }
+
 
 }
