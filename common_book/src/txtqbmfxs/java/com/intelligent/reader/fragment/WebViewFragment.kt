@@ -210,7 +210,6 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         if (!viewVisible || !viewPrepared) {
             return
         }
-        web_view_content?.loadUrl("javascript:startEventFunc()")
     }
 
     private fun requestWebViewData(url: String?) {
