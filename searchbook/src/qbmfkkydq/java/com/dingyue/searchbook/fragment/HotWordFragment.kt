@@ -30,26 +30,59 @@ import kotlin.collections.ArrayList
  */
 class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
 
-    private var mView: View? = null
+    var onResultListener: OnResultListener<String>? = null
 
+    private var hotWordAdapter: HotWordAdapter? = null
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
 
-    var onResultListener:OnResultListener<String>? = null
-
-    private var hotWordAdapter: HotWordAdapter? = null
 
     private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_hotword, container, false)
+        return inflater.inflate(R.layout.fragment_hotword, container, false)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
         hotWordPresenter.loadRecommendData()
-        return mView
+        initListener()
     }
 
+    private var count = 0//用于标识换一换次数
+    private fun initListener(){
+//        txt_change.setOnClickListener {
+//            count += 8
+//            if (count >= 24) {
+//                count = 0
+//            }
+//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
+//                    StartLogClickUtil.HOTREADCHANGE)
+//            initRecycleView(count)
+//        }
+    }
+
+//    @Synchronized
+//    fun initRecycleView(bookCount: Int) {
+//        mRecommendFinalBooks.clear()
+//        for (i in bookCount until bookCount + 8) {
+//            if (i < mRecommendBooks.size) {
+//                mRecommendFinalBooks.add(mRecommendBooks.get(i))
+//            }
+//        }
+//        if (mRecommendBooksAdapter == null) {
+//            mRecommendBooksAdapter = RecommendBooksAdapter(mContext, this@SearchViewHelper,
+//                    mRecommendFinalBooks)
+//            mRecommendRecycleView.setAdapter(mRecommendBooksAdapter)
+//        } else {
+//            mRecommendBooksAdapter.notifyDataSetChanged()
+//        }
+//
+//    }
 
     override fun showLoading() {
     }
@@ -91,7 +124,7 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
             data.put("type", bean.superscript ?: "")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
             hotWordPresenter.onKeyWord(bean.keyword)
-            onResultListener?.onSuccess(bean.keyword?:"")
+            onResultListener?.onSuccess(bean.keyword ?: "")
         }
     }
 

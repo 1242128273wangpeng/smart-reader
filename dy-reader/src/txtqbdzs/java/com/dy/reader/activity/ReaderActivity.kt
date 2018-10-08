@@ -15,6 +15,9 @@ import android.view.WindowManager
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
@@ -35,16 +38,14 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.view.NativeView
+import iyouqu.theme.BaseCacheableActivity
+import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbdzs.act_reader.*
 import kotlinx.android.synthetic.txtqbdzs.reader_content.*
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
-import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.book.RepairHelp
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.repair_books.RepairHelp
+import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.utils.loge
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -165,7 +166,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onConfigurationChanged(newConfig)
 
         //横向阅读 最后一章到完结页 点击返回 dialog不显示
-        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+        if (!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)) {
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         }
 
@@ -372,7 +373,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             mReadPresenter.updateOriginLog()
 
         } else {
-            ToastUtil.showToastMessage("无法查看原文链接！")
+            this.applicationContext.showToastMessage("无法查看原文链接！")
         }
     }
 
@@ -547,7 +548,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                         }
                     } else if (adView.view is NativeMediaView) {
                         mNativeMediaView = adView.view as NativeMediaView
-                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _ ->
                             mNativeMediaView?.onPause()
                             EventBus.getDefault()
                                     .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
@@ -578,7 +579,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -618,6 +619,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun supportSlideBack(): Boolean = false
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        loge(keyCode)
         if (keyCode == KeyEvent.KEYCODE_MENU) {
 
             if (ReaderSettings.instance.isAutoReading) {
@@ -634,17 +636,14 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
                 }
             } else {
-                if (ReaderStatus.isMenuShow) {
-                    mReadSettingFragment.show(false)
-                    ReaderStatus.isMenuShow = false
-                } else {
+                if (!ReaderStatus.isMenuShow) {
                     mReadSettingFragment.show(true)
                     ReaderStatus.isMenuShow = true
                 }
 
             }
 
-            return true
+//            return true
         }
         return super.onKeyDown(keyCode, event)
     }

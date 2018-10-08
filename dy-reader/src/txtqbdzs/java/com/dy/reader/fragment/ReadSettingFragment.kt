@@ -31,19 +31,19 @@ import org.greenrobot.eventbus.ThreadMode
 /**
  * Created by yuchao on 2018/4/29 0029
  */
-class ReadSettingFragment : DialogFragment() , CallBackDownload {
+class ReadSettingFragment : DialogFragment(), CallBackDownload {
     override fun onTaskStatusChange(book_id: String?) {
-      /*  if(dialog != null){
-            dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }*/
+        /*  if(dialog != null){
+              dialog.rsh_option_header.setBookDownLoadState(book_id)
+          }*/
 
     }
 
     override fun onTaskFinish(book_id: String?) {
-       /* if(dialog != null){
-            dialog.rsh_option_header.setBookDownLoadState(book_id)
-        }
-*/
+        /* if(dialog != null){
+             dialog.rsh_option_header.setBookDownLoadState(book_id)
+         }
+ */
     }
 
     override fun onTaskFailed(book_id: String?, t: Throwable?) {
@@ -89,15 +89,21 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
                 canTouch
             }
         }
-        dialog.setOnKeyListener { dialog, keyCode, event ->
+        dialog.setOnKeyListener { _, keyCode, event ->
 
-            if (KeyEvent.KEYCODE_BACK == keyCode) {
-                if (event.action == MotionEvent.ACTION_UP) {
-                    activity?.onBackPressed()
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> {
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        activity?.onBackPressed()
+                    }
+                    true
                 }
-                true
-            } else {
-                false
+                KeyEvent.KEYCODE_MENU -> {
+                    show(false)
+                    ReaderStatus.isMenuShow = false
+                    true
+                }
+                else -> false
             }
         }
         if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
@@ -124,7 +130,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             }
         }*/
 
-        if(ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
+        if (ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
             when (event.type) {
                 ReaderSettings.ConfigType.CHAPTER_REFRESH -> {
                     canTouch = false
@@ -154,7 +160,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         dialog?.rsbd_option_bottom_detail?.currentThemeMode = themeMode
         dialog?.rsbd_option_bottom_detail?.setNovelMode(ReaderSettings.instance.readThemeMode)
         dialog?.rl_read_setting_content?.setOnClickListener {
-            if(dialog?.isShowing == true){
+            if (dialog?.isShowing == true) {
                 dialog?.dismiss()
             }
         }
@@ -189,7 +195,7 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
             } else {
                 dismiss()
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
         }
     }
 
@@ -211,5 +217,6 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         EventBus.getDefault().unregister(this)
         mPresenter?.clear()
     }
+
 
 }

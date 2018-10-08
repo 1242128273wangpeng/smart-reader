@@ -256,7 +256,10 @@
 
 
     <color name="transparent_color">#00ffffff</color>
+
     <color name="white">#ffffffff</color>
+    <color name="white_alpha">#4DFFFFFF</color>
+
     <color name="remove_delete_normal">#f25732</color>
     <color name="color_gray_eaeaea">#eaeaea</color>
     <color name="color_gray_989797">#989797</color>

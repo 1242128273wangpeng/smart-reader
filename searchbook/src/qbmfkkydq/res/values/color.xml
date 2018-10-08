@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--搜索相关的-->
+    <color name="search_hotWord_bg1">#FCF6F6</color>
+    <color name="search_hotWord_bg2">#F7FDF9</color>
+    <color name="search_hotWord_bg3">#FDFCF7</color>
+    <color name="search_hotWord_bg4">#F6FAFC</color>
+    <color name="search_hotWord_bg5">#FDF7FC</color>
+    <color name="search_hotWord_bg6">#F7F7FD</color>
+    <color name="search_divider">#f0f0f0</color>
+
+</resources>

@@ -44,6 +44,8 @@
     <string name="notification_update_book_count">本书更新了</string>
     <string name="notification_update_book_catalog">本书目录已更新！</string>
 
+    <string name="determine_clear_serach_history">你确定要清除所有搜索历史吗？</string>
+
     <string name="prompt">提示</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>

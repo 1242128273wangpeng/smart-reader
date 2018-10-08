@@ -7,21 +7,23 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import net.lzbook.kit.utils.router.RouterConfig
-import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.fragment.HistoryFragment
 import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dingyue.searchbook.fragment.SearchResultFragment
 import com.dingyue.searchbook.fragment.SuggestFragment
+import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.interfaces.OnResultListener
-import net.lzbook.kit.ui.activity.base.FrameActivity
 import kotlinx.android.synthetic.qbmfkkydq.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.ToastUtil
 
 
 /**
@@ -85,8 +87,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 historyFragment.loadHistoryRecord()
             }
             search_result_btn.id -> {
-                showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(search_result_input.text.toString())
+                clickSearchBtn()
             }
         }
     }
@@ -121,8 +122,12 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_btn.setOnClickListener(this)
 
         historyFragment.onKeyWordListener = this
-        hotWordFragment.onResultListener = object :OnResultListener<String> {
+        hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
+                search_result_input.setText(result)
+                search_result_focus.visibility = View.GONE
+                search_result_default.visibility = View.VISIBLE
+
                 showFragment(searchResultFragment)
                 searchResultFragment.loadKeyWord(result)
             }
@@ -130,6 +135,15 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
     }
 
+    private fun clickSearchBtn(){
+        val keyword = search_result_input.text.toString()
+        if (TextUtils.isEmpty(keyword.trim())) {
+            ToastUtil.showToastMessage(R.string.search_click_check_isright)
+        } else {
+            showFragment(searchResultFragment)
+            searchResultFragment.loadKeyWord(search_result_input.text.toString())
+        }
+    }
 
     override fun afterTextChanged(editable: Editable?) {
 //        if (mSearchHelper != null && mSearchHelper.getWord() != null) {
@@ -210,5 +224,13 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     }
 
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            clickSearchBtn()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+
+    }
 }
 

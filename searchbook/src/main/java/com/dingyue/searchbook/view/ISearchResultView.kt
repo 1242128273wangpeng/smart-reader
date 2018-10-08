@@ -1,8 +1,7 @@
 package com.dingyue.searchbook.view
 
 import com.dingyue.searchbook.interfaces.OnSearchResult
-import com.dingyue.searchbook.JSInterface
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.webview.WebViewJsInterface
 
 
 /**
@@ -13,5 +12,5 @@ import net.lzbook.kit.utils.webview.JSInterfaceHelper
  */
 interface ISearchResultView : IBaseView, OnSearchResult {
 
-    fun obtainJSInterface(jsInterface: JSInterfaceHelper)
+    fun obtainJSInterface(jsInterface: WebViewJsInterface)
 }
