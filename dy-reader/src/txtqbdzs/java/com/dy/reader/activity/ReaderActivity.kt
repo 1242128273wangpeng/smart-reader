@@ -619,7 +619,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun supportSlideBack(): Boolean = false
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        loge(keyCode)
         if (keyCode == KeyEvent.KEYCODE_MENU) {
 
             if (ReaderSettings.instance.isAutoReading) {
@@ -643,7 +642,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
             }
 
-//            return true
         }
         return super.onKeyDown(keyCode, event)
     }
