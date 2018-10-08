@@ -1,12 +1,11 @@
-package com.dingyue.searchbook
+package com.dingyue.searchbook.interfaces
 
-import android.os.Handler
 import android.text.TextUtils
 import android.webkit.JavascriptInterface
 import com.ding.basic.RequestRepositoryFactory
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.utils.webview.WebViewJsInterface
 import java.util.*
 
@@ -18,98 +17,33 @@ import java.util.*
  */
 class JSInterface : WebViewJsInterface {
 
-     var enterApp: OnEnterAppClick? = null
-     var anotherWeb: OnAnotherWebClick? = null
-     var gameAppClick: OnGameAppClick? = null
-     var webGameClick: OnWebGameClick? = null
-     var search: OnSearchClick? = null
-     var cover: OnEnterCover? = null
-     var read: OnEnterRead? = null
-     var toRead: onTurnRead? = null
-     var mCategory: OnEnterCategory? = null
-     var ad: OnOpenAd? = null
-     var showToast: OnShowToastListener? = null
-     var closeWebView: OnCloseWebViewListener? = null
-     var handler: Handler
-     var insertBook: OnInsertBook? = null
-     var deleteBook: OnDeleteBook? = null
-     var pagerInfo: OnH5PagerInfoListener? = null
-     var strings: String? = null
-     var searchWordClick: OnSearchWordClick? = null
-     var subSearchBook: OnSubSearchBook? = null
-     var searchResultNotify: OnSearchResultNotify? = null
+    var enterApp: OnEnterAppClick? = null
+    var anotherWeb: OnAnotherWebClick? = null
+    var gameAppClick: OnGameAppClick? = null
+    var webGameClick: OnWebGameClick? = null
+    var search: OnSearchClick? = null
+    var cover: OnEnterCover? = null
+    var read: OnEnterRead? = null
+    var toRead: onTurnRead? = null
+    var mCategory: OnEnterCategory? = null
+    var ad: OnOpenAd? = null
+    var showToast: OnShowToastListener? = null
+    var closeWebView: OnCloseWebViewListener? = null
+    var insertBook: OnInsertBook? = null
+    var deleteBook: OnDeleteBook? = null
+    var pagerInfo: OnH5PagerInfoListener? = null
+    var strings: String? = null
+    var searchWordClick: OnSearchWordClick? = null
+    var subSearchBook: OnSubSearchBook? = null
+    var searchResultNotify: OnSearchResultNotify? = null
 
-    init {
-        handler = Handler()
-
-    }
-
-    fun setBookString(strings: String) {
-        this.strings = strings
-    }
-
-    fun setOnInsertBook(insertBook: OnInsertBook) {
-        this.insertBook = insertBook
-    }
-
-    fun setOnDeleteBook(deleteBook: OnDeleteBook) {
-        this.deleteBook = deleteBook
-    }
-
-    fun setOnEnterAppClick(enterApp: OnEnterAppClick) {
-        this.enterApp = enterApp
-    }
-
-    fun setOnAnotherWebClick(another: OnAnotherWebClick) {
-        this.anotherWeb = another
-    }
-
-    fun setOnWebGameClick(webGameClick: OnWebGameClick) {
-        this.webGameClick = webGameClick
-    }
-
-    fun setOnGameAppClick(gameAppClick: OnGameAppClick) {
-        this.gameAppClick = gameAppClick
-    }
-
-    fun setOnSearchClick(search: OnSearchClick) {
-        this.search = search
-    }
-
-    fun setOnEnterCover(cover: OnEnterCover) {
-        this.cover = cover
-    }
-
-    fun setOnEnterRead(read: OnEnterRead) {
-        this.read = read
-    }
-
-    fun setOnEnterCategory(category: OnEnterCategory) {
-        this.mCategory = category
-    }
-
-    fun setOnOpenAd(ad: OnOpenAd) {
-        this.ad = ad
-    }
-
-    fun setOnH5PagerInfo(info: OnH5PagerInfoListener) {
-        this.pagerInfo = info
-    }
-
-    fun setOnSearchResultNotify(notify: OnSearchResultNotify) {
-        this.searchResultNotify = notify
-    }
 
     @JavascriptInterface
     override fun enterSearch(keyWord: String?, search_type: String?, filter_type: String?, filter_word: String, sort_type: String) {
         if (keyWord == null || search_type == null || filter_type == null)
             return
 
-        handler.post {
-
-                search?.doSearch(keyWord, search_type, filter_type, filter_word, sort_type)
-//
-        }
+        search?.doSearch(keyWord, search_type, filter_type, filter_word, sort_type)
     }
 
     @JavascriptInterface
@@ -129,7 +63,7 @@ class JSInterface : WebViewJsInterface {
 
     @JavascriptInterface
     override fun returnBooks(): String {
-        return strings?:""
+        return strings ?: ""
     }
 
     @JavascriptInterface
@@ -138,11 +72,9 @@ class JSInterface : WebViewJsInterface {
         if (name == null || book_id == null || book_source_id == null || author == null)
             return
 
-        handler.post {
-            if (insertBook != null) {
-                val dex1 = if (TextUtils.isEmpty(dex)) 1 else Integer.parseInt(dex)
-                insertBook?.doInsertBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, java.lang.Long.valueOf(updateTime)!!, parameter, extra_parameter, dex1)
-            }
+        if (insertBook != null) {
+            val dex1 = if (TextUtils.isEmpty(dex)) 1 else Integer.parseInt(dex)
+            insertBook?.doInsertBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, java.lang.Long.valueOf(updateTime)!!, parameter, extra_parameter, dex1)
         }
     }
 
@@ -151,10 +83,8 @@ class JSInterface : WebViewJsInterface {
         if (book_id == null)
             return
 
-        handler.post {
-            if (deleteBook != null) {
-                deleteBook?.doDeleteBook(book_id)
-            }
+        if (deleteBook != null) {
+            deleteBook?.doDeleteBook(book_id)
         }
     }
 
@@ -163,11 +93,8 @@ class JSInterface : WebViewJsInterface {
         if (url == null || name == null)
             return
 
-
-        handler.post {
-            if (anotherWeb != null) {
-                anotherWeb?.doAnotherWeb(url, name)
-            }
+        if (anotherWeb != null) {
+            anotherWeb?.doAnotherWeb(url, name)
         }
     }
 
@@ -176,11 +103,8 @@ class JSInterface : WebViewJsInterface {
         if (url == null || name == null)
             return
 
-
-        handler.post {
-            if (webGameClick != null) {
-                webGameClick?.openWebGame(url, name)
-            }
+        if (webGameClick != null) {
+            webGameClick?.openWebGame(url, name)
         }
 
     }
@@ -190,11 +114,8 @@ class JSInterface : WebViewJsInterface {
         if (url == null || name == null)
             return
 
-
-        handler.post {
-            if (gameAppClick != null) {
-                gameAppClick?.downloadGame(url, name)
-            }
+        if (gameAppClick != null) {
+            gameAppClick?.downloadGame(url, name)
         }
 
     }
@@ -204,10 +125,8 @@ class JSInterface : WebViewJsInterface {
         if (name == null)
             return
 
-        handler.post {
-            if (enterApp != null) {
-                enterApp?.doEnterApp(name)
-            }
+        if (enterApp != null) {
+            enterApp?.doEnterApp(name)
         }
 
 
@@ -218,10 +137,8 @@ class JSInterface : WebViewJsInterface {
         if (url == null)
             return
 
-        handler.post {
-            if (ad != null) {
-                ad?.doOpenAd(url)
-            }
+        if (ad != null) {
+            ad?.doOpenAd(url)
         }
 
 
@@ -232,10 +149,8 @@ class JSInterface : WebViewJsInterface {
         if (host == null || book_id == null || book_source_id == null)
             return
 
-        handler.post {
-            if (cover != null) {
-                cover?.doCover(host, book_id, book_source_id, name, author, parameter, extra_parameter)
-            }
+        if (cover != null) {
+            cover?.doCover(host, book_id, book_source_id, name, author, parameter, extra_parameter)
         }
 
 
@@ -246,11 +161,9 @@ class JSInterface : WebViewJsInterface {
         if (book_id == null || name == null || author == null)
             return
 
-        handler.post {
-            if (read != null) {
-                val dex1 = if (TextUtils.isEmpty(dex)) 1 else Integer.parseInt(dex)
-                read?.doRead(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, java.lang.Long.valueOf(updateTime)!!, parameter, extra_parameter, dex1)
-            }
+        if (read != null) {
+            val dex1 = if (TextUtils.isEmpty(dex)) 1 else Integer.parseInt(dex)
+            read?.doRead(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, java.lang.Long.valueOf(updateTime)!!, parameter, extra_parameter, dex1)
         }
     }
 
@@ -279,10 +192,8 @@ class JSInterface : WebViewJsInterface {
     //搜索无结果 点击订阅
     @JavascriptInterface
     override fun showSubBookDialog(word: String) {
-        handler.post {
-            if (subSearchBook != null) {
-                subSearchBook?.showSubSearchBook(word)
-            }
+        if (subSearchBook != null) {
+            subSearchBook?.showSubSearchBook(word)
         }
     }
 
@@ -321,12 +232,10 @@ class JSInterface : WebViewJsInterface {
         if (gid == null || nid == null || lastSort == null || name == null)
             return
 
-        handler.post {
-            if (mCategory != null) {
-                mCategory!!.doCategory(Integer.parseInt(gid),
-                        Integer.parseInt(nid), name,
-                        Integer.parseInt(lastSort))
-            }
+        if (mCategory != null) {
+            mCategory!!.doCategory(Integer.parseInt(gid),
+                    Integer.parseInt(nid), name,
+                    Integer.parseInt(lastSort))
         }
 
     }
@@ -335,20 +244,16 @@ class JSInterface : WebViewJsInterface {
     override fun showToast(str: String?) {
         if (str == null)
             return
-        handler.post {
-            if (showToast != null) {
-                showToast?.onShowToast(str)
-            }
+        if (showToast != null) {
+            showToast?.onShowToast(str)
         }
     }
 
     @JavascriptInterface
     override fun closeWebview() {
 
-        handler.post {
-            if (closeWebView != null) {
-                closeWebView?.onCloseWebView()
-            }
+        if (closeWebView != null) {
+            closeWebView?.onCloseWebView()
         }
     }
 
@@ -395,9 +300,6 @@ class JSInterface : WebViewJsInterface {
         fun sendSearchWord(searchWord: String, search_type: String)
     }
 
-    fun setSearchWordClicks(searchWordClick: OnSearchWordClick) {
-        this.searchWordClick = searchWordClick
-    }
 
     interface onTurnRead {
         fun turnRead(book_id: String, book_source_id: String, host: String, name: String,
@@ -426,10 +328,8 @@ class JSInterface : WebViewJsInterface {
     override fun turnToRead(book_id: String, book_source_id: String, host: String, name: String, author: String, parameter: String, extra_parameter: String, update_type: String, last_chapter_name: String, serial_number: String, img_url: String, update_time: String, desc: String, label: String, status: String, bookType: String) {
         if (book_id != "" && book_source_id != "") {
 
-            handler.post {
-                if (toRead != null) {
-                    toRead!!.turnRead(book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, Integer.valueOf(serial_number)!!, img_url, java.lang.Long.valueOf(update_time)!!, desc, label, status, bookType)
-                }
+            if (toRead != null) {
+                toRead!!.turnRead(book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, Integer.valueOf(serial_number)!!, img_url, java.lang.Long.valueOf(update_time)!!, desc, label, status, bookType)
             }
         }
     }
@@ -438,10 +338,8 @@ class JSInterface : WebViewJsInterface {
     override fun sendSearchWord(searchWord: String, search_type: String) {
         if (searchWord != "") {
 
-            handler.post {
-                if (searchWordClick != null) {
-                    searchWordClick?.sendSearchWord(searchWord, search_type)
-                }
+            if (searchWordClick != null) {
+                searchWordClick?.sendSearchWord(searchWord, search_type)
             }
         }
     }
