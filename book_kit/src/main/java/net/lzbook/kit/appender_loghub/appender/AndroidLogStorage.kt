@@ -70,27 +70,27 @@ class AndroidLogStorage {
             ToastUtil.showToastMessage(serverLog.content.toString())
         }
 
-//        AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +
-//                "2、手机型号:${AppUtils.getPhoneModel()}\n" +
-//                "3、系统版本号:${AppUtils.getRelease()}\n" +
-//                "4、屏幕分辨率:${AppUtils.getScreenMetrics(context)}\n" +
-//                "5、MAC地址:${AppUtils.getMacAddress(context)}\n" +
-//                "6、WLAN名称:${AppUtils.getWLanMacAddress(context)}\n" +
-//                "7、运营商:${AppUtils.getProvidersName(context)}\n" +
-//                "8、网络类型:${AppUtils.getNetState(context)}\n" +
-//                "9、IP:${AppUtils.getIPAddress(context)}\n" +
-//                "10、蓝牙:${AppUtils.getBluetoothID()}\n" +
-//                "11、城市信息:${Constants.cityCode}\n" +
-//                "12、内存大小:${AppUtils.getSDTotalSize(context)}\n" +
-//                "13、已使用内存:${AppUtils.getSDAvailableSize(context)}\n" +
-//                "14、处理器:${AppUtils.getCpuName()}\n" +
-//                "15、内核版本:${AppUtils.getSystemInnerVersion()}\n" +
-//                "18、是否启用VPN:${AppUtils.getIsVPNUsed()}\n" +
-//
-//                "16、电池电量:${AppUtils.getBatteryLevel()}\n" +
-//                "17、X86架构:${AppUtils.getX86()}\n" +
-//                "19、MEID:${AppUtils.getIMEI(context)}\n" +
-//                "20、WiFi-Mac地址:${AppUtils.getWifiMacAddress(context)}")
+        /*AppLog.e("Joann", "1、IMEI（设备串号）:${AppUtils.getIMEI(context)}\n" +
+                "2、手机型号:${AppUtils.getPhoneModel()}\n" +
+                "3、系统版本号:${AppUtils.getRelease()}\n" +
+                "4、屏幕分辨率:${AppUtils.getScreenMetrics(context)}\n" +
+                "5、MAC地址:${AppUtils.getMacAddress(context)}\n" +
+                "6、WLAN名称:${AppUtils.getWLanMacAddress(context)}\n" +
+                "7、运营商:${AppUtils.getProvidersName(context)}\n" +
+                "8、网络类型:${AppUtils.getNetState(context)}\n" +
+                "9、IP:${AppUtils.getIPAddress(context)}\n" +
+                "10、蓝牙:${AppUtils.getBluetoothID()}\n" +
+                "11、城市信息:${Constants.cityCode}\n" +
+                "12、内存大小:${AppUtils.getSDTotalSize(context)}\n" +
+                "13、已使用内存:${AppUtils.getSDAvailableSize(context)}\n" +
+                "14、处理器:${AppUtils.getCpuName()}\n" +
+                "15、内核版本:${AppUtils.getSystemInnerVersion()}\n" +
+                "18、是否启用VPN:${AppUtils.getIsVPNUsed()}\n" +
+
+                "16、电池电量:${AppUtils.getBatteryLevel()}\n" +
+                "17、X86架构:${AppUtils.getX86()}\n" +
+                "19、MEID:${AppUtils.getIMEI(context)}\n" +
+                "20、WiFi-Mac地址:${AppUtils.getWifiMacAddress(context)}")*/
 
         val type = serverLog.eventType
         val localLog = LocalLog(type, serverLog.content)

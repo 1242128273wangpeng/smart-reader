@@ -63,18 +63,14 @@ interface RequestService {
         /**
          * 搜索按钮（h5为前后端分离后的接口）
          */
+        const val SEARCH_V3 = "/v3/search"
+        const val SEARCH_V4 = "/v4/search/page"
+        const val SEARCH_V5 = "/v5/search/page"
         const val SEARCH_VUE = "/h5/{packageName}/search"
         // 前后端不分离，数据融合（搜索一期）
         const val SEARCH_S1_V5 = "/v5/search/page"
         // 前后端不分离，数据融合（搜索二期）
         const val SEARCH_S2_V5 = "/v5/search/searchPage"
-        const val SEARCH_V4 = "/v4/search/page"
-
-        // 搜索V3
-        const val SEARCH = "/v3/search"
-
-        // 搜索
-        const val SEARCH_V5 = "/v5/search/page"
 
         /**
          * 搜索热词

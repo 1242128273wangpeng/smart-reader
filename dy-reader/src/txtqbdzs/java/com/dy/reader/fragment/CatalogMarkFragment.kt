@@ -84,7 +84,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         val bookmarkAdapter = ListRecyclerAdapter(bookmarkList, R.layout.item_reader_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
+            presenter.gotoBookMark(requireActivity(), v.tag as Bookmark)
+        }
+
+        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v ->
             presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
+            true
         }
 
         checkHead(true)
@@ -282,12 +287,17 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         override fun onBindData(position: Int, data: Bookmark, editMode: Boolean) {
             if (itemView != null) {
+                itemView.tag = data
                 itemView.txt_delete_mark.tag = data
 
                 itemView.isClickable = true
-                itemView.txt_delete_mark.setOnClickListener { v ->
-                    onItemClick?.onClick(v)
+                itemView.setOnClickListener {
+                    onItemClick?.onClick(it)
                 }
+                itemView.txt_delete_mark.setOnClickListener { v ->
+                    onItemLongClick?.onLongClick(v)
+                }
+
 
                 (itemView.txt_bookmark_title as TextView).text = "${data.chapter_name}"
                 (itemView.txt_bookmark_content as TextView).text = "${data.chapter_content}"

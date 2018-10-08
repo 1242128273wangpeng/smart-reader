@@ -62,7 +62,7 @@
 
     <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_below="@id/img_bottom_shadow"
         android:visibility="gone"/>
 </RelativeLayout>

@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
@@ -22,6 +24,7 @@ import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.service.CheckNovelUpdateService
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.oneclick.OneClickUtil
@@ -29,11 +32,8 @@ import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
@@ -315,9 +315,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
-            BookShelfLogger.uploadFirstOpenBooks()
-        }
-        if(bookShelfPresenter.iBookList.isNotEmpty()){
             BookShelfLogger.uploadFirstOpenBooks()
         }
     }

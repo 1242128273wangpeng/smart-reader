@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.RequestSubscriber;
 import com.dy.media.MediaCode;
@@ -432,6 +433,14 @@ public class SplashActivity extends FrameActivity {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
                 }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = requestRepositoryFactory.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    requestRepositoryFactory.updateBook(book);
+                    requestRepositoryFactory.deleteBookFix(book.getBook_id());
+                }
             }
 
             if (upBooks.isEmpty()) {
@@ -700,7 +709,8 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
+            //今日多看未接登录
+          /*  UserManager.INSTANCE.initPlatform(SplashActivity.this, null);*/
 
             //请求广告
             initAdSwitch();

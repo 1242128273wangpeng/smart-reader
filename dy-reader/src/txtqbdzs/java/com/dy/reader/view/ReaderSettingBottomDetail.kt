@@ -108,6 +108,10 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         resetBtn(Constants.isSlideUp)
 
+        ll_reader_setting_detail.setOnTouchListener { v, event ->
+            true
+        }
+
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -151,11 +155,11 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
                 resetBtn(Constants.isSlideUp)
 
-                if (readerSettings.readThemeMode == 61) {
-                    rg_reader_backdrop_group.clearCheck()
-                } else {
-                    setNovelMode(readerSettings.readThemeMode)
-                }
+//                if (readerSettings.readThemeMode == 61) {
+//                    rg_reader_backdrop_group.clearCheck()
+//                } else {
+                setNovelMode(readerSettings.readThemeMode)
+//                }
                 rg_reader_backdrop_group.setOnCheckedChangeListener(this)
             }
 
@@ -466,6 +470,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
                 anim?.cancel()
                 rl_jump_back.alpha = 1F
+                img_jump_back.isEnabled = false
                 anim = rl_jump_back.animate()
                 anim?.alpha(0F)
                 anim?.duration = 2000
@@ -628,20 +633,20 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             53 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_3)
             54 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_4)
             55 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_5)
-            56 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_6)
             511 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_1)
             512 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_2)
             513 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_3)
             514 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_4)
             515 -> rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_img_5)
             61 -> {
+                rg_reader_backdrop_group?.check(R.id.rbtn_read_bg_6)
                 restoreBright()
                 readerSettings.readThemeMode = index
                 presenter?.changeNight()
             }
             else -> Unit
         }
-        if (index in 51..56 || index in 511..515) {
+        if (index in 51..55 || index in 511..515) {
             readerSettings.readThemeMode = index
             readerSettings.readLightThemeMode = index
             presenter?.changeNight()
@@ -730,26 +735,20 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 if (current != lastIndex) {
 
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "6")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
-                }
-                lastIndex = current
-            }
-            R.id.rbtn_read_bg_6 -> {
-                changePageBackgroundWrapper(56)
-                if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
                     data.put("type", "5")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
                 }
                 lastIndex = current
+            }
+            R.id.rbtn_read_bg_6 -> { // 此皮肤 改成了夜间模式
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
+                presenter?.chageNightMode()
             }
             R.id.rbtn_read_bg_img_1 -> {
                 changePageBackgroundWrapper(511)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
+                    data.put("type", "7")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
                 }
                 lastIndex = current
@@ -758,7 +757,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 changePageBackgroundWrapper(512)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
+                    data.put("type", "8")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
                 }
                 lastIndex = current
@@ -767,7 +766,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 changePageBackgroundWrapper(513)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
+                    data.put("type", "9")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
                 }
                 lastIndex = current
@@ -776,7 +775,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 changePageBackgroundWrapper(514)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
+                    data.put("type", "10")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
                 }
                 lastIndex = current
@@ -785,7 +784,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 changePageBackgroundWrapper(515)
                 if (current != lastIndex) {
                     val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
+                    data.put("type", "11")
                     StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
                 }
                 lastIndex = current
@@ -891,6 +890,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser && seekBar.id == R.id.skbar_reader_chapter_change) {
             rl_jump_back.visibility = View.VISIBLE
+            img_jump_back.isEnabled = true
             anim?.cancel()
             rl_jump_back.alpha = 1F
 //            val resizeProgress = progress.times(ReaderStatus.chapterList.size).div(100)

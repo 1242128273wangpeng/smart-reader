@@ -432,7 +432,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             }
             BookShelfLogger.uploadFirstOpenBooks()
         }
-
     }
 
     /**

@@ -8,6 +8,7 @@
     tools:ignore="RtlHardcoded,MissingPrefix">
 
     <RelativeLayout
+        android:id="@+id/rl_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#F2191919"
@@ -58,6 +59,17 @@
                 tools:ignore="RtlSymmetry"/>
         </RelativeLayout>
     </RelativeLayout>
+
+    <net.lzbook.kit.ui.widget.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rl_head"
+        android:layout_alignEnd="@+id/rl_head"
+        android:layout_alignLeft="@+id/rl_head"
+        android:layout_alignRight="@+id/rl_head"
+        android:layout_alignStart="@+id/rl_head"
+        android:layout_alignTop="@+id/rl_head"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/txt_reader_guide_option"

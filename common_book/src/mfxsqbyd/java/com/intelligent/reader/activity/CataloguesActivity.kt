@@ -246,6 +246,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
         loadingPage.onError()
     }
 
+    @Subscribe
     fun onEvent(eventBookmark: EventBookmark) {
         if (eventBookmark.type == EventBookmark.type_delete) {
             AppLog.e(TAG, "eventBookmark:" + eventBookmark.bookmark.id + " name:" + eventBookmark.bookmark.chapter_name)

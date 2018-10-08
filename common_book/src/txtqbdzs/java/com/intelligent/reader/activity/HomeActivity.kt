@@ -23,26 +23,32 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.HomePresenter
-import net.lzbook.kit.view.HomeView
-import net.lzbook.kit.bean.EventBookStore
-import net.lzbook.kit.bean.PagerDesc
 import com.intelligent.reader.view.PushSettingDialog
+import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.txtqbdzs.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.bean.EventBookStore
+import net.lzbook.kit.bean.PagerDesc
 import net.lzbook.kit.constants.ActionConstants
+import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
 import net.lzbook.kit.ui.activity.WelfareCenterActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.BannerDialog
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.AppLog
@@ -50,11 +56,12 @@ import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.view.HomeView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
 
@@ -126,6 +133,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         dialog
     }
 
+    private val bannerDialog: BannerDialog by lazy {
+        BannerDialog(this,Intent(this, FindBookDetail::class.java))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -157,6 +168,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             pushSettingDialog.show()
         }
 
+        EventBus.getDefault().register(this)
     }
 
 
@@ -206,6 +218,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             exception.printStackTrace()
         }
         AppUtils.fixInputMethodManagerLeak(applicationContext)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -643,6 +656,24 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             view_pager.setCurrentItem(index, false)
         }
     }
+
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
+    }
+
 
     companion object {
         private const val BACK = 0x80

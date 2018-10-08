@@ -57,7 +57,7 @@
     <!--color_night-->
     <color name="reading_text_color_night">#CC9B9B9B</color>
     <color name="reading_operation_text_color_night">#309B9B9B</color>
-    <color name="reading_backdrop_night">#333333</color>
+    <color name="reading_backdrop_nightly">#333333</color>
 
     <color name="color_black_222222">#222222</color>
     <color name="color_black_212121">#212121</color>

@@ -22,23 +22,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ding.basic.net.api.service.RequestService;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
 import com.intelligent.reader.view.SelectSexDialog;
 
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.PagerDesc;
 import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.logger.AppLog;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFinishedCallback {
 
@@ -119,52 +121,63 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
             rl_head = (RelativeLayout) rootView.findViewById(R.id.rl_head);
             img_sex = rootView.findViewById(R.id.img_sex);
             img_shadow = rootView.findViewById(R.id.img_shadow);
-            if (Build.VERSION.SDK_INT >= 11) {
+            if (Build.VERSION.SDK_INT >= 11 && contentView != null) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
-            img_sex.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            if(img_sex != null){
+                img_sex.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                    if (selectSexDialog == null) {
-                        selectSexDialog = new SelectSexDialog(weakReference.get());
-                        selectSexDialog.setAniFinishedAction(WebViewFragment.this);
-                    }
-                    //0 表示男  1 表示女
-                    if (SPUtils.INSTANCE.getDefaultSharedInt(SPKey.RANK_SELECT_SEX, 0) == 0) {
-                        SPUtils.INSTANCE.putDefaultSharedInt(SPKey.RANK_SELECT_SEX, 1);
-                        img_sex.setImageResource(R.drawable.rank_gril_icon);
-                        selectSexDialog.show(false);
-                        String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
-                                AppUtils.getPackageName());
-                        url = UrlUtils.buildWebUrl(uri, new HashMap());
-                        loadingData(url);
-                    } else {
-                        SPUtils.INSTANCE.putDefaultSharedInt(SPKey.RANK_SELECT_SEX, 0);
-                        selectSexDialog.show(true);
-                        img_sex.setImageResource(R.drawable.rank_boy_icon);
-                        String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
-                                AppUtils.getPackageName());
-                        url = UrlUtils.buildWebUrl(uri, new HashMap());
-                        loadingData(url);
-                    }
+                        if(weakReference.get() != null){
+                            if (selectSexDialog == null) {
+                                selectSexDialog = new SelectSexDialog(weakReference.get());
+                                selectSexDialog.setAniFinishedAction(WebViewFragment.this);
+                            }
+                            Map<String,String> data = new HashMap<>();
+                            //0 表示男  1 表示女
+                            if (SPUtils.INSTANCE.getDefaultSharedInt(SPKey.RANK_SELECT_SEX, 0) == 0) {
+                                data.put("type","2");
+                                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.RANK_SELECT_SEX, 1);
+                                img_sex.setImageResource(R.drawable.rank_gril_icon);
+                                selectSexDialog.show(false);
+                                String uri = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
+                                        AppUtils.getPackageName());
+                                url = UrlUtils.buildWebUrl(uri, new HashMap());
+                                loadingData(url);
+                            } else {
+                                data.put("type","1");
+                                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.RANK_SELECT_SEX, 0);
+                                selectSexDialog.show(true);
+                                img_sex.setImageResource(R.drawable.rank_boy_icon);
+                                String uri = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
+                                        AppUtils.getPackageName());
+                                url = UrlUtils.buildWebUrl(uri, new HashMap());
+                                loadingData(url);
+                            }
+                            StartLogClickUtil.upLoadEventLog(weakReference.get(),StartLogClickUtil.TOP_PAGE,StartLogClickUtil.QG_SWITCHTAB,data);
+                        }
 
-                }
-            });
+                    }
+                });
+            }
+
         }
 
         if (type.equals("recommend_male") || type.equals("recommend_female")) {
             rl_head.setVisibility(View.GONE);
             img_shadow.setVisibility(View.GONE);
         }
-        if ("rankBoy".equals(type)) {
-            img_sex.setVisibility(View.VISIBLE);
-            img_sex.setImageResource(R.drawable.rank_boy_icon);
-        } else if ("rankGirl".equals(type)) {
-            img_sex.setVisibility(View.VISIBLE);
-            img_sex.setImageResource(R.drawable.rank_gril_icon);
-        } else {
-            img_sex.setVisibility(View.GONE);
+        if(img_sex != null){
+            if ("rankBoy".equals(type)) {
+                img_sex.setVisibility(View.VISIBLE);
+                img_sex.setImageResource(R.drawable.rank_boy_icon);
+            } else if ("rankGirl".equals(type)) {
+                img_sex.setVisibility(View.VISIBLE);
+                img_sex.setImageResource(R.drawable.rank_gril_icon);
+            } else {
+                img_sex.setVisibility(View.GONE);
+            }
         }
 
         if (weakReference != null) {
@@ -218,7 +231,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
 
     public void loadWebData(String url) {
         AppLog.e(TAG, "loadWebData url: " + url);
-        if (fragmentCallback != null) {
+        if (fragmentCallback != null && contentView != null) {
             url = fragmentCallback.startLoad(contentView, url);
         }
         AppLog.e(TAG, "loadWebData url: " + url);
@@ -348,7 +361,10 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                     if (customWebClient != null) {
                         customWebClient.doClear();
                     }
-                    contentView.reload();
+                    if(contentView != null){
+                        contentView.reload();
+                    }
+
                 }
             });
         }
@@ -390,7 +406,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
 
     @Override
     public void onAniFinished() {
-        if (selectSexDialog != null) {
+        if (weakReference.get() != null && selectSexDialog != null) {
             if (selectSexDialog.isShow()) {
                 selectSexDialog.dismiss();
             }

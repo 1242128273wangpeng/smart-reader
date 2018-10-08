@@ -129,11 +129,21 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         params["font"] = settings.fontSize.toString()
         params["fontsetting"] = TypefaceUtil.loadTypefaceTag(settings.fontTypeface)
         params["background"] = settings.readThemeMode.toString()
-        params["readgap"] = settings.readInterlineaSpace.toString()
+        params["readgap"] = formatSpaceGapType(settings.readInterlineaSpace).toString()
         params["pageturn"] = settings.animation_mode.toString()
 
         StartLogClickUtil.upLoadEventLog(act, StartLogClickUtil.READPAGE_PAGE
                 , StartLogClickUtil.DEFAULTSETTING)
+    }
+
+    private fun formatSpaceGapType(space: Float): Int {
+        return when (space) {
+            0.2f -> 4
+            0.3f -> 3
+            0.4f -> 2
+            0.5f -> 1
+            else -> 3
+        }
     }
 
     fun loadData(useReadStatus: Boolean = false) {

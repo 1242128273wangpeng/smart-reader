@@ -19,6 +19,8 @@ import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.service.CheckNovelUpdateService
+import net.lzbook.kit.ui.widget.ConsumeEvent
+import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.router.BookRouter
@@ -26,8 +28,6 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.ui.widget.ConsumeEvent
-import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import org.greenrobot.eventbus.EventBus
 
 /**

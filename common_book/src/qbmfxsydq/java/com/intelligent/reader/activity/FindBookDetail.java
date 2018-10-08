@@ -248,26 +248,34 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
                 break;
             case R.id.img_sex:
-                if (selectSexDialog == null) {
-                    selectSexDialog = new SelectSexDialog(this);
-                    selectSexDialog.setAniFinishedAction(this);
+                if (!isFinishing()) {
+                    if (selectSexDialog == null) {
+                        selectSexDialog = new SelectSexDialog(this);
+                        selectSexDialog.setAniFinishedAction(this);
+                    }
+                    Map<String, String> data1 = new HashMap<>();
+                    //0 表示男  1 表示女
+                    if (isMale) {
+                        data1.put("type", "2");
+                        isMale = false;
+                        img_sex.setImageResource(R.drawable.rank_gril_icon);
+                        selectSexDialog.show(false);
+                        currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
+                                AppUtils.getPackageName());
+                        loadWebData(currentUrl, currentTitle);
+                    } else {
+                        data1.put("type", "1");
+                        isMale = true;
+                        selectSexDialog.show(true);
+                        img_sex.setImageResource(R.drawable.rank_boy_icon);
+                        currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
+                                AppUtils.getPackageName());
+                        loadWebData(currentUrl, currentTitle);
+                    }
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.TOP_PAGE,
+                            StartLogClickUtil.QG_SWITCHTAB, data1);
                 }
-                //0 表示男  1 表示女
-                if (isMale) {
-                    isMale = false;
-                    img_sex.setImageResource(R.drawable.rank_gril_icon);
-                    selectSexDialog.show(false);
-                    currentUrl = RequestService.WEB_RANK_H5_Girl.replace("{packageName}",
-                            AppUtils.getPackageName());
-                    loadWebData(currentUrl, currentTitle);
-                } else {
-                    isMale = true;
-                    selectSexDialog.show(true);
-                    img_sex.setImageResource(R.drawable.rank_boy_icon);
-                    currentUrl = RequestService.WEB_RANK_H5_BOY.replace("{packageName}",
-                            AppUtils.getPackageName());
-                    loadWebData(currentUrl, currentTitle);
-                }
+
                 break;
 
         }
@@ -430,7 +438,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     if (loadingpage != null) {
                         loadingpage.onSuccessGone();
                     }
-                    addCheckSlide(find_detail_content);
+                    if(find_detail_content != null){
+                        addCheckSlide(find_detail_content);
+                    }
+
                 }
             });
         }
@@ -443,7 +454,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     if (customWebClient != null) {
                         customWebClient.doClear();
                     }
-                    find_detail_content.reload();
+                    if(find_detail_content != null){
+                        find_detail_content.reload();
+                    }
                 }
             });
         }
@@ -765,7 +778,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     @Override
     public void onAniFinished() {
-        if (selectSexDialog != null) {
+        if (!isFinishing() && selectSexDialog != null) {
             if (selectSexDialog.isShow()) {
                 selectSexDialog.dismiss();
             }

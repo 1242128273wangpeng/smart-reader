@@ -49,6 +49,7 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
@@ -575,14 +576,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
             R.id.book_cover_description ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    val data = HashMap<String,String>()
                     if (book_cover_description.maxLines <= 4) {
                         book_cover_description.maxLines = book_cover_description.lineCount
                         expand_collapse.setImageResource(R.drawable.icon_open_text)
+                        data.put("type","1")
+
                     } else {
                         expand_collapse.setImageResource(R.drawable.icon_close_text)
                         book_cover_description.maxLines = 4
+                        data.put("type","2")
                     }
-
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.INTRODUCTION,data)
                 }
 
         }

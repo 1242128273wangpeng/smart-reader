@@ -23,23 +23,23 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
 import com.intelligent.reader.fragment.WebViewFragment
-import net.lzbook.kit.presenter.HomePresenter
-import net.lzbook.kit.view.HomeView
 import com.intelligent.reader.view.PushSettingDialog
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
 import net.lzbook.kit.ui.activity.WelfareCenterActivity
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.book.LoadDataManager
@@ -52,6 +52,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.view.HomeView
 import java.io.File
 import java.util.*
 
@@ -134,6 +135,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     StartLogClickUtil.POPUPMESSAGE)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            if (intent.getIntExtra("position", 0) == 1) {
+                changeHomePagerIndex(1)
+            }
+
+        }
     }
 
     override fun onClick(v: View) {
@@ -267,11 +278,21 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onResume() {
+        super.onResume()
+        MediaLifecycle.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MediaLifecycle.onPause()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         AndroidLogStorage.getInstance().clear()
         this.unregisterReceiver(homeBroadcastReceiver)
+        MediaLifecycle.onDestroy()
         try {
             homeAdapter = null
             setContentView(R.layout.common_empty)

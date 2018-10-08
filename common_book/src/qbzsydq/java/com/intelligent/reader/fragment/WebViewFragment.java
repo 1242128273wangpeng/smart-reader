@@ -64,7 +64,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.weakReference = new WeakReference<>(activity);
-//        this.fragmentCallback = (FragmentCallback) activity;
+        this.fragmentCallback = (FragmentCallback) activity;
         this.context = activity;
     }
 

@@ -249,6 +249,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         //锁定不可滑出
         override fun onDrawerClosed(drawerView: View) {
             dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            mCatalogMarkFragment?.dimissDialog()
         }
 
         override fun onDrawerStateChanged(newState: Int) = Unit
@@ -329,7 +330,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         DataProvider.clear()
         AppHelper.glSurfaceView = null
         mReadPresenter.onDestroy()
-        ReaderStatus.chapterList.clear()
+
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
 

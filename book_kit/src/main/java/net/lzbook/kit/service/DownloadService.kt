@@ -100,7 +100,10 @@ class DownloadService : Service(), Runnable {
                 if (requestRepositoryFactory.getChapterCount(task.book_id) <= 0) {
                     requestBookCatalog(task)
                 } else {
-                    downBook(task, requestRepositoryFactory.queryAllChapters(task.book_id))
+                    try {
+                        downBook(task, requestRepositoryFactory.queryAllChapters(task.book_id), requestRepositoryFactory)
+                    } catch (e: Exception) {
+                    }
                 }
             } else {
                 synchronized(lock) {
@@ -116,13 +119,16 @@ class DownloadService : Service(), Runnable {
     }
 
     private fun requestBookCatalog(bookTask: BookTask) {
-
+        val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
                 .requestCatalog(bookTask.book_id, bookTask.book.book_source_id, bookTask.book.book_chapter_id, object : RequestSubscriber<List<Chapter>>() {
                     override fun requestResult(result: List<Chapter>?) {
                         if (result != null) {
                             if (result.isNotEmpty()) {
-                                downBook(bookTask, result)
+                                try {
+                                    downBook(bookTask, result, requestRepositoryFactory)
+                                } catch (e: Exception) {
+                                }
                             } else {
                                 CacheManager.innerListener.onTaskFailed(bookTask.book_id,
                                         IllegalArgumentException("server return null chapter list"))
@@ -138,7 +144,7 @@ class DownloadService : Service(), Runnable {
                 }, SchedulerHelper.Type_Default)
     }
 
-    fun downBook(task: BookTask, chapterList: List<Chapter>) {
+    fun downBook(task: BookTask, chapterList: List<Chapter>, chapterDao: RequestRepositoryFactory) {
 
         if (task.state != DownloadState.DOWNLOADING) {
             CacheManager.innerListener.onTaskStatusChange(task.book_id)
@@ -255,7 +261,7 @@ class DownloadService : Service(), Runnable {
                                 parsedList.clear()
                             } else if (ret != null && ret.code == CacheTaskConfig.USE_CHAPTER_BY_CHAPTER) {
                                 downChapterOneByOne(task, chapterList, false)
-                            } else if (ret != null) {
+                            } else if (ret != null){
 
                                 CacheManager.innerListener.onTaskFailed(task.book_id, IllegalArgumentException("server err : " + ret.code))
                             }
@@ -360,7 +366,7 @@ class DownloadService : Service(), Runnable {
                     data.put("endtime", "" + System.currentTimeMillis())
                     data.put("times", "" + (System.currentTimeMillis() - startParseTime))
                     StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.RESOLVEPACKE, data)
-                } catch (e: OutOfMemoryError) {
+                } catch (e:OutOfMemoryError){
                     val data = HashMap<String, String>()
                     data.put("STATUS", "2")
                     data.put("reason", e.javaClass.simpleName + ":" + e.message)
@@ -546,7 +552,7 @@ class DownloadService : Service(), Runnable {
                         index++
                         tempChapterCount++
 
-                        if (tempChapterCount > 10) {
+                        if(tempChapterCount > 10){
                             if (task.state == DownloadState.DOWNLOADING) {
 
                                 task.progress = DataCache.getCacheChapterIDs(task.book).size * 100 / task.endSequence

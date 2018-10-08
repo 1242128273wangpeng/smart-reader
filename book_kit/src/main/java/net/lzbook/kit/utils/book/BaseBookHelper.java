@@ -166,7 +166,9 @@ public abstract class BaseBookHelper {
                             DataCache.deleteOtherSourceCache(book);
                             ExtensionsKt.msMainLooperHandler.post(new Runnable() {
                                 public void run() {
-                                    myDialog.dismiss();
+                                    if(myDialog != null && myDialog.isShowing()){
+                                        myDialog.dismiss();
+                                    }
                                     if (!CacheManager.INSTANCE.start(book.getBook_id(), startDownIndex)) {
                                         Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
                                     }

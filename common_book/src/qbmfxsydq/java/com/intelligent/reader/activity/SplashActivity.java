@@ -27,8 +27,11 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -52,8 +55,6 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.user.UserManagerV4;
 
 import org.jetbrains.annotations.NotNull;
@@ -412,6 +413,7 @@ public class SplashActivity extends FrameActivity {
         updateBookLastChapter();
 
         initializeDataFusion();
+        checkBookChapterCount();
 
         // 安装快捷方式
         new InstallShotCutTask().execute();
@@ -420,6 +422,35 @@ public class SplashActivity extends FrameActivity {
         if (UserManagerV4.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
+    }
+
+
+    /**
+     * 检查章节数是否为0
+     * 解决阅读进度不更新的问题
+     */
+    private void checkBookChapterCount(){
+
+        boolean isCheckChapterCount = SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.CHECK_CHAPTER_COUNT, false);
+
+        if (!isCheckChapterCount) {
+
+            List<Book> bookList = requestFactory.loadBooks();
+
+            if (bookList != null && bookList.size() > 0) {
+                for (Book book : bookList) {
+
+                    if (book.getChapter_count() <= 0 && !TextUtils.isEmpty(book.getBook_id())) {
+                        int chapterCount = requestFactory.getCount(book.getBook_id());
+                        book.setChapter_count(chapterCount);
+
+                        requestFactory.updateBook(book);
+                    }
+                }
+            }
+            SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.CHECK_CHAPTER_COUNT, true);
+        }
+
     }
 
     private void initializeDataFusion() {
@@ -433,7 +464,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
-                    Logger.e("BookChapterId缺失: " + book.getBook_id());
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = requestFactory.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    requestFactory.updateBook(book);
+                    requestFactory.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -503,7 +541,7 @@ public class SplashActivity extends FrameActivity {
                     }
                 }
             }
-            SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.Companion.getDATABASE_REMARK(), true);
+            SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.Companion.getDATABASE_REMARK(), true);
         }
     }
 
@@ -724,7 +762,11 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
+            try {
+                UserManagerV4.INSTANCE.initPlatform(SplashActivity.this, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             //请求广告
             initAdSwitch();

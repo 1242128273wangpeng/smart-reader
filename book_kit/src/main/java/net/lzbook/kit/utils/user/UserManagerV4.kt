@@ -116,7 +116,7 @@ object UserManagerV4 : IWXAPIEventHandler {
 
             mInitCallback = callback
 
-            if (context.packageManager != null) {
+            if (context.packageManager != null && context.packageName != null) {
                 val appInfo = context.packageManager
                         .getApplicationInfo(context.packageName,
                                 PackageManager.GET_META_DATA)

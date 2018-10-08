@@ -35,6 +35,10 @@ import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.view.PushSettingDialog
+import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.qbmfxsydq.act_home.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
@@ -47,6 +51,7 @@ import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
 import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.BannerDialog
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.encrypt.MD5Utils
@@ -61,6 +66,8 @@ import net.lzbook.kit.utils.user.UserManagerV4
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.view.HomeView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
 
@@ -125,7 +132,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         HomeLogger.uploadHomeBookListInformation()
 
         if (isShouldShowPushSettingDialog()) {
-            pushSettingDialog.show()
+            if(!isFinishing){
+                pushSettingDialog.show()
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
+                        StartLogClickUtil.POPUPMESSAGE)
+            }
         }
 
         if (UserManagerV4.isUserLogin) run {
@@ -133,6 +144,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     uploadReadInfo()
             )
         }
+
+        EventBus.getDefault().register(this)
     }
 
     private val pushSettingDialog: PushSettingDialog by lazy {
@@ -142,6 +155,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
         lifecycle.addObserver(dialog)
         dialog
+    }
+
+    private val bannerDialog: BannerDialog by lazy {
+        BannerDialog(this,Intent(this, FindBookDetail::class.java))
     }
 
     override fun onResume() {
@@ -201,6 +218,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
         fixInputMethodManagerLeak(applicationContext)
         MediaLifecycle.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 
@@ -624,7 +642,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
             } else if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
                 if (bookShelfFragment != null) {
-                    bookShelfFragment?.updateUI()
+                    try {
+                        bookShelfFragment?.updateUI()
+                    }catch (e:Exception){
+                    }
                 }
             } else if (intent.action == ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS) {
                 val bundle = intent.extras
@@ -687,6 +708,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     override fun changeDrawerLayoutState() {
 
+    }
+
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
     }
 
     companion object {

@@ -27,8 +27,11 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -52,8 +55,6 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -431,6 +432,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = requestRepositoryFactory.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    requestRepositoryFactory.updateBook(book);
+                    requestRepositoryFactory.deleteBookFix(book.getBook_id());
                 }
             }
 

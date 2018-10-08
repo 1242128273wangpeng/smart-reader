@@ -239,12 +239,16 @@ public class ApkUpdateUtils {
         if (DownloadIntentService.isDownloading) {
             return;
         }
-        Intent intent = new Intent();
-        intent.putExtra("downloadLink", downloadLink);
-        intent.putExtra("md5", md5);
-        intent.putExtra("fileName", fileName);
-        intent.setClass(reference.get().getApplicationContext(), DownloadIntentService.class);
-        reference.get().startService(intent);
+        //百度移动统计 java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.Context android.app.Activity.getApplicationContext()' on a null object reference
+        if(reference.get() != null){
+            Intent intent = new Intent();
+            intent.putExtra("downloadLink", downloadLink);
+            intent.putExtra("md5", md5);
+            intent.putExtra("fileName", fileName);
+            intent.setClass(reference.get().getApplicationContext(), DownloadIntentService.class);
+            reference.get().startService(intent);
+        }
+
     }
 
 

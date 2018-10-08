@@ -12,7 +12,7 @@
         android:id="@+id/rl_jump_back"
         android:layout_width="327dp"
         android:layout_height="48dp"
-        android:layout_above="@+id/rl_reader_change_chapter"
+        android:layout_above="@+id/rl_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="6dp"
         android:layout_marginLeft="24dp"
@@ -52,168 +52,188 @@
             android:id="@+id/img_jump_back"
             android:layout_width="57dp"
             android:layout_height="match_parent"
-            android:padding="16dp"
             android:background="#20FFFFFF"
-            android:src="@drawable/reader_option_jump_back_icon"/>
+            android:padding="16dp"
+            android:src="@drawable/reader_option_jump_back_sel"/>
+
+        <net.lzbook.kit.ui.widget.NightShadowView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_reader_change_chapter"
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_above="@+id/ll_reader_bottom_option"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="#191919"
-        android:gravity="center_vertical">
+        android:id="@+id/rl_content"
+        android:layout_width="wrap_content"
+        android:layout_height="95dp"
+        android:layout_alignParentBottom="true">
 
-        <TextView
-            android:id="@+id/txt_reader_chapter_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="18dp"
-            android:gravity="center"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:text="@string/previous_chapter"
-            android:textColor="#989898"
-            android:textSize="14sp"
-            app:onPressChangeAlpha="true"/>
-
-        <SeekBar
-            android:id="@+id/skbar_reader_chapter_change"
+        <RelativeLayout
+            android:id="@+id/rl_reader_change_chapter"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/txt_reader_chapter_next"
-            android:layout_toRightOf="@+id/txt_reader_chapter_previous"
-            android:background="@drawable/reader_option_seek_bar_bg"
-            android:maxHeight="2dp"
-            android:minHeight="2dp"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
-            android:splitTrack="false"
-            android:thumb="@drawable/reader_option_seek_bar_thumb"/>
+            android:layout_height="42dp"
+            android:layout_above="@+id/ll_reader_bottom_option"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="#F2191919"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/txt_reader_chapter_next"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="18dp"
-            android:gravity="center"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:text="@string/next_chapter"
-            android:textColor="#989898"
-            android:textSize="14sp"
-            app:onPressChangeAlpha="true"/>
+            <TextView
+                android:id="@+id/txt_reader_chapter_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="18dp"
+                android:gravity="center"
+                android:paddingLeft="6dp"
+                android:text="@string/previous_chapter"
+                android:textColor="#989898"
+                android:textSize="14sp"
+                app:onPressChangeAlpha="true"/>
+
+            <SeekBar
+                android:id="@+id/skbar_reader_chapter_change"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/txt_reader_chapter_next"
+                android:layout_toRightOf="@+id/txt_reader_chapter_previous"
+                android:background="@drawable/reader_option_seek_bar_bg"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
+                android:splitTrack="false"
+                tools:progress=""
+                android:thumb="@drawable/reader_option_seek_bar_thumb"/>
+
+            <TextView
+                android:id="@+id/txt_reader_chapter_next"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="18dp"
+                android:gravity="center"
+                android:paddingRight="6dp"
+                android:text="@string/next_chapter"
+                android:textColor="#989898"
+                android:textSize="14sp"
+                app:onPressChangeAlpha="true"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_reader_bottom_option"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_alignParentBottom="true"
+            android:background="#F2191919"
+            android:orientation="horizontal"
+            android:paddingBottom="4dp">
+
+            <RelativeLayout
+                android:id="@+id/rl_reader_catalog"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/txt_reader_catalog"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="2dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/reader_option_bottom_catalog_icon"
+                    app:onPressChangeAlpha="true"/>
+
+                <TextView
+                    android:id="@+id/txt_reader_catalog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/catalog"
+                    android:textColor="#989898"
+                    android:textSize="10sp"
+                    app:onPressChangeAlpha="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_reader_night"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:onPressChangeAlpha="true">
+
+                <ImageView
+                    android:id="@+id/ibtn_reader_night"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/txt_reader_night"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="2dp"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/reader_option_bottom_night_icon"
+                    app:onPressChangeAlpha="true"/>
+
+                <TextView
+                    android:id="@+id/txt_reader_night"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:singleLine="true"
+                    android:text="@string/night"
+                    android:textColor="#989898"
+                    android:textSize="10sp"
+                    app:onPressChangeAlpha="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_reader_setting"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/txt_reader_setting"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="2dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/reader_option_bottom_setting_icon"
+                    app:onPressChangeAlpha="true"/>
+
+                <TextView
+                    android:id="@+id/txt_reader_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:singleLine="true"
+                    android:text="@string/setting"
+                    android:textColor="#989898"
+                    android:textSize="10sp"
+                    app:onPressChangeAlpha="true"/>
+            </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_reader_bottom_option"
-        android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:layout_alignParentBottom="true"
-        android:background="#191919"
-        android:orientation="horizontal"
-        android:paddingBottom="4dp">
-
-        <RelativeLayout
-            android:id="@+id/rl_reader_catalog"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/txt_reader_catalog"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="2dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/reader_option_bottom_catalog_icon"
-                app:onPressChangeAlpha="true"/>
-
-            <TextView
-                android:id="@+id/txt_reader_catalog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="@string/catalog"
-                android:textColor="#989898"
-                android:textSize="10sp"
-                app:onPressChangeAlpha="true"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_reader_night"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:onPressChangeAlpha="true">
-
-            <ImageView
-                android:id="@+id/ibtn_reader_night"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/txt_reader_night"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="2dp"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/reader_option_bottom_night_icon"
-                app:onPressChangeAlpha="true"/>
-
-            <TextView
-                android:id="@+id/txt_reader_night"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:singleLine="true"
-                android:text="@string/night"
-                android:textColor="#989898"
-                android:textSize="10sp"
-                app:onPressChangeAlpha="true"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_reader_setting"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/txt_reader_setting"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="2dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/reader_option_bottom_setting_icon"
-                app:onPressChangeAlpha="true"/>
-
-            <TextView
-                android:id="@+id/txt_reader_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:singleLine="true"
-                android:text="@string/setting"
-                android:textColor="#989898"
-                android:textSize="10sp"
-                app:onPressChangeAlpha="true"/>
-        </RelativeLayout>
-    </LinearLayout>
+    <net.lzbook.kit.ui.widget.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rl_content"
+        android:layout_alignEnd="@+id/rl_content"
+        android:layout_alignLeft="@+id/rl_content"
+        android:layout_alignRight="@+id/rl_content"
+        android:layout_alignStart="@+id/rl_content"
+        android:layout_alignTop="@+id/rl_content"
+        android:visibility="gone"/>
 
 </RelativeLayout>

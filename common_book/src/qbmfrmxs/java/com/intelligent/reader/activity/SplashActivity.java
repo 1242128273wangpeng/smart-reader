@@ -22,7 +22,10 @@ import android.view.WindowManager;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -36,8 +39,6 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.user.UserManager;
 
 import java.lang.ref.WeakReference;
@@ -52,6 +53,7 @@ public class SplashActivity extends FrameActivity {
     public int complete_count = 0;
     public ViewGroup ad_view;
     private RequestRepositoryFactory requestRepositoryFactory;
+    private  List<Book> books;
 
 
     public static void checkAndInstallShotCut(Context ctt) {
@@ -201,6 +203,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
+        initializeDataFusion();
 
         startInitTask();
         // 安装快捷方式
@@ -209,6 +212,26 @@ public class SplashActivity extends FrameActivity {
         StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
         if (UserManager.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
+        }
+    }
+
+    private void initializeDataFusion() {
+
+
+        books = requestRepositoryFactory.loadBooks();
+
+        if (books != null) {
+            for (Book book : books) {
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = requestRepositoryFactory.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    requestRepositoryFactory.updateBook(book);
+                    requestRepositoryFactory.deleteBookFix(book.getBook_id());
+                }
+            }
+
         }
     }
 

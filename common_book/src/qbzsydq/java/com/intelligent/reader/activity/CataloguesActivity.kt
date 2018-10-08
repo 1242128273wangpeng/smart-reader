@@ -55,17 +55,11 @@ import java.util.concurrent.Callable
  */
 @Route(path = RouterConfig.CATALOGUES_ACTIVITY)
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesContract {
-    override fun insertBookShelfResult(result: Boolean) {
+    override fun insertBookShelfResult(result: Boolean) = Unit
 
-    }
+    override fun changeShelfButtonClickable(clickable: Boolean) = Unit
 
-    override fun changeShelfButtonClickable(clickable: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun bookSubscribeState(subscribe: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun bookSubscribeState(subscribe: Boolean) = Unit
 
     var type = 2
     internal var colorSelected: Int = 0

@@ -115,15 +115,12 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
         if (books != null) {
-//            if(isList){
-//                iBookList.removeAll {
-//                    it.item_type != 2
-//                }
-//            }else{
-//                iBookList.clear()
-//            }
-            iBookList.removeAll{
-                it.item_type!=2
+            if(isList){
+                iBookList.removeAll {
+                    it.item_type != 2
+                }
+            }else{
+                iBookList.clear()
             }
 
             if (books.isEmpty()) {
@@ -177,44 +174,32 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         val interval = MediaControl.loadBookShelfMediaInterval() + 1
 
         var adBook: Book
-        val adlist = mutableListOf<BookShelfADView>()
+
         //创建相应广告位置的Bean
         if (isList) {
-
-            if (adBookMap[0] != null && adBookMap[0]?.item_view is BookShelfADView) {
-                val bookShelfADView = adBookMap[0]!!.item_view as BookShelfADView
-                bookShelfADView.needRefreshAD = true
-                adlist.add(bookShelfADView)
-
-            } else {
-                adBook = Book()
-                adBook.item_type = 1
-                adBook.item_view = null
-                adBookMap[0] = adBook
-                adlist.add(BookShelfADView(activity))
-            }
-
+            adBook = Book()
+            adBook.item_type = 1
+            adBook.item_view = null
+            adBookMap[0] = adBook
         }
 
         for (i in 1 until count + 1) {
             val key = i * interval
             if (key < iBookList.size) {
-                if (adBookMap[key] != null && adBookMap[key]?.item_view is BookShelfADView) {
-                    val bookShelfADView = adBookMap[key]!!.item_view as BookShelfADView
-                    bookShelfADView.needRefreshAD = true
-                    adlist.add(bookShelfADView)
-                } else {
-                    adBook = Book()
-                    adBook.item_type = 1
-                    adBook.item_view = null
-                    adBookMap[key] = adBook
-                    adlist.add(BookShelfADView(activity))
-                }
+                adBook = Book()
+                adBook.item_type = 1
+                adBook.item_view = null
+                adBookMap[key] = adBook
             }
         }
 
+        val views = mutableListOf<ViewGroup>()
 
-        handleADResult(adlist)
+        for (i in 0 until count){
+            views.add(BookShelfADView(activity))
+        }
+
+        handleADResult(views)
         view?.onAdRefresh()
 
 //        doAsync {

@@ -48,6 +48,8 @@ class FontAdapter(var list: ArrayList<FontData>) : RecyclerView.Adapter<Recycler
             holder.itemView.img_current_use.visibility = View.GONE
         }
 
+        holder.itemView.txt_font_size.text = data.fileSize
+
         val progress = data.progress
         holder.itemView.btn_use.text = when (progress) {
             100 -> holder.itemView.resources.getString(R.string.use)

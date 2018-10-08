@@ -55,7 +55,7 @@ class UserProfileActivity : BaseCacheableActivity() {
         rl_head.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this,
                     StartLogClickUtil.PROFILE, StartLogClickUtil.PHOTO)
-            pictureDialog.show()
+            pictureDialog?.show()
         }
 
         rl_user_name.setOnClickListener {
@@ -104,7 +104,7 @@ class UserProfileActivity : BaseCacheableActivity() {
                 genderDialog.changeItemTextColor(Color.BLACK, 0)
                 genderDialog.changeItemTextColor(genderSelectedColor, 1)
             }
-            genderDialog.show()
+            genderDialog?.show()
         }
 
         rl_platform.setOnClickListener {
@@ -130,11 +130,11 @@ class UserProfileActivity : BaseCacheableActivity() {
                 .setOnMenuClickListener { position ->
                     when (position) {
                         1 -> {
-                            pictureDialog.dismiss()
+                            pictureDialog?.dismiss()
                             takePhoto()
                         }
                         2 -> {
-                            pictureDialog.dismiss()
+                            pictureDialog?.dismiss()
                             choicePicture()
                         }
                     }
@@ -217,7 +217,7 @@ class UserProfileActivity : BaseCacheableActivity() {
         val dialog = BottomDialog.newBuilder(this)
                 .addMenu(menuList)
                 .setOnMenuClickListener { position ->
-                    genderDialog.dismiss()
+                    genderDialog?.dismiss()
                     loadingDialog.show(getString(R.string.loading_dialog_title_editing))
                     val gender = if (position == 1) getString(R.string.gender_male) else getString(R.string.gender_female)
                     UserManagerV4.uploadUserGender(gender) { success, result ->
@@ -296,7 +296,9 @@ class UserProfileActivity : BaseCacheableActivity() {
     }
 
     private fun dismissProgressDialog() {
-        progressDialog.dismiss()
+        if(!isFinishing() && progressDialog?.isShowing){
+            progressDialog?.dismiss()
+        }
         onResume()
     }
 

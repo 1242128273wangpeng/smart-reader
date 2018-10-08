@@ -376,6 +376,8 @@ public class StartLogClickUtil {
     public static final String QG_BDY_SEARCH = "SEARCH";//点击搜索
     public static final String QG_BDY_BOOKCLICK = "BOOKCLICK";//点击搜索
     public static final String QG_BDY_MORE = "MORE";//点击搜索
+    public static final String QG_SWITCHTAB = "SWITCHTAB";//点击搜索
+
 
 
     //青果分类页

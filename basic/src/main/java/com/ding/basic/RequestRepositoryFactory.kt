@@ -233,6 +233,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             chapter.book_chapter_id = result.data!!.book_chapter_id
                         }
 
+                        result.data?.chapters = resList
                         val book = localRepository.checkBookSubscribe(book_id)
 
                         if (book != null) {
@@ -271,16 +272,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
                         }
                     } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
-                        val resList = noRepeatList(it.data!!.chapters!!)
-
-                        for (chapter in resList) {
-                            chapter.host = it.data!!.host
-                            chapter.book_id = it.data!!.book_id
-                            chapter.book_source_id = it.data!!.book_source_id
-                            chapter.book_chapter_id = it.data!!.book_chapter_id
-                        }
-
-                        requestSubscriber.onNext(resList)
+                        requestSubscriber.onNext(it.data?.chapters)
                     } else {
                         requestSubscriber.onError(Throwable("获取章节目录异常！"))
                     }
@@ -2008,6 +2000,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     fun updateChapterBySequence(book_id: String, chapter: Chapter) {
         localRepository.updateChapterBySequence(book_id,chapter)
+    }
+
+    fun getCount(book_id: String):Int{
+        return localRepository.getCount(book_id)
     }
 
     /**
