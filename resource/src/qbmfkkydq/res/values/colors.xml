@@ -2,8 +2,8 @@
 <resources>
     <!--公共模块-->
 
-    <color name="accent">#FF2AD1BE</color>
-    <color name="primary">#FF2AD1BE</color>
+    <color name="accent">#2AD1BE</color>
+    <color name="primary">#2AD1BE</color>
     <color name="primary_alpha">#4D2AD1BE</color>
 
     <color name="text_color_dark">#FF282828</color>

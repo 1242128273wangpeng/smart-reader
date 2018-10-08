@@ -94,7 +94,7 @@ class SuggestFragment : Fragment(), ISuggestView {
                 return@setOnItemClickListener
             }
 
-            var suggest = searchCommonBean.suggest
+            val suggest = searchCommonBean.suggest
             var searchType = "0"
             var isAuthor = 0
             val data = HashMap<String, String>()
