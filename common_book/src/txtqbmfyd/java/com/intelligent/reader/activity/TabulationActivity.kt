@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
@@ -62,6 +63,8 @@ class TabulationActivity : FrameActivity() {
     private var supportSlide = true
 
     private val WEB_AUTHOR = "/h5/{packageName}/author"
+
+    private var handler: Handler? = Handler()
 
     private val isNeedInterceptSlide: Boolean
         get() {
@@ -273,12 +276,6 @@ class TabulationActivity : FrameActivity() {
         titles.add(title)
 
         runOnMain {
-            if (loadingPage == null) {
-                loadingPage = LoadingPage(this, rl_tabulation_root, LoadingPage.setting_result)
-            } else {
-                loadingPage?.visibility = View.VISIBLE
-            }
-
             requestWebViewData(this.url, this.title)
         }
     }
@@ -420,9 +417,7 @@ class TabulationActivity : FrameActivity() {
             return
         }
 
-        web_tabulation_content?.post {
-            handleLoadingWebViewData(url)
-        }
+        handler?.post { handleLoadingWebViewData(url) } ?: handleLoadingWebViewData(url)
     }
 
     /***
@@ -431,14 +426,6 @@ class TabulationActivity : FrameActivity() {
     private fun handleLoadingWebViewData(url: String?) {
         if (customWebClient != null) {
             customWebClient?.initParameter()
-        }
-
-        web_tabulation_content.clearView()
-
-        if (loadingPage == null) {
-            loadingPage = LoadingPage(this, rl_tabulation_root, LoadingPage.setting_result)
-        } else {
-            loadingPage?.visibility = View.VISIBLE
         }
 
         if (url != null && url.isNotEmpty()) {
