@@ -37,7 +37,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
-import com.intelligent.reader.fragment.CustomWebViewFragment
+import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
@@ -57,6 +57,8 @@ import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
@@ -101,8 +103,8 @@ class HomeActivity : BaseCacheableActivity(),
     // webview排行页面
     private val WEB_RANK = "/h5/{packageName}/rank"
 
-    private val recommendFragment: CustomWebViewFragment by lazy {
-        val fragment = CustomWebViewFragment()
+    private val recommendFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
         val uri = WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
@@ -111,8 +113,8 @@ class HomeActivity : BaseCacheableActivity(),
         fragment
     }
 
-    private val rankingFragment: CustomWebViewFragment by lazy {
-        val fragment = CustomWebViewFragment()
+    private val rankingFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "rank")
         val uri = WEB_RANK.replace("{packageName}", AppUtils.getPackageName())
@@ -287,6 +289,17 @@ class HomeActivity : BaseCacheableActivity(),
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
+                when (position) {
+                    1 -> {
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.ENTRYPAGE)
+                    }
+                    2 -> {
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.ENTRYPAGE)
+                    }
+                    3 -> {
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
+                    }
+                }
             }
         })
 
@@ -342,7 +355,6 @@ class HomeActivity : BaseCacheableActivity(),
                 ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
                 mThemeHelper.setMode(ThemeMode.THEME1)
             }
-//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         }
@@ -622,9 +634,16 @@ class HomeActivity : BaseCacheableActivity(),
                     }
                     bookShelfFragment
                 }
-                1 -> recommendFragment
-                2 -> rankingFragment
-                3 -> categoryFragment
+                1 -> {
+                    recommendFragment
+                }
+                2 -> {
+                    rankingFragment
+                }
+
+                3 -> {
+                    categoryFragment
+                }
                 else -> null
             }
         }

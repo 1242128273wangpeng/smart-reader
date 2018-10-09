@@ -70,8 +70,8 @@ class CategoryFragment : Fragment() {
     }
 
     // 男频
-    private val manCategoryFragment: CustomWebViewFragment by lazy {
-        val fragment = CustomWebViewFragment()
+    private val manCategoryFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_male")
         val uri = WEB_CATEGORY_BOY.replace("{packageName}", AppUtils.getPackageName())
@@ -83,8 +83,8 @@ class CategoryFragment : Fragment() {
     }
 
     // 女频
-    private val girlCategoryFragment: CustomWebViewFragment by lazy {
-        val fragment = CustomWebViewFragment()
+    private val girlCategoryFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_female")
         val uri = WEB_CATEGORY_GIRL.replace("{packageName}", AppUtils.getPackageName())
