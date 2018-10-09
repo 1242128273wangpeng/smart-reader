@@ -6,6 +6,8 @@ import static android.content.Context.TELEPHONY_SERVICE;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ClipboardManager;
 import android.content.ComponentCallbacks;
@@ -42,6 +44,10 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import com.meituan.android.walle.WalleChannelReader;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -72,6 +78,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1005,8 +1012,97 @@ public class AppUtils {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return sb.toString();
+    }
+
+
+    public static String loadUserApplicationList(Context context, PackageManager packageManager) {
+        try {
+            List<PackageInfo> packages = packageManager.getInstalledPackages(0);
+            if (packages.size() > 0) {
+                Map<String, String> data = Maps.newHashMap();
+                JSONArray appInfoList = new JSONArray();
+                JSONObject appInfo;
+
+                List<UsageStats> usageStatsList = null;
+
+                if (android.os.Build.VERSION.SDK_INT
+                        >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    UsageStatsManager usageStatsManager =
+                            (UsageStatsManager) context.getSystemService(
+                                    Context.USAGE_STATS_SERVICE);
+
+                    Calendar calendar = Calendar.getInstance();
+                    long endTime = calendar.getTimeInMillis();
+
+                    calendar.add(Calendar.DAY_OF_MONTH, -12);
+                    long startTime = calendar.getTimeInMillis();
+
+                    if (usageStatsManager != null) {
+                        usageStatsList = usageStatsManager.queryUsageStats(
+                                UsageStatsManager.INTERVAL_MONTHLY, startTime, endTime);
+                    }
+
+                    for (PackageInfo packageInfo : packages) {
+                        if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags)
+                                <= 0) {
+                            appInfo = new JSONObject();
+
+                            packageInfo.applicationInfo.loadLabel(packageManager);
+
+                            String packageName = packageInfo.packageName;
+
+                            //应用名称
+                            appInfo.put("app_name", packageInfo.applicationInfo.loadLabel(
+                                    packageManager).toString().replace(":", "").replace("`", ""));
+                            //应用包名
+                            appInfo.put("app_package_name",
+                                    packageName.replace(":", "").replace("`", ""));
+                            //应用安装时间
+                            appInfo.put("app_install_time", packageInfo.firstInstallTime);
+                            //应用最近一次更新时间
+                            appInfo.put("app_last_update_time", packageInfo.lastUpdateTime);
+
+                            if (usageStatsList != null && usageStatsList.size() != 0) {
+                                for (UsageStats usageStats : usageStatsList) {
+                                    String usagePackageName = usageStats.getPackageName();
+
+                                    if (usagePackageName.equals(packageName)) {
+                                        //应用近1月总运行时长
+                                        appInfo.put("app_last_month_run_time",
+                                                usageStats.getTotalTimeInForeground());
+                                        appInfo.put("app_last_month_used_time",
+                                                usageStats.getLastTimeUsed());
+                                    }
+
+                                    try {
+                                        Field field = usageStats.getClass().getDeclaredField(
+                                                "mLaunchCount");
+                                        if (field != null) {
+                                            //应用近1月启动次数
+                                            appInfo.put("app_last_month_start_num",
+                                                    field.getInt(usageStats));
+                                        }
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            }
+                            appInfoList.add(appInfo);
+                        }
+                    }
+                }
+
+                data.put("app_infos", appInfoList.toJSONString());
+                return Joiner.on("`").withKeyValueSeparator(":").join(data);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return "";
     }
 
     /**

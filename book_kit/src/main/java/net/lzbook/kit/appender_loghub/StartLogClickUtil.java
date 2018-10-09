@@ -16,14 +16,14 @@ import net.lzbook.kit.appender_loghub.appender.AndroidLogClient;
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage;
 import net.lzbook.kit.appender_loghub.common.PLItemKey;
 import net.lzbook.kit.appender_loghub.util.FormatUtil;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.bean.ChapterErrorBean;
-import net.lzbook.kit.utils.user.UserManager;
-import net.lzbook.kit.utils.user.UserManagerV4;
-import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.utils.user.UserManagerV4;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -547,13 +547,14 @@ public class StartLogClickUtil {
     }
 
     //上传用户App列表
-    public static void upLoadApps(String applist) {
+    public static void upLoadApps(String applist, String data) {
         if (!Constants.dy_ad_new_statistics_switch) {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_APPSTORE);
         upLoadUserInfo(log);
         log.putContent("apps", applist);
+        log.putContent("data", data);
         log.putContent("time", System.currentTimeMillis() + "");
         AppLog.e("app_list", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
