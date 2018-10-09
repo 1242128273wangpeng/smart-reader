@@ -120,7 +120,7 @@
         <attr name="selectedIndicatorTextSize" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="AndroidTagView">
+    <!--<declare-styleable name="AndroidTagView">
         <attr name="vertical_interval" format="dimension" />
         <attr name="horizontal_interval" format="dimension" />
 
@@ -170,6 +170,6 @@
         <attr name="tag_cross_area_padding" format="dimension" />
         <attr name="tag_support_letters_rlt" format="boolean" />
         <attr name="tag_background" format="reference" />
-    </declare-styleable>
+    </declare-styleable>-->
 
 </resources>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.intelligent.reader.view;
+package com.dingyue.searchbook.widget;
 
 import static net.lzbook.kit.utils.AppUtils.dp2px;
 
@@ -37,7 +37,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.ding.basic.bean.HotWordBean;
-import com.intelligent.reader.R;
+import com.dingyue.searchbook.R;
 
 /**
  * Desc: 快读全本小说 TagView

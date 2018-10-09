@@ -18,8 +18,7 @@ import kotlinx.android.synthetic.qbmfxsydq.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
-import java.util.HashMap
-import kotlin.collections.ArrayList
+import java.util.*
 
 
 /**
@@ -30,26 +29,28 @@ import kotlin.collections.ArrayList
  */
 class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
 
-    private var mView: View? = null
+    var onResultListener: OnResultListener<String>? = null
 
+    private var hotWordAdapter: HotWordAdapter? = null
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
 
-    var onResultListener:OnResultListener<String>? = null
-
-    private var hotWordAdapter: HotWordAdapter? = null
-
-    private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_hotword, container, false)
+        return inflater.inflate(R.layout.fragment_hotword, container, false)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
         hotWordPresenter.loadRecommendData()
-        return mView
-    }
 
+        txt_change.setOnClickListener {
+            hotWordPresenter.loadRecommendData()
+        }
+    }
 
     override fun showLoading() {
     }
@@ -60,39 +61,32 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {
 
         hotWordAdapter = HotWordAdapter(hotWordList)
-        gridView.adapter = hotWordAdapter
+//        gridView.adapter = hotWordAdapter
 
         onHotWordItemClick(hotWordList)
     }
 
     override fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>) {
 
-        recommendFreeList.clear()
-        recommendList.forEachIndexed { index, dataBean ->
-            if (index < 8) {
-                recommendFreeList.add(dataBean)
-            }
-        }
-
-        list_recommend.layoutManager = GridLayoutManager(context, 4)
-        list_recommend.adapter = RecommendAdapter(recommendFreeList, this@HotWordFragment)
+        list_recommend.layoutManager = GridLayoutManager(context, 3)
+        list_recommend.adapter = RecommendAdapter(recommendList, this@HotWordFragment)
 
     }
 
     private fun onHotWordItemClick(hotWordList: ArrayList<HotWordBean>) {
-        gridView.setOnItemClickListener { _, _, position, _ ->
-            StatServiceUtils.statAppBtnClick(context,
-                    StatServiceUtils.b_search_click_allhotword)
-
-            val bean = hotWordList[position]
-            val data = HashMap<String, String>()
-            data.put("topicword", bean.keyword ?: "")
-            data.put("rank", bean.sort.toString())
-            data.put("type", bean.superscript ?: "")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
-            hotWordPresenter.onKeyWord(bean.keyword)
-            onResultListener?.onSuccess(bean.keyword?:"")
-        }
+//        gridView.setOnItemClickListener { _, _, position, _ ->
+//            StatServiceUtils.statAppBtnClick(context,
+//                    StatServiceUtils.b_search_click_allhotword)
+//
+//            val bean = hotWordList[position]
+//            val data = HashMap<String, String>()
+//            data.put("topicword", bean.keyword ?: "")
+//            data.put("rank", bean.sort.toString())
+//            data.put("type", bean.superscript ?: "")
+//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
+//            hotWordPresenter.onKeyWord(bean.keyword)
+//            onResultListener?.onSuccess(bean.keyword ?: "")
+//        }
     }
 
     override fun onRecommendItemClick(view: View, position: Int, dataBean: SearchRecommendBook.DataBean) {

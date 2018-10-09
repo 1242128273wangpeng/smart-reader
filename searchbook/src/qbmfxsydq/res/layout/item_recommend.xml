@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:paddingLeft="6.5dp"
-              android:paddingRight="6.5dp"
-              android:paddingTop="16dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:layout_marginRight="9dp"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_margin_8"
+                android:paddingTop="@dimen/dimen_margin_13">
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="99.2dp">
+    <FrameLayout
+        android:id="@+id/iv_card"
+        android:layout_width="@dimen/dimen_margin_88"
+        android:layout_height="@dimen/dimen_margin_124">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_book_rectangle"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"/>
@@ -24,42 +26,22 @@
             android:id="@+id/iv_url"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="4.2dp"
-            android:layout_marginLeft="3.5dp"
-            android:layout_marginRight="3.5dp"
-            android:contentDescription="@string/icon"
-            android:scaleType="fitXY"
-            tools:src="@drawable/book_cover_default"/>
+            android:scaleType="fitXY"/>
+    </FrameLayout>
 
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_book_name"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dimen_margin_88"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="3.5dp"
-        android:layout_marginRight="3.5dp"
-        android:layout_marginTop="4.7dp"
+        android:layout_below="@+id/iv_card"
+        android:layout_marginTop="@dimen/dimen_margin_8"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/color_252B35"
-        android:textSize="12sp"
-        tools:text="name"/>
-
-    <TextView
-        android:id="@+id/tv_book_auther"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="3.5dp"
-        android:layout_marginRight="3.5dp"
-        android:layout_marginTop="4.2dp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@color/color_949AA5"
-        android:textSize="10sp"
-        tools:ignore="SmallSp"
-        tools:text="author"/>
-</LinearLayout>
+        android:textColor="@color/color_303135"
+        android:textSize="14sp"
+        tools:text="青果作家"/>
 
 
+</RelativeLayout>
 

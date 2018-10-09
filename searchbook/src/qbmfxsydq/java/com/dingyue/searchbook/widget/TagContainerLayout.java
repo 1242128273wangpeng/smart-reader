@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package com.intelligent.reader.view;
+package com.dingyue.searchbook.widget;
+
 
 import static net.lzbook.kit.utils.AppUtils.dp2px;
 import static net.lzbook.kit.utils.AppUtils.sp2px;
@@ -35,7 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ding.basic.bean.HotWordBean;
-import com.intelligent.reader.R;
+import com.dingyue.searchbook.R;
 
 import java.util.ArrayList;
 import java.util.List;
