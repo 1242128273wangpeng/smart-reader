@@ -25,12 +25,13 @@ import kotlinx.android.synthetic.txtqbmfyd.webview_layout.*
 
 import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.contract.web.JSInterfaceObject
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 
-open class CustomWebViewFragment : Fragment(), View.OnClickListener {
+open class WebViewFragment : Fragment(), View.OnClickListener {
 
     private var customWebClient: CustomWebClient? = null
 
@@ -223,7 +224,7 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
                                 when {
                                     redirect.from == "recommend" -> bundle.putString("from", "recommend")
-                                    redirect.from == "ranking" -> bundle.putString("from", "ranking")
+                                    redirect.from == "rank" -> bundle.putString("from", "rank")
                                     redirect.from == "category" -> bundle.putString("from", "category")
                                     else -> bundle.putString("from", "other")
                                 }
@@ -300,6 +301,9 @@ open class CustomWebViewFragment : Fragment(), View.OnClickListener {
         srl_web_view_refresh?.onRefreshComplete()
 
         handleRefreshContentData("javascript:refreshNew()")
+
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.DROPDOWN)
     }
 
     /***

@@ -291,18 +291,18 @@ class TabulationActivity : FrameActivity() {
         data["type"] = "1"
 
         when (fromType) {
-            "class" -> {
-                data["firstclass"] = title
+            "category" -> {
+                data["FIRSTCLASS"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.BACK, data)
             }
 
-            "top" -> {
-                data["firsttop"] = title
+            "rank" -> {
+                data["FIRSTTOP"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.BACK, data)
             }
 
             "recommend" -> {
-                data["firstrecommend"] = title
+                data["FIRSTRECOMMEND"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.BACK, data)
             }
 
@@ -319,12 +319,12 @@ class TabulationActivity : FrameActivity() {
         val data = HashMap<String, String?>()
 
         when (fromType) {
-            "class" -> {
+            "category" -> {
                 data["firstclass"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH, data)
             }
 
-            "top" -> {
+            "rank" -> {
                 data["firsttop"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH, data)
             }
@@ -332,6 +332,9 @@ class TabulationActivity : FrameActivity() {
             "recommend" -> {
                 data["firstrecommend"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.SEARCH, data)
+            }
+            "authorType" -> {
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE, StartLogClickUtil.SEARCH, data)
             }
         }
     }
