@@ -7,21 +7,23 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import net.lzbook.kit.utils.router.RouterConfig
-import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.fragment.HistoryFragment
 import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dingyue.searchbook.fragment.SearchResultFragment
 import com.dingyue.searchbook.fragment.SuggestFragment
+import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.interfaces.OnResultListener
-import net.lzbook.kit.ui.activity.base.FrameActivity
 import kotlinx.android.synthetic.zsmfqbxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.toast.ToastUtil
 
 
@@ -61,6 +63,26 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 //            mSearchHelper.initSearchType(intent)
 //        }
 
+        // 拦截键盘的回车事件
+        search_result_input.setOnKeyListener { _, keyCode, _ ->
+
+            when (keyCode) {
+                KeyEvent.KEYCODE_ENTER -> {
+                    val keyword = search_result_input.text.toString()
+                    if (TextUtils.isEmpty(keyword.trim())) {
+                        ToastUtil.showToastMessage(R.string.search_click_check_isright)
+                    } else {
+                        showFragment(searchResultFragment)
+                        searchResultFragment.loadKeyWord(keyword)
+                        hideKeyboard()
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+
+
     }
 
     override fun onClick(v: View) {
@@ -98,7 +120,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     }
 
     override fun onKeyWord(keyword: String?) {
-        search_result_input.setText(keyword)
+        inputKeyWord(keyword ?: "")
         search_result_btn.performClick()
     }
 
@@ -127,15 +149,29 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_btn.setOnClickListener(this)
 
         historyFragment.onKeyWordListener = this
-        hotWordFragment.onResultListener = object :OnResultListener<String> {
+        hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
-                showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(result)
+                runOnMain {
+                    inputKeyWord(result)
+                    showFragment(searchResultFragment)
+                    searchResultFragment.loadKeyWord(result)
+                }
             }
         }
 
     }
 
+
+    /**
+     * 设置关键词，将光标移至文字末尾（热词、历史子条目）
+     */
+    private fun inputKeyWord(keyword: String) {
+        search_result_focus.visibility = View.GONE
+        search_result_default.visibility = View.VISIBLE
+        search_result_input.requestFocus()
+        search_result_input.setText(keyword)
+        search_result_input.setSelection(keyword.length)
+    }
 
     override fun afterTextChanged(editable: Editable?) {
 
@@ -186,8 +222,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     private fun showSoftKeyboard(view: View?) {
         val handler = Handler()
         handler.postDelayed({
-            val imm = getSystemService(
-                    Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             // 弹出软键盘
             if (view != null) {
                 imm.showSoftInput(view, 0)
@@ -195,7 +230,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         }, 500)
 
     }
-
 
 }
 
