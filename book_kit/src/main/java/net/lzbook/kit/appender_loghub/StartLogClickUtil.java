@@ -547,13 +547,14 @@ public class StartLogClickUtil {
     }
 
     //上传用户App列表
-    public static void upLoadApps(String applist) {
+    public static void upLoadApps(String applist, String data) {
         if (!Constants.dy_ad_new_statistics_switch) {
             return;
         }
         final ServerLog log = new ServerLog(PLItemKey.ZN_APP_APPSTORE);
         upLoadUserInfo(log);
         log.putContent("apps", applist);
+        log.putContent("data", data);
         log.putContent("time", System.currentTimeMillis() + "");
         AppLog.e("app_list", log.getContent().toString());
         AndroidLogStorage.getInstance().accept(log, BaseBookApplication.getGlobalContext());
