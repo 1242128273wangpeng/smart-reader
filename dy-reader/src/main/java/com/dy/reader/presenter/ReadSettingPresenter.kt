@@ -405,7 +405,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             val activity = this.activity.get()
 
             if (activity is ReaderActivity) {
-//                activity.registerShareCallback(true)
+                activity.registerShareCallback(true)
             }
         }
     }

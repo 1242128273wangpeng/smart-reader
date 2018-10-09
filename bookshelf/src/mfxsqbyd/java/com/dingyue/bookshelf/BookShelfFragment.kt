@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
@@ -22,14 +23,17 @@ import com.dingyue.contract.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.mfxsqbyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfxsqbyd.frag_bookshelf.*
+import kotlinx.android.synthetic.mfxsqbyd.frag_bookshelf.view.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.uiThread
 
@@ -58,6 +62,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         popup.setOnSortingClickListener {
             bookShelfSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
+        }
+        popup.setOnImportClickListener {
+            RouterUtil.navigation(requireActivity(), RouterConfig.LOCAL_IMPORT_ACTIVITY)
+            BookShelfLogger.uploadBookShelfLocalImport()
+        }
+        popup.setOnShareListener {
+            applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
+            BookShelfLogger.uploadBookShelfShare()
+        }
+        popup.setOnGoneListener {
+            view_head_menu.visibility = View.GONE
         }
         popup
     }
@@ -136,6 +152,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog.setOnAbrogateListener {
             BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
         }
+        dialog
+    }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
         dialog
     }
 
@@ -219,6 +240,16 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_empty_add_book.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
+        }
+
+        val isImportPromptGone = activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT)
+                ?: false
+        val isSharePromptGone = activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+                ?: false
+        if (isImportPromptGone && isSharePromptGone) {
+            view_head_menu.visibility = View.GONE
+        } else {
+            view_head_menu.visibility = View.VISIBLE
         }
     }
 
@@ -436,14 +467,14 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true && !requireActivity().isFinishing) {
-                if (updateCount == 1 ) {
+                if (updateCount == 1) {
                     if (isAdded) {
                         CommonUtil.showToastMessage(
                                 "《$bookName${requireActivity()?.getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",
                                 2000L)
                     }
                 } else {
-                    if(isAdded){
+                    if (isAdded) {
                         CommonUtil.showToastMessage(
                                 "《$bookName${requireActivity()?.getString(R.string.bookshelf_books_update_more)}"
                                         + "$updateCount${activity?.getString(R.string.bookshelf_books_update_chapters)}",

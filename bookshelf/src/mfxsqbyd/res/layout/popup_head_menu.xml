@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/ll_container"
         android:layout_width="124dp"
-        android:layout_height="100dp"
+        android:layout_height="196dp"
         android:layout_margin="10dp"
         android:background="@drawable/background_body_dialog"
         android:orientation="vertical">
@@ -24,6 +24,60 @@
             android:text="@string/download_manager"
             android:textColor="#5D646E"
             android:textSize="12sp"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_local_import"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <View
+                android:id="@+id/view_local_import"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="6dp"
+                android:layout_toLeftOf="@+id/txt_local_import"
+                android:background="@drawable/prompt_red_bg"/>
+
+            <TextView
+                android:id="@+id/txt_local_import"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/local_import"
+                android:textColor="#5D646E"
+                android:textSize="12sp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_share"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <View
+                android:id="@+id/view_share"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="6dp"
+                android:layout_toLeftOf="@+id/txt_share"
+                android:background="@drawable/prompt_red_bg"/>
+
+            <TextView
+                android:id="@+id/txt_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/invite_friend"
+                android:textColor="#5D646E"
+                android:textSize="12sp"/>
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/txt_book_sorting"

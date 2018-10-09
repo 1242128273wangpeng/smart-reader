@@ -227,7 +227,10 @@ class SharedPreUtil(val type: Int) {
 
 
         const val APPLICATION_SHARE_ACTION = "application_share_action"
+        const val BOOKSHELF_IMPORT_PROMPT = "bookshelf_import_prompt"
+        const val BOOKSHELF_SHARE_PROMPT = "bookshelf_share_prompt"
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
+        const val READER_SHARE_PROMPT = "reader_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
 
