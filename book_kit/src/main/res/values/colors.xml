@@ -279,6 +279,7 @@
     <color name="search_hot_word_text_color_2">#06d2c0</color>
     <color name="search_hot_word_text_color_3">#fd9929</color>
     <color name="search_hot_word_text_color_4">#fe290d</color>
+    <color name="search_input_text_color_hint1">#33000000</color>
 
     <!--调试界面下SwitchButton-->
     <color name="debug_switch_button_checked_color">#ACACAC</color>

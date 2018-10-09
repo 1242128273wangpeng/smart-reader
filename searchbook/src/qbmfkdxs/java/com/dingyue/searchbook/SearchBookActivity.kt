@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.qbmfkdxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.toast.ToastUtil
 
 
 /**
@@ -85,8 +86,13 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 historyFragment.loadHistoryRecord()
             }
             search_result_btn.id -> {
-                showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(search_result_input.text.toString())
+                val keyword = search_result_input.text.toString()
+                if (TextUtils.isEmpty(keyword.trim())) {
+                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
+                } else {
+                    showFragment(searchResultFragment)
+                    searchResultFragment.loadKeyWord(keyword)
+                }
             }
         }
     }
