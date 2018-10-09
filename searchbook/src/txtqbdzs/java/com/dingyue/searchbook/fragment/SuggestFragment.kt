@@ -15,7 +15,7 @@ import com.dingyue.searchbook.adapter.SuggestAdapter
 import com.dingyue.searchbook.presenter.SuggestPresenter
 import net.lzbook.kit.utils.enterCover
 import com.dingyue.searchbook.view.ISuggestView
-import kotlinx.android.synthetic.txtqbdzs.fragment_listview.*
+import kotlinx.android.synthetic.qbmfxsydq.fragment_listview.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import java.util.HashMap
 

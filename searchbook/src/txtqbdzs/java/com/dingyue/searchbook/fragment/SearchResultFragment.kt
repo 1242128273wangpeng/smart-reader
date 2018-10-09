@@ -9,17 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
-import android.webkit.WebSettings
 import android.webkit.WebViewClient
-import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.router.RouterUtil
-import com.dingyue.searchbook.JSInterface
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
-import kotlinx.android.synthetic.txtqbdzs.fragment_search_result.view.*
+import kotlinx.android.synthetic.qbmfxsydq.fragment_search_result.view.*
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.webview.WebViewJsInterface
 
 
 /**
@@ -49,19 +47,12 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-    override fun obtainJSInterface(jsInterface: JSInterfaceHelper) {
+    override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             mView?.search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-//        customWebClient = CustomWebClient(requireContext(), mView?.search_result_content)
-//        customWebClient?.setWebSettings()
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            mView?.search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-//        }
-////
         mView?.search_result_content?.webViewClient = WebViewClient()
         mView?.search_result_content?.webChromeClient = WebChromeClient()
         mView?.search_result_content?.settings?.javaScriptEnabled = true
@@ -117,22 +108,22 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     override fun onDestroy() {
         super.onDestroy()
         searchResultPresenter.onDestroy()
-            mView?.search_result_content?.clearCache(false) //清空缓存
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        mView?.search_result_content?.clearCache(false) //清空缓存
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                if ( mView?.search_result_main != null) {
 //                    mView?.search_result_main.removeView(search_result_content)
 //                }
-                mView?.search_result_content?.stopLoading()
-                mView?.search_result_content?.removeAllViews()
-                //search_result_content.destroy();
-            } else {
-                mView?.search_result_content?.stopLoading()
-                mView?.search_result_content?.removeAllViews()
-                //search_result_content.destroy();
+            mView?.search_result_content?.stopLoading()
+            mView?.search_result_content?.removeAllViews()
+            //search_result_content.destroy();
+        } else {
+            mView?.search_result_content?.stopLoading()
+            mView?.search_result_content?.removeAllViews()
+            //search_result_content.destroy();
 //                if (search_result_main != null) {
 //                    search_result_main.removeView(search_result_content)
 //                }
-            }
+        }
     }
 
 }
