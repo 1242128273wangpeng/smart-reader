@@ -387,6 +387,20 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             }
         }
 
+        if (search_result_content != null) {
+            val keyword = search_result_input?.text.toString()
+            if (keyword.isNotEmpty()) {
+                search_result_content?.post {
+                    try {
+                        search_result_content?.loadUrl("javascript:refreshNew()")
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                        finish()
+                    }
+                }
+            }
+        }
+
         StatService.onResume(this)
     }
 
