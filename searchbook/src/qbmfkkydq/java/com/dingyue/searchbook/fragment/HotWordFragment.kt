@@ -37,9 +37,6 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
         HotWordPresenter(this)
     }
 
-
-    private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_hotword, container, false)
     }
@@ -50,39 +47,11 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
         hotWordPresenter.loadRecommendData()
-        initListener()
-    }
 
-    private var count = 0//用于标识换一换次数
-    private fun initListener(){
-//        txt_change.setOnClickListener {
-//            count += 8
-//            if (count >= 24) {
-//                count = 0
-//            }
-//            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
-//                    StartLogClickUtil.HOTREADCHANGE)
-//            initRecycleView(count)
-//        }
+        txt_change.setOnClickListener {
+            hotWordPresenter.loadRecommendData()
+        }
     }
-
-//    @Synchronized
-//    fun initRecycleView(bookCount: Int) {
-//        mRecommendFinalBooks.clear()
-//        for (i in bookCount until bookCount + 8) {
-//            if (i < mRecommendBooks.size) {
-//                mRecommendFinalBooks.add(mRecommendBooks.get(i))
-//            }
-//        }
-//        if (mRecommendBooksAdapter == null) {
-//            mRecommendBooksAdapter = RecommendBooksAdapter(mContext, this@SearchViewHelper,
-//                    mRecommendFinalBooks)
-//            mRecommendRecycleView.setAdapter(mRecommendBooksAdapter)
-//        } else {
-//            mRecommendBooksAdapter.notifyDataSetChanged()
-//        }
-//
-//    }
 
     override fun showLoading() {
     }
@@ -100,15 +69,8 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
 
     override fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>) {
 
-        recommendFreeList.clear()
-        recommendList.forEachIndexed { index, dataBean ->
-            if (index < 8) {
-                recommendFreeList.add(dataBean)
-            }
-        }
-
         list_recommend.layoutManager = GridLayoutManager(context, 4)
-        list_recommend.adapter = RecommendAdapter(recommendFreeList, this@HotWordFragment)
+        list_recommend.adapter = RecommendAdapter(recommendList, this@HotWordFragment)
 
     }
 
