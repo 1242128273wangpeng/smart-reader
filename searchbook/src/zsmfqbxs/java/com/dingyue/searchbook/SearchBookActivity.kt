@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.zsmfqbxs.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.toast.ToastUtil
 
 
 /**
@@ -85,8 +86,13 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 historyFragment.loadHistoryRecord()
             }
             search_result_btn.id -> {
-                showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(search_result_input.text.toString())
+                val keyword = search_result_input.text.toString()
+                if (TextUtils.isEmpty(keyword.trim())) {
+                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
+                } else {
+                    showFragment(searchResultFragment)
+                    searchResultFragment.loadKeyWord(keyword)
+                }
             }
         }
     }
@@ -132,20 +138,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
 
     override fun afterTextChanged(editable: Editable?) {
-//        if (mSearchHelper != null && mSearchHelper.getWord() != null) {
-//            if (mSearchHelper.getFromClass() != null) {
-//                if (mSearchHelper.getWord().trim({ it <= ' ' }) != s.toString().trim { it <= ' ' }) {
-//                    if (mSearchHelper.getFromClass() != "other") {
-//                        mSearchHelper.setFromClass("other")
-//                    }
-//                    mSearchHelper.setSearchType("0")
-//                }
-//            } else {
-//                if (mSearchHelper.getWord().trim({ it <= ' ' }) != s.toString().trim { it <= ' ' }) {
-//                    mSearchHelper.setSearchType("0")
-//                }
-//            }
-//        }
 
         if (editable.toString().isNotEmpty() && search_result_input.isFocused) {
             search_result_clear.visibility = View.VISIBLE
@@ -169,11 +161,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
             suggestFragment.obtainKeyWord(search_result_input.text.toString())
         }
 
-//        //网络请求
-//        if (searchViewHelper != null) {
-//            val finalContent = AppUtils.deleteAllIllegalChar(s.toString())
-//            searchViewHelper.showRemainWords(finalContent)
-//        }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

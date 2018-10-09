@@ -36,6 +36,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         }
     }
 
+
     override fun onSearchResult(url: String) {
         searchResultView?.onSearchResult(url)
     }
@@ -45,9 +46,11 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         searchResultView?.onCoverResult(bundle)
     }
 
+
     override fun onAnotherResult(bundle: Bundle) {
         searchResultView?.onAnotherResult(bundle)
     }
+
 
     override fun onSearchWordResult(searchWord: String) {
         historyModel?.addHistoryWord(searchWord)
@@ -59,6 +62,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         searchResultView?.onTurnReadResult(bundle)
     }
 
+
     override fun onEnterReadResult(bundle: Bundle) {
         searchResultView?.onTurnReadResult(bundle)
     }
@@ -69,6 +73,5 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         searchResultView = null
         historyModel = null
     }
-
 
 }

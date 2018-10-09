@@ -37,6 +37,8 @@ class HotWordPresenter(var hotWordView: IHotWordView?) : BasePresenter, OnKeyWor
     }
 
     fun loadHotWordData() {
+        hotWordView?.showLoading()
+
         hotWordModel?.loadHotWordData(object : OnResultListener<SearchResult> {
             override fun onSuccess(result: SearchResult) {
                 hotWordView?.hideLoading()
@@ -45,7 +47,13 @@ class HotWordPresenter(var hotWordView: IHotWordView?) : BasePresenter, OnKeyWor
         })
     }
 
-    fun loadRecommendData() {
+    /**
+     * isInit = false：点击换一换时不展示loading框
+     */
+    fun loadRecommendData(isInit:Boolean) {
+        if (isInit){
+            hotWordView?.showLoading()
+        }
         hotWordModel?.loadRecommendData(object : OnResultListener<ArrayList<SearchRecommendBook.DataBean>> {
             override fun onSuccess(result: ArrayList<SearchRecommendBook.DataBean>) {
                 hotWordView?.hideLoading()

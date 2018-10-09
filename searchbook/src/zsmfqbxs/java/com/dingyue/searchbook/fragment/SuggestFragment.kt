@@ -17,6 +17,7 @@ import net.lzbook.kit.utils.enterCover
 import com.dingyue.searchbook.view.ISuggestView
 import kotlinx.android.synthetic.zsmfqbxs.fragment_listview.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.widget.LoadingPage
 import java.util.HashMap
 
 /**
@@ -27,10 +28,10 @@ import java.util.HashMap
  */
 class SuggestFragment : Fragment(), ISuggestView {
 
-    private var mView: View? = null
     private lateinit var mKeyWord: String
 
-    private var itemGapViewCount = 0 // 用于打点 记录自动补全的type不为 书籍，作者，标签
+    // 用于打点 记录自动补全的type不为 书籍，作者，标签
+    private var itemGapViewCount = 0
 
     private lateinit var searchCommonBean: SearchCommonBeanYouHua
 
@@ -39,9 +40,12 @@ class SuggestFragment : Fragment(), ISuggestView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_listview, container, false)
+        return inflater.inflate(R.layout.fragment_listview, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         suggestPresenter.onCreate()
-        return mView
     }
 
     override fun showLoading() {
@@ -94,7 +98,7 @@ class SuggestFragment : Fragment(), ISuggestView {
                 return@setOnItemClickListener
             }
 
-            var suggest = searchCommonBean.suggest
+            val suggest = searchCommonBean.suggest
             var searchType = "0"
             var isAuthor = 0
             val data = HashMap<String, String>()
