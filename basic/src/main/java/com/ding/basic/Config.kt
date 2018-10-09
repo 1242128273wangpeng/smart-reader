@@ -41,6 +41,11 @@ object Config {
     private var contentAPIHost: String = ""
 
     /***
+     * CDN
+     * **/
+    var cdnHost: String = ""
+
+    /***
      * user tag 接口
      * **/
     private var userTagHost: String = "https://znapi-bigdata.zhuishuwang.com"
@@ -90,6 +95,7 @@ object Config {
 
         microAPIHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
         contentAPIHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+        cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
     }
 
     fun getContext(): Context? {

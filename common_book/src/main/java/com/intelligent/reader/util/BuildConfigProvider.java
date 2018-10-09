@@ -75,4 +75,10 @@ public class BuildConfigProvider implements IBuildConfigProvider {
     public String getContentApiHost() {
         return BuildConfig.content_api_host;
     }
+
+    @NotNull
+    @Override
+    public String getCDNHost() {
+        return BuildConfig.cdn_host;
+    }
 }

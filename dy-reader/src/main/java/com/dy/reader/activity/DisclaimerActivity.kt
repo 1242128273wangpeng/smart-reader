@@ -1,12 +1,20 @@
 package com.dy.reader.activity
 
+import android.net.http.SslError
 import android.os.Bundle
 import android.os.SystemClock
+import android.view.GestureDetector
 import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.webkit.SslErrorHandler
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.Config
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
@@ -26,13 +34,11 @@ import java.util.*
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : iyouqu.theme.FrameActivity() {
 
+    private var gestureDetector: GestureDetector? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_disclaimer)
-        // 使用协议
-        txt_title.text = resources.getString(R.string.disclaimer_statement)
-        txt_content.text = resources.getString(R.string.disclaimer_statement_description)
 
         // 阅读页转码声明
         val isFromReadingPage = intent.getBooleanExtra(RouterUtil.FROM_READING_PAGE, false)
@@ -58,20 +64,31 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
 
         }
 
+        // 使用协议页面
+        val isFormDisclaimerPage = intent.getBooleanExtra(RouterUtil.FROM_DISCLAIMER_PAGE, false)
+        if (isFormDisclaimerPage) {
+            txt_title.text = resources.getString(R.string.disclaimer_statement)
+            web_disclaimer.visibility = View.VISIBLE
+            web_disclaimer.webViewClient = object : WebViewClient() {
+                override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,
+                                                error: SslError?) {
+                    handler?.proceed()
+                }
+            }
+            web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageName()}/protocol/protocol.html")
+
+            //可以打开调试模式
+            rl_disclaimer.setOnClickListener {
+                displayEggs()
+            }
+        }
+
 
         img_back.setOnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data)
             finish()
-        }
-
-        // 仅在使用协议页面进入可以打开调试模式
-        val isFormDisclaimerPage = intent.getBooleanExtra(RouterUtil.FROM_DISCLAIMER_PAGE, false)
-        if (isFormDisclaimerPage) {
-            txt_content.setOnClickListener {
-                displayEggs()
-            }
         }
 
     }
