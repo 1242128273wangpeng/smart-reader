@@ -283,6 +283,7 @@
     <color name="debug_switch_bg_unchecked_color">#E3E1E1</color>
 
     <color name="divider_bg">#5D646E</color>
+    <color name="divider_line">#EDEEF0</color>
     <color name="dialog_line">#4DB8C5D9</color>
 
     <color name="color_F4F4F4">#F4F4F4</color>

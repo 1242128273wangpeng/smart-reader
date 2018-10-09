@@ -12,47 +12,48 @@
         android:layout_height="@dimen/top_bar_height">
 
         <ImageView
-            android:id="@id/img_back"
+            android:id="@+id/img_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="@string/icon"
-            android:paddingEnd="@dimen/dimen_margin_0"
-            android:paddingLeft="@dimen/dimen_margin_16"
-            android:paddingRight="@dimen/dimen_margin_0"
-            android:paddingStart="@dimen/dimen_margin_16"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dimen_padding_16"
             android:src="@drawable/icon_back_left"/>
 
-        <TextView
-            android:id="@+id/search_result_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:paddingLeft="@dimen/dimen_margin_16"
-            android:paddingRight="@dimen/dimen_margin_16"
-            android:text="@string/search"
-            android:textColor="@color/color_5D646E"/>
-
-
-        <TextView
+        <RelativeLayout
             android:id="@+id/search_result_focus"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_view_height_30"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/img_back"
-            android:layout_toLeftOf="@id/search_result_btn"
+            android:layout_toLeftOf="@+id/search_result_btn"
             android:layout_toRightOf="@+id/img_back"
-            android:layout_toStartOf="@id/search_result_btn"
-            android:background="@drawable/draw_search_input_bg"
-            android:gravity="center_vertical"
-            android:hint="@string/search"
-            android:singleLine="true"
-            android:textColor="@color/color_323232"
-            android:textSize="@dimen/dimen_text_14"/>
+            android:background="@drawable/draw_search_input_bg">
 
+            <TextView
+                android:id="@+id/search_result_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimen_margin_10"
+                android:singleLine="true"
+                android:textColor="@color/search_input_text_color"
+                android:textSize="@dimen/dimen_text_16"/>
+
+            <TextView
+                android:id="@+id/search_result_keyword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimen_margin_10"
+                android:layout_toLeftOf="@id/search_result_count"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/search_novel"
+                android:textColor="@color/search_input_text_color_hint"
+                android:textSize="14sp"/>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/search_result_default"
@@ -60,11 +61,8 @@
             android:layout_height="@dimen/dimen_view_height_30"
             android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@id/img_back"
             android:layout_toLeftOf="@id/search_result_btn"
             android:layout_toRightOf="@id/img_back"
-            android:layout_toStartOf="@id/search_result_btn"
             android:background="@drawable/draw_search_input_bg"
             android:visibility="gone">
 
@@ -72,34 +70,40 @@
                 android:id="@+id/search_result_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/app_name"
-                android:paddingEnd="@dimen/dimen_margin_0"
                 android:paddingLeft="@dimen/dimen_padding_10"
-                android:paddingRight="@dimen/dimen_margin_0"
-                android:paddingStart="@dimen/dimen_padding_10"
                 android:scaleType="fitCenter"
-                android:src="@drawable/draw_search_edit_clear"
+                android:src="@drawable/search_edit_clear"
                 android:visibility="gone"/>
 
             <net.lzbook.kit.ui.widget.HWEditText
                 android:id="@+id/search_result_input"
+                style="@style/style_text_normal_plain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/search_result_clear"
-                android:layout_toStartOf="@id/search_result_clear"
                 android:background="@color/transparent"
                 android:cursorVisible="true"
                 android:gravity="center_vertical"
-                android:hint="@string/search"
+                android:hint="@string/search_novel"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textColorHint="@color/color_ADB4BE"
+                android:textColorHint="@color/search_input_text_color_hint"
                 app:HWEditText_textCursorDrawable="@drawable/draw_search_edit_cursor"/>
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/search_result_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="@dimen/dimen_padding_7"
+            android:paddingRight="@dimen/dimen_padding_12"
+            android:src="@drawable/search_button"/>
     </RelativeLayout>
 
     <FrameLayout

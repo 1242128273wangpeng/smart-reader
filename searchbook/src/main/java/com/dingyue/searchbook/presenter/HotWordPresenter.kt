@@ -50,8 +50,8 @@ class HotWordPresenter(var hotWordView: IHotWordView?) : BasePresenter, OnKeyWor
     /**
      * isInit = false：点击换一换时不展示loading框
      */
-    fun loadRecommendData(isInit:Boolean) {
-        if (isInit){
+    fun loadRecommendData(isInit: Boolean = false) {
+        if (isInit) {
             hotWordView?.showLoading()
         }
         hotWordModel?.loadRecommendData(object : OnResultListener<ArrayList<SearchRecommendBook.DataBean>> {

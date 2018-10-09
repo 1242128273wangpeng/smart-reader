@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">searchbook</string>
 
-    <string name="search_book">输入书名、作者或关键词</string>
     <string name="hot_read">热门阅读</string>
+    <string name="hot_search">热门搜索</string>
+
+    <string name="search_history">搜索历史</string>
+    <string name="search_book">输入书名、作者或关键词</string>
+    <string name="search_novel">搜小说</string>
+
+    <string name="everyone_is_searching">大家都在搜</string>
+    <string name="want_to_read_and_read">想读就读</string>
+    <string name="full_station_free">全站免费</string>
+
+    <string name="change">换一换</string>
+
+
 </resources>

@@ -13,6 +13,6 @@ import com.ding.basic.bean.SearchRecommendBook
 interface IHotWordView : IBaseView {
 
     fun showHotWordList(hotWordList: ArrayList<HotWordBean>)
-    fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>)
+    fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>){}
 
 }

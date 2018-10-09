@@ -13,13 +13,13 @@ import android.webkit.WebSettings
 import android.webkit.WebViewClient
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import com.dingyue.searchbook.JSInterface
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
 import kotlinx.android.synthetic.txtqbmfyd.fragment_search_result.view.*
 import net.lzbook.kit.utils.webview.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.webview.WebViewJsInterface
 
 
 /**
@@ -49,7 +49,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-    override fun obtainJSInterface(jsInterface: JSInterfaceHelper) {
+    override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             mView?.search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)

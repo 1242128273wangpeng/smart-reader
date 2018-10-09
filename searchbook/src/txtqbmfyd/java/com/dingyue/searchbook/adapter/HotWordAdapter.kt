@@ -22,7 +22,7 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
 
     override fun getCount(): Int {
         return if (list.isNotEmpty()) {
-            if (list.size >= 5) 6 else list.size
+            if (list.size >= 9) 9 else list.size
         } else {
             0
         }
@@ -53,19 +53,15 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         }
         val dataBean = list[position]
         holder.hotWordText.text = dataBean.keyword
-        if (!TextUtils.isEmpty(dataBean.superscript)) {
-            holder.typeImg.visibility = View.VISIBLE
-            when (dataBean.superscript) {
-                "热" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_hot)
-                "荐" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_recommend)
-                "新" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_new)
-            }
-        } else {
-            holder.typeImg.visibility = View.GONE
+
+        when (position) {
+            0 -> holder.typeImg.setImageResource(R.drawable.search_img_hot_1)
+            1 -> holder.typeImg.setImageResource(R.drawable.search_img_hot_2)
+            2 -> holder.typeImg.setImageResource(R.drawable.search_img_hot_3)
+            else -> holder.typeImg.setImageResource(R.drawable.search_img_hot_4)
         }
-        if (!TextUtils.isEmpty(dataBean.color)) {
-            holder.hotWordText.setTextColor(Color.parseColor(dataBean.color))
-        }
+
+
         return hotView
     }
 

@@ -281,18 +281,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onStop()
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
-            if(keyCode == KeyEvent.KEYCODE_BACK ){
-                onBackPressed()
-                true
-            }else{
-                super.onKeyDown(keyCode, event)
-            }
-
-
-
-
-
     override fun onBackPressed() {
         if (dl_reader_content.isDrawerOpen(GravityCompat.START)) {
             dl_reader_content.closeDrawers()
