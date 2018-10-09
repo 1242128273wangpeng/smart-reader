@@ -100,7 +100,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
             if (webView != null) {
                 webView?.stopLoading()
-                webView?.clearView()
+                webView?.loadUrl("about:blank")
                 webView?.visibility = View.GONE
             }
             loadingWebViewError?.invoke()
@@ -120,8 +120,8 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             }
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
             if (webView != null) {
-                webView?.clearView()
                 webView?.stopLoading()
+                webView?.loadUrl("about:blank")
                 webView?.visibility = View.GONE
             }
             loadingWebViewError?.invoke()
@@ -132,8 +132,8 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
         loadingErrorCount = errorCode
         if (webView != null) {
-            webView?.clearView()
             webView?.stopLoading()
+            webView?.loadUrl("about:blank")
         }
         super.onReceivedError(view, errorCode, description, failingUrl)
     }

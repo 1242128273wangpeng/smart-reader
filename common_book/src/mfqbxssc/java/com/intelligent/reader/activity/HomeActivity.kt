@@ -30,7 +30,6 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
-import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -80,8 +79,13 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     private var bookShelfFragment: BookShelfFragment? = null
 
-    private val recommendFragment: RecommendFragment by lazy {
-        val fragment = RecommendFragment()
+    private val recommendFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "recommend")
+        val uri = RequestService.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
         fragment
     }
 

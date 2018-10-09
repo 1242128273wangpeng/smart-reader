@@ -1,7 +1,6 @@
 package com.intelligent.reader.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,29 +15,34 @@ import com.dingyue.contract.CommonContract
 
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.CommonUtil
 import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.contract.web.JSInterfaceObject
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.mfqbxssc.frag_web_view.*
+import kotlinx.android.synthetic.mfqbxssc.view_web_view_refresh.view.*
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.utils.CustomWebView
+import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.utils.NetWorkUtils
 
 class WebViewFragment : Fragment() {
 
     private var url: String? = ""
     private var type: String? = null
-
+    
     private var customWebClient: CustomWebClient? = null
 
     private var loadingPage: LoadingPage? = null
 
     private var handle = Handler()
 
-    private var customChangeListener: CustomWebView.ScrollChangeListener? = null
+    private val refreshHeader: View by lazy {
+        LayoutInflater.from(srl_web_view_refresh.context).inflate(R.layout.view_web_view_refresh, null)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,13 +66,8 @@ class WebViewFragment : Fragment() {
 
         if (!TextUtils.isEmpty(url)) {
             when (type) {
-                "recommendMan" -> {
+                "recommend" -> {
                     requestWebViewData(url)
-                }
-                "recommendWoman" -> {
-                    handle.postDelayed({
-                        requestWebViewData(url)
-                    }, 2000)
                 }
                 "rank" -> {
                     handle.postDelayed({
@@ -113,6 +112,8 @@ class WebViewFragment : Fragment() {
 
         refreshContentHeader()
 
+        initRefreshHeader()
+
         loadingPage = LoadingPage(requireActivity(), rl_web_view_content)
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
@@ -124,10 +125,6 @@ class WebViewFragment : Fragment() {
         }
 
         web_view_content?.webViewClient = customWebClient
-
-        if (customChangeListener != null) {
-            web_view_content.insertScrollChangeListener(customChangeListener)
-        }
 
         web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
 
@@ -171,9 +168,16 @@ class WebViewFragment : Fragment() {
             }
         }, "J_search")
 
-        web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
 
-        img_web_view_header_search?.setOnClickListener {
+        rl_web_view_header_recommend?.setOnClickListener {
+            RouterUtil.navigation(requireActivity(),
+                    RouterConfig.SEARCH_BOOK_ACTIVITY)
+
+            StartLogClickUtil.upLoadEventLog(requireActivity(),
+                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
+        }
+
+        img_web_view_header_other_search?.setOnClickListener {
             RouterUtil.navigation(requireActivity(),
                     RouterConfig.SEARCH_BOOK_ACTIVITY)
             if ("rank" == type) {
@@ -188,16 +192,24 @@ class WebViewFragment : Fragment() {
 
 
     private fun refreshContentHeader() {
-        if ("recommendMan" == type || "recommendWoman" == type) {
-            if (rl_web_view_header != null) {
-                rl_web_view_header?.visibility = View.GONE
+        if ("recommend" == type) {
+            if (rl_web_view_header_recommend != null) {
+                rl_web_view_header_recommend?.visibility = View.VISIBLE
+            }
+
+            if (rl_web_view_header_other != null) {
+                rl_web_view_header_other?.visibility = View.GONE
             }
 
             return
         }
 
-        if (rl_web_view_header != null) {
-            rl_web_view_header?.visibility = View.VISIBLE
+        if (rl_web_view_header_other != null) {
+            rl_web_view_header_other?.visibility = View.VISIBLE
+        }
+
+        if (rl_web_view_header_recommend != null) {
+            rl_web_view_header_recommend?.visibility = View.GONE
         }
 
         if (txt_web_view_header_title != null && type != null) {
@@ -225,7 +237,7 @@ class WebViewFragment : Fragment() {
 
     private fun handleLoadingWebViewData(url: String?) {
         customWebClient?.initParameter()
-
+        
         if (url != null && url.isNotEmpty()) {
             try {
                 web_view_content?.loadUrl(url)
@@ -269,23 +281,71 @@ class WebViewFragment : Fragment() {
         }
     }
 
-    /**
-     * 获取web中banner的位置js回调
-     */
-    inner class JsPositionInterface {
+    private fun initRefreshHeader() {
+        if (!TextUtils.isEmpty(url)) {
+            srl_web_view_refresh?.setHeaderViewBackgroundColor(0x00000000)
+            srl_web_view_refresh?.setHeaderView(createHeaderView())
+            srl_web_view_refresh?.isTargetScrollWithLayout = true
 
-        @JavascriptInterface
-        fun insertProhibitSlideArea(x: String, y: String, width: String, height: String) {
-            try {
-                val viewWidth = java.lang.Float.parseFloat(width)
-                val viewHeight = java.lang.Float.parseFloat(height)
-                val scale = web_view_content.resources.displayMetrics.widthPixels / viewWidth
+            srl_web_view_refresh?.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
+                override fun onRefresh() {
+                    refreshHeader.txt_refresh_prompt.text = "正在刷新"
+                    refreshHeader.img_refresh_arrow.visibility = View.GONE
+                    refreshHeader.pgbar_refresh_loading.visibility = View.VISIBLE
+                    refreshContentView()
+                }
 
-                web_view_content.insertProhibitSlideArea(RectF(
-                        x.toFloat() * scale, y.toFloat() * scale, (x.toFloat() + viewWidth) * scale,
-                        (y.toFloat() + viewHeight) * scale))
-            } catch (exception: Exception) {
-                exception.printStackTrace()
+                override fun onPullDistance(distance: Int) {}
+
+                override fun onPullEnable(enable: Boolean) {
+                    refreshHeader.pgbar_refresh_loading.visibility = View.GONE
+                    refreshHeader.txt_refresh_prompt.text = if (enable) "松开刷新" else "下拉刷新"
+                    refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
+                    refreshHeader.img_refresh_arrow.rotation = (if (enable) 180 else 0).toFloat()
+                }
+                
+            })
+            if ("recommend" == type) {
+                srl_web_view_refresh?.setPullToRefreshEnabled(true)
+            } else {
+                srl_web_view_refresh?.setPullToRefreshEnabled(false)
+            }
+        }
+    }
+
+    private fun createHeaderView(): View {
+        refreshHeader.txt_refresh_prompt.text = "下拉刷新"
+        refreshHeader.img_refresh_arrow.visibility = View.VISIBLE
+        refreshHeader.img_refresh_arrow.setImageResource(R.drawable.pulltorefresh_down_arrow)
+        refreshHeader.pgbar_refresh_loading.visibility = View.GONE
+        return refreshHeader
+    }
+
+    private fun refreshContentView() {
+        if (srl_web_view_refresh == null) {
+            return
+        }
+
+        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+            srl_web_view_refresh?.isRefreshing = false
+            CommonUtil.showToastMessage("网络不给力")
+            return
+        }
+
+        srl_web_view_refresh?.onRefreshComplete()
+
+        refreshContent("javascript:refreshNew()")
+    }
+
+    private fun refreshContent(message: String) {
+        if (!TextUtils.isEmpty(message)) {
+            web_view_content?.post {
+                try {
+                    web_view_content?.loadUrl(message)
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    requireActivity().finish()
+                }
             }
         }
     }
