@@ -433,6 +433,14 @@ class TabulationActivity : FrameActivity() {
             customWebClient?.initParameter()
         }
 
+        web_tabulation_content.clearView()
+
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(this, rl_tabulation_root, LoadingPage.setting_result)
+        } else {
+            loadingPage?.visibility = View.VISIBLE
+        }
+
         if (url != null && url.isNotEmpty()) {
             try {
                 web_tabulation_content?.loadUrl(url)
