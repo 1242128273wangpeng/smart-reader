@@ -1256,7 +1256,7 @@ public class AppUtils {
                     }
                 });
             }
-            float targetDensity = displayMetrics.widthPixels / 360;
+            float targetDensity = displayMetrics.widthPixels / 360f;
             float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
             int targetDensityDpi = (int) (160 * targetDensity);
 
