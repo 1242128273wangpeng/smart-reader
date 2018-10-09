@@ -1,65 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:paddingLeft="6.5dp"
-              android:paddingRight="6.5dp"
-              android:paddingTop="16dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/draw_search_recommend_bg">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="99.2dp">
+    <FrameLayout
+        android:id="@+id/iv_card"
+        android:layout_width="34dp"
+        android:layout_height="46dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="9dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="9dp">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_book_rectangle"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"/>
 
         <ImageView
             android:id="@+id/iv_url"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="4.2dp"
-            android:layout_marginLeft="3.5dp"
-            android:layout_marginRight="3.5dp"
+            android:layout_width="32dp"
+            android:layout_height="44dp"
             android:contentDescription="@string/icon"
             android:scaleType="fitXY"
             tools:src="@drawable/book_cover_default"/>
+    </FrameLayout>
 
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_book_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="3.5dp"
-        android:layout_marginRight="3.5dp"
-        android:layout_marginTop="4.7dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/iv_card"
         android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@color/color_252B35"
-        android:textSize="12sp"
-        tools:text="name"/>
+        android:maxLines="2"
+        android:textColor="#303135"
+        android:textSize="14sp"
+        tools:text="青果作家"/>
 
-    <TextView
-        android:id="@+id/tv_book_auther"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="3.5dp"
-        android:layout_marginRight="3.5dp"
-        android:layout_marginTop="4.2dp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@color/color_949AA5"
-        android:textSize="10sp"
-        tools:ignore="SmallSp"
-        tools:text="author"/>
-</LinearLayout>
-
-
+</RelativeLayout>
 

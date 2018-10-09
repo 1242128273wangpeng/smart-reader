@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <color name="color_statusBar">#ffffff</color>
     <color name="color_gray_070707">#070707</color>
     <color name="light_center_time">#999999</color>
@@ -245,10 +245,10 @@
     <color name="color_black_444444">#444444</color>
     <color name="color_black_424242">#424242</color>
 
-   <!-- <color name="color_red_e0664e">#E0664E</color>
-    <color name="color_red_fe5e49">#fe5e49</color>
-    <color name="color_red_ff1010">#ff1010</color>
-    <color name="color_red_f04c3b">#F04C3B</color>-->
+    <!-- <color name="color_red_e0664e">#E0664E</color>
+     <color name="color_red_fe5e49">#fe5e49</color>
+     <color name="color_red_ff1010">#ff1010</color>
+     <color name="color_red_f04c3b">#F04C3B</color>-->
     <color name="color_gray_b3b3b3">#b3b3b3</color>
 
     <color name="color_blue_1dbfbb">#1dbfbb</color>
@@ -269,6 +269,12 @@
     <color name="text_color_plain">#FF5D646E</color>
     <color name="text_color_light">#FF9097A1</color>
     <color name="text_color_weak">#FFADB4BE</color>
+
+    <!--搜索-->
+    <color name="search_input_text_color">#171717</color>
+    <color name="search_input_text_color_hint">#c4c2c2</color>
+    <color name="search_recommend_title">#303135</color>
+    <color name="search_recommend_bg">#DFE5EA</color>
 
     <!--调试界面下SwitchButton-->
     <color name="debug_switch_button_checked_color">#ACACAC</color>
