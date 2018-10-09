@@ -57,8 +57,6 @@ import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.book.download.CacheManager
