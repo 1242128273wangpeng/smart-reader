@@ -57,8 +57,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         loadingPage = null
     }
 
-    fun loadKeyWord(keyWord: String) {
-        searchResultPresenter.loadKeyWord(keyWord)
+    fun loadKeyWord(keyWord: String,searchType:String = "0") {
+        searchResultPresenter.loadKeyWord(keyWord,searchType)
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")

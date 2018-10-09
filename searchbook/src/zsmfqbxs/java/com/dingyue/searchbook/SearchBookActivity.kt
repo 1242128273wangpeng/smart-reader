@@ -148,6 +148,14 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
         search_result_btn.setOnClickListener(this)
 
+        suggestFragment.onSuggestClickListener = object :SuggestFragment.OnSuggestClickListener{
+            override fun onSuggestClick(history: String, searchType: String) {
+                showFragment(searchResultFragment)
+                searchResultFragment.loadKeyWord(history,searchType)
+            }
+
+        }
+
         historyFragment.onKeyWordListener = this
         hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {

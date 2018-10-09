@@ -29,10 +29,11 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
     }
 
 
-    fun loadKeyWord(keyWord: String) {
+    fun loadKeyWord(keyWord: String,searchType:String) {
         searchResultView?.showLoading()
         historyModel?.addHistoryWord(keyWord)
         searchResultModel?.setWord(keyWord)
+        searchResultModel?.setSearchType(searchType)
         searchResultModel?.startLoadData(0)?.let {
             onSearchResult(it)
         }
