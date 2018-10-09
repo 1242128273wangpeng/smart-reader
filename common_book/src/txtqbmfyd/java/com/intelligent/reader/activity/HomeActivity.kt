@@ -289,6 +289,7 @@ class HomeActivity : BaseCacheableActivity(),
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
+
                 when (position) {
                     1 -> {
                         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.ENTRYPAGE)
