@@ -29,6 +29,8 @@ import net.lzbook.kit.utils.webview.WebViewJsInterface
  */
 class SearchResultFragment : Fragment(), ISearchResultView {
 
+    private var loadingPage:LoadingPage? = null
+
     private var customWebClient: CustomWebClient? = null
 
     private val searchResultPresenter: SearchResultPresenter  by lazy {
@@ -45,9 +47,14 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun showLoading() {
+        if (loadingPage == null){
+            loadingPage = LoadingPage(requireActivity(),search_result_main,LoadingPage.setting_result)
+        }
     }
 
     override fun hideLoading() {
+        loadingPage?.onSuccess()
+        loadingPage = null
     }
 
     fun loadKeyWord(keyWord: String) {

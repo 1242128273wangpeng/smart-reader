@@ -5,6 +5,7 @@ import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.dingyue.searchbook.model.HistoryModel
 import com.dingyue.searchbook.model.SearchResultModel
 import com.dingyue.searchbook.view.ISearchResultView
+import net.lzbook.kit.utils.runOnMain
 
 
 /**
@@ -29,6 +30,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
 
 
     fun loadKeyWord(keyWord: String) {
+        searchResultView?.showLoading()
         historyModel?.addHistoryWord(keyWord)
         searchResultModel?.setWord(keyWord)
         searchResultModel?.startLoadData(0)?.let {
@@ -38,6 +40,9 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
 
 
     override fun onSearchResult(url: String) {
+        runOnMain {
+            searchResultView?.hideLoading()
+        }
         searchResultView?.onSearchResult(url)
     }
 
