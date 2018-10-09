@@ -65,4 +65,11 @@
             android:textColor="#E6000000"
             android:textSize="14sp"/>
     </ScrollView>
+
+    <WebView
+        android:id="@+id/web_disclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl_disclaimer"
+        android:visibility="gone"/>
 </RelativeLayout>
