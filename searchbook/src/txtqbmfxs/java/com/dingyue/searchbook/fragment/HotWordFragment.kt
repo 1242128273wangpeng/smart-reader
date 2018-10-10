@@ -2,7 +2,7 @@ package com.dingyue.searchbook.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +16,10 @@ import com.dingyue.searchbook.presenter.HotWordPresenter
 import com.dingyue.searchbook.view.IHotWordView
 import kotlinx.android.synthetic.txtqbmfxs.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
-import java.util.HashMap
-import kotlin.collections.ArrayList
+import java.util.*
 
 
 /**
@@ -30,13 +30,15 @@ import kotlin.collections.ArrayList
  */
 class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
 
+    var onResultListener: OnResultListener<String>? = null
+
+    private var loadingPage: LoadingPage? = null
+
+    private var hotWordAdapter: HotWordAdapter? = null
+
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
-
-    var onResultListener:OnResultListener<String>? = null
-
-    private var hotWordAdapter: HotWordAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_hotword, container, false)
@@ -50,9 +52,12 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
     }
 
     override fun showLoading() {
+        hideLoading()
+        loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
     }
 
     override fun hideLoading() {
+        loadingPage?.onSuccessGone()
     }
 
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {
@@ -65,8 +70,8 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
 
     override fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>) {
 
-        list_recommend.layoutManager = GridLayoutManager(context, 1)
-        list_recommend.adapter = RecommendAdapter(recommendList, this@HotWordFragment)
+        list_recommend.layoutManager = LinearLayoutManager(context)
+        list_recommend.adapter = RecommendAdapter(recommendList, this)
 
     }
 
@@ -82,7 +87,7 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
             data.put("type", bean.superscript ?: "")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
             hotWordPresenter.onKeyWord(bean.keyword)
-            onResultListener?.onSuccess(bean.keyword?:"")
+            onResultListener?.onSuccess(bean.keyword ?: "")
         }
     }
 

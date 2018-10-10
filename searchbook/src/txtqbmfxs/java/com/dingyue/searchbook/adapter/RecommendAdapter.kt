@@ -34,8 +34,11 @@ class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
     }
 
     override fun onBindViewHolder(holder: RecommendAdapter.ViewHolder, position: Int) {
-
         val book = books[position]
+
+        holder.dataBean = book
+        holder.index = position
+
         holder.tv_book_name.text = book.bookName
         holder.tv_author.text = ("作者：" + book.authorName)
         if (book.serialStatus == "SERIALIZE") {
