@@ -29,7 +29,7 @@ import net.lzbook.kit.utils.webview.WebViewJsInterface
  */
 class SearchResultFragment : Fragment(), ISearchResultView {
 
-    private var loadingPage:LoadingPage? = null
+    private var loadingPage: LoadingPage? = null
 
     private var customWebClient: CustomWebClient? = null
 
@@ -47,8 +47,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun showLoading() {
-        if (loadingPage == null){
-            loadingPage = LoadingPage(requireActivity(),search_result_main,LoadingPage.setting_result)
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
         }
     }
 
@@ -57,8 +57,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         loadingPage = null
     }
 
-    fun loadKeyWord(keyWord: String,searchType:String = "0") {
-        searchResultPresenter.loadKeyWord(keyWord,searchType)
+    fun loadKeyWord(keyWord: String, searchType: String = "0") {
+        searchResultPresenter.loadKeyWord(keyWord, searchType)
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")

@@ -23,7 +23,6 @@ import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.toast.ToastUtil
 
 
@@ -59,30 +58,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         setContentView(R.layout.activity_search_book)
         initView()
         initListener()
-//        if (intent != null) {
-//            mSearchHelper.initSearchType(intent)
-//        }
-
-        // 拦截键盘的回车事件
-        search_result_input.setOnKeyListener { _, keyCode, _ ->
-
-            when (keyCode) {
-                KeyEvent.KEYCODE_ENTER -> {
-                    val keyword = search_result_input.text.toString()
-                    if (TextUtils.isEmpty(keyword.trim())) {
-                        ToastUtil.showToastMessage(R.string.search_click_check_isright)
-                    } else {
-                        showFragment(searchResultFragment)
-                        searchResultFragment.loadKeyWord(keyword)
-                        hideKeyboard()
-                    }
-                    true
-                }
-                else -> false
-            }
-        }
-
-
+        interceptKeyBoard()
     }
 
     override fun onClick(v: View) {
@@ -145,25 +121,24 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_focus.setOnClickListener(this)
         search_result_input.setOnClickListener(this)
         search_result_input.addTextChangedListener(this)
-
         search_result_btn.setOnClickListener(this)
 
-        suggestFragment.onSuggestClickListener = object :SuggestFragment.OnSuggestClickListener{
+        historyFragment.onKeyWordListener = this
+
+        suggestFragment.onSuggestClickListener = object : SuggestFragment.OnSuggestClickListener {
             override fun onSuggestClick(history: String, searchType: String) {
+                inputKeyWord(history)
                 showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(history,searchType)
+                searchResultFragment.loadKeyWord(history, searchType)
             }
 
         }
 
-        historyFragment.onKeyWordListener = this
         hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
-                runOnMain {
-                    inputKeyWord(result)
-                    showFragment(searchResultFragment)
-                    searchResultFragment.loadKeyWord(result)
-                }
+                inputKeyWord(result)
+                showFragment(searchResultFragment)
+                searchResultFragment.loadKeyWord(result)
             }
         }
 
@@ -237,6 +212,31 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
             }
         }, 500)
 
+    }
+
+
+    /**
+     * 拦截键盘的回车事件
+     */
+    private fun interceptKeyBoard() {
+
+        search_result_input.setOnKeyListener { _, keyCode, _ ->
+
+            when (keyCode) {
+                KeyEvent.KEYCODE_ENTER -> {
+                    val keyword = search_result_input.text.toString()
+                    if (TextUtils.isEmpty(keyword.trim())) {
+                        ToastUtil.showToastMessage(R.string.search_click_check_isright)
+                    } else {
+                        showFragment(searchResultFragment)
+                        searchResultFragment.loadKeyWord(keyword)
+                        hideKeyboard()
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
 }

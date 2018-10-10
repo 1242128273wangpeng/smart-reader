@@ -13,7 +13,8 @@ import android.webkit.WebViewClient
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
-import kotlinx.android.synthetic.qbmfxsydq.fragment_search_result.view.*
+import kotlinx.android.synthetic.qbmfxsydq.fragment_search_result.*
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
@@ -28,43 +29,57 @@ import net.lzbook.kit.utils.webview.WebViewJsInterface
  */
 class SearchResultFragment : Fragment(), ISearchResultView {
 
-    private var mView: View? = null
+    private var loadingPage: LoadingPage? = null
+
     private var customWebClient: CustomWebClient? = null
 
     private val searchResultPresenter: SearchResultPresenter  by lazy {
         SearchResultPresenter(this)
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_search_result, container, false)
-        searchResultPresenter.onCreate()
-        return mView
+        return inflater.inflate(R.layout.fragment_search_result, container, false)
     }
 
-    fun loadKeyWord(keyWord: String) {
-        searchResultPresenter.loadKeyWord(keyWord)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        searchResultPresenter.onCreate()
+    }
+
+    override fun showLoading() {
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
+        }
+    }
+
+    override fun hideLoading() {
+        loadingPage?.onSuccess()
+        loadingPage = null
+    }
+
+    fun loadKeyWord(keyWord: String, searchType: String = "0") {
+        searchResultPresenter.loadKeyWord(keyWord, searchType)
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
 
         if (Build.VERSION.SDK_INT >= 14) {
-            mView?.search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
+            search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-        mView?.search_result_content?.webViewClient = WebViewClient()
-        mView?.search_result_content?.webChromeClient = WebChromeClient()
-        mView?.search_result_content?.settings?.javaScriptEnabled = true
-        mView?.search_result_content?.settings?.domStorageEnabled = true
-        mView?.search_result_content?.addJavascriptInterface(jsInterface, "J_search")
+        search_result_content?.webViewClient = WebViewClient()
+        search_result_content?.webChromeClient = WebChromeClient()
+        search_result_content?.settings?.javaScriptEnabled = true
+        search_result_content?.settings?.domStorageEnabled = true
+        search_result_content?.addJavascriptInterface(jsInterface, "J_search")
     }
 
 
     override fun onSearchResult(url: String) {
         showLoading()
         //加载URL
-        mView?.search_result_content?.loadUrl(url)
+        search_result_content?.loadUrl(url)
     }
 
     override fun onCoverResult(bundle: Bundle) {
@@ -78,12 +93,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
 
     override fun onSearchWordResult(searchWord: String) {
-//        if (search_result_default.visibility != View.VISIBLE) {
-//            search_result_default.visibility = View.VISIBLE
-//        }
-//
-//        search_result_input.setText(searchWord)
-//        search_result_content.clearView()
+
     }
 
 
@@ -97,32 +107,16 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         RouterUtil.navigation(requireActivity(), RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
-
-    override fun showLoading() {
-
-    }
-
-    override fun hideLoading() {
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         searchResultPresenter.onDestroy()
-        mView?.search_result_content?.clearCache(false) //清空缓存
+        search_result_content?.clearCache(false) //清空缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                if ( mView?.search_result_main != null) {
-//                    mView?.search_result_main.removeView(search_result_content)
-//                }
-            mView?.search_result_content?.stopLoading()
-            mView?.search_result_content?.removeAllViews()
-            //search_result_content.destroy();
+            search_result_content?.stopLoading()
+            search_result_content?.removeAllViews()
         } else {
-            mView?.search_result_content?.stopLoading()
-            mView?.search_result_content?.removeAllViews()
-            //search_result_content.destroy();
-//                if (search_result_main != null) {
-//                    search_result_main.removeView(search_result_content)
-//                }
+            search_result_content?.stopLoading()
+            search_result_content?.removeAllViews()
         }
     }
 
