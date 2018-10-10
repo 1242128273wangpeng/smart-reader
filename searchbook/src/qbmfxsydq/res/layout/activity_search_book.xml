@@ -42,8 +42,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_margin_32"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
                 android:layout_toEndOf="@+id/img_back"
                 android:layout_toLeftOf="@id/search_result_btn"
                 android:layout_toRightOf="@+id/img_back"
@@ -52,12 +50,12 @@
                 android:gravity="center_vertical"
                 android:hint="@string/search_book"
                 android:singleLine="true"
-                android:textColor="@color/color_323232"
+                android:textColor="@color/search_input_text_color_hint"
                 android:textSize="@dimen/dimen_text_14"/>
 
             <RelativeLayout
                 android:id="@+id/search_result_default"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_margin_32"
                 android:layout_centerInParent="true"
                 android:layout_toEndOf="@id/img_back"

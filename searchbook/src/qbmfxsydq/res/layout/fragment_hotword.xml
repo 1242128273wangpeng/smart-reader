@@ -13,33 +13,28 @@
         android:layout_marginTop="13dp"
         android:text="@string/everyone_is_searching"
         android:textColor="@color/color_303135"
-        android:textSize="17sp"
-        android:visibility="gone"/>
+        android:textSize="17sp"/>
 
-    <com.dingyue.searchbook.widget.TagContainerLayout
-        android:id="@+id/tag_container_layout"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_hotWord"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="14dp"/>
 
     <View
-        android:id="@+id/search_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/divider_line"
-        android:visibility="gone"/>
+        android:background="@color/divider_line"/>
 
     <RelativeLayout
         android:id="@+id/relative_hot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:visibility="gone">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -66,7 +61,7 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_recommend"
+        android:id="@+id/recyclerView_recommend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"

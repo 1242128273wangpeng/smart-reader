@@ -29,7 +29,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
     }
 
 
-    fun loadKeyWord(keyWord: String,searchType:String) {
+    fun loadKeyWord(keyWord: String, searchType: String = "0") {
         searchResultView?.showLoading()
         historyModel?.addHistoryWord(keyWord)
         searchResultModel?.setWord(keyWord)

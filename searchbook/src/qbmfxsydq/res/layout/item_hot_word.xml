@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_hotword"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_hotWord"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginTop="7dp"
-        android:background="@drawable/booksearch_red_bg"
+        android:background="@drawable/draw_search_red_bg"
         android:gravity="center"
         android:paddingBottom="4dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:paddingTop="4dp"
         android:singleLine="true"
         android:textSize="14sp"
         tools:text="热词"/>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_hotWord"
+        android:layout_alignRight="@id/tv_hotWord"
+        android:contentDescription="@string/icon"
+        android:src="@drawable/icon_search_hot"/>
+
+</RelativeLayout>

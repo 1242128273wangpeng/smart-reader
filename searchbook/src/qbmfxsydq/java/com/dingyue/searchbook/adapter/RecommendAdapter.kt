@@ -74,7 +74,7 @@ class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
         val tv_book_name: TextView
 
         var index = 0
-        var dataBean:SearchRecommendBook.DataBean? = null
+        var dataBean: SearchRecommendBook.DataBean? = null
 
         init {
 
