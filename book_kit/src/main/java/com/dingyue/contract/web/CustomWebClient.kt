@@ -100,7 +100,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
             if (webView != null) {
                 webView?.stopLoading()
-                webView?.loadUrl("about:blank")
+                webView?.clearView()
                 webView?.visibility = View.GONE
             }
             loadingWebViewError?.invoke()
@@ -120,8 +120,8 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             }
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
             if (webView != null) {
+                webView?.clearView()
                 webView?.stopLoading()
-                webView?.loadUrl("about:blank")
                 webView?.visibility = View.GONE
             }
             loadingWebViewError?.invoke()
@@ -132,8 +132,8 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
         loadingErrorCount = errorCode
         if (webView != null) {
+            webView?.clearView()
             webView?.stopLoading()
-            webView?.loadUrl("about:blank")
         }
         super.onReceivedError(view, errorCode, description, failingUrl)
     }
@@ -142,10 +142,10 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         handler.proceed()
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-        return interceptWebViewRequest(view, request)
-    }
+//    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+//    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+//        return interceptWebViewRequest(view, request)
+//    }
 
     /***
      * 设置加载WebView开始监听

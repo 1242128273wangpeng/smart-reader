@@ -148,7 +148,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
     }
 
     @JavascriptInterface
-    fun loadBookShelfInfo(): String {
+    fun uploadBookShelfList(): String {
         val stringBuilder = StringBuilder()
 
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()

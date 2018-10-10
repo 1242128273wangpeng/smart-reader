@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
@@ -62,6 +63,8 @@ class TabulationActivity : FrameActivity() {
     private var title: String? = null
 
     private var fromPush = false
+
+    private var handler: Handler? = Handler()
 
     private val needInterceptSlide: Boolean
         get() {
@@ -406,9 +409,7 @@ class TabulationActivity : FrameActivity() {
             return
         }
 
-        web_tabulation_content?.post {
-            handleLoadingWebViewData(url)
-        }
+        handler?.post { handleLoadingWebViewData(url) } ?: handleLoadingWebViewData(url)
     }
 
     /***

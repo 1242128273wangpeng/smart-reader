@@ -351,7 +351,20 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 etxt_search_input.setSelection(index.length)
                 showSearchViews()
             }
+        }
 
+        if (search_result_content != null) {
+            val keyword = etxt_search_input?.text.toString()
+            if (keyword.isNotEmpty()) {
+                search_result_content?.post {
+                    try {
+                        search_result_content?.loadUrl("javascript:refreshNew()")
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                        finish()
+                    }
+                }
+            }
         }
     }
 
