@@ -19,6 +19,7 @@ import com.dingyue.searchbook.presenter.HotWordPresenter
 import com.dingyue.searchbook.view.IHotWordView
 import kotlinx.android.synthetic.qbmfxsydq.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
@@ -37,6 +38,8 @@ class HotWordFragment : Fragment(), IHotWordView,
 
     var onResultListener: OnResultListener<String>? = null
 
+    private var loadingPage: LoadingPage? = null
+
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
@@ -45,12 +48,11 @@ class HotWordFragment : Fragment(), IHotWordView,
         return inflater.inflate(R.layout.fragment_hotword, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
-        hotWordPresenter.loadRecommendData()
+        hotWordPresenter.loadRecommendData(true)
 
         txt_change.setOnClickListener {
             hotWordPresenter.loadRecommendData()
@@ -58,9 +60,12 @@ class HotWordFragment : Fragment(), IHotWordView,
     }
 
     override fun showLoading() {
+        hideLoading()
+        loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
     }
 
     override fun hideLoading() {
+        loadingPage?.onSuccessGone()
     }
 
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {
