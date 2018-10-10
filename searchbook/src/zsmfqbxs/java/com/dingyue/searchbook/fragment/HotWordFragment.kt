@@ -49,7 +49,7 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
         super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
-        hotWordPresenter.loadRecommendData(true)
+        hotWordPresenter.loadRecommendData()
 
         tv_change.setOnClickListener {
             hotWordPresenter.loadRecommendData(false)

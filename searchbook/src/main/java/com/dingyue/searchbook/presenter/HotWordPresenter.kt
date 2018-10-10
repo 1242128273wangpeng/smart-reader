@@ -48,9 +48,10 @@ class HotWordPresenter(var hotWordView: IHotWordView?) : BasePresenter, OnKeyWor
     }
 
     /**
+     * isInit = true：默认展示loading框
      * isInit = false：点击换一换时不展示loading框
      */
-    fun loadRecommendData(isInit: Boolean = false) {
+    fun loadRecommendData(isInit: Boolean = true) {
         if (isInit) {
             hotWordView?.showLoading()
         }

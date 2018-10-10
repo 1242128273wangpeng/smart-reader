@@ -52,10 +52,10 @@ class HotWordFragment : Fragment(), IHotWordView,
         super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
-        hotWordPresenter.loadRecommendData(true)
+        hotWordPresenter.loadRecommendData()
 
         txt_change.setOnClickListener {
-            hotWordPresenter.loadRecommendData()
+            hotWordPresenter.loadRecommendData(false)
         }
     }
 
