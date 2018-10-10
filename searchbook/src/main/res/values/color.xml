@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--搜索-->
+    <color name="search_input_text_color">#171717</color>
+    <color name="search_input_text_color_hint">#c4c2c2</color>
+    <color name="search_input_text_color_hint1">#33000000</color>
+    <color name="search_recommend_title">#303135</color>
+    <color name="search_recommend_bg">#DFE5EA</color>
+
+    <!--五步替、智胜电子书替热词-->
+    <color name="search_hot_word_gray">#d7d4d4</color>
+    <color name="search_hot_word_green">#75C945</color>
+    <color name="search_hot_word_orange">#fd9929</color>
+    <color name="search_hot_word_red">#fe290d</color>
+
+    <!--新壳4热词-->
+    <color name="search_hotWord_bg1">#FCF6F6</color>
+    <color name="search_hotWord_bg2">#F7FDF9</color>
+    <color name="search_hotWord_bg3">#FDFCF7</color>
+    <color name="search_hotWord_bg4">#F6FAFC</color>
+    <color name="search_hotWord_bg5">#FDF7FC</color>
+    <color name="search_hotWord_bg6">#F7F7FD</color>
+    <color name="search_divider">#f0f0f0</color>
+
+</resources>

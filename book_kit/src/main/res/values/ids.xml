@@ -6,6 +6,7 @@
     <item type="id" name="icon"/>
     <item type="id" name="line"/>
     <item type="id" name="listView"/>
+    <item type="id" name="gridView"/>
     <item type="id" name="relativeLayout"/>
 
 </resources>

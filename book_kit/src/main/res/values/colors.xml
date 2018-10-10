@@ -270,19 +270,6 @@
     <color name="text_color_light">#FF9097A1</color>
     <color name="text_color_weak">#FFADB4BE</color>
 
-    <!--搜索-->
-    <color name="search_input_text_color">#171717</color>
-    <color name="search_input_text_color_hint">#c4c2c2</color>
-    <color name="search_input_text_color_hint1">#33000000</color>
-    <color name="search_recommend_title">#303135</color>
-    <color name="search_recommend_bg">#DFE5EA</color>
-
-    <color name="search_hot_word_gray">#d7d4d4</color>
-    <color name="search_hot_word_green">#75C945</color>
-    <color name="search_hot_word_orange">#fd9929</color>
-    <color name="search_hot_word_red">#fe290d</color>
-
-
     <!--调试界面下SwitchButton-->
     <color name="debug_switch_button_checked_color">#ACACAC</color>
     <color name="debug_switch_button_unchecked_color">#FFFFFF</color>
