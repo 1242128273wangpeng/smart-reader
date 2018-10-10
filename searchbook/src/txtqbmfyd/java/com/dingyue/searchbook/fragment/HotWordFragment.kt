@@ -14,6 +14,7 @@ import com.dingyue.searchbook.presenter.HotWordPresenter
 import com.dingyue.searchbook.view.IHotWordView
 import kotlinx.android.synthetic.txtqbmfyd.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
 import kotlin.collections.ArrayList
@@ -27,8 +28,9 @@ import kotlin.collections.ArrayList
  */
 class HotWordFragment : Fragment(), IHotWordView {
 
-
     var onResultListener: OnResultListener<String>? = null
+
+    private var loadingPage: LoadingPage? = null
 
     private var hotWordAdapter: HotWordAdapter? = null
 
@@ -50,9 +52,12 @@ class HotWordFragment : Fragment(), IHotWordView {
     }
 
     override fun showLoading() {
+        hideLoading()
+        loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
     }
 
     override fun hideLoading() {
+        loadingPage?.onSuccessGone()
     }
 
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {

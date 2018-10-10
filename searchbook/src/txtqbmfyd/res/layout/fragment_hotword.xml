@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_root"
+    android:id="@+id/search_result_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimen_margin_16"
@@ -16,11 +17,11 @@
         android:textColor="@color/reading_setting_text_info_color"
         android:textSize="14sp"/>
 
-
     <net.lzbook.kit.ui.widget.ScrollForGridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/text"
         android:layout_marginLeft="@dimen/dimen_margin_10"
         android:layout_marginRight="@dimen/dimen_margin_10"
         android:layout_marginTop="@dimen/dimen_margin_14"
@@ -28,6 +29,5 @@
         android:numColumns="2"
         android:scrollbars="none"/>
 
-
-</LinearLayout>
+</RelativeLayout>
 

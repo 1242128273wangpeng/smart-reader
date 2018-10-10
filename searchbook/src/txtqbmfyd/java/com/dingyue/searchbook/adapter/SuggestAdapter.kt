@@ -97,10 +97,9 @@ class SuggestAdapter(private val list: MutableList<Any>?, val editInput: String)
 
         // item中间的gap显示
             ITEM_VIEW_TYPE_GAP ->
-
                 if (suggestView == null) {
                     suggestView = LayoutInflater.from(context).inflate(
-                            R.layout.item_suggest_title, parent, false)
+                            R.layout.item_suggest_gap, parent, false)
                 }
             else -> {
             }
