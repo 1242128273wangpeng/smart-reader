@@ -124,7 +124,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
         })
 
-        jsInterfaceModel.cover =(object : JSInterface.OnEnterCover {
+        jsInterfaceModel.cover = (object : JSInterface.OnEnterCover {
             override fun doCover(host: String?, book_id: String?, book_source_id: String?, name: String, author: String, parameter: String, extra_parameter: String) {
                 val data = HashMap<String, String>()
                 data.put("BOOKID", book_id ?: "")
