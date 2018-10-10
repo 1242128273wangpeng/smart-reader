@@ -244,7 +244,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         val isImportPromptGone = activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT)
                 ?: false
-        val isSharePromptGone = activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+        val isSharePromptGone = !Constants.SHARE_SWITCH_ENABLE || activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
                 ?: false
         if (isImportPromptGone && isSharePromptGone) {
             view_head_menu.visibility = View.GONE

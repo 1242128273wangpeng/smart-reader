@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/ll_container"
         android:layout_width="124dp"
-        android:layout_height="196dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="@drawable/background_body_dialog"
         android:orientation="vertical">
@@ -18,8 +18,7 @@
         <TextView
             android:id="@+id/txt_download_manager"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="49dp"
             android:gravity="center"
             android:text="@string/download_manager"
             android:textColor="#5D646E"
@@ -28,8 +27,7 @@
         <RelativeLayout
             android:id="@+id/rl_local_import"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="49dp">
 
             <View
                 android:id="@+id/view_local_import"
@@ -55,8 +53,7 @@
         <RelativeLayout
             android:id="@+id/rl_share"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="49dp">
 
             <View
                 android:id="@+id/view_share"
@@ -82,8 +79,7 @@
         <TextView
             android:id="@+id/txt_book_sorting"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="49dp"
             android:gravity="center"
             android:paddingBottom="10dp"
             android:text="@string/book_sort"
@@ -93,10 +89,13 @@
     </LinearLayout>
 
     <net.lzbook.kit.book.view.NightShadowView
-        android:layout_width="124dp"
-        android:layout_height="100dp"
-        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ll_container"
+        android:layout_alignTop="@+id/ll_container"
+        android:layout_alignRight="@+id/ll_container"
+        android:layout_alignBottom="@+id/ll_container"
         android:visibility="gone"
         app:cornerRadius="4dp"/>
 
-</FrameLayout>
+</RelativeLayout>

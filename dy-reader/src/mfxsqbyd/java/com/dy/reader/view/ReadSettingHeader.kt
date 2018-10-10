@@ -70,7 +70,7 @@ class ReadSettingHeader : FrameLayout {
             presenter?.back()
         }
 
-        val hasPromptShowed = context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
+        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
 
         if (hasPromptShowed) {
             view_reader_share.visibility = View.INVISIBLE
@@ -78,12 +78,16 @@ class ReadSettingHeader : FrameLayout {
             view_reader_share.visibility = View.VISIBLE
         }
 
-        ibtn_reader_share?.setOnClickListener {
-            context.editShared {
-                putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+        if (Constants.SHARE_SWITCH_ENABLE) {
+            ibtn_reader_share?.setOnClickListener {
+                context.editShared {
+                    putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+                }
+                view_reader_share.visibility = View.INVISIBLE
+                presenter?.showShareDialog()
             }
-            view_reader_share.visibility = View.INVISIBLE
-            presenter?.showShareDialog()
+        } else {
+            ibtn_reader_share.visibility = View.GONE
         }
 
         if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {

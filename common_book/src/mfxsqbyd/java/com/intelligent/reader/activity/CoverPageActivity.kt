@@ -31,6 +31,7 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.AppUtils
@@ -96,6 +97,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
         book_cover_content.scrollChanged = {
             book_cover_bookname.visibility = if (it > AppUtils.dp2px(resources, 178f)) View.VISIBLE else View.GONE
+        }
+
+        if (!Constants.SHARE_SWITCH_ENABLE) {
+            img_app_share.visibility = View.GONE
         }
     }
 
@@ -463,6 +468,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     private fun checkShowCoverPrompt() {
+        if (!Constants.SHARE_SWITCH_ENABLE) return
         val hasShareDialogShowed = getSharedBoolean(SharedPreUtil.COVER_SHARE_PROMPT)
         if (!hasShareDialogShowed) {
             fl_cover_share_prompt.visibility = View.VISIBLE

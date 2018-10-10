@@ -10,6 +10,7 @@ import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
 import com.dingyue.contract.util.SharedPreUtil
 import kotlinx.android.synthetic.mfxsqbyd.popup_head_menu.view.*
+import net.lzbook.kit.constants.Constants
 
 /**
  * Desc 请描述这个文件
@@ -61,14 +62,20 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
             shareListener?.invoke()
         }
 
-        val isSharePromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
-        if (isSharePromptGone) {
-            contentView.view_share.visibility = View.GONE
-        }
         val isLocalImportPromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT)
         if (isLocalImportPromptGone) {
             contentView.view_local_import.visibility = View.GONE
         }
+        if (Constants.SHARE_SWITCH_ENABLE) {
+            val isSharePromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+            if (isSharePromptGone) {
+                contentView.view_share.visibility = View.GONE
+            }
+        } else {
+            contentView.rl_share.visibility = View.GONE
+            contentView.view_share.visibility = View.GONE
+        }
+
 
     }
 

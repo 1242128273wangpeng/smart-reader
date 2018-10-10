@@ -130,6 +130,10 @@ class SharedPreUtil(val type: Int) {
         const val AD_CONTROL_VERSION = "version" //广告动态参数 app版本号
         const val AD_CONTROL_ADTYPE = "advertisingSpace" //广告动态参数  广告位类型  0 福利中心 1书架页1-1  2书架页1-2  3阅读页广告 4全部
 
+        /**
+         * 分享功能开关
+         */
+        const val SHARE_SWITCH = "SHARE_SWITCH" //分享开关
 
         /**
          * webviewFragment
