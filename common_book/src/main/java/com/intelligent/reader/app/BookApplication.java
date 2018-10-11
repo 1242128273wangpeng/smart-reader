@@ -3,7 +3,6 @@ package com.intelligent.reader.app;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -24,9 +23,7 @@ import com.reyun.tracking.sdk.Tracking;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.umeng.commonsdk.UMConfigure;
-import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UTrack;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.ReplaceConstants;
@@ -53,6 +50,7 @@ public class BookApplication extends BaseBookApplication {
     }
 
     private static final String TAG = "BookApplication";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -65,12 +63,14 @@ public class BookApplication extends BaseBookApplication {
 
         if (AppUtils.isMainProcess(this)) {
 
-            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+            MediaConfig.INSTANCE.setAd_userid(
+                    OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
             MediaLifecycle.INSTANCE.onAppCreate(this);
 
 //            //防止定位不回掉导致缺失id
-//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication
+// .getGlobalContext()));
 //            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
@@ -120,12 +120,12 @@ public class BookApplication extends BaseBookApplication {
                     ApplicationInfo appInfo = getPackageManager()
                             .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
 
-                    if (!AppUtils.hasReYun()) {
-                        String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
-                        AppLog.e("reyun", reyunAppKey);
-                        Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
-                                reyunAppKey, "_default_");
-                    }
+//                    if (!AppUtils.hasReYun()) {
+                    String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
+                    AppLog.e("reyun", reyunAppKey);
+                    Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
+                            reyunAppKey, "_default_");
+//                    }
 
                     // 友盟推送初始化
                     if (!AppUtils.hasUPush()) return;
