@@ -50,7 +50,7 @@ class SuggestModel {
         val newBean = SearchCommonBeanYouHua()
         newBean.viewType = 1
         //两个书名
-        if (bean!!.data!!.name != null && bean.data!!.name!!.size > 0) {
+        if (bean!!.data!!.name != null && bean.data!!.name!!.isNotEmpty()) {
             resultSuggest.add(newBean)
 
             for (i in 0 until if (bean.data!!.name!!.size >= 2)
@@ -81,7 +81,7 @@ class SuggestModel {
             resultSuggest.add(newBean)
         }
 
-        if (bean.data!!.authors != null && bean.data!!.authors!!.size > 0) {
+        if (bean.data!!.authors != null && bean.data!!.authors!!.isNotEmpty()) {
 
             //两个作者
             for (i in 0 until if (bean.data!!.authors!!.size >= 2)
@@ -102,7 +102,7 @@ class SuggestModel {
             resultSuggest.add(newBean)
         }
 
-        if (bean.data!!.label != null && bean.data!!.label!!.size > 0) {
+        if (bean.data!!.label != null && bean.data!!.label!!.isNotEmpty()) {
 
             //两个标签
             for (i in 0 until if (bean.data!!.label!!.size >= 2)

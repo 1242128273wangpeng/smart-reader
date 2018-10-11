@@ -44,21 +44,22 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         if (convertView == null) {
             hotView = LayoutInflater.from(context).inflate(R.layout.item_hot_word, parent, false)
             holder = ViewHolder()
-            holder.hotWordText = hotView.findViewById<View>(R.id.tv_hotword) as TextView
-            holder.typeImg = hotView.findViewById<View>(R.id.iv_type) as ImageView
+            holder.hotWordText = hotView.findViewById(R.id.tv_hotword)
+            holder.typeImg = hotView.findViewById(R.id.iv_type)
             hotView.tag = holder
         } else {
             hotView = convertView
             holder = convertView.tag as ViewHolder
         }
+
         val dataBean = list[position]
         holder.hotWordText.text = dataBean.keyword
         if (!TextUtils.isEmpty(dataBean.superscript)) {
             holder.typeImg.visibility = View.VISIBLE
             when (dataBean.superscript) {
-                "热" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_hot)
-                "荐" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_recommend)
-                "新" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_new)
+                "热" -> holder.typeImg.setImageResource(R.drawable.icon_search_hot)
+                "荐" -> holder.typeImg.setImageResource(R.drawable.icon_search_recommend)
+                "新" -> holder.typeImg.setImageResource(R.drawable.icon_search_new)
             }
         } else {
             holder.typeImg.visibility = View.GONE

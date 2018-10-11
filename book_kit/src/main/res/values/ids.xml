@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item type="id" name="night_shadow_view" />
+
+    <item type="id" name="text"/>
+    <item type="id" name="icon"/>
+    <item type="id" name="line"/>
+    <item type="id" name="listView"/>
+    <item type="id" name="gridView"/>
+    <item type="id" name="relativeLayout"/>
+
 </resources>

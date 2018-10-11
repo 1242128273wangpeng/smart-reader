@@ -25,16 +25,24 @@ class HistoryPresenter(private var iHistoryView: IHistoryView?) : BasePresenter 
     }
 
     fun loadHistoryRecord() {
+        iHistoryView?.showLoading()
         iHistoryView?.showHistoryRecord(historyModel?.loadHistoryRecord() ?: arrayListOf())
+        iHistoryView?.hideLoading()
 
     }
 
-    fun removeHistoryRecord(){
+    /**
+     * 清空所有历史记录
+     */
+    fun removeHistoryRecord() {
         historyModel?.clearHistory()
     }
 
-    fun removeHistoryRecord(index:Int){
-            historyModel?.clearHistory(index)
+    /**
+     * 删除某条历史记录
+     */
+    fun removeHistoryRecord(index: Int) {
+        historyModel?.clearHistory(index)
     }
 
 

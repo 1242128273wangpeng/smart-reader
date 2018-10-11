@@ -45,8 +45,6 @@ class SuggestModel {
      */
     fun packageData(bean: SearchAutoCompleteBeanYouHua?): ArrayList<Any> {
         val resultSuggest = ArrayList<Any>()
-//        val view = LayoutInflater.from(mContext).inflate(R.layout.item_suggest_title, null,
-//                false)
         val newBean = SearchCommonBeanYouHua()
         newBean.viewType = 1
         //两个书名

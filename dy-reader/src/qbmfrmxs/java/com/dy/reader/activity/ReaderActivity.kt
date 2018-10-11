@@ -36,9 +36,9 @@ import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
 import kotlinx.android.synthetic.qbmfrmxs.act_reader.*
 import kotlinx.android.synthetic.qbmfrmxs.reader_content.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.activity.base.FrameActivity
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -275,18 +275,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onStop()
         mReadPresenter.onStop()
     }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
-            if(keyCode == KeyEvent.KEYCODE_BACK ){
-                onBackPressed()
-                true
-            }else{
-                super.onKeyDown(keyCode, event)
-            }
-
-
-
-
 
     override fun onBackPressed() {
         if (dl_reader_content.isDrawerOpen(GravityCompat.START)) {
@@ -610,5 +598,33 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     override fun supportSlideBack(): Boolean = false
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (!ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
 }

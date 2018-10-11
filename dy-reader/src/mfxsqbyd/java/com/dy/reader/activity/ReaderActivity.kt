@@ -35,9 +35,9 @@ import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.mfxsqbyd.act_reader.*
 import kotlinx.android.synthetic.mfxsqbyd.reader_content.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.activity.base.FrameActivity
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -51,7 +51,7 @@ import org.greenrobot.eventbus.ThreadMode
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private var mCatalogMarkFragment: CatalogMarkFragment? = null
-    
+
     private val mReadSettingFragment by lazy {
         val readSettingFragment = ReadSettingFragment()
         readSettingFragment.fm = fragmentManager
@@ -141,7 +141,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable  = {
+    val orientaionRunnable = {
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -161,14 +161,14 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onConfigurationChanged(newConfig)
 
         //横向阅读 最后一章到完结页 点击返回 dialog不显示
-        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+        if (!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)) {
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         }
 
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            if(lastOrientation != newConfig.orientation) {
+            if (lastOrientation != newConfig.orientation) {
                 lastOrientation = newConfig.orientation
                 AppHelper.mainHandler.removeCallbacks(orientaionRunnable)
                 AppHelper.mainHandler.postDelayed(orientaionRunnable, 500)
@@ -273,39 +273,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onStop()
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
-            if(keyCode == KeyEvent.KEYCODE_MENU) {
-
-                if (ReaderSettings.instance.isAutoReading) {
-
-                    if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
-                        val fragment = fragmentManager.findFragmentByTag("auto")
-
-                        if (fragment == null) {
-                            AutoReadOptionDialog().show(fragmentManager, "auto")
-                        } else {
-                            if (fragment is AutoReadOptionDialog) {
-                                fragment.dismissAllowingStateLoss()
-                            }
-                        }
-                    }
-                } else {
-                    if (ReaderStatus.isMenuShow) {
-                        mReadSettingFragment.show(false)
-                        ReaderStatus.isMenuShow = false
-                    } else {
-                        mReadSettingFragment.show(true)
-                        ReaderStatus.isMenuShow = true
-                    }
-
-                }
-                true
-
-            } else{
-                super.onKeyDown(keyCode, event)
-            }
-
-
 
     override fun onBackPressed() {
         if (dl_reader_content.isDrawerOpen(GravityCompat.START)) {
@@ -380,7 +347,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 val uri = Uri.parse(url!!.trim { it <= ' ' })
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -586,7 +553,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark,AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -624,5 +591,33 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     override fun supportSlideBack(): Boolean = false
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (!ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
 }

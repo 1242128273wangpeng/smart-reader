@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static android.view.KeyEvent.KEYCODE_BACK;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -32,6 +34,8 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -56,8 +60,6 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,8 +80,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-
-import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity implements GenderHelper.onGenderSelectedListener {
@@ -410,7 +410,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                     MediaType.parse("application/json; charset=utf-8")
                     , gson.toJson(upBooks));
 
-            requestRepositoryFactory.requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
+            requestRepositoryFactory.requestBookShelfUpdate(checkBody,
+                    new RequestSubscriber<Boolean>() {
                         @Override
                         public void requestResult(Boolean result) {
                             if (result) {
@@ -453,7 +454,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             if (bookList != null && bookList.size() > 0) {
 
                 for (Book book : bookList) {
-                    Chapter lastChapter = requestRepositoryFactory.queryLastChapter(book.getBook_id());
+                    Chapter lastChapter = requestRepositoryFactory.queryLastChapter(
+                            book.getBook_id());
 
                     if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
                         book.setLast_chapter(lastChapter);
@@ -476,16 +478,14 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                 final GenderHelper genderHelper = new GenderHelper(view);
                 genderHelper.setOnGenderSelectedListener(SplashActivity.this);
                 final TextView tvStepIn = view.findViewById(R.id.tv_step_in);
-                tvStepIn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tvStepIn.setText("努力加载中...");
-                        tvStepIn.setClickable(false);
-                        genderHelper.jumpAnimation();
-                        mStepInFlag = true;
-                        Constants.SGENDER = Constants.SDEFAULT;
-                        initData();
-                    }
+                tvStepIn.setOnClickListener(v -> {
+                    tvStepIn.setText("努力加载中...");
+                    tvStepIn.setClickable(false);
+                    genderHelper.jumpAnimation();
+                    mStepInFlag = true;
+                    Constants.SGENDER = Constants.SDEFAULT;
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SGENDER);
+                    initData();
                 });
             } else {
                 mStepInFlag = true;
@@ -644,7 +644,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             }
 
 
-            boolean b = SPUtils.INSTANCE.getDefaultSharedBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
+            boolean b = SPUtils.INSTANCE.getDefaultSharedBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID,
+                    false);
 
             if (!b) {
                 List<Book> bookOnlineList = requestRepositoryFactory.loadBooks();
@@ -652,10 +653,12 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                     for (int i = 0; i < bookOnlineList.size(); i++) {
                         Book iBook = bookOnlineList.get(i);
                         if (!TextUtils.isEmpty(iBook.getBook_id())) {
-                            Chapter lastChapter = requestRepositoryFactory.queryLastChapter(iBook.getBook_id());
+                            Chapter lastChapter = requestRepositoryFactory.queryLastChapter(
+                                    iBook.getBook_id());
                             if (lastChapter != null) {
                                 lastChapter.setBook_source_id(iBook.getBook_source_id());
-                                requestRepositoryFactory.updateChapterBySequence(iBook.getBook_id(), lastChapter);
+                                requestRepositoryFactory.updateChapterBySequence(iBook.getBook_id(),
+                                        lastChapter);
                             }
                         }
                     }
@@ -683,7 +686,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                 // 统计阅读章节数
                 if (Constants.readedCount == 0) {
                     Constants.readedCount = SPUtils.INSTANCE.getDefaultSharedInt(
-                            SPKey.READED_CONT,0);
+                            SPKey.READED_CONT, 0);
                 }
 
                 //
@@ -749,23 +752,23 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
         //判断是否展示广告
 //        if (sharedPreUtil != null) {
-            long limited_time = SPUtils.INSTANCE.getDefaultSharedLong(
-                    SPKey.AD_LIMIT_TIME_DAY, 0L);
-            if (limited_time == 0) {
-                limited_time = System.currentTimeMillis();
-                try {
-                    SPUtils.INSTANCE.putDefaultSharedLong(SPKey.AD_LIMIT_TIME_DAY,
-                            limited_time);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        long limited_time = SPUtils.INSTANCE.getDefaultSharedLong(
+                SPKey.AD_LIMIT_TIME_DAY, 0L);
+        if (limited_time == 0) {
+            limited_time = System.currentTimeMillis();
+            try {
+                SPUtils.INSTANCE.putDefaultSharedLong(SPKey.AD_LIMIT_TIME_DAY,
+                        limited_time);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            AppLog.e(TAG, "Limited_Time : " + limited_time);
-            AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
-            AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
+        }
+        AppLog.e(TAG, "Limited_Time : " + limited_time);
+        AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
+        AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
-            int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
-            boolean init_ad = false;
+        int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
+        boolean init_ad = false;
 
             /*
              * FIXME  user_index
@@ -773,50 +776,50 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
              * 1：新用户：两天内无广告
              * 2：老用户：显示广告
              */
-            switch (user_index) {
-                case 0:
-                    if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
-                            false)) {
-                        SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 1);
-                        init_ad = true;
-                    } else {
-                        init_ad = false;
-                        //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                        Constants.isHideAD = !Constants.new_app_ad_switch;
-                    }
-                    break;
-                case 1:
-                    if (SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
-                            false)) {
-                        init_ad = true;
-                    }
-                    break;
-                case 2:
+        switch (user_index) {
+            case 0:
+                if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
+                        false)) {
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 1);
+                    init_ad = true;
+                } else {
                     init_ad = false;
                     //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
                     Constants.isHideAD = !Constants.new_app_ad_switch;
-                    break;
+                }
+                break;
+            case 1:
+                if (SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
+                        false)) {
+                    init_ad = true;
+                }
+                break;
+            case 2:
+                init_ad = false;
+                //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+                Constants.isHideAD = !Constants.new_app_ad_switch;
+                break;
+        }
+
+        if (init_ad) {
+            int ad_limit_time_day = SPUtils.INSTANCE.getDefaultSharedInt(
+                    SPKey.USER_NEW_AD_LIMIT_DAY, 0);
+            if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
+                ad_limit_time_day = Constants.ad_limit_time_day;
+                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_AD_LIMIT_DAY,
+                        ad_limit_time_day);
             }
 
-            if (init_ad) {
-                int ad_limit_time_day = SPUtils.INSTANCE.getDefaultSharedInt(
-                        SPKey.USER_NEW_AD_LIMIT_DAY, 0);
-                if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
-                    ad_limit_time_day = Constants.ad_limit_time_day;
-                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_AD_LIMIT_DAY,
-                            ad_limit_time_day);
-                }
-
-                if (limited_time + (ad_limit_time_day * (Constants.DEVELOPER_MODE
-                        ? Constants.read_rest_time : Constants.one_day_time)) > System
-                        .currentTimeMillis()) {
-                    Constants.isHideAD = true;
-                } else {
-                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
-                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                    Constants.isHideAD = !Constants.new_app_ad_switch;
-                }
+            if (limited_time + (ad_limit_time_day * (Constants.DEVELOPER_MODE
+                    ? Constants.read_rest_time : Constants.one_day_time)) > System
+                    .currentTimeMillis()) {
+                Constants.isHideAD = true;
+            } else {
+                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
+                //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+                Constants.isHideAD = !Constants.new_app_ad_switch;
             }
+        }
 //        } else {
 //            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
 //            Constants.isHideAD = !Constants.new_app_ad_switch;

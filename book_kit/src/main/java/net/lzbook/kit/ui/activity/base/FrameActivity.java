@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
@@ -707,4 +708,13 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public Lifecycle getLifecycle() {
         return lifecycleRegistry;
     }
+
+    /**
+     * 隐藏输入法键盘
+     */
+    public void hideKeyboard() {
+        InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        im.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
 }

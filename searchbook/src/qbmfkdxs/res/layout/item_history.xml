@@ -1,34 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/draw_item_press_bg"
-                android:orientation="horizontal">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55.5dp"
+    android:background="@drawable/draw_item_press_bg">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:src="@drawable/search_his_time_mark"/>
 
     <TextView
         android:id="@+id/history_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dimen_margin_16"
-        android:layout_marginStart="@dimen/dimen_margin_16"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@+id/history_clear"
+        android:layout_toRightOf="@+id/icon"
         android:ellipsize="end"
-        android:maxEms="15"
-        android:singleLine="true"
-        android:text="@string/icon"
-        android:textColor="#212832"
-        android:textSize="13sp"/>
+        android:maxLines="1"
+        android:textColor="@color/color_black_8C000000"
+        android:textSize="14sp"/>
 
     <ImageView
         android:id="@+id/history_clear"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:contentDescription="@string/icon"
-        android:padding="@dimen/dimen_margin_16"
-        android:scaleType="center"
-        android:src="@drawable/icon_search_delete"/>
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/search_his_clear"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"
+        android:background="@color/color_black_0D000000"/>
 </RelativeLayout>

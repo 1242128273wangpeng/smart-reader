@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import android.widget.TextView
 import com.dingyue.searchbook.R
 import kotlinx.android.synthetic.txtqbmfyd.item_history.view.*
@@ -39,7 +38,6 @@ class HistoryAdapter(var context: Context?,
             holder = ViewHolder()
             historyView = LayoutInflater.from(context).inflate(R.layout.item_history, parent, false)
             holder.historyWordText = historyView.history_word
-            holder.historyClearImg = historyView.history_clear
             historyView.tag = holder
         } else {
             historyView = convertView
@@ -52,16 +50,11 @@ class HistoryAdapter(var context: Context?,
             onHistoryItemClickListener?.onHistoryItemClickListener(position, historyList)
         }
 
-        holder.historyClearImg.setOnClickListener {
-            onHistoryItemClickListener?.onHistoryIndex(position)
-        }
-
         return historyView
     }
 
     class ViewHolder {
         lateinit var historyWordText: TextView
-        lateinit var historyClearImg: ImageView
 
     }
 
@@ -70,7 +63,6 @@ class HistoryAdapter(var context: Context?,
      */
     interface OnHistoryItemClickListener {
         fun onHistoryItemClickListener(position: Int, historyList: List<String>?)
-        fun onHistoryIndex(index:Int)
     }
 
 }

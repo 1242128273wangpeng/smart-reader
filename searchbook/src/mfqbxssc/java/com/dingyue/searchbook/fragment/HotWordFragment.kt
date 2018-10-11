@@ -16,6 +16,7 @@ import com.dingyue.searchbook.presenter.HotWordPresenter
 import com.dingyue.searchbook.view.IHotWordView
 import kotlinx.android.synthetic.mfqbxssc.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
 import java.util.HashMap
@@ -30,31 +31,37 @@ import kotlin.collections.ArrayList
  */
 class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
 
-    private var mView: View? = null
+    var onResultListener: OnResultListener<String>? = null
+
+    private var loadingPage: LoadingPage? = null
+
+    private var hotWordAdapter: HotWordAdapter? = null
+
+    private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
+    private var recommendWantList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
 
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
     }
 
-    var onResultListener:OnResultListener<String>? = null
-
-    private var hotWordAdapter: HotWordAdapter? = null
-
-    private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_hotword, container, false)
+        return inflater.inflate(R.layout.fragment_hotword, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         hotWordPresenter.onCreate()
         hotWordPresenter.loadHotWordData()
         hotWordPresenter.loadRecommendData()
-        return mView
     }
 
-
     override fun showLoading() {
+        hideLoading()
+        loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
     }
 
     override fun hideLoading() {
+        loadingPage?.onSuccessGone()
     }
 
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {
@@ -68,14 +75,20 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
     override fun showRecommendList(recommendList: ArrayList<SearchRecommendBook.DataBean>) {
 
         recommendFreeList.clear()
+        recommendWantList.clear()
         recommendList.forEachIndexed { index, dataBean ->
             if (index < 8) {
                 recommendFreeList.add(dataBean)
+            } else if (index < 16) {
+                recommendWantList.add(dataBean)
             }
         }
 
-        list_recommend.layoutManager = GridLayoutManager(context, 4)
-        list_recommend.adapter = RecommendAdapter(recommendFreeList, this@HotWordFragment)
+        list_recommend1.layoutManager = GridLayoutManager(context, 4)
+        list_recommend1.adapter = RecommendAdapter(recommendFreeList, this@HotWordFragment)
+
+        list_recommend2.layoutManager = GridLayoutManager(context, 4)
+        list_recommend2.adapter = RecommendAdapter(recommendWantList, this@HotWordFragment)
 
     }
 
@@ -91,7 +104,7 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
             data.put("type", bean.superscript ?: "")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
             hotWordPresenter.onKeyWord(bean.keyword)
-            onResultListener?.onSuccess(bean.keyword?:"")
+            onResultListener?.onSuccess(bean.keyword ?: "")
         }
     }
 

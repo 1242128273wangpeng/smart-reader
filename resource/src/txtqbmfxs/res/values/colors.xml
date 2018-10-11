@@ -3,6 +3,11 @@
 
     <color name="accent">#87af4c</color>
     <color name="primary">#87af4c</color>
+    <color name="primary_alpha">#4c87af4c</color>
 
+    <color name="search_recommend_author_color">#949494</color>
+    <color name="search_recommend_finish_color">#DD400D</color>
+    <color name="search_recommend_lianzai_color">#DD9A0D</color>
+    <color name="search_recommend_score_color">#B8B8B8</color>
 
 </resources>

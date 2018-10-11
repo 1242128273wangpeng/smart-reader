@@ -10,8 +10,9 @@ import com.dingyue.searchbook.adapter.HistoryAdapter
 import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.presenter.HistoryPresenter
 import com.dingyue.searchbook.view.IHistoryView
-import kotlinx.android.synthetic.zsmfqbxs.fragment_history.*
+import kotlinx.android.synthetic.zsmfqbxs.fragment_listview.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 
 /**
@@ -22,35 +23,37 @@ import net.lzbook.kit.utils.StatServiceUtils
  */
 class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemClickListener {
 
-    private var mView: View? = null
+    private var loadingPage: LoadingPage? = null
 
     private var historyAdapter: HistoryAdapter? = null
 
     var onKeyWordListener: OnKeyWordListener? = null
 
-    private val historyPresenter: HistoryPresenter by lazy {
+    val historyPresenter: HistoryPresenter by lazy {
         HistoryPresenter(this)
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_history, container, false)
+        return inflater.inflate(R.layout.fragment_listview, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         historyPresenter.onCreate()
-        return mView
     }
 
     override fun showLoading() {
-
+        loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
     }
 
     override fun hideLoading() {
-
+        loadingPage?.onSuccessGone()
     }
 
 
     override fun showHistoryRecord(historyList: ArrayList<String>) {
         historyAdapter = HistoryAdapter(requireContext(), historyList, this@HistoryFragment)
-        list_history.adapter = historyAdapter
+        listView.adapter = historyAdapter
     }
 
     override fun onHistoryItemClickListener(position: Int, historyList: List<String>?) {
@@ -65,16 +68,11 @@ class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemCl
 
             onKeyWordListener?.onKeyWord(history)
 
-//            if (mSearchEditText != null) {
-//                mSearchEditText.setText(history)
-//                isFocus = false
-//                startSearch(history, "0", 0)
-
             val data = HashMap<String, String>()
             data.put("keyword", history)
             data.put("rank", position.toString() + "")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARLIST, data)
-//            }
+
         }
     }
 
