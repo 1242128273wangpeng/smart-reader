@@ -1,12 +1,12 @@
 package com.dingyue.searchbook.adapter
 
+import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.SearchCommonBeanYouHua
@@ -20,14 +20,8 @@ import net.lzbook.kit.utils.AppUtils
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/9/25 0025 17:18
  */
-class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : BaseAdapter() {
+class SuggestAdapter(private val list: MutableList<Any>?, val editInput: String) : BaseAdapter() {
 
-    private var editInput: String? = ""
-
-    init {
-        this.editInput = editInput
-
-    }
 
     override fun getViewTypeCount(): Int {
         return ITEM_VIEW_TYPE_COUNT
@@ -46,13 +40,6 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
         }
 
         return ITEM_VIEW_TYPE_GAP
-//        list[position]
-//        return if (list!![position] is SearchCommonBeanYouHua){
-//            ITEM_VIEW_TYPE_DATA
-//        }
-//
-//        else
-//            ITEM_VIEW_TYPE_GAP
     }
 
     override fun getCount(): Int {
@@ -74,7 +61,7 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
 
         //判断suggestView的type，通过type判断item是显示数据还是Title
         when (getItemViewType(position)) {
-            //数据填充item
+        //数据填充item
             ITEM_VIEW_TYPE_DATA -> {
 
                 if (suggestView == null) {
@@ -82,12 +69,10 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
                     suggestView = LayoutInflater.from(context).inflate(R.layout.item_suggest, parent, false)
 
                     holder = ViewHolder()
-
-                    holder.iv_icon = suggestView.findViewById(R.id.iv_icon)
-                    holder.rl_book = suggestView.findViewById(R.id.rl_book)
-                    holder.tv_book_name = suggestView.findViewById(R.id.tv_book_name)
-                    holder.tv_author = suggestView.findViewById(R.id.tv_author)
-                    holder.tv_search_item = suggestView.findViewById(R.id.tv_search_item)
+                    holder.img_book_cover = suggestView.findViewById(R.id.img_book_cover)
+                    holder.txt_name = suggestView.findViewById(R.id.txt_name)
+                    holder.img_type = suggestView.findViewById(R.id.img_type)
+                    holder.img_shadow = suggestView.findViewById(R.id.img_shadow)
 
                     suggestView.tag = holder
                 } else {
@@ -97,67 +82,48 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
 
                 val bean = list!![position] as SearchCommonBeanYouHua
 
-                var content = bean.suggest
-                var finalInput = ""
-
-                if (editInput != null) {
-                    finalInput = AppUtils.deleteAllIllegalChar(editInput)
-                }
-                content = content.replace(finalInput.toRegex(), "<font color='#FFBA01'>$finalInput</font>")
-
-
+                //如果不是以上三种的话，说明返回的数据为书籍名，则通过url加载后台返回的图片URL地址（加上非空判断）
                 when (bean.wordtype) {
                     "author" -> {
-                        holder.rl_book.visibility = View.GONE
-                        holder.tv_search_item.visibility = View.VISIBLE
-                        holder.tv_search_item.text = Html.fromHtml(content)
+                        holder.img_shadow.visibility = View.GONE
+                        holder.img_book_cover.setImageResource(R.drawable.search_label_author)
+                        holder.img_type.setImageResource(R.drawable.search_writer)
+
                     }
                     "label" -> {
-                        holder.rl_book.visibility = View.GONE
-                        holder.tv_search_item.visibility = View.VISIBLE
-                        holder.tv_search_item.text = Html.fromHtml(content)
+                        holder.img_shadow.visibility = View.GONE
+                        holder.img_book_cover.setImageResource(R.drawable.search_label_icon)
+                        holder.img_type.setImageResource(R.drawable.search_label)
+
                     }
                     "name" -> {
-                        holder.rl_book.visibility = View.VISIBLE
-                        holder.tv_search_item.visibility = View.GONE
-                        holder.tv_book_name.text = Html.fromHtml(content)
-                        holder.tv_author.text = bean.author
+                        holder.img_shadow.visibility = View.VISIBLE
                         //如果不是以上三种的话，说明返回的数据为书籍名，则通过url加载后台返回的图片URL地址（加上非空判断）
-                        if (bean.image_url != null) {
-                            Glide.with(context).load(bean.image_url).placeholder(
-                                    R.drawable.bg_book_cover_default).error(
-                                    R.drawable.bg_book_cover_default).into(
-                                    holder.iv_icon)
-                        }
+                        Glide.with(context).load(bean.image_url).placeholder(
+                                R.drawable.bg_book_cover_default).error(
+                                R.drawable.bg_book_cover_default).into(
+                                holder.img_book_cover)
+                        holder.img_type.setImageResource(R.drawable.search_book_icon)
                     }
-
-
                 }
+
+                // 动态修改关键字颜色
+                var content = bean.suggest
+                val finalInput = AppUtils.deleteAllIllegalChar(editInput)
+                val color = ContextCompat.getColor(context, R.color.primary)
+                val colorTag = String.format("<font color='%s'>", AppUtils.colorHoHex(color))
+                content = content.replace(finalInput.toRegex(), colorTag + finalInput + "</font>")
+                holder.txt_name.text = Html.fromHtml(content)
+
             }
 
 
-            // item中间的gap显示
+        // item中间的gap显示
             ITEM_VIEW_TYPE_GAP ->
 
                 if (suggestView == null) {
                     suggestView = LayoutInflater.from(context).inflate(
                             R.layout.item_suggest_title, parent, false)
-
-                    val descText = suggestView.findViewById<TextView>(R.id.tv_desc)
-
-                    if (position + 1 < list!!.size) {
-                        val type = (list[position + 1] as SearchCommonBeanYouHua).wordtype
-
-                        descText.text = when (type) {
-                            "name" -> "图书"
-                            "label" -> "标签"
-                            "author" -> "作者"
-                            else -> {
-                                "图书"
-                            }
-                        }
-                    }
-
                 }
             else -> {
             }
@@ -173,16 +139,11 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
     }
 
     private class ViewHolder {
-        lateinit var rl_book: RelativeLayout
-        lateinit var iv_icon: ImageView
-        lateinit var tv_search_item: TextView
-        lateinit var iv_type: ImageView
-        lateinit var tv_book_name: TextView
-        lateinit var tv_author: TextView
-    }
 
-    fun setEditInput(editInput: String) {
-        this.editInput = editInput
+        lateinit var img_book_cover: ImageView
+        lateinit var txt_name: TextView
+        lateinit var img_type: ImageView
+        lateinit var img_shadow: ImageView
     }
 
     companion object {
