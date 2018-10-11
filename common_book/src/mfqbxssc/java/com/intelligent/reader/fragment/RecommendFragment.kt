@@ -82,7 +82,7 @@ class RecommendFragment : Fragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                when (position) {
+                when(position) {
                     0 -> {
 
                     }

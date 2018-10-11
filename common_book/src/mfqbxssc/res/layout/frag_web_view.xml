@@ -15,80 +15,33 @@
         android:background="#FFFFFF"
         android:fitsSystemWindows="true">
 
-        <RelativeLayout
-            android:id="@+id/rl_web_view_header_recommend"
-            android:layout_width="match_parent"
-            android:layout_height="29dp"
+        <TextView
+            android:id="@+id/txt_web_view_header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/search_margin"
-            android:layout_marginRight="@dimen/search_margin"
-            android:background="@drawable/bookshelf_title_shaper"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:paddingLeft="10dp"
-            android:visibility="visible">
+            android:gravity="center_vertical"
+            android:text="榜单"
+            android:textColor="@color/setting_login_font_color"
+            android:textSize="18sp"
+            android:visibility="visible"/>
 
-            <ImageView
-                android:id="@+id/img_web_view_header_search"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:contentDescription="@string/module_name"
-                android:layout_centerVertical="true"
-                android:background="@mipmap/bookshelf_icon_search_copy"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="6dp"
-                android:layout_toRightOf="@id/img_web_view_header_search"
-                android:text="搜小说"
-                android:textColor="@color/home_title_search_text"
-                android:textSize="13sp"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_web_view_header_other"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/txt_web_view_header_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:text="榜单"
-                android:textColor="@color/setting_login_font_color"
-                android:textSize="18sp"
-                android:visibility="visible"/>
-
-            <ImageView
-                android:id="@+id/img_web_view_header_other_search"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="18dp"
-                android:background="@drawable/home_head_search_selector"
-                android:scaleType="fitXY"/>
-
-        </RelativeLayout>
-
+        <ImageView
+            android:id="@+id/img_web_view_header_search"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="18dp"
+            android:background="@drawable/home_head_search_selector"
+            android:scaleType="fitXY"/>
     </RelativeLayout>
 
-    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-        android:id="@+id/srl_web_view_refresh"
+    <net.lzbook.kit.utils.CustomWebView
+        android:id="@+id/web_view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_web_view_header">
-
-        <WebView
-            android:id="@+id/web_view_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"/>
-    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+        android:layout_below="@id/rl_web_view_header"
+        android:scrollbars="none"/>
 </RelativeLayout>
