@@ -1,6 +1,5 @@
 package com.dingyue.searchbook.adapter
 
-import android.graphics.Color
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -44,34 +43,32 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         if (convertView == null) {
             hotView = LayoutInflater.from(context).inflate(R.layout.item_hot_word, parent, false)
             holder = ViewHolder()
-            holder.hotWordText = hotView.findViewById<View>(R.id.tv_hotword) as TextView
-            holder.typeImg = hotView.findViewById<View>(R.id.iv_type) as ImageView
+            holder.tv_hotword = hotView.findViewById<View>(R.id.tv_hotword) as TextView
+            holder.iv_type = hotView.findViewById<View>(R.id.iv_type) as ImageView
             hotView.tag = holder
         } else {
             hotView = convertView
             holder = convertView.tag as ViewHolder
         }
         val dataBean = list[position]
-        holder.hotWordText.text = dataBean.keyword
+        holder.tv_hotword.text = dataBean.keyword
         if (!TextUtils.isEmpty(dataBean.superscript)) {
-            holder.typeImg.visibility = View.VISIBLE
+            holder.iv_type.visibility = View.VISIBLE
             when (dataBean.superscript) {
-                "热" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_hot)
-                "荐" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_recommend)
-                "新" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_new)
+                "热" -> holder.iv_type.setImageResource(R.drawable.icon_hot_word_hot)
+                "荐" -> holder.iv_type.setImageResource(R.drawable.icon_hot_word_recommend)
+                "新" -> holder.iv_type.setImageResource(R.drawable.icon_hot_word_new)
             }
         } else {
-            holder.typeImg.visibility = View.GONE
+            holder.iv_type.visibility = View.GONE
         }
-        if (!TextUtils.isEmpty(dataBean.color)) {
-            holder.hotWordText.setTextColor(Color.parseColor(dataBean.color))
-        }
+
         return hotView
     }
 
     private inner class ViewHolder {
-        lateinit var hotWordText: TextView
-        lateinit var typeImg: ImageView
+        lateinit var tv_hotword: TextView
+        lateinit var iv_type: ImageView
     }
 
 }
