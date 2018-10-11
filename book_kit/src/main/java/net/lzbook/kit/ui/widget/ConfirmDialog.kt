@@ -27,7 +27,10 @@ class ConfirmDialog(val activity: Activity, val gravity: Int = Gravity.BOTTOM) {
         layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
         layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
         window.attributes = layoutParams
-        window.setWindowAnimations(R.style.BottomPopupDialog)
+
+        if (gravity == Gravity.BOTTOM) {
+            window.setWindowAnimations(R.style.BottomPopupDialog)
+        }
         dialog.rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
             dialog.nightShadowView.layoutParams.height = dialog.rootLayout.height
             dialog.rootLayout.requestLayout()

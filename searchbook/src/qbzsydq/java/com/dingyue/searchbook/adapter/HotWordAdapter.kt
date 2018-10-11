@@ -1,15 +1,14 @@
 package com.dingyue.searchbook.adapter
 
-import android.graphics.Color
-import android.text.TextUtils
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import android.widget.TextView
 import com.ding.basic.bean.HotWordBean
 import com.dingyue.searchbook.R
+import java.util.*
 
 
 /**
@@ -20,12 +19,20 @@ import com.dingyue.searchbook.R
  */
 class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
 
+    private val random = Random() //生成不同颜色背景的随机数
+    private var oldType = -1 // 避免两个连续标签显示一样的背景
+
     override fun getCount(): Int {
         return if (list.isNotEmpty()) {
-            if (list.size >= 5) 6 else list.size
+            if (list.size >= 9) {
+                9
+            } else {
+                list.size
+            }
         } else {
             0
         }
+
     }
 
     override fun getItem(position: Int): Any? {
@@ -44,8 +51,7 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         if (convertView == null) {
             hotView = LayoutInflater.from(context).inflate(R.layout.item_hot_word, parent, false)
             holder = ViewHolder()
-            holder.hotWordText = hotView.findViewById<View>(R.id.tv_hotword) as TextView
-            holder.typeImg = hotView.findViewById<View>(R.id.iv_type) as ImageView
+            holder.hotWordText = hotView.findViewById(R.id.tv_hotword)
             hotView.tag = holder
         } else {
             hotView = convertView
@@ -53,25 +59,36 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         }
         val dataBean = list[position]
         holder.hotWordText.text = dataBean.keyword
-        if (!TextUtils.isEmpty(dataBean.superscript)) {
-            holder.typeImg.visibility = View.VISIBLE
-            when (dataBean.superscript) {
-                "热" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_hot)
-                "荐" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_recommend)
-                "新" -> holder.typeImg.setImageResource(R.drawable.icon_hot_word_new)
+
+        var currType = random.nextInt(7)
+        while (oldType == currType) {
+            currType = random.nextInt(7)
+        }
+        oldType = currType
+        when (currType) {
+            0, 1, 2, 3 -> {
+                holder.hotWordText.setBackgroundResource(R.drawable.draw_search_gray_bg)
+                holder.hotWordText.setTextColor(ContextCompat.getColor(context, R.color.search_hot_word_black))
             }
-        } else {
-            holder.typeImg.visibility = View.GONE
+            4 -> {
+                holder.hotWordText.setBackgroundResource(R.drawable.draw_search_blue_bg)
+                holder.hotWordText.setTextColor(ContextCompat.getColor(context, R.color.search_hot_word_blue))
+            }
+            5 -> {
+                holder.hotWordText.setBackgroundResource(R.drawable.draw_search_orange_bg)
+                holder.hotWordText.setTextColor(ContextCompat.getColor(context, R.color.search_hot_word_orange))
+            }
+            6 -> {
+                holder.hotWordText.setBackgroundResource(R.drawable.draw_search_red_bg)
+                holder.hotWordText.setTextColor(ContextCompat.getColor(context, R.color.search_hot_word_red))
+            }
         }
-        if (!TextUtils.isEmpty(dataBean.color)) {
-            holder.hotWordText.setTextColor(Color.parseColor(dataBean.color))
-        }
+
         return hotView
     }
 
     private inner class ViewHolder {
         lateinit var hotWordText: TextView
-        lateinit var typeImg: ImageView
     }
 
 }

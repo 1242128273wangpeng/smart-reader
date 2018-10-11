@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="300dp"
-        android:layout_height="160dp"
+        android:layout_height="194dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/draw_dialog_bg">
 
@@ -21,6 +21,14 @@
             android:text="@string/prompt"
             android:textStyle="bold"/>
 
+        <View
+            android:id="@id/line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@id/txt_dialog_title"
+            android:background="#F1F1F1"/>
+
+
         <LinearLayout
             android:id="@+id/ll_btn"
             android:layout_width="match_parent"
@@ -30,7 +38,7 @@
 
             <Button
                 android:id="@+id/btn_cancel"
-                style="@style/style_text_great_plain"
+                style="@style/style_text_normal_plain"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -48,6 +56,7 @@
 
             <Button
                 android:id="@+id/btn_confirm"
+                style="@style/style_text_normal_plain"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -55,8 +64,7 @@
                 android:gravity="center"
                 android:minWidth="24dp"
                 android:text="@string/confirm"
-                android:textColor="@color/primary"
-                android:textSize="15sp"/>
+                android:textColor="@color/primary"/>
         </LinearLayout>
 
         <TextView
@@ -84,9 +92,9 @@
     <net.lzbook.kit.ui.widget.NightShadowView
         android:id="@+id/nightShadowView"
         android:layout_width="300dp"
-        android:layout_height="160dp"
+        android:layout_height="194dp"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
-        app:cornerRadius="8dp"/>
+        app:cornerRadius="4dp"/>
 
 </FrameLayout>
