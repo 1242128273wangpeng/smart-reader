@@ -250,6 +250,12 @@ class SharedPreUtil(val type: Int) {
 
         const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
 
+
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
     }
 
 
