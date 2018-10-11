@@ -50,7 +50,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
     companion object {
         private val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_ONLINE_CONFIG)
-        private val staticResourceRule = sharedPreUtil.getString(SharedPreUtil.AD_LIMIT_TIME_DAY)
+        private val staticResourceRule = sharedPreUtil.getString(SharedPreUtil.DY_STATIC_RESOURCE_RULE)
 
         val interceptHostList = staticResourceRule.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     }
