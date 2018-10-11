@@ -282,6 +282,15 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         if (customWebClient != null) {
             customWebClient?.initParameter()
         }
+
+        search_result_content.clearView()
+
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+        } else {
+            loadingPage?.visibility = View.VISIBLE
+        }
+
         Logger.e("LoadingData ==> " + url)
         if (!TextUtils.isEmpty(url) && search_result_content != null) {
             try {
