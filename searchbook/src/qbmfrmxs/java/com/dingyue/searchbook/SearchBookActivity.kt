@@ -68,7 +68,14 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR)
             }
             search_result_focus.id -> {
-                showHistoryFragment()
+                search_result_focus.visibility = View.GONE
+                search_result_default.visibility = View.VISIBLE
+
+                search_result_input.requestFocus()
+                showSoftKeyboard(search_result_input)
+
+                showFragment(historyFragment)
+                historyFragment.loadHistoryRecord()
             }
             search_result_btn.id -> {
                 val keyword = search_result_input.text.toString()
@@ -80,19 +87,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 }
             }
         }
-    }
-
-    private fun showHistoryFragment() {
-
-        search_result_focus.visibility = View.GONE
-        search_result_default.visibility = View.VISIBLE
-
-        search_result_input.requestFocus()
-        showSoftKeyboard(search_result_input)
-
-        showFragment(historyFragment)
-        historyFragment.loadHistoryRecord()
-
     }
 
     override fun onKeyWord(keyword: String?) {
@@ -112,15 +106,18 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
             supportFragmentManager.beginTransaction().add(R.id.search_result_hint, searchResultFragment).commit()
             supportFragmentManager.beginTransaction().add(R.id.search_result_hint, historyFragment).hide(historyFragment).commit()
-            search_result_btn.performClick()
-
+            search_result_btn.postDelayed({
+                searchResultFragment.loadKeyWord(keyword)
+            }, 100)
         } else {
             lastFragment = historyFragment
 
             supportFragmentManager.beginTransaction().add(R.id.search_result_hint, historyFragment).commit()
             supportFragmentManager.beginTransaction().add(R.id.search_result_hint, searchResultFragment).hide(searchResultFragment).commit()
 
-            search_result_focus.performClick()
+            search_result_focus.postDelayed({
+                search_result_focus.performClick()
+            }, 100)
 
         }
 
