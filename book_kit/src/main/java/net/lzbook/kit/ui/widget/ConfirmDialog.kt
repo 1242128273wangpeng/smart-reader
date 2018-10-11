@@ -13,9 +13,9 @@ import net.lzbook.kit.R
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/3/1 0002 15:09
  */
-class ConfirmDialog(val activity: Activity) {
+class ConfirmDialog(val activity: Activity, val gravity: Int = Gravity.BOTTOM) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_confirm_layout, Gravity.BOTTOM)
+    private val dialog = MyDialog(activity, R.layout.dialog_confirm_layout, gravity)
 
     private var confirmListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
