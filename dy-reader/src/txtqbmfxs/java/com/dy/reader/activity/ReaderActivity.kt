@@ -616,4 +616,32 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun supportSlideBack(): Boolean = false
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (!ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
 }

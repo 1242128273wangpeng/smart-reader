@@ -70,7 +70,7 @@ class HistoryAdapter(var context: Context?,
      */
     interface OnHistoryItemClickListener {
         fun onHistoryItemClickListener(position: Int, historyList: List<String>?)
-        fun onHistoryIndex(index:Int)
+        fun onHistoryIndex(index: Int)
     }
 
 }

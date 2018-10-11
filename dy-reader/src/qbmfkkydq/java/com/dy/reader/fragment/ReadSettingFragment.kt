@@ -91,13 +91,19 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
         }
         dialog.setOnKeyListener { _, keyCode, event ->
 
-            if (KeyEvent.KEYCODE_BACK == keyCode) {
-                if (event.action == MotionEvent.ACTION_UP) {
-                    activity?.onBackPressed()
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> {
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        activity?.onBackPressed()
+                    }
+                    true
                 }
-                true
-            } else {
-                false
+                KeyEvent.KEYCODE_MENU -> {
+                    show(false)
+                    ReaderStatus.isMenuShow = false
+                    true
+                }
+                else -> false
             }
         }
 

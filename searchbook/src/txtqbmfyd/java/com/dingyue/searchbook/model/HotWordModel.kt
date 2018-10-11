@@ -68,10 +68,7 @@ class HotWordModel {
                 if (result?.data != null) {
 
                     val data = result.data
-                    /*searchHotTitleLayout.relative_hot.setVisibility(View.VISIBLE)
-                   if (data.size > 8) {
-                       searchHotTitleLayout.relative_hot1.setVisibility(View.VISIBLE)
-                   }*/
+
                     listener.onSuccess(data as ArrayList<SearchRecommendBook.DataBean>)
                 }
 

@@ -10,7 +10,7 @@ import com.dingyue.searchbook.adapter.HistoryAdapter
 import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.presenter.HistoryPresenter
 import com.dingyue.searchbook.view.IHistoryView
-import kotlinx.android.synthetic.qbmfkdxs.fragment_history.*
+import kotlinx.android.synthetic.qbmfkdxs.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.StatServiceUtils
 
@@ -22,8 +22,6 @@ import net.lzbook.kit.utils.StatServiceUtils
  */
 class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemClickListener {
 
-    private var mView: View? = null
-
     private var historyAdapter: HistoryAdapter? = null
 
     var onKeyWordListener: OnKeyWordListener? = null
@@ -34,11 +32,13 @@ class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemCl
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_history, container, false)
-        historyPresenter.onCreate()
-        return mView
+        return inflater.inflate(R.layout.fragment_listview, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        historyPresenter.onCreate()
+    }
     override fun showLoading() {
 
     }
@@ -50,7 +50,7 @@ class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemCl
 
     override fun showHistoryRecord(historyList: ArrayList<String>) {
         historyAdapter = HistoryAdapter(requireContext(), historyList, this@HistoryFragment)
-        list_history.adapter = historyAdapter
+        listView.adapter = historyAdapter
     }
 
     override fun onHistoryItemClickListener(position: Int, historyList: List<String>?) {

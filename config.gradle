@@ -41,7 +41,7 @@ ext {
     ]
 
     // 改完记得重新编译项目
-    def appName = "qbmfxsydq"
+    def appName = "zsmfqbxs"
     defaultPublishConfig = appName + 'Debug'
     applicationId = appPackageIDConfig.get(appName)
 

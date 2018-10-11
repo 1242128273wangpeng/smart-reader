@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <color name="color_statusBar">#ffffff</color>
     <color name="color_gray_070707">#070707</color>
     <color name="light_center_time">#999999</color>
@@ -245,10 +245,10 @@
     <color name="color_black_444444">#444444</color>
     <color name="color_black_424242">#424242</color>
 
-   <!-- <color name="color_red_e0664e">#E0664E</color>
-    <color name="color_red_fe5e49">#fe5e49</color>
-    <color name="color_red_ff1010">#ff1010</color>
-    <color name="color_red_f04c3b">#F04C3B</color>-->
+    <!-- <color name="color_red_e0664e">#E0664E</color>
+     <color name="color_red_fe5e49">#fe5e49</color>
+     <color name="color_red_ff1010">#ff1010</color>
+     <color name="color_red_f04c3b">#F04C3B</color>-->
     <color name="color_gray_b3b3b3">#b3b3b3</color>
 
     <color name="color_blue_1dbfbb">#1dbfbb</color>
@@ -256,7 +256,10 @@
 
 
     <color name="transparent_color">#00ffffff</color>
+
     <color name="white">#ffffffff</color>
+    <color name="white_alpha">#4DFFFFFF</color>
+
     <color name="remove_delete_normal">#f25732</color>
     <color name="color_gray_eaeaea">#eaeaea</color>
     <color name="color_gray_989797">#989797</color>
@@ -274,6 +277,8 @@
     <color name="debug_switch_bg_unchecked_color">#E3E1E1</color>
 
     <color name="divider_bg">#5D646E</color>
+    <color name="divider_line">#EDEEF0</color>
+    <color name="dialog_line">#4DB8C5D9</color>
 
     <color name="color_F4F4F4">#F4F4F4</color>
     <color name="color_F0F0F0">#F0F0F0</color>
@@ -284,4 +289,9 @@
     <color name="color_252B35">#252B35</color>
     <color name="color_212832">#212832</color>
     <color name="color_323232">#323232</color>
+    <color name="color_949494">#949494</color>
+    <color name="color_B8B8B8">#B8B8B8</color>
+    <color name="color_E8E8E8">#E8E8E8</color>
+    <color name="color_FAFAFA">#FAFAFA</color>
+    <color name="color_303135">#303135</color>
 </resources>

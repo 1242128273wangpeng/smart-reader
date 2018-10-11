@@ -8,6 +8,7 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
@@ -22,8 +23,8 @@ import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.webview.WebViewJsInterface
 import java.util.*
 
 
@@ -107,9 +108,9 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
     private val shake = AntiShake()
 
-    fun initJSModel(): JSInterfaceHelper {
-        val jsInterfaceModel = JSInterfaceHelper()
-        jsInterfaceModel.setOnSearchClick(object : JSInterfaceHelper.onSearchClick {
+    fun initJSModel(): WebViewJsInterface {
+        val jsInterfaceModel = JSInterface()
+        jsInterfaceModel.search = (object : JSInterface.OnSearchClick {
             override fun doSearch(keyWord: String?, search_type: String?, filter_type: String?, filter_word: String, sort_type: String) {
                 word = keyWord ?: ""
                 searchType = search_type ?: ""
@@ -123,7 +124,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
         })
 
-        jsInterfaceModel.setOnEnterCover(object : JSInterfaceHelper.onEnterCover {
+        jsInterfaceModel.cover = (object : JSInterface.OnEnterCover {
             override fun doCover(host: String?, book_id: String?, book_source_id: String?, name: String, author: String, parameter: String, extra_parameter: String) {
                 val data = HashMap<String, String>()
                 data.put("BOOKID", book_id ?: "")
@@ -151,7 +152,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
         })
 
 
-        jsInterfaceModel.setOnAnotherWebClick(object : JSInterfaceHelper.onAnotherWebClick {
+        jsInterfaceModel.anotherWeb = (object : JSInterface.OnAnotherWebClick {
             override fun doAnotherWeb(url: String?, name: String?) {
                 if (shake.check()) {
                     return
@@ -177,7 +178,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
         })
 
 
-        jsInterfaceModel.setSearchWordClick(object : JSInterfaceHelper.onSearchWordClick {
+        jsInterfaceModel.searchWordClick = (object : JSInterface.OnSearchWordClick {
             override fun sendSearchWord(searchWord: String, search_type: String) {
                 if (shake.check()) {
                     return
@@ -195,7 +196,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
         })
 
 
-        jsInterfaceModel.setOnTurnRead(object : JSInterfaceHelper.onTurnRead {
+        jsInterfaceModel.toRead = (object : JSInterface.onTurnRead {
             override fun turnRead(book_id: String, book_source_id: String, host: String, name: String, author: String, parameter: String, extra_parameter: String, update_type: String, last_chapter_name: String, serial_number: Int, img_url: String, update_time: Long, desc: String, label: String, status: String, bookType: String) {
                 val book = Book()
                 book.book_id = book_id
@@ -229,7 +230,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
         })
 
 
-        jsInterfaceModel.setOnEnterRead(object : JSInterfaceHelper.onEnterRead {
+        jsInterfaceModel.read = (object : JSInterface.OnEnterRead {
             override fun doRead(host: String, book_id: String?, book_source_id: String, name: String?, author: String?, status: String, category: String, imgUrl: String, last_chapter: String, chapter_count: String, updateTime: Long, parameter: String, extra_parameter: String, dex: Int) {
                 val coverBook = genCoverBook(host, book_id ?: "", book_source_id, name ?: "", author ?: "", status,
                         category, imgUrl, last_chapter, chapter_count,
@@ -259,11 +260,11 @@ class SearchResultModel(var listener: OnSearchResult?) {
             }
             stringBuilder.append("]")
 //            AppLog.e(TAG, "StringBuilder : " + stringBuilder.toString())
-            jsInterfaceModel.setBookString(stringBuilder.toString())
+            jsInterfaceModel.strings = (stringBuilder.toString())
         }
 
 
-        jsInterfaceModel.setOnInsertBook(object : JSInterfaceHelper.OnInsertBook {
+        jsInterfaceModel.insertBook = (object : JSInterface.OnInsertBook {
             override fun doInsertBook(host: String, book_id: String?, book_source_id: String?, name: String?, author: String?, status: String, category: String, imgUrl: String, last_chapter: String, chapter_count: String, updateTime: Long, parameter: String, extra_parameter: String, dex: Int) {
                 val book = genCoverBook(host, book_id ?: "", book_source_id ?: "", name ?: "", author ?: "", status,
                         category, imgUrl, last_chapter, chapter_count,
@@ -284,7 +285,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
         })
 
 
-        jsInterfaceModel.setOnDeleteBook(object : JSInterfaceHelper.OnDeleteBook {
+        jsInterfaceModel.deleteBook = (object : JSInterface.OnDeleteBook {
             override fun doDeleteBook(book_id: String?) {
                 RequestRepositoryFactory.loadRequestRepositoryFactory(
                         BaseBookApplication.getGlobalContext()).deleteBook(book_id ?: "")

@@ -21,6 +21,11 @@ import net.lzbook.kit.constants.Constants
  */
 class HotWordModel {
 
+    /**
+     * 用于换一换标识
+     */
+    var count = 0
+
     val mGson = Gson()
 
     /**
@@ -65,14 +70,19 @@ class HotWordModel {
                 obtainBookOnLineIds(), object : RequestSubscriber<SearchRecommendBook>() {
 
             override fun requestResult(result: SearchRecommendBook?) {
-                if (result?.data != null) {
 
-                    val data = result.data
-                    /*searchHotTitleLayout.relative_hot.setVisibility(View.VISIBLE)
-                   if (data.size > 8) {
-                       searchHotTitleLayout.relative_hot1.setVisibility(View.VISIBLE)
-                   }*/
-                    listener.onSuccess(data as ArrayList<SearchRecommendBook.DataBean>)
+                result?.data?.apply {
+
+                    val list = ArrayList<SearchRecommendBook.DataBean>()
+
+                    if (count >= 24) {
+                        count = 0
+                    }
+
+                    (count until count + 8).mapTo(list) { this[it] }
+                    count += 8
+
+                    listener.onSuccess(list)
                 }
 
             }

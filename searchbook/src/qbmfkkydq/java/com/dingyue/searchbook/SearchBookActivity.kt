@@ -7,21 +7,23 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import net.lzbook.kit.utils.router.RouterConfig
-import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.fragment.HistoryFragment
 import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dingyue.searchbook.fragment.SearchResultFragment
 import com.dingyue.searchbook.fragment.SuggestFragment
+import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.interfaces.OnResultListener
-import net.lzbook.kit.ui.activity.base.FrameActivity
 import kotlinx.android.synthetic.qbmfkkydq.activity_search_book.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.toast.ToastUtil
 
 
 /**
@@ -56,10 +58,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         setContentView(R.layout.activity_search_book)
         initView()
         initListener()
-//        if (intent != null) {
-//            mSearchHelper.initSearchType(intent)
-//        }
-
+        interceptKeyBoard()
     }
 
     override fun onClick(v: View) {
@@ -85,14 +84,19 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 historyFragment.loadHistoryRecord()
             }
             search_result_btn.id -> {
-                showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(search_result_input.text.toString())
+                val keyword = search_result_input.text.toString()
+                if (TextUtils.isEmpty(keyword.trim())) {
+                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
+                } else {
+                    showFragment(searchResultFragment)
+                    searchResultFragment.loadKeyWord(keyword)
+                }
             }
         }
     }
 
     override fun onKeyWord(keyword: String?) {
-        search_result_input.setText(keyword)
+        inputKeyWord(keyword ?: "")
         search_result_btn.performClick()
     }
 
@@ -117,12 +121,22 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_focus.setOnClickListener(this)
         search_result_input.setOnClickListener(this)
         search_result_input.addTextChangedListener(this)
-
         search_result_btn.setOnClickListener(this)
 
         historyFragment.onKeyWordListener = this
-        hotWordFragment.onResultListener = object :OnResultListener<String> {
+
+        suggestFragment.onSuggestClickListener = object : SuggestFragment.OnSuggestClickListener {
+            override fun onSuggestClick(history: String, searchType: String) {
+                inputKeyWord(history)
+                showFragment(searchResultFragment)
+                searchResultFragment.loadKeyWord(history, searchType)
+            }
+
+        }
+
+        hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
+                inputKeyWord(result)
                 showFragment(searchResultFragment)
                 searchResultFragment.loadKeyWord(result)
             }
@@ -131,21 +145,18 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     }
 
 
+    /**
+     * 设置关键词，将光标移至文字末尾（热词、历史子条目）
+     */
+    private fun inputKeyWord(keyword: String) {
+        search_result_focus.visibility = View.GONE
+        search_result_default.visibility = View.VISIBLE
+        search_result_input.requestFocus()
+        search_result_input.setText(keyword)
+        search_result_input.setSelection(keyword.length)
+    }
+
     override fun afterTextChanged(editable: Editable?) {
-//        if (mSearchHelper != null && mSearchHelper.getWord() != null) {
-//            if (mSearchHelper.getFromClass() != null) {
-//                if (mSearchHelper.getWord().trim({ it <= ' ' }) != s.toString().trim { it <= ' ' }) {
-//                    if (mSearchHelper.getFromClass() != "other") {
-//                        mSearchHelper.setFromClass("other")
-//                    }
-//                    mSearchHelper.setSearchType("0")
-//                }
-//            } else {
-//                if (mSearchHelper.getWord().trim({ it <= ' ' }) != s.toString().trim { it <= ' ' }) {
-//                    mSearchHelper.setSearchType("0")
-//                }
-//            }
-//        }
 
         if (editable.toString().isNotEmpty() && search_result_input.isFocused) {
             search_result_clear.visibility = View.VISIBLE
@@ -169,11 +180,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
             suggestFragment.obtainKeyWord(search_result_input.text.toString())
         }
 
-//        //网络请求
-//        if (searchViewHelper != null) {
-//            val finalContent = AppUtils.deleteAllIllegalChar(s.toString())
-//            searchViewHelper.showRemainWords(finalContent)
-//        }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -199,8 +205,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     private fun showSoftKeyboard(view: View?) {
         val handler = Handler()
         handler.postDelayed({
-            val imm = getSystemService(
-                    Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             // 弹出软键盘
             if (view != null) {
                 imm.showSoftInput(view, 0)
@@ -209,6 +214,30 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
     }
 
+
+    /**
+     * 拦截键盘的回车事件
+     */
+    private fun interceptKeyBoard() {
+
+        search_result_input.setOnKeyListener { _, keyCode, _ ->
+
+            when (keyCode) {
+                KeyEvent.KEYCODE_ENTER -> {
+                    val keyword = search_result_input.text.toString()
+                    if (TextUtils.isEmpty(keyword.trim())) {
+                        ToastUtil.showToastMessage(R.string.search_click_check_isright)
+                    } else {
+                        showFragment(searchResultFragment)
+                        searchResultFragment.loadKeyWord(keyword)
+                        hideKeyboard()
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+    }
 
 }
 

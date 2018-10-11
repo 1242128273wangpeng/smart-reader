@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_root"
+    android:id="@+id/search_result_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
+        android:id="@id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimen_margin_16"
@@ -17,9 +18,10 @@
         android:textSize="14sp"/>
 
     <net.lzbook.kit.ui.widget.ScrollForGridView
-        android:id="@+id/gridView"
+        android:id="@id/gridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/text"
         android:layout_marginLeft="@dimen/dimen_margin_10"
         android:layout_marginRight="@dimen/dimen_margin_10"
         android:layout_marginTop="@dimen/dimen_margin_14"
@@ -32,10 +34,11 @@
         android:id="@+id/relative_hot"
         android:layout_width="match_parent"
         android:layout_height="42dp"
+        android:layout_below="@id/gridView"
         android:layout_marginLeft="@dimen/dimen_margin_16"
         android:layout_marginRight="@dimen/dimen_margin_16"
-        android:layout_marginTop="40dp"
-        android:visibility="visible">
+        android:layout_marginTop="40dp">
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
@@ -49,17 +52,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
-            android:layout_toRightOf="@id/textView1"
-            android:src="@drawable/icon_search_label"
             android:layout_marginStart="3dp"
-            android:layout_toEndOf="@id/textView1"/>
+            android:layout_toEndOf="@id/textView1"
+            android:layout_toRightOf="@id/textView1"
+            android:src="@drawable/icon_search_label"/>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_recommend"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/relative_hot"
         android:layout_marginLeft="@dimen/dimen_margin_7"
         android:layout_marginRight="@dimen/dimen_margin_7"/>
-</LinearLayout>
+</RelativeLayout>
 

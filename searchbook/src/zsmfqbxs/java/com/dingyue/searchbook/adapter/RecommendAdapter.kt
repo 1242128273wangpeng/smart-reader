@@ -36,7 +36,7 @@ class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
         holder.dataBean = book
         holder.index = position
         holder.tv_book_name.text = book.bookName
-        holder.tv_book_author.text = book.authorName
+
         if (!TextUtils.isEmpty(book.sourceImageUrl)) {
             Glide.with(context).load(book.sourceImageUrl).placeholder(
                     net.lzbook.kit.R.drawable.icon_book_cover_default)
@@ -64,13 +64,13 @@ class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
 
         val iv_url: ImageView
         val tv_book_name: TextView
-        val tv_book_author: TextView
+
         var index = 0
         var dataBean:SearchRecommendBook.DataBean? = null
         init {
             iv_url = itemView.findViewById(R.id.iv_url)
             tv_book_name = itemView.findViewById(R.id.tv_book_name)
-            tv_book_author = itemView.findViewById(R.id.tv_book_auther)
+
             itemView.setOnClickListener({
                if (dataBean!= null){
                    recommendItemClickListener?.onRecommendItemClick(it,index,dataBean!!)
