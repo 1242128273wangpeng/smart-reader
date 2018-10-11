@@ -365,7 +365,9 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     private fun switchState(isBookShelf: Boolean) {
         ll_home_bookshelf?.isSelected = isBookShelf
         ll_home_bookstore?.isSelected = !isBookShelf
-
+        if(ll_home_bookstore?.isSelected == true){
+            bookShelfFragment?.dismissRemoveMenu()
+        }
     }
 
 
