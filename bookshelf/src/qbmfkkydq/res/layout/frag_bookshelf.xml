@@ -30,8 +30,7 @@
         android:id="@+id/ll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-       >
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/rl_head_normal"
