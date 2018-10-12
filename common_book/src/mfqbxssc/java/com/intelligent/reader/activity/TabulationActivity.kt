@@ -268,12 +268,6 @@ class TabulationActivity : FrameActivity() {
         titles.add(title)
 
         runOnMain {
-            if (loadingPage == null) {
-                loadingPage = LoadingPage(this, rl_tabulation_root, LoadingPage.setting_result)
-            } else {
-                loadingPage?.visibility = View.VISIBLE
-            }
-
             requestWebViewData(this.url, this.title)
         }
     }
