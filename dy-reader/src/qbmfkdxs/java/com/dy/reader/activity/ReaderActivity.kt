@@ -152,7 +152,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable  = {
+    val orientaionRunnable = {
         showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
 
         glSurfaceView.visibility = View.GONE
@@ -174,13 +174,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onConfigurationChanged(newConfig)
 
         //横向阅读 最后一章到完结页 点击返回 dialog不显示
-        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+        if (!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)) {
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         }
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            if(lastOrientation != newConfig.orientation) {
+            if (lastOrientation != newConfig.orientation) {
                 lastOrientation = newConfig.orientation
                 AppHelper.mainHandler.removeCallbacks(orientaionRunnable)
                 AppHelper.mainHandler.postDelayed(orientaionRunnable, 500)
@@ -258,6 +258,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onResume() {
         super.onResume()
         isResume = true
+        registerShareCallback = false
         registerShareCallback = false
         glSurfaceView.onResume()
         // 设置全屏
@@ -381,7 +382,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 val uri = Uri.parse(url!!.trim { it <= ' ' })
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -574,7 +575,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                         }
                     } else if (adView.view is NativeMediaView) {
                         mNativeMediaView = adView.view as NativeMediaView
-                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _ ->
                             mNativeMediaView?.onPause()
                             EventBus.getDefault()
                                     .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
@@ -605,7 +606,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -679,5 +680,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         return super.onKeyDown(keyCode, event)
     }
+
 
 }

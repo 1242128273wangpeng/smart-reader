@@ -13,4 +13,6 @@ interface BookShelfInterface {
     fun changeHomePagerIndex(index: Int)
 
     fun changeDrawerLayoutState()
+
+    fun registerShareCallback(state: Boolean)
 }

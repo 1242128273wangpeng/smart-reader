@@ -50,6 +50,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
@@ -89,6 +90,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var rankingFragment: WebViewFragment? = null
 
     private var categoryFragment: WebViewFragment? = null
+    private var registerShareCallback = false
 
     private val pushSettingDialog: PushSettingDialog by lazy {
         val dialog = PushSettingDialog(this)
@@ -145,7 +147,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         super.onResume()
         MediaLifecycle.onResume()
         this.changeHomePagerIndex(currentIndex)
-
+        this.registerShareCallback = false
         StatService.onResume(this)
     }
 
@@ -381,6 +383,19 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         handler.sendMessageDelayed(message, 2000)
     }
 
+    override fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
+    }
+
+
     override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
@@ -591,6 +606,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     }
                 }
             } else if (intent.action == ActionConstants.ACTION_CHECK_QING_STATE_SUCCESS) {
+                if (bookShelfFragment != null) {
+                    bookShelfFragment?.updateUI()
+                }
+            } else if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
                 }

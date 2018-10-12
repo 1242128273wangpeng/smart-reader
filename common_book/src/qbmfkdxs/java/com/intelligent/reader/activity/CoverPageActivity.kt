@@ -27,9 +27,12 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.util.editShared
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
@@ -43,6 +46,7 @@ import java.util.concurrent.Callable
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.qbmfkdxs.act_book_cover.*
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 import swipeback.ActivityLifecycleHelper
 
@@ -63,6 +67,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         initIntent(intent)
         initListener()
 //        initAD()
+    }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(this)
+        dialog
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -205,8 +214,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_bookshelf.antiShakeClick(this)
         book_cover_reading.antiShakeClick(this)
         book_cover_download.antiShakeClick(this)
-
+        img_app_share.antiShakeClick(this)
         book_cover_content!!.setScrollChangedListener(this)
+        if (!Constants.SHARE_SWITCH_ENABLE) {
+            img_app_share.visibility = View.GONE
+        }
     }
 
     override fun showCoverDetail(book: Book?) {
@@ -316,7 +328,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (result) {
             book_cover_bookshelf!!.setText("已在书架")
             setRemoveBtn()
-        }else {
+        } else {
             book_cover_bookshelf!!.setText("加入书架")
             setInsertBtn()
         }
@@ -387,15 +399,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun showLoadingSuccess() {
-        if (loadingPage != null) {
-            loadingPage?.onSuccess()
-        }
+        loadingPage?.onSuccess()
+        checkShowCoverPrompt()
     }
 
     override fun showLoadingFail() {
-        if (loadingPage != null) {
-            loadingPage?.onError()
-        }
+        loadingPage?.onError()
         Toast.makeText(this, "请求失败", Toast.LENGTH_SHORT).show()
     }
 
@@ -445,6 +454,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
             }
+            R.id.img_app_share -> {
+                applicationShareDialog.show()
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ACTION_SHARE)
+            }
         }
     }
 
@@ -476,4 +489,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
     }
 
+    private fun checkShowCoverPrompt() {
+        if (!Constants.SHARE_SWITCH_ENABLE) return
+        val hasShareDialogShowed = getSharedBoolean(SharedPreUtil.COVER_SHARE_PROMPT)
+        if (!hasShareDialogShowed) {
+            fl_cover_share_prompt.visibility = View.VISIBLE
+
+            fl_cover_share_prompt.setOnClickListener {
+                fl_cover_share_prompt.visibility = View.GONE
+                editShared {
+                    putBoolean(SharedPreUtil.COVER_SHARE_PROMPT, true)
+                }
+            }
+        }
+    }
 }

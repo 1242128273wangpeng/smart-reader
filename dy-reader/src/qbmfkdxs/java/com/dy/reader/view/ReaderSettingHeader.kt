@@ -9,6 +9,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.util.editShared
+import com.ding.basic.util.getSharedBoolean
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -67,6 +70,27 @@ class ReaderSettingHeader : FrameLayout {
         img_reader_back.setOnClickListener {
             presenter?.back()
         }
+        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
+
+        if (hasPromptShowed) {
+            view_reader_share.visibility = View.INVISIBLE
+        } else {
+            view_reader_share.visibility = View.VISIBLE
+        }
+
+        if (Constants.SHARE_SWITCH_ENABLE) {
+            ibtn_reader_share?.setOnClickListener {
+                context.editShared {
+                    putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+                }
+                view_reader_share.visibility = View.INVISIBLE
+                presenter?.showShareDialog()
+            }
+        } else {
+            ibtn_reader_share.visibility = View.GONE
+        }
+
+
 
         txt_reader_source.setOnClickListener {
             presenter?.openWeb()
@@ -91,7 +115,7 @@ class ReaderSettingHeader : FrameLayout {
 
             val readerHeaderMorePopup = ReaderHeaderMorePopup(context)
 
-            val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
+            val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)
 
             if (isMarkPage) {
                 readerHeaderMorePopup.insertBookmarkContent("删除书签")
