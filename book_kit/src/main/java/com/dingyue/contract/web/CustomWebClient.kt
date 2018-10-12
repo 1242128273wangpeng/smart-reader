@@ -142,10 +142,10 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         handler.proceed()
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-        return interceptWebViewRequest(view, request)
-    }
+//    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+//    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+//        return interceptWebViewRequest(view, request)
+//    }
 
     /***
      * 设置加载WebView开始监听

@@ -255,6 +255,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (mNativeMediaView != null) {
             mNativeMediaView?.onResume()
         }
+        mCatalogMarkFragment?.fixBook()
     }
 
     override fun shouldShowNightShadow(): Boolean = false

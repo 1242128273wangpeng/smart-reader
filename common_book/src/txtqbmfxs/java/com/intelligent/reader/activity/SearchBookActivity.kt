@@ -15,11 +15,14 @@ import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.search.SearchPresenter
@@ -32,6 +35,10 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.utils.*
 import java.util.*
+
+import com.dingyue.contract.web.CustomWebClient
+import com.dingyue.contract.web.JSInterfaceObject
+import com.google.gson.Gson
 
 /**
  * Function：搜索书籍页
@@ -59,7 +66,6 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
     private var handler: Handler? = Handler()
 
     private var customWebClient: CustomWebClient? = null
-    private var jsInterfaceHelper: JSInterfaceHelper? = null
 
     private var isSearch = false
 
@@ -90,22 +96,23 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             search_result_content.clearCache(true)
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+            } else {
+                loadingPage?.visibility = View.VISIBLE
             }
-
         }
     }
 
     override fun onStartLoad(url: String) {
 
         if (search_result_content == null) return
-        search_result_main!!.visibility = View.VISIBLE
+        search_result_main?.visibility = View.VISIBLE
         handler?.post { loadingData(url) }
 
         webViewCallback()
     }
 
 
-    @SuppressLint("JavascriptInterface")
+    @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
     private fun initView() {
 
         if (mSearchPresenter == null) {
@@ -121,18 +128,13 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         customWebClient = CustomWebClient(this, search_result_content)
-        customWebClient?.setWebSettings()
+        customWebClient?.initWebViewSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             search_result_content.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
         search_result_content.webViewClient = customWebClient
-
-        jsInterfaceHelper = JSInterfaceHelper(this, search_result_content)
-        search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search")
-        mSearchPresenter?.initJSHelp(jsInterfaceHelper)
-
 
         if (intent != null) {
             mSearchPresenter?.setInitType(intent)
@@ -142,6 +144,58 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
             mSearchViewHelper?.setSearchWord(mSearchPresenter?.word)
         }
 
+        search_result_content?.addJavascriptInterface(object : JSInterfaceObject(this@SearchBookActivity) {
+
+            @JavascriptInterface
+            override fun startSearchActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+
+                    try {
+                        val search = Gson().fromJson(data, JSSearch()::class.java)
+
+                        runOnMain {
+                            if (search?.word != null && (search.word?.isNotEmpty() == true)) {
+                                onNoneResultSearch(search.word!!)
+                            }
+                        }
+
+                        mSearchPresenter?.setHotWordType(search?.word, search?.type)
+                        mSearchPresenter?.startLoadData(0)
+
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+            }
+
+            @JavascriptInterface
+            override fun startTabulationActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+
+                    try {
+                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
+
+                        if (redirect?.url != null && redirect.title != null) {
+                            val bundle = Bundle()
+                            bundle.putString("url", redirect.url)
+                            bundle.putString("title", redirect.title)
+                            bundle.putString("from", "other")
+
+                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+            }
+
+        }, "J_search")
     }
 
 
@@ -212,6 +266,8 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+            } else {
+                loadingPage?.visibility = View.VISIBLE
             }
 
             mSearchPresenter?.startLoadData(isAuthor)
@@ -224,8 +280,17 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     private fun loadingData(url: String) {
         if (customWebClient != null) {
-            customWebClient!!.doClear()
+            customWebClient?.initParameter()
         }
+
+        search_result_content.clearView()
+
+        if (loadingPage == null) {
+            loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+        } else {
+            loadingPage?.visibility = View.VISIBLE
+        }
+
         Logger.e("LoadingData ==> " + url)
         if (!TextUtils.isEmpty(url) && search_result_content != null) {
             try {
@@ -245,27 +310,26 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         customWebClient?.let {
-            it.setStartedAction { url ->
-                Logger.e("onLoadStarted: " + url)
+            it.setLoadingWebViewStart { url ->
                 if (mSearchPresenter == null) {
                     mSearchPresenter = SearchPresenter(this, this)
                 }
                 mSearchPresenter?.setStartedAction()
             }
 
-            it.setErrorAction {
+            it.setLoadingWebViewError {
                 Logger.e("onErrorReceived")
                 if (loadingPage != null) {
                     loadingPage?.onErrorVisable()
                 }
             }
 
-            it.setFinishedAction {
+            it.setLoadingWebViewFinish {
                 Logger.e("onLoadFinished")
                 if (mSearchPresenter == null) {
                     mSearchPresenter = SearchPresenter(this, this)
                 }
-                mSearchPresenter!!.onLoadFinished()
+                mSearchPresenter?.onLoadFinished()
                 if (loadingPage != null) {
                     if (isSearch) {
                         hideSearchView()
@@ -277,7 +341,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebClient != null) customWebClient?.doClear()
+                if (customWebClient != null) customWebClient?.initParameter()
                 search_result_content.reload()
             })
         }
@@ -285,7 +349,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onResume() {
         super.onResume()
-        if (isStayHistory && mSearchViewHelper != null && mSearchViewHelper?.getShowStatus()!!) {
+        if (isStayHistory && mSearchViewHelper != null && mSearchViewHelper?.getShowStatus() == true) {
             if (mSearchPresenter != null && mSearchPresenter?.fromClass != null && mSearchPresenter?.fromClass != "fromClass") {
                 val historyDates = Tools.getKeyWord()
 
@@ -296,7 +360,20 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 etxt_search_input.setSelection(index.length)
                 showSearchViews()
             }
+        }
 
+        if (search_result_content != null) {
+            val keyword = etxt_search_input?.text.toString()
+            if (keyword.isNotEmpty()) {
+                search_result_content?.post {
+                    try {
+                        search_result_content?.loadUrl("javascript:refreshNew()")
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                        finish()
+                    }
+                }
+            }
         }
     }
 
@@ -485,7 +562,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 } else {
                     if (!ziyougb) {
                         etxt_search_input.setText(mSearchPresenter?.word)
-                        etxt_search_input.setSelection(mSearchPresenter?.word!!.length)
+                        etxt_search_input.setSelection(mSearchPresenter?.word?.length ?: 0)
                     }
                 }
                 etxt_search_input.setTextColor(ContextCompat.getColor(this, R.color.search_input_text_color))
@@ -537,7 +614,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         } else {
             editable.clear()
             img_clear.visibility = View.GONE
-            search_result_main!!.visibility = View.GONE
+            search_result_main?.visibility = View.GONE
         }
 
         //保存用户搜索词
@@ -564,7 +641,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                 actionId == EditorInfo.IME_ACTION_SEND ||
                 actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
 
-            val keyword = etxt_search_input!!.text.toString()
+            val keyword = etxt_search_input?.text.toString()
 
             if (keyword.trim { it <= ' ' } == "") {
                 this.showToastMessage(R.string.search_click_check_isright)
@@ -591,12 +668,12 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
 
     override fun onNoneResultSearch(searchWord: String) {
 
-        if (search_result_default != null && search_result_default!!.visibility != View.VISIBLE) {
-            search_result_default!!.visibility = View.VISIBLE
+        if (search_result_default != null && search_result_default?.visibility != View.VISIBLE) {
+            search_result_default?.visibility = View.VISIBLE
         }
 
         if (etxt_search_input != null) {
-            etxt_search_input!!.setText(searchWord)
+            etxt_search_input?.setText(searchWord)
         }
 
         if (mSearchViewHelper != null) {
@@ -605,9 +682,11 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
         }
 
         if (search_result_content != null) {
-            search_result_content!!.clearView()
+            search_result_content?.clearView()
             if (loadingPage == null) {
                 loadingPage = LoadingPage(this, search_result_main, LoadingPage.setting_result)
+            } else {
+                loadingPage?.visibility = View.VISIBLE
             }
         }
     }
