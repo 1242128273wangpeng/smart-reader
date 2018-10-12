@@ -6,7 +6,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -43,6 +42,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -57,9 +57,6 @@ import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-
-import com.intelligent.reader.util.ShieldManager;
-
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -172,34 +169,16 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
-        if (firstGuide) {
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                    getApplicationContext()).edit();
-            editor.putBoolean(versionCode + "first_guide", false);
-            editor.apply();
-            try {
-                Intent intent = new Intent();
-                intent.setClass(SplashActivity.this, GuideActivity.class);
-                intent.putExtra("fromA", "Loading");
-                startActivity(intent);
-                finish();
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Intent intent = new Intent();
-            intent.setClass(SplashActivity.this, HomeActivity.class);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-            finish();
+        Intent intent = new Intent();
+        intent.setClass(SplashActivity.this, HomeActivity.class);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
+        finish();
     }
 
     private void initShield() {
@@ -446,8 +425,9 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext());
+        RequestRepositoryFactory loadRequest =
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
 
         books = loadRequest.loadBooks();
 
@@ -463,7 +443,8 @@ public class SplashActivity extends FrameActivity {
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2
+                        && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     loadRequest.updateBook(book);
                     loadRequest.deleteBookFix(book.getBook_id());

@@ -66,8 +66,8 @@
 
             <CheckBox
                 android:id="@+id/ckb_not_show_next_time"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:background="@drawable/read_source_dialog_ckb_sel"
                 android:button="@null"/>
 
