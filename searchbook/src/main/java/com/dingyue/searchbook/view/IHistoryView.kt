@@ -10,5 +10,5 @@ package com.dingyue.searchbook.view
 interface IHistoryView : IBaseView {
 
     fun showHistoryRecord(historyList:ArrayList<String>)//展示搜索历史记录
-    fun clearHistoryResult()
+    fun clearHistoryResult() {}
 }

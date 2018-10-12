@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="accent">#FFFFBA01</color>
-    <color name="primary">#FFFFBA01</color>
+    <color name="accent">#FFBA01</color>
+    <color name="primary">#FFBA01</color>
 
-    <color name="text_color_dark">#FF212832</color>
-    <color name="text_color_plain">#FF5D646E</color>
-    <color name="text_color_light">#FF9097A1</color>
-    <color name="text_color_weak">#FFADB4BE</color>
+    <color name="text_color_dark">#212832</color>
+    <color name="text_color_plain">#5D646E</color>
+    <color name="text_color_light">#9097A1</color>
+    <color name="text_color_weak">#ADB4BE</color>
 
-    <color name="bookshelf_item_pressed">#FFFAFAFA</color>
+    <color name="bookshelf_item_pressed">#FAFAFA</color>
 
 </resources>

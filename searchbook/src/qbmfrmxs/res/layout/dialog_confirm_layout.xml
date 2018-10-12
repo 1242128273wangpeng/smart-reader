@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/draw_dialog_bg">
+
+        <TextView
+            android:id="@+id/txt_dialog_title"
+            style="@style/style_text_huge_dark"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:gravity="center"
+            android:text="@string/prompt"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:id="@+id/ll_btn"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/style_text_great_plain"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:text="@string/cancel"/>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="#F1F1F1"/>
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:text="@string/confirm"
+                android:textColor="@color/primary"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_dialog_information"
+            style="@style/style_text_great_dark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_btn"
+            android:layout_below="@id/txt_dialog_title"
+            android:gravity="center"
+            android:lineSpacingExtra="6dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="@string/determine_clear_serach_history"/>
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_above="@id/ll_btn"
+            android:background="#F1F1F1"/>
+
+    </RelativeLayout>
+
+    <net.lzbook.kit.ui.widget.NightShadowView
+        android:id="@+id/nightShadowView"
+        android:layout_width="300dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        app:cornerRadius="8dp"/>
+
+</FrameLayout>

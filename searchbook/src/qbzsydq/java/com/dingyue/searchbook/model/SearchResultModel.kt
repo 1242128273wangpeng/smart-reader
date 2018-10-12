@@ -8,8 +8,8 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.R
+import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -398,14 +398,12 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
             } else {
                 val params = HashMap<String, String>()
-                params.put("keyword", searchWord)
-                params.put("searchType", searchType)
+                params.put("word", searchWord)
+                params.put("search_type", searchType)
                 params.put("filter_type", filterType)
                 params.put("filter_word", filterWord)
                 params.put("sort_type", sortType)
-                params.put("wordType", searchType)
-                params.put("searchEmpty", "1")
-                val uri = RequestService.SEARCH_VUE.replace("{packageName}", AppUtils.getPackageName())
+                val uri = RequestService.SEARCH_V5.replace("{packageName}", AppUtils.getPackageName())
                 mUrl = UrlUtils.buildWebUrl(uri, params)
             }
         }
