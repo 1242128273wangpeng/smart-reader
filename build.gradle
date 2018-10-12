@@ -2,9 +2,12 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-//        mavenCentral()
-        maven { url 'http://20.20.56.135:8081/repository/maven-public/'}
+        maven {
+            url 'http://20.20.56.135:8081/repository/maven-public/'
+        }
+
         jcenter()
+
         google()
     }
 
@@ -17,11 +20,14 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url 'http://20.20.56.135:8081/repository/maven-public/'
+        }
 
-//        mavenCentral()
-        maven { url 'http://20.20.56.135:8081/repository/maven-public/'}
         google()
+
         jcenter()
+
         maven {
             url "http://20.20.27.101:8081/nexus/content/groups/public/"
             credentials {

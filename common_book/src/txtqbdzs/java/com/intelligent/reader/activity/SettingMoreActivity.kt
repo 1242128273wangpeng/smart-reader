@@ -245,4 +245,8 @@ class SettingMoreActivity : BaseCacheableActivity() {
         img_book_sort_update.setImageResource(if (type == 1) R.drawable.bookshelf_delete_checked else R.drawable.bookshelf_delete_unchecked)
     }
 
+    override fun onBackPressed() {
+        DyStatService.onEvent(EventPoint.MORESET_BACK, mapOf("type" to "2"))
+    }
+
 }

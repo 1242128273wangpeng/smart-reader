@@ -24,7 +24,6 @@ import android.view.WindowManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
-import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.router.RouterConfig;
@@ -57,7 +56,6 @@ public class SplashActivity extends FrameActivity {
     public int complete_count = 0;
     public ViewGroup ad_view;
     private SharedPreUtil sharedPreUtil;
-    private List<Book> books;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -209,7 +207,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-        initializeDataFusion();
+        initializeDataFusion()
 
         startInitTask();
         // 安装快捷方式
@@ -223,9 +221,8 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        RequestRepositoryFactory loadRequest =
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext());
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
 
         books = loadRequest.loadBooks();
 
@@ -234,8 +231,7 @@ public class SplashActivity extends FrameActivity {
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2
-                        && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     loadRequest.updateBook(book);
                     loadRequest.deleteBookFix(book.getBook_id());
@@ -246,11 +242,13 @@ public class SplashActivity extends FrameActivity {
     }
 
 
+
     private void startInitTask() {
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
     }
+
 
 
     private boolean isGo = true;
@@ -259,7 +257,7 @@ public class SplashActivity extends FrameActivity {
 //        if (ad_view == null) return;
 //        if (Constants.isHideAD) {
 //            AppLog.e(TAG, "Limited AD display!");
-        handler.sendEmptyMessage(0);
+            handler.sendEmptyMessage(0);
 //            return;
 //        }
 //        if (isGo) {

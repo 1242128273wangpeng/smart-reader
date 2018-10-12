@@ -72,6 +72,10 @@ android {
 
         resConfigs "zh"
 
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+
 //        System.err.println("project.properties = ${project.getProperties()}")
 
 
@@ -534,10 +538,10 @@ android {
             buildConfigField "String", "push_key", "\"DOGRj3vpV9F6KamswYShmdHM\""
             buildConfigField "String", "alifeedback_key", "\"24812888\""
             buildConfigField "String", "alifeedback_secret", "\"2baf3d5d4f949e5189afbe37a8e1302e\""
-            buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmf.readzq.com\""
-            buildConfigField "String", "book_webview_host", "\"https://uwqbmf.readzq.com\""
-            buildConfigField "String", "micro_api_host", "\"https://atxtqbmfydunionapi.jingytech.com\""
-            buildConfigField "String", "content_api_host", "\"https://atxtqbmfydunioncontent.jingytech.com\""
+            buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmf.readzq.com:443\""
+            buildConfigField "String", "book_webview_host", "\"https://uwqbmf.readzq.com:443\""
+            buildConfigField "String", "micro_api_host", "\"https://atxtqbmfydunionapi.jingytech.com:443\""
+            buildConfigField "String", "content_api_host", "\"https://atxtqbmfydunioncontent.jingytech.com:443\""
 
         }
 

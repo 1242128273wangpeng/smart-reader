@@ -63,14 +63,12 @@ public class BookApplication extends BaseBookApplication {
 
         if (AppUtils.isMainProcess(this)) {
 
-            MediaConfig.INSTANCE.setAd_userid(
-                    OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
             MediaLifecycle.INSTANCE.onAppCreate(this);
 
 //            //防止定位不回掉导致缺失id
-//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication
-// .getGlobalContext()));
+//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
 //            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
@@ -120,12 +118,12 @@ public class BookApplication extends BaseBookApplication {
                     ApplicationInfo appInfo = getPackageManager()
                             .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
 
-//                    if (!AppUtils.hasReYun()) {
-                    String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
-                    AppLog.e("reyun", reyunAppKey);
-                    Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
-                            reyunAppKey, "_default_");
-//                    }
+                    if (!AppUtils.hasReYun()) {
+                        String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
+                        AppLog.e("reyun", reyunAppKey);
+                        Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
+                                reyunAppKey, "_default_");
+                    }
 
                     // 友盟推送初始化
                     if (!AppUtils.hasUPush()) return;

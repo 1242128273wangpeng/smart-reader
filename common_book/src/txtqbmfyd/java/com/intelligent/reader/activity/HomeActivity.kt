@@ -16,10 +16,8 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
@@ -29,7 +27,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.Config
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
-import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.logger.PersonalLogger
 import com.dingyue.contract.router.RouterConfig
@@ -39,23 +36,28 @@ import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.CategoryFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.view.BannerDialog
 import com.intelligent.reader.widget.ClearCacheDialog
+import com.intelligent.reader.widget.PushSettingDialog
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import com.reyun.tracking.sdk.Tracking
+import com.umeng.message.PushAgent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
 import net.lzbook.kit.app.ActionConstants
+import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -64,14 +66,15 @@ import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
-import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
-class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
+class HomeActivity : BaseCacheableActivity(),
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
@@ -96,9 +99,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     private var bookShelfFragment: BookShelfFragment? = null
 
     // webview精选页面
-    private val WEB_RECOMMEND = "/{packageName}/v3/recommend/index.do"
+    private val WEB_RECOMMEND = "/h5/{packageName}/recommend"
     // webview排行页面
-    private val WEB_RANK = "/{packageName}/v3/rank/index.do"
+    private val WEB_RANK = "/h5/{packageName}/rank"
 
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
@@ -145,6 +148,19 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         dialog
     }
 
+    private val pushSettingDialog: PushSettingDialog by lazy {
+        val dialog = PushSettingDialog(this)
+        dialog.openPushListener = {
+            openPushSetting()
+        }
+        lifecycle.addObserver(dialog)
+        dialog
+    }
+
+    private val bannerDialog: BannerDialog by lazy {
+        BannerDialog(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -173,6 +189,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         homePresenter.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
+
+        if (isShouldShowPushSettingDialog()) {
+            pushSettingDialog.show()
+        }
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onResume() {
@@ -221,6 +243,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             exception.printStackTrace()
         }
         fixInputMethodManagerLeak(applicationContext)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -266,6 +289,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
+
+                when (position) {
+                    1 -> {
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.ENTRYPAGE)
+                    }
+                    2 -> {
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.ENTRYPAGE)
+                    }
+                    3 -> {
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
+                    }
+                }
             }
         })
 
@@ -321,7 +356,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
                 mThemeHelper.setMode(ThemeMode.THEME1)
             }
-//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         }
@@ -545,108 +579,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         handler.sendMessageDelayed(message, 2000)
     }
 
-    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
-        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            try {
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "0"//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, SearchBookActivity::class.java)
-                intent.putExtra("word", keyWord)
-                intent.putExtra("search_type", search_type)
-                intent.putExtra("filter_type", filter_type)
-                intent.putExtra("filter_word", filter_word)
-                intent.putExtra("sort_type", sort_type)
-                intent.putExtra("from_class", "fromClass")//是否从分类来
-                startActivity(intent)
-                AppLog.e("kkk", "$search_type===")
-
-            } catch (e: Exception) {
-                AppLog.e(TAG, "Search failed")
-                e.printStackTrace()
-            }
-        }
-        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@onAnotherWebClick
-            }
-            AppLog.e(TAG, "doAnotherWeb")
-            try {
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, FindBookDetail::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("title", name)
-                startActivity(intent)
-                AppLog.e(TAG, "EnterAnotherWeb")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
-
-        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                return@onEnterCover
-            }
-
-            if (!isFinishing) {
-                val intent = Intent()
-                intent.putExtra("book_id", book_id)
-                intent.putExtra("book_source_id", book_source_id)
-                intent.setClass(applicationContext, CoverPageActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        //为webview 加载广告提供回调
-        jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
-            try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                    return@onWebGameClick
-                }
-                var title = if (TextUtils.isEmpty(name)) {
-                    AppUtils.getPackageName()
-                } else {
-                    name
-                }
-                val welfareIntent = Intent()
-                welfareIntent.putExtra("url", url)
-                welfareIntent.putExtra("title", title)
-                welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
-                startActivity(welfareIntent)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
-            AppLog.e("福利中心", "下载游戏: $name : $url")
-
-            try {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
-                    return@onGameAppClick
-                }
-                val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("name", name)
-                startService(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-    }
-
-    override fun startLoad(webView: WebView, url: String): String {
-        return url
-    }
-
     override fun supportSlideBack(): Boolean {
         return false
     }
@@ -703,9 +635,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     }
                     bookShelfFragment
                 }
-                1 -> recommendFragment
-                2 -> rankingFragment
-                3 -> categoryFragment
+                1 -> {
+                    recommendFragment
+                }
+                2 -> {
+                    rankingFragment
+                }
+
+                3 -> {
+                    categoryFragment
+                }
                 else -> null
             }
         }
@@ -804,6 +743,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         } else {
             dl_home_content.openMenu()
         }
+    }
+
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
     }
 
     companion object {

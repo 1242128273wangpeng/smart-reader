@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_tabulation_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_tabulation_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/top_navigation_bg_color"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
+                android:id="@+id/img_tabulation_header_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_16"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:contentDescription="@string/module_name"
+                android:src="@drawable/nbar_back_icon"/>
+
+            <TextView
+                android:id="@+id/txt_tabulation_header_title"
+                style="@style/style_text_huge_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+
+            <ImageView
+                android:id="@+id/img_tabulation_header_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_16"
+                android:contentDescription="@string/module_name"
+                android:src="@drawable/nbar_search_nor_icon"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.intelligent.reader.widget.topshadow.TopShadowWebView
+        android:id="@+id/web_tabulation_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_tabulation_header"/>
+
+    <ImageView
+        android:id="@+id/img_head_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_tabulation_header"
+        android:scaleType="fitXY"
+        android:src="@drawable/top_shadow_bg"
+        android:contentDescription="@string/module_name"
+        android:visibility="gone"/>
+
+</RelativeLayout>

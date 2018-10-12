@@ -10,7 +10,6 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.request.RequestService
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.txtqbmfyd.category_fragment_layout.*
@@ -29,6 +28,11 @@ class CategoryFragment : Fragment() {
     private lateinit var mCategoryPageAdapter: CategoryPageAdapter
 
     private val titles = arrayOf("男频", "女频")
+
+    // webview精选页面
+    private val WEB_CATEGORY_BOY = "/h5/{packageName}/categoryBoy"
+    // webview排行页面
+    private val WEB_CATEGORY_GIRL = "/h5/{packageName}/categoryGirl"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.category_fragment_layout, container, false)
@@ -66,11 +70,11 @@ class CategoryFragment : Fragment() {
     }
 
     // 男频
-    private val manCategoryFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val manCategoryFragment: CustomWebViewFragment by lazy {
+        val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_male")
-        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
+        val uri = WEB_CATEGORY_BOY.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "0"
         bundle.putString("url", UrlUtils.buildWebUrl(uri, map))
@@ -79,11 +83,11 @@ class CategoryFragment : Fragment() {
     }
 
     // 女频
-    private val girlCategoryFragment: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
+    private val girlCategoryFragment: CustomWebViewFragment by lazy {
+        val fragment = CustomWebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "category_female")
-        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
+        val uri = WEB_CATEGORY_GIRL.replace("{packageName}", AppUtils.getPackageName())
         val map = HashMap<String, String>()
         map["type"] = "1"
         bundle.putString("url", UrlUtils.buildWebUrl(uri, map))

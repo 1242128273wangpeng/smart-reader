@@ -19,4 +19,8 @@
     <string name="setting_qq_add">一键加群</string>
     <string name="setting_qq_add_fail">加群失败，请检查是否安装QQ</string>
 
+    <string name="push_setting_dialog_title">开启消息通知</string>
+    <string name="push_setting_dialog_subtitle">更多热门好书，精选书单及运营活动等你来看！</string>
+    <string name="push_setting_dialog_action">现在开启</string>
+
 </resources>
