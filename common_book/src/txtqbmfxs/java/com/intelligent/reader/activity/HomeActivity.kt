@@ -138,8 +138,9 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let {
-            if (intent.getIntExtra("position", 0) == 1) {
-                changeHomePagerIndex(1)
+            val position = intent.getIntExtra("position", -1)
+            if (position == 0 || position == 1) {
+                changeHomePagerIndex(position)
             }
 
         }
