@@ -31,6 +31,8 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -54,8 +56,6 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -413,12 +413,33 @@ public class SplashActivity extends FrameActivity {
 
         initializeDataFusion();
 
+        if(!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.DEL_WEBVIEW_CACHE,false)){
+            deleteFile(getCacheDir());
+            deleteFile(new File(getCacheDir().getParentFile(), "app_webview"));
+            SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.DEL_WEBVIEW_CACHE,true);
+        }
+
+
         // 安装快捷方式
         new InstallShotCutTask().execute();
 
         StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
         if (UserManager.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
+        }
+    }
+
+    private void deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                deleteFile(f);
+            }
+            file.delete();//如要保留文件夹，只删除文件，请注释这行
+            Log.d("SplashActivity", "files " + file.getAbsolutePath());
+        } else if (file.exists()) {
+            file.delete();
+            Log.d("SplashActivity", "files " + file.getAbsolutePath());
         }
     }
 

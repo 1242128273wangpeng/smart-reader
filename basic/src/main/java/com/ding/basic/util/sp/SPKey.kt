@@ -112,6 +112,12 @@ class SPKey {
 
         const val BOOK_SHELF_STATE = "book_shelf_state"//九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
 
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
+
 
         /**
          * 广告分版本，分渠道，分广告位开关控制

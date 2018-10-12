@@ -421,11 +421,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         updateUI()
         bookShelfDeleteDialog.dismiss()
         dismissRemoveMenu()
-        ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
+        ToastUtil.showToastMessage(if (onlyDeleteCache) R.string.bookshelf_delete_cache_success else R.string.bookshelf_delete_success)
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {

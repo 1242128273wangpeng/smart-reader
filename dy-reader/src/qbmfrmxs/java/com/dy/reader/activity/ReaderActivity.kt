@@ -210,7 +210,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
                 ReaderStatus.book.fromType = 1//打点 书籍封面（0）/书架（1）/上一页翻页（2）
-                if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+                if (ReaderStatus.book.fromQingoo()) {
                     ReaderStatus.book.channel_code = 1
                 } else {
                     ReaderStatus.book.channel_code = 2

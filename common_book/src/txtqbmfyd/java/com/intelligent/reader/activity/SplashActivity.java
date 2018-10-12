@@ -747,7 +747,6 @@ public class SplashActivity extends FrameActivity {
             }
             return null;
         }
-
     }
 
     @Override

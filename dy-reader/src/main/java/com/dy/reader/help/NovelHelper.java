@@ -251,6 +251,10 @@ public class NovelHelper {
             book.setReaded(1);
             book.setLast_read_time(System.currentTimeMillis());
 
+            if (book.getChapter_count() <= 0) {
+                book.setChapter_count(ReaderStatus.INSTANCE.getChapterCount());
+            }
+
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).updateBook(book);
         }

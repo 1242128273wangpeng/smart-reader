@@ -109,7 +109,7 @@ object Config {
     }
 
     fun loadRequestAPIHost(): String {
-        return requestAPIHost!!
+        return requestAPIHost
     }
 
     fun insertRequestParameter(@NotNull key: String, @NotNull value: String) {

@@ -328,7 +328,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
             Thread.sleep(1000)
             uiThread {
-                view?.onBookDelete()
+                view?.onBookDelete(onlyDeleteCache)
             }
 
             BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)

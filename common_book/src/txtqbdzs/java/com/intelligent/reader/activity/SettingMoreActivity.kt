@@ -2,24 +2,21 @@ package com.intelligent.reader.activity
 
 import android.os.Bundle
 import com.intelligent.reader.R
-import com.intelligent.reader.R.id.*
 import com.intelligent.reader.view.PushTimeDialog
 import com.umeng.message.IUmengCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
-import com.umeng.message.UmengMessageHandler
-
 import kotlinx.android.synthetic.txtqbdzs.act_setting_more.*
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.bean.SettingItems
-
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
-import java.util.*
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
+import java.util.*
 
 
 class SettingMoreActivity : BaseCacheableActivity() {
@@ -246,6 +243,10 @@ class SettingMoreActivity : BaseCacheableActivity() {
     private fun setBookShelfSort(type: Int) {
         img_book_sort_read.setImageResource(if (type != 1) R.drawable.bookshelf_delete_checked else R.drawable.bookshelf_delete_unchecked)
         img_book_sort_update.setImageResource(if (type == 1) R.drawable.bookshelf_delete_checked else R.drawable.bookshelf_delete_unchecked)
+    }
+
+    override fun onBackPressed() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),StartLogClickUtil.MORESET_PAGE,StartLogClickUtil.BACK,mapOf("type" to "2"))
     }
 
 }

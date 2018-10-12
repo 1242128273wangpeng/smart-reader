@@ -21,6 +21,8 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import java.util.*
 
 /**
@@ -191,7 +193,13 @@ fun Context.openPushActivity(msg: UMessage) {
     loge("umsg.activity: ${msg.activity}")
     intent.setClassName(this, msg.activity)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    startActivity(intent)
+    try {
+        startActivity(intent)
+    } catch (e: Exception) {
+        if (this is Activity) {
+            RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY)
+        }
+    }
     uploadPushLog(msg)
 }
 

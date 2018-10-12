@@ -65,7 +65,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         LayoutInflater.from(srl_refresh.context).inflate(R.layout.bookshelf_refresh_header, null)
     }
 
-    private val   bookshelfLayoutManager :ShelfGridLayoutManager by lazy{
+    private val bookshelfLayoutManager: ShelfGridLayoutManager by lazy {
         ShelfGridLayoutManager(activity, 3)
     }
 
@@ -205,13 +205,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
-        fl_bg_layout.post {
-            iconBgViewHeight = fl_bg_layout.height
+        if (fl_bg_layout != null) {
+            fl_bg_layout.post {
+                iconBgViewHeight = fl_bg_layout.height
+            }
+        } else {
+            iconBgViewHeight = AppUtils.dip2px(context, 220f)
         }
 
-        ll_container.post {
-            titleHeight = ll_container.height
-
+        ll_container?.let {
+            it.post {
+                titleHeight = it.height
+            }
         }
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
@@ -321,7 +326,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         recl_content.recycledViewPool.setMaxRecycledViews(0, 12)
 
 
-
         val bookshelfShelfSpanSizeLookup = BookShelfSpanSizeLookup(bookShelfAdapter)
         bookshelfLayoutManager.spanSizeLookup = bookshelfShelfSpanSizeLookup
 
@@ -341,17 +345,17 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
                 super.onScrolled(recyclerView, dx, dy)
 
                 mScrollDistance += dy
-                if(mScrollDistance>headerViewHeight){
-                    mScrollDistance=headerViewHeight
-                }else if(mScrollDistance<0){
-                    mScrollDistance=0
+                if (mScrollDistance > headerViewHeight) {
+                    mScrollDistance = headerViewHeight
+                } else if (mScrollDistance < 0) {
+                    mScrollDistance = 0
                 }
-                if(bookshelfLayoutManager.findFirstCompletelyVisibleItemPosition()==0){
-                    mScrollDistance=0
+                if (bookshelfLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                    mScrollDistance = 0
                 }
                 val percent = mScrollDistance * 1f / headerViewHeight
 
-                setTitleLayoutAlpha( percent)
+                setTitleLayoutAlpha(percent)
 
             }
         })
@@ -432,6 +436,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             }
             BookShelfLogger.uploadFirstOpenBooks()
         }
+        if (bookShelfPresenter.iBookList.isNotEmpty()) {
+            BookShelfLogger.uploadFirstOpenBooks()
+        }
+
     }
 
     /**
@@ -545,10 +553,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (isAdded && !requireActivity().isFinishing) {
             updateUI()
-            isEditMode=false
+            isEditMode = false
             bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
             ToastUtil.showToastMessage(R.string.bookshelf_delete_success)

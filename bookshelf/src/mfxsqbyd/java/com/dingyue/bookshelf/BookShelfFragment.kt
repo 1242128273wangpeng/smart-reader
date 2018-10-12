@@ -416,7 +416,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (isAdded && !requireActivity().isFinishing) {
             updateUI()
             bookShelfDeleteDialog.dismiss()

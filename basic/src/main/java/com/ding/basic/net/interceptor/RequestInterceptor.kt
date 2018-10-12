@@ -20,35 +20,35 @@ class RequestInterceptor : Interceptor {
 
     private fun buildRequestParameters(): Map<String, String> {
 
-        if (requestParameters["packageName"] == null) {
+        if (requestParameters["packageName"].isNullOrEmpty()) {
             requestParameters["packageName"] = Config.loadRequestParameter("packageName")
         }
 
-        if (requestParameters["os"] == null) {
+        if (requestParameters["os"].isNullOrEmpty()) {
             requestParameters["os"] = Config.loadRequestParameter("os")
         }
 
-        if (requestParameters["udid"] == null) {
+        if (requestParameters["udid"].isNullOrEmpty()) {
             requestParameters["udid"] = Config.loadRequestParameter("udid")
         }
 
-        if (requestParameters["version"] == null) {
+        if (requestParameters["version"].isNullOrEmpty()) {
             requestParameters["version"] = Config.loadRequestParameter("version")
         }
 
-        if (requestParameters["channelId"] == null) {
+        if (requestParameters["channelId"].isNullOrEmpty()) {
             requestParameters["channelId"] = Config.loadRequestParameter("channelId")
         }
 
-        if (requestParameters["latitude"] == null) {
+        if (requestParameters["latitude"].isNullOrEmpty()) {
             requestParameters["latitude"] = Config.loadRequestParameter("latitude")
         }
 
-        if (requestParameters["longitude"] == null) {
+        if (requestParameters["longitude"].isNullOrEmpty()) {
             requestParameters["longitude"] = Config.loadRequestParameter("longitude")
         }
 
-        if (requestParameters["cityCode"] == null) {
+        if (requestParameters["cityCode"].isNullOrEmpty()) {
             requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
         }
 

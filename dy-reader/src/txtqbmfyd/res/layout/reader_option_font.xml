@@ -79,7 +79,7 @@
 
         <com.dy.reader.view.LRadioGroup
             android:id="@+id/rg_reader_spacing_group"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center"
@@ -90,6 +90,7 @@
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
+                android:layout_weight="1.0"
                 android:background="@null"
                 android:button="@drawable/reader_option_spacing_0_2_sel"/>
 
@@ -98,7 +99,7 @@
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="75dp"
+                android:layout_weight="1.0"
                 android:background="@null"
                 android:button="@drawable/reader_option_spacing_0_5_sel"/>
 
@@ -107,7 +108,7 @@
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="75dp"
+                android:layout_weight="1.0"
                 android:background="@null"
                 android:button="@drawable/reader_option_spacing_1_0_sel"/>
 
@@ -116,7 +117,6 @@
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="75dp"
                 android:background="@null"
                 android:button="@drawable/reader_option_spacing_1_5_sel"
                 android:gravity="center"/>

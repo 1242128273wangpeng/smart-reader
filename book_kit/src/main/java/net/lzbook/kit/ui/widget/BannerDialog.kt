@@ -2,6 +2,7 @@ package net.lzbook.kit.ui.widget
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.view.Gravity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
@@ -12,6 +13,8 @@ import com.ding.basic.util.sp.SPUtils
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.R
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.user.UserManager
 
 
@@ -33,9 +36,17 @@ class BannerDialog(val activity: Activity,var intent:Intent) {
         dialog.setCancelable(true)
 
         dialog.img_banner.setOnClickListener {
-            intent.putExtra("url", bannerWebUrl)
-            intent.putExtra("title", "推荐书单")
-            activity.startActivity(intent)
+//            val intent = Intent()
+//            intent.setClass(activity, FindBookDetail::class.java)
+//            intent.putExtra("url", bannerWebUrl)
+//            intent.putExtra("title", "推荐书单")
+//            activity.startActivity(intent)
+
+            val bundle = Bundle()
+            bundle.putString("url", bannerWebUrl)
+            bundle.putString("title", "推荐书单")
+            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+
             dialog.dismiss()
 
             // 弹窗点击，status记录登录状态：1未登录、2已登录

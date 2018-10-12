@@ -50,6 +50,7 @@ public class BookApplication extends BaseBookApplication {
     }
 
     private static final String TAG = "BookApplication";
+
     @Override
     public void onCreate() {
         super.onCreate();

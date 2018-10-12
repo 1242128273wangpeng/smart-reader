@@ -21,14 +21,13 @@ public class ReplaceConstants {
     public String ALIFEEDBACK_SECRET;
 
 
-
     public String BOOK_NOVEL_DEPLOY_HOST;
     public String BOOK_WEBVIEW_HOST;
 
     public String MICRO_API_HOST;
     public String CONTENT_API_HOST;
 
-    public final static String BUILD_CONFIG_PROVIDER="/common_book/SwitchADActivity";
+    public final static String BUILD_CONFIG_PROVIDER = "/common_book/SwitchADActivity";
 
     private ReplaceConstants() {
 //        APP_PATH = Config.INSTANCE.getSDCARD_PATH() + ResourceUtil.getStringById(R.string.app_path);
@@ -53,33 +52,38 @@ public class ReplaceConstants {
 //        MICRO_API_HOST = ResourceUtil.getStringById(R.string.micro_api_host);
 //        CONTENT_API_HOST = ResourceUtil.getStringById(R.string.content_api_host);
 
-        IBuildConfigProvider buidCofig=(IBuildConfigProvider) ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation();
-        APP_PATH = Config.INSTANCE.getSDCARD_PATH() + buidCofig.getAppPath();
-        APP_PATH_BOOK = APP_PATH +"/book/";
+        IBuildConfigProvider buildConfigProvider =
+                (IBuildConfigProvider) ARouter.getInstance().build(
+                        BUILD_CONFIG_PROVIDER).navigation();
+
+        APP_PATH = Config.INSTANCE.getSDCARD_PATH() + buildConfigProvider.getAppPath();
+        APP_PATH_BOOK = APP_PATH + "/book/";
         APP_PATH_CACHE = APP_PATH + "/cache/";
         APP_PATH_DOWNLOAD = APP_PATH + "/download/";
         APP_PATH_IMAGE = APP_PATH + "/image/";
         APP_PATH_LOG = APP_PATH + "/log/";
+
         DEFAULT_IMAGE_URL = "http://image.book.easou.com/i/default/cover.jpg";
 
-        BOOK_NOVEL_DEPLOY_HOST =buidCofig.getBookNovelDeployHost();
-        BOOK_WEBVIEW_HOST =buidCofig.getBookWebviewHost();
+        DATABASE_NAME = buildConfigProvider.getDatabaseName();
 
-        DATABASE_NAME = buidCofig.getDatabaseName();
+        PUSH_KEY = buildConfigProvider.getPushKey();
+        BAIDU_STAT_ID = buildConfigProvider.getBaiduStatId();
+        ALIFEEDBACK_KEY = buildConfigProvider.getAlifeedbackKey();
+        ALIFEEDBACK_SECRET = buildConfigProvider.getAlifeedbackSecret();
 
-        BAIDU_STAT_ID = buidCofig.getBaiduStatId();
-        PUSH_KEY = buidCofig.getPushKey();
-        ALIFEEDBACK_KEY = buidCofig.getAlifeedbackKey();
-        ALIFEEDBACK_SECRET = buidCofig.getAlifeedbackSecret();
+        BOOK_WEBVIEW_HOST = buildConfigProvider.getBookWebviewHost();
+        BOOK_NOVEL_DEPLOY_HOST = buildConfigProvider.getBookNovelDeployHost();
 
-        MICRO_API_HOST =buidCofig.getMicroApiHost();
-        CONTENT_API_HOST =buidCofig.getContentApiHost();
+        MICRO_API_HOST = buildConfigProvider.getMicroApiHost();
+        CONTENT_API_HOST = buildConfigProvider.getContentApiHost();
 
     }
 
     public static ReplaceConstants getReplaceConstants() {
-        if (replaceConstants == null)
+        if (replaceConstants == null) {
             replaceConstants = new ReplaceConstants();
+        }
         return replaceConstants;
     }
 }

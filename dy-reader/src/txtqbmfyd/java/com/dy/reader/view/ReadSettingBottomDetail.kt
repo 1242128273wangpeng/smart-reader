@@ -28,7 +28,9 @@ import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_background.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_bottom.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_chapter_change.view.*
+import kotlinx.android.synthetic.txtqbmfyd.reader_option_detail.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_font.view.*
+import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.*
@@ -91,7 +93,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         isCustomSpaceSet()
         initPageMode()
-        setFontSize()
 
         ckb_reader_landscape.isChecked = readerSettings.isLandscape
         ckb_reader_full_screen.isChecked = readerSettings.isFullScreenRead
@@ -110,6 +111,16 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 .setUnit("字号: ")
                 .build()
         setFontSize()
+
+        fl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
     }
 
     private fun resetBtn(isSlideUp: Boolean) {

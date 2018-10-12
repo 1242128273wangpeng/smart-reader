@@ -7,11 +7,11 @@ import com.ding.basic.bean.AdControlByChannelBean
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
+import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
-import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.RequestRepositoryFactory
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
@@ -26,6 +26,7 @@ import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.contract.web.WebResourceCache
 import java.util.*
 
 class DynamicParameter(private val context: Context) {
@@ -237,6 +238,10 @@ class DynamicParameter(private val context: Context) {
 
         SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, map.user_tag_host)
 
+        SPUtils.putOnlineConfigSharedString(SPKey.DY_STATIC_RESOURCE_RULE, map.DY_static_resource_rule)
+
+        SPUtils.putOnlineConfigSharedString(SPKey.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
+
         // 保存动态参数校验版本号
         if (mCurVersion < mReqVersion) {
             SPUtils.putDefaultSharedInt(SPKey.DYNAMIC_VERSION, mReqVersion)
@@ -268,6 +273,8 @@ class DynamicParameter(private val context: Context) {
 
         initApi()
 
+        initWebResource()
+
         setBaidu()
 
         setAdControl()
@@ -281,6 +288,24 @@ class DynamicParameter(private val context: Context) {
         setNetWorkLimit()
 
         AppLog.d("um_param", " real param ==> " + this.toString())
+    }
+
+    private fun initWebResource() {
+
+        val webStaticResources = SPUtils.getOnlineConfigSharedString(SPKey.DY_WEB_STATIC_RESOURCES)
+
+        if (webStaticResources.isNotEmpty()) {
+
+            val customWebViewCache = WebResourceCache.loadCustomWebViewCache()
+
+            val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            for (resource in resourceList) {
+                if (resource.isNotEmpty()) {
+                    customWebViewCache.checkWebViewResourceCached(resource)
+                }
+            }
+        }
     }
 
 
