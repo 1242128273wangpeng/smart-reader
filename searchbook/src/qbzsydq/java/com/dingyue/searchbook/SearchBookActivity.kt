@@ -11,10 +11,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.searchbook.fragment.HistoryFragment
-import com.dingyue.searchbook.fragment.HotWordFragment
-import com.dingyue.searchbook.fragment.SearchResultFragment
-import com.dingyue.searchbook.fragment.SuggestFragment
+import com.dingyue.searchbook.fragment.*
 import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.interfaces.OnResultListener
 import kotlinx.android.synthetic.qbzsydq.activity_search_book.*
@@ -37,12 +34,8 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
     private var lastFragment: Fragment? = null
 
-    private val historyFragment: HistoryFragment by lazy {
-        HistoryFragment()
-    }
-
-    private val hotWordFragment: HotWordFragment by lazy {
-        HotWordFragment()
+    private val hotAndHisFragment: HotAndHisFragment by lazy {
+        HotAndHisFragment()
     }
 
     private val suggestFragment: SuggestFragment by lazy {
@@ -80,8 +73,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
                 search_result_input.requestFocus()
                 showSoftKeyboard(search_result_input)
 
-                showFragment(historyFragment)
-                historyFragment.loadHistoryRecord()
             }
             search_result_btn.id -> {
                 val keyword = search_result_input.text.toString()
@@ -102,11 +93,9 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
     private fun initView() {
 
-        lastFragment = hotWordFragment
+        lastFragment = hotAndHisFragment
 
-        supportFragmentManager.beginTransaction().add(R.id.search_result_hint, hotWordFragment).commit()
-        supportFragmentManager.beginTransaction().add(R.id.search_result_hint, historyFragment)
-                .hide(historyFragment).commit()
+        supportFragmentManager.beginTransaction().add(R.id.search_result_hint, hotAndHisFragment).commit()
         supportFragmentManager.beginTransaction().add(R.id.search_result_hint, suggestFragment)
                 .hide(suggestFragment).commit()
         supportFragmentManager.beginTransaction().add(R.id.search_result_hint, searchResultFragment)
@@ -123,7 +112,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_input.addTextChangedListener(this)
         search_result_btn.setOnClickListener(this)
 
-        historyFragment.onKeyWordListener = this
+        hotAndHisFragment.onKeyWordListener = this
 
         suggestFragment.onSuggestClickListener = object : SuggestFragment.OnSuggestClickListener {
             override fun onSuggestClick(history: String, searchType: String) {
@@ -134,7 +123,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
         }
 
-        hotWordFragment.onResultListener = object : OnResultListener<String> {
+        hotAndHisFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
                 inputKeyWord(result)
                 showFragment(searchResultFragment)
@@ -165,7 +154,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
             editable?.clear()
         }
 
-
         val searchWord = AppUtils.deleteAllIllegalChar(editable.toString())
 
         //保存用户搜索词
@@ -173,8 +161,8 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
         //当搜索词为空是显示搜索历史界面
         if (searchWord.isNullOrEmpty()) {
-            showFragment(historyFragment)
-            historyFragment.loadHistoryRecord()
+            showFragment(hotAndHisFragment)
+            hotAndHisFragment.loadHistoryRecord()
         } else {
             showFragment(suggestFragment)
             suggestFragment.obtainKeyWord(search_result_input.text.toString())
