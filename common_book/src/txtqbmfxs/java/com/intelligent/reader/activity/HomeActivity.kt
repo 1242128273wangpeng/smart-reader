@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -133,8 +134,18 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     override fun onClick(v: View) {
         when (v.id) {
-            bookshelf_search.id -> intentSearch()
-            bookshelf_setting.id -> RouterUtil.navigation(this, RouterConfig.SETTING_ACTIVITY)
+            bookshelf_search.id -> {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return
+                }
+                intentSearch()
+            }
+            bookshelf_setting.id -> {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return
+                }
+                RouterUtil.navigation(this, RouterConfig.SETTING_ACTIVITY)
+            }
             ll_home_bookshelf.id -> {
                 view_pager.currentItem = 0
                 bottomType = 1
@@ -365,7 +376,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     private fun switchState(isBookShelf: Boolean) {
         ll_home_bookshelf?.isSelected = isBookShelf
         ll_home_bookstore?.isSelected = !isBookShelf
-        if(ll_home_bookstore?.isSelected == true){
+        if (ll_home_bookstore?.isSelected == true) {
             bookShelfFragment?.dismissRemoveMenu()
         }
     }
