@@ -48,7 +48,7 @@ class ReaderSettings {
             Reader.context.getSharedPreferences(READER_CONFIG, Context.MODE_PRIVATE)
         }
 
-        const val DEFAULT_BRIGHTNESS = 20
+        const val DEFAULT_BRIGHTNESS = 80
         const val NOT_SET_BRIGHTNESS = -1
     }
 
