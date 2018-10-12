@@ -245,6 +245,9 @@ class SharedPreUtil(val type: Int) {
          * **/
         const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
         const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
+
+        const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
+
     }
 
 

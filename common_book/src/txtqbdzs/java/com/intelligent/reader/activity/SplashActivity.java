@@ -246,7 +246,19 @@ public class SplashActivity extends FrameActivity {
             txt_name.setText(R.string.app_name);
             upgradeBookDB(bookDBName, chapterDBList);
         } else {
+            // 选择兴趣
+            selectInterest();
+        }
+    }
+
+    private void selectInterest() {
+        if (sharedPreUtil == null) sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        if (sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 1) == 1) {
             doOnCreate();
+        } else {
+            // 选择兴趣
+            Intent intent = new Intent(this, SelectInterestActivity.class);
+            startActivityForResult(intent, 1);
         }
     }
 
@@ -424,8 +436,9 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext());
+        RequestRepositoryFactory loadRequest =
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
 
         books = loadRequest.loadBooks();
 
@@ -441,7 +454,8 @@ public class SplashActivity extends FrameActivity {
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2
+                        && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     loadRequest.updateBook(book);
                     loadRequest.deleteBookFix(book.getBook_id());
