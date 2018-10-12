@@ -41,6 +41,7 @@ class BannerDialog(val activity: Activity) {
             val bundle = Bundle()
             bundle.putString("url", bannerWebUrl)
             bundle.putString("title", "推荐书单")
+            bundle.putString("from", "banner_dialog")
             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
 
             dialog.dismiss()
