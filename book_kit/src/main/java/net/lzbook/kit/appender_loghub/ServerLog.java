@@ -38,6 +38,9 @@ public class ServerLog {
             if (!mContent.containsKey("udid")) {
                 mContent.put("udid", OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));//用户ID（唯一,跟设备有关系）
             }
+            if (!mContent.containsKey("packagename")) {
+                mContent.put("packagename", AppUtils.getPackageName());//app包名
+            }
             AppLog.e("liebiao", type + "===");
         } else if (type.equals(PLItemKey.ZN_APP_EVENT)) {
             if (!mContent.containsKey("project")) {
