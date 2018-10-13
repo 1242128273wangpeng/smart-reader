@@ -2,14 +2,18 @@ package com.intelligent.reader.util;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.ding.basic.Config;
+import com.ding.basic.bean.Interest;
 import com.dingyue.contract.util.SharedPreUtil;
 import com.dy.media.MediaConfig;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
@@ -18,6 +22,8 @@ import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.LoadDataManager;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.OpenUDID;
+
+import java.util.List;
 
 /**
  * 屏蔽管理类
@@ -105,7 +111,36 @@ public class ShieldManager {
         LoadDataManager loadDataManager = new LoadDataManager(context);
         if (!sharedPreUtil.getBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS)) {
             // 首次安装新用户添加默认书籍
-            loadDataManager.addDefaultBooks(Constants.SGENDER);
+            int hasSelectInterest = sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 0);
+            if (hasSelectInterest == 0) {
+                // 无选兴趣功能，执行原有逻辑
+                loadDataManager.addDefaultBooks(Constants.SGENDER);
+            } else if (hasSelectInterest == -1) {
+                // 选择兴趣时，选择跳过
+                loadDataManager.addDefaultBooksWithInterest("", "");
+            } else if (hasSelectInterest == 1) {
+                // 获取用户选择的兴趣
+                List<Interest> list = new Gson().fromJson(
+                        sharedPreUtil.getString(SharedPreUtil.SELECTED_INTEREST_DATA),
+                        new TypeToken<List<Interest>>() {
+                        }.getType());
+                StringBuilder labelOne = new StringBuilder();
+                StringBuilder labelTwo = new StringBuilder();
+                for (Interest item : list) {
+                    if (item.getType() == 1) {
+                        labelOne.append(item.getName()).append(",");
+                    } else {
+                        labelTwo.append(item.getName()).append(",");
+                    }
+                }
+                // 移除最后 逗号
+                labelOne.deleteCharAt(labelOne.length() - 1);
+                labelTwo.deleteCharAt(labelTwo.length() - 1);
+                Log.e("=====",
+                        "labelOne：" + labelOne.toString() + "    labelTwo：" + labelTwo.toString());
+                loadDataManager.addDefaultBooksWithInterest(labelOne.toString(),
+                        labelTwo.toString());
+            }
         }
     }
 

@@ -11,4 +11,6 @@ import com.ding.basic.bean.Interest
 interface InterestView {
 
     fun showInterestList(list: List<Interest>)
+
+    fun showError(message: String)
 }

@@ -21,6 +21,10 @@ import com.ding.basic.util.ParserUtil
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.FlowableEmitter
+import io.reactivex.FlowableOnSubscribe
 import io.reactivex.*
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -32,6 +36,7 @@ import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import org.json.JSONException
 import java.io.IOException
 import java.util.*
@@ -62,7 +67,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     override fun requestDefaultBooks(sex: Int, requestSubscriber: RequestSubscriber<Boolean>) {
         InternetRequestRepository.loadInternetRequestRepository(context).requestDefaultBooks(sex)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
-                .doOnNext({
+                .doOnNext {
                     if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
                         for (book in it.data?.coverList!!) {
                             if (!TextUtils.isEmpty(book.book_id)) {
@@ -75,7 +80,41 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             }
                         }
                     }
+                }
+                .subscribe({ result ->
+                    if (result != null) {
+                        if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
+                            requestSubscriber.onNext(true)
+                        } else {
+                            requestSubscriber.onError(Throwable("获取默认书籍异常！"))
+                        }
+                    } else {
+                        requestSubscriber.onError(Throwable("获取默认书籍异常！"))
+                    }
+                }, { throwable ->
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求默认书籍完成！")
                 })
+    }
+
+    fun requestDefaultBooks(firstType: String, secondType: String, requestSubscriber: RequestSubscriber<Boolean>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestDefaultBooks(firstType, secondType)!!
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
+                .doOnNext {
+                    if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
+                        for (book in it.data?.coverList!!) {
+                            if (!TextUtils.isEmpty(book.book_id)) {
+
+                                val localBook = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book.book_id)
+
+                                if (localBook == null) {
+                                    LocalRequestRepository.loadLocalRequestRepository(context).insertBook(book)
+                                }
+                            }
+                        }
+                    }
+                }
                 .subscribe({ result ->
                     if (result != null) {
                         if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
@@ -1952,5 +1991,25 @@ class RequestRepositoryFactory private constructor(private val context: Context)
             e.printStackTrace()
             return false
         }
+    }
+
+    /**
+     * 下载语音插件
+     */
+    fun downloadVoicePlugin(): Flowable<ResponseBody> {
+        return InternetRequestRepository.loadInternetRequestRepository(context).downloadVoicePlugin()
+    }
+
+    /**
+     * 获取兴趣列表
+     */
+    fun getInterestList(requestSubscriber: RequestSubscriber<BasicResult<InterestDto>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).getInterest()?.subscribeBy(
+                onNext = { res ->
+                    requestSubscriber.onNext(res)
+                },
+                onError = { t ->
+                    requestSubscriber.onError(t)
+                })
     }
 }

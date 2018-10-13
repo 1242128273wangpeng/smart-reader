@@ -248,6 +248,8 @@ class SharedPreUtil(val type: Int) {
 
         const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
 
+        const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
+
     }
 
 

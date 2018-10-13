@@ -60,6 +60,23 @@ object RequestAPI {
         }
     }
 
+    /**
+     * 选择兴趣
+     * @param firstType 一级分类
+     * @param secondType 二级分类
+     */
+    fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
+        return requestService.requestDefaultBooks(firstType, secondType)
+    }
+
+    /**
+     * 获取兴趣列表
+     */
+    fun getInterestList(): Flowable<BasicResult<InterestDto>>? {
+        // TODO 未实现
+        return null
+    }
+
     fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return requestService.requestApplicationUpdate(parameters)
     }

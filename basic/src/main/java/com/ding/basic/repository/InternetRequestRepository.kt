@@ -46,6 +46,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestDefaultBooks(sex)
     }
 
+    fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
+        return RequestAPI.requestDefaultBooks(firstType, secondType)
+    }
+
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }
@@ -273,4 +277,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
         return RequestAPI.downloadFont(fontName)
     }
+
+    fun downloadVoicePlugin(): Flowable<ResponseBody> = RequestAPI.downloadVoicePlugin()
+
+    fun getInterest(): Flowable<BasicResult<InterestDto>>? = RequestAPI.getInterestList()
 }
