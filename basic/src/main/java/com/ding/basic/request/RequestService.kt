@@ -4,7 +4,6 @@ import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
@@ -59,7 +58,6 @@ interface RequestService {
 
         //来源列表
         const val SOURCE_LIST = "/v5/book/source"
-
 
         /**
          * 搜索按钮（h5为前后端分离后的接口）
@@ -235,6 +233,11 @@ interface RequestService {
         const val FONT_URL = "https://sta.zhuishuwang.com/cc-remennovel/apk/"
 
         /**
+         * 语音插件包下载地址
+         */
+        const val VOICE_PLUGIN_URL = "http://zn-app-plugin.oss-cn-hangzhou.aliyuncs.com/Android/voice_plugin.zip"
+
+        /**
          * 二维码 拉新
          */
         const val QR_CODE = "/h5/{packageName}/share"
@@ -277,9 +280,6 @@ interface RequestService {
 
     @GET(DEFAULT_BOOK)
     fun requestDefaultBooks(): Flowable<BasicResult<CoverList>>
-
-    @GET(DEFAULT_BOOK)
-    fun requestDefaultBooks(@Query("labelOne") first: String, @Query("labelTwo") second: String): Flowable<BasicResult<CoverList>>
 
     // sex：0全部 1男 2女
     @GET(DEFAULT_BOOK)
@@ -468,5 +468,11 @@ interface RequestService {
     @Streaming
     @GET
     fun downloadFont(@Url url: String): Flowable<ResponseBody>
+
+    @Streaming
+    @GET(VOICE_PLUGIN_URL)
+    fun downloadVoicePlugin(): Flowable<ResponseBody>
+
+
 
 }

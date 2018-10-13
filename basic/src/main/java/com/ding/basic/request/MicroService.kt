@@ -27,6 +27,12 @@ interface MicroService {
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/union/book/down"
 
+        // 兴趣列表
+        const val INTEREST_LIST = "/union/bookrack/label"
+
+        //默认书架
+        const val DEFAULT_BOOK = "/union/bookrack/labelCover"
+
     }
 
     @GET(AUTH_ACCESS)
@@ -62,4 +68,9 @@ interface MicroService {
     @GET(DOWN_TASK_CONFIG)
     fun requestDownTaskConfig(@Query(value = "bookId") str: String, @Query(value = "bookSourceId") str2: String, @Query(value = "type") i: Int, @Query(value = "chapterId") str3: String): Flowable<BasicResult<CacheTaskConfig>>
 
+    @GET(INTEREST_LIST)
+    fun getInterestList(): Flowable<BasicResult<InterestDto>>
+
+    @GET(DEFAULT_BOOK)
+    fun requestDefaultBooks(@Query("labelOne") first: String, @Query("labelTwo") second: String): Flowable<BasicResult<CoverList>>
 }

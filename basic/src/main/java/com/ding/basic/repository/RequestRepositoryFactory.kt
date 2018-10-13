@@ -2004,12 +2004,28 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      * 获取兴趣列表
      */
     fun getInterestList(requestSubscriber: RequestSubscriber<BasicResult<InterestDto>>) {
-        InternetRequestRepository.loadInternetRequestRepository(context).getInterest()?.subscribeBy(
-                onNext = { res ->
-                    requestSubscriber.onNext(res)
-                },
-                onError = { t ->
-                    requestSubscriber.onError(t)
+        InternetRequestRepository.loadInternetRequestRepository(context).getInterest()!!
+                .compose(SchedulerHelper.schedulerHelper<BasicResult<InterestDto>>())
+                .subscribe({
+                    if (it != null) {
+                        when {
+                            it.checkPrivateKeyExpire() -> requestAuthAccess {
+                                if (it) {
+                                    getInterestList(requestSubscriber)
+                                }
+                            }
+                            it.checkResultAvailable() -> {
+                                requestSubscriber.requestResult(it)
+                            }
+                        }
+                    } else {
+                        Logger.e(" 获取兴趣列表结果异常！")
+                    }
+                }, { throwable ->
+                    throwable.printStackTrace()
+                    Logger.e(" 获取兴趣列表异常: " + throwable.toString())
+                }, {
+                    Logger.e(" 获取兴趣列表完成！")
                 })
     }
 }

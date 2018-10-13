@@ -47,7 +47,7 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
-        return RequestAPI.requestDefaultBooks(firstType, secondType)
+        return MicroAPI.requestDefaultBooks(firstType, secondType)
     }
 
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
@@ -280,5 +280,5 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     fun downloadVoicePlugin(): Flowable<ResponseBody> = RequestAPI.downloadVoicePlugin()
 
-    fun getInterest(): Flowable<BasicResult<InterestDto>>? = RequestAPI.getInterestList()
+    fun getInterest(): Flowable<BasicResult<InterestDto>>? = MicroAPI.getInterestList()
 }
