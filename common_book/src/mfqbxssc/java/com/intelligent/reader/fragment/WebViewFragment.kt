@@ -159,7 +159,7 @@ class WebViewFragment : Fragment() {
                                     else -> bundle.putString("from", "other")
                                 }
                             } else {
-                                bundle.putString("from", "other")
+                                bundle.putString("from", "authorType")
                             }
 
                             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
