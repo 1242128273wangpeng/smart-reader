@@ -28,7 +28,10 @@ import kotlinx.android.synthetic.mfqbxssc.reader_option_bottom.view.*
 import kotlinx.android.synthetic.mfqbxssc.reader_option_detail.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.ResourceUtil
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 
@@ -94,6 +97,16 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         ckb_reader_full_screen.isChecked = readerSettings.isFullScreenRead
 
         resetBtn(Constants.isSlideUp)
+
+        rl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
 
     }
 
