@@ -134,8 +134,12 @@ public class ShieldManager {
                     }
                 }
                 // 移除最后 逗号
-                labelOne.deleteCharAt(labelOne.length() - 1);
-                labelTwo.deleteCharAt(labelTwo.length() - 1);
+                if (labelOne.length() > 0 && labelOne.lastIndexOf(",") == labelOne.length() - 1) {
+                    labelOne.deleteCharAt(labelOne.length() - 1);
+                }
+                if (labelTwo.length() > 0 && labelTwo.lastIndexOf(",") == labelTwo.length() - 1) {
+                    labelTwo.deleteCharAt(labelTwo.length() - 1);
+                }
                 Log.e("=====",
                         "labelOne：" + labelOne.toString() + "    labelTwo：" + labelTwo.toString());
                 loadDataManager.addDefaultBooksWithInterest(labelOne.toString(),

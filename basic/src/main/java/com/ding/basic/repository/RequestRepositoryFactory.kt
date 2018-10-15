@@ -102,7 +102,13 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         InternetRequestRepository.loadInternetRequestRepository(context).requestDefaultBooks(firstType, secondType)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
                 .doOnNext {
-                    if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
+                    if (it != null && it.checkPrivateKeyExpire()) {
+                        requestAuthAccess {
+                            if (it) {
+                                requestDefaultBooks(firstType, secondType, requestSubscriber)
+                            }
+                        }
+                    } else if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
                         for (book in it.data?.coverList!!) {
                             if (!TextUtils.isEmpty(book.book_id)) {
 
@@ -126,6 +132,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         requestSubscriber.onError(Throwable("获取默认书籍异常！"))
                     }
                 }, { throwable ->
+                    throwable.printStackTrace()
                     requestSubscriber.onError(throwable)
                 }, {
                     Logger.v("请求默认书籍完成！")
@@ -2020,6 +2027,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         }
                     } else {
                         Logger.e(" 获取兴趣列表结果异常！")
+                        requestSubscriber.requestError("获取兴趣列表结果异常")
                     }
                 }, { throwable ->
                     throwable.printStackTrace()

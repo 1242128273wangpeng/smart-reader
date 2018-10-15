@@ -45,7 +45,7 @@ class InterestPresenter(val context: Context, private val interestView: Interest
         val list = ArrayList<Interest>()
         (0 until (one.size + two.size)).map {
             val pos: Int = it / 2
-            if (pos % 2 == 0) {
+            if (it % 2 == 0) {
                 // 偶数 取one中的数据
                 val item = Interest(one[pos])
                 item.type = 1
