@@ -158,6 +158,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                 if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                     return
                 }
+                HomeLogger.uploadHomePersonal()
                 RouterUtil.navigation(this, RouterConfig.SETTING_ACTIVITY)
             }
             ll_home_bookshelf.id -> {
@@ -394,6 +395,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         ll_home_bookstore?.isSelected = !isBookShelf
         if (ll_home_bookstore?.isSelected == true) {
             bookShelfFragment?.dismissRemoveMenu()
+            bottomType = 2
         }
     }
 
