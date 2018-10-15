@@ -361,7 +361,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             updateUI()
             bookShelfDeleteDialog.dismiss()
             dismissRemoveMenu()
-            CommonUtil.showToastMessage(if(onlyDeleteCache) R.string.bookshelf_delete_cache_success else R.string.bookshelf_delete_success)
+            CommonUtil.showToastMessage(if (onlyDeleteCache) R.string.bookshelf_delete_cache_success else R.string.bookshelf_delete_success)
         }
     }
 

@@ -23,7 +23,6 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.doAsync
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList

@@ -20,7 +20,6 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus

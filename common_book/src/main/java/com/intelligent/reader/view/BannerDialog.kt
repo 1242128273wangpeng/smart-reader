@@ -40,7 +40,7 @@ class BannerDialog(val activity: Activity) {
         dialog.setCancelable(true)
 
         dialog.img_banner.setOnClickListener {
-//            val intent = Intent()
+            //            val intent = Intent()
 //            intent.setClass(activity, FindBookDetail::class.java)
 //            intent.putExtra("url", bannerWebUrl)
 //            intent.putExtra("title", bannerWebTitle)

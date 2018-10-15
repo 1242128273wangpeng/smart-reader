@@ -262,9 +262,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                     isPositive = !isPositive
 
-                    if(!is_last_chapter){
+                    if (!is_last_chapter) {
                         Collections.reverse(chapterList)
-                    }else{
+                    } else {
                         is_last_chapter = false
                     }
 
