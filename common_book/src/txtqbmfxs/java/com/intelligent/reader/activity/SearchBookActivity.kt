@@ -185,7 +185,7 @@ class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeListen
                             val bundle = Bundle()
                             bundle.putString("url", redirect.url)
                             bundle.putString("title", redirect.title)
-                            bundle.putString("from", "other")
+                            bundle.putString("from", "authorType")
 
                             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
                         }

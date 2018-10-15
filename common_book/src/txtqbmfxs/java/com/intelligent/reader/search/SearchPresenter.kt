@@ -228,7 +228,7 @@ class SearchPresenter(private val mContext: SearchBookActivity,
                 val bundle = Bundle()
                 bundle.putString("url", mUrl)
                 bundle.putString("title", "作者主页")
-                bundle.putString("from", "other")
+                bundle.putString("from", "authorType")
                 RouterUtil.navigation(mContext, RouterConfig.TABULATION_ACTIVITY, bundle)
                 return
             } catch (e: Exception) {
