@@ -87,7 +87,7 @@ object MicroAPI {
     /**
      * 获取兴趣列表
      */
-    fun getInterestList(): Flowable<BasicResult<InterestDto>>? {
+    fun getInterestList(): Flowable<BasicResult<List<Interest>>>? {
         return microService.getInterestList()
     }
 }

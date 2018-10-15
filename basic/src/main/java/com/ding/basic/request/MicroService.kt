@@ -71,7 +71,7 @@ interface MicroService {
     fun requestDownTaskConfig(@Query(value = "bookId") str: String, @Query(value = "bookSourceId") str2: String, @Query(value = "type") i: Int, @Query(value = "chapterId") str3: String): Flowable<BasicResult<CacheTaskConfig>>
 
     @GET(INTEREST_LIST)
-    fun getInterestList(): Flowable<BasicResult<InterestDto>>
+    fun getInterestList(): Flowable<BasicResult<List<Interest>>>
 
     @GET(DEFAULT_BOOK)
     fun requestDefaultBooks(@Query("labelOne") first: String, @Query("labelTwo") second: String): Flowable<BasicResult<CoverList>>

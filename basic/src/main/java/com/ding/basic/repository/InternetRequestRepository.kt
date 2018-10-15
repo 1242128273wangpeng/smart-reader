@@ -280,5 +280,5 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     fun downloadVoicePlugin(): Flowable<ResponseBody> = RequestAPI.downloadVoicePlugin()
 
-    fun getInterest(): Flowable<BasicResult<InterestDto>>? = MicroAPI.getInterestList()
+    fun getInterest(): Flowable<BasicResult<List<Interest>>>? = MicroAPI.getInterestList()
 }

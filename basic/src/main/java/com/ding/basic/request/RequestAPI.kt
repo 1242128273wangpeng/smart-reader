@@ -275,4 +275,6 @@ object RequestAPI {
         return requestService.downloadFont(url)
     }
 
+    fun downloadVoicePlugin(): Flowable<ResponseBody> = requestService.downloadVoicePlugin()
+
 }

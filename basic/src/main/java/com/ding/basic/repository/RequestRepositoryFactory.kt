@@ -2010,9 +2010,9 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     /**
      * 获取兴趣列表
      */
-    fun getInterestList(requestSubscriber: RequestSubscriber<BasicResult<InterestDto>>) {
+    fun getInterestList(requestSubscriber: RequestSubscriber<BasicResult<List<Interest>>>) {
         InternetRequestRepository.loadInternetRequestRepository(context).getInterest()!!
-                .compose(SchedulerHelper.schedulerHelper<BasicResult<InterestDto>>())
+                .compose(SchedulerHelper.schedulerHelper<BasicResult<List<Interest>>>())
                 .subscribe({
                     if (it != null) {
                         when {

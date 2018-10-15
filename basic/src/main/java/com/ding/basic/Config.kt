@@ -96,6 +96,8 @@ object Config {
         microAPIHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
         contentAPIHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
+
+        //        microAPIHost = "https://uniontest.bookapi.cn"
     }
 
     fun getContext(): Context? {
@@ -183,9 +185,9 @@ object Config {
 
 
     fun insertMicroAPIHost(microAPIHost: String) {
-        if (!TextUtils.isEmpty(microAPIHost)) {
-            Config.microAPIHost = microAPIHost
-        }
+//        if (!TextUtils.isEmpty(microAPIHost)) {
+//            Config.microAPIHost = microAPIHost
+//        }
     }
 
     fun loadMicroAPIHost(): String {
