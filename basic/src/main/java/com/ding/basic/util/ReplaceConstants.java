@@ -27,7 +27,7 @@ public class ReplaceConstants {
     public String MICRO_API_HOST;
     public String CONTENT_API_HOST;
 
-    public final static String BUILD_CONFIG_PROVIDER = "/common_book/SwitchADActivity";
+    public final static String BUILD_CONFIG_PROVIDER = "/common_book/BuildConfigProvider";
 
     private ReplaceConstants() {
 //        APP_PATH = Config.INSTANCE.getSDCARD_PATH() + ResourceUtil.getStringById(R.string.app_path);
