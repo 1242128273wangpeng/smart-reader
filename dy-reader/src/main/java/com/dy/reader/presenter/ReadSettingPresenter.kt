@@ -289,8 +289,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
-            logMap.put("bookid",ReaderStatus.book?.book_id)
-            logMap.put("chapterid",ReaderStatus?.chapterId)
+            logMap.put("bookid", ReaderStatus.book?.book_id)
+            logMap.put("chapterid", ReaderStatus?.chapterId)
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
@@ -408,8 +408,11 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     fun showShareDialog() {
-        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
-        
+        val data = HashMap<String, String>()
+        data["bookid"] = ReaderStatus.book.book_id
+        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE,
+                StartLogClickUtil.ACTION_SHARE)
+
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             val applicationShareDialog = ApplicationShareDialog(activity.get())
             applicationShareDialog.show()
@@ -474,7 +477,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
                 return
             }
-            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.FEEDBACK)
             val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
             readerFeedbackDialog.insertSubmitListener {

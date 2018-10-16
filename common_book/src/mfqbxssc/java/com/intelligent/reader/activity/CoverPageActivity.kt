@@ -454,7 +454,10 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             R.id.img_app_share -> {
                 applicationShareDialog.show()
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ACTION_SHARE)
+                val data = HashMap<String, String>()
+                data.put("bookid", bookId?:"")
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                        StartLogClickUtil.ACTION_SHARE)
             }
 
             R.id.book_cover_bookshelf -> if (coverPagePresenter != null) {
