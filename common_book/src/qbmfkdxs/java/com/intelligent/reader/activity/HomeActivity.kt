@@ -507,6 +507,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 recommendFragment?.recommendManFragment?.mPagerDesc = PagerDesc(y, x, x + width, y + height)
             })
         }
+
     }
 
     override fun startLoad(webView: WebView, url: String): String {

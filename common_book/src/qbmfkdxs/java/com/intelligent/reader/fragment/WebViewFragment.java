@@ -112,7 +112,7 @@ public class WebViewFragment extends Fragment {
             rl_head.setVisibility(View.GONE);
             return;
         }
-
+        rl_head.setVisibility(View.VISIBLE);
         if (rl_head_other != null) {
             rl_head_other.setVisibility(View.VISIBLE);
         }
@@ -331,46 +331,46 @@ public class WebViewFragment extends Fragment {
 
     private void initRefresh() {
 
-        // 免费全本小说书城 推荐页添加下拉刷新
-        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(url)
-                && rootView != null) {
-            swipeRefreshLayout = rootView.findViewById(
-                    R.id.bookshelf_refresh_view);
-            swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
-            swipeRefreshLayout.setHeaderView(createHeaderView());
-            swipeRefreshLayout.setTargetScrollWithLayout(true);
-            swipeRefreshLayout.setOnPullRefreshListener(
-                    new SuperSwipeRefreshLayout.OnPullRefreshListener() {
-
-                        @Override
-                        public void onRefresh() {
-                            head_text_view.setText("正在刷新");
-                            head_image_view.setVisibility(View.GONE);
-                            head_pb_view.setVisibility(View.VISIBLE);
-                            checkUpdate();
-                        }
-
-                        @Override
-                        public void onPullDistance(int distance) {
-                            // pull distance
-                        }
-
-                        @Override
-                        public void onPullEnable(boolean enable) {
-                            head_pb_view.setVisibility(View.GONE);
-                            head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
-                            head_image_view.setVisibility(View.VISIBLE);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                head_image_view.setRotation(enable ? 180 : 0);
-                            }
-                        }
-                    });
-            if (url.contains("recommend")) {
-                swipeRefreshLayout.setPullToRefreshEnabled(true);
-            } else {
-                swipeRefreshLayout.setPullToRefreshEnabled(false);
-            }
-        }
+//        // 免费全本小说书城 推荐页添加下拉刷新
+//        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(url)
+//                && rootView != null) {
+//            swipeRefreshLayout = rootView.findViewById(
+//                    R.id.bookshelf_refresh_view);
+//            swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
+//            swipeRefreshLayout.setHeaderView(createHeaderView());
+//            swipeRefreshLayout.setTargetScrollWithLayout(true);
+//            swipeRefreshLayout.setOnPullRefreshListener(
+//                    new SuperSwipeRefreshLayout.OnPullRefreshListener() {
+//
+//                        @Override
+//                        public void onRefresh() {
+//                            head_text_view.setText("正在刷新");
+//                            head_image_view.setVisibility(View.GONE);
+//                            head_pb_view.setVisibility(View.VISIBLE);
+//                            checkUpdate();
+//                        }
+//
+//                        @Override
+//                        public void onPullDistance(int distance) {
+//                            // pull distance
+//                        }
+//
+//                        @Override
+//                        public void onPullEnable(boolean enable) {
+//                            head_pb_view.setVisibility(View.GONE);
+//                            head_text_view.setText(enable ? "松开刷新" : "下拉刷新");
+//                            head_image_view.setVisibility(View.VISIBLE);
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//                                head_image_view.setRotation(enable ? 180 : 0);
+//                            }
+//                        }
+//                    });
+//            if (url.contains("recommend")) {
+//                swipeRefreshLayout.setPullToRefreshEnabled(true);
+//            } else {
+//                swipeRefreshLayout.setPullToRefreshEnabled(false);
+//            }
+//        }
     }
 
     private View createHeaderView() {

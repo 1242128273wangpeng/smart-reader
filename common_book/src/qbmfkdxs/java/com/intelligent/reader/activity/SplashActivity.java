@@ -248,24 +248,24 @@ public class SplashActivity extends FrameActivity {
      * 选择兴趣
      */
     private void selectInterest() {
-//        if (sharedPreUtil == null) sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-//        int hasSelect = sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 0);
-//        if (hasSelect == 1 || hasSelect == -1) { // 用户已选择 或者 用户选择跳过
-//            doOnCreate();
-//        } else {
-        // 选择兴趣
-        FrameLayout frameLayout = findViewById(R.id.content_frame);
-        View view = LayoutInflater.from(this).inflate(R.layout.select_interest, frameLayout);
-        if (view != null) {
-            final SelectInterestHelper interestHelper = new SelectInterestHelper(view, this);
-            interestHelper.setOverListener(() -> {
-                doOnCreate();
-                return null;
-            });
-        } else {
+        if (sharedPreUtil == null) sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        int hasSelect = sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 0);
+        if (hasSelect == 1 || hasSelect == -1) { // 用户已选择 或者 用户选择跳过
             doOnCreate();
+        } else {
+            // 选择兴趣
+            FrameLayout frameLayout = findViewById(R.id.content_frame);
+            View view = LayoutInflater.from(this).inflate(R.layout.select_interest, frameLayout);
+            if (view != null) {
+                final SelectInterestHelper interestHelper = new SelectInterestHelper(view, this);
+                interestHelper.setOverListener(() -> {
+                    doOnCreate();
+                    return null;
+                });
+            } else {
+                doOnCreate();
+            }
         }
-//        }
     }
 
 

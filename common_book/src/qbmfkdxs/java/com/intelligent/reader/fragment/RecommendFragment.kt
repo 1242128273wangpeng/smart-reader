@@ -51,7 +51,6 @@ class RecommendFragment : Fragment() {
         }
     }
 
-
     val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
@@ -111,13 +110,12 @@ class RecommendFragment : Fragment() {
         fragment
     }
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.frag_recommend, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestRecommendCateList(AppUtils.getPackageName(), categoryNames, object : RequestSubscriber<ArrayList<RecommendCateListBean>>() {
             override fun requestResult(result: ArrayList<RecommendCateListBean>?) {
@@ -126,20 +124,15 @@ class RecommendFragment : Fragment() {
                     recommendCateList.addAll(result)
                     isLoadDataSuccess = true
                 } else {
+                    isLoadDataSuccess = false
                 }
             }
 
             override fun requestError(message: String) {
                 Logger.e("获取作者推荐异常！")
+                isLoadDataSuccess = false
             }
         })
-
-        listFragment.add(recommendFragment)
-        listFragment.add(recommendManFragment)
-        listFragment.add(recommendWomanFragment)
-        listFragment.add(recommendFinishFragment)
-        listFragment.add(recommendFantasyFragment)
-        listFragment.add(recommendModernFragment)
 
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         vp_recommend_content.adapter = mCategoryPageAdapter
@@ -147,7 +140,7 @@ class RecommendFragment : Fragment() {
         sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         tabstrip.setViewPager(vp_recommend_content)
-
+        vp_recommend_content.offscreenPageLimit = 6
         vp_recommend_content.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
@@ -170,7 +163,6 @@ class RecommendFragment : Fragment() {
                         } else {
                             txt_select.visibility = View.GONE
                         }
-
                     }
                 }
             }
@@ -185,9 +177,7 @@ class RecommendFragment : Fragment() {
 
         txt_select.setOnClickListener {
             val bundle = Bundle()
-
             bundle.putString("from", "recommend")
-
             when (currentPosition) {
 
                 3 -> {
@@ -202,7 +192,6 @@ class RecommendFragment : Fragment() {
                         bundle.putString("title", "玄幻")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                     }
-
                 }
                 5 -> {
                     if (recommendCateList.size > 1) {
@@ -210,13 +199,9 @@ class RecommendFragment : Fragment() {
                         bundle.putString("title", "现代言情")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                     }
-
                 }
-
             }
-
         }
-
     }
 
     private fun uploadTabSwitchLog(position: Int) {
@@ -227,17 +212,18 @@ class RecommendFragment : Fragment() {
     }
 
     private inner class CategoryPageAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        override fun getItem(position: Int): Fragment {
-//            var page: WebViewFragment? = null
-//            if (listFragment.size > position) {
-//                page = listFragment.get(position)
-//                if (page != null) {
-//                    return page
-//                }
-//            }
-//            page = listFragment.get(position)
-//            listFragment.set(position, page)
-            return listFragment.get(position)
+        override fun getItem(position: Int): Fragment? {
+            return when (position) {
+                0 -> recommendFragment
+                1 -> recommendManFragment
+                2 -> recommendWomanFragment
+                3 -> recommendFinishFragment
+                4 -> recommendFantasyFragment
+                5 -> recommendModernFragment
+                else -> {
+                    null
+                }
+            }
         }
 
         override fun getCount() = 6

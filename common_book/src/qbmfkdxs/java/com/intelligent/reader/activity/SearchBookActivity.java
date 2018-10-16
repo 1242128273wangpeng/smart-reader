@@ -173,49 +173,6 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             mSearchHelper.initJSHelp(jsInterfaceHelper);
         }
 
-        search_result_content.addJavascriptInterface(
-                new JSInterfaceObject(SearchBookActivity.this) {
-                    @Override
-                    public void startSearchActivity(@Nullable String data) {
-                        if (!isFinishing() && !TextUtils.isEmpty(data)) {
-                            if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
-                                return;
-                            }
-                            try {
-                                JSSearch search = new Gson().fromJson(data, JSSearch.class);
-                                mSearchHelper.setHotWordType(search.getWord(), search.getType());
-                                mSearchHelper.startLoadData(0);
-
-                            } catch (JsonSyntaxException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void startTabulationActivity(@Nullable String data) {
-                        if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
-                            return;
-                        }
-                        try {
-                            JSRedirect redirect = new Gson().fromJson(data, JSRedirect.class);
-                            if (!TextUtils.isEmpty(redirect.getTitle()) && !TextUtils.isEmpty(
-                                    redirect.getUrl())) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("url", redirect.getUrl());
-                                bundle.putString("title", redirect.getTitle());
-                                bundle.putString("from", "authorType");
-                                RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY,
-                                        bundle);
-                            }
-                        } catch (JsonSyntaxException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, "J_search");
-
     }
 
     private void initListener() {
