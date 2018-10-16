@@ -33,7 +33,6 @@ class InterestPresenter(val context: Context, private val interestView: Interest
 
                     override fun requestError(message: String) {
                         loge("requestError============$message")
-                        interestView?.showError(message)
                     }
                 })
     }

@@ -14,6 +14,8 @@
     <string name="interest_title">快来选择自己喜欢的标签吧</string>
     <string name="interest_surprise">会有阅读的惊喜哦～</string>
     <string name="interest_confirm">开启精彩阅读之旅～</string>
+    <string name="recommend_search_text">搜你想搜的</string>
+    <string name="recommend_search_select">筛选</string>
 
 
     <string name="hotwords_local">{\"hotWords\":[

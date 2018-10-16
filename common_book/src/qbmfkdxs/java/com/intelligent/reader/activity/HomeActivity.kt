@@ -33,6 +33,7 @@ import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
@@ -85,7 +86,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
-    private var recommendFragment: WebViewFragment? = null
+    private var recommendFragment: RecommendFragment? = null
 
     private var rankingFragment: WebViewFragment? = null
 
@@ -523,12 +524,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 }
                 1 -> {
                     if (recommendFragment == null) {
-                        recommendFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", WebViewFragment.TYPE_RECOMM)
-                        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        recommendFragment?.arguments = bundle
+                        recommendFragment = RecommendFragment()
                     }
                     recommendFragment
                 }

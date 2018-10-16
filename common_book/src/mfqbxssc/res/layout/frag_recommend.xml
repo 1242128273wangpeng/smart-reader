@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_recommend_header"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFF">
+
+        <net.lzbook.kit.utils.NavigationBarStrip
+            android:id="@+id/nbs_navigation"
+            android:layout_width="120dp"
+            android:layout_height="52dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            app:indicatorActiveColor="#FF882F46"
+            app:indicatorActivityTextSize="22sp"
+            app:indicatorAnimationDuration="200"
+            app:indicatorColor="#FF882F46"
+            app:indicatorFactor="2.0"
+            app:indicatorGravity="bottom"
+            app:indicatorHeight="3dp"
+            app:indicatorInActivityTextSize="18sp"
+            app:indicatorInactiveColor="#FF282828"
+            app:indicatorMarginBottom="2dp"
+            app:indicatorPadding="21dp"
+            app:indicatorRadius="100dp"
+            app:indicatorType="line"/>
+
+        <View
+            android:id="@+id/view_recommend_header_search"
+            android:layout_width="140dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/recommend_search_bg"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="24dp"
+            android:contentDescription="@string/module_name"
+            android:src="@drawable/icon_recommend_search"/>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_recommend_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_recommend_header"
+        android:persistentDrawingCache="animation"/>
+
+</RelativeLayout>

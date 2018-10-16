@@ -242,8 +242,6 @@ interface RequestService {
          */
         const val QR_CODE = "/h5/{packageName}/share"
 
-
-
         /***
          * 精选页
          * **/
@@ -260,6 +258,24 @@ interface RequestService {
          * 精选完结
          * **/
         const val WEB_RECOMMEND_FINISH = "/h5/{packageName}/recommendFinish"
+
+        /***
+         * 精选玄幻
+         * **/
+        const val WEB_RECOMMEND_XUANGHUA = "/h5/{packageName}/recommendFantasy"
+
+        /***
+         * 精选现代
+         * **/
+        const val WEB_RECOMMEND_XIANDAI = "/h5/{packageName}/recommendModern"
+
+        /**
+         * 精选页分类标签
+         */
+        const val RECOMMEN_CATEGORY_LABEL = "/api/{packageName}/recommend/categoryList"
+
+
+
         /***
          * 榜单
          * **/
@@ -474,5 +490,7 @@ interface RequestService {
     fun downloadVoicePlugin(): Flowable<ResponseBody>
 
 
+    @GET(RECOMMEN_CATEGORY_LABEL)
+    fun requestRecommendCateList(@Path("packageName") packageName: String, @Query("categoryNames") categoryNames: String): Flowable<BasicResultV4<ArrayList<RecommendCateListBean>>>
 
 }

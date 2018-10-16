@@ -1607,6 +1607,32 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    /**
+     * 精选（推荐）首页 分类标签数据接口
+     */
+    override fun requestRecommendCateList(packageName: String, categoryNames: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<RecommendCateListBean>>) {
+        InternetRequestRepository.loadInternetRequestRepository(context).requestRecommendCateList(packageName, categoryNames)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<java.util.ArrayList<RecommendCateListBean>>>() {
+                    override fun onNext(result: BasicResultV4<java.util.ArrayList<RecommendCateListBean>>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("获取精选推荐分类标签书籍接口请求异常！"))
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+
 
     /**
      * 搜索无结果页  订阅
@@ -2031,6 +2057,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     }
                 }, { throwable ->
                     throwable.printStackTrace()
+                    requestSubscriber.requestError(throwable.toString())
                     Logger.e(" 获取兴趣列表异常: " + throwable.toString())
                 }, {
                     Logger.e(" 获取兴趣列表完成！")

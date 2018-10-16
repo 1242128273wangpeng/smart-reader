@@ -233,6 +233,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
+    override fun requestRecommendCateList(packageName: String, categoryNames: String): Flowable<BasicResultV4<ArrayList<RecommendCateListBean>>> {
+        return RequestAPI.requestRecommendCateList(packageName, categoryNames)
+    }
+
     /***************** 微服务 *****************/
 
     override fun requestAuthAccess(): Flowable<BasicResult<String>>? {

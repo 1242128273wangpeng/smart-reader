@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:ignore="RtlHardcoded">
+
+
+    <com.intelligent.reader.widget.FlymeTabScaleStrip
+        android:id="@+id/tabstrip"
+        app:indicatorHeight="3dp"
+        app:indicatorColor="#00C298"
+        app:indicatorMargin="13dp"
+        app:indicatorTextSize="17sp"
+        android:paddingLeft="12dp"
+        app:selectedIndicatorTextSize="24sp"
+        app:indicatorTextColor="@color/text_color_dark"
+        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_height="50dp"/>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tabstrip">
+        <RelativeLayout
+            android:layout_toLeftOf="@+id/txt_select"
+            android:id="@+id/rl_head_recommend"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="9dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/bookshelf_title_shaper"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:paddingLeft="10dp"
+            android:visibility="visible"
+            tools:ignore="RtlSymmetry">
+
+            <ImageView
+                android:id="@+id/img_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bookshelf_icon_search_copy"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@+id/img_icon"
+                android:text="@string/recommend_search_text"
+                android:textColor="@color/home_title_search_text"
+                android:textSize="13sp"/>
+
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/txt_select"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:layout_marginRight="16dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/recommend_header_select_bg"
+            android:layout_marginLeft="22dp"
+            android:text="@string/recommend_search_select"
+            android:textColor="#00C298"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_below="@+id/rl_container"
+        android:background="#F4F5F7"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_recommend_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/view_divider"
+        android:persistentDrawingCache="animation"/>
+
+</RelativeLayout>

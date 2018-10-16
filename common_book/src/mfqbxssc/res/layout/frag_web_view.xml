@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_web_view_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA"
+    tools:ignore="RtlHardcoded,RtlSymmetry,HardcodedText">
+
+    <RelativeLayout
+        android:id="@+id/rl_web_view_header"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#FFFFFF"
+        android:fitsSystemWindows="true">
+
+        <TextView
+            android:id="@+id/txt_web_view_header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="榜单"
+            android:textColor="@color/setting_login_font_color"
+            android:textSize="18sp"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/img_web_view_header_search"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="18dp"
+            android:background="@drawable/home_head_search_selector"
+            android:scaleType="fitXY"/>
+    </RelativeLayout>
+
+    <net.lzbook.kit.utils.CustomWebView
+        android:id="@+id/web_view_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_web_view_header"
+        android:scrollbars="none"/>
+</RelativeLayout>

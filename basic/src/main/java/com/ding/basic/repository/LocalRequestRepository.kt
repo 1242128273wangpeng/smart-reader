@@ -22,6 +22,7 @@ import retrofit2.Call
 class LocalRequestRepository private constructor(private var context: Context) : BasicRequestRepository {
 
 
+
     companion object {
         private var localRequestRepository: LocalRequestRepository? = null
 
@@ -58,6 +59,9 @@ class LocalRequestRepository private constructor(private var context: Context) :
         return null
     }
 
+    override fun requestRecommendCateList(packageName: String, categoryNames: String): Flowable<BasicResultV4<java.util.ArrayList<RecommendCateListBean>>>? {
+        return null
+    }
     override fun requestBookCatalog(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Catalog>> {
         return Flowable.create({ emitter ->
 
