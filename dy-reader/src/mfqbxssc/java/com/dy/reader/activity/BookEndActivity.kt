@@ -113,15 +113,15 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
-            finish()
+            bookEndPresenter.uploadLog(book,StartLogClickUtil.TOSHELF)
+//            finish()
         }
 
         //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
-            finish()
+            bookEndPresenter.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
+//            finish()
         }
         //喜欢这本书的人还喜欢（换一换）
         txt_more_refresh.setOnClickListener {
