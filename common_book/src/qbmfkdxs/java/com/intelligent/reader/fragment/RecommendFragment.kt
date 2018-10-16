@@ -52,7 +52,7 @@ class RecommendFragment : Fragment() {
     }
 
 
-    private val recommendFragment: WebViewFragment by lazy {
+    val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
@@ -62,7 +62,7 @@ class RecommendFragment : Fragment() {
         fragment
     }
 
-    private val recommendManFragment: WebViewFragment by lazy {
+    val recommendManFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommendMan")
@@ -72,7 +72,7 @@ class RecommendFragment : Fragment() {
         fragment
     }
 
-    private val recommendWomanFragment: WebViewFragment by lazy {
+    val recommendWomanFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommendWoman")
@@ -83,7 +83,7 @@ class RecommendFragment : Fragment() {
     }
 
 
-    private val recommendFinishFragment: WebViewFragment by lazy {
+    val recommendFinishFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommendFinish")
@@ -92,7 +92,7 @@ class RecommendFragment : Fragment() {
         fragment.arguments = bundle
         fragment
     }
-    private val recommendFantasyFragment: WebViewFragment by lazy {
+    val recommendFantasyFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommendXuhuan")
@@ -101,7 +101,7 @@ class RecommendFragment : Fragment() {
         fragment.arguments = bundle
         fragment
     }
-    private val recommendModernFragment: WebViewFragment by lazy {
+    val recommendModernFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommendModern")

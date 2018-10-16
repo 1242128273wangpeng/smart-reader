@@ -9,8 +9,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -26,6 +28,7 @@ import com.dingyue.contract.util.CommonUtil;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.PagerDesc;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.LoadingPage;
@@ -62,6 +65,8 @@ public class WebViewFragment extends Fragment {
     public static final String TYPE_RANK = "rank";
     public static final String TYPE_CATEGORY = "category";
     private String mTitle = null;
+    public PagerDesc mPagerDesc;
+    private int h5Margin;
 
     @Override
     public void onAttach(Activity activity) {
@@ -189,6 +194,7 @@ public class WebViewFragment extends Fragment {
 
             }
         });
+        addTouchListener();
     }
 
     @Override
@@ -326,7 +332,8 @@ public class WebViewFragment extends Fragment {
     private void initRefresh() {
 
         // 免费全本小说书城 推荐页添加下拉刷新
-        if (!TextUtils.isEmpty(url) && rootView != null) {
+        if ("cc.kdqbxs.reader".equals(AppUtils.getPackageName()) && !TextUtils.isEmpty(url)
+                && rootView != null) {
             swipeRefreshLayout = rootView.findViewById(
                     R.id.bookshelf_refresh_view);
             swipeRefreshLayout.setHeaderViewBackgroundColor(0x00000000);
@@ -403,6 +410,52 @@ public class WebViewFragment extends Fragment {
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                     weakReference.get().finish();
+                }
+            });
+        }
+    }
+
+    public boolean isNeedInterceptSlide() {
+        if (this.url.contains("recommend")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void addTouchListener() {
+        if (contentView != null && isNeedInterceptSlide()) {
+            contentView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    float y = event.getRawY();
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            if (contentView != null) {
+                                int[] loction = new int[2];
+                                contentView.getLocationOnScreen(loction);
+                                h5Margin = loction[1];
+                            }
+                            if (null != mPagerDesc) {
+                                float top = mPagerDesc.getTop();
+                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                                DisplayMetrics metric = getResources().getDisplayMetrics();
+                                top = (float) (top * metric.density) + h5Margin;
+                                bottom = (float) (bottom * metric.density) + h5Margin;
+                                if (y > top && y < bottom) {
+                                    contentView.requestDisallowInterceptTouchEvent(true);
+                                } else {
+                                    contentView.requestDisallowInterceptTouchEvent(false);
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
                 }
             });
         }
