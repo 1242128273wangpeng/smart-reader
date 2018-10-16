@@ -55,7 +55,7 @@ class RecommendFragment : Fragment() {
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "recommendWoman")
+        bundle.putString("type", "recommend")
         val uri = RequestService.WEB_RECOMMEND.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
@@ -86,26 +86,26 @@ class RecommendFragment : Fragment() {
     private val recommendFinishFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "recommendWoman")
+        bundle.putString("type", "recommendFinish")
         val uri = RequestService.WEB_RECOMMEND_FINISH.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
     }
-    private val recommendXuHuanFragment: WebViewFragment by lazy {
+    private val recommendFantasyFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "recommendWoman")
-        val uri = RequestService.WEB_RECOMMEND_XUANGHUA.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("type", "recommendXuhuan")
+        val uri = RequestService.WEB_RECOMMEND_FANTASY.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
     }
-    private val recommendXianDaiFragment: WebViewFragment by lazy {
+    private val recommendModernFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "recommendWoman")
-        val uri = RequestService.WEB_RECOMMEND_XIANDAI.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("type", "recommendModern")
+        val uri = RequestService.WEB_RECOMMEND_MODERN.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -138,8 +138,8 @@ class RecommendFragment : Fragment() {
         listFragment.add(recommendManFragment)
         listFragment.add(recommendWomanFragment)
         listFragment.add(recommendFinishFragment)
-        listFragment.add(recommendXuHuanFragment)
-        listFragment.add(recommendXianDaiFragment)
+        listFragment.add(recommendFantasyFragment)
+        listFragment.add(recommendModernFragment)
 
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         vp_recommend_content.adapter = mCategoryPageAdapter
@@ -191,14 +191,14 @@ class RecommendFragment : Fragment() {
             when (currentPosition) {
 
                 3 -> {
-                    bundle.putString("url", RequestService.WEB_RECOMMEND_FINISH.replace("{packageName}", AppUtils.getPackageName()) + "-完结")
+                    bundle.putString("url", RequestService.WEB_RECOMMEND_FINISH.replace("{packageName}", AppUtils.getPackageName()) + "- -完结")
                     bundle.putString("title", "完结")
                     RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                 }
                 4 -> {
 
                     if (recommendCateList.size > 0) {
-                        bundle.putString("url", RequestService.WEB_RECOMMEND_XUANGHUA.replace("{packageName}", AppUtils.getPackageName()) + "-玄幻-" + recommendCateList.get(0).id)
+                        bundle.putString("url", RequestService.WEB_RECOMMEND_FANTASY.replace("{packageName}", AppUtils.getPackageName()) + "-玄幻-" + recommendCateList.get(0).id)
                         bundle.putString("title", "玄幻")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                     }
@@ -206,7 +206,7 @@ class RecommendFragment : Fragment() {
                 }
                 5 -> {
                     if (recommendCateList.size > 1) {
-                        bundle.putString("url", RequestService.WEB_RECOMMEND_XIANDAI.replace("{packageName}", AppUtils.getPackageName()) + "-现代言情-" + recommendCateList.get(1).id)
+                        bundle.putString("url", RequestService.WEB_RECOMMEND_MODERN.replace("{packageName}", AppUtils.getPackageName()) + "-现代言情-" + recommendCateList.get(1).id)
                         bundle.putString("title", "现代言情")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                     }

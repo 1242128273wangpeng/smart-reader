@@ -262,18 +262,12 @@ interface RequestService {
         /***
          * 精选玄幻
          * **/
-        const val WEB_RECOMMEND_XUANGHUA = "/h5/{packageName}/recommendFantasy"
+        const val WEB_RECOMMEND_FANTASY = "/h5/{packageName}/recommendFantasy"
 
         /***
          * 精选现代
          * **/
-        const val WEB_RECOMMEND_XIANDAI = "/h5/{packageName}/recommendModern"
-
-        /**
-         * 精选页分类标签
-         */
-        const val RECOMMEN_CATEGORY_LABEL = "/api/{packageName}/recommend/categoryList"
-
+        const val WEB_RECOMMEND_MODERN = "/h5/{packageName}/recommendModern"
 
 
         /***
@@ -292,6 +286,12 @@ interface RequestService {
          * 作者主页
          * **/
         const val WEB_AUTHOR = "/h5/{packageName}/author"
+
+        /**
+         * 精选页分类标签
+         */
+        const val RECOMMEN_CATEGORY_LABEL = "/api/{packageName}/recommend/categoryList"
+
     }
 
     @GET(DEFAULT_BOOK)

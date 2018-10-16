@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="95dp"
+                android:layout_marginBottom="@dimen/home_guide_bottom"
                 android:layout_marginLeft="22dp"
 
                 android:scaleType="fitXY"

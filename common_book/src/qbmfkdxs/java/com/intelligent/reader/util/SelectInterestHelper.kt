@@ -71,6 +71,8 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
 
     override fun showError(message: String) {
         context.showToastMessage(message)
+        view.img_guide.visibility = View.VISIBLE
+        view.rl_container.visibility = View.GONE
     }
 
     /**
@@ -93,39 +95,42 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        when (buttonView?.id) {
-            R.id.cbx_yscr -> {
-                if (isChecked) selectList.add(listData.get(4))
-            }
-            R.id.cbx_gdyq -> {
-                if (isChecked) selectList.add(listData.get(1))
-            }
-            R.id.cbx_qcxy -> {
-                if (isChecked) selectList.add(listData.get(9))
-            }
-            R.id.cbx_dsxt -> {
-                if (isChecked) selectList.add(listData.get(8))
-            }
-            R.id.cbx_xdyq -> {
-                if (isChecked) selectList.add(listData.get(3))
-            }
-            R.id.cbx_xhyq -> {
-                if (isChecked) selectList.add(listData.get(5))
-            }
-            R.id.cbx_xh -> {
-                if (isChecked) selectList.add(listData.get(0))
-            }
-            R.id.cbx_dssh -> {
-                if (isChecked) selectList.add(listData.get(2))
-            }
-            R.id.cbx_ncy -> {
-                if (isChecked) selectList.add(listData.get(7))
-            }
-            R.id.cbx_mswj -> {
-                if (isChecked) selectList.add(listData.get(6))
-            }
+        if (listData.size == 10) {
+            when (buttonView?.id) {
+                R.id.cbx_yscr -> {
+                    if (isChecked) selectList.add(listData.get(4))
+                }
+                R.id.cbx_gdyq -> {
+                    if (isChecked) selectList.add(listData.get(1))
+                }
+                R.id.cbx_qcxy -> {
+                    if (isChecked) selectList.add(listData.get(9))
+                }
+                R.id.cbx_dsxt -> {
+                    if (isChecked) selectList.add(listData.get(8))
+                }
+                R.id.cbx_xdyq -> {
+                    if (isChecked) selectList.add(listData.get(3))
+                }
+                R.id.cbx_xhyq -> {
+                    if (isChecked) selectList.add(listData.get(5))
+                }
+                R.id.cbx_xh -> {
+                    if (isChecked) selectList.add(listData.get(0))
+                }
+                R.id.cbx_dssh -> {
+                    if (isChecked) selectList.add(listData.get(2))
+                }
+                R.id.cbx_ncy -> {
+                    if (isChecked) selectList.add(listData.get(7))
+                }
+                R.id.cbx_mswj -> {
+                    if (isChecked) selectList.add(listData.get(6))
+                }
 
+            }
         }
+
     }
 
     /**
@@ -157,7 +162,7 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
             sharedPreUtil.putObject(SharedPreUtil.SELECTED_INTEREST_DATA, selectList)
             // 延时关闭页面
             val loadingAnimation = ObjectAnimator.ofFloat(view, "alpha", 1f, 1f)
-            loadingAnimation.duration = 1500
+            loadingAnimation.duration = 900
             loadingAnimation.start()
             loadingAnimation.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {

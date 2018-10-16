@@ -54,6 +54,7 @@ public class WebViewFragment extends Fragment {
     private Handler handler;
     private RelativeLayout rl_head_recommend;
     private RelativeLayout rl_head_other;
+    private RelativeLayout rl_head;
     private TextView txt_title;
     private ImageView img_search;
 
@@ -102,7 +103,8 @@ public class WebViewFragment extends Fragment {
     }
 
     private void setTitle() {
-        if (TYPE_RECOMM.equals(mTitle)) {
+        if (mTitle != null && mTitle.contains(TYPE_RECOMM) && rl_head != null) {
+            rl_head.setVisibility(View.GONE);
             return;
         }
 
@@ -128,6 +130,7 @@ public class WebViewFragment extends Fragment {
             contentView = rootView.findViewById(R.id.web_content_view);
             rl_head_recommend = rootView.findViewById(R.id.rl_head_recommend);
             rl_head_other = rootView.findViewById(R.id.rl_head_other);
+            rl_head = rootView.findViewById(R.id.rl_head);
             txt_title = rootView.findViewById(R.id.txt_title);
             img_search = rootView.findViewById(R.id.img_search);
             if (Build.VERSION.SDK_INT >= 11) {

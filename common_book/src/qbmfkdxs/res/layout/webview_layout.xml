@@ -15,6 +15,7 @@
         android:layout_height="48dp">
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/rl_head_recommend"
             android:layout_width="match_parent"
             android:layout_height="29dp"
@@ -25,7 +26,6 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:paddingLeft="10dp"
-            android:visibility="visible"
             tools:ignore="RtlSymmetry">
 
             <ImageView

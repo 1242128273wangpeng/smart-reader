@@ -14,6 +14,8 @@
 
     <dimen name="recommend_book_label">4sp</dimen>
     <dimen name="cover_book_text_title_size">16sp</dimen>
+    <dimen name="home_guide_bottom">95dp</dimen>
+
 
     <dimen name="interest_80">80dp</dimen>
     <dimen name="interest_100">100dp</dimen>
