@@ -411,7 +411,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         val data = HashMap<String, String>()
         data["bookid"] = ReaderStatus.book.book_id
         StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE,
-                StartLogClickUtil.ACTION_SHARE)
+                StartLogClickUtil.ACTION_SHARE, data)
 
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             val applicationShareDialog = ApplicationShareDialog(activity.get())
