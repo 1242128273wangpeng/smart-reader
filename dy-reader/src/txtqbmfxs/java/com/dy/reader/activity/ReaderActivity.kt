@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
+import anet.channel.util.Utils.context
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
@@ -38,6 +39,7 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.view.NativeView
+import com.orhanobut.logger.Logger
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_reader.*
@@ -250,6 +252,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             true -> window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
+        this.window.attributes.layoutAnimationParameters
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
         if (mNativeMediaView != null) {

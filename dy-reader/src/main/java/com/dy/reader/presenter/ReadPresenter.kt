@@ -38,6 +38,7 @@ import com.dy.reader.util.getNotchSize
 import com.dy.reader.util.isNotchScreen
 import com.dy.reader.util.xiaomiNotch
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -454,6 +455,11 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     fun onPause() {
         isFromCover = false
+
+        if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
+            isSubed = (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null)
+        }
+
         if (isSubed) {
             myNovelHelper?.saveBookmark(ReaderStatus.book.book_id, ReaderStatus.position.group,
                     ReaderStatus.position.offset)

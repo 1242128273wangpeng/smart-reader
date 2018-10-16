@@ -13,6 +13,7 @@ import com.dy.reader.dialog.ReaderChangeSourceDialog;
 import com.dy.reader.event.EventSetting;
 import com.dy.reader.listener.SourceClickListener;
 import com.dy.reader.setting.ReaderStatus;
+import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
@@ -257,6 +258,7 @@ public class NovelHelper {
 
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).updateBook(book);
+
         }
     }
 
