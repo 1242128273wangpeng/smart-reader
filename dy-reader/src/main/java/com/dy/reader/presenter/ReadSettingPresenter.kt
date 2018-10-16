@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.widget.Toast
@@ -264,8 +263,14 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     /**
      * 添加手动书签
      */
-    fun addOptionMark(font_count: Int, type: Int): Int {
+    private fun addOptionMark(font_count: Int, type: Int): Int {
         if (activity.get() == null) {
+            return 0
+        }
+
+        // 如果是扉页，直接return
+        val sequence = if (ReaderStatus.position.group + 1 > ReaderStatus.chapterList.size) ReaderStatus.chapterList.size else ReaderStatus.position.group
+        if (sequence == -1) {
             return 0
         }
 
