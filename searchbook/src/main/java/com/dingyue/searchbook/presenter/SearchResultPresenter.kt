@@ -29,13 +29,17 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
     }
 
 
-    fun loadKeyWord(keyWord: String, searchType: String = "0") {
+    /**
+     * searchType：0 全部 1 标签 2 作者 3 书名
+     * isAuthor: 是否显示作者页，0为默认不显示 (目前新壳2显示作者页)
+     */
+    fun loadKeyWord(keyWord: String, searchType: String = "0", isAuthor: Int = 0) {
         searchResultView?.showLoading()
         historyModel?.addHistoryWord(keyWord)
 
         searchResultModel?.setWord(keyWord)
         searchResultModel?.setSearchType(searchType)
-        searchResultModel?.startLoadData(0)?.let {
+        searchResultModel?.startLoadData(isAuthor)?.let {
             onSearchResult(it)
         }
     }
