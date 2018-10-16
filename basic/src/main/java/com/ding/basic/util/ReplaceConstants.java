@@ -2,7 +2,6 @@ package com.ding.basic.util;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.ding.basic.Config;
-import com.ding.basic.R;
 
 
 public class ReplaceConstants {
@@ -22,13 +21,14 @@ public class ReplaceConstants {
     public String ALIFEEDBACK_SECRET;
 
 
+
     public String BOOK_NOVEL_DEPLOY_HOST;
     public String BOOK_WEBVIEW_HOST;
 
     public String MICRO_API_HOST;
     public String CONTENT_API_HOST;
 
-    public final static String BUILD_CONFIG_PROVIDER = "/common_book/SwitchADActivity";
+    public final static String BUILD_CONFIG_PROVIDER="/common_book/SwitchADActivity";
 
     private ReplaceConstants() {
 //        APP_PATH = Config.INSTANCE.getSDCARD_PATH() + ResourceUtil.getStringById(R.string.app_path);
