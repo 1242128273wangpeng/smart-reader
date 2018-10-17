@@ -153,6 +153,11 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
     @ColumnInfo(name = "chapters_update_index")
     var chapters_update_index: Int = 0
 
+    @ColumnInfo(name = "list_version_fix")
+    var list_version_fix: Int = -1
+
+    @ColumnInfo(name = "force_fix")
+    var force_fix: Int = 0
 
     //区分书籍状态，目前没有本地书籍，暂时标识书籍和广告两种状态
     @Ignore
@@ -177,6 +182,9 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
         this.id = id
     }
 
+    /**
+     * 书籍是否来源于青果
+     */
     fun fromQingoo(): Boolean {
         host?.let {
             return it.contains("qingoo")
@@ -184,8 +192,31 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
         return false
     }
 
+    /**
+     * 书籍是否处于等待目录修复状态
+     */
+    fun waitingCataFix(): Boolean {
+        if (force_fix == 1 || list_version < list_version_fix) {
+            return true
+        }
+        return false
+    }
+
     public override fun clone(): Book {
         return super.clone() as Book
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        } else {
+            if (other is Book) {
+                if (other.book_id.isNotEmpty()) {
+                    return other.book_id == this.book_id
+                }
+            }
+        }
+        return false
     }
 
     override fun compareTo(other: Book): Int {

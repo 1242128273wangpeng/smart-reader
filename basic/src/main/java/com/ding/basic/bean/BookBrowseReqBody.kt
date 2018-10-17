@@ -1,5 +1,7 @@
 package net.lzbook.kit.data.book
 
+import java.io.Serializable
+
 /**
  * @desc 足迹数据上传Body
  * @author lijun Lee
@@ -7,7 +9,7 @@ package net.lzbook.kit.data.book
  * @data 2018/4/3 10:32
  */
 data class BookBrowseReqBody(var accountId: String,
-                             var list: List<BookInfoBody>) {
+                             var list: List<BookInfoBody>): Serializable {
 
     data class BookInfoBody(var bookId: String,
                             var bookSourceId: String,
@@ -15,5 +17,5 @@ data class BookBrowseReqBody(var accountId: String,
                             var host: String,
                             var imgUrl: String,
                             var name: String,
-                            var author: String)
+                            var author: String): Serializable
 }

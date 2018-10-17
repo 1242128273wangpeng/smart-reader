@@ -1,10 +1,13 @@
 package com.ding.basic.repository
 
 import android.content.Context
+import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.request.ContentAPI
 import com.ding.basic.request.MicroAPI
 import com.ding.basic.request.RequestAPI
+import com.ding.basic.request.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import net.lzbook.kit.data.book.UserMarkBook
@@ -13,6 +16,7 @@ import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 
 /**
@@ -46,8 +50,16 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }
 
-    fun requestDynamicParameters(): Flowable<JsonObject> {
+    fun requestDynamicCheck(): Flowable<BasicResult<Int>> {
+        return RequestAPI.requestDynamicCheck()
+    }
+
+    fun requestDynamicParameters(): Flowable<Parameter> {
         return RequestAPI.requestDynamicParameters()
+    }
+
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean>? {
+        return RequestAPI.requestAdControlDynamic()
     }
 
     override fun requestBookSources(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<BookSource>>? {
@@ -73,6 +85,11 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     override fun requestHotWords(): Flowable<SearchHotBean>? {
         return RequestAPI.requestHotWords()
     }
+
+    override fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>? {
+        return RequestAPI.requestShareInformation()
+    }
+
 
     override fun requestHotWordsV4(): Flowable<Result<SearchResult>> {
         return RequestAPI.requestHotWordsV4()
@@ -131,6 +148,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     fun uploadBookshelf(bookShelfBody: RequestBody): Flowable<BasicResultV4<String>> {
         return RequestAPI.uploadBookshelf(bookShelfBody)
+    }
+
+    fun refreshToken(): Flowable<BasicResultV4<LoginRespV4>>? {
+        return RequestAPI.refreshToken()
     }
 
     fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
@@ -196,7 +217,12 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     }
 
     fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
-        return RequestAPI.requestPushTags(udid)
+        val url = Config.loadUserTagHost() + RequestService.PUSH_TAG
+        return RequestAPI.requestPushTags(url, udid)
+    }
+
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>> {
+        return RequestAPI.requestBannerTags()
     }
 
     override fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
@@ -242,5 +268,9 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
 
     override fun requestChapterContentSync(chapter_id: String, book_id: String, book_source_id: String, book_chapter_id: String): Call<BasicResult<Chapter>>? {
         return ContentAPI.requestChapterContentSync(chapter_id, book_id, book_source_id, book_chapter_id)
+    }
+
+    fun downloadFont(fontName: String): Flowable<ResponseBody> {
+        return RequestAPI.downloadFont(fontName)
     }
 }

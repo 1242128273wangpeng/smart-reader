@@ -2,6 +2,7 @@ package com.ding.basic.request
 
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.util.ReplaceConstants
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
@@ -13,6 +14,7 @@ import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -62,11 +64,19 @@ object RequestAPI {
         return requestService.requestApplicationUpdate(parameters)
     }
 
-    fun requestDynamicParameters(): Flowable<JsonObject> {
+    fun requestDynamicCheck(): Flowable<BasicResult<Int>> {
+        return requestService.requestDynamicCheck()
+    }
+
+    fun requestDynamicParameters(): Flowable<Parameter> {
         return requestService.requestDynamicParameters()
     }
 
-    fun requestCDNDynamicPar(url: String): Flowable<JsonObject> {
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean> {
+        return requestService.requestAdControlDynamic()
+    }
+
+    fun requestCDNDynamicPar(url: String): Flowable<Parameter> {
         return requestService.requestCDNDynamicPar(url)
     }
 
@@ -118,6 +128,9 @@ object RequestAPI {
         return requestService.requestFeedback(parameters)
     }
 
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>> {
+        return requestService.requestShareInformation()
+    }
 
     // v3 的登陆接口强制走阿里云服务器，也就是默认的 host
     fun requestLoginAction(parameters: Map<String, String>): Flowable<LoginResp>? {
@@ -175,6 +188,10 @@ object RequestAPI {
 
     fun uploadBookshelf(bookShelfBody: RequestBody): Flowable<BasicResultV4<String>> {
         return requestService.uploadBookshelf(bookShelfBody)
+    }
+
+    fun refreshToken(): Flowable<BasicResultV4<LoginRespV4>> {
+        return requestService.refreshToken()
     }
 
     fun requestBookMarks(accountId: String): Flowable<BasicResultV4<List<UserMarkBook>>> {
@@ -241,13 +258,21 @@ object RequestAPI {
         return requestService.requestBookRecommendV4(book_id, recommend)
     }
 
-    fun requestPushTags(udid: String): Flowable<CommonResult<ArrayList<String>>> {
-        return requestService.requestPushTags(udid)
+    fun requestPushTags(url:String, udid: String): Flowable<CommonResult<ArrayList<String>>> {
+        return requestService.requestPushTags(url, udid)
+    }
+
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>> {
+        return requestService.requestBannerTags()
     }
 
     fun requestSubBook(bookName: String, bookAuthor: String): Flowable<JsonObject>? {
         return requestService.requestSubBook(bookName, bookAuthor)
     }
 
+    fun downloadFont(fontName: String): Flowable<ResponseBody> {
+        val url = RequestService.FONT_URL + fontName
+        return requestService.downloadFont(url)
+    }
 
 }

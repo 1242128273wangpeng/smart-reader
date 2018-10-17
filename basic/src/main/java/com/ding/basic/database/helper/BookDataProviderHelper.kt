@@ -7,12 +7,8 @@ import com.ding.basic.bean.*
 import com.ding.basic.dao.*
 import com.ding.basic.database.BookDatabase
 import com.ding.basic.database.provider.BookDataProvider
-import com.ding.basic.rx.SchedulerHelper
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 
@@ -147,6 +143,10 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     }
 
     override fun updateBook(book: Book): Boolean {
+        if (book.id <= 0) {
+            val interimBook = bookdao.loadBook(book.book_id) ?: return false
+            book.id = interimBook.id
+        }
         return bookdao.updateBook(book) != -1
     }
 
@@ -156,10 +156,10 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteBook(book_id: String, context: Context): Boolean {
-        var isSuc = bookdao.deleteBook(book_id) != -1
+        val result = bookdao.deleteBook(book_id) != -1
         ChapterDaoHelper.deleteDataBase(book_id, context)
         deleteBookFix(book_id)
-        return isSuc
+        return result
     }
 
     @Synchronized
@@ -202,14 +202,6 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     override fun loadBookShelfIDs(): String {
         val stringBuilder = StringBuilder()
-
-//        val books = bookdao.loadBooks()
-//
-//        for (i in books.indices) {
-//            stringBuilder.append(books[i].id)
-//            stringBuilder.append(if (i == books.size - 1) "" else ",")
-//        }
-
         return stringBuilder.toString()
     }
 

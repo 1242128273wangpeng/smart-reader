@@ -1,5 +1,7 @@
 package com.ding.basic.bean;
 
+import java.io.Serializable;
+
 /**
  * @author lijun Lee
  * @desc 搜索运营模块
@@ -7,7 +9,7 @@ package com.ding.basic.bean;
  * @data 2017/12/5 11:55
  */
 
-public class SearchOperations {
+public class SearchOperations implements Serializable {
 
     private String imgUrl;
     private String title;

@@ -1,19 +1,24 @@
 package com.ding.basic.request
 
 import com.ding.basic.bean.*
+import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import net.lzbook.kit.data.book.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.user.bean.UserNameState
 import net.lzbook.kit.user.bean.WXAccess
 import net.lzbook.kit.user.bean.WXSimpleInfo
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 interface RequestService {
 
     companion object {
+        //五步替默认接口请求地址：登陆二期必须用阿里的地址
+        const val QBMFXSYDQ_DEFAULT_HOST = "https://zhuishu.lsread.cn"
 
         // cdn智能
         const val DYNAMIC_ZN = "https://public.lsread.cn/dpzn/{packageName}.json"
@@ -33,8 +38,15 @@ interface RequestService {
         //应用更新
         const val CHECK_APPLICATION = "/v3/app/check"
 
+        //动态参数校验
+        const val DYNAMIC_CHECK = "/v3/dynamic/dynamicCheck"
+
         //动态参数
         const val DYNAMIC_PARAMETERS = "/v3/dynamic/dynamicParameter"
+
+
+        //广告分渠道，分版本，分广告位 动态参数
+        const val AD_CONTROL_DYNAMIC_PARAMETERS = "/v5/cn.dingyueApi.reader/advertising/get"
 
         //默认书架
         const val DEFAULT_BOOK = "/v5/book/default"
@@ -52,12 +64,14 @@ interface RequestService {
         /**
          * 搜索按钮（h5为前后端分离后的接口）
          */
+        const val SEARCH_V3 = "/v3/search"
+        const val SEARCH_V4 = "/v4/search/page"
+        const val SEARCH_V5 = "/v5/search/page"
         const val SEARCH_VUE = "/h5/{packageName}/search"
         // 前后端不分离，数据融合（搜索一期）
         const val SEARCH_S1_V5 = "/v5/search/page"
         // 前后端不分离，数据融合（搜索二期）
         const val SEARCH_S2_V5 = "/v5/search/searchPage"
-        const val SEARCH_V4 = "/v4/search/page"
 
         /**
          * 搜索热词
@@ -91,6 +105,9 @@ interface RequestService {
         const val BOOKSHELF_UPDATE = "/v5/book/update"
 
         const val FEEDBACK_ERROR = "/v3/log/fb"
+
+        const val SHARE_INFORMATION = "/v5/share/getShareInfo"
+
         // 用户相关----------------------
         //登陆操作
         const val LOGIN_ACTION = "/v3/user/login"
@@ -100,6 +117,11 @@ interface RequestService {
 
         //刷新Token
         const val REFRESH_TOKEN = "/v3/user/refLToken"
+        /**
+         * 刷新用户token
+         */
+        const val PATH_REFRESH_TOKEN = "/v4/user/refresh_token"
+
         // 获取短信
         const val PATH_FETCH_SMS_CODE_V4 = "/v4/message/sms"
         // 短信登录
@@ -143,9 +165,8 @@ interface RequestService {
 
 
         //获得缓存方式和package 列表
+        @Deprecated("已切换到union,MicroService.DOWN_TASK_CONFIG")
         const val DOWN_TASK_CONFIG = "/v5/book/down"
-
-
 
 
         /**
@@ -190,17 +211,74 @@ interface RequestService {
          */
         const val WEB_RANK_V3 = "/{packageName}/v3/rank/index.do"
         const val WEB_RANK_H5 = "/h5/{packageName}/rank"
+        const val WEB_RANK_H5_BOY = "/h5/{packageName}/rankBoy"
+        const val WEB_RANK_H5_Girl = "/h5/{packageName}/rankGirl"
+
 
         /**
          * PUSH标签
          */
-        const val PUSH_TAG = "/v4/cn.dingyueWeb.reader/getUserTag"
+        const val PUSH_TAG = "/v1/zn.bigdata.api/activity/getUserTag"
+
+        /**
+         * 活动标签
+         */
+        const val BANNER_TAG = "/v4/cn.dingyueWeb.reader/getActivityData"
 
         /**
          * 搜索无结果页  点击订阅  searchEmpty/userSubscription
          */
         const val SEARCH_SUB_BOOK = "/v5/cn.dingyueWeb.reader/searchEmpty/userSubscription"
 
+        /**
+         * 字体下载链接
+         */
+        const val FONT_URL = "https://sta.zhuishuwang.com/cc-remennovel/apk/"
+
+        /**
+         * 二维码 拉新
+         */
+        const val QR_CODE = "/h5/{packageName}/share"
+
+
+
+
+
+
+
+
+        /***
+         * 精选页
+         * **/
+        const val WEB_RECOMMEND = "/h5/{packageName}/recommend"
+        /***
+         * 精选男频
+         * **/
+        const val WEB_RECOMMEND_MAN = "/h5/{packageName}/recommendBoy"
+        /***
+         * 精选女频
+         * **/
+        const val WEB_RECOMMEND_WOMAN = "/h5/{packageName}/recommendGirl"
+        /***
+         * 精选完结
+         * **/
+        const val WEB_RECOMMEND_FINISH = "/h5/{packageName}/recommendFinish"
+        /***
+         * 榜单
+         * **/
+        const val WEB_RANKING = "/h5/{packageName}/rank"
+        /***
+         * 分类
+         * **/
+        const val WEB_CATEGORY = "/h5/{packageName}/category"
+        /***
+         * 搜索
+         * **/
+        const val WEB_SEARCH = "/h5/{packageName}/search"
+        /***
+         * 作者主页
+         * **/
+        const val WEB_AUTHOR = "/h5/{packageName}/author"
     }
 
     @GET(DEFAULT_BOOK)
@@ -213,11 +291,17 @@ interface RequestService {
     @GET(CHECK_APPLICATION)
     fun requestApplicationUpdate(@QueryMap parameters: Map<String, String>): Flowable<JsonObject>
 
+    @GET(DYNAMIC_CHECK)
+    fun requestDynamicCheck(): Flowable<BasicResult<Int>>
+
     @GET(DYNAMIC_PARAMETERS)
-    fun requestDynamicParameters(): Flowable<JsonObject>
+    fun requestDynamicParameters(): Flowable<Parameter>
+
+    @GET(AD_CONTROL_DYNAMIC_PARAMETERS)
+    fun requestAdControlDynamic(): Flowable<AdControlByChannelBean>
 
     @GET
-    fun requestCDNDynamicPar(@Url url: String): Flowable<JsonObject>
+    fun requestCDNDynamicPar(@Url url: String): Flowable<Parameter>
 
     @GET(BOOK_DETAIL)
     fun requestBookDetail(@Query("book_id") book_id: String, @Query("book_source_id") book_source_id: String): Flowable<BasicResult<Book>>
@@ -261,6 +345,8 @@ interface RequestService {
     @GET(FEEDBACK_ERROR)
     fun requestFeedback(@QueryMap(encoded = false) params: Map<String, String>): Flowable<NoBodyEntity>
 
+    @GET(SHARE_INFORMATION)
+    fun requestShareInformation(): Flowable<BasicResultV4<ShareInformation>>
 
     /************************************* 用户相关 *************************************/
 
@@ -308,6 +394,12 @@ interface RequestService {
     @Headers("Content-Type: application/json", "Accept: application/json")
     @POST(PATH_BOOKSHELF_UPLOAD) //上传书架
     fun uploadBookshelf(@Body bookshelf: RequestBody): Flowable<BasicResultV4<String>>
+    /**
+     * 刷新Token
+     * @return Observable<Result></Result><User>>
+    </User> */
+    @GET(PATH_REFRESH_TOKEN)
+    fun refreshToken(): Flowable<BasicResultV4<LoginRespV4>>
 
     @GET(PATH_BOOKMAEK_GET) // 获取用户书签
     fun requestBookMarks(@Query("accountId") userId: String): Flowable<BasicResultV4<List<UserMarkBook>>>
@@ -366,11 +458,18 @@ interface RequestService {
     @POST(BOOK_END_RECOMMEND_V4)
     fun requestBookRecommendV4(@Path("book_id") book_id: String, @Field("recommanded") bookIds: String): Flowable<RecommendBooksEndResp>
 
-    @GET(PUSH_TAG)
-    fun requestPushTags(@Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+    @GET
+    fun requestPushTags(@Url url: String, @Query("udid") udid: String): Flowable<CommonResult<ArrayList<String>>>
+
+    @GET(BANNER_TAG)
+    fun requestBannerTags(): Flowable<CommonResult<BannerInfo>>
 
     //搜索无结果页  订阅
     @GET(SEARCH_SUB_BOOK)
     fun requestSubBook(@Query("bookName") bookName: String, @Query("authorName") bookAuthor: String): Flowable<JsonObject>
+
+    @Streaming
+    @GET
+    fun downloadFont(@Url url: String): Flowable<ResponseBody>
 
 }

@@ -21,20 +21,41 @@ class RequestInterceptor : Interceptor {
     private val requestParameters = mutableMapOf<String, String>()
 
     private fun buildRequestParameters(): Map<String, String> {
-        if (requestParameters["packageName"] == null) {
-            requestParameters["os"] = Config.loadRequestParameter("os")
-            requestParameters["udid"] = Config.loadRequestParameter("udid")
-            requestParameters["version"] = Config.loadRequestParameter("version")
-            requestParameters["channelId"] = Config.loadRequestParameter("channelId")
+
+        if (requestParameters["packageName"].isNullOrEmpty()) {
             requestParameters["packageName"] = Config.loadRequestParameter("packageName")
         }
 
-        requestParameters["latitude"] = Config.loadRequestParameter("latitude")
-        requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
-        requestParameters["longitude"] = Config.loadRequestParameter("longitude")
+        if (requestParameters["os"].isNullOrEmpty()) {
+            requestParameters["os"] = Config.loadRequestParameter("os")
+        }
 
-        if(!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))){
-            requestParameters["loginToken"]=Config.loadRequestParameter("loginToken")
+        if (requestParameters["udid"].isNullOrEmpty()) {
+            requestParameters["udid"] = Config.loadRequestParameter("udid")
+        }
+
+        if (requestParameters["version"].isNullOrEmpty()) {
+            requestParameters["version"] = Config.loadRequestParameter("version")
+        }
+
+        if (requestParameters["channelId"].isNullOrEmpty()) {
+            requestParameters["channelId"] = Config.loadRequestParameter("channelId")
+        }
+
+        if (requestParameters["latitude"].isNullOrEmpty()) {
+            requestParameters["latitude"] = Config.loadRequestParameter("latitude")
+        }
+
+        if (requestParameters["longitude"].isNullOrEmpty()) {
+            requestParameters["longitude"] = Config.loadRequestParameter("longitude")
+        }
+
+        if (requestParameters["cityCode"].isNullOrEmpty()) {
+            requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
+        }
+
+        if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
+            requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")
         }
 
         return requestParameters
@@ -100,16 +121,18 @@ class RequestInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        val defaultHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-        if (request.url().host() == URL(Config.loadRequestAPIHost()).host
-                || request.url().host() == Config.loadBookContent()
-                || defaultHost.contains(request.url().host())) { // v3 登陆接口强制走阿里云服务器，也就是使用默认的 host
+        val host = request.url().host()
 
-            request = buildRequest(request)
+        if (host == URL("https://api.weixin.qq.com").host
+                || host == URL("https://graph.qq.com").host
+                || host == URL("https://public.lsread.cn/dpzn").host
+                || host == URL("https://public.dingyueads.com/dpzn").host
+                || host == URL("https://public.qingoo.cn/dpzn").host
+                || host == URL("http://ad.dingyueads.com:8010/insertData").host) {
+            Logger.e("请求微信或者QQ的接口: " + request.url().toString())
         } else {
-            Logger.e("other host, not add token")
+            request = buildRequest(request)
         }
-
         return chain.proceed(request)
     }
 
@@ -124,9 +147,7 @@ class RequestInterceptor : Interceptor {
             parameters[otherRequest.url().queryParameterName(index)] = otherRequest.url().queryParameterValue(index)
         }
 
-        if (!parameters.containsKey("packageName")) {
-            parameters.putAll(buildRequestParameters())
-        }
+        parameters.putAll(buildRequestParameters())
 
         val url = initializeToken(otherRequest, parameters) ?: return request
 

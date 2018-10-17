@@ -23,6 +23,24 @@ object SchedulerHelper {
         }
     }
 
+    /**
+     * 同时对线程和请求结果进行转换
+     */
+    fun <T> schedulerMapper(): FlowableTransformer<CommonResult<T>, T> {
+        return FlowableTransformer { observable ->
+            observable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.io())
+                    .map{
+                        if (it.checkResultAvailable()) {
+                            it.data
+                        } else {
+                            throw Throwable("请求 $it 失败")
+                        }
+                    }
+        }
+    }
+
     fun <T> schedulerIOHelper(): FlowableTransformer<T, T> {
         return FlowableTransformer { observable ->
             observable

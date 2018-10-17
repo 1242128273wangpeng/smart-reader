@@ -4,7 +4,6 @@ import com.ding.basic.Config
 import com.ding.basic.bean.*
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
