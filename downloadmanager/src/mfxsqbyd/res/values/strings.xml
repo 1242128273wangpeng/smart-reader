@@ -7,6 +7,8 @@
     <string name="status_finish">已缓存</string>
     <string name="clear_loading_title">正在清理缓存中...</string>
 
+    <string name="download_edit">编辑缓存</string>
+    <string name="download_sort">排序选择</string>
 
     <string name="application_cache_size">0B</string>
 </resources>
