@@ -79,7 +79,7 @@
             android:layout_below="@id/list_recommend1"
             android:layout_marginLeft="@dimen/dimen_margin_16"
             android:layout_marginRight="@dimen/dimen_margin_16"
-            android:layout_marginTop="@dimen/dimen_margin_15"
+            android:layout_marginTop="@dimen/dimen_margin_25"
             android:text="@string/want_to_read_and_read"
             android:textColor="@color/color_212832"
             android:textSize="16sp"/>
@@ -89,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/icon"
+            android:layout_marginBottom="@dimen/dimen_margin_20"
             android:layout_marginLeft="@dimen/dimen_margin_7"
             android:layout_marginRight="@dimen/dimen_margin_7"/>
     </RelativeLayout>
