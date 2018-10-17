@@ -57,6 +57,18 @@ public interface WebViewJsInterface {
      */
     String buildAjaxUrl(String url);
 
+
+    /***
+     * 精选接入数据流，添加接口拼接方式
+     * **/
+    String buildMicroRequestUrl(String url);
+
+    /***
+     * 精选页鉴权失败时调用
+     * **/
+    String authAccessMicroRequest(String url);
+
+
     /**
      * 进入 CoverPageActivity
      * @param host 未使用参数
@@ -193,5 +205,12 @@ public interface WebViewJsInterface {
      * 搜索无结果  点击订阅
      */
     void showSubBookDialog(final String word);
+
+    /**
+     * 搜索结果回调
+     *
+     * @param result 1表示有结果，2表示搜索无结果
+     */
+    void onSearchResult(int result);
 
 }

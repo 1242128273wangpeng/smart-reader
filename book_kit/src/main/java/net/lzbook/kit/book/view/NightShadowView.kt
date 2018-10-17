@@ -2,23 +2,18 @@ package net.lzbook.kit.book.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.CornerPathEffect
-import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RectShape
-import android.support.annotation.IdRes
 import android.util.AttributeSet
 import android.view.View
-import de.greenrobot.event.EventBus
 import iyouqu.theme.EventThemeModeChange
 import iyouqu.theme.ThemeHelper
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.R
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.safeRegist
-import net.lzbook.kit.utils.safeUnregist
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 /**
@@ -111,15 +106,16 @@ class NightShadowView : View {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         setMode(ThemeHelper.getInstance(context).isNight)
-        EventBus.getDefault().safeRegist(this)
+        EventBus.getDefault().register(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
-        EventBus.getDefault().safeUnregist(this)
+        EventBus.getDefault().unregister(this)
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEventMainThread(mode: EventThemeModeChange) {
         if (isEnable) {
             setMode(mode.mode == ThemeMode.NIGHT)

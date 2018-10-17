@@ -109,9 +109,9 @@ public abstract class BaseBookHelper {
             final MyDialog myDialog = new MyDialog((Activity) context, R.layout.publish_hint_dialog);
             myDialog.setCanceledOnTouchOutside(false);
             myDialog.setCancelable(false);
-            Button btn_cancle_clear_cache = (Button) myDialog.findViewById(R.id.publish_stay);
-            Button btn_confirm_clear_cache = (Button) myDialog.findViewById(R.id.publish_leave);
-            TextView publish_content = (TextView) myDialog.findViewById(R.id.publish_content);
+            Button btn_cancle_clear_cache = myDialog.findViewById(R.id.publish_stay);
+            Button btn_confirm_clear_cache = myDialog.findViewById(R.id.publish_leave);
+            TextView publish_content = myDialog.findViewById(R.id.publish_content);
             ((TextView) myDialog.findViewById(R.id.dialog_title)).setText(R.string.prompt);
             publish_content.setText(R.string.tip_network_mobile);
             btn_cancle_clear_cache.setOnClickListener(new OnClickListener() {
@@ -164,7 +164,9 @@ public abstract class BaseBookHelper {
                             DataCache.deleteOtherSourceCache(book);
                             ExtensionsKt.msMainLooperHandler.post(new Runnable() {
                                 public void run() {
-                                    myDialog.dismiss();
+                                    if(myDialog != null && myDialog.isShowing()){
+                                        myDialog.dismiss();
+                                    }
                                     if (!CacheManager.INSTANCE.start(book.getBook_id(), startDownIndex)) {
                                         Toast.makeText(context, "启动缓存服务失败", Toast.LENGTH_SHORT).show();
                                     }

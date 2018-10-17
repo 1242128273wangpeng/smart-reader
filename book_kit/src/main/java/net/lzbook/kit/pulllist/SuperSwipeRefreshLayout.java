@@ -74,6 +74,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private int mCurrentTargetOffsetTop;
     private boolean mOriginalOffsetCalculated = false;
     private float mInitialMotionY;
+    private float mInitialMotionX;
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
     private boolean mScale;
@@ -167,7 +168,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
             updateListenerCallBack();
         }
     };
-    private long REFRSH_LOADING_MIN_TIME = 1500;
+    private long REFRSH_LOADING_MIN_TIME = 1000;
     private long complete_loading_time = -1;
     private long start_loading_time = -1;
     Runnable refreshCompleteTask = new Runnable() {
@@ -726,7 +727,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
             } else {// 下拉刷新
                 return handlerPullTouchEvent(ev, action);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }

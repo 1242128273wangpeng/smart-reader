@@ -5,7 +5,12 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Application;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ClipboardManager;
+import android.content.ComponentCallbacks;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +20,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -38,6 +44,10 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import com.meituan.android.walle.WalleChannelReader;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -67,6 +77,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -403,12 +414,14 @@ public class AppUtils {
     public static String getBatteryLevel() {
         int level = 0;
         //API 21 之后用 BATTERY_SERVICE 主动去获取电量
-        if (Build.VERSION.SDK_INT  >= Build.VERSION_CODES.LOLLIPOP) {
-            BatteryManager batteryManager = (BatteryManager)BaseBookApplication.getGlobalContext().getSystemService(BATTERY_SERVICE);
-            if(batteryManager != null){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BatteryManager batteryManager =
+                    (BatteryManager) BaseBookApplication.getGlobalContext().getSystemService(
+                            BATTERY_SERVICE);
+            if (batteryManager != null) {
                 level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             }
-        }else{
+        } else {
             Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
                     .registerReceiver(null,
                             new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -551,21 +564,28 @@ public class AppUtils {
      */
     public static String getIPAddress(Context context) {
         String ip = "";
-        ConnectivityManager conMann = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        //这里不应该每次都重新获得的, 应该在receiver里 收到网络状态的时候, 获取一次然后做记录, 偷懒了先catch一下吧
+        try {
+            ConnectivityManager conMann = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mobileNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            NetworkInfo wifiNetworkInfo = conMann.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
-            ip = getLocalIpAddress();
-        } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
-            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            int ipAddress = wifiInfo.getIpAddress();
-            ip = getWifiIPAddress(ipAddress);
+            if (mobileNetworkInfo != null && mobileNetworkInfo.isConnected()) {//移动网络
+                ip = getLocalIpAddress();
+            } else if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {//wifi网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(
+                        Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                int ipAddress = wifiInfo.getIpAddress();
+                ip = getWifiIPAddress(ipAddress);
+            }
+        } catch (Throwable t) {
+
         }
         return ip;
     }
+
 
     //如果连接的是移动网络
     private static String getLocalIpAddress() {
@@ -705,13 +725,16 @@ public class AppUtils {
                 || packageName.equals("cc.kdqbxs.reader") //快读替
                 || packageName.equals("cc.quanbennovel") //今日多看
                 || packageName.equals("cc.lianzainovel") //鸿雁替
-                || packageName.equals("cc.mianfeinovel"); //阅微替
+                || packageName.equals("cc.quanben.novel") //五步替
+                || packageName.equals("cc.mianfeinovel") //阅微替
+                || packageName.equals("cn.txtqbmfyd.reader"); //新壳1
     }
 
     public static boolean hasReYun() {
         String packageName = getPackageName();
         return packageName.equals("cn.qbmfkkydq.reader");
     }
+
     /**
      * 获取渠道号
      */
@@ -803,7 +826,11 @@ public class AppUtils {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point point = new Point();
-        display.getSize(point);
+
+        if (null != display) {
+            display.getSize(point);
+        }
+
         int width = point.x;
         int height = point.y;
         metric = width + height + "";
@@ -971,8 +998,90 @@ public class AppUtils {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return sb.toString();
+    }
+
+
+    public static String loadUserApplicationList(Context context, PackageManager packageManager) {
+        try {
+            List<PackageInfo> packages = packageManager.getInstalledPackages(0);
+            if (packages.size() > 0) {
+                Map<String, String> data = Maps.newHashMap();
+                JSONArray appInfoList = new JSONArray();
+                JSONObject appInfo;
+
+                List<UsageStats> usageStatsList = null;
+
+                if (android.os.Build.VERSION.SDK_INT
+                        >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    UsageStatsManager usageStatsManager =
+                            (UsageStatsManager) context.getSystemService(
+                                    Context.USAGE_STATS_SERVICE);
+
+                    Calendar calendar = Calendar.getInstance();
+                    long endTime = calendar.getTimeInMillis();
+
+                    calendar.add(Calendar.DAY_OF_MONTH, -12);
+                    long startTime = calendar.getTimeInMillis();
+
+                    if (usageStatsManager != null) {
+                        usageStatsList = usageStatsManager.queryUsageStats(
+                                UsageStatsManager.INTERVAL_MONTHLY, startTime, endTime);
+                    }
+
+                    for (PackageInfo packageInfo : packages) {
+                        if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags) <= 0) {
+                            appInfo = new JSONObject();
+
+                            packageInfo.applicationInfo.loadLabel(packageManager);
+
+                            String packageName = packageInfo.packageName;
+
+                            //应用名称
+                            appInfo.put("app_name", packageInfo.applicationInfo.loadLabel(packageManager).toString().replace(":", "").replace("`", ""));
+                            //应用包名
+                            appInfo.put("app_package_name", packageName.replace(":", "").replace("`", ""));
+                            //应用安装时间
+                            appInfo.put("app_install_time", packageInfo.firstInstallTime);
+                            //应用最近一次更新时间
+                            appInfo.put("app_last_update_time", packageInfo.lastUpdateTime);
+
+                            if (usageStatsList != null && usageStatsList.size() != 0) {
+                                for (UsageStats usageStats : usageStatsList) {
+                                    String usagePackageName = usageStats.getPackageName();
+
+                                    if (usagePackageName.equals(packageName)) {
+                                        //应用近1月总运行时长
+                                        appInfo.put("app_last_month_run_time", usageStats.getTotalTimeInForeground());
+                                        appInfo.put("app_last_month_used_time", usageStats.getLastTimeUsed());
+                                    }
+
+                                    try {
+                                        Field field = usageStats.getClass().getDeclaredField("mLaunchCount");
+                                        if (field != null) {
+                                            //应用近1月启动次数
+                                            appInfo.put("app_last_month_start_num", field.getInt(usageStats));
+                                        }
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            }
+                            appInfoList.add(appInfo);
+                        }
+                    }
+                }
+
+                data.put("app_infos", appInfoList.toJSONString());
+                return Joiner.on("`").withKeyValueSeparator(":").join(data);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return "";
     }
 
     /**
@@ -1162,7 +1271,7 @@ public class AppUtils {
 
      ******************/
 
-    public static boolean joinQQGroup(Activity activity,String key) {
+    public static boolean joinQQGroup(Activity activity, String key) {
 
         Intent intent = new Intent();
         intent.setData(Uri.parse(
@@ -1170,8 +1279,8 @@ public class AppUtils {
                         + ".com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D"
                         + key));
 
-            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
-            // .FLAG_ACTIVITY_NEW_TASK)
+        // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent
+        // .FLAG_ACTIVITY_NEW_TASK)
         try {
             activity.startActivity(intent);
             return true;
@@ -1182,5 +1291,124 @@ public class AppUtils {
 
         }
 
+    }
+
+    /**
+     * 一键复制粘贴
+     */
+
+    public static void copyText(String content, Context context) {
+
+        try {
+            String finalContent = content.trim();
+            int sdk = Build.VERSION.SDK_INT;
+            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                android.text.ClipboardManager clipboard =
+                        (android.text.ClipboardManager) context.getSystemService(
+                                Context.CLIPBOARD_SERVICE);
+                clipboard.setText(finalContent);
+            } else {
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(
+                        Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip_data = android.content.ClipData.newPlainText(
+                        "TSMS", finalContent);
+                clipboard.setPrimaryClip(clip_data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private static float sNoncompatDensity;
+    private static float sNoncompatScaleDensity;
+
+    /**
+     * 屏幕适配修改属性
+     */
+    public static void setCustomDensity(final Activity activity, final Application application) {
+        try {
+            DisplayMetrics displayMetrics = application.getResources().getDisplayMetrics();
+            if (sNoncompatDensity == 0) {
+                sNoncompatDensity = displayMetrics.density;
+                sNoncompatScaleDensity = displayMetrics.scaledDensity;
+                application.registerComponentCallbacks(new ComponentCallbacks() {
+                    @Override
+                    public void onConfigurationChanged(Configuration newConfig) {
+                        if (newConfig != null && newConfig.fontScale > 0) {
+                            sNoncompatScaleDensity =
+                                    application.getResources().getDisplayMetrics().scaledDensity;
+
+                        }
+                    }
+
+                    @Override
+                    public void onLowMemory() {
+
+                    }
+                });
+            }
+            float targetDensity = displayMetrics.widthPixels / 360F;
+            float targetScaleDensity =
+                    targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
+            int targetDensityDpi = (int) (160 * targetDensity);
+
+            displayMetrics.density = targetDensity;
+            displayMetrics.scaledDensity = targetScaleDensity;
+            displayMetrics.densityDpi = targetDensityDpi;
+
+            DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
+            activityDisplayMetrics.density = targetDensity;
+            activityDisplayMetrics.scaledDensity = targetScaleDensity;
+            activityDisplayMetrics.densityDpi = targetDensityDpi;
+        } catch (Throwable e) {
+            AppLog.e("setCustomDensity:" + e.getMessage());
+        }
+
+    }
+
+    /**
+     * 是否需要开启广告分渠道，分版本，分广告位控制
+     *
+     * @param adSpaceType 广告位类型
+     */
+
+    public static boolean isNeedAdControl(String adSpaceType) {
+        AppLog.e("dynamic", getPackageName() + getChannelId() + getVersionName());
+        if (!TextUtils.isEmpty(Constants.ad_control_status) && Constants.ad_control_status.equals(
+                "1")) {
+            if (Constants.ad_control_pkg.equals(getPackageName())
+                    && Constants.ad_control_channelId.toLowerCase().equals(
+                    getChannelId().toLowerCase())
+                    && Constants.ad_control_version.equals(getVersionName())) {
+                if ("0".equals(Constants.ad_control_adTpye)) { //全部广告位
+                    return true;
+                } else if ("1".equals(Constants.ad_control_adTpye)) { // 福利中心
+                    if (adSpaceType.equals(Constants.ad_control_welfare)) {
+                        return true;
+                    }
+                } else if ("2".equals(Constants.ad_control_adTpye)) {//书架页 1-1
+                    if (adSpaceType.equals(Constants.ad_control_shelf_normal)) {
+                        return true;
+                    }
+                } else if ("3".equals(Constants.ad_control_adTpye)) { //书架页  1-2
+                    if (adSpaceType.equals(Constants.ad_control_shelf_float)) {
+                        return true;
+                    }
+                } else if ("4".equals(Constants.ad_control_adTpye)) { //阅读页
+                    if (adSpaceType.equals(Constants.ad_control_reader)) {
+                        return true;
+                    }
+                } else if ("5".equals(Constants.ad_control_adTpye)) { //福利中心和书架页 1-2
+                    if (adSpaceType.equals(Constants.ad_control_welfare_shelf)) {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }

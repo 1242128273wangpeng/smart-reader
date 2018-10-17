@@ -57,11 +57,11 @@ object HomeLogger {
     }
 
     /***
-     * HomeActivity点击推荐
+     * HomeActivity点击书城
      * **/
-    fun uploadHomeRecommendSelected() {
+    fun uploadHomeStoreSelected() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_RECOMMEND)
+                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_BOOKSTORE)
     }
 
     /***

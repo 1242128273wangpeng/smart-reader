@@ -1,7 +1,6 @@
 package com.dingyue.contract.router
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.bean.Book
@@ -9,7 +8,6 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.util.DataCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.FootprintUtils
 import net.lzbook.kit.utils.NetWorkUtils
@@ -33,13 +31,15 @@ object BookRouter {
 
     private val shake = AntiShake()
 
-    fun navigateCoverOrRead(activity: Activity, book: Book, type: Int): Any? {
+    fun navigateCoverOrRead(activity: Activity, interimBook: Book, type: Int): Any? {
 
         val bundle = Bundle()
 
+        var book = interimBook
         val localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBook(book.book_id)
 
         if (localBook != null) {
+            book = localBook
             book.update_status = 0
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).updateBook(book)
         }
@@ -52,7 +52,7 @@ object BookRouter {
             val path = RouterConfig.CATALOGUES_ACTIVITY
             return RouterUtil.navigation(activity, path, bundle)
 
-        } else if ((book.sequence > -1 || book.readed == 1 || NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE && isCached(book)) && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null) {
+        } else if ((book.sequence > -1 || book.readed == 1 || (NetWorkUtils.getNetWorkType(activity) == NetWorkUtils.NETWORK_NONE && isCached(book))) && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null) {
             FootprintUtils.saveHistoryShelf(book)
 
             book.fromType = 0
@@ -81,7 +81,7 @@ object BookRouter {
 
             val data = HashMap<String, String>()
 
-            data["BOOKID"] = book.book_id
+            data["bookid"] = book.book_id
 
             when (type) {
                 NAVIGATE_TYPE_BOOKSHELF -> data["source"] = "SHELF"

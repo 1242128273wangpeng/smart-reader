@@ -3,11 +3,9 @@ package com.dingyue.contract.util
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.text.TextUtils
-import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.AppUtils
 import com.google.gson.Gson
-import net.lzbook.kit.appender_loghub.common.PLItemKey.getKey
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.utils.AppUtils
 
 
 /**
@@ -28,6 +26,9 @@ class SharedPreUtil(val type: Int) {
 
         // 当前阅读的书籍
         const val CURRENT_READ_BOOK = "current_read_book"
+
+        // 删除WebView缓存
+        const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
 
 
         /**
@@ -52,6 +53,7 @@ class SharedPreUtil(val type: Int) {
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
         const val UNION_HOST = "union_host"           //微服务API接口
         const val CONTENT_HOST = "content_host"       //微服务内容接口
+        const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
         /**
          * 禁用动态参数前保留一份动态HOST
@@ -60,11 +62,15 @@ class SharedPreUtil(val type: Int) {
         const val WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
         const val UNION_PRE_HOST = "union_pre_host"
         const val CONTENT_PRE_HOST = "content_pre_host"
-
+        /**
+         * 检查章节数是否为0
+         */
+        const val CHECK_CHAPTER_COUNT = "check_chapter_count"
 
         /**
          * DynamicParameter
          */
+        const val DYNAMIC_VERSION = "dynamic_version"
         const val CHANNEL_LIMIT = "channel_limit"
         const val DAY_LIMIT = "day_limit"
         const val RECOMMEND_BOOKCOVER = "recommend_bookcover" //书籍封面页推荐位智能，青果书籍配比
@@ -112,6 +118,23 @@ class SharedPreUtil(val type: Int) {
 
         const val BOOK_SHELF_STATE = "book_shelf_state"//九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
 
+        /**
+         * 广告分版本，分渠道，分广告位开关控制
+         */
+        const val AD_CONTROL_STATUS = "status" //广告动态参数总开关 0关 1 开
+        const val AD_CONTROL_PGK = "packageName" //广告动态参数 包名
+        const val AD_CONTROL_CHANNELID = "channelId" //广告动态参数 渠道号
+        const val AD_CONTROL_VERSION = "version" //广告动态参数 app版本号
+        const val AD_CONTROL_ADTYPE = "advertisingSpace" //广告动态参数  广告位类型  0 福利中心 1书架页1-1  2书架页1-2  3阅读页广告 4全部
+
+
+        /**
+         * webviewFragment
+         */
+
+        const val RANK_SELECT_SEX = "rank_select_sex"   // 五步替 榜单选男女
+        const val RECOMMEND_SELECT_SEX = "recommend_select_sex"   // 五步替 精选页选男女
+
 
         /**
          * SplashActivity
@@ -129,6 +152,7 @@ class SharedPreUtil(val type: Int) {
         const val UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id" //更新当前章节
 
         val DATABASE_REMARK = "database_remark"
+        const val GENDER_TAG = "gender" //开屏选男女
 
         /**
          * HomeActivity
@@ -142,7 +166,6 @@ class SharedPreUtil(val type: Int) {
         /**
          * SettingActivity
          */
-
         const val CURRENT_NIGHT_MODE = "current_night_mode" //当前是否是夜间模式
         const val AUTO_UPDATE_CAHCE = "AUTO_UPDATE_CAHCE" //wifi下是否自动追更书籍 开关
 
@@ -185,6 +208,7 @@ class SharedPreUtil(val type: Int) {
         const val READ_PARAGRAPH_SPACE = "read_paragraph_space"     //阅读页段间距
         const val READ_CONTENT_PAGE_TOP_SPACE = "read_content_page_top_space"   //阅读页距顶部的间距
         const val READ_CONTENT_PAGE_LEFT_SPACE = "read_content_page_left_space" //阅读页距左右的间距
+        const val READ_TODAY_FIRST_POST_SETTINGS = "read_today_first_post_settings" //每天上传一次阅读页设置
 
         /**
          * push
@@ -192,6 +216,20 @@ class SharedPreUtil(val type: Int) {
         @JvmField
         val PUSH_TAG_LATEST_UPDATE_TIME = "push_tag_latest_update_time"
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
+
+
+        const val APPLICATION_SHARE_ACTION = "application_share_action"
+        const val COVER_SHARE_PROMPT = "cover_share_prompt"
+
+        const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
+
+
+
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
     }
 
 
