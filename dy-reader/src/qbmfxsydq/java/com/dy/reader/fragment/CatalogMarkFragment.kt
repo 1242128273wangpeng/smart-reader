@@ -40,7 +40,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     val presenter: CatalogMark.Presenter by lazy {
         CatalogMarkPresenter(this)
     }
-
+    var deleteBookmarkPopup:ReaderDeleteBookmarkPopup ?= null
     var chapterList = mutableListOf<Chapter>()
 
     private var bookmarkList = mutableListOf<Bookmark>()
@@ -72,7 +72,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 val firstVisibleItemPosition = findFirstVisibleItemPosition()
                 if (firstVisibleItemPosition != 0) {
                     if (firstVisibleItemPosition == -1) {
-                        ckb_catalog_order.visibility = View.GONE
+                        ckb_catalog_order.visibility = View.VISIBLE
                     }else{
                         ckb_catalog_order.visibility = View.VISIBLE
                     }
@@ -96,23 +96,23 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
             val transX = requireActivity().window.decorView.width - rl_book_content.width
 
-            val deleteBookmarkPopup = ReaderDeleteBookmarkPopup(requireActivity())
+            deleteBookmarkPopup = ReaderDeleteBookmarkPopup(requireActivity())
 
-            deleteBookmarkPopup.deleteBookmarkListener = {
+            deleteBookmarkPopup?.deleteBookmarkListener = {
                 presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
-                deleteBookmarkPopup.dismiss()
+                deleteBookmarkPopup?.dismiss()
             }
 
-            deleteBookmarkPopup.clearBookmarkListener = {
+            deleteBookmarkPopup?.clearBookmarkListener = {
                 presenter.deleteAllBookMark(requireActivity())
-                deleteBookmarkPopup.dismiss()
+                deleteBookmarkPopup?.dismiss()
             }
 
-            deleteBookmarkPopup.dismissList = {
+            deleteBookmarkPopup?.dismissList = {
                 view_content_mask.visibility = View.GONE
             }
 
-            deleteBookmarkPopup.showAtLocation(view_content_mask, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
+            deleteBookmarkPopup?.showAtLocation(view_content_mask, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
 
             true
         }
@@ -142,7 +142,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     private fun initListener() {
         img_fix_book.setOnClickListener {
             RepairHelp.fixBook(requireActivity(), presenter.getBook(), {
-                if (!requireActivity().isFinishing) {
+                if (isAdded && !requireActivity().isFinishing) {
                     RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 }
             })
@@ -184,6 +184,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         } else {
             presenter.loadBookMark(requireActivity(), 2)
         }
+    }
+
+    fun dimissDialog(){
+        deleteBookmarkPopup?.dismiss()
     }
 
     fun fixBook() {

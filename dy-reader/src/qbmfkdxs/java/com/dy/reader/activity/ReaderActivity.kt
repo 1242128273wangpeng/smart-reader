@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
+import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 import com.dingyue.contract.router.RouterConfig
@@ -21,10 +22,10 @@ import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
+import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -36,6 +37,7 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dycm_adsdk.view.NativeView
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.qbmfkdxs.act_reader.*
@@ -43,6 +45,7 @@ import kotlinx.android.synthetic.qbmfkdxs.reader_content.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.repair_books.RepairHelp
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -50,8 +53,10 @@ import org.greenrobot.eventbus.ThreadMode
 @Route(path = RouterConfig.READER_ACTIVITY)
 class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
-    private var mCatalogMarkFragment: CatalogMarkFragment? = null
+    private var registerShareCallback = false
 
+    private var mCatalogMarkFragment: CatalogMarkFragment? = null
+    private var mNativeMediaView: NativeMediaView? = null
     private val mReadSettingFragment by lazy {
         val readSettingFragment = ReadSettingFragment()
         readSettingFragment.fm = fragmentManager
@@ -81,6 +86,12 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter = ReadPresenter(this)
         mReadPresenter.onCreateInit(savedInstanceState)
 
+//        3-1 休息广告位
+//        MediaControl.startRestMedia {
+//            re_rest_view.visibility = View.VISIBLE
+//            MediaControl.loadRestMedia(this,re_rest_view,{ int: Int? ->
+//            })
+//        }
 
         dl_reader_content.layoutParams.width = AppHelper.screenWidth
         dl_reader_content.layoutParams.height = AppHelper.screenHeight
@@ -142,6 +153,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     val orientaionRunnable  = {
+        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -160,8 +173,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
-
+        //横向阅读 最后一章到完结页 点击返回 dialog不显示
+        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+        }
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
@@ -216,6 +231,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, extras)
             }
         }
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
     }
 
     private val mDrawerListener = object : DrawerLayout.DrawerListener {
@@ -230,6 +249,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         //锁定不可滑出
         override fun onDrawerClosed(drawerView: View) {
             dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            mCatalogMarkFragment?.dimissDialog()
         }
 
         override fun onDrawerStateChanged(newState: Int) = Unit
@@ -238,6 +258,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onResume() {
         super.onResume()
         isResume = true
+        registerShareCallback = false
         glSurfaceView.onResume()
         // 设置全屏
         when (!Constants.isFullWindowRead) {
@@ -245,6 +266,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             false -> window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         mReadPresenter.onResume()
+        MediaLifecycle.onResume()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onResume()
+        }
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -262,11 +288,17 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         isResume = false
         glSurfaceView.onPause()
         mReadPresenter.onPause()
+        MediaLifecycle.onPause()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onPause()
+        }
     }
 
     override fun onStop() {
         super.onStop()
         mReadPresenter.onStop()
+        MediaLifecycle.onStop()
     }
 
 
@@ -291,15 +323,21 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
+        recyclerView.removeAllViews()
         dl_reader_content.removeDrawerListener(mDrawerListener)
         EventBus.getDefault().unregister(this)
         ReaderStatus.clear()
         DataProvider.clear()
         AppHelper.glSurfaceView = null
         mReadPresenter.onDestroy()
-        ReaderStatus.chapterList.clear()
+
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
+
+        if (mNativeMediaView != null) {
+            mNativeMediaView?.onDestroy()
+            mNativeMediaView = null
+        }
     }
 
 
@@ -413,7 +451,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     PageManager.clear()
                     hideAd()
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 } else if (glSurfaceView.visibility != View.VISIBLE && ReaderSettings.instance.animation != GLReaderView.AnimationType.LIST) {
                     PageManager.clear()
@@ -424,7 +462,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
 
                     ReadMediaManager.tonken++
-                    ReadMediaManager.adCache.clear()
+                    ReadMediaManager.clearAllAd()
                     mReadPresenter.loadData(true)
                 }
             }
@@ -506,10 +544,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //条件
-        if (pac_reader_ad != null) {
-            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
-        }
+        //如果夜间设置了alpha值之后, 视频将有重影
+//        if (pac_reader_ad != null) {
+//            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
+//        }
         if (ReaderStatus.currentChapter == null) return
         val mChapter = ReaderStatus.currentChapter!!
         val count = ReaderStatus.position.groupChildCount
@@ -524,6 +562,24 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (adView != null) {
             if (adView.loaded) {//加载成功
                 if (adView.view != null) {
+
+                    if (adView.view is NativeView) {
+                        (adView.view as NativeView).setHideAdListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                        (adView.view as NativeView).setOnLoadCompleteListener {
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    } else if (adView.view is NativeMediaView) {
+                        mNativeMediaView = adView.view as NativeMediaView
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
+                            mNativeMediaView?.onPause()
+                            EventBus.getDefault()
+                                    .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
+                        }
+                    }
 
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null
@@ -549,7 +605,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }
@@ -579,12 +635,49 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     private fun hideAd() {
         pac_reader_ad?.visibility = View.GONE
+        pac_reader_ad?.removeAllViews()
     }
 
     fun showLoadingDialog(type: LoadingDialogFragment.DialogType, retry: (() -> Unit)? = null) {
         mLoadingFragment.show(type, retry)
     }
 
+    fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
     override fun supportSlideBack(): Boolean = false
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(false)
+                    ReaderStatus.isMenuShow = false
+                } else {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
 }

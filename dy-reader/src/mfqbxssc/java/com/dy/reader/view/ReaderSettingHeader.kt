@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -70,6 +71,19 @@ class ReaderSettingHeader : FrameLayout {
 
         txt_reader_source.setOnClickListener {
             presenter?.openWeb()
+        }
+
+        val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+        val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+
+        if (share) {
+            view_reader_share.visibility = View.GONE
+        } else {
+            view_reader_share.visibility = View.VISIBLE
+        }
+
+        ibtn_reader_share?.setOnClickListener {
+            presenter?.showShareDialog()
         }
 
         ibtn_reader_download.setOnClickListener {
@@ -153,7 +167,7 @@ class ReaderSettingHeader : FrameLayout {
         if (ReaderStatus.position.group == -1) {
             txt_reader_source.visibility = View.GONE
         } else {
-            if (Constants.QG_SOURCE == ReaderStatus.book.host) {
+            if (ReaderStatus.book.fromQingoo()) {
                 txt_reader_source.text = "青果阅读"
                 txt_reader_source.visibility = View.VISIBLE
             } else {

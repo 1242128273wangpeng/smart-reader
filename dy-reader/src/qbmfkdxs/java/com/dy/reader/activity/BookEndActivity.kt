@@ -67,7 +67,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         initListener()
         initIntent()
         initData()
-
+        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -101,12 +101,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
             finish()
         }
 
         //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
+            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             finish()
         }
         //喜欢这本书的人还喜欢（换一换）
@@ -181,8 +183,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         if (recommender != null) {
             val recommendBookendBooks1 = recommender!!.recommendBookendBooks1
             if (recommendBookendBooks1 != null) {
-                mRecommendBookAdapter!!.setBooks(recommendBookendBooks1)
-                mRecommendBookAdapter!!.notifyDataSetChanged()
+                mRecommendBookAdapter?.setBooks(recommendBookendBooks1)
+                mRecommendBookAdapter?.notifyDataSetChanged()
             } else {
                 AppLog.e("test", "书籍已拿完，重新从后端获取")
                 bookEndPresenter.requestRecommendV4(true, false, bookId!!)
@@ -194,8 +196,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         if (recommender != null) {
             val recommendBookendBooks2 = recommender!!.recommendBookendBooks2
             if (recommendBookendBooks2 != null) {
-                mNewBookAdapter!!.setBooks(recommendBookendBooks2)
-                mNewBookAdapter!!.notifyDataSetChanged()
+                mNewBookAdapter?.setBooks(recommendBookendBooks2)
+                mNewBookAdapter?.notifyDataSetChanged()
             } else {
                 bookEndPresenter.requestRecommendV4(false, true, bookId!!)
             }

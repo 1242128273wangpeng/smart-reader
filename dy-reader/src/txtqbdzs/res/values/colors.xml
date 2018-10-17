@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="reader_seek_bar_drawable">#C2B282</color>
+    <color name="reader_seek_bar_drawable">#3ECC96</color>
+    <color name="reader_catalog_head_txt">#B9B9B9</color>
+    <color name="reader_catalog_head_indicator">#00FFFFFF</color>
+
+    <color name="reading_backdrop_nightly">#131313</color>
+    <color name="reading_text_color_nightly">#4E4E4E</color>
+
 </resources>

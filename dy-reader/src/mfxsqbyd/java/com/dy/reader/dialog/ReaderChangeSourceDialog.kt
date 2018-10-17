@@ -8,7 +8,6 @@ import com.ding.basic.bean.Source
 import com.dy.reader.R
 import com.dy.reader.adapter.SourceAdapter
 import com.dy.reader.listener.SourceClickListener
-import com.dy.reader.setting.ReaderSettings
 import kotlinx.android.synthetic.mfxsqbyd.dialog_reader_chang_source.*
 import net.lzbook.kit.book.view.MyDialog
 import java.util.ArrayList
@@ -22,7 +21,7 @@ import java.util.ArrayList
 
 class ReaderChangeSourceDialog(activity: Activity) {
 
-    private val dialog = MyDialog(activity, R.layout.dialog_reader_chang_source, Gravity.CENTER)
+    private val dialog = MyDialog(activity, R.layout.dialog_reader_chang_source, Gravity.BOTTOM)
 
     private var continueListener: (() -> Unit)? = null
     private var cancelListener: (() -> Unit)? = null
@@ -37,10 +36,6 @@ class ReaderChangeSourceDialog(activity: Activity) {
         dialog.mhv_change_source.post {
             dialog.nsv_change_source.layoutParams.height = dialog.mhv_change_source.height
             dialog.mhv_change_source.requestLayout()
-        }
-
-        dialog.txt_change_source_continue.setOnClickListener {
-            continueListener?.invoke()
         }
 
         dialog.txt_change_source_cancel.setOnClickListener {

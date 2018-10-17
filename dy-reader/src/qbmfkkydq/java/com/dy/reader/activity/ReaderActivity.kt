@@ -160,7 +160,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+        //横向阅读 最后一章到完结页 点击返回 dialog不显示
+        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
+            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+        }
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
@@ -553,7 +556,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark)
+                ReadMediaManager.requestAd(adType, adMark,AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }

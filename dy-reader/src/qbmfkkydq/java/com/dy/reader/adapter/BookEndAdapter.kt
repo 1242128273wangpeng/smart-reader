@@ -49,8 +49,8 @@ class BookEndAdapter(private val activity: Activity) : BaseAdapter() {
         val book = books[position]
         Glide.with(activity)
                 .load(book.img_url)
-                .placeholder(R.drawable.book_cover_default_icon)
-                .error(R.drawable.book_cover_default_icon)
+                .placeholder(R.drawable.icon_book_cover_default)
+                .error(R.drawable.icon_book_cover_default)
                 .into(view.img_book_cover.getBackGroundImage())
         view.img_book_cover.setLabelText(book.genre ?: "")
         view.txt_book_name.text = book.name
