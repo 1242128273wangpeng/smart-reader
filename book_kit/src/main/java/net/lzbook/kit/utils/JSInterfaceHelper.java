@@ -10,8 +10,6 @@ import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.request.UrlUtils;
 
 import android.content.Context;
