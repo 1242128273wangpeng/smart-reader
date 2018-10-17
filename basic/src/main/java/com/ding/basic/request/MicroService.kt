@@ -28,12 +28,10 @@ interface MicroService {
         const val DOWN_TASK_CONFIG = "/union/book/down"
 
         // 兴趣列表
-//        const val INTEREST_LIST = "/union/bookrack/label"
-        const val INTEREST_LIST = "/UNION3/bookrack/label"
+        const val INTEREST_LIST = "/union/bookrack/label"
 
         //默认书架
-//        const val DEFAULT_BOOK = "/union/bookrack/labelCover"
-        const val DEFAULT_BOOK = "/UNION3/bookrack/labelCover"
+        const val DEFAULT_BOOK = "/union/bookrack/labelCover"
 
     }
 
