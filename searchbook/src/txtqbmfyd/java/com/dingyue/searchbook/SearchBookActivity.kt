@@ -37,7 +37,7 @@ import net.lzbook.kit.utils.toast.ToastUtil
 class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, OnKeyWordListener {
 
     private var lastFragment: Fragment? = null
-    private var isRunTextWatcher=true
+    private var isRunTextWatcher = true
 
     private val historyFragment: HistoryFragment by lazy {
         HistoryFragment()
@@ -67,15 +67,20 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         when (v.id) {
             img_back.id -> finish()
             search_result_clear.id -> {
-                isRunTextWatcher=true
+                isRunTextWatcher = true
                 search_result_input.setText("")
                 search_result_clear.visibility = View.GONE
 
                 showSoftKeyboard(search_result_input)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR)
             }
-            search_result_focus.id
-            -> {
+            search_result_input.id -> {
+                isRunTextWatcher = true
+                showEditCursor(true)
+                showFragment(suggestFragment)
+                suggestFragment.obtainKeyWord(search_result_input.text.toString())
+            }
+            search_result_focus.id -> {
                 search_result_focus.visibility = View.GONE
                 search_result_default.visibility = View.VISIBLE
 
@@ -84,9 +89,6 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
                 showFragment(historyFragment)
                 historyFragment.loadHistoryRecord()
-            }
-            search_result_input.id ->{
-                isRunTextWatcher=true
             }
             search_result_btn.id -> {
                 val keyword = search_result_input.text.toString()
@@ -103,6 +105,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     override fun onKeyWord(keyword: String?) {
         inputKeyWord(keyword ?: "")
         search_result_btn.performClick()
+        showEditCursor(false)
     }
 
     private fun initView() {
@@ -142,6 +145,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         hotWordFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
                 inputKeyWord(result)
+                showEditCursor(false)
                 showFragment(searchResultFragment)
                 searchResultFragment.loadKeyWord(result)
             }
@@ -149,10 +153,8 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
         searchResultFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
-                isRunTextWatcher=false
+                isRunTextWatcher = false
                 inputKeyWord(result)
-//                showFragment(searchResultFragment)
-//                searchResultFragment.loadKeyWord(result)
             }
         }
     }
@@ -169,8 +171,18 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         search_result_input.setSelection(keyword.length)
     }
 
+    /**
+     * 是否展示输入框的光标：
+     * true：展示光标，同时显示清除按钮
+     */
+    private fun showEditCursor(isShowCursor: Boolean) {
+        search_result_input.isCursorVisible = isShowCursor
+        search_result_clear.visibility = if (isShowCursor) View.VISIBLE else View.GONE
+    }
+
     override fun afterTextChanged(editable: Editable?) {
-        if(!isRunTextWatcher) return
+        if (!isRunTextWatcher) return
+
         if (editable.toString().isNotEmpty() && search_result_input.isFocused) {
             search_result_clear.visibility = View.VISIBLE
         } else {
