@@ -70,7 +70,6 @@ dependencies {
 
     compile "com.alibaba:arouter-api:$arouter_api_version"
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
-//    annotationProcessor "android.arch.persistence.room:compiler:$arch_version"
 
     api project(':resource')
     if(rootProject.ext.hasad) {
