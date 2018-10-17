@@ -1,15 +1,14 @@
 package com.dy.reader.holder
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.read.mode.NovelPageBean
 
 /**
- * Desc 书籍封面Holder
+ * Desc 书籍扉页
  * Author qiantao
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/6/22 11:43

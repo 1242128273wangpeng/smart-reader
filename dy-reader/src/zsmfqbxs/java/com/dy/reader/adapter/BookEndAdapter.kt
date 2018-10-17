@@ -1,6 +1,5 @@
 package com.dy.reader.adapter
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +12,9 @@ import com.ding.basic.bean.Book
 import com.dingyue.contract.router.BookRouter
 import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
-import kotlinx.android.synthetic.zsmfqbxs.item_book_end_recommend.view.*
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import java.util.*
-import kotlin.collections.ArrayList
 
 class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
 
@@ -57,8 +54,8 @@ class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
 
         Glide.with(parent?.context?.applicationContext)
                 .load(book.img_url)
-                .placeholder(R.drawable.common_book_cover_default_icon)
-                .error(R.drawable.common_book_cover_default_icon)
+                .placeholder(R.drawable.book_cover_default)
+                .error(R.drawable.book_cover_default)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(viewHolder.imgCover?.getBackGroundImage())
 
