@@ -8,8 +8,8 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.R
+import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -118,7 +118,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 filterWord = filter_word
                 sortType = sort_type
 
-                listener?.onSearchResult(startLoadData(0) ?: "")
+                listener?.onSearchResult(startLoadData() ?: "")
 
             }
 
@@ -188,7 +188,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
                 //不正常后删除回掉
                 listener?.onSearchWordResult(searchWord)
-                listener?.onSearchResult(startLoadData(0) ?: "")
+                listener?.onSearchResult(startLoadData() ?: "")
 
 
             }
@@ -366,7 +366,12 @@ class SearchResultModel(var listener: OnSearchResult?) {
     }
 
 
-    fun startLoadData(isAuthor: Int): String? {
+    /**
+     * isAuthor: 是否显示作者页，0为默认不显示
+     * 目前新壳2显示作者页
+     */
+    fun startLoadData(isAuthor: Int = 0): String? {
+
         var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word

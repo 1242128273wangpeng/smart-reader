@@ -57,8 +57,12 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         loadingPage = null
     }
 
-    fun loadKeyWord(keyWord: String, searchType: String = "0") {
-        searchResultPresenter.loadKeyWord(keyWord, searchType)
+    /**
+     * 加载关键字
+     * searchType：0 全部 1 标签 2 作者 3 书名
+     */
+    fun loadKeyWord(keyWord: String, searchType: String = "0", isAuthor: Int = 0) {
+        searchResultPresenter.loadKeyWord(keyWord, searchType, isAuthor)
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
