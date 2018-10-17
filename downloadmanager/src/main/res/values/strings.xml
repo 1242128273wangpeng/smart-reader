@@ -36,4 +36,7 @@
     <string name="download_manager_empty_prompt">当前无缓存</string>
 
     <string name="download_manager_delete_empty">您还没有选择书籍</string>
+
+
+
 </resources>

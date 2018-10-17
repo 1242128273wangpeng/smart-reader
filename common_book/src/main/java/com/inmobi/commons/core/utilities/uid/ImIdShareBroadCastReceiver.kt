@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 
 /**
- * Function：解决Unable to instantiate receiver com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver
- *
- * Created by JoannChen on 2018/5/15 0015 20:46
- * E-mail:yongzuo_chen@dingyuegroup.cn
+ * Desc 请描述这个文件
+ * Author zhenxiang
+ * Mail zhenxiang_lin@dingyuegroup.cn
+ * Date 2018\9\19 0019 15:16
  */
-class ImIdShareBroadCastReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {}
 
+class ImIdShareBroadCastReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+
+    }
 }
