@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/web_content_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix"
+    android:orientation="vertical">
+
+    <include layout="@layout/view_home_header" />
+
+    <RelativeLayout
+        android:id="@+id/rl_header"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:background="#FFFFFF">
+
+        <net.lzbook.kit.utils.NavigationBarStrip
+            android:id="@+id/nbs_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_below="@id/rl_head"
+            android:layout_centerHorizontal="true"
+            app:indicatorActiveColor="#1FB7C3"
+            app:indicatorAnimationDuration="200"
+            app:indicatorColor="#1FB7C3"
+            app:indicatorFactor="2.0"
+            app:indicatorGravity="bottom"
+            app:indicatorHeight="4dp"
+            app:indicatorInactiveColor="#FF212832"
+            app:indicatorMarginBottom="2dp"
+            app:indicatorPadding="64dp"
+            app:indicatorRadius="100dp"
+            app:indicatorTextSize="14sp"
+            app:indicatorType="line"/>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -3,13 +3,13 @@
     android:id="@+id/welfare_center_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/base_bg">
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/welfare_center_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/welfare_center_header_bg"
+        android:background="@color/primary"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
@@ -26,14 +26,14 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:scaleType="fitCenter"
-                android:src="@mipmap/welfare_center_back" />
+                android:src="@drawable/welfare_center_back" />
 
             <TextView
                 android:id="@+id/welfare_center_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textColor="@color/welfare_center_header_title"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
 
             <ImageView
@@ -44,7 +44,7 @@
                 android:paddingLeft="@dimen/dimen_padding_12"
                 android:paddingRight="@dimen/dimen_padding_12"
                 android:visibility="gone"
-                android:src="@mipmap/welfare_center_search" />
+                android:src="@drawable/welfare_center_search" />
         </RelativeLayout>
     </RelativeLayout>
 

@@ -80,7 +80,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="@string/confirm"
-                android:textColor="@color/theme_primary"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/dimen_text_18"/>
     </RelativeLayout>
 

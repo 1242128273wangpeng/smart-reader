@@ -3,8 +3,8 @@
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:paddingLeft="@dimen/padding_18"
-              android:paddingRight="@dimen/padding_18"
+              android:paddingLeft="@dimen/dimen_margin_18"
+              android:paddingRight="@dimen/dimen_margin_18"
               android:paddingTop="@dimen/padding_10">
 
     <LinearLayout
@@ -23,7 +23,7 @@
                 android:paddingLeft="0dp"
                 android:singleLine="true"
                 android:text="[推荐]"
-                android:textColor="@color/dialog_recommend"
+                android:textColor="@color/primary"
                 android:textSize="16.0sp"
                 android:visibility="gone"/>
 

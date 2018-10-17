@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:focusable="true"
     android:id="@+id/rootLayout"
     android:scrollbars="vertical"
     tools:ignore="RtlHardcoded">
@@ -85,7 +84,7 @@
                 android:background="@drawable/dialog_btn_right_selector"
                 android:gravity="center"
                 android:text="@string/reading_continue"
-                android:textColor="@color/color_primary"
+                android:textColor="@color/primary"
                 android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>

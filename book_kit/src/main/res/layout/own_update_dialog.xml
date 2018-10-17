@@ -69,7 +69,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:focusable="true"
                             android:text="更新内容"
                             android:textColor="#747474"/>
                 </LinearLayout>
@@ -100,7 +99,6 @@
                         android:text="@string/UMUpdateNow"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="10dp"
-                        android:focusable="true"
                         android:textSize="14sp"
                         android:textColor="#FFFFFF"/>
                 
@@ -113,7 +111,6 @@
                         android:background="@drawable/update_cancel_bg"
                         android:gravity="center"
                         android:text="@string/UMNotNow"
-                        android:focusable="true"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="15dp"
                         android:textColor="#000"/>
@@ -129,7 +126,6 @@
                         android:gravity="center"
                         android:padding="12dp"
                         android:text="@string/UMIgnore"
-                        android:focusable="true"
                         android:textColor="#AAABAF"/>
             </LinearLayout>
         
