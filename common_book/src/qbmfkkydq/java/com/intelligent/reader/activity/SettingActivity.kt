@@ -16,6 +16,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
@@ -27,7 +28,6 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.UIHelper
@@ -40,7 +40,6 @@ import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.qbmfkkydq.act_setting_user.*
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.IntentUtils
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -169,7 +168,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
             bt_night_shift!!.isChecked = false
         }
 
-        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
 
     }
 
@@ -322,7 +321,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
-            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
+            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
             edit.apply()
             val data = HashMap<String, String>()
             data.put("type", if (isChecked) "1" else "0")

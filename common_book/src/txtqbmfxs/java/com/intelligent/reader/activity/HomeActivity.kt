@@ -24,13 +24,16 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
 import com.intelligent.reader.fragment.WebViewFragment
+import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.view.PushSettingDialog
 import iyouqu.theme.BaseCacheableActivity
@@ -60,6 +63,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
 
     //    private var viewPager: NonSwipeViewPager? = null
+    private var homePresenter: HomePresenter? = null
     private var bookView: BookShelfFragment? = null
     private var isClosed = false
     private var apkUpdateUtils: ApkUpdateUtils? = null
@@ -96,11 +100,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         setContentView(R.layout.act_home)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        homePresenter = HomePresenter(this, this.packageManager)
 
-
-        initData()
         initListener()
         initViewPager()
+        homePresenter!!.initParameters()
 
         homeAdapter = HomeAdapter(supportFragmentManager)
         view_pager.adapter = homeAdapter
@@ -115,11 +119,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         } catch (e: Exception) {
             e.printStackTrace()
         }
-/*
-        initPositon()
-        checckUrlIsTest()*/
 
         AndroidLogStorage.getInstance().clear()
+        homePresenter!!.initDownloadService()
+        HomeLogger.uploadHomeBookListInformation()
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
@@ -127,6 +130,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     StartLogClickUtil.POPUPMESSAGE)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            if (intent.getIntExtra("position", 0) == 1) {
+                changeHomePagerIndex(1)
+            }
+
+        }
     }
 
     override fun onClick(v: View) {
@@ -194,7 +207,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     override fun changeHomePagerIndex(index: Int) {
         // 去书城
-        view_pager.currentItem = 1
+        view_pager.currentItem = index
     }
 
     override fun changeDrawerLayoutState() {
@@ -219,84 +232,21 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         startActivity(intent)
     }
 
-    private fun initData() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                applicationContext)
-        val edit = sharedPreferences.edit()
-        //获取阅读页背景
-        if (sharedPreferences.getInt("content_mode", 51) < 50) {
-            Constants.MODE = 51
-            edit.putInt("content_mode", Constants.MODE)
-            edit.putInt("current_light_mode", Constants.MODE)
-            edit.apply()
-        } else {
-            Constants.MODE = sharedPreferences.getInt("content_mode", 51)
-        }
-
-        //判断用户是否是当日首次打开应用
-        val first_time = sharedPreferences.getLong(Constants.TODAY_FIRST_OPEN_APP, 0)
-        AppLog.e("BaseBookApplication", "first_time=" + first_time)
-        val currentTime = System.currentTimeMillis()
-        val b = AppUtils.isToday(first_time, currentTime)
-        if (b) {
-            //用户非首次打开
-            Constants.is_user_today_first = false
-        } else {
-            //用户首次打开，记录当前时间
-            Constants.is_user_today_first = true
-            sharedPreferences.edit().putLong(Constants.TODAY_FIRST_OPEN_APP, currentTime).apply()
-            sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD, false).apply()
-            GetAppList().execute()
-        }
-        AppLog.e("BaseBookApplication",
-                "Constants.is_user_today_first=" + Constants.is_user_today_first)
-
-        mLoadDataManager = LoadDataManager(this)
-        Constants.upload_userinformation = sharedPreferences.getBoolean(Constants.IS_UPLOAD, false)
-
-        val premVersionCode = Constants.preVersionCode
-        val currentVersionCode = AppUtils.getVersionCode()
-
-        if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
-            //
-            if (!Constants.upload_userinformation || premVersionCode != currentVersionCode) {
-                /*  // 获取用户基础数据
-                  StatisticManager.getStatisticManager().sendUserData()
-    */
-                Constants.upload_userinformation = true
-                Constants.preVersionCode = currentVersionCode
-                sharedPreferences.edit().putBoolean(Constants.IS_UPLOAD,
-                        Constants.upload_userinformation).apply()
-            }
-        }
-
-
-        if (Constants.is_user_today_first) {
-            // 老用户更新书架书籍的完结/连载状态,和dex值
-            /*   mLoadDataManager!!.updateShelfBooks()*/
-
-            // 用户第一次启动时删掉物料表中的信息
-            /*  new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        AdDao.getInstance(HomeActivity.this).deleteAdMaterial();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();*/
-        }
-    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            doubleClickFinish()
+//            doubleClickFinish()
+            when {
+                view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
+                bookShelfFragment?.isRemoveMenuShow() == true -> bookShelfFragment?.dismissRemoveMenu()
+                else -> doubleClickFinish()
+            }
             return true
 
         }
         return super.onKeyDown(keyCode, event)
     }
+
 
     /**
      * 两次返回键退出
@@ -318,81 +268,26 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         handler.sendMessageDelayed(message, 2000)
     }
 
-/*    override fun onPause() {
-        try {
-            super.onPause()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (frameHelper != null) {
-            frameHelper!!.onPauseAction()
-        }
-    }*/
-
-    /**
-     * 接收默认书籍的加载完成刷新
-     */
-/*    fun onEvent(event: BookEvent) {
-        if (event.getMsg().equals(BookEvent.DEFAULTBOOK_UPDATED)) {
-            if (mLoadDataManager != null) {
-                mLoadDataManager!!.updateShelfBooks()
-            }
-        } else if (event.getMsg().equals(BookEvent.PULL_BOOK_STATUS)) {
-            if (bookView != null) {
-                bookView!!.updateBook()
-            }
-        }
-    }*/
-
-
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         return super.onCreateOptionsMenu(menu)
     }
 
-//    fun getViewPager(pager: ViewPager) {
-//        this.viewPager = pager as NonSwipeViewPager
-//    }
-
-/*   fun getRemoveMenuHelper(helper: BookShelfRemoveHelper) {
-       this.removeMenuHelper = helper
-   }
-
-   fun getFrameBookRankView(bookView: Fragment) {
-       this.bookView = bookView as BookShelfFragment
-   }
-*/
-/*    fun frameHelper() {
-        if (frameHelper == null) {
-            frameHelper = FrameBookHelper(applicationContext, this@HomeActivity)
-        }
-        frameHelper!!.setCancleUpdate(this)
+    override fun onResume() {
+        super.onResume()
+        MediaLifecycle.onResume()
     }
 
-    fun getAllCheckedState(isAllChecked: Boolean) {}
-
-    fun getMenuShownState(state: Boolean) {
-        if (mHomeFragment != null) {
-            mHomeFragment!!.onMenuShownState(state)
-        }
-    }
-
-    fun setSelectTab(index: Int) {
-        if (mHomeFragment != null) {
-            mHomeFragment!!.setTabSelected(index)
-        }
-    }*/
-
-    fun restoreSystemState() {
-        restoreSystemDisplayState()
+    override fun onPause() {
+        super.onPause()
+        MediaLifecycle.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         AndroidLogStorage.getInstance().clear()
         this.unregisterReceiver(homeBroadcastReceiver)
+        MediaLifecycle.onDestroy()
         try {
             homeAdapter = null
             setContentView(R.layout.common_empty)
@@ -553,24 +448,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
-    // 获取用户app列表
-    internal inner class GetAppList : AsyncTask<Void, Int, String>() {
-
-
-        override fun doInBackground(vararg params: Void): String {
-            return AppUtils.scanLocalInstallAppList(
-                    packageManager)
-        }
-
-        override fun onPostExecute(s: String) {
-
-            /*   StartLogClickUtil.upLoadApps(this, s)*/
-        }
-    }
 
     override fun supportSlideBack(): Boolean {
         return false
     }
+
 
     companion object {
         private val BACK = 12

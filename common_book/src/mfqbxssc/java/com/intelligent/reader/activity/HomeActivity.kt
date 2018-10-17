@@ -22,6 +22,7 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
+import com.ding.basic.Config
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.contract.CommonContract
@@ -29,13 +30,19 @@ import com.dingyue.contract.logger.HomeLogger
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
+import com.intelligent.reader.view.BannerDialog
 import com.intelligent.reader.view.PushSettingDialog
+import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.mfqbxssc.act_home.*
 import net.lzbook.kit.app.ActionConstants
@@ -43,10 +50,13 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
 import net.lzbook.kit.utils.update.ApkUpdateUtils
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
 
@@ -54,7 +64,7 @@ import java.util.*
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
-    private var homePresenter:HomePresenter? = null
+    private var homePresenter: HomePresenter? = null
 
     private var homeBroadcastReceiver: HomeBroadcastReceiver? = null
 
@@ -81,15 +91,19 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var categoryFragment: WebViewFragment? = null
 
+    private var registerShareCallback = false
+
     private val pushSettingDialog: PushSettingDialog by lazy {
         val dialog = PushSettingDialog(this)
         dialog.openPushListener = {
             openPushSetting()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPNOWOPEN)
         }
         lifecycle.addObserver(dialog)
         dialog
+    }
+
+    private val bannerDialog: BannerDialog by lazy {
+         BannerDialog(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,23 +136,11 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPMESSAGE)
         }
+
+        EventBus.getDefault().register(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        this.changeHomePagerIndex(currentIndex)
-
-        StatService.onResume(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        StatService.onPause(this)
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -159,13 +161,28 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+        this.changeHomePagerIndex(currentIndex)
+        this.registerShareCallback = false
+        StatService.onResume(this)
+        MediaLifecycle.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+        MediaLifecycle.onPause()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         AndroidLogStorage.getInstance().clear()
 
         this.unregisterReceiver(homeBroadcastReceiver)
-
+        MediaLifecycle.onDestroy()
         try {
             bookShelfFragment = null
             recommendFragment = null
@@ -179,6 +196,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             exception.printStackTrace()
         }
         fixInputMethodManagerLeak(applicationContext)
+
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -330,7 +349,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
+        if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
@@ -499,7 +518,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment
                 }
                 1 -> {
-                    if(recommendFragment == null){
+                    if (recommendFragment == null) {
                         recommendFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", WebViewFragment.TYPE_RECOMM)
@@ -510,7 +529,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     recommendFragment
                 }
                 2 -> {
-                    if(rankingFragment == null){
+                    if (rankingFragment == null) {
                         rankingFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", WebViewFragment.TYPE_RANK)
@@ -521,7 +540,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     rankingFragment
                 }
                 3 -> {
-                    if(categoryFragment == null){
+                    if (categoryFragment == null) {
                         categoryFragment = WebViewFragment()
                         val bundle = Bundle()
                         bundle.putString("type", WebViewFragment.TYPE_CATEGORY)
@@ -619,6 +638,35 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     override fun changeDrawerLayoutState() {
 
+    }
+
+    override fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
+        }
+    }
+
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
     }
 
     companion object {

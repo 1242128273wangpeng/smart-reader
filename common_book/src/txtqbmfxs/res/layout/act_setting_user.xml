@@ -161,8 +161,8 @@
 
                 <ImageView
                     android:id="@+id/iv_mine_image_left"
-                    android:layout_width="@dimen/umeng_comm_dimen_100px"
-                    android:layout_height="@dimen/umeng_comm_dimen_100px"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dimen_margin_15"
                     android:layout_toEndOf="@+id/setting_back_left"
@@ -238,8 +238,8 @@
 
                 <ImageView
                     android:id="@+id/iv_mine_image"
-                    android:layout_width="@dimen/umeng_comm_dimen_100px"
-                    android:layout_height="@dimen/umeng_comm_dimen_100px"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="25dp"
                     android:background="@mipmap/read_bookmark"
@@ -264,7 +264,7 @@
             <View
                 android:id="@+id/v_divider"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:layout_alignParentTop="true"
                 android:background="@color/color_divider"
                 android:visibility="gone"/>
@@ -272,7 +272,7 @@
             <View
                 android:id="@+id/v_gap1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_12"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/color_lv_gap"
                 android:visibility="gone"/>
@@ -280,13 +280,13 @@
             <RelativeLayout
                 android:id="@+id/rl_readpage_bbs"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56"
+                android:layout_height="56dp"
                 android:visibility="gone">
 
                 <View
                     android:id="@+id/v_divider1"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -294,7 +294,7 @@
                     android:id="@+id/tv_readpage_bbs"
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -304,7 +304,7 @@
                 <View
                     android:id="@+id/v_divider2"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"/>
             </RelativeLayout>
@@ -312,7 +312,7 @@
             <View
                 android:id="@+id/v_gap2"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_12"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/color_lv_gap"
                 android:visibility="gone"/>
@@ -320,13 +320,13 @@
             <RelativeLayout
                 android:id="@+id/rl_style_change"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56"
+                android:layout_height="56dp"
                 android:visibility="gone">
 
                 <View
                     android:id="@+id/v_divider3"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -335,7 +335,7 @@
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
                     android:drawableLeft="@mipmap/read_bookmark"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
                     android:text="@string/style_change"
@@ -355,7 +355,7 @@
                 <View
                     android:id="@+id/v_divider4"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"/>
             </RelativeLayout>
@@ -363,14 +363,14 @@
             <View
                 android:id="@+id/v_divider16"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_0.5"
+                android:layout_height="0.5dp"
                 android:layout_alignParentTop="true"
                 android:background="@color/color_divider"/>
 
             <RelativeLayout
                 android:id="@+id/rl_night_shift"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <View
                     android:id="@+id/v_divider5"
@@ -384,7 +384,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -409,7 +409,7 @@
                 <View
                     android:id="@+id/v_divider6"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"
                     android:visibility="gone"/>
@@ -418,7 +418,7 @@
             <View
                 android:id="@+id/v_gap3"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_12"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/color_lv_gap"
                 android:visibility="gone"/>
@@ -426,12 +426,12 @@
             <RelativeLayout
                 android:id="@+id/rl_history_setting"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <View
                     android:id="@+id/v_divider7"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
@@ -439,7 +439,7 @@
                     android:id="@+id/tv_history_setting"
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -449,7 +449,7 @@
                 <View
                     android:id="@+id/v_divider8"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -466,11 +466,11 @@
             <RelativeLayout
                 android:id="@+id/rl_wifi_auto"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
                 <View
                     android:id="@+id/v_gap12"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_12"
+                    android:layout_height="12dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_lv_gap"
                     android:visibility="gone"/>
@@ -480,7 +480,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -504,7 +504,7 @@
                 <View
                     android:id="@+id/v_divider20"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -513,7 +513,7 @@
             <View
                 android:id="@+id/v_gap4"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_12"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/color_lv_gap"
                 android:visibility="gone"/>
@@ -521,7 +521,7 @@
             <RelativeLayout
                 android:id="@+id/rl_welfare"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_45">
+                android:layout_height="45dp">
 
                 <TextView
                     android:id="@+id/tv_welfare"
@@ -534,16 +534,16 @@
 
                 <ImageView
                     android:id="@+id/img_welfare"
-                    android:layout_width="@dimen/dimen_height_35"
-                    android:layout_height="@dimen/dimen_height_35"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/padding_14"
+                    android:layout_marginRight="14dp"
                     android:src="@mipmap/icon_welfare_center"/>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -558,7 +558,7 @@
                 <View
                     android:id="@+id/v_divider9"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"
                     android:visibility="gone"/>
@@ -567,7 +567,7 @@
                     android:id="@+id/tv_readpage_setting"
                     style="@style/text_setting_style"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -578,7 +578,7 @@
                 <View
                     android:id="@+id/v_divider10"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
@@ -589,12 +589,12 @@
             <RelativeLayout
                 android:id="@+id/rl_setting_more"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <TextView
                     android:id="@+id/tv_setting_more"
                     style="@style/text_setting_style"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
@@ -605,7 +605,7 @@
                 <View
                     android:id="@+id/v_divider11"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"
                     android:visibility="gone"/>
@@ -614,7 +614,7 @@
             <View
                 android:id="@+id/v_gap5"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_12"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/color_lv_gap"
                 android:visibility="gone"/>
@@ -622,19 +622,19 @@
             <RelativeLayout
                 android:id="@+id/rl_feedback"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <View
                     android:id="@+id/v_divider12"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentTop="true"
                     android:background="@color/color_divider"/>
 
                 <TextView
                     android:id="@+id/tv_feedback"
                     style="@style/text_setting_style"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
@@ -645,7 +645,7 @@
                 <View
                     android:id="@+id/v_divider13"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_divider"/>
             </RelativeLayout>
@@ -653,12 +653,12 @@
             <RelativeLayout
                 android:id="@+id/rl_mark"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <TextView
                     android:id="@+id/tv_mark"
                     style="@style/text_setting_style"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
@@ -669,7 +669,7 @@
                 <View
                     android:id="@+id/v_divider14"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -678,14 +678,14 @@
             <RelativeLayout
                 android:id="@+id/check_update_rl"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <TextView
                     android:id="@+id/text_check_update"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -706,7 +706,7 @@
                 <View
                     android:id="@+id/v_divider15"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -715,7 +715,7 @@
             <RelativeLayout
                 android:id="@+id/clear_cache_rl"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56"
+                android:layout_height="56dp"
                 android:visibility="visible">
 
                 <TextView
@@ -723,7 +723,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
                     android:paddingRight="@dimen/padding_12"
@@ -744,7 +744,7 @@
                 <View
                     android:id="@+id/v_divider17"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -753,12 +753,12 @@
             <RelativeLayout
                 android:id="@+id/disclaimer_statement_rl"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <TextView
                     android:id="@+id/text_disclaimer_statement"
                     style="@style/text_setting_style"
-                    android:drawablePadding="@dimen/padding_14"
+                    android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/padding_12"
@@ -769,7 +769,7 @@
                 <View
                     android:id="@+id/v_divider18"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_height_0.5"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="16dp"
                     android:background="@color/color_divider"/>
@@ -778,7 +778,7 @@
             <RelativeLayout
                 android:id="@+id/rl_logout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_height_56">
+                android:layout_height="56dp">
 
                 <Button
                     android:id="@+id/btn_logout"

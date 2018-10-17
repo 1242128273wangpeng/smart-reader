@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
-import com.ding.basic.bean.Book
-import com.ding.basic.bean.Chapter
-import com.ding.basic.bean.SearchAutoCompleteBean
-import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.bean.*
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.request.RequestService
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.router.BookRouter
@@ -21,7 +19,6 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.data.search.SearchCommonBean
 import net.lzbook.kit.encrypt.URLBuilderIntterface
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.statistic.alilog
@@ -67,25 +64,25 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
         if (searchWord != null && !TextUtils.isEmpty(searchWord)) {
             RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestAutoCompleteV5(searchWord, object : RequestSubscriber<SearchAutoCompleteBeanYouHua>() {
                 override fun requestResult(result: SearchAutoCompleteBeanYouHua?) {
-                    val resultSuggest = ArrayList<SearchCommonBean>()
+                    val resultSuggest = ArrayList<SearchCommonBeanYouHua>()
                     resultSuggest.clear()
                     transmitBean = result
                     AppLog.e("bean", result.toString())
                     if (result != null && result.respCode == "20000"&& result.data != null) {
                         for (i in 0 until result.data!!.authors!!.size) {
-                            val searchCommonBean = SearchCommonBean()
+                            val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.authors!![i].suggest
                             searchCommonBean.wordtype = result.data!!.authors!![i].wordtype
                             resultSuggest.add(searchCommonBean)
                         }
                         for (i in 0 until result.data!!.label!!.size) {
-                            val searchCommonBean = SearchCommonBean()
+                            val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.label!![i].suggest
                             searchCommonBean.wordtype = result.data!!.label!![i].wordtype
                             resultSuggest.add(searchCommonBean)
                         }
                         for (i in 0 until result.data!!.name!!.size) {
-                            val searchCommonBean = SearchCommonBean()
+                            val searchCommonBean = SearchCommonBeanYouHua()
                             searchCommonBean.suggest = result.data!!.name!![i].suggest
                             searchCommonBean.wordtype = result.data!!.name!![i].wordtype
                             resultSuggest.add(searchCommonBean)
@@ -270,7 +267,7 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
             params.put("filter_word", filterWord ?: "")
             params.put("sort_type", sortType ?: "")
             AppLog.e("kk", "$searchWord==$searchType==$filterType==$filterWord===$sortType")
-            mUrl = UrlUtils.buildWebUrl(URLBuilderIntterface.SEARCH_V5, params)
+            mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V5, params)
         }
 
         view?.onStartLoad(mUrl!!)
@@ -297,7 +294,7 @@ class SearchPresenter(private val activity: SearchBookActivity, private val mCon
     }
 
     interface SearchSuggestCallBack {
-        fun onSearchResult(suggestList: List<SearchCommonBean>, transmitBean: SearchAutoCompleteBeanYouHua)
+        fun onSearchResult(suggestList: List<SearchCommonBeanYouHua>, transmitBean: SearchAutoCompleteBeanYouHua)
     }
 
     private inner class WordInfo {

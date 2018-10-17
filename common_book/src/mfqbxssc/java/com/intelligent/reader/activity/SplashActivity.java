@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -41,8 +42,6 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
-import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -52,10 +51,14 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
+
+import com.intelligent.reader.util.ShieldManager;
+
 import net.lzbook.kit.utils.StatServiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -423,8 +426,10 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -434,6 +439,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -531,27 +544,34 @@ public class SplashActivity extends FrameActivity {
         if (isGo) {
             handler.sendEmptyMessageDelayed(1, 3000);
         }
-        MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
-            @Override
-            public Unit invoke(Integer resultCode) {
-                switch (resultCode) {
-                    case MediaCode.MEDIA_SUCCESS: //广告请求成功
-                        isGo = false;
-                        AppLog.e(TAG, "time");
-                        break;
-                    case MediaCode.MEDIA_FAILED: //广告请求失败
-                        handler.sendEmptyMessage(0);
-                        break;
-                    case MediaCode.MEDIA_DISMISS: //开屏页面关闭
-                        handler.sendEmptyMessage(0);
-                        break;
-                    case MediaCode.MEDIA_DISABLE: //无开屏广告
-                        handler.sendEmptyMessage(0);
-                        break;
+        if(!AppUtils.isNeedAdControl(Constants.ad_control_other)){
+            MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
+                @Override
+                public Unit invoke(Integer resultCode) {
+                    switch (resultCode) {
+                        case MediaCode.MEDIA_SUCCESS: //广告请求成功
+                            isGo = false;
+                            AppLog.e(TAG, "time");
+                            break;
+                        case MediaCode.MEDIA_FAILED: //广告请求失败
+                            handler.sendEmptyMessage(0);
+                            break;
+                        case MediaCode.MEDIA_DISMISS: //开屏页面关闭
+                            handler.sendEmptyMessage(0);
+                            break;
+                        case MediaCode.MEDIA_DISABLE: //无开屏广告
+                            handler.sendEmptyMessage(0);
+                            break;
+                    }
+                    return null;
                 }
-                return null;
+            });
+        }else{
+            if (isGo) {
+                handler.sendEmptyMessageDelayed(1, 3000);
             }
-        });
+        }
+
     }
 
     //初始化广告开关
@@ -708,8 +728,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }

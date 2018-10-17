@@ -22,7 +22,6 @@ import com.dingyue.contract.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
-import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.mfxsqbyd.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfxsqbyd.frag_bookshelf.*
@@ -105,8 +104,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
                     }
 
                     if (book != null) {
-                        handleBook(book)
                         BookShelfLogger.uploadBookShelfBookClick(book, position)
+                        handleBook(book)
                     }
                 } else {
                     bookShelfAdapter.insertSelectedPosition(position)
@@ -172,21 +171,19 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         srl_refresh.setOnPullRefreshListener(object : SuperSwipeRefreshLayout.OnPullRefreshListener {
             override fun onRefresh() {
-                refreshHeader.head_text_view.text = "正在刷新"
-                refreshHeader.head_image_view.visibility = View.GONE
-                refreshHeader.head_pb_view2.visibility = View.VISIBLE
-                (refreshHeader.head_pb_view2.drawable as AnimationDrawable).start()
+                refreshHeader.img_head.visibility = View.GONE
+                refreshHeader.img_anim.visibility = View.VISIBLE
+                (refreshHeader.img_anim.drawable as AnimationDrawable).start()
                 checkBookUpdate()
             }
 
             override fun onPullDistance(distance: Int) {}
 
             override fun onPullEnable(enable: Boolean) {
-                refreshHeader.head_pb_view2.visibility = View.GONE
-                refreshHeader.head_text_view.text = if (enable) "松开刷新" else "下拉刷新"
-                refreshHeader.head_image_view.visibility = View.VISIBLE
-//                headerView.head_image_view.rotation = (if (enable) 180 else 0).toFloat()
-                refreshHeader.head_image_view.setImageResource((if (enable) R.drawable.refresh_head_pull_light_1 else R.drawable.pull_light_0))
+                refreshHeader.img_anim.visibility = View.GONE
+                refreshHeader.img_head.visibility = View.VISIBLE
+//                headerView.img_anim.rotation = (if (enable) 180 else 0).toFloat()
+                refreshHeader.img_head.setImageResource((if (enable) R.drawable.refresh_head_pull_light_1 else R.drawable.refresh_head_pull_light_0))
             }
         })
         txt_head_title.text = getString(R.string.bookshelf)
@@ -293,10 +290,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
 
     private fun createHeaderView(): View {
-        refreshHeader.head_text_view.text = "下拉刷新"
-        refreshHeader.head_image_view.visibility = View.VISIBLE
-        refreshHeader.head_image_view.setImageResource(R.drawable.pull_light_0)
-        refreshHeader.head_pb_view2.visibility = View.GONE
+        refreshHeader.img_head.visibility = View.VISIBLE
+        refreshHeader.img_head.setImageResource(R.drawable.refresh_head_pull_light_0)
+        refreshHeader.img_anim.visibility = View.GONE
         return refreshHeader
     }
 
@@ -308,7 +304,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
+            BookShelfLogger.uploadFirstOpenBooks()
         }
+
+
     }
 
     /**

@@ -35,11 +35,11 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 
 import java.util.concurrent.Callable
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbmfxsydq.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -112,20 +112,19 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         val bundle = intent.extras ?: return
 
         initData(bundle)
-        initCatalogAndBookmark()
+
 
         if (fromEnd) {
             isPositive = false
             changeSortState(isPositive)
         }
 
+
         EventBus.getDefault().register(this)
 
     }
 
-    fun shouldLightStatusBase(): Boolean {
-        return true
-    }
+
 
 
     private fun initUI() {
@@ -153,7 +152,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         char_hint!!.visibility = View.INVISIBLE
 
 
-        iv_back_reading!!.setOnClickListener(this)
         currentView = tab_catalog
 
         changeSortState(isPositive)
@@ -192,7 +190,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (chapterList != null && !chapterList!!.isEmpty()) {
                     var manager = recl_catalog_main.layoutManager
-                    if (manager is LinearLayoutManager) {
+                    if (manager is LinearLayoutManager && manager.findFirstVisibleItemPosition() >=0) {
 
                         char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
                     }
@@ -408,7 +406,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                 }
                 finish()
             }
-            R.id.iv_back_reading -> finish()
             R.id.catalog_empty_refresh -> getChapterData()
             R.id.tab_catalog -> {
                 if (recl_catalog_main != null) {
@@ -446,10 +443,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                 //书签点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                 isPositive = !isPositive
-                Collections.reverse(chapterList!!)
+                if(!is_last_chapter){
+                    Collections.reverse(chapterList!!)
+                }else{
+                    is_last_chapter = false
+                }
                 mCataloguesAdapter.insertCatalog(chapterList)
                 mCataloguesAdapter.notifyDataSetChanged()
                 changeSortState(isPositive)
+                recl_catalog_main.scrollToPosition(0)
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
                 mCataloguesPresenter!!.fixBook()
@@ -463,7 +465,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         if (tv_catalog_novel_sort != null && iv_catalog_novel_sort != null) {
             if (b) {
                 tv_catalog_novel_sort!!.setText(R.string.catalog_negative)
-                sortIcon = R.mipmap.dir_sort_negative
+                sortIcon = R.drawable.dir_sort_negative
                 //正序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
 
@@ -471,7 +473,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
             } else {
                 tv_catalog_novel_sort!!.setText(R.string.catalog_positive)
-                sortIcon = R.mipmap.dir_sort_positive
+                sortIcon = R.drawable.dir_sort_positive
                 iv_catalog_novel_sort!!.setImageResource(sortIcon)
                 //倒序的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)
@@ -565,6 +567,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         if (mCataloguesAdapter != null) {
             mCataloguesAdapter.setSelectedItem(position)
         }
+        initCatalogAndBookmark()
     }
 
     override fun requestCatalogError() {
@@ -599,4 +602,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     override fun changeDownloadButtonStatus() {
     }
 
+    override fun shouldLightStatusBase(): Boolean {
+        return true
+    }
 }

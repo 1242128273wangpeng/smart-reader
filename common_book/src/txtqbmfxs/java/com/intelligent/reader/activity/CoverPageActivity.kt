@@ -276,10 +276,10 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.remove_bookshelf)
             initializeRemoveShelfButton()
         } else {
-            book_cover_bookshelf!!.setText(R.string.book_cover_add_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.add_bookshelf)
             initializeInsertShelfButton()
         }
     }
@@ -317,7 +317,7 @@ class CoverPageActivity : BaseCacheableActivity(),
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf!!.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf!!.setText(R.string.remove_bookshelf)
             initializeRemoveShelfButton()
         } else {
             initializeInsertShelfButton()

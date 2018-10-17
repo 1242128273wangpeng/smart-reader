@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.data.search.SearchSuggest;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.List;

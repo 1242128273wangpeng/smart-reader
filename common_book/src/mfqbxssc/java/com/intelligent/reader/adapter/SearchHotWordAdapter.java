@@ -11,10 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ding.basic.bean.HotWordBean;
+import com.ding.basic.bean.SearchHotBean;
 import com.intelligent.reader.R;
-
-
-import net.lzbook.kit.data.search.SearchHotBean;
 
 import java.util.List;
 import java.util.Random;

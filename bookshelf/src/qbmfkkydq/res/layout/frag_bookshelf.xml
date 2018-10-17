@@ -30,9 +30,7 @@
         android:id="@+id/ll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="11dp"
-        android:paddingTop="31dp">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/rl_head_normal"
@@ -47,6 +45,8 @@
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/module_name"
                 android:paddingLeft="16dp"
+                android:paddingBottom="11dp"
+                android:paddingTop="31dp"
                 android:src="@drawable/bookshelf_icon_personal"
                 app:onPressChangeAlpha="true"/>
 
@@ -57,6 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
+                android:paddingBottom="11dp"
+                android:paddingTop="31dp"
                 android:gravity="center_vertical"
                 android:text="@string/bookshelf"/>
 
@@ -68,6 +70,8 @@
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/module_name"
                 android:paddingRight="16dp"
+                android:paddingBottom="11dp"
+                android:paddingTop="31dp"
                 android:src="@drawable/bookshelf_icon_more"
                 app:onPressChangeAlpha="true"/>
 
@@ -79,6 +83,8 @@
                 android:layout_toLeftOf="@id/img_head_menu"
                 android:contentDescription="@string/module_name"
                 android:paddingRight="26dp"
+                android:paddingBottom="11dp"
+                android:paddingTop="31dp"
                 android:src="@drawable/bookshelf_icon_search"
                 app:onPressChangeAlpha="true"/>
         </RelativeLayout>

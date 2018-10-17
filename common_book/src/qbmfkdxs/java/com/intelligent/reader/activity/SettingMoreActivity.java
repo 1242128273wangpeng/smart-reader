@@ -297,8 +297,8 @@ public class SettingMoreActivity extends BaseCacheableActivity implements View.O
         int checkedColor = 0;
         int uncheckedColor = 0;
         Resources.Theme theme = mContext.getTheme();
-        checkedColor = R.mipmap.edit_bookshelf_selected;
-        uncheckedColor = R.mipmap.edit_bookshelf_unselected;
+        checkedColor = R.drawable.edit_bookshelf_selected;
+        uncheckedColor = R.drawable.edit_bookshelf_unselected;
         bookshelf_sort_time_checkbox.setImageResource(type != 1 ? checkedColor : uncheckedColor);
         bookshelf_sort_update_time_checkbox.setImageResource(type == 1 ? checkedColor : uncheckedColor);
     }

@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:background="@color/top_navigation_bg_color">
+            android:background="#ffffff">
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/cover_top_back"/>
+                    android:src="@drawable/nav_icon_back"/>
 
             <TextView
                     android:id="@+id/find_book_detail_title"
@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:textSize="18sp"
-                    android:textColor="@color/top_navigation_text_color"/>
+                    android:textColor="#282828"/>
 
             <ImageView
                     android:id="@+id/find_book_detail_search"
@@ -40,8 +40,21 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
+                    android:layout_centerVertical="true"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/search_submit_btn"/>
+                    android:src="@drawable/recommend_head_search_icon"/>
+
+            <ImageView
+                android:id="@+id/img_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/rank_boy_icon"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:visibility="gone"
+                android:text="click"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -57,5 +70,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+            android:src="@drawable/top_shadow"/>
 </RelativeLayout>

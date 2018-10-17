@@ -24,7 +24,7 @@
                     android:layout_centerVertical="true"
                     android:paddingLeft="@dimen/dimen_padding_16"
                     android:paddingRight="@dimen/dimen_padding_12"
-                    android:src="@mipmap/nbar_back_icon"/>
+                    android:src="@drawable/nbar_back_icon"/>
 
             <TextView
                     android:id="@+id/find_book_detail_title"
@@ -40,7 +40,7 @@
                     android:layout_alignParentRight="true"
                     android:paddingLeft="@dimen/dimen_padding_12"
                     android:paddingRight="@dimen/dimen_padding_16"
-                    android:src="@mipmap/nbar_search_nor_icon"/>
+                    android:src="@drawable/nbar_search_nor_icon"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -57,6 +57,6 @@
         android:layout_below="@+id/find_book_detail_head"
         android:scaleType="fitXY"
         android:visibility="gone"
-        android:src="@drawable/top_shadow_bg"/>
+        android:src="@drawable/top_shadow"/>
 
 </RelativeLayout>

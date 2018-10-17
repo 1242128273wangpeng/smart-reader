@@ -11,10 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.request.RequestService
+import com.dingyue.contract.util.SharedPreUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import kotlinx.android.synthetic.mfxsqbyd.category_fragment_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
 
@@ -27,6 +29,7 @@ import net.lzbook.kit.utils.AppUtils
 class CategoryFragment : Fragment() {
 
     private lateinit var mCategoryPageAdapter: CategoryPageAdapter
+    private val sharedPreUtil:SharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
     private val titles = arrayOf("男频", "女频")
 
@@ -43,7 +46,13 @@ class CategoryFragment : Fragment() {
         }
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         category_view_page.adapter = mCategoryPageAdapter
-        category_view_page.setCurrentItem(0, false)
+        when(sharedPreUtil?.getInt(SharedPreUtil.GENDER_TAG)){
+            Constants.SGIRL -> { category_view_page.setCurrentItem(1, false)}
+            else -> {
+                category_view_page.setCurrentItem(0, false)
+            }
+        }
+
         tabstrip.setViewPager(category_view_page)
         category_view_page.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}

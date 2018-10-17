@@ -23,7 +23,7 @@
                 android:layout_width="75dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/dimen_margin_10">
+                android:layout_marginLeft="10dp">
 
             <ImageView
                     android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                         android:maxLines="1"
                         android:text="name"
                         android:textColor="@color/footprint_name_text_color"
-                        android:textSize="@dimen/dimen_text_14"/>
+                        android:textSize="14sp"/>
 
                 <TextView
                         android:id="@+id/book_shelf_update_time"
@@ -83,7 +83,7 @@
                         android:maxLines="1"
                         android:text="2017-08-14 00:00"
                         android:textColor="@color/footprint_brow_time_text_color"
-                        android:textSize="@dimen/dimen_text_10"/>
+                        android:textSize="10sp"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -103,7 +103,7 @@
                         android:maxLines="1"
                         android:text="author"
                         android:textColor="@color/footprint_author_text_color"
-                        android:textSize="@dimen/dimen_text_10"/>
+                        android:textSize="10sp"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -125,7 +125,7 @@
                         android:lineSpacingMultiplier="1.1"
                         android:text="暂无简介"
                         android:textColor="@color/footprint_author_text_color"
-                        android:textSize="@dimen/dimen_text_10"/>
+                        android:textSize="10sp"/>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
@@ -140,7 +140,7 @@
     <View
             android:id="@+id/v_2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_view_height_10"
+            android:layout_height="10dp"
             android:layout_below="@+id/v_1"
             android:background="@color/footprint_item_divider1_color"/>
 

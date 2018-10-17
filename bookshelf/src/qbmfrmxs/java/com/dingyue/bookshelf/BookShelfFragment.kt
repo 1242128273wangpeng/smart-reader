@@ -296,15 +296,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
-            bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
-            uiThread {
-                bookShelfAdapter.notifyDataSetChanged()
+        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
+        uiThread {
+            bookShelfAdapter.notifyDataSetChanged()
 
-                if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
-                    bookShelfInterface?.checkShowShelfGuide()
-                }
+            if (bookShelfAdapter.itemCount > 0 && bookShelfInterface != null) {
+                bookShelfInterface?.checkShowShelfGuide()
             }
-
+            BookShelfLogger.uploadFirstOpenBooks()
+        }
     }
 
     /**

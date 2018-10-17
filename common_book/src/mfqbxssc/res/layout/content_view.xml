@@ -245,7 +245,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/content_head"
         android:scaleType="fitXY"
-        android:src="@mipmap/top_shadow"
+        android:src="@drawable/top_shadow"
         android:visibility="gone"/>
     <!--android:background="?attr/color_divider"-->
     <View
@@ -262,7 +262,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/content_tab_selection"
         android:scaleType="fitXY"
-        android:src="@mipmap/bottom_shadow"/>
+        android:src="@drawable/top_shadow"/>
     <!--android:background="@drawable/tab_bg"-->
     <LinearLayout
         android:id="@+id/content_tab_selection"
@@ -296,7 +296,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bookshelf"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -322,7 +322,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recommend"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -348,7 +348,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ranking"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -374,7 +374,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
+                android:textSize="10sp"/>
         </LinearLayout>
     </LinearLayout>
 

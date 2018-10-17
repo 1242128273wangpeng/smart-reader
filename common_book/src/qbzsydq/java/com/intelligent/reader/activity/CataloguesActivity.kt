@@ -35,11 +35,11 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 
 import java.util.concurrent.Callable
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.qbzsydq.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -48,17 +48,11 @@ import java.util.*
  */
 @Route(path = RouterConfig.CATALOGUES_ACTIVITY)
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesContract {
-    override fun insertBookShelfResult(result: Boolean) {
+    override fun insertBookShelfResult(result: Boolean) = Unit
 
-    }
+    override fun changeShelfButtonClickable(clickable: Boolean) = Unit
 
-    override fun changeShelfButtonClickable(clickable: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun bookSubscribeState(subscribe: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun bookSubscribeState(subscribe: Boolean) = Unit
 
     var type = 2
     internal var colorSelected: Int = 0
@@ -126,7 +120,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     }
 
-    fun shouldLightStatusBase(): Boolean {
+    override  fun shouldLightStatusBase(): Boolean {
         return true
     }
 

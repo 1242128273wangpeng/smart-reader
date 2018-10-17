@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -45,7 +46,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import com.intelligent.reader.util.GenderHelper;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
@@ -385,8 +386,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -396,6 +399,14 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -499,6 +510,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                         genderHelper.jumpAnimation();
                         mStepInFlag = true;
                         Constants.SGENDER = Constants.SDEFAULT;
+                        SharedPreUtil sp = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+                        sp.putInt("gender", Constants.SGENDER);
                         initData();
                     }
                 });
@@ -658,8 +671,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }

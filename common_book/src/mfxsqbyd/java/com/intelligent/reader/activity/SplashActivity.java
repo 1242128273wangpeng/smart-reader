@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,16 +20,19 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -42,7 +46,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.util.DynamicParamter;
+import com.intelligent.reader.util.GenderHelper;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -52,6 +56,7 @@ import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.db.help.ChapterDaoHelper;
+import net.lzbook.kit.dynamic.DynamicParameter;
 import net.lzbook.kit.user.UserManager;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -81,17 +86,26 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
-public class SplashActivity extends FrameActivity {
-    private static String TAG = "SplashActivity";
+public class SplashActivity extends FrameActivity implements GenderHelper.onGenderSelectedListener {
     private final MHandler handler = new MHandler(this);
+    private SharedPreUtil sharedPreUtil;
     public int initialization_count = 0;
     public int complete_count = 0;
     public ViewGroup ad_view;
-    private SharedPreUtil sharedPreUtil;
+    private boolean isIniting;
 
     private TextView txt_upgrade;
     private ProgressBar progress_upgrade;
     private List<Book> books;
+
+    // 开屏选男女
+    private boolean mStepInFlag;
+
+    @Override
+    public void genderSelected() {
+        mStepInFlag = true;
+        doOnCreate();
+    }
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -149,7 +163,6 @@ public class SplashActivity extends FrameActivity {
                 }
             }
         } catch (Exception e) {
-            AppLog.d(TAG, "queryShortCut error " + e);
             e.printStackTrace();
         }
         return isInstallShortcut;
@@ -204,14 +217,26 @@ public class SplashActivity extends FrameActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        // 仅支持Api为19以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+
+
+        try {
+            setContentView(R.layout.act_splash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ad_view = findViewById(R.id.ad_view);
 
         String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
         File bookDBFile = getDatabasePath(bookDBName);
@@ -230,7 +255,7 @@ public class SplashActivity extends FrameActivity {
             txt_name.setText(R.string.app_name);
             upgradeBookDB(bookDBName, chapterDBList);
         } else {
-            doOnCreate();
+            initGenderOrData();
         }
     }
 
@@ -288,7 +313,7 @@ public class SplashActivity extends FrameActivity {
                                 , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
 
                         deleteOldDB();
-                        doOnCreate();
+                        initGenderOrData();
                     }
                 }, new Action() {
                     @Override
@@ -330,7 +355,7 @@ public class SplashActivity extends FrameActivity {
                                     data);
                             //删除之前的数据库
                             deleteOldDB();
-                            doOnCreate();
+                            initGenderOrData();
                         }
                     }, new Action() {
                         @Override
@@ -342,7 +367,7 @@ public class SplashActivity extends FrameActivity {
                                     data);
                             //删除之前的数据库
                             deleteOldDB();
-                            doOnCreate();
+                            initGenderOrData();
                         }
                     });
         } else {
@@ -352,7 +377,7 @@ public class SplashActivity extends FrameActivity {
                     , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
             //删除之前的数据库
             deleteOldDB();
-            doOnCreate();
+            initGenderOrData();
         }
     }
 
@@ -383,17 +408,19 @@ public class SplashActivity extends FrameActivity {
 
     private void doOnCreate() {
 
-        try {
-            setContentView(R.layout.act_splash);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isIniting) {
+            return;
         }
 
         ad_view = findViewById(R.id.ad_view);
+        isIniting = true;
         complete_count = 0;
         initialization_count = 0;
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
 
-//        updateBookLastChapter();
+        updateBookLastChapter();
 
         initializeDataFusion();
 
@@ -406,10 +433,13 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
+
     private void initializeDataFusion() {
 
-        books = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
+        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext());
+
+        books = loadRequest.loadBooks();
 
         if (books != null) {
 
@@ -419,6 +449,14 @@ public class SplashActivity extends FrameActivity {
             for (Book book : books) {
                 if (TextUtils.isEmpty(book.getBook_chapter_id())) {
                     upBooks.add(book);
+                }
+
+                // 旧版本BookFix表等待目录修复的书迁移到book表
+                BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
+                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                    book.setList_version_fix(bookFix.getList_version());
+                    loadRequest.updateBook(book);
+                    loadRequest.deleteBookFix(book.getBook_id());
                 }
             }
 
@@ -466,6 +504,90 @@ public class SplashActivity extends FrameActivity {
         InitTask initTask = new InitTask();
         initTask.execute();
     }
+
+    /***
+     * 数据融合二期修改缓存逻辑，升级时同步本地最新章节信息到Book表
+     * **/
+    private void updateBookLastChapter() {
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+
+        boolean isDataBaseRemark = sharedPreUtil.getBoolean(
+                SharedPreUtil.Companion.getDATABASE_REMARK(), false);
+
+        if (!isDataBaseRemark) {
+
+            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBooks();
+
+            if (bookList != null && bookList.size() > 0) {
+
+                for (Book book : bookList) {
+                    ChapterDaoHelper chapterDaoHelper =
+                            ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                    BaseBookApplication.getGlobalContext(), book.getBook_id());
+
+                    Chapter lastChapter = chapterDaoHelper.queryLastChapter();
+
+                    if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
+                        book.setLast_chapter(lastChapter);
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.Companion.getDATABASE_REMARK(), true);
+        }
+    }
+
+    private void initGenderOrData() {
+        if (initChooseGender()) {
+            FrameLayout frameLayout = findViewById(R.id.content_frame);
+            frameLayout.removeAllViews();
+            View view = LayoutInflater.from(this).inflate(R.layout.gender_splash, null);
+            if (view != null) {
+                frameLayout.addView(view);
+                final GenderHelper genderHelper = new GenderHelper(view);
+                genderHelper.setOnGenderSelectedListener(SplashActivity.this);
+                final TextView tvStepIn = view.findViewById(R.id.tv_step_in);
+                tvStepIn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Map<String,String> data = new HashMap<>();
+                        data.put("type","0");
+                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
+                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
+                        tvStepIn.setText("努力加载中...");
+                        tvStepIn.setClickable(false);
+                        genderHelper.jumpAnimation();
+                        sharedPreUtil.putInt(SharedPreUtil.GENDER_TAG, Constants.SDEFAULT);
+                        mStepInFlag = true;
+                        Constants.SGENDER = Constants.SDEFAULT;
+                        doOnCreate();
+                    }
+                });
+            } else {
+                mStepInFlag = true;
+                doOnCreate();
+            }
+        } else {
+            doOnCreate();
+        }
+    }
+
+    private boolean initChooseGender() {
+        AppUtils.initDensity(getApplicationContext());
+        if( sharedPreUtil == null){
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+        int isChooseGender = sharedPreUtil.getInt(SharedPreUtil.GENDER_TAG, Constants.NONE);
+        return isChooseGender == Constants.NONE;
+    }
+
+
+
 
     private boolean isGo = true;
 
@@ -623,6 +745,8 @@ public class SplashActivity extends FrameActivity {
         return keyCode == KEYCODE_BACK || super.onKeyDown(keyCode, event);
     }
 
+
+
     public class MHandler extends Handler {
 
         private WeakReference<SplashActivity> weakReference;
@@ -661,8 +785,8 @@ public class SplashActivity extends FrameActivity {
 
             // 2 动态参数
             try {
-                DynamicParamter dynamicParameter = new DynamicParamter(getApplicationContext());
-                dynamicParameter.setDynamicParamter();
+                DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
+                dynamicParameter.setDynamicParameter();
             } catch (Exception e) {
                 e.printStackTrace();
             }

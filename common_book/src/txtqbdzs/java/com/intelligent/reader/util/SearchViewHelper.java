@@ -24,21 +24,12 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.data.search.SearchHotBean;
-import net.lzbook.kit.utils.*;
-import net.lzbook.kit.utils.StatServiceUtils;
-
-import com.google.gson.Gson;
-
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.Result;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
+import com.ding.basic.bean.SearchHotBean;
 import com.ding.basic.bean.SearchOperations;
 import com.ding.basic.bean.SearchRecommendBook;
 import com.ding.basic.bean.SearchResult;
@@ -46,17 +37,25 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.bookshelf.ShelfGridLayoutManager;
 import com.dingyue.contract.util.CommonUtil;
+import com.google.gson.Gson;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.adapter.RecommendBooksAdapter;
 import com.intelligent.reader.adapter.SearchHistoryAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
-
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.view.TagContainerLayout;
 import com.intelligent.reader.view.TagView;
 
+import net.lzbook.kit.app.BaseBookApplication;
+import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.book.view.LoadingPage;
+import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.SharedPreferencesUtils;
+import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.Tools;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

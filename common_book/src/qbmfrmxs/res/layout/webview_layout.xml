@@ -30,8 +30,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_web_view_header">
 
-        <wendu.dsbridge.DWebView
-            android:id="@+id/bwv_web_view_result"
+        <WebView
+            android:id="@+id/wv_web_view_result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"/>

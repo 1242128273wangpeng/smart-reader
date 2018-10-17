@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="8dp"
-            android:paddingTop="@dimen/padding_20"
+            android:paddingTop="20dp"
             android:text="@string/seach_subbook"
             android:textColor="@color/color_black_323232"
             android:textSize="18sp"

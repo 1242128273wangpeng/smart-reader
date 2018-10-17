@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.ding.basic.Config
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
@@ -37,7 +38,6 @@ import net.lzbook.kit.book.view.ConsumeEvent
 import net.lzbook.kit.book.view.MyDialog
 import net.lzbook.kit.book.view.SwitchButton
 import net.lzbook.kit.cache.DataCleanManager
-import net.lzbook.kit.constants.SPKeys
 import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.*
@@ -47,10 +47,10 @@ import net.lzbook.kit.utils.update.ApkUpdateUtils
 
 import java.util.HashMap
 
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.ThemeMode
 import kotlinx.android.synthetic.qbzsydq.act_setting_user.*
+import org.greenrobot.eventbus.EventBus
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -219,7 +219,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             bt_night_shift!!.isChecked = false
         }
 
-        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, true)
+        bt_wifi_auto!!.isChecked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, true)
 
         startWelfareCenterAnim()
     }
@@ -600,7 +600,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             ReaderSettings.instance.save()
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
-            edit.putBoolean(SPKeys.Setting.AUTO_UPDATE_CAHCE, isChecked)
+            edit.putBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE, isChecked)
             edit.apply()
             val data = HashMap<String, String>()
             data["type"] = if (isChecked) "1" else "0"

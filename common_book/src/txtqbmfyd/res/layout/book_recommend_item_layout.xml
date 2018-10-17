@@ -65,7 +65,7 @@
             android:background="@drawable/cover_tagart_title_bg"
             android:layout_alignBottom="@+id/book_img_iv"
             android:layout_toLeftOf="@+id/book_cover_category"
-            android:textSize="@dimen/dimen_text_10"/>
+            android:textSize="10sp"/>
 
     <TextView
             android:id="@+id/book_cover_category"
@@ -81,5 +81,5 @@
             android:layout_marginLeft="5dp"
             android:textColor="@color/title_tagart_text_color"
             android:background="@drawable/cover_tagart_title_bg"
-            android:textSize="@dimen/dimen_text_10"/>
+            android:textSize="10sp"/>
 </RelativeLayout>

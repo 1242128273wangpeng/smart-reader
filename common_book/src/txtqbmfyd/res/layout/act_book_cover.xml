@@ -22,8 +22,15 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:paddingLeft="16dp"
-            android:src="@mipmap/nbar_back_icon"
+            android:src="@drawable/nbar_back_icon"
             expandableTextView:onPressChangeAlpha="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="@style/style_text_huge_dark"
+            android:text="书籍详情"/>
 
         <ImageView
             android:id="@+id/book_cover_download_iv"
@@ -104,7 +111,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/padding_23">
+                    android:paddingTop="23dp">
 
                     <FrameLayout
                         android:layout_width="95dp"
@@ -219,7 +226,7 @@
                                 android:paddingTop="4dp"
                                 android:text="连载中"
                                 android:textColor="@color/title_state_text_color"
-                                android:textSize="@dimen/dimen_text_10"/>
+                                android:textSize="10sp"/>
 
                             <TextView
                                 android:id="@+id/book_cover_category2"
@@ -233,7 +240,7 @@
                                 android:paddingTop="4dp"
                                 android:text="玄幻"
                                 android:textColor="@color/title_tagart_text_color"
-                                android:textSize="@dimen/dimen_text_10"/>
+                                android:textSize="10sp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -345,7 +352,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="70dp"
-                        android:drawableRight="@mipmap/board_more_nor_icon"
+                        android:drawableRight="@drawable/board_more_nor_icon"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:text="更新至：123章"/>

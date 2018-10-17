@@ -24,6 +24,7 @@ import android.widget.LinearLayout
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
+import com.ding.basic.Config
 import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
@@ -44,6 +45,7 @@ import com.intelligent.reader.presenter.home.HomePresenter
 import com.intelligent.reader.presenter.home.HomeView
 import com.intelligent.reader.util.EventBookStore
 import com.intelligent.reader.widget.ClearCacheDialog
+import com.intelligent.reader.widget.SwitchButton
 import com.intelligent.reader.widget.drawer.DrawerLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -70,7 +72,7 @@ import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
-        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
+        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface , SwitchButton.OnCheckedChangeListener{
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
 
@@ -98,7 +100,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val fragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("type", "recommend")
-        val uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
+        var uri:String = ""
+        when(sharedPreUtil?.getInt(SharedPreUtil.GENDER_TAG)){
+            Constants.SBOY -> { uri = RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName())}
+            Constants.SGIRL -> { uri = RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName())}
+            else -> {
+                 uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
+            }
+        }
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
@@ -232,11 +241,16 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * **/
     private fun initView() {
         dl_home_content.setOnMenuStateChangeListener { state ->
-            if (state == DrawerLayout.MenuState.MENU_OPENED) {
-                showCacheMessage()
-
-                if (bookShelfFragment?.isRemoveMenuShow() == true) {
-                    bookShelfFragment?.dismissRemoveMenu()
+            when (state) {
+                DrawerLayout.MenuState.MENU_OPENED -> {
+                    showCacheMessage()
+                    if (bookShelfFragment?.isRemoveMenuShow() == true) {
+                        bookShelfFragment?.dismissRemoveMenu()
+                    }
+                }
+                DrawerLayout.MenuState.MENU_START_SCROLL,
+                DrawerLayout.MenuState.MENU_END_SCROLL -> {
+                    ll_home_tab.requestLayout()
                 }
             }
         }
@@ -290,27 +304,9 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             HomeLogger.uploadHomeCategorySelected()
         }
 
-        setMenuTitleMargin()
+//        setNightMode(false)
 
-        setNightMode(false)
-
-        bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
-            PersonalLogger.uploadPersonalNightModeChange()
-            ReaderSettings.instance.initValues()
-            if (isChecked) {
-                tv_night_shift.setText(R.string.mode_day)
-                ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
-                ReaderSettings.instance.readThemeMode = 61
-                mThemeHelper.setMode(ThemeMode.NIGHT)
-            } else {
-                tv_night_shift.setText(R.string.mode_night)
-                ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
-                mThemeHelper.setMode(ThemeMode.THEME1)
-            }
-//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
-            ReaderSettings.instance.save()
-            nightShift(isChecked, true)
-        }
+        bt_night_shift.setOnCheckedChangeListener(this)
 
         val isAutoDownload = sharedPreUtil.getBoolean(SharedPreUtil.AUTO_UPDATE_CAHCE,true)
 
@@ -363,7 +359,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         rl_check_update.setOnClickListener {
             PersonalLogger.uploadPersonalCheckUpdate()
             try {
-                apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
+                apkUpdateUtils.getApkUpdateInfo(this, handler, "SettingActivity")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -379,6 +375,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         txt_clear_cache_message.text = applicationContext.getString(R.string.application_cache_size)
     }
+
 
     private fun initGuide() {
         val key = SharedPreUtil.BOOKSHELF_GUIDE_TAG
@@ -466,7 +463,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
      * 检查请求地址是否为测试地址
      * **/
     private fun checkUrlDevelop() {
-        if (UrlUtils.getBookNovelDeployHost().contains("test") || UrlUtils.getBookWebViewHost().contains("test")) {
+        if (Config.loadRequestAPIHost().contains("test") || Config.loadWebViewHost().contains("test")) {
             this.showToastMessage("请注意！！请求的是测试地址！！！", 0L)
         }
     }
@@ -631,27 +628,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         return false
     }
 
-    /***
-     * 设置抽屉布局中标题的Margin
-     * **/
-    private fun setMenuTitleMargin() {
-        val density = resources.displayMetrics.density
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val left = (12 * density + 0.5f).toInt()
-        var top = 20
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || isMIUISupport || isFlymeSupport) {
-            top += 20
-        }
-        top = (top * density + 0.5f).toInt()
-
-        params.topMargin = top
-        params.leftMargin = left
-
-        txt_menu_title.layoutParams = params
-    }
-
-
 
     /***
      * 是否夜间模式
@@ -743,7 +719,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment?.updateUI()
                 }
             } else if (intent.action == ActionConstants.ACTION_CHANGE_NIGHT_MODE) {
-                setNightMode(true)
+//                setNightMode(true)
             } else if(intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF){
                 if (bookShelfFragment != null) {
                     bookShelfFragment?.updateUI()
@@ -786,6 +762,25 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             dl_home_content.openMenu()
         }
     }
+
+    override fun onCheckedChanged(view: SwitchButton?, isChecked: Boolean) {
+        PersonalLogger.uploadPersonalNightModeChange()
+        ReaderSettings.instance.initValues()
+        if (isChecked) {
+            tv_night_shift.setText(R.string.mode_day)
+            ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
+            ReaderSettings.instance.readThemeMode = 61
+            mThemeHelper.setMode(ThemeMode.NIGHT)
+        } else {
+            tv_night_shift.setText(R.string.mode_night)
+            ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
+            mThemeHelper.setMode(ThemeMode.THEME1)
+        }
+//            sharedPreUtil.putInt(SharedPreUtil.CONTENT_MODE, ReadConfig.MODE)
+        ReaderSettings.instance.save()
+        nightShift(isChecked, true)
+    }
+
 
     companion object {
         private const val BACK = 0x80

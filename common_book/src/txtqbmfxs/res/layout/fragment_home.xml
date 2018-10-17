@@ -252,7 +252,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:visibility="gone"
-        android:src="@mipmap/top_shadow"/>
+        android:src="@drawable/top_shadow"/>
 
     <View
         android:id="@+id/content_tab_selection_devider"

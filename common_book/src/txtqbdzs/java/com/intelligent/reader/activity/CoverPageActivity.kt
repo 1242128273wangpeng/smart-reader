@@ -330,7 +330,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             textView.background = getLabelBgColor(labelColorAlpha[position], labelColor[position])
         } else {
             textView.setTextColor(ContextCompat.getColor(this, R.color.cover_recommend_read))
-            textView.setBackgroundResource(R.drawable.bg_cover_label)
+            textView.setBackgroundResource(R.drawable.book_cover_label_bg)
         }
 
         textView.setPadding(left, top, right, bottom)
@@ -359,9 +359,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            initRemoveShelfButton(book_cover_bookshelf, R.string.book_cover_havein_bookshelf)
+            initRemoveShelfButton(book_cover_bookshelf, R.string.remove_bookshelf)
         } else {
-            initInsertShelfButton(book_cover_bookshelf, R.string.book_cover_add_bookshelf)
+            initInsertShelfButton(book_cover_bookshelf, R.string.add_bookshelf)
         }
     }
 
@@ -411,9 +411,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            initRemoveShelfButton(book_cover_bookshelf, R.string.book_cover_havein_bookshelf)
+            initRemoveShelfButton(book_cover_bookshelf, R.string.remove_bookshelf)
         } else {
-            initInsertShelfButton(book_cover_bookshelf, R.string.book_cover_add_bookshelf)
+            initInsertShelfButton(book_cover_bookshelf, R.string.add_bookshelf)
         }
     }
 

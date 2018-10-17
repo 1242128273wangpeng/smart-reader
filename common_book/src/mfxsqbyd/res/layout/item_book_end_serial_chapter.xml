@@ -4,9 +4,9 @@
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:background="@drawable/read_setting_background_press"
-              android:paddingLeft="@dimen/padding_16"
-              android:paddingRight="@dimen/padding_16"
-              android:paddingTop="@dimen/padding_12">
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="12dp">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -17,12 +17,12 @@
                 android:id="@+id/bestSource_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_margin_6"
+                android:layout_marginRight="6dp"
                 android:gravity="left"
                 android:singleLine="true"
                 android:text="[推荐]"
                 android:textColor="@color/theme_primary"
-                android:textSize="@dimen/text_size_14"
+                android:textSize="14sp"
                 />
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="8dp"
-            android:paddingBottom="@dimen/padding_12">
+            android:paddingBottom="12dp">
 
         <TextView
                 android:id="@+id/site_text"
@@ -61,7 +61,7 @@
                 android:layout_weight="1"
                 android:text="shulou.com"
                 android:textColor="@color/reading_setting_text_info_color"
-                android:textSize="@dimen/text_size_12"
+                android:textSize="12sp"
                 android:singleLine="true"
                 android:ellipsize="end"/>
 
@@ -73,6 +73,6 @@
                 android:singleLine="true"
                 android:text="12天前更新"
                 android:textColor="@color/reading_setting_text_info_color"
-                android:textSize="@dimen/text_size_12"/>
+                android:textSize="12sp"/>
     </LinearLayout>
 </LinearLayout>

@@ -20,7 +20,6 @@ import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.presenter.catalogues.CataloguesContract
 import com.intelligent.reader.presenter.catalogues.CataloguesPresenter
 import com.intelligent.reader.receiver.OffLineDownLoadReceiver
-import de.greenrobot.event.EventBus
 import iyouqu.theme.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -92,13 +91,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
         val bundle = intent.extras ?: return
         initData(bundle)
 
-        initCatalogAndBookmark()
         if (fromEnd) {
             isPositive = false
             changeSortState(isPositive)
         }
-
-        EventBus.getDefault().register(this)
     }
 
     private fun initUI() {
@@ -150,9 +146,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
 
     private fun getChapterData() {
         if (book != null) {
-
-            loadingPage.onSuccess()
-            loadingPage.setCustomBackgroud()
             cataloguesPresenter?.requestCatalogList(changeSource)
 
             loadingPage.isCategory = true
@@ -220,12 +213,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             }
 
         }
-        try {
-            EventBus.getDefault().unregister(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         chapterList.clear()
 
         if (cataloguesPresenter != null) {
@@ -274,11 +261,17 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
                 if (chapterList.isNotEmpty()) {
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                     isPositive = !isPositive
-                    Collections.reverse(chapterList)
+
+                    if(!is_last_chapter){
+                        Collections.reverse(chapterList)
+                    }else{
+                        is_last_chapter = false
+                    }
 
                     cataloguesAdapter.setData(chapterList)
                     cataloguesAdapter.notifyDataSetChanged()
                     changeSortState(isPositive)
+                    catalog_recyceler_main.scrollToPosition(0)
                 }
             }
             R.id.iv_fixbook -> cataloguesPresenter?.fixBook()
@@ -290,7 +283,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
     private fun changeSortState(b: Boolean) {
         if (b) {
             tv_catalog_novel_sort.setText(R.string.catalog_negative)
-            sortIcon = R.mipmap.dir_sort_negative
+            sortIcon = R.drawable.dir_sort_negative
             //正序的统计
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
 
@@ -298,7 +291,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
 
         } else {
             tv_catalog_novel_sort.setText(R.string.catalog_positive)
-            sortIcon = R.mipmap.dir_sort_positive
+            sortIcon = R.drawable.dir_sort_positive
 //                iv_catalog_novel_sort!!.setImageResource(sortIcon)
             //倒序的统计
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)
@@ -330,27 +323,15 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
     override fun requestCatalogSuccess(chapterList: ArrayList<Chapter>) {
         this.chapterList = chapterList
         loadingPage.onSuccess()
+
+        initCatalogAndBookmark()
+
         catalog_chapter_count!!.text = "共" + chapterList.size + "章"
 
         if (fromEnd) {
             isPositive = false
             Collections.reverse(chapterList)
         }
-
-        cataloguesAdapter.setData(chapterList)
-
-        //设置选中的条目
-        val position: Int = if (is_last_chapter) {
-            chapterList.size
-        } else {
-            sequence
-        }
-
-        catalog_recyceler_main.scrollToPosition(position)
-
-        catalog_recyceler_main.scrollToPosition(0)
-
-        cataloguesAdapter.setSelectedItem(position)
     }
 
     override fun requestCatalogError() {

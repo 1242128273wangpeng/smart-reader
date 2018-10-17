@@ -97,7 +97,7 @@
         #ffffff
     </color>
     <color name="cover_bottom_btn_remove_text_color">
-        #8e8d8d
+        #B9B9B9
     </color>
     <color name="cover_bottom_btn_add_text_color">
         #1dbfbb
@@ -374,7 +374,6 @@
     <color name="edir_user_profile_title_color">#767676</color>
     <color name="edir_user_profile_fail_text_color">#F75266</color>
     <color name="edir_user_profile_tip_text_color">#ADADAD</color>
-    <!--用户中心-->
 
-
+    <color name="color_white_faf9f7">#ffffff</color>
 </resources>

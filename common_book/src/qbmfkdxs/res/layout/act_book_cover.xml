@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/top_shadow"/>
+            android:src="@drawable/top_shadow"/>
 
     <RelativeLayout
             android:id="@+id/book_cover_main"
@@ -82,8 +82,8 @@
                             android:layout_marginLeft="16dp"
 
                             android:layout_marginRight="16dp"
-                            android:paddingBottom="@dimen/padding_17"
-                            android:paddingTop="@dimen/padding_19">
+                            android:paddingBottom="17dp"
+                            android:paddingTop="19dp">
 
                         <FrameLayout
                                 android:id="@+id/frame"
@@ -95,7 +95,7 @@
                                     android:layout_height="match_parent"
                                     android:contentDescription="@string/app_name"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/cover_book_shadow"/>
+                                    android:src="@drawable/cover_book_shadow"/>
 
                             <ImageView
                                     android:id="@+id/book_cover_image"
@@ -108,8 +108,8 @@
                                     android:layout_gravity="center_horizontal"
                                     android:contentDescription="@string/app_name"
                                     android:scaleType="fitXY"
-                                    android:background="@mipmap/bookshelf_book_cover_default"
-                                    android:src="@mipmap/bookshelf_book_cover_default"/>
+                                    android:background="@drawable/bookshelf_book_cover_default"
+                                    android:src="@drawable/bookshelf_book_cover_default"/>
 
                         </FrameLayout>
 
@@ -155,7 +155,7 @@
                                         android:gravity="center_vertical"
                                         android:text="连载中"
                                         android:textColor="@color/cover_text_color"
-                                        android:textSize="@dimen/cover_page_author_text_13"/>
+                                        android:textSize="13sp"/>
                             </RelativeLayout>
 
 
@@ -173,7 +173,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="作者："
                                         android:textColor="@color/cover_profile_des_color"
-                                        android:textSize="@dimen/cover_page_author_text"/>
+                                        android:textSize="12sp"/>
 
                                 <TextView
                                         android:id="@+id/book_cover_author"
@@ -181,7 +181,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="望语"
                                         android:textColor="@color/cover_profile_des_color"
-                                        android:textSize="@dimen/cover_page_author_text"/>
+                                        android:textSize="12sp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -199,7 +199,7 @@
                                         android:singleLine="true"
                                         android:text="字数："
                                         android:textColor="@color/cover_profile_des_color"
-                                        android:textSize="@dimen/cover_page_author_text"/>
+                                        android:textSize="12sp"/>
 
                                 <TextView
                                         android:id="@+id/tv_text_number"
@@ -207,7 +207,7 @@
                                         android:layout_height="wrap_content"
                                         android:gravity="center"
                                         android:textColor="@color/cover_profile_des_color"
-                                        android:textSize="@dimen/cover_page_author_text"
+                                        android:textSize="12sp"
                                         />
 
 
@@ -232,7 +232,7 @@
                                         android:text="@string/book_cover_source"
                                         android:layout_centerVertical="true"
                                         android:textColor="@color/cover_profile_des_color"
-                                        android:textSize="@dimen/cover_page_author_text"/>
+                                        android:textSize="12sp"/>
 
                                 <TextView
                                         android:id="@+id/book_cover_source_form"
@@ -248,17 +248,8 @@
                                         android:paddingRight="@dimen/dimen_padding_7"
                                         android:text="@string/book_cover_no_source"
                                         android:textColor="@color/cover_profile_des_color"
-                                        android:textSize="@dimen/cover_page_author_text"/>
+                                        android:textSize="12sp"/>
 
-                                <ImageView
-                                        android:id="@+id/iv_arrow"
-                                        android:layout_width="12dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentRight="true"
-                                        android:layout_centerVertical="true"
-                                        android:background="@drawable/icon_open_answer"
-                                        android:layout_marginRight="@dimen/dimen_elevation_5"
-                                        />
                             </RelativeLayout>
 
                             <RelativeLayout
@@ -276,8 +267,7 @@
                                         android:isIndicator="true"
                                         android:stepSize="0.1"
                                         android:layout_centerVertical="true"
-                                        style="@style/GlimmerRatingbar"
-                                        />
+                                        style="@style/GlimmerRatingbar"/>
 
                                 <TextView
                                         android:id="@+id/tv_score"
@@ -461,10 +451,10 @@
                                 android:text="2天前更新"
                                 android:gravity="center_vertical"
                                 android:layout_centerVertical="true"
-                                android:drawableRight="@mipmap/cover_go"
+                                android:drawableRight="@drawable/cover_go"
                                 android:layout_alignParentRight="true"
                                 android:textColor="@color/cover_recommend_read"
-                                android:textSize="@dimen/cover_page_author_text"/>
+                                android:textSize="12sp"/>
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -507,7 +497,7 @@
                 android:layout_height="3dp"
                 android:layout_above="@+id/linear_bottom"
                 android:scaleType="fitXY"
-                android:src="@mipmap/bottom_shadow"/>
+                android:src="@drawable/bottom_shadow"/>
 
         <LinearLayout
                 android:id="@+id/linear_bottom"
