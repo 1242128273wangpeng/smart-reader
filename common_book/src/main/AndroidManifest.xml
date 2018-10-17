@@ -13,17 +13,6 @@
         android:targetSdkVersion="22"
         tools:overrideLibrary="comm.umeng.com.umeng_community_library_project"/>
 
-    <!-- 百度推送权限 -->
-    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
-    <!-- 适配Android N系统必需的ContentProvider写权限声明，写权限包含应用包名-->
-    <uses-permission android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"/>
-    <permission
-        android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"
-        android:protectionLevel="signature">
-    </permission>
-
     <!-- 用于在屏幕关闭时维持下载网络 -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!-- 用于连接Internet -->
@@ -41,35 +30,24 @@
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <!-- 离线下载 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.REORDER_TASKS"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <!-- 广告sdk权限 -->
-    <!-- 有助于获取投放地域广告，提高广告与用户的相关性，提高广告点击率 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES"/>
 
-    <!-- 芒果广告权限 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <!-- 百度统计3.7.1新增权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <!-- WeChat -->
+    <!-- WeChat -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <!-- WeChat -->
-    <!-- WeChat -->
 
-    <!--qq-->
-    <!-- SDK2.1新增获取用户位置信息 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions"/>
 
-    <uses-permission android:name="android.permission.GET_TASKS"/>
     <!--qq-->
     <supports-screens
         android:anyDensity="true"
@@ -94,6 +72,10 @@
         <meta-data
             android:name="android.notch_support"
             android:value="true"/>
+        <!--xiaomi适配异形屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait"/>
         <!-- start for GaoDe Map -->
         <service android:name="com.amap.api.location.APSService"/>
 
@@ -123,11 +105,6 @@
         <meta-data
             android:name="BaiduMobAd_STAT_ID"
             android:value="${BAIDU_STAT_ID}"/>
-        <!-- 应用程序的分发渠道 -->
-        <!--<meta-data-->
-        <!--android:name="BaiduMobAd_CHANNEL"-->
-        <!--android:value="${CHANNEL_NAME}"/>-->
-        <!-- baidu channel -->
 
         <meta-data
             android:name="WECHAT_APPID"
@@ -140,35 +117,6 @@
         <meta-data
             android:name="REYUN_APPKEY"
             android:value="${REYUN_APPKEY}"/>
-
-        <!-- 注册Service，应用下载所需 -->
-        <service
-            android:name="com.adsmogo.controller.service.UpdateService"
-            android:exported="true"
-            android:process=":remote"/>
-        <!-- 注册Service，应用被安装所用 -->
-        <service
-            android:name="com.adsmogo.controller.service.CountService"
-            android:exported="true"
-            android:process=":remote"/>
-
-        <activity
-            android:name="com.qq.e.ads.InterstitialAd"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity
-            android:name="com.qq.e.ads.ADActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
-
-        <!-- 百度广告Activity声明 -->
-        <activity
-            android:name="com.baidu.mobads.AppActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"/>
-
-        <service
-            android:name="com.qq.e.comm.DownloadService"
-            android:exported="false"/>
-        <!-- <activity android:name="com.qq.e.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" /> -->
 
         <activity
             android:name=".activity.SplashActivity"
@@ -202,11 +150,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN2"/>-->
-
-            <!--<category android:name="android.intent.category.main"/>-->
-            <!--</intent-filter>-->
         </activity>
 
         <activity
@@ -271,13 +214,6 @@
             android:theme="@style/AppThemeTranslucent"
             android:windowSoftInputMode="adjustNothing"/>
         <activity
-            android:name=".activity.StyleChangeActivity"
-            android:configChanges="keyboard"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeTranslucent"/>
-
-        <activity
             android:name=".activity.WelfareCenterActivity"
             android:configChanges="keyboard"
             android:launchMode="singleTop"
@@ -303,67 +239,6 @@
                 <action android:name="${PACKAGE_NAME}.receiver.CLICK_DOWN_BOOK"/>
             </intent-filter>
         </receiver>
-        <!-- push应用定义消息receiver声明 -->
-        <receiver android:name=".receiver.BaiduPushReceiver">
-            <intent-filter>
-
-                <!-- 接收push消息 -->
-                <action android:name="com.baidu.android.pushservice.action.MESSAGE"/>
-                <!-- 接收bind,unbind,fetch,delete等反馈消息 -->
-                <action android:name="com.baidu.android.pushservice.action.RECEIVE"/>
-                <action android:name="com.baidu.android.pushservice.action.notification.CLICK"/>
-            </intent-filter>
-        </receiver>
-        <!-- 百度推送 push必须的receviver和service声明 -->
-        <receiver
-            android:name="com.baidu.android.pushservice.PushServiceReceiver"
-            android:process=":bdservice_v1">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="com.baidu.android.pushservice.action.notification.SHOW"/>
-                <action android:name="com.baidu.android.pushservice.action.media.CLICK"/>
-                <!-- 以下四项为可选的action声明，可大大提高service存活率和消息到达速度 -->
-                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.baidu.android.pushservice.RegistrationReceiver"
-            android:process=":bdservice_v1">
-            <intent-filter>
-                <action android:name="com.baidu.android.pushservice.action.METHOD"/>
-                <action android:name="com.baidu.android.pushservice.action.BIND_SYNC"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-
-                <data android:scheme="package"/>
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.baidu.android.pushservice.PushService"
-            android:exported="true"
-            android:process=":bdservice_v1">
-            <intent-filter>
-                <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.baidu.android.pushservice.CommandService"
-            android:exported="true"/>
-
-        <!-- 适配Android N系统必需的ContentProvider声明，写权限包含应用包名-->
-        <provider
-            android:name="com.baidu.android.pushservice.PushInfoProvider"
-            android:authorities="${PACKAGE_NAME}.bdpush"
-            android:exported="true"
-            android:protectionLevel="signature"
-            android:writePermission="baidu.push.permission.WRITE_PUSHINFOPROVIDER.${PACKAGE_NAME}"/>
-
 
         <activity
             android:name=".activity.CoverPageActivity"
@@ -391,21 +266,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
-        <activity
-            android:name=".activity.SwitchModeActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeTranslucent"/>
 
         <activity
             android:name=".activity.GoToCoverOrReadActivity"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:taskAffinity=".gotocoverorreadactivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="${applicationId}.GoToCoverOrReadActivity"/>-->
-            <!--<category android:name="android.intent.category.DEFAULT"/>-->
-            <!--</intent-filter>-->
+
         </activity>
         <!-- 腾讯SSO授权的Activity注册 -->
         <activity
@@ -433,29 +300,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- 微信回调activity -->
 
-
-        <!-- 新浪微博 -->
-        <activity
-            android:name=".WBShareActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
-            android:configChanges="keyboardHidden|orientation"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <service
-            android:name="com.sina.weibo.sdk.net.DownloadService"
-            android:exported="false"/>
-
         <receiver android:name=".receiver.ConnectionChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
@@ -472,11 +316,9 @@
             android:enabled="true"
             android:exported="true"/>
 
-        <!-- 科大讯飞 -->
-        <service android:name="com.iflytek.voiceads.update.DownloadService"/>
-        <activity
-            android:name="com.iflytek.voiceads.request.IFLYBrowser"
-            android:screenOrientation="portrait"/>
+        <service
+            android:name="net.lzbook.kit.dynamic.service.DynamicService"
+            android:label="dynamicparameter"/>
 
     </application>
 

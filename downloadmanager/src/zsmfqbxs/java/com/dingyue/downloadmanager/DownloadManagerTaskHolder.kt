@@ -84,9 +84,9 @@ class DownloadManagerTaskHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         }
 
         if (contains) {
-            img_delete.setImageResource(R.drawable.download_manager_item_check_icon)
+            img_delete.setImageResource(R.drawable.bookshelf_delete_selected)
         } else {
-            img_delete.setImageResource(R.drawable.download_manager_item_uncheck_icon)
+            img_delete.setImageResource(R.drawable.bookshelf_delete_unselected)
         }
 
         if (remove) {
