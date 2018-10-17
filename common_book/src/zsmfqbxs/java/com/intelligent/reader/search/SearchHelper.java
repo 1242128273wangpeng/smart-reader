@@ -432,15 +432,15 @@ public class SearchHelper {
                     AppLog.e(TAG, searchWord);
                 }
             }
-//
             if (searchType.equals("2") && isAuthor == 1) {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("authorType", searchWord);
-                mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord;
+                mUrl = RequestService.WEB_AUTHOR.replace("{packageName}", AppUtils.getPackageName()) + "?author=" + searchWord;
+
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
-                            "authorType").apply();//FindBookDetail 返回键时标识
+                            "authorType").apply();
                     SearchBookActivity.isSatyHistory = true;
                     Intent intent = new Intent();
                     intent.setClass(mContext, FindBookDetail.class);
@@ -457,7 +457,7 @@ public class SearchHelper {
             } else {
                 Map<String, String> params = new HashMap<>();
                 params.put("keyword", searchWord);
-                params.put("search_type", searchType);
+                params.put("searchType", searchType);
                 params.put("filter_type", filterType);
                 params.put("filter_word", filterWord);
                 params.put("sort_type", sortType);
@@ -466,7 +466,8 @@ public class SearchHelper {
                 AppLog.e("kk",
                         searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
                                 + "===" + sortType);
-                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
+                String uri = RequestService.WEB_SEARCH.replace("{packageName}", AppUtils.getPackageName());
+                mUrl = UrlUtils.buildWebUrl(uri, params);
             }
 
         }

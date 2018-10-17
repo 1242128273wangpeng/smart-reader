@@ -1,6 +1,6 @@
 package com.intelligent.reader.activity;
 
-import static net.lzbook.kit.utils.ExtensionsKt.IS_FROM_PUSH;
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
+import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
@@ -33,7 +34,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.view.LoadingPage;
-import net.lzbook.kit.encrypt.URLBuilderIntterface;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
@@ -118,10 +118,11 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_book_detail_back = findViewById(R.id.find_book_detail_back);
         find_book_detail_title = findViewById(R.id.find_book_detail_title);
         find_book_detail_search = findViewById(R.id.find_book_detail_search);
-        find_detail_content = findViewById(R.id.rank_content);
+        find_detail_content = findViewById(R.id.find_book_detail_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(RequestService.AUTHOR_V4)||currentUrl.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
+                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);
@@ -138,7 +139,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             customWebClient = new CustomWebClient(this, find_detail_content);
         }
 
-        if (find_detail_content != null && customWebClient != null) {
+        if (find_detail_content != null) {
             customWebClient.setWebSettings();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 find_detail_content.getSettings().setMixedContentMode(
@@ -166,6 +167,14 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
         find_book_detail_search.setOnClickListener(this);
         addTouchListener();
+    }
+
+    @Override
+    public boolean shouldLightStatusBase() {
+        if ("cc.quanben.novel".equals(AppUtils.getPackageName())) {
+            return true;
+        }
+        return super.shouldLightStatusBase();
     }
 
     @Override
@@ -213,29 +222,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 intent.setClass(this, SearchBookActivity.class);
                 startActivity(intent);
                 break;
-//            case R.id.iv_banddan_pull:
-//            case R.id.find_book_detail_title:
-//                showPopupWindow();
-//                break;
+
         }
     }
 
-//    View view_zhehzao;
-//    private void showPopupWindow() {
-//        if (popupWindow != null && !popupWindow.isShowing()) {
-////            View view = findViewById(R.id.find_book_detail_head);
-////            popupWindow.showAtLocation(view, Gravity.TOP, 0, view.getHeight());
-//            popupWindow.showAsDropDown(findViewById(R.id.find_book_detail_head),0,0);
-//            view_zhehzao.setVisibility(View.VISIBLE);
-//        }
-//    }
-
-//    private void dissmissPop(){
-//        if (popupWindow != null && popupWindow.isShowing()) {
-//            popupWindow.dismiss();
-//            view_zhehzao.setVisibility(View.GONE);
-//        }
-//    }
 
     @Override
     protected void onResume() {
@@ -314,9 +304,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         //如果可以切换周榜和月榜总榜
         if (map != null && map.get("qh") != null && map.get("qh").equals("true")) {
             setPullImageVisible(true);
-            //刷新popwindow的UI
             rankType = analysisUrl(currentUrl).get("rankType");
-//            updatePopView();
         } else {//如果不可以切换周榜和月榜总榜
             setPullImageVisible(false);
             setTitle(name);
@@ -333,12 +321,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    loadingData(url);
-                }
-            });
+            handler.post(() -> loadingData(url));
         } else {
             loadingData(url);
         }
@@ -499,7 +482,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                         urls.add(currentUrl);
                         names.add(currentTitle);
                         loadWebData(currentUrl, name);
-//                    setTitle(name);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -564,11 +546,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     }
 
     private void setPullImageVisible(boolean visible) {
-        if (visible) {
-//            bangdan_pull.setVisibility(View.VISIBLE);
-        } else {
-//            bangdan_pull.setVisibility(View.GONE);
-        }
+
     }
 
     private void setSearchBtnVisibel(boolean visibel) {
@@ -578,74 +556,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             find_book_detail_search.setVisibility(View.GONE);
         }
     }
-
-//    private void updatePopView(){
-//        tv_bd_total.setText(currentTitle+"—总榜");
-//        tv_bd_week.setText(currentTitle+"—周榜");
-//        tv_bd_month.setText(currentTitle+"—月榜");
-//        if ("week".equals(rankType)){
-//            find_book_detail_title.setText(currentTitle+"—周榜");
-//            weekSelect.setVisibility(View.VISIBLE);
-//            monthSelect.setVisibility(View.GONE);
-//            totalSelect.setVisibility(View.GONE);
-//        }else if ("month".equals(rankType)){
-//            find_book_detail_title.setText(currentTitle+"—月榜");
-//            monthSelect.setVisibility(View.VISIBLE);
-//            weekSelect.setVisibility(View.GONE);
-//            totalSelect.setVisibility(View.GONE);
-//        }else if ("total".equals(rankType)){
-//            find_book_detail_title.setText(currentTitle+"—总榜");
-//            totalSelect.setVisibility(View.VISIBLE);
-//            weekSelect.setVisibility(View.GONE);
-//            monthSelect.setVisibility(View.GONE);
-//        }
-//    }
-
-//    private void initPopupWindow() {
-//        PopupClickListener popupClickListener = new PopupClickListener();
-//        View popupView = getLayoutInflater().inflate(R.layout.bookstore_bangdan_select, null);
-//        bangdanWeek = (RelativeLayout) popupView.findViewById(R.id.rl_bangdan_week);
-//        bangdanMonth = (RelativeLayout) popupView.findViewById(R.id.rl_bangdan_month);
-//        bangdanTotal = (RelativeLayout) popupView.findViewById(R.id.rl_bangdan_total);
-//        tv_bd_total = (TextView) popupView.findViewById(R.id.tv_bd_total);
-//        tv_bd_week = (TextView) popupView.findViewById(R.id.tv_bd_week);
-//        tv_bd_month = (TextView) popupView.findViewById(R.id.tv_bd_month);
-//        weekSelect = (ImageView) popupView.findViewById(R.id.iv_bangdan_week);
-//        monthSelect = (ImageView) popupView.findViewById(R.id.iv_bangdan_month);
-//        totalSelect = (ImageView) popupView.findViewById(R.id.iv_bangdan_total);
-//
-//        bangdanWeek.setOnClickListener(popupClickListener);
-//        bangdanMonth.setOnClickListener(popupClickListener);
-//        bangdanTotal.setOnClickListener(popupClickListener);
-//
-//        popupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.MATCH_PARENT,
-// RelativeLayout.LayoutParams.WRAP_CONTENT,true);
-//        popupWindow.setTouchable(true);
-//        popupWindow.setOutsideTouchable(true);
-//        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-//
-//        popupWindow.getContentView().setFocusableInTouchMode(true);
-//        popupWindow.getContentView().setFocusable(true);
-//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                view_zhehzao.setVisibility(View.GONE);
-//            }
-//        });
-//        popupWindow.getContentView().setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0
-//                        && event.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if (popupWindow != null && popupWindow.isShowing()) {
-//                        dissmissPop();
-//                    }
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//    }
 
     private Map<String, String> analysisUrl(String ulr) {
         Map<String, String> map = new HashMap<>();
@@ -686,11 +596,10 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         url = UrlUtils.buildUrl(url, map);
-        if (url.contains(UrlUtils.getBookNovelDeployHost())) {
-            int start = url.lastIndexOf(UrlUtils.getBookNovelDeployHost())
-                    + UrlUtils.getBookNovelDeployHost().length();
-            String tempUrl = url.substring(start, url.length());
-            this.currentUrl = tempUrl;
+        if (url.contains(Config.INSTANCE.loadRequestAPIHost())) {
+            int start = url.lastIndexOf(Config.INSTANCE.loadRequestAPIHost())
+                    + Config.INSTANCE.loadRequestAPIHost().length();
+            this.currentUrl = url.substring(start, url.length());
         }
 
         //如果可以切换周榜和月榜总榜
@@ -704,42 +613,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         webViewCallback();
     }
 
-
-//    class PopupClickListener implements View.OnClickListener{
-//
-//        @Override
-//        public void onClick(View v) {
-//            //设置UI改变
-//            int type = 0;
-//            switch (v.getId()){
-//                case R.id.rl_bangdan_week:
-//                    weekSelect.setVisibility(View.VISIBLE);
-//                    monthSelect.setVisibility(View.GONE);
-//                    totalSelect.setVisibility(View.GONE);
-//                    setTitle(currentTitle+"—周榜");
-//                    type = 0;
-//                    break;
-//                case R.id.rl_bangdan_month:
-//                    weekSelect.setVisibility(View.GONE);
-//                    monthSelect.setVisibility(View.VISIBLE);
-//                    totalSelect.setVisibility(View.GONE);
-//                    setTitle(currentTitle+"—月榜");
-//                    type = 1;
-//                    break;
-//                case R.id.rl_bangdan_total:
-//                    weekSelect.setVisibility(View.GONE);
-//                    monthSelect.setVisibility(View.GONE);
-//                    totalSelect.setVisibility(View.VISIBLE);
-//                    setTitle(currentTitle+"—总榜");
-//                    type = 2;
-//                    break;
-//            }
-//            dissmissPop();
-//            //重新加载webview
-//            reLoadWebData(currentUrl,type);
-//        }
-//    }
-
     private void clickBackBtn() {
         if (urls.size() - backClickCount <= 1) {
             FindBookDetail.this.finish();
@@ -751,7 +624,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             currentTitle = names.get(nowIndex);
             loadWebData(currentUrl, currentTitle);
         }
-        return;
     }
 
     private void addCheckSlide(WebView find_detail_content) {

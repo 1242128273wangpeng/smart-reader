@@ -270,10 +270,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
-            book_cover_bookshelf?.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf?.setText(R.string.remove_bookshelf)
             initializeRemoveShelfButton()
         } else {
-            book_cover_bookshelf?.setText(R.string.book_cover_add_bookshelf)
+            book_cover_bookshelf?.setText(R.string.add_bookshelf)
             initializeInsertShelfButton()
         }
     }
@@ -311,7 +311,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun bookSubscribeState(subscribe: Boolean) {
         if (subscribe) {
-            book_cover_bookshelf?.setText(R.string.book_cover_remove_bookshelf)
+            book_cover_bookshelf?.setText(R.string.remove_bookshelf)
             initializeRemoveShelfButton()
         } else {
             initializeInsertShelfButton()
@@ -404,7 +404,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private fun initializeInsertShelfButton() {
         mBackground = R.drawable.cover_bottom_btn_add_bg
-        mTextColor = R.color.cover_bottom_btn_add_text_color
+        mTextColor = R.color.primary
         book_cover_bookshelf?.setTextColor(ContextCompat.getColor(this, mTextColor))
         if (book_cover_category2?.visibility != View.VISIBLE) {
             book_cover_bookshelf?.setBackgroundResource(mBackground)

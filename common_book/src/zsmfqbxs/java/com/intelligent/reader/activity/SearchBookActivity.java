@@ -84,6 +84,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_content.clearView();
             if (loadingPage == null){
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
+            } else {
+                loadingPage.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -294,13 +296,9 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             return;
         }
         search_result_main.setVisibility(View.VISIBLE);
+
         if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    loadingData(url);
-                }
-            });
+            handler.post(() -> loadingData(url));
         } else {
             loadingData(url);
         }
@@ -310,6 +308,15 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         if (customWebClient != null) {
             customWebClient.doClear();
         }
+
+        search_result_content.clearView();
+
+        if (loadingPage == null){
+            loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
+        } else {
+            loadingPage.setVisibility(View.VISIBLE);
+        }
+
         AppLog.e(TAG, "LoadingData ==> " + url);
         if (!TextUtils.isEmpty(url) && search_result_content != null) {
             try {
@@ -804,25 +811,28 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     @Override
     public void onNoneResultSearch(String searchWord) {
-
-        if (search_result_default != null && search_result_default.getVisibility() != View.VISIBLE) {
-            search_result_default.setVisibility(View.VISIBLE);
-        }
-
-        if(search_result_input != null){
-            search_result_input.setText(searchWord);
-        }
-
-        if(searchViewHelper != null){
-            searchViewHelper.addHistoryWord(searchWord);
-            searchViewHelper.hideHintList();
-        }
-
-        if (search_result_content != null) {
-            search_result_content.clearView();
-            if (loadingPage == null) {
-                loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
+        runOnUiThread(() -> {
+            if (search_result_default != null && search_result_default.getVisibility() != View.VISIBLE) {
+                search_result_default.setVisibility(View.VISIBLE);
             }
-        }
+
+            if(search_result_input != null){
+                search_result_input.setText(searchWord);
+            }
+
+            if(searchViewHelper != null){
+                searchViewHelper.addHistoryWord(searchWord);
+                searchViewHelper.hideHintList();
+            }
+
+            if (search_result_content != null) {
+                search_result_content.clearView();
+                if (loadingPage == null) {
+                    loadingPage = new LoadingPage(SearchBookActivity.this, search_result_main, LoadingPage.setting_result);
+                } else {
+                    loadingPage.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }

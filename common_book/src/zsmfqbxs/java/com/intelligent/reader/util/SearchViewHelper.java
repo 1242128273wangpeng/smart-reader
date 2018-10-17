@@ -409,7 +409,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestSearchOperationV4(
-
                 new RequestSubscriber<Result<SearchResult>>() {
                     @Override
                     public void requestResult(@Nullable Result<SearchResult> value) {
@@ -444,7 +443,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
 
         RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestSearchRecommend(
-
                 getBookOnLineIds(), new RequestSubscriber<SearchRecommendBook>() {
                     @Override
                     public void requestResult(@Nullable SearchRecommendBook value) {

@@ -37,7 +37,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
         this.mContext = context;
         this.mData = mData;
         this.editInput = editInput;
-        int color = mContext.getResources().getColor(R.color.colorPrimary);
+        int color = mContext.getResources().getColor(R.color.primary);
         mColorTag = String.format("<font color='%s'>", AppUtils.colorHoHex(color));
     }
 
@@ -111,8 +111,8 @@ public class SearchSuggestAdapter extends BaseAdapter {
                         //如果不是以上三种的话，说明返回的数据为书籍名，则通过url加载后台返回的图片URL地址（加上非空判断）
 
                         Glide.with(mContext).load(bean.getImage_url()).placeholder(
-                                R.drawable.search_default_book_cover).error(
-                                (R.drawable.search_default_book_cover)).into(hodler.iv_icon);
+                                R.drawable.book_cover_default).error(
+                                (R.drawable.book_cover_default)).into(hodler.iv_icon);
 
                         hodler.iv_type.setImageResource(R.drawable.search_book);
                     }
