@@ -1,8 +1,12 @@
 package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.dingyue.contract.util.SharedPreUtil
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 
@@ -13,6 +17,7 @@ import java.util.*
  * Date 2018/5/11 10:33
  */
 object BookShelfLogger {
+    var shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
     /***
      * 书架点击更多
      * **/
@@ -83,6 +88,14 @@ object BookShelfLogger {
                 StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
         StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
                 StatServiceUtils.bs_click_download_btn)
+    }
+
+    /***
+     * 书架点击应用分享
+     * **/
+    fun uploadBookShelfShare() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
     }
 
     /***
@@ -161,9 +174,33 @@ object BookShelfLogger {
      * **/
     fun uploadBookShelfEditSelectAll(all: Boolean) {
         val data = HashMap<String, String>()
-        data["type"] = if (all) "2" else "1"
+        data["type"] = if (all) "1" else "2"
 
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
                 StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_SELECT_ALL, data)
     }
+
+    fun uploadFirstOpenBooks() {
+
+        //判断用户是否是当日首次打开应用,并上传书架的id
+        val lastTime = shareUtil.getLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
+        val currentTime = System.currentTimeMillis()
+
+        val isSameDay = AppUtils.isToday(lastTime, currentTime)
+        if (!isSameDay) {
+            val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
+            val bookIdList = StringBuilder()
+            books?.forEachIndexed { index, book ->
+                bookIdList.append(book.book_id)
+                bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
+                bookIdList.append(if (index == books.size) "" else "$")
+            }
+            val data = HashMap<String, String>()
+            data.put("bookid", bookIdList.toString())
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data)
+            shareUtil.putLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime)
+        }
+    }
+
 }

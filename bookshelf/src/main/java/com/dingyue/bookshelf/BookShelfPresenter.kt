@@ -129,6 +129,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 }
                 return 0
             } else {
+                System.setProperty("java.util.Arrays.useLegacyMergeSort", "true")
                 Collections.sort(books, CommonContract.MultiComparator(Constants.book_list_sort_type))
                 iBookList.addAll(books)
 
@@ -192,25 +193,17 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 adBookMap[key] = adBook
             }
         }
-        doAsync {
-            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
-                override fun requestMediaSuccess(views: List<ViewGroup>) {
-                    runOnMain {
-                        handleADResult(views)
-                        view?.onAdRefresh()
-                    }
-                }
 
-                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
-                    runOnMain {
-                        handleADResult(views)
-                        view?.onAdRefresh()
-                    }
+        val views = mutableListOf<ViewGroup>()
 
-                }
-            })
+        for (i in 0 until count){
+            views.add(BookShelfADView(activity))
         }
 
+        runOnMain {
+            handleADResult(views)
+            view?.onAdRefresh()
+        }
     }
 
 
@@ -219,13 +212,15 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * **/
     private fun handleADResult(views: List<ViewGroup>) {
         val adViews = ArrayList<ViewGroup>()
+        val iBooks = ArrayList<Book>()
         adViews.addAll(views)
+        iBooks.addAll(iBookList)
 
         var index = 0
 
         val iterator = adBookMap.entries.iterator()
 
-        val size = iBookList.size
+        val size = iBooks.size
 
         while (iterator.hasNext()) {
             val entry = iterator.next()
@@ -233,10 +228,10 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 if (index < adViews.size) {
                     entry.value.item_view = adViews[index]
 
-                    if (iBookList[entry.key].item_type == 1) {
-                        iBookList[entry.key].item_view = entry.value.item_view
+                    if (iBooks[entry.key].item_type == 1) {
+                        iBooks[entry.key].item_view = entry.value.item_view
                     } else {
-                        iBookList.add(entry.key, entry.value)
+                        iBooks.add(entry.key, entry.value)
                     }
 
                     index += 1
@@ -251,6 +246,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * 获取九宫格顶部广告
      * **/
     private fun requestShelfHeaderAD(activity: Activity) {
+        MediaControl.insertBookShelfMediaType(false)
         MediaControl.loadBookShelfHeaderMedia(activity, object : IMediaControl.HeaderMediaCallback {
             override fun requestMediaSuccess(viewGroup: ViewGroup?) {
                 if (viewGroup != null) {
@@ -307,12 +303,16 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                     BaseBookHelper.removeChapterCacheFile(it)
                 }
             } else {
+                deleteBooks.forEach {
+                    CacheManager.remove(it.book_id)
+                    BaseBookHelper.removeChapterCacheFile(it)
+                }
                 RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBooks(deleteBooks)
             }
 
             Thread.sleep(1000)
             uiThread {
-                view?.onBookDelete()
+                view?.onBookDelete(onlyDeleteCache)
             }
 
             BookShelfLogger.uploadBookShelfEditDelete(size, stringBuilder, onlyDeleteCache)

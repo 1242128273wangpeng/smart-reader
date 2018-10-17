@@ -5,6 +5,7 @@ import android.view.View
 import android.view.WindowManager
 import com.dingyue.bookshelf.R
 import com.dingyue.contract.BasePopup
+import com.dingyue.contract.util.SharedPreUtil
 import kotlinx.android.synthetic.mfqbxssc.popup_head_menu.view.*
 
 /**
@@ -22,6 +23,8 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
 
     var onBookSortingClickListener: (() -> Unit)? = null
 
+    var onApplicationShareClickListener: (() -> Unit)? = null
+
     init {
         popupWindow.isFocusable = true
         popupWindow.isOutsideTouchable = false
@@ -35,10 +38,22 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
             onBookSortingClickListener?.invoke()
         }
 
+        contentView.ll_app_share.setOnClickListener {
+            dismiss()
+            onApplicationShareClickListener?.invoke()
+        }
     }
 
     fun show(view: View) {
         showAsDropDown(view, 0, -(view.height + 30))
-    }
 
+        val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+        val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+
+        if (share) {
+            contentView.view_app_share.visibility = View.GONE
+        } else {
+            contentView.view_app_share.visibility = View.VISIBLE
+        }
+    }
 }

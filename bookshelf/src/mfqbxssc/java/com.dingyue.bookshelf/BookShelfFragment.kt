@@ -15,9 +15,9 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
-import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.mfqbxssc.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.mfqbxssc.frag_bookshelf.*
 import net.lzbook.kit.book.component.service.CheckNovelUpdateService
@@ -26,7 +26,9 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
+import org.greenrobot.eventbus.EventBus
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
 
@@ -54,9 +56,13 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
+        popup.onApplicationShareClickListener = {
+            applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
+            BookShelfLogger.uploadBookShelfShare()
+        }
         popup
     }
-
 
     private val removeMenuPopup: RemoveMenuPopup by lazy {
         val popup = RemoveMenuPopup(requireActivity())
@@ -126,6 +132,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog.onCancelListener = {
             BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
         }
+        dialog
+    }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
         dialog
     }
 
@@ -227,8 +238,22 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         updateUI()
 
-        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()) {
+        if (!Constants.isHideAD && Constants.dy_shelf_boundary_switch && bookShelfPresenter.iBookList.isNotEmpty()
+                && (!AppUtils.isNeedAdControl(Constants.ad_control_shelf_float) && !AppUtils.isNeedAdControl(Constants.ad_control_welfare_shelf))) {
+
+            AppLog.e("dynamicShelfNo",(AppUtils.isNeedAdControl(Constants.ad_control_shelf_float)).toString())
             bookShelfPresenter.requestFloatAD(requireActivity(), fl_ad_float)
+        }
+
+        if (!requireActivity().isFinishing) {
+            val sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
+            val share = sharedPreUtil.getBoolean(SharedPreUtil.APPLICATION_SHARE_ACTION)
+
+            if (share) {
+                view_head_prompt.visibility = View.GONE
+            } else {
+                view_head_prompt.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -295,13 +320,14 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         if (activity != null && !activity!!.isFinishing) {
-            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
+            AppLog.e("dynamicShelfNo",(AppUtils.isNeedAdControl(Constants.ad_control_shelf_normal)).toString())
+            val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0 && !AppUtils.isNeedAdControl(Constants.ad_control_shelf_normal)
 
             bookShelfPresenter.queryBookListAndAd(activity!!, isShowAD, false)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
+                BookShelfLogger.uploadFirstOpenBooks()
             }
-
         }
     }
 
@@ -362,7 +388,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         if (activity != null && !activity!!.isFinishing) {
             latestLoadDataTime = System.currentTimeMillis()
             if (isAdded) {
-                activity!!.applicationContext.showToastMessage(R.string.bookshelf_refresh_network_problem, 2000L)
+                activity!!.applicationContext.showToastMessage(R.string.bookshelf_network_error, 2000L)
             }
             if (srl_refresh != null) {
                 srl_refresh.onRefreshComplete()
@@ -482,7 +508,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     override fun deleteBooks(books: ArrayList<Book>, isDeleteCacheOnly: Boolean) {
         bookShelfPresenter.deleteBooks(books, isDeleteCacheOnly)
     }
-
 
     companion object {
         private const val PULL_REFRESH_DELAY = 30 * 1000

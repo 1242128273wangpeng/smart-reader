@@ -34,6 +34,8 @@
 
     <string name="book_sort">书架排序</string>
 
+    <string name="application_share">分享应用</string>>
+
     <string name="refresh_start">下拉刷新</string>
 
     <string name="refresh_running">正在刷新</string>
@@ -43,6 +45,8 @@
     <string name="bookshelf_edit">编辑书架</string>
 
     <string name="bookshelf_delete_fail">书籍删除失败!</string>
+
+    <string name="bookshelf_delete_cache_success">书籍缓存删除成功!</string>
 
     <string name="bookshelf_delete_success">书籍删除成功!</string>
 

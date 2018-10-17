@@ -315,6 +315,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
+            BookShelfLogger.uploadFirstOpenBooks()
         }
     }
 
@@ -420,11 +421,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         updateUI()
         bookShelfDeleteDialog.dismiss()
         dismissRemoveMenu()
-        requireActivity().applicationContext.showToastMessage(R.string.bookshelf_delete_success)
+        requireActivity().applicationContext.showToastMessage(if (onlyDeleteCache) R.string.bookshelf_delete_cache_success else R.string.bookshelf_delete_success)
     }
 
     override fun onSuccessUpdateHandle(updateCount: Int, firstBook: BookUpdate?) {
