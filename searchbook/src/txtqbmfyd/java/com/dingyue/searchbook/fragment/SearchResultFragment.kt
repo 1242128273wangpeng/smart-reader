@@ -1,6 +1,7 @@
 package com.dingyue.searchbook.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,16 +10,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
-import android.webkit.WebViewClient
+import android.webkit.WebSettings
+import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.searchbook.R
+import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
+import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import kotlinx.android.synthetic.txtqbmfyd.fragment_search_result.*
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.webview.CustomWebClient
-import net.lzbook.kit.utils.webview.WebViewJsInterface
+import net.lzbook.kit.utils.runOnMain
 
 
 /**
@@ -32,6 +36,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     private var loadingPage: LoadingPage? = null
 
     private var customWebClient: CustomWebClient? = null
+
+    var onResultListener: OnResultListener<String>? = null
 
     private val searchResultPresenter: SearchResultPresenter  by lazy {
         SearchResultPresenter(this)
@@ -57,21 +63,27 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         loadingPage = null
     }
 
-    fun loadKeyWord(keyWord: String, searchType: String = "0") {
-        searchResultPresenter.loadKeyWord(keyWord, searchType)
+     fun loadKeyWord(keyWord: String, searchType: String = "0") {
+         searchResultPresenter.loadKeyWord(keyWord, searchType)
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-    override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
+    override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
         }
-
-        search_result_content?.webViewClient = WebViewClient()
-        search_result_content?.webChromeClient = WebChromeClient()
-        search_result_content?.settings?.javaScriptEnabled = true
-        search_result_content?.settings?.domStorageEnabled = true
+        if (search_result_content != null) {
+            customWebClient = CustomWebClient(activity, search_result_content)
+        }
+        customWebClient?.initWebViewSetting()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+        search_result_content?.webViewClient = customWebClient
+//        search_result_content?.webChromeClient = WebChromeClient()
+//        search_result_content?.settings?.javaScriptEnabled = true
+//        search_result_content?.settings?.domStorageEnabled = true
         search_result_content?.addJavascriptInterface(jsInterface, "J_search")
     }
 
@@ -79,7 +91,46 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     override fun onSearchResult(url: String) {
         showLoading()
         //加载URL
+        search_result_content.clearView()
+        webViewCallback()
         search_result_content?.loadUrl(url)
+    }
+
+
+    private fun webViewCallback() {
+
+        if (search_result_content == null) {
+            return
+        }
+
+        if (customWebClient != null) {
+            customWebClient?.setLoadingWebViewStart { url ->
+
+                searchResultPresenter?.setStartedAction()
+            }
+
+            customWebClient?.setLoadingWebViewError {
+                if (loadingPage != null) {
+                    loadingPage?.onErrorVisable()
+                }
+            }
+
+            customWebClient?.setLoadingWebViewFinish {
+                searchResultPresenter?.onLoadFinished()
+                if (loadingPage != null) {
+                    hideLoading()
+                }
+            }
+        }
+
+        if (loadingPage != null) {
+            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+                if (customWebClient != null) {
+                    customWebClient?.initParameter()
+                }
+                search_result_content?.reload()
+            })
+        }
     }
 
     override fun onCoverResult(bundle: Bundle) {
@@ -107,6 +158,13 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         RouterUtil.navigation(requireActivity(), RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
+    override fun getCurrentActivity(): Activity? {
+        return activity
+    }
+
+    override fun onSetKeyWord(keyWord: String) {
+        onResultListener?.onSuccess(keyWord)
+    }
     override fun onDestroy() {
         super.onDestroy()
         searchResultPresenter.onDestroy()
@@ -120,4 +178,19 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (search_result_content != null) {
+            val keyword = search_result_input?.text.toString()
+            if (keyword.isNotEmpty()) {
+                search_result_content?.post {
+                    try {
+                        search_result_content?.loadUrl("javascript:refreshNew()")
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
 }

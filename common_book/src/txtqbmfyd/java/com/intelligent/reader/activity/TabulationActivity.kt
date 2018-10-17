@@ -241,7 +241,7 @@ class TabulationActivity : FrameActivity() {
 
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }

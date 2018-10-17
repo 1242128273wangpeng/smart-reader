@@ -1,5 +1,6 @@
 package com.dingyue.searchbook.presenter
 
+import android.app.Activity
 import android.os.Bundle
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.dingyue.searchbook.model.HistoryModel
@@ -29,12 +30,15 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
     }
 
 
-    fun loadKeyWord(keyWord: String, searchType: String = "0") {
-        searchResultView?.showLoading()
+     fun loadKeyWord(keyWord: String, searchType: String = "0") {
+         runOnMain {
+             searchResultView?.showLoading()
+             searchResultView?.onSetKeyWord(keyWord)
+         }
         historyModel?.addHistoryWord(keyWord)
 
-        searchResultModel?.setWord(keyWord)
-        searchResultModel?.setSearchType(searchType)
+        searchResultModel?.setWord(keyWord!!)
+        searchResultModel?.setSearchType(searchType!!)
         searchResultModel?.startLoadData(0)?.let {
             onSearchResult(it)
         }
@@ -44,8 +48,8 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
     override fun onSearchResult(url: String) {
         runOnMain {
             searchResultView?.hideLoading()
+            searchResultView?.onSearchResult(url)
         }
-        searchResultView?.onSearchResult(url)
     }
 
 
@@ -74,11 +78,25 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         searchResultView?.onTurnReadResult(bundle)
     }
 
+    override fun getCurrentActivity(): Activity? {
+        return searchResultView?.getCurrentActivity()
+    }
 
+    override  fun onLoadKeyWord(keyWord: String?, searchType: String?) {
+        loadKeyWord(keyWord!!,searchType!!)
+    }
     override fun onDestroy() {
         searchResultModel = null
         searchResultView = null
         historyModel = null
+    }
+
+    fun setStartedAction() {
+        searchResultModel?.setStartedAction()
+    }
+
+    fun onLoadFinished() {
+        searchResultModel?.onLoadFinished()
     }
 
 }

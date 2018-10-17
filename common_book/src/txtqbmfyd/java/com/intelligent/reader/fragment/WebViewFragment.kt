@@ -206,7 +206,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
@@ -230,7 +230,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
                                 bundle.putString("from", "other")
                             }
 
-                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+                            RouterUtil.navigation(activity!!, RouterConfig.TABULATION_ACTIVITY, bundle)
                         }
                     } catch (exception: Exception) {
                         exception.printStackTrace()

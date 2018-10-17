@@ -18,7 +18,6 @@ import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.webview.CustomWebClient
-import net.lzbook.kit.utils.webview.WebViewJsInterface
 
 
 /**
@@ -62,7 +61,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-    override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
+    override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)

@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.baidu.mobstat.StatService
 import com.dingyue.searchbook.fragment.HistoryFragment
 import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dingyue.searchbook.fragment.SearchResultFragment
@@ -36,6 +37,7 @@ import net.lzbook.kit.utils.toast.ToastUtil
 class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, OnKeyWordListener {
 
     private var lastFragment: Fragment? = null
+    private var isRunTextWatcher=true
 
     private val historyFragment: HistoryFragment by lazy {
         HistoryFragment()
@@ -65,8 +67,8 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         when (v.id) {
             img_back.id -> finish()
             search_result_clear.id -> {
-
-                search_result_input.text = null
+                isRunTextWatcher=true
+                search_result_input.setText("")
                 search_result_clear.visibility = View.GONE
 
                 showSoftKeyboard(search_result_input)
@@ -82,6 +84,9 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
                 showFragment(historyFragment)
                 historyFragment.loadHistoryRecord()
+            }
+            search_result_input.id ->{
+                isRunTextWatcher=true
             }
             search_result_btn.id -> {
                 val keyword = search_result_input.text.toString()
@@ -142,6 +147,14 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
             }
         }
 
+        searchResultFragment.onResultListener = object : OnResultListener<String> {
+            override fun onSuccess(result: String) {
+                isRunTextWatcher=false
+                inputKeyWord(result)
+//                showFragment(searchResultFragment)
+//                searchResultFragment.loadKeyWord(result)
+            }
+        }
     }
 
 
@@ -157,7 +170,7 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
     }
 
     override fun afterTextChanged(editable: Editable?) {
-
+        if(!isRunTextWatcher) return
         if (editable.toString().isNotEmpty() && search_result_input.isFocused) {
             search_result_clear.visibility = View.VISIBLE
         } else {
@@ -239,5 +252,14 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
 }
 

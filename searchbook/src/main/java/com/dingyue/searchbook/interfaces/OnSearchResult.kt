@@ -1,5 +1,6 @@
 package com.dingyue.searchbook.interfaces
 
+import android.app.Activity
 import android.os.Bundle
 
 
@@ -25,6 +26,15 @@ interface OnSearchResult {
 
     fun onEnterReadResult(bundle: Bundle)
 
+    fun getCurrentActivity():Activity?{
+        return null
+    }
+    fun onLoadKeyWord(keyWord: String?, searchType: String? ){
 
+    }
+
+    fun onSetKeyWord(keyWord: String){
+
+    }
 
 }

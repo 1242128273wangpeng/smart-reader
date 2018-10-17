@@ -62,7 +62,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
-    override fun obtainJSInterface(jsInterface: WebViewJsInterface) {
+    override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
