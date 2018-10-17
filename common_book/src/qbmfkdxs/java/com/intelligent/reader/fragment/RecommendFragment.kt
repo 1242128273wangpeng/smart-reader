@@ -94,7 +94,7 @@ class RecommendFragment : Fragment() {
     val recommendFantasyFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("type", "recommendXuhuan")
+        bundle.putString("type", "recommendFantasy")
         val uri = RequestService.WEB_RECOMMEND_FANTASY.replace("{packageName}", AppUtils.getPackageName())
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
@@ -181,21 +181,21 @@ class RecommendFragment : Fragment() {
             when (currentPosition) {
 
                 3 -> {
-                    bundle.putString("url", RequestService.WEB_RECOMMEND_FINISH.replace("{packageName}", AppUtils.getPackageName()) + "- -完结")
+                    bundle.putString("url", RequestService.WEB_RECOMMEND_FINISH_DETAIL.replace("{packageName}", AppUtils.getPackageName()) + "- -完结")
                     bundle.putString("title", "完结")
                     RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                 }
                 4 -> {
 
                     if (recommendCateList.size > 0) {
-                        bundle.putString("url", RequestService.WEB_RECOMMEND_FANTASY.replace("{packageName}", AppUtils.getPackageName()) + "-玄幻-" + recommendCateList.get(0).id)
+                        bundle.putString("url", RequestService.WEB_RECOMMEND_FANTASY_DETAIL.replace("{packageName}", AppUtils.getPackageName()) + "-玄幻-" + recommendCateList.get(0).id)
                         bundle.putString("title", "玄幻")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                     }
                 }
                 5 -> {
                     if (recommendCateList.size > 1) {
-                        bundle.putString("url", RequestService.WEB_RECOMMEND_MODERN.replace("{packageName}", AppUtils.getPackageName()) + "-现代言情-" + recommendCateList.get(1).id)
+                        bundle.putString("url", RequestService.WEB_RECOMMEND_MODERN_DETAIL.replace("{packageName}", AppUtils.getPackageName()) + "-现代言情-" + recommendCateList.get(1).id)
                         bundle.putString("title", "现代言情")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
                     }

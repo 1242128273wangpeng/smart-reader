@@ -1,8 +1,12 @@
 package com.intelligent.reader.util;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -19,18 +23,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
-
 import com.ding.basic.bean.HotWordBean;
 import com.ding.basic.bean.Result;
-import com.ding.basic.bean.SearchAutoCompleteBean;
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua;
 import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.bean.SearchResult;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
 import com.dingyue.contract.util.CommonUtil;
+import com.google.gson.Gson;
 import com.intelligent.reader.R;
+import com.intelligent.reader.activity.CoverPageActivity;
 import com.intelligent.reader.adapter.SearchHisAdapter;
 import com.intelligent.reader.adapter.SearchHotWordAdapter;
 import com.intelligent.reader.adapter.SearchSuggestAdapter;
@@ -54,9 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
-public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,SearchHisAdapter.SearchClearCallBack{
+public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
+        SearchHisAdapter.SearchClearCallBack {
     private static String TAG = SearchViewHelper.class.getSimpleName();
     private static ArrayList<String> hotDatas = new ArrayList<String>();
     private static ArrayList<String> hisDatas = new ArrayList<String>();
@@ -71,7 +73,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private SearchHotWordAdapter mHotAdapter;
     private SearchSuggestAdapter mSuggestAdapter;
     private SearchHisAdapter mHisAdapter;
-    private List<SearchCommonBeanYouHua> mSuggestList = new ArrayList<SearchCommonBeanYouHua>();
+    private List<Object> mSuggestList = new ArrayList<Object>();
     private Resources mResources;
     private boolean mShouldShowHint = true;
     private OnHistoryClickListener mOnHistoryClickListener;
@@ -83,6 +85,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private RelativeLayout relative_parent;
     private String searchType;
     private String suggest;
+    private SearchCommonBeanYouHua searchCommonBean;
+    private int isAuthor = 0;
+    //运营模块返回标识
+    private boolean isBackSearch = false;
+    //从标签和作者的webView页面返回是否保留焦点
+    public boolean isFocus = true;
 
     private LoadingPage loadingPage;
 
@@ -96,13 +104,15 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     private void init(Context context, Activity activity, ViewGroup rootLayout, EditText
             searchEditText) {
         gson = new Gson();
-        sharedPreferencesUtils = new SharedPreferencesUtils(PreferenceManager.getDefaultSharedPreferences(context));
+        sharedPreferencesUtils = new SharedPreferencesUtils(
+                PreferenceManager.getDefaultSharedPreferences(context));
         mContext = context;
         this.activity = activity;
         mRootLayout = rootLayout;
         mSearchEditText = searchEditText;
-        if (mContext != null)
+        if (mContext != null) {
             mResources = mContext.getResources();
+        }
 
         initHotListView();
         initHisListView();
@@ -110,6 +120,16 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         showHotList();
     }
 
+    /**
+     * 返回isFocus 和 isBackSearch 的值，以此来确定searchBookActivity页面显示的模块
+     */
+    public boolean getShowStatus() {
+        if (!isBackSearch && isFocus) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void setShowHintEnabled(boolean showHint) {
         mShouldShowHint = showHint;
@@ -121,8 +141,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             return;
         }
 
-        if (mRootLayout != null)
+        if (mRootLayout != null) {
             mRootLayout.setVisibility(View.VISIBLE);
+        }
 
         //保证开始输入且续输入空格时显示搜索历史
         if (searchWord == null || TextUtils.isEmpty(searchWord.trim()) || isFromEditClick) {
@@ -135,17 +156,21 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     public void hideHintList() {
-        if (mRootLayout != null)
+        if (mRootLayout != null) {
             mRootLayout.setVisibility(View.GONE);
+        }
     }
 
     private void showSuggestList(String searchWord) {
-        if (mHotListView != null)
+        if (mHotListView != null) {
             mHotListView.setVisibility(View.GONE);
-        if (mHisListView != null)
+        }
+        if (mHisListView != null) {
             mHisListView.setVisibility(View.GONE);
-        if (mSuggestListView != null)
+        }
+        if (mSuggestListView != null) {
             mSuggestListView.setVisibility(View.VISIBLE);
+        }
 
         // 清空上一个词的联想词结果
         if (mSuggestList != null) {
@@ -155,27 +180,31 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             mSuggestAdapter.notifyDataSetChanged();
         }
 
-        if (mSearchHelper != null){
+        if (mSearchHelper != null) {
             mSearchHelper.startSearch(searchWord);
         }
 
     }
 
     private void showHisList() {
-        if (mSuggestListView != null)
+        if (mSuggestListView != null) {
             mSuggestListView.setVisibility(View.GONE);
-        if (mHotListView != null)
+        }
+        if (mHotListView != null) {
             mHotListView.setVisibility(View.GONE);
-        if (mHisListView != null)
+        }
+        if (mHisListView != null) {
             mHisListView.setVisibility(View.VISIBLE);
+        }
 
-        if (hisDatas != null && mContext != null)
+        if (hisDatas != null && mContext != null) {
             hisDatas.clear();
+        }
         ArrayList<String> historyWord = Tools.getHistoryWord(mContext);
-        if (historyWord != null){
+        if (historyWord != null) {
             hisDatas.addAll(historyWord);
         }
-        if (mHisAdapter != null){
+        if (mHisAdapter != null) {
             mHisAdapter.notifyDataSetChanged();
         }
     }
@@ -194,7 +223,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             getCacheDataFromShare(false);
         } else {
 
-            if (loadingPage == null && mRootLayout != null && !activity.isFinishing() ){
+            if (loadingPage == null && mRootLayout != null && !activity.isFinishing()) {
                 loadingPage = new LoadingPage(activity, mRootLayout, LoadingPage.setting_result);
             }
 
@@ -244,15 +273,17 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     /**
      * if hasn't net getData from sharepreferenecs cache
      */
-    public void getCacheDataFromShare(boolean hasNet){
-        if (!TextUtils.isEmpty(sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
-            String cacheHotWords = sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD_YOUHUA);
+    public void getCacheDataFromShare(boolean hasNet) {
+        if (!TextUtils.isEmpty(
+                sharedPreferencesUtils.getString(Constants.SERARCH_HOT_WORD_YOUHUA))) {
+            String cacheHotWords = sharedPreferencesUtils.getString(
+                    Constants.SERARCH_HOT_WORD_YOUHUA);
             SearchResult searchResult = gson.fromJson(cacheHotWords, SearchResult.class);
             relative_parent.setVisibility(View.VISIBLE);
             parseResult(searchResult);
             AppLog.e("urlbean", cacheHotWords);
         } else {
-            if(!hasNet){
+            if (!hasNet) {
                 CommonUtil.showToastMessage("网络不给力哦");
             }
             relative_parent.setVisibility(View.GONE);
@@ -274,18 +305,24 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
                     mHotListView.setAdapter(mHotAdapter);
                     mHotListView.setOnItemClickListener(new OnItemClickListener() {
                         @Override
-                        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
-                            StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
-                            if (hotWords != null && !hotWords.isEmpty() && position > -1 && position < hotWords.size()) {
+                        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                long position) {
+                            StatServiceUtils.statAppBtnClick(activity,
+                                    StatServiceUtils.b_search_click_his_word);
+                            if (hotWords != null && !hotWords.isEmpty() && position > -1
+                                    && position < hotWords.size()) {
                                 String hotWord = hotWords.get(arg2 - 1).getKeyword();
                                 if (hotWord != null && mSearchEditText != null) {
                                     mShouldShowHint = false;
                                     mSearchEditText.setText(hotWord);
-                                    startSearch(hotWord,hotWords.get(arg2-1).getKeywordType()+"");
+                                    startSearch(hotWord,
+                                            hotWords.get(arg2 - 1).getKeywordType() + "", 0);
 
                                     Map<String, String> data = new HashMap<>();
                                     data.put("topicword", hotWord);
-                                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data);
+                                    StartLogClickUtil.upLoadEventLog(activity,
+                                            StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC,
+                                            data);
                                 }
                             }
                         }
@@ -315,18 +352,20 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             mHisListView.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long position) {
-                    StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_search_click_his_word);
+                    StatServiceUtils.statAppBtnClick(activity,
+                            StatServiceUtils.b_search_click_his_word);
                     if (hisDatas != null && !hisDatas.isEmpty() && position > -1 &&
                             position < hisDatas.size()) {
                         String history = hisDatas.get((int) position);
                         if (history != null && mSearchEditText != null) {
                             mShouldShowHint = false;
                             mSearchEditText.setText(history);
-                            startSearch(history,"0");
+                            startSearch(history, "0", 0);
 
                             Map<String, String> data = new HashMap<>();
                             data.put("keyword", history);
-                            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data);
+                            StartLogClickUtil.upLoadEventLog(activity,
+                                    StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data);
                         }
                     }
                 }
@@ -346,8 +385,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
 
     private void setHotHeader() {
         View hotword_view = initHotWordView();
-        if (mHotListView != null)
+        if (mHotListView != null) {
             mHotListView.addHeaderView(hotword_view);
+        }
     }
 
     private View initHotWordView() {
@@ -364,13 +404,14 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
 
 
     private void initSuggestListView() {
-        if (mSearchHelper != null){
+        if (mSearchHelper != null) {
             mSearchHelper.setSearchSuggestCallBack(this);
         }
 
         mSuggestListView = new ListView(activity);
-        if (mSuggestListView == null)
+        if (mSuggestListView == null) {
             return;
+        }
         mSuggestListView.setCacheColorHint(mResources.getColor(R.color.transparent));
         mSuggestListView.setDivider(mResources.getDrawable(R.color.transparent));
         mSuggestListView.setSelector(R.drawable.item_selector_white);
@@ -383,9 +424,9 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         }
         if (mSuggestAdapter == null) {
             String inputString = "";
-            if (mSearchEditText != null){
+            if (mSearchEditText != null) {
                 Editable editable = mSearchEditText.getText();
-                if (editable != null && editable.length() > 0){
+                if (editable != null && editable.length() > 0) {
                     inputString = editable.toString();
                 }
             }
@@ -395,34 +436,79 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         mSuggestListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                SearchCommonBeanYouHua bean = mSuggestList.get(arg2);
-                suggest = bean.getSuggest();
+
+                Object obj = mSuggestList.get(arg2);
+                if (obj instanceof SearchCommonBeanYouHua) {
+                    searchCommonBean = (SearchCommonBeanYouHua) obj;
+                } else {
+                    return;
+                }
+                suggest = searchCommonBean.getSuggest();
                 searchType = "0";
-                if (bean.getWordtype().equals("label")) {
+                isAuthor = 0;
+                Map<String, String> data = new HashMap<>();
+
+                if (searchCommonBean.getWordtype().equals("label")) {
                     searchType = "1";
-                } else if (bean.getWordtype().equals("author")) {
+                    isAuthor = 0;
+                    isFocus = false;
+                } else if (searchCommonBean.getWordtype().equals("author")) {
                     searchType = "2";
-                } else if (bean.getWordtype().equals("name")) {
+                    isAuthor = searchCommonBean.getIsAuthor();
+                    isBackSearch = false;
+                    isFocus = true;
+                    addHistoryWord(suggest);
+                } else if (searchCommonBean.getWordtype().equals("name")) {
                     searchType = "3";
+
+                    isFocus = true;
+                    isBackSearch = false;
+                    isAuthor = 0;
+                    SearchCommonBeanYouHua searchCommonBeanYouHua =
+                            (SearchCommonBeanYouHua) mSuggestList.get(arg2);
+                    data.put("bookid", searchCommonBeanYouHua.getBook_id());
+
+                    //统计进入到书籍封面页
+                    Map<String, String> data1 = new HashMap<>();
+                    data1.put("BOOKID", searchCommonBeanYouHua.getBook_id());
+                    data1.put("source", "SEARCH");
+                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                            StartLogClickUtil.ENTER, data1);
+
+
+                    Intent intent = new Intent();
+                    intent.setClass(activity, CoverPageActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("author", searchCommonBeanYouHua.getAuthor());
+                    bundle.putString("book_id", searchCommonBeanYouHua.getBook_id());
+                    bundle.putString("book_source_id", searchCommonBeanYouHua.getBook_source_id());
+
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                    addHistoryWord(suggest);
                 } else {
                     searchType = "0";
-                }
-                if (mSearchHelper != null) {
-                    mSearchHelper.setSearchType(searchType);
-                    mSearchHelper.setWord(suggest);
-                    AppLog.e("typesearc", mSearchHelper.getSearchType() + suggest);
+                    isAuthor = 0;
                 }
                 if (!TextUtils.isEmpty(suggest) && mSearchEditText != null) {
-                    Map<String, String> data = new HashMap<>();
+
                     data.put("keyword", suggest);
                     data.put("type", searchType);
                     data.put("enterword", mSearchEditText.getText().toString().trim());
-                    data.put("rank", arg2 + 1 + "");
+                    if ((arg2 + 1) > 0 && (arg2 + 1) <= 2) {
+                        data.put("rank", (arg2 + 1) + "");
+                    } else if ((arg2 + 1) > 3 && (arg2 + 1) <= 5) {
+                        data.put("rank", arg2 + "");
+                    } else if ((arg2 + 1) > 6 && (arg2 + 1) <= 8) {
+                        data.put("rank", (arg2 - 1) + "");
+                    } else if ((arg2 + 1) > 9) {
+                        data.put("rank", (arg2 - 2) + "");
+                    }
                     StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data);
+                }
 
-                    mShouldShowHint = false;
-                    mSearchEditText.setText(suggest);
-                    startSearch(suggest, searchType);
+                if (mSearchEditText != null && !searchType.equals("3")) {
+                    startSearch(suggest, searchType, isAuthor);
                 }
             }
         });
@@ -433,7 +519,8 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                    int totalItemCount) {
 
             }
         });
@@ -441,17 +528,21 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
 
 
     private void showHotList() {
-        if (mHotListView != null)
+        if (mHotListView != null) {
             mHotListView.setVisibility(View.VISIBLE);
-        if (mSuggestListView != null)
+        }
+        if (mSuggestListView != null) {
             mSuggestListView.setVisibility(View.GONE);
-        if (mHisListView != null)
+        }
+        if (mHisListView != null) {
             mHisListView.setVisibility(View.GONE);
+        }
     }
 
     public void notifyListChanged() {
-        if (mHotAdapter != null)
+        if (mHotAdapter != null) {
             mHotAdapter.notifyDataSetChanged();
+        }
     }
 
     public void setSearchWord(String word) {
@@ -462,12 +553,12 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
         addHistoryWord(word);
     }
 
-    private void startSearch(String searchWord,String searchType) {
+    private void startSearch(String searchWord, String searchType, int isAuthor) {
         if (searchWord != null && !searchWord.equals("")) {
             addHistoryWord(searchWord);
 
             if (mOnHistoryClickListener != null) {
-                mOnHistoryClickListener.OnHistoryClick(searchWord,searchType);
+                mOnHistoryClickListener.OnHistoryClick(searchWord, searchType, isAuthor);
             }
 
         }
@@ -501,34 +592,37 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
 
 
     private void clearHistoryItem(String item) {
-        if (hisDatas != null && hisDatas.contains(item))
+        if (hisDatas != null && hisDatas.contains(item)) {
             hisDatas.remove(item);
-        if (mHisAdapter != null)
+        }
+        if (mHisAdapter != null) {
             mHisAdapter.notifyDataSetChanged();
+        }
         Tools.saveHistoryWord(mContext, hisDatas);
     }
 
     @Override
-    public void onSearchResult(ArrayList<SearchCommonBeanYouHua> suggestList, SearchAutoCompleteBean transmitBean) {
+    public void onSearchResult(List<Object> suggestList,
+            SearchAutoCompleteBeanYouHua transmitBean) {
         if (mSuggestList == null) {
             return;
         }
         mSuggestList.clear();
-        for (SearchCommonBeanYouHua item : suggestList) {
+        for (Object item : suggestList) {
             mSuggestList.add(item);
         }
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                if (mSuggestAdapter != null){
+                if (mSuggestAdapter != null) {
                     String inputString = "";
-                    if (mSearchEditText != null){
+                    if (mSearchEditText != null) {
                         Editable editable = mSearchEditText.getText();
-                        if (editable != null && editable.length() > 0){
+                        if (editable != null && editable.length() > 0) {
                             inputString = editable.toString();
                         }
                     }
-                    if (inputString != null){
+                    if (inputString != null) {
                         mSuggestAdapter.setEditInput(inputString);
                     }
                     mSuggestAdapter.notifyDataSetChanged();
@@ -581,7 +675,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
             hotDatas.clear();
             hotDatas = null;
         }
-        if(loadingPage != null){
+        if (loadingPage != null) {
             loadingPage = null;
         }
 
@@ -592,9 +686,11 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     public void hideInputMethod(final View paramView) {
-        if (paramView == null || paramView.getContext() == null)
+        if (paramView == null || paramView.getContext() == null) {
             return;
-        InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        }
+        InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(
+                INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
         }
@@ -605,6 +701,6 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack ,Sea
     }
 
     public interface OnHistoryClickListener {
-        void OnHistoryClick(String history, String searchType);
+        void OnHistoryClick(String history, String searchType, int isAuthor);
     }
 }

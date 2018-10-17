@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -43,8 +44,8 @@ import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.Tools;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +59,7 @@ import iyouqu.theme.FrameActivity;
 public class SearchBookActivity extends FrameActivity implements OnClickListener,
         OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
         TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall,
-        SearchHelper.StartLoadCall {
+        SearchHelper.StartLoadCall, SearchHelper.JsNoneResultSearchCall {
 
     boolean isSearch = false;
     //记录是否退出当前界面,for:修复退出界面时出现闪影
@@ -77,11 +78,11 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private SearchViewHelper searchViewHelper;
     private Handler handler = new Handler();
     private CustomWebClient customWebClient;
-    private JSInterfaceHelper jsInterfaceHelper;
     private LoadingPage loadingPage;
     private SearchHelper mSearchHelper;
     //静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
     public static boolean isSatyHistory = false;
+    public static final int isNotAuthor = 0;//不是作者
 
     @Override
     public void onJsSearch() {
@@ -100,6 +101,26 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (isSatyHistory && searchViewHelper != null && searchViewHelper.getShowStatus()) {
+            if (mSearchHelper != null && mSearchHelper.getFromClass() != null
+                    && !mSearchHelper.getFromClass().equals("fromClass")) {
+                String historyDates = Tools.getKeyWord();
+
+                if (search_result_input != null) {
+                    search_result_input.requestFocus();
+                    search_result_input.setText(historyDates);
+                    //设置光标的索引
+                    Editable index = search_result_input.getText();
+                    search_result_input.setSelection(index.length());
+                    showSearchViews();
+                }
+            }
+
+        }
+    }
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppLog.e(TAG, "StartActivity");
@@ -112,7 +133,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         initData();
         initView();
         if (mSearchHelper != null && !TextUtils.isEmpty(mSearchHelper.getWord())) {
-            loadDataFromNet();
+            loadDataFromNet(isNotAuthor);
         }
     }
 
@@ -164,15 +185,59 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_content.setWebViewClient(customWebClient);
         }
 
-        if (search_result_content != null) {
-            jsInterfaceHelper = new JSInterfaceHelper(this, search_result_content);
-        }
 
-        if (jsInterfaceHelper != null && search_result_content != null) {
-            search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search");
-            mSearchHelper.initJSHelp(jsInterfaceHelper);
-        }
+        search_result_content.addJavascriptInterface(
+                new JSInterfaceObject(SearchBookActivity.this) {
+                    @JavascriptInterface
+                    @Override
+                    public void startSearchActivity(@Nullable String data) {
+                        if (!isFinishing() && !TextUtils.isEmpty(data)) {
+                            if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                                return;
+                            }
+                            try {
+                                JSSearch search = new Gson().fromJson(data, JSSearch.class);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!TextUtils.isEmpty(search.getWord())) {
+                                            onNoneResultSearch(search.getWord());
+                                        }
+                                    }
+                                });
 
+                                mSearchHelper.setHotWordType(search.getWord(), search.getType());
+                                mSearchHelper.startLoadData(0);
+
+                            } catch (JsonSyntaxException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @JavascriptInterface
+                    @Override
+                    public void startTabulationActivity(@Nullable String data) {
+                        if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                            return;
+                        }
+                        try {
+                            JSRedirect redirect = new Gson().fromJson(data, JSRedirect.class);
+                            if (!TextUtils.isEmpty(redirect.getTitle()) && !TextUtils.isEmpty(
+                                    redirect.getUrl())) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("url", redirect.getUrl());
+                                bundle.putString("title", redirect.getTitle());
+                                bundle.putString("from", "authorType");
+                                RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY,
+                                        bundle);
+                            }
+                        } catch (JsonSyntaxException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, "J_search");
     }
 
     private void initListener() {
@@ -216,7 +281,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                             if (mSearchHelper != null) {
                                 mSearchHelper.setHotWordType(tag, searchType);
                             }
-                            loadDataFromNet();
+                            loadDataFromNet(isNotAuthor);
                         }
                     };
         }
@@ -236,24 +301,45 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     }
 
-    private void loadDataFromNet() {
+    private void loadDataFromNet(int isAuthor) {
 
         if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
+//
+//        if (search_result_count != null) {
+//            search_result_count.setText(null);
+//        }
+
 
         if (!TextUtils.isEmpty(mSearchHelper.getWord())) {
             if (search_result_input != null) {
-                search_result_input.setText(mSearchHelper.getWord());
+                if (isAuthor != 1) {
+                    search_result_input.setText(mSearchHelper.getWord());
+//                    search_result_input.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                } else {
+                    mSearchHelper.setSearchType("2");
+                    search_result_input.setText(Tools.getKeyWord());
+//                    search_result_input.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                }
             }
-
             if (search_result_keyword != null) {
-                search_result_keyword.setText(mSearchHelper.getWord());
+                if (isAuthor != 1) {
+                    search_result_keyword.setText(mSearchHelper.getWord());
+//                    search_result_keyword.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                } else {
+                    mSearchHelper.setSearchType("2");
+                    search_result_keyword.setText(Tools.getKeyWord());
+//                    search_result_keyword.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                }
             }
 
             if (searchViewHelper != null) {
                 searchViewHelper.addHistoryWord(mSearchHelper.getWord());
-                searchViewHelper.setShowHintEnabled(false);
             }
 
             hideSearchView();
@@ -261,7 +347,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             if (loadingPage == null) {
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
-            mSearchHelper.startLoadData(0);
+
+            mSearchHelper.startLoadData(isAuthor);
 
         } else {
             showSearchViews();
@@ -604,7 +691,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                                 mSearchHelper.setSearchType("0");
                             }
                         }
-                        loadDataFromNet();
+                        loadDataFromNet(isNotAuthor);
 
                         Map<String, String> data = new HashMap<>();
                         data.put("type", "0");
@@ -663,7 +750,9 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        if (loadingPage != null) {
+            loadingPage.onSuccessGone();
+        }
     }
 
 
@@ -702,15 +791,22 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             s.clear();
             search_result_main.setVisibility(View.GONE);
         }
+
+        //保存用户搜索词
+        Tools.setUserSearchWord(s.toString());
     }
 
     @Override
-    public void OnHistoryClick(String history, String searchType) {
+    public void OnHistoryClick(String history, String searchType, int isAuthor) {
         if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         mSearchHelper.setHotWordType(history, searchType);
-        loadDataFromNet();
+        if ("3".equals(searchType)) {
+
+        } else {
+            loadDataFromNet(isAuthor);
+        }
     }
 
     @Override
@@ -731,7 +827,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 if (keyword != null && !keyword.equals("") && searchViewHelper != null) {
                     searchViewHelper.addHistoryWord(keyword);
                     mSearchHelper.setHotWordType(keyword, "0");
-                    loadDataFromNet();
+                    loadDataFromNet(isNotAuthor);
 
                     Map<String, String> data = new HashMap<>();
                     data.put("type", "1");
@@ -745,4 +841,30 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
         return false;
     }
+
+    @Override
+    public void onNoneResultSearch(String searchWord) {
+
+        if (search_result_default != null
+                && search_result_default.getVisibility() != View.VISIBLE) {
+            search_result_default.setVisibility(View.VISIBLE);
+        }
+
+        if (search_result_input != null) {
+            search_result_input.setText(searchWord);
+        }
+
+        if (searchViewHelper != null) {
+            searchViewHelper.addHistoryWord(searchWord);
+            searchViewHelper.hideHintList();
+        }
+
+        if (search_result_content != null) {
+            search_result_content.clearView();
+            if (loadingPage == null) {
+                loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
+            }
+        }
+    }
+
 }

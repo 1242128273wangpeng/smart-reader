@@ -431,7 +431,6 @@ class TabulationActivity : FrameActivity() {
                 if (loadingPage != null) {
                     loadingPage?.onSuccessGone()
                 }
-                requestWebViewPager(web_tabulation_content)
             }
 
             customWebClient?.setLoadingWebViewError {
@@ -452,14 +451,6 @@ class TabulationActivity : FrameActivity() {
         }
     }
 
-    /***
-     * 获取H5页面信息
-     * **/
-    private fun requestWebViewPager(web_tabulation_content: WebView?) {
-        if (needInterceptSlide && web_tabulation_content != null) {
-            web_tabulation_content.loadUrl("javascript:getViewPagerInfo()")
-        }
-    }
 
     override fun shouldLightStatusBase(): Boolean {
         return if ("cc.quanben.novel" == AppUtils.getPackageName()) {

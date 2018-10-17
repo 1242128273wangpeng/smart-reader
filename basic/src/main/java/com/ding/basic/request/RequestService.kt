@@ -282,6 +282,23 @@ interface RequestService {
          * 搜索
          * **/
         const val WEB_SEARCH = "/h5/{packageName}/search"
+
+
+        /***
+         * 精选完结详情
+         * **/
+        const val WEB_RECOMMEND_FINISH_DETAIL = "/h5/{packageName}/finishDetail"
+
+        /***
+         * 精选玄幻详情
+         * **/
+        const val WEB_RECOMMEND_FANTASY_DETAIL = "/h5/{packageName}/finishDetail"
+
+        /***
+         * 精选现代详情
+         * **/
+        const val WEB_RECOMMEND_MODERN_DETAIL = "/h5/{packageName}/finishDetail"
+
         /***
          * 作者主页
          * **/

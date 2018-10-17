@@ -5,7 +5,7 @@
               android:layout_height="5dp"
               android:background="#edeef0"
               android:clickable="false"
-              android:orientation="vertical" >
+              android:orientation="vertical">
 
     <!--自动补全分割线-->
 
