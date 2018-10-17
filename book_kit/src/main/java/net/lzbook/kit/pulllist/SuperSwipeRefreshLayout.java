@@ -1088,6 +1088,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     private void setTargetOffsetTopAndBottom(int offset, boolean requiresUpdate) {
+        mHeadViewContainer.clearFocus();
         mHeadViewContainer.bringToFront();
         mHeadViewContainer.offsetTopAndBottom(offset);
         mCurrentTargetOffsetTop = mHeadViewContainer.getTop();
@@ -1102,6 +1103,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
      */
     private void updateFooterViewPosition() {
         mFooterViewContainer.setVisibility(View.VISIBLE);
+        mFooterViewContainer.clearFocus();
         mFooterViewContainer.bringToFront();
         //针对4.4及之前版本的兼容
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
