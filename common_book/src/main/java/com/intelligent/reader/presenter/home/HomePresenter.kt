@@ -4,10 +4,10 @@ import android.content.pm.PackageManager
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.repository.RequestRepositoryFactory
-import com.intelligent.reader.app.BookApplication
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
+import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -38,7 +38,6 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * **/
     fun initParameters() {
         val sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-//        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
         //初始化阅读页背景
         if (sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE) < 50) {
@@ -104,7 +103,11 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
                     MediaType.parse("application/json; charset=utf-8"),
                     loadUpdateParameters(books))
 
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
+            //部分4.2 手机报 retrofit 动态代理问题 java.lang.reflect.UndeclaredThrowableException at $Proxy2.a(Native Method)
+            try {
+                RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestCoverBatch(checkBody)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -137,14 +140,13 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * 上传用户应用列表
      * **/
     private fun updateApplicationList() {
-        Observable.create(ObservableOnSubscribe<String> { emitter ->
-            Logger.e("UpdateApplicationList")
-            emitter.onNext(AppUtils.scanLocalInstallAppList(packageManager))
+        Observable.create(ObservableOnSubscribe<List<String>> { emitter ->
+            emitter.onNext(mutableListOf(AppUtils.scanLocalInstallAppList(packageManager), AppUtils.loadUserApplicationList(BookApplication.getGlobalContext(), packageManager)))
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(onNext = { message ->
-                    StartLogClickUtil.upLoadApps(message)
+                .subscribeBy(onNext = {
+                    StartLogClickUtil.upLoadApps(it[0], it[1])
                 })
     }
 

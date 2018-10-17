@@ -48,9 +48,4 @@ class OfflineNotifyActivity : UmengNotifyClickActivity() {
         finish()
     }
 
-    companion object {
-        @JvmField
-        val IS_FROM_PUSH = "is_from_push"
-    }
-
 }
