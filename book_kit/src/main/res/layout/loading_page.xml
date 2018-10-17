@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/tv_loading_progress"
             android:layout_centerInParent="true">
+
         <ImageView
             android:id="@+id/img_loading"
             android:layout_width="60dp"

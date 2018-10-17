@@ -290,8 +290,8 @@ android {
 
         //自定义
         custom {
-            minifyEnabled false
-            zipAlignEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
             shrinkResources false
 
             fixChannelAppName(getOwner(), "${channel}")
@@ -317,8 +317,8 @@ android {
 
         //调试和开发使用
         release {
-            minifyEnabled false
-            zipAlignEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
             shrinkResources false
             fixChannelAppName(getOwner(), "${channel}")
 

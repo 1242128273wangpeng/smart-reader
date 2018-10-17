@@ -395,8 +395,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 mCatalogAdapter?.list = chapterList
                 mCatalogAdapter?.notifyDataSetChanged()
                 changeSortState(isPositive)
-                catalog_main!!.setSelection(0)
-
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
                 mCataloguesPresenter!!.fixBook()

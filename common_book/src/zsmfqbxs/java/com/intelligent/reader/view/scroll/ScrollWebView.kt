@@ -1,4 +1,4 @@
-package com.intelligent.reader.view.scroll
+package com.dingyue.contract.web
 
 import android.content.Context
 import android.graphics.RectF
@@ -6,7 +6,7 @@ import android.webkit.WebView
 import android.util.AttributeSet
 import android.view.MotionEvent
 
-class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : WebView(context, attrs) {
+class CustomWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : WebView(context, attrs) {
 
     private var bannerRectFList = mutableListOf<RectF>()
 
@@ -27,7 +27,7 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
         return super.dispatchTouchEvent(event)
     }
 
-    fun setBannerRect(rectF: RectF) {
+    fun insertProhibitSlideArea(rectF: RectF) {
         bannerRectFList.add(rectF)
     }
 }

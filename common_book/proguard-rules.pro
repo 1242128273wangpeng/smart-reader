@@ -569,3 +569,4 @@ public *;
 -dontwarn com.moat.**
 # skip AVID classes
 -keep class com.integralads.avid.library.* {*;}
+

@@ -40,6 +40,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import swipeback.ActivityLifecycleHelper;
 
+
 public class BookApplication extends BaseBookApplication {
 
     private static RefWatcher sRefWatcher;

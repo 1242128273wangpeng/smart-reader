@@ -89,8 +89,8 @@ class AndroidLogStorage {
                 "16、电池电量:${AppUtils.getBatteryLevel()}\n" +
                 "17、X86架构:${AppUtils.getX86()}\n" +
                 "19、MEID:${AppUtils.getIMEI(context)}\n" +
-                "20、WiFi-Mac地址:${AppUtils.getWifiMacAddress(context)}")
-*/
+                "20、WiFi-Mac地址:${AppUtils.getWifiMacAddress(context)}")*/
+
         val type = serverLog.eventType
         val localLog = LocalLog(type, serverLog.content)
         if (localLogDao == null) {

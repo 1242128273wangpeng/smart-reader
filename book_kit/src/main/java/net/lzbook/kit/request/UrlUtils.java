@@ -39,12 +39,13 @@ public class UrlUtils {
         params.put("longitude", longitude);
         params.put("latitude", latitude);
         params.put("cityCode", cityCode);
-
-        URLBuilderIntterface urlBuilderIntterface = BaseBookApplication.getUrlBuilderIntterface();
-        if (urlBuilderIntterface != null) {
-            return urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
+        BaseBookApplication globalContext = BaseBookApplication.getGlobalContext();
+        if (globalContext != null) {
+            URLBuilderIntterface urlBuilderIntterface = globalContext.getUrlBuilderIntterface();
+            if (urlBuilderIntterface != null) {
+                return urlBuilderIntterface.buildUrl(novel_host, uriTag, params);
+            }
         }
-
         return null;
     }
 
@@ -52,7 +53,6 @@ public class UrlUtils {
         if (uriTag == null) {
             return null;
         }
-
         String webView_host = Config.INSTANCE.loadWebViewHost();
 
         String channelId = AppUtils.getChannelId();

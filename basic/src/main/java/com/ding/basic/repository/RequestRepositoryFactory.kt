@@ -230,8 +230,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         result.data?.chapters = resList
                         val book = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book_id)
 
-                        result.data?.chapters = resList
-
                         if (book != null) {
                             val chapterDaoHelp = ChapterDaoHelper.loadChapterDataProviderHelper(context, book_id)
                             chapterDaoHelp.insertOrUpdateChapter(resList)
