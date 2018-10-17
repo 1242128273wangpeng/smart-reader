@@ -15,7 +15,6 @@ import com.ding.basic.bean.Chapter
 import com.dy.media.MediaConfig
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
-import com.dy.reader.Reader
 import com.dy.reader.helper.ReadSeparateHelper
 import com.dy.reader.holder.HomePagerHolder
 import com.dy.reader.mode.NovelLineBean
@@ -23,7 +22,7 @@ import com.dy.reader.page.PageContentView
 import com.dy.reader.page.SpacingTextView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.mode.NovelPageBean
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ReadViewEnums
 import java.util.*
@@ -249,6 +248,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 val adView = ReadMediaManager.adCache.get(page.adType)
 
                 adView?.view?.apply {
+                    //8-1章节末广告
 
                     val map = HashMap<String, String>()
                     map.put("book_id", ReaderStatus.book.book_id)
@@ -270,6 +270,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                         (this.tag as ViewGroup?)?.removeAllViews()
                     }
                     this.tag = fl_reader_content_ad
+                    fl_reader_content_ad.removeAllViews()
                     fl_reader_content_ad.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
                     fl_reader_content_ad.addView(this, adViewLayoutParams)
                     itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -394,7 +395,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     internal inner class AdViewHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
 
         init {
-            fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad)
+             fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad)
         }
 
         override fun bindHolder(page: NovelPageBean) {
@@ -415,8 +416,9 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
                 MediaConfig.setExpandInfo(map)
 
-                val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 val adView = ReadMediaManager.adCache.get(page.adType)
+
+                //5-3广告位
                 adView?.view?.apply {
                     if (this.parent != null) {
                         (this.tag as ViewGroup).removeAllViews()
@@ -425,8 +427,16 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                         this.tag = fl_reader_content_ad
                         fl_reader_content_ad.alpha = if (ReaderSettings.instance.readThemeMode == 61) 0.5f else 1f
                     }
+                    fl_reader_content_ad.visibility = View.VISIBLE
+
+                    // 默认广告位高度是包裹的，在广告展现时更改为填充
+                    val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    itemView.layoutParams = lp
+
+                    val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     fl_reader_content_ad.addView(this, layoutParams)
                 }
+
             }
         }
 

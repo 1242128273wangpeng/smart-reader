@@ -1,6 +1,5 @@
 package com.dy.reader.presenter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,7 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.StringRes
 import android.text.TextUtils
-import android.widget.*
+import android.widget.Toast
 import com.ding.basic.bean.*
 import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
@@ -32,10 +31,10 @@ import io.reactivex.schedulers.Schedulers
 import iyouqu.theme.ThemeMode
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.bean.ChapterErrorBean
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
@@ -277,7 +276,9 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
+            logMap.put("bookid",ReaderStatus.book?.book_id)
+            logMap.put("chapterid",ReaderStatus?.chapterId)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
@@ -327,7 +328,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap.put("type", "2")
             logMap.put("bookid", ReaderStatus.book!!.book_id)
             logMap.put("chapterid", ReaderStatus.chapterId.toString())
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKMARKEDIT, logMap)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
             mBookDataHelper.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }
@@ -381,41 +382,50 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
     }
 
+    fun showShareDialog() {
+        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
+        
+        if (activity.get() != null && !activity.get()!!.isFinishing) {
+            val applicationShareDialog = ApplicationShareDialog(activity.get())
+            applicationShareDialog.show()
+
+            val activity = this.activity.get()
+
+            if (activity is ReaderActivity) {
+//                activity.registerShareCallback(true)
+            }
+        }
+    }
 
     fun chageNightMode(mode: Int = 0, useLightMode: Boolean = true) {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity?.get()?.applicationContext)
-        val edit = sharedPreferences.edit()
         val data = java.util.HashMap<String, String>()
 
-        if (activity?.get()?.mThemeHelper!!.isNight) {
-            //夜间模式只有一种背景， 不能存储
-//            edit.putInt("current_night_mode", ReaderSettings.instance.readThemeMode)
+        if (activity.get()?.mThemeHelper!!.isNight) {
             if (useLightMode) {
-                ReaderSettings.instance.readThemeMode = sharedPreferences.getInt("current_light_mode", 51)
+                ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
             } else {
                 ReaderSettings.instance.readThemeMode = mode
             }
 
-            activity?.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
+            activity.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
             data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         } else {
-            edit.putInt("current_light_mode", ReaderSettings.instance.readThemeMode)
-            //            ReadConfig.readThemeMode = sharedPreferences.getInt("current_night_mode", 61);
+
             //夜间模式只有一种背景
+            ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
             ReaderSettings.instance.readThemeMode = 61
-            activity?.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
+            activity.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
             data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity?.get()?.getApplicationContext(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
         }
-        edit.putInt("content_mode", ReaderSettings.instance.readThemeMode)
-        edit.apply()
+//        ReaderSettings.instance.save()
 
         changeNight()
     }
 
     fun changeNight() {
-        val editor = activity?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)?.edit()
+        val editor = activity.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)?.edit()
         if (ReaderSettings.instance.readThemeMode == 61) {
             if ("light" == ResourceUtil.mode) {
                 editor?.putString("mode", "night")
@@ -439,7 +449,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
                 return
             }
-
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
             val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
             readerFeedbackDialog.insertSubmitListener {

@@ -1,4 +1,4 @@
-package com.intelligent.reader.reader.v2
+package com.dy.reader.animation
 
 interface IGLAnimation {
 

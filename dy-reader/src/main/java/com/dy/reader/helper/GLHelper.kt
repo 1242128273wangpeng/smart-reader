@@ -1,4 +1,4 @@
-package com.intelligent.reader.reader.v2
+package com.dy.reader.helper
 
 import android.content.Context
 import android.graphics.Bitmap

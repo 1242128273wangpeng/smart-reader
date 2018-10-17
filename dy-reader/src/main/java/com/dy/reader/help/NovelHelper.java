@@ -16,7 +16,6 @@ import com.dy.reader.setting.ReaderStatus;
 
 import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.constants.ReadConstants;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -237,31 +236,6 @@ public class NovelHelper {
     }
 
 
-    private boolean checkIsPunct(char ch) {
-        boolean isInclude = false;
-        for (char c : ReadConstants.puncts) {
-            if (ch == c) {
-                isInclude = true;
-                break;
-            }
-        }
-        return isInclude;
-    }
-
-    private boolean lastIsPunct(String text, int i) {
-        if (i > 0) {
-            char ch = text.charAt(i - 1);
-            if (ch == '”') {
-                return false;
-            }
-            if (checkIsPunct(ch)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     /**
      * 保存书签
      */
@@ -274,16 +248,16 @@ public class NovelHelper {
             book.setBook_id(book_id);
             book.setOffset(offset);
             book.setSequence(sequence);
+            book.setReaded(1);
             book.setLast_read_time(System.currentTimeMillis());
 
-            book.setReaded(1);
+            if (book.getChapter_count() <= 0) {
+                book.setChapter_count(ReaderStatus.INSTANCE.getChapterCount());
+            }
 
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).updateBook(book);
-
         }
-
-
     }
 
 

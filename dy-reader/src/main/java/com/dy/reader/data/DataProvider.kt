@@ -7,19 +7,19 @@ import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.Reader
-import com.dy.reader.page.Position
-import com.dy.reader.setting.ReaderSettings
-import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.helper.ReadSeparateHelper
+import com.dy.reader.mode.NovelChapter
 import com.dy.reader.mode.NovelLineBean
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.PageManager
+import com.dy.reader.page.Position
 import com.dy.reader.repository.ReaderRepository
 import com.dy.reader.repository.ReaderRepositoryFactory
-import com.intelligent.reader.read.mode.NovelChapter
-import com.intelligent.reader.read.mode.NovelPageBean
+import com.dy.reader.setting.ReaderSettings
+import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -27,7 +27,6 @@ import io.reactivex.functions.Function
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.runOnMain
 import org.greenrobot.eventbus.EventBus
@@ -37,7 +36,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * Created by xian on 18-3-21.
+ * Created by xian on 18-3-21
  */
 object DataProvider {
 
@@ -85,11 +84,11 @@ object DataProvider {
 
 
                     AppLog.e("DataProvider", "forceReload = " + forceReload)
-
-                    loadGroup(position.group, forceReload) {
+                    val mediaToken = ReadMediaManager.tonken
+                    loadGroup(position.group, forceReload, mediaToken) {
                         if (it) {
 
-                            loadGroup(Math.max(position.group - 1, 0), forceReload) {
+                            loadGroup(Math.max(position.group - 1, 0), forceReload, mediaToken) {
                                 if (it) {
                                     groupListeners.forEach {
                                         if (event.type == ReaderSettings.ConfigType.CHAPTER_REFRESH) {
@@ -109,7 +108,7 @@ object DataProvider {
                                 }
                             }
 
-                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload)
+                            loadGroup(Math.min(position.group + 1, ReaderStatus.chapterCount), forceReload, mediaToken)
                         } else {
                             EventBus.getDefault().post(EventLoading(EventLoading.Type.RETRY) {
                                 onNeedRefresh(event)
@@ -199,12 +198,12 @@ object DataProvider {
                                     onNext = {
 
                                         ReadMediaManager.tonken++
-                                        ReadMediaManager.adCache.clear()
+                                        ReadMediaManager.clearAllAd()
 
                                         it.forEach {
                                             var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                                     ?: "", it.name ?: "")
-                                            separateContent = ReadMediaManager.insertChapterAd(it.sequence, separateContent)
+                                            separateContent = ReadMediaManager.insertChapterAd(it.sequence, ReadMediaManager.tonken, separateContent)
                                             chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                         }
 
@@ -266,7 +265,12 @@ object DataProvider {
                         arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
             }
 //            return lruCache.get(ReaderStatus.chapterList[group].sequence.toLong())
-            return chapterCache.get(ReaderStatus.chapterList[group].sequence)
+            if(ReaderStatus.chapterList[group] != null){
+                return chapterCache.get(ReaderStatus.chapterList[group].sequence)
+            }else{
+                return null
+            }
+
         } else {
             return null
         }
@@ -413,7 +417,7 @@ object DataProvider {
         }
     }
 
-    private fun loadGroup(group: Int, force: Boolean = true, callback: ((Boolean) -> Unit)? = null) {
+    private fun loadGroup(group: Int, force: Boolean = true, mediaToken: Long = ReadMediaManager.tonken, callback: ((Boolean) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
             if (group < 0 || (!force && chapterCache.get(group) != null)) {
                 AppLog.e("DataProvider", "loadGroup group loaded")
@@ -428,7 +432,7 @@ object DataProvider {
                                 AppLog.e("DataProvider", "onNext = ")
                                 var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                         ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, separateContent)
+                                separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
 
                                 callback?.invoke(true)
@@ -454,7 +458,7 @@ object DataProvider {
                             onNext = {
                                 var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
                                         ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, separateContent)
+                                separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                 runOnMain {
                                     callback?.invoke(true, it)
