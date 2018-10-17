@@ -986,7 +986,7 @@ public class SearchViewHelper implements SearchHelper.SearchSuggestCallBack,
         }
         InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(
                 INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
+        if (imm != null && imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
         }
     }
