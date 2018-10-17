@@ -34,6 +34,7 @@ import java.util.HashMap
 
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.mfqbxssc.act_tabulation.*
+import kotlinx.android.synthetic.mfqbxssc.activity_search_book.*
 import net.lzbook.kit.utils.*
 import swipeback.ActivityLifecycleHelper
 
@@ -47,11 +48,11 @@ class TabulationActivity : FrameActivity() {
     private var customWebClient: CustomWebClient? = null
 
     private var fromType = ""
-    
+
     private var pagerDesc: PagerDesc? = null
-    
+
     private var margin: Int = 0
-    
+
     private var supportSlide = true
 
     private var urls = ArrayList<String?>()
@@ -61,7 +62,7 @@ class TabulationActivity : FrameActivity() {
     private var title: String? = null
 
     private var fromPush = false
-    
+
 
     private val needInterceptSlide: Boolean
         get() {
@@ -73,7 +74,7 @@ class TabulationActivity : FrameActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            
+
         setContentView(R.layout.act_tabulation)
 
         val intent = intent
@@ -104,6 +105,16 @@ class TabulationActivity : FrameActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (web_tabulation_content != null) {
+            web_tabulation_content?.post {
+                try {
+                    web_tabulation_content?.loadUrl("javascript:refreshNew()")
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    finish()
+                }
+            }
+        }
         StatService.onResume(this)
     }
 
@@ -196,8 +207,8 @@ class TabulationActivity : FrameActivity() {
         }
 
         insertTouchListener()
-        
-        
+
+
         //判断是否是作者主页
         if (url != null && url?.contains(RequestService.WEB_AUTHOR.replace("{packageName}", AppUtils.getPackageName())) == true) {
             img_tabulation_header_search?.visibility = View.GONE
@@ -254,7 +265,6 @@ class TabulationActivity : FrameActivity() {
 
         }, "J_search")
     }
-
 
 
     /***
