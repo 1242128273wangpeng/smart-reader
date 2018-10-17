@@ -1,5 +1,6 @@
 package com.ding.basic.rx
 
+import com.ding.basic.bean.CommonResult
 import io.reactivex.FlowableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
