@@ -10,7 +10,7 @@
         android:id="@+id/view_devider"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#e8e8e8"/>
+        android:background="@color/divider_bg"/>
 
     <LinearLayout
         android:id="@+id/ll_container"
