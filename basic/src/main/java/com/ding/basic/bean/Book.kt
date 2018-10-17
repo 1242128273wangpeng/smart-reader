@@ -206,19 +206,6 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
         return super.clone() as Book
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (other == null) {
-            return false
-        } else {
-            if (other is Book) {
-                if (other.book_id.isNotEmpty()) {
-                    return other.book_id == this.book_id
-                }
-            }
-        }
-        return false
-    }
-
     override fun compareTo(other: Book): Int {
         return if (this.last_read_time == other.last_read_time) 0 else if (this.last_read_time < other.last_read_time) 1 else -1
     }

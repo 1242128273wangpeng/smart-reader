@@ -23,12 +23,12 @@ import android.widget.TextView;
 
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
+import com.dingyue.contract.web.CustomWebView;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.activity.SearchBookActivity;
 import com.intelligent.reader.activity.SettingActivity;
 import com.intelligent.reader.app.BookApplication;
-import com.intelligent.reader.view.scroll.ScrollWebView;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
@@ -48,7 +48,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout rl_web_content;
-    private ScrollWebView web_content_view;
+    private CustomWebView web_content_view;
     private CustomWebClient customWebClient;
     private JSInterfaceHelper jsInterfaceHelper;
     private FragmentCallback fragmentCallback;
@@ -409,7 +409,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                 float viewHeight = Float.parseFloat(height);
                 float scale = web_content_view.getResources().getDisplayMetrics().widthPixels / (viewWidth);
 
-                web_content_view.setBannerRect(new RectF(
+                web_content_view.insertProhibitSlideArea(new RectF(
                         Float.parseFloat(x) * scale
                         , Float.parseFloat(y) * scale
                         , (Float.parseFloat(x) + viewWidth) * scale,

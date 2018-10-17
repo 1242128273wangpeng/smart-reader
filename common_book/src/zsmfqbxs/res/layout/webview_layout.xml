@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/rl_home_header">
 
-        <com.intelligent.reader.view.scroll.ScrollWebView
+        <com.dingyue.contract.web.CustomWebView
             android:id="@+id/web_content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
