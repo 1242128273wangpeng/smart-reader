@@ -403,7 +403,12 @@ class SearchResultModel(var listener: OnSearchResult?) {
     }
 
 
-    fun startLoadData(isAuthor: Int): String? {
+    /**
+     * isAuthor: 是否显示作者页，0为默认不显示
+     * 目前新壳2显示作者页
+     */
+    fun startLoadData(isAuthor: Int = 0): String? {
+
         var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word

@@ -134,10 +134,10 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
         historyFragment.onKeyWordListener = this
 
         suggestFragment.onSuggestClickListener = object : SuggestFragment.OnSuggestClickListener {
-            override fun onSuggestClick(history: String, searchType: String) {
+            override fun onSuggestClick(history: String, searchType: String, isAuthor: Int) {
                 inputKeyWord(history)
                 showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(history, searchType)
+                searchResultFragment.loadKeyWord(history, searchType, isAuthor)
             }
 
         }

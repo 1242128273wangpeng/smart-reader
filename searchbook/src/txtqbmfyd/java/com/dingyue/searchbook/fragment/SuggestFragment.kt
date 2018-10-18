@@ -101,6 +101,7 @@ class SuggestFragment : Fragment(), ISuggestView {
 
             val suggest = searchCommonBean.suggest
             val searchType: String
+            var isAuthor = 0
             val data = HashMap<String, String>()
 
 
@@ -110,6 +111,7 @@ class SuggestFragment : Fragment(), ISuggestView {
                 }
                 "author" -> {
                     searchType = "2"
+                    isAuthor = searchCommonBean.isAuthor
                 }
                 "name" -> {
                     searchType = "3"
@@ -144,7 +146,7 @@ class SuggestFragment : Fragment(), ISuggestView {
                 }
 
                 if (searchType != "3") {
-                    onSuggestClickListener?.onSuggestClick(suggest, searchType)
+                    onSuggestClickListener?.onSuggestClick(suggest, searchType, isAuthor)
                 }
 
             }
@@ -163,7 +165,10 @@ class SuggestFragment : Fragment(), ISuggestView {
     }
 
 
+    /**
+     * isAuthor:0不显示作者页，1显示作者页
+     */
     interface OnSuggestClickListener {
-        fun onSuggestClick(history: String, searchType: String)
+        fun onSuggestClick(history: String, searchType: String, isAuthor: Int = 0)
     }
 }
