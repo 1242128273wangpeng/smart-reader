@@ -21,6 +21,11 @@ import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.toast.ToastUtil;
 
+/**
+ * net.lzbook.kit.utils.web.CustomWebClient
+ * 已切换为kt文件
+ */
+@Deprecated
 public class CustomWebClient extends WebViewClient {
     private final static String TAG = "CustomWebClient";
     public WebSettings webSetting;
@@ -48,7 +53,7 @@ public class CustomWebClient extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(final WebView view, String url) {
         // 如下方案可在非微信内部WebView的H5页面中调出微信支付
-        if(url.startsWith("weixin://wap/pay?")) {
+        if (url.startsWith("weixin://wap/pay?")) {
             try {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
@@ -76,7 +81,7 @@ public class CustomWebClient extends WebViewClient {
                     ToastUtil.INSTANCE.showToastMessage("未找到支付宝客户端，请先安装支付宝！");
                 }
                 exception.printStackTrace();
-                return  super.shouldOverrideUrlLoading(view, url);
+                return super.shouldOverrideUrlLoading(view, url);
             }
         }
         return super.shouldOverrideUrlLoading(view, url);
@@ -85,7 +90,9 @@ public class CustomWebClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         pageStartCount++;
-        AppLog.d(TAG, "pageStartCount  " + pageStartCount + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError);
+        AppLog.d(TAG,
+                "pageStartCount  " + pageStartCount + " ERROR_CODE : " + ERROR_CODE + " onError : "
+                        + onError);
         if (onLoad != null && pageStartCount == 1) {
             onLoad.onLoadStarted(url);// FIXME 保证回调只执行一次
         }
@@ -99,7 +106,9 @@ public class CustomWebClient extends WebViewClient {
             }
             onError.onErrorReceived();
         }
-        AppLog.e(TAG, "onPageStarted view " + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError + view + " webview " + webview);//初始化webview与加载webview要一致
+        AppLog.e(TAG,
+                "onPageStarted view " + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError
+                        + view + " webview " + webview);//初始化webview与加载webview要一致
         super.onPageStarted(view, url, favicon);
     }
 
@@ -125,12 +134,15 @@ public class CustomWebClient extends WebViewClient {
             }
             onError.onErrorReceived();
         }
-        AppLog.d(TAG, "onPageFinished view" + view + " webview " + webview + " ERROR_CODE : " + ERROR_CODE + " onError : " + onError);
+        AppLog.d(TAG,
+                "onPageFinished view" + view + " webview " + webview + " ERROR_CODE : " + ERROR_CODE
+                        + " onError : " + onError);
         super.onPageFinished(view, url);
     }
 
     @Override
-    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+    public void onReceivedError(WebView view, int errorCode, String description,
+            String failingUrl) {
         ERROR_CODE = errorCode;// FIXME 标识是否出错
         AppLog.e(TAG, "error[" + errorCode + " --- " + failingUrl + "] " + description);
         if (webview != null) {
@@ -141,7 +153,8 @@ public class CustomWebClient extends WebViewClient {
     }
 
     @Override
-    public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+    public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host,
+            String realm) {
         super.onReceivedHttpAuthRequest(view, handler, host, realm);
     }
 
@@ -187,7 +200,8 @@ public class CustomWebClient extends WebViewClient {
         if (context == null) {
             context = BaseBookApplication.getGlobalContext();
         }
-        if (context != null && context.getCacheDir() != null && context.getDir("databases", 0) != null) {
+        if (context != null && context.getCacheDir() != null && context.getDir("databases", 0)
+                != null) {
 
             try {
                 appCachePath = context.getCacheDir().getAbsolutePath();
@@ -199,8 +213,9 @@ public class CustomWebClient extends WebViewClient {
             AppLog.d(TAG, "appCachePath " + appCachePath);
             AppLog.d(TAG, "dbPath " + dbPath);
         }
-        if (webSetting != null && appCachePath != null)
+        if (webSetting != null && appCachePath != null) {
             webSetting.setAppCachePath(appCachePath);
+        }
         if (webSetting != null && dbPath != null) {
             webSetting.setDatabasePath(dbPath);// TODO
         }

@@ -37,12 +37,12 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
     fun loadKeyWord(keyWord: String, searchType: String = "0", isAuthor: Int = 0) {
         runOnMain {
             searchResultView?.showLoading()
-            searchResultView?.onSetKeyWord(keyWord)
+            searchResultView?.onObtainKeyWord(keyWord)
         }
         historyModel?.addHistoryWord(keyWord)
 
-        searchResultModel?.setWord(keyWord!!)
-        searchResultModel?.setSearchType(searchType!!)
+        searchResultModel?.setWord(keyWord)
+        searchResultModel?.setSearchType(searchType)
         searchResultModel?.startLoadData(isAuthor)?.let {
             onSearchResult(it)
         }
@@ -66,6 +66,9 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         searchResultView?.onAnotherResult(bundle)
     }
 
+    override fun onAnotherResultNew(bundle: Bundle) {
+        searchResultView?.onAnotherResultNew(bundle)
+    }
 
     override fun onSearchWordResult(searchWord: String) {
         historyModel?.addHistoryWord(searchWord)
@@ -86,9 +89,10 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView?) : 
         return searchResultView?.getCurrentActivity()
     }
 
-    override  fun onLoadKeyWord(keyWord: String?, searchType: String?) {
-        loadKeyWord(keyWord!!,searchType!!)
+    override fun onLoadKeyWord(keyWord: String?, searchType: String?) {
+        loadKeyWord(keyWord!!, searchType!!)
     }
+
     override fun onDestroy() {
         searchResultModel = null
         searchResultView = null

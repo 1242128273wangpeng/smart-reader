@@ -23,8 +23,6 @@ import net.lzbook.kit.utils.StatServiceUtils
  */
 class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemClickListener {
 
-    private var mView: View? = null
-
     private var historyAdapter: HistoryAdapter? = null
 
     var onKeyWordListener: OnKeyWordListener? = null
@@ -33,11 +31,13 @@ class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemCl
         HistoryPresenter(this)
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mView = inflater.inflate(R.layout.fragment_history, container, false)
+        return inflater.inflate(R.layout.fragment_history, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         historyPresenter.onCreate()
-        return mView
     }
 
     override fun showLoading() {
@@ -66,16 +66,11 @@ class HistoryFragment : Fragment(), IHistoryView, HistoryAdapter.OnHistoryItemCl
 
             onKeyWordListener?.onKeyWord(history)
 
-//            if (mSearchEditText != null) {
-//                mSearchEditText.setText(history)
-//                isFocus = false
-//                startSearch(history, "0", 0)
-
             val data = HashMap<String, String>()
             data.put("keyword", history)
             data.put("rank", position.toString() + "")
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARLIST, data)
-//            }
+
         }
     }
 

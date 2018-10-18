@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.contract.web.JSInterfaceObject
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
@@ -27,6 +26,7 @@ import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.web.CustomWebClient
 
 open class CustomWebViewFragment : Fragment(), View.OnClickListener {
 

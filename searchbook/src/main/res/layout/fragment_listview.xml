@@ -5,9 +5,11 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <com.intelligent.reader.widget.topshadow.TopShadowWebView
-        android:id="@+id/search_result_content"
+    <ListView
+        android:id="@id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@color/transparent"/>
 
 </RelativeLayout>

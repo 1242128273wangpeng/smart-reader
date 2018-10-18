@@ -14,27 +14,26 @@ import android.os.Bundle
  */
 interface OnSearchResult {
 
-    fun onSearchResult(url:String)
+    fun onSearchResult(url: String)
 
-    fun onSearchWordResult(searchWord:String)
+    fun onSearchWordResult(searchWord: String)
 
     fun onCoverResult(bundle: Bundle)
 
-    fun onAnotherResult(bundle: Bundle)
+    fun onAnotherResult(bundle: Bundle)//跳转findBookDetail
+    fun onAnotherResultNew(bundle: Bundle)//跳转TabulationActivity
 
     fun onTurnReadResult(bundle: Bundle)
 
     fun onEnterReadResult(bundle: Bundle)
 
-    fun getCurrentActivity():Activity?{
+    fun onLoadKeyWord(keyWord: String?, searchType: String?) {}
+
+    fun onObtainKeyWord(keyWord: String) {}
+
+    fun getCurrentActivity(): Activity? {
         return null
     }
-    fun onLoadKeyWord(keyWord: String?, searchType: String? ){
 
-    }
-
-    fun onSetKeyWord(keyWord: String){
-
-    }
 
 }
