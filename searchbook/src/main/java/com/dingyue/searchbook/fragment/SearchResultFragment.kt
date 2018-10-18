@@ -167,7 +167,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         return activity
     }
 
-    override fun onSetKeyWord(keyWord: String) {
+    override fun onObtainKeyWord(keyWord: String) {
         onResultListener?.onSuccess(keyWord)
     }
 
