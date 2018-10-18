@@ -126,13 +126,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
             R.id.search_result_input -> {
                 isRunTextWatcher = true
                 showEditCursor(true)
-
-//              showFragment(historyFragment)
-//              historyFragment.loadHistoryRecord()
-
-                showFragment(suggestFragment)
-                suggestFragment.obtainKeyWord(inputEditText.text.toString())
-
+                showInputEditClickEvent()
             }
             R.id.search_result_focus -> {
                 focusTextView.visibility = View.GONE
@@ -272,6 +266,18 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
         historyFragment.loadHistoryRecord()
     }
 
+    /**
+     * 点击热词，进入搜索结果页，搜索框无焦点，点击搜索框获取焦点时，进入历史记录页（其他壳进入自动补全页）
+     * 快读替、今日多看
+     */
+    open fun showInputEditClickEvent() {
+
+//      showFragment(historyFragment)
+//      historyFragment.loadHistoryRecord()
+
+        showFragment(suggestFragment)
+        suggestFragment.obtainKeyWord(inputEditText.text.toString())
+    }
 
     /**
      * 设置关键词，将光标移至文字末尾（热词、历史子条目）
