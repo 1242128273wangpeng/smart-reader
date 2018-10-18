@@ -279,6 +279,7 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", 1);
                 ATManager.exitReading();
+                finish();
                 RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle);
                 break;
             default:
