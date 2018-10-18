@@ -10,7 +10,7 @@ import com.dingyue.searchbook.adapter.HistoryAdapter
 import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.presenter.HistoryPresenter
 import com.dingyue.searchbook.view.IHistoryView
-import kotlinx.android.synthetic.qbmfkkydq.fragment_listview.*
+import kotlinx.android.synthetic.main.fragment_listview.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.widget.ConfirmDialog
 import net.lzbook.kit.utils.StatServiceUtils
