@@ -35,12 +35,12 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
     companion object {
 
         val lock = GLPage::class.java
-        val semaphore = Semaphore(1, true)
+        var semaphore = Semaphore(1, true)
 
         private var mOrientation = Configuration.ORIENTATION_UNDEFINED
 
         private var bitmap: Bitmap? = null
-        var canvas: Canvas? = null
+        private var canvas: Canvas? = null
 
         fun createBitmap(orientation: Int) {
             if (mOrientation != orientation) {
@@ -61,9 +61,8 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
                 AppHelper.workQueueThread.shutdownNow()
 
-                if (semaphore.availablePermits() != 1) {
-                    semaphore.release()
-                }
+                semaphore.release(10)
+
                 canvas = null
                 bitmap = null
                 mOrientation = Configuration.ORIENTATION_UNDEFINED
@@ -78,14 +77,14 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
 
     fun ready(orientation: Int = Configuration.ORIENTATION_PORTRAIT) {
+
+        semaphore = Semaphore(1, true)
+
         createBitmap(orientation)
 
         //修正位置信息
         DataProvider.revisePosition(position)
 
-        if (semaphore.availablePermits() != 1) {
-            semaphore.release()
-        }
 
 //        prepareBitmap(position)
 //

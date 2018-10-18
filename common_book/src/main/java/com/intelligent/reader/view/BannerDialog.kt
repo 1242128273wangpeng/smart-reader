@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.animation.GlideAnimation
@@ -49,6 +48,7 @@ class BannerDialog(val activity: Activity) {
             val bundle = Bundle()
             bundle.putString("url", bannerWebUrl)
             bundle.putString("title", "推荐书单")
+            bundle.putString("from", "banner_dialog")
             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
 
             dialog.dismiss()

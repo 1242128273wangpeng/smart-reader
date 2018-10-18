@@ -82,7 +82,7 @@ class WebResourceCache {
             null
         } else {
             val fileName = loadCacheFileName(url, "MD5")
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "" + fileExtension
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
 
             val file = File(filePath)
 
@@ -123,7 +123,7 @@ class WebResourceCache {
             val fileName = loadCacheFileName(url, "MD5")
             val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
 
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "" + fileExtension
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
 
             val file = File(filePath)
 

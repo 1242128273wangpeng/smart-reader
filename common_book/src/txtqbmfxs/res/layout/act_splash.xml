@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="@dimen/dimen_margin_120"
+            android:layout_marginBottom="@dimen/dimen_margin_125"
             android:adjustViewBounds="true"
             android:orientation="vertical"
             android:scaleType="fitXY"/>

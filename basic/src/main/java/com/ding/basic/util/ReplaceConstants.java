@@ -2,7 +2,6 @@ package com.ding.basic.util;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.ding.basic.Config;
-import com.ding.basic.R;
 
 
 public class ReplaceConstants {
@@ -20,6 +19,7 @@ public class ReplaceConstants {
     public String PUSH_KEY;
     public String ALIFEEDBACK_KEY;
     public String ALIFEEDBACK_SECRET;
+
 
 
     public String BOOK_NOVEL_DEPLOY_HOST;

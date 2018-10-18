@@ -9,21 +9,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.utils.AbsRecyclerViewHolder;
-
 import com.ding.basic.bean.HistoryInfo;
 import com.ding.basic.database.helper.BookDataProviderHelper;
+import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.intelligent.reader.R;
 import com.intelligent.reader.adapter.paging.BaseAdapter;
 import com.intelligent.reader.adapter.paging.HisAdapter;
 import com.intelligent.reader.adapter.paging.LoadMoreAdapterWrapper;
-import com.intelligent.reader.util.EventBookStore;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.book.view.EmptyRecyclerView;
 import net.lzbook.kit.book.view.MyDialog;
 import net.lzbook.kit.user.UserManager;
+import net.lzbook.kit.utils.ATManager;
+import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -275,12 +276,11 @@ public class FootprintActivity extends iyouqu.theme.FrameActivity implements Abs
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HISTORYLOGIN);
                 break;
             case R.id.footprint_empty_find:
-                Intent storeIntent = new Intent();
-                storeIntent.setClass(this, HomeActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSTORE);
-                storeIntent.putExtras(bundle);
-                startActivity(storeIntent);
+                bundle.putInt("position", 1);
+                ATManager.exitReading();
+                finish();
+                RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle);
                 break;
             default:
                 break;
