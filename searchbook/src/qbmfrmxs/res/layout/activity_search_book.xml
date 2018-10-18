@@ -1,13 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:fitsSystemWindows="true"
                 android:focusableInTouchMode="true">
 
     <RelativeLayout
-        android:id="@+id/search_result_head"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height">
 
@@ -135,23 +134,4 @@
                 app:HWEditText_textCursorDrawable="@drawable/draw_search_edit_cursor"/>
         </RelativeLayout>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/search_result_hint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_result_head"
-        android:background="@color/base_bg">
-    </FrameLayout>
-
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_result_head"
-        android:contentDescription="@string/icon"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow"
-        android:visibility="gone"/>
-
 </RelativeLayout>

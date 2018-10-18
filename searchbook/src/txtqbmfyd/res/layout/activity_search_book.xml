@@ -1,13 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/base_bg"
                 android:fitsSystemWindows="true"
                 android:focusableInTouchMode="true">
 
     <RelativeLayout
-        android:id="@+id/search_result_head"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height">
 
@@ -19,6 +18,16 @@
             android:layout_centerVertical="true"
             android:paddingLeft="@dimen/dimen_padding_16"
             android:src="@drawable/icon_back_left"/>
+
+        <ImageView
+            android:id="@+id/search_result_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="@dimen/dimen_padding_7"
+            android:paddingRight="@dimen/dimen_padding_12"
+            android:src="@drawable/search_button"/>
 
         <RelativeLayout
             android:id="@+id/search_result_focus"
@@ -94,34 +103,5 @@
                 android:textColorHint="@color/search_input_text_color_hint"
                 app:HWEditText_textCursorDrawable="@drawable/draw_search_edit_cursor"/>
         </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/search_result_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="5dp"
-            android:paddingLeft="@dimen/dimen_padding_7"
-            android:paddingRight="@dimen/dimen_padding_12"
-            android:src="@drawable/search_button"/>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/search_result_hint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_result_head"
-        android:background="@color/base_bg">
-    </FrameLayout>
-
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_result_head"
-        android:contentDescription="@string/icon"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow"
-        android:visibility="gone"/>
-
 </RelativeLayout>
