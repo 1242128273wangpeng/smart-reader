@@ -3,8 +3,6 @@ package com.dingyue.searchbook.model
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.JavascriptInterface
-import com.ding.basic.bean.Book
-import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
@@ -14,7 +12,6 @@ import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -43,10 +40,6 @@ class SearchResultModel(var listener: OnSearchResult?) {
     private var filterWord = "ALL"
     private var sortType = "0"
     private lateinit var fromClass: String
-
-
-    private var searchSuggestCallBack: SearchSuggestCallBack? = null
-    private var jsNoneResultSearchCall: JsNoneResultSearchCall? = null
 
 
     fun loadSearchResultData(listener: OnResultListener<SearchAutoCompleteBeanYouHua>) {}
@@ -103,10 +96,9 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
     }
 
-    private val shake = AntiShake()
 
     fun initJSModel(): JSInterfaceObject {
-        val jsInterfaceModel =(object :JSInterfaceObject(listener?.getCurrentActivity()){
+        val jsInterfaceModel = (object : JSInterfaceObject(listener?.getCurrentActivity()) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
@@ -123,6 +115,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                     }
                 }
             }
+
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
@@ -147,214 +140,8 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 }
             }
         })
-//        jsInterfaceModel.search = (object : JSInterface.OnSearchClick {
-//            override fun doSearch(keyWord: String?, search_type: String?, filter_type: String?, filter_word: String, sort_type: String) {
-//                word = keyWord ?: ""
-//                searchType = search_type ?: ""
-//                filterType = filter_type ?: ""
-//                filterWord = filter_word
-//                sortType = sort_type
-//
-//                listener?.onSearchResult(startLoadData(0) ?: "")
-//
-//            }
-//
-//        })
-//
-//        jsInterfaceModel.cover = (object : JSInterface.OnEnterCover {
-//            override fun doCover(host: String?, book_id: String?, book_source_id: String?, name: String, author: String, parameter: String, extra_parameter: String) {
-//                val data = HashMap<String, String>()
-//                data.put("BOOKID", book_id ?: "")
-//                data.put("source", "WEBVIEW")
-//                StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.BOOOKDETAIL_PAGE,
-//                        StartLogClickUtil.ENTER, data)
-//
-//                val book = Book()
-//                book.book_id = book_id ?: ""
-//                book.book_source_id = book_source_id ?: ""
-//                book.host = host
-//                book.name = name
-//                book.author = author
-//
-//                val wordInfo = wordInfoMap[word]
-//                if (wordInfo != null) {
-//                    wordInfo.actioned = true
-//                    alilog(buildSearch(book, word, Search.OP.COVER, wordInfo.computeUseTime()))
-//                }
-//                val bundle = Bundle()
-//                bundle.putString("book_id", book_id)
-//                bundle.putString("book_source_id", book_source_id)
-//                listener?.onCoverResult(bundle)
-//            }
-//        })
-//
-//
-//        jsInterfaceModel.anotherWeb = (object : JSInterface.OnAnotherWebClick {
-//            override fun doAnotherWeb(url: String?, name: String?) {
-//                if (shake.check()) {
-//                    return
-//                }
-//                try {
-//                    if (url?.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName())) == true) {
-//                        //FindBookDetail 返回键时标识
-//                        SPUtils.editDefaultShared {
-//                            putString(Constants.FINDBOOK_SEARCH, "author")
-//                        }
-//                    }
-//
-//                    val bundle = Bundle()
-//                    bundle.putString("url", url)
-//                    bundle.putString("title", name)
-//                    listener?.onAnotherResult(bundle)
-//
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
-//
-//        })
-//
-//
-//        jsInterfaceModel.searchWordClick = (object : JSInterface.OnSearchWordClick {
-//            override fun sendSearchWord(searchWord: String, search_type: String) {
-//                if (shake.check()) {
-//                    return
-//                }
-//                word = searchWord
-//                searchType = search_type
-//
-//                //不正常后删除回掉
-//                listener?.onSearchWordResult(searchWord)
-//                listener?.onSearchResult(startLoadData(0) ?: "")
-//
-//
-//            }
-//
-//        })
-//
-//
-//        jsInterfaceModel.toRead = (object : JSInterface.onTurnRead {
-//            override fun turnRead(book_id: String, book_source_id: String, host: String, name: String, author: String, parameter: String, extra_parameter: String, update_type: String, last_chapter_name: String, serial_number: Int, img_url: String, update_time: Long, desc: String, label: String, status: String, bookType: String) {
-//                val book = Book()
-//                book.book_id = book_id
-//                book.book_source_id = book_source_id
-//                book.host = host
-//                book.author = author
-//                book.name = name
-//                val chapter = Chapter()
-//                chapter.name = last_chapter_name
-//                book.last_chapter = chapter
-//                book.chapter_count = serial_number
-//                book.img_url = img_url
-//                book.last_update_success_time = update_time
-//                book.sequence = -1
-//                book.desc = desc
-//                book.label = label
-//                book.status = status
-//
-//                //                book.mBookType = Integer.parseInt(bookType);
-//                //bookType为是否付费书籍标签 除快读外不加
-//
-//                FootprintUtils.saveHistoryShelf(book)
-//
-//                val bundle = Bundle()
-//
-//                bundle.putInt("sequence", 0)
-//                bundle.putInt("offset", 0)
-//                bundle.putSerializable("book", book)
-//                listener?.onTurnReadResult(bundle)
-//            }
-//        })
-//
-//
-//        jsInterfaceModel.read = (object : JSInterface.OnEnterRead {
-//            override fun doRead(host: String, book_id: String?, book_source_id: String, name: String?, author: String?, status: String, category: String, imgUrl: String, last_chapter: String, chapter_count: String, updateTime: Long, parameter: String, extra_parameter: String, dex: Int) {
-//                val coverBook = genCoverBook(host, book_id ?: "", book_source_id, name ?: "", author ?: "", status,
-//                        category, imgUrl, last_chapter, chapter_count,
-//                        updateTime, parameter, extra_parameter, dex)
-//
-//                val bundle = Bundle()
-//                bundle.putInt("sequence", coverBook.sequence)
-//                bundle.putInt("offset", coverBook.offset)
-//                bundle.putSerializable("book", coverBook)
-//                listener?.onEnterReadResult(bundle)
-//            }
-//
-//        })
-//
-//
-//        val booksOnLine = RequestRepositoryFactory.loadRequestRepositoryFactory(
-//                BaseBookApplication.getGlobalContext()).loadBooks()
-//        val stringBuilder = StringBuilder()
-//        stringBuilder.append("[")
-//        if (booksOnLine != null) {
-//            for (i in booksOnLine.indices) {
-//                stringBuilder.append("{'id':'").append(booksOnLine[i].book_id).append(
-//                        "'}")
-//                if (i != booksOnLine.size - 1) {
-//                    stringBuilder.append(",")
-//                }
-//            }
-//            stringBuilder.append("]")
-////            AppLog.e(TAG, "StringBuilder : " + stringBuilder.toString())
-//            jsInterfaceModel.strings = (stringBuilder.toString())
-//        }
-//
-//
-//        jsInterfaceModel.insertBook = (object : JSInterface.OnInsertBook {
-//            override fun doInsertBook(host: String, book_id: String?, book_source_id: String?, name: String?, author: String?, status: String, category: String, imgUrl: String, last_chapter: String, chapter_count: String, updateTime: Long, parameter: String, extra_parameter: String, dex: Int) {
-//                val book = genCoverBook(host, book_id ?: "", book_source_id ?: "", name ?: "", author ?: "", status,
-//                        category, imgUrl, last_chapter, chapter_count,
-//                        updateTime, parameter, extra_parameter, dex)
-//                val wordInfo = wordInfoMap[word]
-//                if (wordInfo != null) {
-//                    wordInfo.actioned = true
-//                    alilog(buildSearch(book, word, Search.OP.BOOKSHELF, wordInfo.computeUseTime()))
-//                }
-//                val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(
-//                        BaseBookApplication.getGlobalContext()).insertBook(book)
-//                if (succeed > 0) {
-//                    ToastUtil.showToastMessage(R.string.bookshelf_insert_success)
-//                }
-//
-//            }
-//
-//        })
-//
-//
-//        jsInterfaceModel.deleteBook = (object : JSInterface.OnDeleteBook {
-//            override fun doDeleteBook(book_id: String?) {
-//                RequestRepositoryFactory.loadRequestRepositoryFactory(
-//                        BaseBookApplication.getGlobalContext()).deleteBook(book_id ?: "")
-//                CacheManager.stop(book_id ?: "")
-//                CacheManager.resetTask(book_id ?: "")
-//                ToastUtil.showToastMessage(R.string.bookshelf_delete_success)
-//            }
-//        })
 
         return jsInterfaceModel
-    }
-
-    private fun genCoverBook(host: String, book_id: String, book_source_id: String, name: String,
-                             author: String, status: String, category: String,
-                             imgUrl: String, last_chapter: String, chapter_count: String, update_time: Long,
-                             parameter: String, extra_parameter: String, dex: Int): Book {
-        val book = Book()
-        book.status = status
-        book.book_id = book_id
-        book.book_source_id = book_source_id
-        book.name = name
-        book.label = category
-        book.author = author
-        book.img_url = imgUrl
-        book.host = host
-        val chapter = Chapter()
-        chapter.name = last_chapter
-        chapter.update_time = update_time
-        book.last_chapter = chapter
-        book.chapter_count = Integer.valueOf(chapter_count)
-        book.last_update_success_time = System.currentTimeMillis()
-        return book
     }
 
 
@@ -442,11 +229,11 @@ class SearchResultModel(var listener: OnSearchResult?) {
             } else {
                 val params = HashMap<String, String>()
                 params.put("keyword", searchWord)
-                params.put("searchType", searchType ?: "")
-                params.put("filter_type", filterType ?: "")
-                params.put("filter_word", filterWord ?: "")
-                params.put("sort_type", sortType ?: "")
-                params.put("wordType", searchType ?: "")
+                params.put("searchType", searchType)
+                params.put("filter_type", filterType)
+                params.put("filter_word", filterWord)
+                params.put("sort_type", sortType)
+                params.put("wordType", searchType)
                 params.put("searchEmpty", "1")
                 val uri = RequestService.SEARCH_VUE.replace("{packageName}", AppUtils.getPackageName())
                 mUrl = UrlUtils.buildWebUrl(uri, params)

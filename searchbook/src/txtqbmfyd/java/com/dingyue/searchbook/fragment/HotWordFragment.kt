@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.HotWordBean
-import com.ding.basic.bean.SearchRecommendBook
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.adapter.HotWordAdapter
 import com.dingyue.searchbook.interfaces.OnResultListener
@@ -16,8 +15,7 @@ import kotlinx.android.synthetic.txtqbmfyd.fragment_hotword.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
-import java.util.HashMap
-import kotlin.collections.ArrayList
+import java.util.*
 
 
 /**
@@ -33,8 +31,6 @@ class HotWordFragment : Fragment(), IHotWordView {
     private var loadingPage: LoadingPage? = null
 
     private var hotWordAdapter: HotWordAdapter? = null
-
-    private var recommendFreeList: ArrayList<SearchRecommendBook.DataBean> = ArrayList()
 
     private val hotWordPresenter: HotWordPresenter by lazy {
         HotWordPresenter(this)
