@@ -15,7 +15,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.contract.web.JSInterfaceObject
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
@@ -33,6 +32,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.uiThread
+import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
 
