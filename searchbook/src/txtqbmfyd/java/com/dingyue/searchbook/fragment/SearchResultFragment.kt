@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.searchbook.R
@@ -19,10 +18,8 @@ import com.dingyue.searchbook.view.ISearchResultView
 import kotlinx.android.synthetic.txtqbmfyd.activity_search_book.*
 import kotlinx.android.synthetic.txtqbmfyd.fragment_search_result.*
 import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.runOnMain
 
 
 /**
@@ -33,11 +30,11 @@ import net.lzbook.kit.utils.runOnMain
  */
 class SearchResultFragment : Fragment(), ISearchResultView {
 
+    var onResultListener: OnResultListener<String>? = null
+
     private var loadingPage: LoadingPage? = null
 
     private var customWebClient: CustomWebClient? = null
-
-    var onResultListener: OnResultListener<String>? = null
 
     private val searchResultPresenter: SearchResultPresenter  by lazy {
         SearchResultPresenter(this)
@@ -63,8 +60,12 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         loadingPage = null
     }
 
-     fun loadKeyWord(keyWord: String, searchType: String = "0") {
-         searchResultPresenter.loadKeyWord(keyWord, searchType)
+    /**
+     * 加载关键字
+     * searchType：0 全部 1 标签 2 作者 3 书名
+     */
+    fun loadKeyWord(keyWord: String, searchType: String = "0", isAuthor: Int = 0) {
+        searchResultPresenter.loadKeyWord(keyWord, searchType, isAuthor)
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
@@ -139,7 +140,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
 
     override fun onAnotherResult(bundle: Bundle) {
-        RouterUtil.navigation(requireActivity(), RouterConfig.FIND_BOOK_DETAIL_ACTIVITY, bundle)
+        RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
     }
 
 
@@ -165,6 +166,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     override fun onSetKeyWord(keyWord: String) {
         onResultListener?.onSuccess(keyWord)
     }
+
     override fun onDestroy() {
         super.onDestroy()
         searchResultPresenter.onDestroy()
