@@ -75,7 +75,10 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
                     handler?.proceed()
                 }
             }
-            web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageName()}/protocol/protocol.html")
+            val pkName = AppUtils.getPackageName()
+            web_disclaimer.loadUrl("${Config.cdnHost}/${if (pkName != "cn.mfxsqbyd.reader") pkName.replace("\\.".toRegex(), "-") else pkName}/protocol/protocol.html")
+            val fontSize = resources.getDimension(R.dimen.text_size_12)
+            web_disclaimer.settings.defaultFontSize = fontSize.toInt()
 
             //可以打开调试模式
             rl_disclaimer.setOnClickListener {
