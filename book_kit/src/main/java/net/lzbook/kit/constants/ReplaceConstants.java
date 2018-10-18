@@ -4,6 +4,9 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.ding.basic.Config;
 import com.ding.basic.util.IBuildConfigProvider;
 
+import net.lzbook.kit.R;
+import net.lzbook.kit.utils.ResourceUtil;
+
 public class ReplaceConstants {
 
     public static ReplaceConstants replaceConstants = null;
@@ -22,7 +25,7 @@ public class ReplaceConstants {
     public String ALIFEEDBACK_KEY;
     public String ALIFEEDBACK_SECRET;
 
-    public final static String BUILD_CONFIG_PROVIDER = "/common_book/BuildConfigProvider";
+    public final static String BUILD_CONFIG_PROVIDER="/common_book/SwitchADActivity";
 
     private ReplaceConstants() {
 //        APP_PATH = Constants.SDCARD_PATH + ResourceUtil.getStringById(R.string.app_path);

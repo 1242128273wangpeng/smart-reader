@@ -17,6 +17,7 @@ import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.StatServiceUtils
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.Gravity
@@ -45,8 +46,6 @@ import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfxs.act_catalog.*
 import net.lzbook.kit.utils.antiShakeClick
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Function：小说目录页
@@ -217,7 +216,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(eventBookmark: EventBookmark) {
         if (eventBookmark.type == EventBookmark.type_delete) {
             AppLog.e(TAG, "eventBookmark:" + eventBookmark.bookmark.id + " name:" + eventBookmark.bookmark.chapter_name)
@@ -562,6 +560,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun changeDownloadButtonStatus() {
-
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
 }

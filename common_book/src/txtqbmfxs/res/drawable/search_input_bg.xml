@@ -3,7 +3,7 @@
        android:shape="rectangle">
     
     <!-- 填充的颜色 -->
-    <solid android:color="#a4c277"/>
+    <solid android:color="@color/primary"/>
     <!-- 设置按钮的四个角为弧形 -->
     <!--  弧形的半径 -->
     <corners
@@ -24,6 +24,6 @@
             android:dashGap="0dp"
             android:dashWidth="0dp"
             android:width="1dp"
-            android:color="#a4c277"/>
+            android:color="@color/primary"/>
 
 </shape>

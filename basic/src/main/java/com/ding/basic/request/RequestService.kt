@@ -238,41 +238,6 @@ interface RequestService {
          * 二维码 拉新
          */
         const val QR_CODE = "/h5/{packageName}/share"
-
-
-
-        /***
-         * 精选页
-         * **/
-        const val WEB_RECOMMEND = "/h5/{packageName}/recommend"
-        /***
-         * 精选男频
-         * **/
-        const val WEB_RECOMMEND_MAN = "/h5/{packageName}/recommendBoy"
-        /***
-         * 精选女频
-         * **/
-        const val WEB_RECOMMEND_WOMAN = "/h5/{packageName}/recommendGirl"
-        /***
-         * 精选完结
-         * **/
-        const val WEB_RECOMMEND_FINISH = "/h5/{packageName}/recommendFinish"
-        /***
-         * 榜单
-         * **/
-        const val WEB_RANKING = "/h5/{packageName}/rank"
-        /***
-         * 分类
-         * **/
-        const val WEB_CATEGORY = "/h5/{packageName}/category"
-        /***
-         * 搜索
-         * **/
-        const val WEB_SEARCH = "/h5/{packageName}/search"
-        /***
-         * 作者主页
-         * **/
-        const val WEB_AUTHOR = "/h5/{packageName}/author"
     }
 
     @GET(DEFAULT_BOOK)

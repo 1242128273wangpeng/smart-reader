@@ -8,7 +8,10 @@ import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
-import android.view.*
+import android.view.KeyEvent
+import android.view.SurfaceHolder
+import android.view.View
+import android.view.WindowManager
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
@@ -34,8 +37,6 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.util.getVivoRoundedSize
-import com.dy.reader.util.vivoNotch
 import com.dycm_adsdk.view.NativeView
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
@@ -79,8 +80,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         glSurfaceView.holder.addCallback(this)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
-        window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         mReadPresenter = ReadPresenter(this)
         mReadPresenter.onCreateInit(savedInstanceState)
 
@@ -93,6 +92,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         mReadSettingFragment.setCurrentThemeMode(mReadPresenter.currentThemeMode)
 
+        window.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)
+        window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
 
         txt_reader_translate_code.setOnClickListener {
             showDisclaimerActivity()
@@ -116,10 +117,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         mCatalogMarkFragment?.fixBook()
 
-        if (vivoNotch(this)) {
-            setVivoMargin()
-        }
-
         initGuide()
     }
 
@@ -134,17 +131,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 rl_reader_guide!!.visibility = View.GONE
             }
         }
-    }
-
-    private fun setVivoMargin() {
-//        val params = rl_reader_bottom.layoutParams as ViewGroup.MarginLayoutParams
-//        if (ReaderSettings.instance.isLandscape) {
-//            params.rightMargin = getVivoRoundedSize(this)
-//            params.bottomMargin = 0
-//        } else {
-//            params.bottomMargin = getVivoRoundedSize(this)
-//            params.rightMargin = 0
-//        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -178,12 +164,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        if (vivoNotch(this)) {
-            setVivoMargin()
-        }
-
         //横向阅读 最后一章到完结页 点击返回 dialog不显示
-        if (!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)) {
+        if(!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)){
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         }
 
@@ -273,7 +255,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (mNativeMediaView != null) {
             mNativeMediaView?.onResume()
         }
-        mCatalogMarkFragment?.fixBook()
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -565,7 +546,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                         }
                     } else if (adView.view is NativeMediaView) {
                         mNativeMediaView = adView.view as NativeMediaView
-                        mNativeMediaView?.setOnHideNativeMediaCallback { _ ->
+                        mNativeMediaView?.setOnHideNativeMediaCallback { _->
                             mNativeMediaView?.onPause()
                             EventBus.getDefault()
                                     .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
@@ -596,7 +577,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == adType) showAd()//本页的广告请求回来，重走方法
                 }

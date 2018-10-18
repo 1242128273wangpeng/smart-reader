@@ -10,13 +10,13 @@
         android:id="@+id/bookstore_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_view_height_50"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/dimen_margin_2"
         android:layout_marginTop="@dimen/dimen_margin_2"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/ll_book_store_recommend"
+            android:id="@+id/bookstore_recommend"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -39,7 +39,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_book_store_ranking"
+            android:id="@+id/bookstore_ranking"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -62,7 +62,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_book_store_category"
+            android:id="@+id/bookstore_category"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -81,19 +81,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category"
                 android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                android:textSize="@dimen/dimen_text_10"/>
-        </LinearLayout>
+                android:textSize="@dimen/dimen_text_10"/>        </LinearLayout>
     </LinearLayout>
 
     <View
         android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_height_0.5"
-        android:layout_above="@id/bookstore_bottom"
-        android:background="@color/dialog_line"/>
+        android:background="@color/dialog_line"
+        android:layout_above="@id/bookstore_bottom"/>
 
     <net.lzbook.kit.book.view.NonSwipeViewPager
-        android:id="@+id/vp_book_store_content"
+        android:id="@+id/bookstore_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/line1"
