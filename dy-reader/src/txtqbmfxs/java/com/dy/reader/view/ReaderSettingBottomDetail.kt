@@ -98,6 +98,16 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         resetBtn(Constants.isSlideUp)
 
+        rl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
+
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
