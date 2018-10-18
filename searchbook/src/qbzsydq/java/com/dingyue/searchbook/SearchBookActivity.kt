@@ -1,98 +1,46 @@
 package com.dingyue.searchbook
 
-import android.content.Context
-import android.os.Bundle
-import android.os.Handler
-import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.dingyue.searchbook.fragment.*
-import com.dingyue.searchbook.interfaces.OnKeyWordListener
+import com.dingyue.searchbook.activity.BaseSearchActivity
+import com.dingyue.searchbook.fragment.HotAndHisFragment
 import com.dingyue.searchbook.interfaces.OnResultListener
 import kotlinx.android.synthetic.qbzsydq.activity_search_book.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.ui.activity.base.FrameActivity
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.utils.toast.ToastUtil
 
 
 /**
- * Desc
+ * Desc 热词和历史记录在一个fragment
  * Author JoannChen
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019 18:14
  */
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
-class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, OnKeyWordListener {
+class SearchBookActivity : BaseSearchActivity() {
 
-    private var lastFragment: Fragment? = null
+    override fun headLayout(): Int = R.layout.activity_search_book
 
     private val hotAndHisFragment: HotAndHisFragment by lazy {
         HotAndHisFragment()
     }
 
-    private val suggestFragment: SuggestFragment by lazy {
-        SuggestFragment()
-    }
-
-    private val searchResultFragment: SearchResultFragment by lazy {
-        SearchResultFragment()
-    }
-
-    override fun onCreate(paramBundle: Bundle?) {
-        super.onCreate(paramBundle)
-        setContentView(R.layout.activity_search_book)
-        initView()
-        initListener()
-        interceptKeyBoard()
-    }
-
     override fun onClick(v: View) {
-        when (v.id) {
-            img_back.id -> finish()
-            search_result_clear.id -> {
+        if (v.id == R.id.search_result_focus) {
+            search_result_focus.visibility = View.GONE
+            search_result_default.visibility = View.VISIBLE
 
-                search_result_input.text = null
-                search_result_clear.visibility = View.GONE
+            search_result_input.requestFocus()
+            showSoftKeyboard(search_result_input)
 
-                showSoftKeyboard(search_result_input)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR)
-            }
-            search_result_focus.id
-            -> {
-                search_result_focus.visibility = View.GONE
-                search_result_default.visibility = View.VISIBLE
-
-                search_result_input.requestFocus()
-                showSoftKeyboard(search_result_input)
-
-            }
-            search_result_btn.id -> {
-                val keyword = search_result_input.text.toString()
-                if (TextUtils.isEmpty(keyword.trim())) {
-                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
-                } else {
-                    showFragment(searchResultFragment)
-                    searchResultFragment.loadKeyWord(keyword)
-                }
-            }
+            showFragment(hotAndHisFragment)
+            hotAndHisFragment.loadHistoryRecord()
+        } else {
+            super.onClick(v)
         }
+
     }
 
-    override fun onKeyWord(keyword: String?) {
-        inputKeyWord(keyword ?: "")
-        search_result_btn.performClick()
-    }
-
-    private fun initView() {
-
+    override fun initFragment() {
         lastFragment = hotAndHisFragment
 
         supportFragmentManager.beginTransaction().add(R.id.search_result_hint, hotAndHisFragment).commit()
@@ -103,128 +51,24 @@ class SearchBookActivity : FrameActivity(), View.OnClickListener, TextWatcher, O
 
     }
 
-    private fun initListener() {
-
-        img_back.setOnClickListener(this)
-        search_result_clear.setOnClickListener(this)
-        search_result_focus.setOnClickListener(this)
-        search_result_input.setOnClickListener(this)
-        search_result_input.addTextChangedListener(this)
-        search_result_btn.setOnClickListener(this)
-
+    override fun initHistoryFragmentListener() {
         hotAndHisFragment.onKeyWordListener = this
+    }
 
-        suggestFragment.onSuggestClickListener = object : SuggestFragment.OnSuggestClickListener {
-            override fun onSuggestClick(history: String, searchType: String) {
-                inputKeyWord(history)
-                showFragment(searchResultFragment)
-                searchResultFragment.loadKeyWord(history, searchType)
-            }
-
-        }
-
+    override fun initHotWordFragmentListener() {
         hotAndHisFragment.onResultListener = object : OnResultListener<String> {
             override fun onSuccess(result: String) {
                 inputKeyWord(result)
+                showEditCursor(false)
                 showFragment(searchResultFragment)
                 searchResultFragment.loadKeyWord(result)
             }
         }
-
     }
 
-
-    /**
-     * 设置关键词，将光标移至文字末尾（热词、历史子条目）
-     */
-    private fun inputKeyWord(keyword: String) {
-        search_result_focus.visibility = View.GONE
-        search_result_default.visibility = View.VISIBLE
-        search_result_input.requestFocus()
-        search_result_input.setText(keyword)
-        search_result_input.setSelection(keyword.length)
-    }
-
-    override fun afterTextChanged(editable: Editable?) {
-
-        if (editable.toString().isNotEmpty() && search_result_input.isFocused) {
-            search_result_clear.visibility = View.VISIBLE
-        } else {
-            search_result_clear.visibility = View.GONE
-            editable?.clear()
-        }
-
-        val searchWord = AppUtils.deleteAllIllegalChar(editable.toString())
-
-        //保存用户搜索词
-        Tools.setUserSearchWord(searchWord)
-
-        //当搜索词为空是显示搜索历史界面
-        if (searchWord.isNullOrEmpty()) {
-            showFragment(hotAndHisFragment)
-            hotAndHisFragment.loadHistoryRecord()
-        } else {
-            showFragment(suggestFragment)
-            suggestFragment.obtainKeyWord(search_result_input.text.toString())
-        }
-
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    }
-
-    /**
-     * 展示所选的Fragment，展示前先隐藏之前的fragment
-     */
-    private fun showFragment(fragment: Fragment) {
-        if (lastFragment != null && lastFragment != fragment) {
-            supportFragmentManager.beginTransaction().hide(lastFragment).commit()
-        }
-        lastFragment = fragment
-        supportFragmentManager.beginTransaction().show(fragment).commit()
-    }
-
-    /**
-     * 处理软键盘事件
-     */
-    private fun showSoftKeyboard(view: View?) {
-        val handler = Handler()
-        handler.postDelayed({
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            // 弹出软键盘
-            if (view != null) {
-                imm.showSoftInput(view, 0)
-            }
-        }, 500)
-
-    }
-
-
-    /**
-     * 拦截键盘的回车事件
-     */
-    private fun interceptKeyBoard() {
-
-        search_result_input.setOnKeyListener { _, keyCode, _ ->
-
-            when (keyCode) {
-                KeyEvent.KEYCODE_ENTER -> {
-                    val keyword = search_result_input.text.toString()
-                    if (TextUtils.isEmpty(keyword.trim())) {
-                        ToastUtil.showToastMessage(R.string.search_click_check_isright)
-                    } else {
-                        showFragment(searchResultFragment)
-                        searchResultFragment.loadKeyWord(keyword)
-                        hideKeyboard()
-                    }
-                    true
-                }
-                else -> false
-            }
-        }
+    override fun showInputEditForNullFragment() {
+        showFragment(hotAndHisFragment)
+        hotAndHisFragment.loadHistoryRecord()
     }
 
 }

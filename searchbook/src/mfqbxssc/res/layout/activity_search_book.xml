@@ -1,13 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/base_bg"
                 android:fitsSystemWindows="true"
                 android:focusableInTouchMode="true">
 
     <RelativeLayout
-        android:id="@+id/search_result_head"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height">
 
@@ -48,8 +47,8 @@
             android:layout_toStartOf="@id/search_result_btn"
             android:background="@drawable/draw_search_input_bg"
             android:gravity="center_vertical"
-            android:text="@string/search_novel"
             android:singleLine="true"
+            android:text="@string/search_novel"
             android:textColor="@color/search_input_text_color_hint1"
             android:textSize="@dimen/dimen_text_14"/>
 
@@ -103,23 +102,4 @@
                 app:HWEditText_textCursorDrawable="@drawable/draw_search_edit_cursor"/>
         </RelativeLayout>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/search_result_hint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_result_head"
-        android:background="@color/base_bg">
-    </FrameLayout>
-
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_result_head"
-        android:contentDescription="@string/icon"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow"
-        android:visibility="gone"/>
-
 </RelativeLayout>

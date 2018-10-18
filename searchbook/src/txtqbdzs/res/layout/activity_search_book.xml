@@ -1,124 +1,98 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/base_bg">
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:fitsSystemWindows="true"
+                android:focusableInTouchMode="true">
 
     <RelativeLayout
-        android:id="@+id/search_result_head"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:fitsSystemWindows="true"
-        android:focusableInTouchMode="true">
+        android:layout_height="@dimen/top_bar_height">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dimen_padding_12"
+            android:paddingRight="@dimen/dimen_padding_12"
+            android:src="@drawable/icon_back_left"/>
+
+        <ImageView
+            android:id="@+id/search_result_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="@dimen/dimen_padding_7"
+            android:paddingRight="@dimen/dimen_padding_12"
+            android:src="@drawable/search_submit_btn"/>
+
+
+        <TextView
+            android:id="@+id/search_result_focus"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_margin_32"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/img_back"
+            android:layout_toLeftOf="@id/search_result_btn"
+            android:layout_toRightOf="@+id/img_back"
+            android:layout_toStartOf="@id/search_result_btn"
+            android:background="@drawable/draw_search_input_bg"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/search_book"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_text_14"/>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height">
+            android:id="@+id/search_result_default"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_margin_32"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/img_back"
+            android:layout_toLeftOf="@id/search_result_btn"
+            android:layout_toRightOf="@id/img_back"
+            android:layout_toStartOf="@id/search_result_btn"
+            android:background="@drawable/draw_search_input_bg"
+            android:visibility="gone">
 
             <ImageView
-                android:id="@+id/img_back"
+                android:id="@+id/search_result_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@drawable/icon_back_left"/>
-
-            <ImageView
-                android:id="@+id/search_result_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginLeft="5dp"
-                android:paddingLeft="@dimen/dimen_padding_7"
-                android:paddingRight="@dimen/dimen_padding_12"
-                android:src="@drawable/search_submit_btn"/>
-
-
-            <TextView
-                android:id="@+id/search_result_focus"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_margin_32"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/img_back"
-                android:layout_toLeftOf="@id/search_result_btn"
-                android:layout_toRightOf="@+id/img_back"
-                android:layout_toStartOf="@id/search_result_btn"
-                android:background="@drawable/draw_search_input_bg"
+                android:contentDescription="@string/app_name"
+                android:paddingLeft="@dimen/dimen_padding_10"
+                android:paddingRight="@dimen/dimen_padding_10"
+                android:src="@drawable/draw_search_edit_clear"
+                android:visibility="gone"/>
+
+            <net.lzbook.kit.ui.widget.HWEditText
+                android:id="@+id/search_result_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimen_margin_12"
+                android:layout_marginStart="@dimen/dimen_margin_12"
+                android:layout_toLeftOf="@id/search_result_clear"
+                android:layout_toStartOf="@id/search_result_clear"
+                android:background="@color/transparent"
+                android:cursorVisible="true"
                 android:gravity="center_vertical"
-                android:text="@string/search_book"
+                android:hint="@string/search_book"
+                android:inputType="text"
                 android:singleLine="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/dimen_text_14"/>
-
-            <RelativeLayout
-                android:id="@+id/search_result_default"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_margin_32"
-                android:layout_centerInParent="true"
-                android:layout_toEndOf="@id/img_back"
-                android:layout_toLeftOf="@id/search_result_btn"
-                android:layout_toRightOf="@id/img_back"
-                android:layout_toStartOf="@id/search_result_btn"
-                android:background="@drawable/draw_search_input_bg"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/search_result_clear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/app_name"
-                    android:paddingLeft="@dimen/dimen_padding_10"
-                    android:paddingRight="@dimen/dimen_padding_10"
-                    android:src="@drawable/draw_search_edit_clear"
-                    android:visibility="gone"/>
-
-                <net.lzbook.kit.ui.widget.HWEditText
-                    android:id="@+id/search_result_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dimen_margin_12"
-                    android:layout_marginStart="@dimen/dimen_margin_12"
-                    android:layout_toLeftOf="@id/search_result_clear"
-                    android:layout_toStartOf="@id/search_result_clear"
-                    android:background="@color/transparent"
-                    android:cursorVisible="true"
-                    android:gravity="center_vertical"
-                    android:hint="@string/search_book"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="14sp"
-                    app:HWEditText_textCursorDrawable="@drawable/draw_search_edit_cursor"/>
-            </RelativeLayout>
+                android:textColorHint="@color/white"
+                android:textSize="14sp"
+                app:HWEditText_textCursorDrawable="@drawable/draw_search_edit_cursor"/>
         </RelativeLayout>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/search_result_hint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_result_head"
-        android:background="@color/base_bg">
-    </FrameLayout>
-
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_result_head"
-        android:contentDescription="@string/icon"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow"
-        android:visibility="gone"/>
-
 </RelativeLayout>
