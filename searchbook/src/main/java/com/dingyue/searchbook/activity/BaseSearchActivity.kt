@@ -187,6 +187,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
             override fun onSuccess(result: String) {
                 isRunTextWatcher = false
                 inputKeyWord(result)
+                showEditCursor(false)
             }
         }
     }
