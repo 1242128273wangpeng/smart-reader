@@ -419,9 +419,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
     }
 
     private void doOnCreate() {
-
-        if (isIniting) {
-            return;
+        try {
+            setContentView(R.layout.act_splash);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         ad_view = findViewById(R.id.ad_view);
