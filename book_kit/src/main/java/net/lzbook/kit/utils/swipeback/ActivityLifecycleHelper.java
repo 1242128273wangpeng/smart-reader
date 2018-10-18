@@ -143,6 +143,18 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
         }
         return activities;
     }
+    public static Boolean contains(String name) {
+        if (activities == null) {
+            activities = new LinkedList<>();
+            return false;
+        }
+        for (Activity activity : activities) {
+            if (getName(activity).equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static Boolean isInHome() {
         Activity activity = getLatestActivity();

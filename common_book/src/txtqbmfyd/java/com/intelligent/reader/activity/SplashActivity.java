@@ -54,6 +54,7 @@ import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.user.UserManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -167,6 +168,9 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void gotoActivity() {
+        if (ActivityLifecycleHelper.contains("HomeActivity")) {
+            return;
+        }
         Intent intent = new Intent();
         intent.setClass(SplashActivity.this, HomeActivity.class);
         try {
@@ -490,6 +494,7 @@ public class SplashActivity extends FrameActivity {
                         AppLog.e(TAG, "time");
                         break;
                     case MediaCode.MEDIA_FAILED: //广告请求失败
+                        AppLog.e("initSplashAd MEDIA_FAILED");
                         handler.sendEmptyMessage(0);
                         break;
                     case MediaCode.MEDIA_DISMISS: //开屏页面关闭
@@ -642,12 +647,12 @@ public class SplashActivity extends FrameActivity {
             }
             switch (msg.what) {
                 case 0:
-                    AppLog.e(TAG, "handler执行");
+                    AppLog.e("handler执行");
                     splashActivity.initGuide();
                     break;
                 case 1:
                     if (isGo) {
-                        AppLog.e(TAG, "handler执行111");
+                        AppLog.e("handler执行111");
                         splashActivity.initGuide();
                     }
                     break;

@@ -6,28 +6,27 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import android.text.TextUtils
 import android.view.ViewGroup
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.presenter.base.IPresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.download.CacheManager
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 
 /**
  * Created by qiantao on 2017/11/14 0014
@@ -36,8 +35,6 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
     var iBookList: ArrayList<Book> = ArrayList()
 
-
-    private val adBookMap = LinkedHashMap<Int, Book>()
 
     var updateService: CheckNovelUpdateService? = null
 
@@ -132,18 +129,6 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 Collections.sort(books, CommonContract.MultiComparator(Constants.book_list_sort_type))
                 iBookList.addAll(books)
 
-                //将之前请求到广告的item，添加到列表中，防止刷新列表是，广告抖动问题
-                if (adBookMap.isNotEmpty()) {
-                    val iterator = adBookMap.entries.iterator()
-
-                    while (iterator.hasNext()) {
-                        val entry = iterator.next()
-                        if (entry.key < iBookList.size && entry.value.item_view != null) {
-                            iBookList.add(entry.key, entry.value)
-                        }
-                    }
-                }
-
                 uiThread {
                     view?.onBookListQuery(books)
                 }
@@ -171,93 +156,32 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
      * **/
     private fun requestShelfADs(activity: Activity, count: Int, isList: Boolean) {
 
-        val interval = MediaControl.loadBookShelfMediaInterval() + 1
-
-        var adBook: Book
+        val interval = MediaControl.loadBookShelfMediaInterval()
 
         //创建相应广告位置的Bean
         if (isList) {
-            adBook = Book()
+            val adBook = Book()
             adBook.item_type = 1
-            adBook.item_view = null
-            adBookMap[0] = adBook
+            adBook.item_view = BookShelfADView(activity)
+            iBookList.add(0, adBook)
+
         }
 
         for (i in 1 until count + 1) {
-            val key = i * interval
-            if (key < iBookList.size) {
-                adBook = Book()
+            val index = i * (interval + 1) - 1
+            if (index < iBookList.size) {
+                val adBook = Book()
                 adBook.item_type = 1
-                adBook.item_view = null
-                adBookMap[key] = adBook
+                adBook.item_view = BookShelfADView(activity)
+                iBookList.add(index, adBook)
             }
+
         }
-
-        val views = mutableListOf<ViewGroup>()
-
-        for (i in 0 until count){
-            views.add(BookShelfADView(activity))
-        }
-
-        handleADResult(views)
         view?.onAdRefresh()
 
-//        doAsync {
-//            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
-//                override fun requestMediaSuccess(views: List<ViewGroup>) {
-//                    runOnMain {
-//                        handleADResult(views)
-//                        view?.onAdRefresh()
-//                    }
-//                }
-//
-//                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
-//                    runOnMain {
-//                        handleADResult(views)
-//                        view?.onAdRefresh()
-//                    }
-//
-//                }
-//            })
-//        }
-
     }
 
 
-    /***
-     * 处理书架列表中广告请求结果。返回结果先保存到adBookMap中，再添加或更新到列表中
-     * **/
-    private fun handleADResult(views: List<ViewGroup>) {
-        val adViews = ArrayList<ViewGroup>()
-        val iBooks = ArrayList<Book>()
-        adViews.addAll(views)
-        iBooks.addAll(iBookList)
-
-        var index = 0
-
-        val iterator = adBookMap.entries.iterator()
-
-        val size = iBooks.size
-
-        while (iterator.hasNext()) {
-            val entry = iterator.next()
-            if (entry.key < size && entry.value.item_view == null) {
-                if (index < adViews.size) {
-                    entry.value.item_view = adViews[index]
-
-                    if (iBooks[entry.key].item_type == 1) {
-                        iBooks[entry.key].item_view = entry.value.item_view
-                    } else {
-                        iBooks.add(entry.key, entry.value)
-                    }
-
-                    index += 1
-                } else {
-                    break
-                }
-            }
-        }
-    }
 
     /***
      * 获取九宫格顶部广告
@@ -378,21 +302,8 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
             }
         }
 
-        if (adBookMap.isNotEmpty()) {
-            val iterator = adBookMap.entries.iterator()
-
-            while (iterator.hasNext()) {
-                val entry = iterator.next()
-
-                if (entry.value.item_view != null) {
-                    entry.value.item_view?.removeAllViews()
-                    entry.value.item_view = null
-                }
-            }
-        }
 
         iBookList.clear()
 
-        adBookMap.clear()
     }
 }

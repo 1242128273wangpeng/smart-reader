@@ -312,7 +312,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
      */
     fun updateUI() {
         val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD && Constants.book_shelf_state != 0
-        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
+        bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, false)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
             BookShelfLogger.uploadFirstOpenBooks()
