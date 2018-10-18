@@ -411,7 +411,7 @@ class HomeActivity : BaseCacheableActivity(),
         rl_check_update.setOnClickListener {
             PersonalLogger.uploadPersonalCheckUpdate()
             try {
-                apkUpdateUtils.getApkUpdateInfo(this, null, "SettingActivity")
+                apkUpdateUtils.getApkUpdateInfo(this, handler, "SettingActivity")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
