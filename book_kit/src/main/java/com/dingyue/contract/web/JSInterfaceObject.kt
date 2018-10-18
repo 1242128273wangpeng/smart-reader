@@ -82,14 +82,14 @@ abstract class JSInterfaceObject(var activity: Activity) {
      * 进入阅读页
      */
     @JavascriptInterface
-    fun enterRead(data: String?) {
+    fun startReaderActivity(data: String?) {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
                 return
             }
 
             try {
-                val book = genCoverBook(data)
+                val book = loadBook(data)
                 val bundle = Bundle()
                 bundle.putInt("sequence", book.sequence)
                 bundle.putInt("offset", book.offset)
@@ -107,31 +107,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
     fun insertBookShelf(data: String?): Boolean {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             try {
-                val recommend = Gson().fromJson(data, RecommendBean::class.java)
-
-                val book = Book()
-                book.book_id = recommend.bookId
-                book.book_source_id = recommend.id
-                book.book_chapter_id = recommend.bookChapterId
-                book.uv = recommend.uv
-                book.name = recommend.bookName
-                book.desc = recommend.description
-                book.host = recommend.host
-                book.label = recommend.label
-                book.genre = recommend.genre
-                book.score = recommend.score
-                book.author = recommend.authorName
-                book.status = recommend.serialStatus
-                book.img_url = recommend.sourceImageUrl
-                book.sub_genre = recommend.subGenre
-                book.book_type = recommend.bookType
-                book.word_count = recommend.wordCountDescp
-
-                val chapter = Chapter()
-                chapter.name = recommend.lastChapterName
-                chapter.update_time = recommend.updateTime
-
-                book.last_chapter = chapter
+                val book = loadBook(data)
 
                 val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
 
@@ -236,14 +212,16 @@ abstract class JSInterfaceObject(var activity: Activity) {
         var type: String? = null
     }
 
-    protected fun genCoverBook(data: String): Book {
+    protected fun loadBook(data: String): Book {
 
         val recommend = Gson().fromJson(data, RecommendBean::class.java)
 
         val book = Book()
+
         book.book_id = recommend.bookId
         book.book_source_id = recommend.id
         book.book_chapter_id = recommend.bookChapterId
+
         book.uv = recommend.uv
         book.name = recommend.bookName
         book.desc = recommend.description

@@ -220,9 +220,7 @@ class RecommendFragment : Fragment() {
                 3 -> recommendFinishFragment
                 4 -> recommendFantasyFragment
                 5 -> recommendModernFragment
-                else -> {
-                    null
-                }
+                else -> recommendFragment
             }
         }
 
