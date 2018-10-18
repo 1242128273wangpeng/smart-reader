@@ -141,13 +141,13 @@ object RequestAPI {
 
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.LOGOUT_ACTION
+                RequestService.LOGIN_ACTION
         return requestService.requestLogoutAction(url, parameters)
     }
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.REFRESH_TOKEN
+                RequestService.LOGIN_ACTION
         return requestService.requestRefreshToken(url, parameters)
     }
 

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#87af4c"
+        android:background="@color/primary"
         android:fitsSystemWindows="true">
 
 
@@ -56,41 +56,63 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/home_bookshelf_parent_selector"
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/home_bookshelf_txt"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bookshelf"
-                        android:textColor="@drawable/home_bookshelf_txt_selector"
-                        android:textSize="18sp"/>
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/home_bookshelf_img_selector"/>
+
+
+                        <TextView
+                            android:id="@+id/home_bookshelf_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="@string/bookshelf"
+                            android:textColor="@drawable/home_bookshelf_txt_selector"
+                            android:textSize="@dimen/dimen_text_15"/>
+                    </LinearLayout>
 
                 </LinearLayout>
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="#F4F4F4"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"/>
 
                 <LinearLayout
                     android:id="@+id/ll_home_bookstore"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/home_bookshelf_parent_selector"
                     android:gravity="center"
                     android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/home_bookstore_txt"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bookstore"
-                        android:textColor="@drawable/home_bookshelf_txt_selector"
-                        android:textSize="18sp"/>
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/home_bookstore_img_selector"/>
+
+
+                        <TextView
+                            android:id="@+id/home_bookstore_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="@string/bookstore"
+                            android:textColor="@drawable/home_bookshelf_txt_selector"
+                            android:textSize="@dimen/dimen_text_15"/>
+                    </LinearLayout>
 
                 </LinearLayout>
             </LinearLayout>

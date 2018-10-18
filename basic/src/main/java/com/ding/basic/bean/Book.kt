@@ -206,6 +206,10 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
         return super.clone() as Book
     }
 
+    override fun compareTo(other: Book): Int {
+        return if (this.last_read_time == other.last_read_time) 0 else if (this.last_read_time < other.last_read_time) 1 else -1
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other == null) {
             return false
@@ -218,12 +222,6 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
         }
         return false
     }
-
-    override fun compareTo(other: Book): Int {
-        return if (this.last_read_time == other.last_read_time) 0 else if (this.last_read_time < other.last_read_time) 1 else -1
-    }
-
-
 
     override fun toString(): String {
         return "Book(id=$id, book_id='$book_id', book_chapter_id='$book_chapter_id', book_source_id='$book_source_id', name=$name, author=$author, desc=$desc, label=$label, genre=$genre, sub_genre=$sub_genre, img_url=$img_url, status=$status, host=$host, book_type=$book_type, word_count=$word_count, list_version=$list_version, c_version=$c_version, last_chapter=$last_chapter, readed=$readed, sequence=$sequence, offset=$offset, last_read_time=$last_read_time, insert_time=$insert_time, update_status=$update_status, chapter_count=$chapter_count, last_check_update_time=$last_check_update_time, last_update_success_time=$last_update_success_time, update_date_fusion=$update_date_fusion, chapters_update_index=$chapters_update_index, item_type=$item_type, fromType=$fromType, channel_code=$channel_code)"

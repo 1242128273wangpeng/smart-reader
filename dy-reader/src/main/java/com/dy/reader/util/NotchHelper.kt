@@ -1,15 +1,12 @@
 package com.dy.reader.util
 
-import android.annotation.SuppressLint
 import android.content.Context
-import com.dy.reader.R
-import net.lzbook.kit.utils.AppLog
 
-fun isNotchScreen(context: Context): Boolean {
+fun isNotchScreen(context: Context):Boolean{
     return xiaomiNotch(context) || huaweiNotch(context) || oppoNotch(context) || vivoNotch(context)
 }
 
-fun getNotchSize(context: Context): Int {
+fun getNotchSize(context: Context):Int{
     var result = 0
     val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
     if (resourceId > 0) {
@@ -18,7 +15,7 @@ fun getNotchSize(context: Context): Int {
     return result
 }
 
-fun xiaomiNotch(context: Context): Boolean {
+fun xiaomiNotch(context: Context):Boolean{
     var xiaomi = false
     try {
         val cl = context.classLoader
@@ -49,40 +46,15 @@ private fun oppoNotch(context: Context): Boolean {
 
 private val NOTCH_IN_SCREEN_VOIO = 0x00000020//是否有凹槽
 private val ROUNDED_IN_SCREEN_VOIO = 0x00000008//是否有圆角
-
-@SuppressLint("PrivateApi")
-fun vivoNotch(context: Context): Boolean {
+private fun vivoNotch(context: Context): Boolean {
     var ret = false
     try {
-        val classLoader = context.classLoader
-        val ftFeature = classLoader.loadClass("android.util.FtFeature")
-        val method = ftFeature.getMethod("isFeatureSupport", Int::class.javaPrimitiveType)
-        ret = method.invoke(ftFeature, NOTCH_IN_SCREEN_VOIO) as Boolean
-    } catch (e: ClassNotFoundException) {
-        AppLog.w("Notch", "vivoNotch ClassNotFoundException")
-    } catch (e: NoSuchMethodException) {
-        AppLog.w("Notch", "vivoNotch NoSuchMethodException")
+        val cl = context.classLoader
+        val FtFeature = cl.loadClass("com.util.FtFeature")
+        val get = FtFeature.getMethod("isFeatureSupport", Int::class.javaPrimitiveType)
+        ret = get.invoke(FtFeature, NOTCH_IN_SCREEN_VOIO) as Boolean
+
     } catch (e: Exception) {
-        AppLog.w("Notch", "vivoNotch Exception")
-    } finally {
-        return ret
     }
-}
-
-private var vivoNotchSize: Int = 0
-
-fun getVivoNotchSize(context: Context): Int {
-    if (vivoNotchSize == 0) {
-        vivoNotchSize = context.resources.getDimension(R.dimen.notch_vivo).toInt()
-    }
-    return vivoNotchSize
-}
-
-private var vivoRoundedSize: Int = 0
-
-fun getVivoRoundedSize(context: Context): Int {
-    if (vivoRoundedSize == 0) {
-        vivoRoundedSize = context.resources.getDimension(R.dimen.rounded_vivo).toInt()
-    }
-    return vivoRoundedSize
+    return ret
 }
