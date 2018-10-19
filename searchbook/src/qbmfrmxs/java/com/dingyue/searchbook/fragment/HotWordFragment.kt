@@ -31,40 +31,14 @@ import java.util.*
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019 22:05
  */
-class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItemClickListener {
+class HotWordFragment : BaseHotWordFragment(), RecommendAdapter.RecommendItemClickListener {
 
-    var onResultListener: OnResultListener<String>? = null
+    override fun setLayout(): Int = R.layout.fragment_hotword
 
-    private var loadingPage: LoadingPage? = null
-
-    private var hotWordAdapter: HotWordAdapter? = null
-
-    private val hotWordPresenter: HotWordPresenter by lazy {
-        HotWordPresenter(this)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_hotword, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        hotWordPresenter.onCreate()
-        hotWordPresenter.loadHotWordData()
-        hotWordPresenter.loadRecommendData()
-
+    override fun initView() {
         rl_recommend_search.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
-    }
-
-    override fun showLoading() {
-        hideLoading()
-        loadingPage = LoadingPage(requireActivity(), search_result_main, LoadingPage.setting_result)
-    }
-
-    override fun hideLoading() {
-        loadingPage?.onSuccessGone()
     }
 
     override fun showHotWordList(hotWordList: ArrayList<HotWordBean>) {
@@ -128,17 +102,5 @@ class HotWordFragment : Fragment(), IHotWordView, RecommendAdapter.RecommendItem
                 book_chapter_id = dataBean.bookChapterId)
 
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        hotWordPresenter.onDestroy()
-    }
-//
-//    /**
-//     * 点击搜索框，回调给SearchBookActivity
-//     */
-//    interface OnSearchInputClick {
-//        fun onSearchClick()
-//    }
 
 }

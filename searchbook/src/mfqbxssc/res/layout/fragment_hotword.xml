@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="none">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
 
     <RelativeLayout
-        android:id="@+id/search_result_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -93,5 +91,6 @@
             android:layout_marginLeft="@dimen/dimen_margin_7"
             android:layout_marginRight="@dimen/dimen_margin_7"/>
     </RelativeLayout>
+
 </ScrollView>
 
