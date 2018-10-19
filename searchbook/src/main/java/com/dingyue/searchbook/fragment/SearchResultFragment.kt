@@ -138,7 +138,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun onSearchWordResult(searchWord: String) {
-        onResultListener?.onSuccess(keyWord)
+        onResultListener?.onSuccess(searchWord)
     }
 
     override fun onCoverResult(bundle: Bundle) {
