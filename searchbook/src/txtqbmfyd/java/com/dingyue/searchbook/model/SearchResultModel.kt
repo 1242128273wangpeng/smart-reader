@@ -110,7 +110,7 @@ class SearchResultModel {
                     try {
                         val search = Gson().fromJson(data, JSSearch()::class.java)
                         listener?.onLoadKeyWord(search?.word, search?.type)
-                        listener?.onSearchWordResult(search?.word ?: "")
+//                        listener?.onSearchWordResult(search?.word ?: "")
 
                     } catch (exception: Exception) {
                         exception.printStackTrace()
