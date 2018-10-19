@@ -1,5 +1,6 @@
 package com.dingyue.searchbook.view
 
+import android.app.Activity
 import com.dingyue.searchbook.interfaces.OnSearchResult
 
 
@@ -12,4 +13,7 @@ import com.dingyue.searchbook.interfaces.OnSearchResult
 interface ISearchResultView : IBaseView, OnSearchResult {
 
     fun obtainJSInterface(jsInterface: Any)
+
+    fun getCurrentActivity(): Activity
+
 }

@@ -1,5 +1,6 @@
 package com.dingyue.searchbook.model
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.JavascriptInterface
@@ -28,7 +29,7 @@ import java.util.*
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/9/25 0025 16:21
  */
-class SearchResultModel(var listener: OnSearchResult?) {
+class SearchResultModel {
 
     private val wordInfoMap = HashMap<String, WordInfo>()
 
@@ -97,11 +98,11 @@ class SearchResultModel(var listener: OnSearchResult?) {
     }
 
 
-    fun initJSModel(): JSInterfaceObject {
-        val jsInterfaceModel = (object : JSInterfaceObject(listener?.getCurrentActivity()) {
+    fun initJSModel(listener: OnSearchResult?, activity: Activity): JSInterfaceObject {
+        val jsInterfaceModel = (object : JSInterfaceObject(activity) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
@@ -118,7 +119,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
@@ -132,7 +133,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                             bundle.putString("title", redirect.title)
                             bundle.putString("from", "other")
 
-                            RouterUtil.navigation(activity!!, RouterConfig.TABULATION_ACTIVITY, bundle)
+                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
                         }
                     } catch (exception: Exception) {
                         exception.printStackTrace()
@@ -194,8 +195,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
      * isAuthor: 是否显示作者页，0为默认不显示
      * 目前新壳2显示作者页
      */
-    fun startLoadData(isAuthor: Int = 0): String? {
-
+    fun startLoadData(listener: OnSearchResult?, isAuthor: Int = 0): String? {
         var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word

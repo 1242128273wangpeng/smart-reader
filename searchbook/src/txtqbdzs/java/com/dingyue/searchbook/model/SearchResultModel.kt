@@ -1,5 +1,6 @@
 package com.dingyue.searchbook.model
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.ding.basic.RequestRepositoryFactory
@@ -8,8 +9,8 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.R
+import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -34,7 +35,7 @@ import java.util.*
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/9/25 0025 16:21
  */
-class SearchResultModel(var listener: OnSearchResult?) {
+class SearchResultModel {
 
     private val wordInfoMap = HashMap<String, WordInfo>()
 
@@ -108,7 +109,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
     private val shake = AntiShake()
 
-    fun initJSModel(): WebViewJsInterface {
+    fun initJSModel(listener: OnSearchResult?, activity: Activity): WebViewJsInterface {
         val jsInterfaceModel = JSInterface()
         jsInterfaceModel.search = (object : JSInterface.OnSearchClick {
             override fun doSearch(keyWord: String?, search_type: String?, filter_type: String?, filter_word: String, sort_type: String) {
@@ -118,7 +119,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 filterWord = filter_word
                 sortType = sort_type
 
-                listener?.onSearchResult(startLoadData(0) ?: "")
+                listener?.onSearchResult(startLoadData(listener) ?: "")
 
             }
 
@@ -177,7 +178,9 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
         })
 
-
+        /**
+         * 搜索无结果页，点击猜你喜欢
+         */
         jsInterfaceModel.searchWordClick = (object : JSInterface.OnSearchWordClick {
             override fun sendSearchWord(searchWord: String, search_type: String) {
                 if (shake.check()) {
@@ -188,8 +191,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
                 //不正常后删除回掉
                 listener?.onSearchWordResult(searchWord)
-                listener?.onSearchResult(startLoadData(0) ?: "")
-
+                listener?.onSearchResult(startLoadData(listener) ?: "")
 
             }
 
@@ -366,7 +368,10 @@ class SearchResultModel(var listener: OnSearchResult?) {
     }
 
 
-    fun startLoadData(isAuthor: Int): String? {
+    /**
+     * isAuthor：0 不显示作者  1 显示作者
+     */
+    fun startLoadData(listener: OnSearchResult?, isAuthor: Int = 0): String? {
         var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word

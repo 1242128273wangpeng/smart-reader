@@ -21,16 +21,16 @@ import java.io.Serializable
 import java.util.*
 
 /**
- * Desc 请描述这个文件
+ * Desc 新版JSInterface
  * Author crazylei
  * Mail crazylei911228@gmail.com
  * Date 2018/9/18 17:45
  */
-abstract class JSInterfaceObject(var activity: Activity?) {
+abstract class JSInterfaceObject(var activity: Activity) {
 
     @JavascriptInterface
     fun buildRequestUrl(data: String?): String? {
-        if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             var url = data
             var parameters: Map<String, String>? = null
 
@@ -52,7 +52,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
 
     @JavascriptInterface
     fun startCoverActivity(data: String?) {
-        if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return
             }
@@ -66,7 +66,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
                     bundle.putString("book_source_id", cover.book_source_id)
                     bundle.putString("book_chapter_id", cover.book_chapter_id)
 
-                    RouterUtil.navigation(activity!!, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
+                    RouterUtil.navigation(activity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
@@ -76,7 +76,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
 
     @JavascriptInterface
     fun insertBookShelf(data: String?): Boolean {
-        if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             try {
                 val recommend = Gson().fromJson(data, RecommendBean::class.java)
 
@@ -124,7 +124,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
 
     @JavascriptInterface
     fun removeBookShelf(data: String?): Boolean {
-        if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             return try {
                 val delete = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(data)
 
