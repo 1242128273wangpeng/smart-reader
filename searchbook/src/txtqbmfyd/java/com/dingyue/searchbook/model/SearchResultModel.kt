@@ -7,7 +7,6 @@ import android.webkit.JavascriptInterface
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.contract.web.JSInterfaceObject
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
@@ -19,6 +18,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
+import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
 
@@ -46,7 +46,7 @@ class SearchResultModel {
     fun loadSearchResultData(listener: OnResultListener<SearchAutoCompleteBeanYouHua>) {}
 
     fun setStartedAction() {
-        wordInfoMap.put(word, WordInfo())
+        wordInfoMap[word] = WordInfo()
     }
 
     fun onLoadFinished() {
@@ -99,7 +99,7 @@ class SearchResultModel {
 
 
     fun initJSModel(listener: OnSearchResult?, activity: Activity): JSInterfaceObject {
-        val jsInterfaceModel = (object : JSInterfaceObject(activity) {
+        return (object : JSInterfaceObject(activity) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -141,8 +141,6 @@ class SearchResultModel {
                 }
             }
         })
-
-        return jsInterfaceModel
     }
 
 
@@ -196,7 +194,7 @@ class SearchResultModel {
      * 目前新壳2显示作者页
      */
     fun startLoadData(listener: OnSearchResult?, isAuthor: Int = 0): String? {
-        var searchWord: String
+        val searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word
 

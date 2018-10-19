@@ -28,14 +28,14 @@ import java.io.Serializable
  * Mail crazylei911228@gmail.com
  * Date 2018/9/18 17:45
  */
-abstract class JSInterfaceObject(var activity: Activity?) {
+abstract class JSInterfaceObject(var activity: Activity) {
 
     /***
      * H5调用原生方法：拼接请求链接
      * **/
     @JavascriptInterface
     fun buildRequestUrl(data: String?): String? {
-        if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             var url = data
             var parameters: Map<String, String>? = null
 
@@ -60,7 +60,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
      * **/
     @JavascriptInterface
     fun startCoverActivity(data: String?) {
-        if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return
             }
@@ -74,9 +74,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
                     bundle.putString("book_source_id", cover.book_source_id)
                     bundle.putString("book_chapter_id", cover.book_chapter_id)
 
-                    if (activity != null) {
-                        RouterUtil.navigation(activity!!, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
-                    }
+                    RouterUtil.navigation(activity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
@@ -89,7 +87,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
      * **/
     @JavascriptInterface
     fun startReaderActivity(data: String?) {
-        if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 return
             }
@@ -102,9 +100,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
                 bundle.putSerializable("book", book)
                 val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
-                if (activity != null) {
-                    RouterUtil.navigation(activity!!, RouterConfig.READER_ACTIVITY, bundle, flags)
-                }
+                RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
 
             } catch (exception: Exception) {
                 exception.printStackTrace()
@@ -117,7 +113,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
      * **/
     @JavascriptInterface
     fun insertBookShelf(data: String?): Boolean {
-        if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             try {
                 val book = loadBook(data)
 
@@ -144,7 +140,7 @@ abstract class JSInterfaceObject(var activity: Activity?) {
      * **/
     @JavascriptInterface
     fun removeBookShelf(data: String?): Boolean {
-        if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
             return try {
                 val delete = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(data)
 
