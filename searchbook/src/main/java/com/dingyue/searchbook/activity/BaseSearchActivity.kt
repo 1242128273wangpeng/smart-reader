@@ -117,7 +117,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
             R.id.img_back -> finish()
             R.id.search_result_clear -> {
                 isRunTextWatcher = true
-                inputEditText.text = null
+                inputEditText.setText("")
                 clearImgView.visibility = View.GONE
 
                 showSoftKeyboard(inputEditText)
