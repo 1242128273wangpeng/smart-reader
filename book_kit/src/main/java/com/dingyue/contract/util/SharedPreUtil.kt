@@ -71,6 +71,7 @@ class SharedPreUtil(val type: Int) {
         /**
          * DynamicParameter
          */
+        const val CHECK_DYNAMIC = "check_dynamic" //用于判断覆盖安装时强制拉取动态参数
         const val DYNAMIC_VERSION = "dynamic_version"
         const val CHANNEL_LIMIT = "channel_limit"
         const val DAY_LIMIT = "day_limit"
