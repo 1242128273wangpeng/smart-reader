@@ -21,6 +21,7 @@ interface OnSearchResult {
     fun onCoverResult(bundle: Bundle)
 
     fun onAnotherResult(bundle: Bundle)//跳转findBookDetail
+
     fun onAnotherResultNew(bundle: Bundle)//跳转TabulationActivity
 
     fun onTurnReadResult(bundle: Bundle)
@@ -28,8 +29,6 @@ interface OnSearchResult {
     fun onEnterReadResult(bundle: Bundle)
 
     fun onLoadKeyWord(keyWord: String?, searchType: String?) {}
-
-    fun onObtainKeyWord(keyWord: String) {}
 
     fun getCurrentActivity(): Activity? {
         return null

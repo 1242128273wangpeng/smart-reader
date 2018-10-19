@@ -177,7 +177,9 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
         })
 
-
+        /**
+         * 搜索无结果页，点击猜你喜欢
+         */
         jsInterfaceModel.searchWordClick = (object : JSInterface.OnSearchWordClick {
             override fun sendSearchWord(searchWord: String, search_type: String) {
                 if (shake.check()) {
@@ -189,7 +191,6 @@ class SearchResultModel(var listener: OnSearchResult?) {
                 //不正常后删除回掉
                 listener?.onSearchWordResult(searchWord)
                 listener?.onSearchResult(startLoadData(0) ?: "")
-
 
             }
 

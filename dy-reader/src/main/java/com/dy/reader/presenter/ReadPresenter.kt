@@ -15,7 +15,8 @@ import android.widget.Toast
 import com.baidu.mobstat.StatService
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
-
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dy.media.MediaControl
 import com.dy.reader.R
 import com.dy.reader.Reader
@@ -30,13 +31,10 @@ import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.util.TypefaceUtil
-import com.dy.reader.util.getNotchSize
-import com.dy.reader.util.isNotchScreen
-import com.dy.reader.util.xiaomiNotch
+import com.dy.reader.util.*
 import com.google.gson.Gson
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.service.DownloadService
 import net.lzbook.kit.utils.AppUtils
@@ -44,8 +42,6 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import org.greenrobot.eventbus.EventBus
 import java.lang.ref.WeakReference
 
@@ -258,7 +254,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                 ReaderSettings.instance.isLandscape = false
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             } else if (sp?.getInt("screen_mode", 3) == Configuration.ORIENTATION_LANDSCAPE && readReference?.get()?.getResources()!!
-                            .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                    .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
                 }
@@ -309,6 +305,15 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (isNotchScreen(Reader.context)) {
             if (xiaomiNotch(Reader.context) && ReaderSettings.instance.isLandscape) {
                 AppHelper.screenWidth -= getNotchSize(Reader.context)
+            }
+        }
+
+        if (vivoNotch(Reader.context)) {
+            val uselessSize = getVivoRoundedSize(Reader.context) * 2
+            if (ReaderSettings.instance.isLandscape) {
+                AppHelper.screenWidth -= uselessSize
+            } else {
+                AppHelper.screenHeight -= uselessSize
             }
         }
 
@@ -461,7 +466,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
 
 
-
         val book = ReaderStatus.book
         book.sequence = ReaderStatus.position.group
         book.offset = ReaderStatus.position.offset
@@ -501,7 +505,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (goToBookEndCount == 0) {
             //发送章节消费
             StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus?.book.book_id, ReaderStatus?.currentChapter?.chapter_id, ReaderStatus?.book?.book_source_id,
-                    if (("zn").equals(ReaderStatus?.book?.book_type)) {
+                    if (("zn").equals(ReaderStatus.book?.book_type)) {
                         "2"
                     } else {
                         "1"

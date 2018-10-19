@@ -93,8 +93,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun onSearchResult(url: String) {
         showLoading()
-        //加载URL
-//        search_result_content.clearView()
         webViewCallback()
         search_result_content?.loadUrl(url)
     }
@@ -136,6 +134,10 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         }
     }
 
+    override fun onSearchWordResult(searchWord: String) {
+        onResultListener?.onSuccess(keyWord)
+    }
+
     override fun onCoverResult(bundle: Bundle) {
         RouterUtil.navigation(requireActivity(), RouterConfig.COVER_PAGE_ACTIVITY, bundle)
     }
@@ -146,11 +148,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun onAnotherResultNew(bundle: Bundle) {
         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
-    }
-
-
-    override fun onSearchWordResult(searchWord: String) {
-
     }
 
     override fun onTurnReadResult(bundle: Bundle) {
@@ -165,10 +162,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun getCurrentActivity(): Activity? {
         return activity
-    }
-
-    override fun onObtainKeyWord(keyWord: String) {
-        onResultListener?.onSuccess(keyWord)
     }
 
     override fun onResume() {
