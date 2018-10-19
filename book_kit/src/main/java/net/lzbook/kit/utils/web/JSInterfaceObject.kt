@@ -232,15 +232,21 @@ abstract class JSInterfaceObject(var activity: Activity) {
         return result
     }
 
+    /**
+     * 搜索无结果页
+     */
     @JavascriptInterface
     abstract fun startSearchActivity(data: String?)
 
+    /**
+     * 搜索作者主页
+     */
     @JavascriptInterface
     abstract fun startTabulationActivity(data: String?)
 
-    /***
+    /**
      * 获取书籍对象
-     * **/
+     */
     protected fun loadBook(data: String): Book {
 
         val recommend = Gson().fromJson(data, RecommendBean::class.java)
