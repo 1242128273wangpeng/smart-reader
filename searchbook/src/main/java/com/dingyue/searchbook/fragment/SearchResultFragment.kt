@@ -70,6 +70,9 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         searchResultPresenter.loadKeyWord(keyWord, searchType, isAuthor)
     }
 
+
+    override fun getCurrentActivity(): Activity = requireActivity()
+
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     override fun obtainJSInterface(jsInterface: Any) {
 
@@ -160,9 +163,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         RouterUtil.navigation(requireActivity(), RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
-    override fun getCurrentActivity(): Activity? {
-        return activity
-    }
 
     override fun onResume() {
         super.onResume()
