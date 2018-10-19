@@ -8,6 +8,8 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
+import com.ding.basic.net.Config
+import com.ding.basic.util.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -19,7 +21,6 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.io.Serializable
-import java.util.*
 
 /**
  * Desc 请描述这个文件
@@ -29,6 +30,9 @@ import java.util.*
  */
 abstract class JSInterfaceObject(var activity: Activity?) {
 
+    /***
+     * H5调用原生方法：拼接请求链接
+     * **/
     @JavascriptInterface
     fun buildRequestUrl(data: String?): String? {
         if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
@@ -51,6 +55,9 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         }
     }
 
+    /***
+     * H5调用原生方法：跳转到封面页
+     * **/
     @JavascriptInterface
     fun startCoverActivity(data: String?) {
         if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
@@ -77,9 +84,9 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         }
     }
 
-    /**
-     * 进入阅读页
-     */
+    /***
+     * H5调用原生方法：跳转到阅读页
+     * **/
     @JavascriptInterface
     fun startReaderActivity(data: String?) {
         if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
@@ -105,6 +112,9 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         }
     }
 
+    /***
+     * H5调用原生方法：加入书架
+     * **/
     @JavascriptInterface
     fun insertBookShelf(data: String?): Boolean {
         if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
@@ -129,6 +139,9 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         }
     }
 
+    /***
+     * H5调用原生方法：移除书架
+     * **/
     @JavascriptInterface
     fun removeBookShelf(data: String?): Boolean {
         if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
@@ -152,6 +165,9 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         }
     }
 
+    /***
+     * H5调用原生方法：获取书架书籍列表
+     * **/
     @JavascriptInterface
     fun loadBookShelfInfo(): String {
         val stringBuilder = StringBuilder()
@@ -161,30 +177,64 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         if (books != null && books.isNotEmpty()) {
             for (i in books.indices) {
                 val book = books[i]
+
                 if (i > 0) {
                     stringBuilder.append(",")
                 }
+
                 stringBuilder.append(book.book_id)
             }
         }
+
         Logger.e("获取书架列表: " + stringBuilder.toString())
+
         return stringBuilder.toString()
     }
 
+    /***
+     * H5调用原生方法：统计打点
+     * **/
     @JavascriptInterface
     fun statisticsWebInformation(data: String?) {
         if (data != null && !data.isNullOrEmpty()) {
-            val parameters = UrlUtils.getDataParams(data)
-            //截取页面编码
+            val parameters = loadMassageParameters(data)
+
             val pageCode = parameters["page_code"]
             parameters.remove("page_code")
-            //截取功能编码
+
             val functionCode = parameters["func_code"]
             parameters.remove("func_code")
+
             StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), pageCode, functionCode, parameters)
         }
     }
 
+    /***
+     * H5调用原生方法：拼接请求链接(微服务接口)
+     * **/
+    @JavascriptInterface
+    fun buildMicroRequestUrl(url: String): String {
+        val result = buildMicroRequest(url)
+        Logger.e("拼接精选页面链接: $result")
+        return result
+    }
+
+    /***
+     * H5调用原生方法：鉴权失败请求重试接口(微服务接口)
+     * **/
+    @JavascriptInterface
+    fun authAccessMicroRequest(url: String): String {
+        if (Config.loadAuthExpire() - System.currentTimeMillis() <= 5000) {
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).requestAuthAccessSync()
+
+            Logger.e("WebView请求鉴权接口结果: " + result + " : " + Config.loadPublicKey() + " : " + Config.loadPrivateKey())
+
+        }
+        val result = buildMicroRequest(url)
+        Logger.e("鉴权异常，生成的链接为: $result")
+        return result
+    }
 
     @JavascriptInterface
     abstract fun startSearchActivity(data: String?)
@@ -192,28 +242,9 @@ abstract class JSInterfaceObject(var activity: Activity?) {
     @JavascriptInterface
     abstract fun startTabulationActivity(data: String?)
 
-    inner class JSCover : Serializable {
-        var book_id: String? = null
-
-        var book_source_id: String? = null
-
-        var book_chapter_id: String? = null
-    }
-
-    inner class JSRedirect : Serializable {
-        var url: String? = null
-
-        var title: String? = null
-
-        var from: String? = null
-    }
-
-    inner class JSSearch : Serializable {
-        var word: String? = null
-
-        var type: String? = null
-    }
-
+    /***
+     * 获取书籍对象
+     * **/
     protected fun loadBook(data: String): Book {
 
         val recommend = Gson().fromJson(data, RecommendBean::class.java)
@@ -245,5 +276,59 @@ abstract class JSInterfaceObject(var activity: Activity?) {
         book.last_chapter = chapter
 
         return book
+    }
+
+    /***
+     * 获取网络请求链接
+     * **/
+    private fun buildMicroRequest(message: String?): String {
+        var url = message
+
+        var parameters: MutableMap<String, String> = HashMap()
+
+        if (!url.isNullOrEmpty()) {
+
+            val array = url!!.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            url = array[0]
+
+            if (array.size == 2) {
+                parameters = loadRequestUrlParameters(array[1])
+            }
+        }
+
+        parameters = buildMicroParameters(parameters)
+
+        val sign = loadMicroRequestSign(parameters)
+
+        parameters["sign"] = sign
+        parameters["p"] = Config.loadPublicKey()
+
+        Logger.e("签名完成后，携带的公钥为: " + Config.loadPublicKey() + " : " + sign)
+
+        return buildMicroRequestAction(url, parameters)
+    }
+
+
+    inner class JSCover : Serializable {
+        var book_id: String? = null
+
+        var book_source_id: String? = null
+
+        var book_chapter_id: String? = null
+    }
+
+    inner class JSRedirect : Serializable {
+        var url: String? = null
+
+        var title: String? = null
+
+        var from: String? = null
+    }
+
+    inner class JSSearch : Serializable {
+        var word: String? = null
+
+        var type: String? = null
     }
 }

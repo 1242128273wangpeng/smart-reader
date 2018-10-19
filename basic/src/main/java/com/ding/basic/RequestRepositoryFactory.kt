@@ -1832,6 +1832,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     if (access.privateKey != null) {
                                         Config.insertPrivateKey(access.privateKey!!)
                                     }
+
+                                    if (access.expire > 0 ) {
+                                        Config.insertAuthExpire(access.expire.toLong())
+                                    }
                                 }
                             }
 
@@ -1907,6 +1911,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                     if (access.privateKey != null) {
                         Config.insertPrivateKey(access.privateKey!!)
+                    }
+
+                    if (access.expire > 0 ) {
+                        Config.insertAuthExpire(access.expire.toLong())
                     }
                 }
             }

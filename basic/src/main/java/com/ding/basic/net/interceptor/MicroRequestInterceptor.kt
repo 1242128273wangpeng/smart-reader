@@ -4,14 +4,12 @@ import android.text.TextUtils
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.MicroService.Companion.AUTH_ACCESS
 import com.ding.basic.net.token.Token
+import com.ding.basic.util.loadMicroRequestSign
 import com.orhanobut.logger.Logger
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.apache.commons.codec.binary.Hex
 import java.net.URLDecoder
-import org.apache.commons.codec.digest.DigestUtils
-import java.util.*
 
 class MicroRequestInterceptor : Interceptor {
 
@@ -87,7 +85,7 @@ class MicroRequestInterceptor : Interceptor {
             parameters.putAll(buildRequestParameters())
         }
 
-        val sign = loadRequestSign(parameters)
+        val sign = loadMicroRequestSign(parameters)
         Logger.e("Sign: $sign")
         parameters["sign"] = sign
 
@@ -106,35 +104,5 @@ class MicroRequestInterceptor : Interceptor {
         Logger.v("Request: " + interimRequest.url().toString() + " : " + Config.loadPublicKey() + " : " + Config.loadPrivateKey())
 
         return interimRequest
-    }
-
-    private fun loadRequestSign(parameters: Map<String, String>): String {
-        val parameterMap = TreeMap(parameters)
-        val stringBuilder = StringBuilder()
-
-        parameterMap.entries.forEach {
-            if ("sign" != it.key) {
-                stringBuilder.append(it.key)
-                stringBuilder.append("=")
-                stringBuilder.append(it.value)
-            }
-        }
-
-        if (Config.loadPrivateKey().isNotEmpty()) {
-            stringBuilder.append("privateKey=")
-            stringBuilder.append(Config.loadPrivateKey())
-        }
-
-        Logger.e("String: " + stringBuilder.toString())
-
-        if (stringBuilder.isNotEmpty()) {
-            try {
-                return String(Hex.encodeHex(DigestUtils.md5(stringBuilder.toString())))
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
-        }
-
-        return ""
     }
 }

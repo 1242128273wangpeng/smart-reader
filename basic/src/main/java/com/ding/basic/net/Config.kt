@@ -72,6 +72,12 @@ object Config {
     private var requestParameters: HashMap<String, String> = HashMap()
 
 
+    /***
+     * 鉴权过期时间
+     * **/
+    private var authExpire = 0L
+
+
     var SDCARD_PATH = Environment.getExternalStorageDirectory().absolutePath
 
 
@@ -236,5 +242,13 @@ object Config {
         }
 
         return privateKey
+    }
+
+    fun insertAuthExpire(authExpire: Long) {
+        this.authExpire = System.currentTimeMillis() + (authExpire * 1000)
+    }
+
+    fun loadAuthExpire(): Long {
+        return authExpire
     }
 }
