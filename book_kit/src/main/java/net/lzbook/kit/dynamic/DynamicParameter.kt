@@ -9,15 +9,17 @@ import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.*
+import com.ding.basic.util.editShared
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.contract.util.SharedPreUtil
-import net.lzbook.kit.dynamic.service.DynamicService
+import com.dingyue.contract.web.WebResourceCache
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import com.dingyue.contract.web.WebResourceCache
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.dynamic.service.DynamicService
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.isNumeric
@@ -46,6 +48,8 @@ class DynamicParameter(private val context: Context) {
 
     fun setDynamicParameter() {
 
+        prepareCheck()
+
         installParams()
 
         requestAdControl()
@@ -54,6 +58,20 @@ class DynamicParameter(private val context: Context) {
 
         DynamicService.startDynaService(BaseBookApplication.getGlobalContext())
 
+    }
+
+    /**
+     * 为了覆盖升级的用户能够强制拉取一次动态参数
+     */
+    private fun prepareCheck() {
+        val versionCode = AppUtils.getVersionCode().toString()
+        val isShouldCheck = context.getSharedBoolean(versionCode + SharedPreUtil.CHECK_DYNAMIC, true)
+        if (isShouldCheck) {
+            context.editShared {
+                putInt(SharedPreUtil.DYNAMIC_VERSION, 0)
+                putBoolean(versionCode + SharedPreUtil.CHECK_DYNAMIC, false)
+            }
+        }
     }
 
     fun requestAdControl(){
