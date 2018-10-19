@@ -70,7 +70,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         searchResultPresenter.loadKeyWord(keyWord, searchType, isAuthor)
     }
 
-    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
+    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface")
     override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
@@ -164,7 +164,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun getCurrentActivity(): Activity? {
-        return activity
+        return requireActivity()
     }
 
     override fun onObtainKeyWord(keyWord: String) {

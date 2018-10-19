@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import com.dingyue.contract.web.JSInterfaceObject
+import net.lzbook.kit.utils.web.JSInterfaceObject
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R

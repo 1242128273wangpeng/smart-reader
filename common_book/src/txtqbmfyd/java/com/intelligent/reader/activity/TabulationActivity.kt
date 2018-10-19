@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
@@ -15,7 +14,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.dingyue.contract.web.JSInterfaceObject
+import net.lzbook.kit.utils.web.JSInterfaceObject
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
@@ -35,7 +34,6 @@ import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
-
 
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
 class TabulationActivity : FrameActivity() {
@@ -241,7 +239,7 @@ class TabulationActivity : FrameActivity() {
 
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity!!.isFinishing) {
+                if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }

@@ -34,6 +34,4 @@ interface OnSearchResult {
     fun getCurrentActivity(): Activity? {
         return null
     }
-
-
 }
