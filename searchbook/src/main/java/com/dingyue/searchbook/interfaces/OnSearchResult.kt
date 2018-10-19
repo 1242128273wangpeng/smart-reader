@@ -1,6 +1,5 @@
 package com.dingyue.searchbook.interfaces
 
-import android.app.Activity
 import android.os.Bundle
 
 
@@ -21,6 +20,7 @@ interface OnSearchResult {
     fun onCoverResult(bundle: Bundle)
 
     fun onAnotherResult(bundle: Bundle)//跳转findBookDetail
+
     fun onAnotherResultNew(bundle: Bundle)//跳转TabulationActivity
 
     fun onTurnReadResult(bundle: Bundle)
@@ -29,9 +29,4 @@ interface OnSearchResult {
 
     fun onLoadKeyWord(keyWord: String?, searchType: String?) {}
 
-    fun onObtainKeyWord(keyWord: String) {}
-
-    fun getCurrentActivity(): Activity? {
-        return null
-    }
 }

@@ -1,18 +1,18 @@
 package com.dingyue.searchbook.model
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.JavascriptInterface
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
-import net.lzbook.kit.utils.web.JSInterfaceObject
+import com.dingyue.contract.web.JSInterfaceObject
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -29,7 +29,7 @@ import java.util.*
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/9/25 0025 16:21
  */
-class SearchResultModel(var listener: OnSearchResult?) {
+class SearchResultModel {
 
     private val wordInfoMap = HashMap<String, WordInfo>()
 
@@ -41,10 +41,6 @@ class SearchResultModel(var listener: OnSearchResult?) {
     private var filterWord = "ALL"
     private var sortType = "0"
     private lateinit var fromClass: String
-
-
-    private var searchSuggestCallBack: SearchSuggestCallBack? = null
-    private var jsNoneResultSearchCall: JsNoneResultSearchCall? = null
 
 
     fun loadSearchResultData(listener: OnResultListener<SearchAutoCompleteBeanYouHua>) {}
@@ -101,13 +97,12 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
     }
 
-    private val shake = AntiShake()
 
-    fun initJSModel(): JSInterfaceObject {
-        val jsInterfaceModel =(object : JSInterfaceObject(listener?.getCurrentActivity()){
+    fun initJSModel(listener: OnSearchResult?, activity: Activity): JSInterfaceObject {
+        val jsInterfaceModel = (object : JSInterfaceObject(activity) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
@@ -121,9 +116,10 @@ class SearchResultModel(var listener: OnSearchResult?) {
                     }
                 }
             }
+
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
-                if (data != null && data.isNotEmpty() && activity?.isFinishing == false) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
@@ -137,9 +133,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
                             bundle.putString("title", redirect.title)
                             bundle.putString("from", "other")
 
-                            if (activity != null) {
-                                RouterUtil.navigation(activity!!, RouterConfig.TABULATION_ACTIVITY, bundle)
-                            }
+                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
                         }
                     } catch (exception: Exception) {
                         exception.printStackTrace()
@@ -150,6 +144,7 @@ class SearchResultModel(var listener: OnSearchResult?) {
 
         return jsInterfaceModel
     }
+
 
     fun onDestroy() {
         val strings = wordInfoMap.keys
@@ -200,9 +195,8 @@ class SearchResultModel(var listener: OnSearchResult?) {
      * isAuthor: 是否显示作者页，0为默认不显示
      * 目前新壳2显示作者页
      */
-    fun startLoadData(isAuthor: Int = 0): String? {
-
-        val searchWord: String
+    fun startLoadData(listener: OnSearchResult?, isAuthor: Int = 0): String? {
+        var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word
 

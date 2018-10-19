@@ -16,14 +16,9 @@ class SearchBookActivity : BaseSearchActivity() {
 
     override fun headLayout(): Int = R.layout.activity_search_book
 
-    override fun onClick(v: View) {
-        if (v.id == R.id.search_result_input) {
-            showEditCursor(true)
-            showFragment(historyFragment)
-            historyFragment.loadHistoryRecord()
-        } else {
-            super.onClick(v)
-        }
+    override fun showInputEditClickEvent() {
+        showFragment(historyFragment)
+        historyFragment.loadHistoryRecord()
     }
 
 }
