@@ -1,8 +1,8 @@
 package com.dy.reader.data
 
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
 import com.dy.reader.ReadMediaManager
@@ -434,7 +434,7 @@ object DataProvider {
                                         ?: "", it.name ?: "")
                                 separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
-
+                                PageManager.refreshLeftAndRightPage()
                                 callback?.invoke(true)
                             },
                             onError = {
