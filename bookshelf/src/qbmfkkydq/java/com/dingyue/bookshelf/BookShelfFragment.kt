@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -404,7 +403,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             if (rAlpha > 255) {
                 rAlpha = 255
             }
-            ll_container.setBackgroundColor(Color.argb(rAlpha, 42, 202, 176))
+            ll_container?.let {
+                ll_container.setBackgroundColor(Color.argb(rAlpha, 42, 202, 176))
+            }
             var rPercent = percent
             if (rPercent > 1) {
                 rPercent = 1f
@@ -554,7 +555,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (isAdded && !requireActivity().isFinishing) {
             updateUI()
             isEditMode = false
