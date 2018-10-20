@@ -14,6 +14,7 @@ import android.view.InflateException
 import android.widget.Toast
 import com.baidu.mobstat.StatService
 import com.ding.basic.bean.Book
+import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -28,14 +29,12 @@ import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.help.NovelHelper
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.page.BatteryView
-import com.dy.reader.page.GLReaderView
 import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.*
 import com.google.gson.Gson
-import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.component.service.DownloadService
@@ -355,8 +354,10 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book)
 
-            Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
-                    Toast.LENGTH_SHORT).show()
+            if (succeed != BookDataProviderHelper.INSERT_BOOKSHELF_FULL) {
+                Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
+                        Toast.LENGTH_SHORT).show()
+            }
         }
         val map1 = HashMap<String, String>()
         if (ReaderStatus.book != null) {
