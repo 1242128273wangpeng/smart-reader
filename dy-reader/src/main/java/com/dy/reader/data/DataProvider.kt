@@ -201,8 +201,8 @@ object DataProvider {
                                         ReadMediaManager.clearAllAd()
 
                                         it.forEach {
-                                            var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
-                                                    ?: "", it.name ?: "")
+                                            var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
+                                                    ?: "")
                                             separateContent = ReadMediaManager.insertChapterAd(it.sequence, ReadMediaManager.tonken, separateContent)
                                             chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                         }
@@ -430,8 +430,8 @@ object DataProvider {
                             onNext = {
 
                                 AppLog.e("DataProvider", "onNext = ")
-                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
-                                        ?: "", it.name ?: "")
+                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
+                                        ?: "")
                                 separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
 
@@ -456,8 +456,8 @@ object DataProvider {
                     .subscribeOn(Schedulers.io())
                     .subscribeBy(
                             onNext = {
-                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
-                                        ?: "", it.name ?: "")
+                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
+                                        ?: "")
                                 separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                 runOnMain {
