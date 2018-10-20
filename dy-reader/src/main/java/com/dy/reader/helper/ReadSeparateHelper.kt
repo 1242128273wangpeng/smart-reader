@@ -3,14 +3,15 @@ package com.dy.reader.helper
 import android.graphics.Paint
 import android.text.TextPaint
 import android.text.TextUtils
+import com.ding.basic.bean.Chapter
 import com.dy.reader.constants.ReadConstants
 import com.dy.reader.mode.NovelLineBean
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.util.TypefaceUtil
-import java.util.ArrayList
+import java.util.*
 
 /**
  * 分页帮助类
@@ -25,8 +26,8 @@ object ReadSeparateHelper {
      * *
      * @return
      */
-    fun initTextSeparateContent(content: String, chapterName: String): ArrayList<NovelPageBean> {
-        var content = content
+    fun initTextSeparateContent(chapter: Chapter, chapterName: String): ArrayList<NovelPageBean> {
+        var content = chapter.content ?: ""
         val chapterHeight = 75 * AppHelper.screenScaledDensity
         val hideHeight = 15 * AppHelper.screenScaledDensity
 
@@ -100,11 +101,6 @@ object ReadSeparateHelper {
             }
         }
         val text = sb.toString()
-        if (ReaderStatus.position.offset > text.length) {
-            ReaderStatus.position.offset = 0
-        } else if (ReaderStatus.position.offset < 0) {
-            ReaderStatus.position.offset = 0
-        }
 
         val contentList = getNovelText(readerSettings.mPaint!!, text, readerSettings.mWidth)
         val size = contentList.size
@@ -161,6 +157,14 @@ object ReadSeparateHelper {
                     lists.add(mNovelPageBean)//
                 }
                 // }
+            }
+        }
+        if (ReaderStatus.position.group == chapter.sequence) {
+            // offset校验工作,只需要校验当前章节
+            if (ReaderStatus.position.offset > lists.last().offset) {
+                ReaderStatus.position.offset = 0
+            } else if (ReaderStatus.position.offset < 0) {
+                ReaderStatus.position.offset = 0
             }
         }
         addLineIndexY(lists)
