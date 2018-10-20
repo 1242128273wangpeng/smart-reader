@@ -16,13 +16,10 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
 import com.dingyue.contract.util.showToastMessage
-import com.intelligent.reader.cover.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.download.CacheManager
-import net.lzbook.kit.repair_books.RepairHelp
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
+import com.intelligent.reader.cover.BookCoverViewModel
 import com.intelligent.reader.view.TransformReadDialog
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
@@ -37,6 +34,8 @@ import net.lzbook.kit.utils.BookCoverUtil
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.HashMap
+import kotlin.collections.ArrayList
+import kotlin.collections.set
 
 class CataloguesPresenter(private val activity: Activity, private val book: Book,
                           private val cataloguesContract: CataloguesContract,
@@ -468,7 +467,9 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
             if (result <= 0) {
                 Logger.v("加入书架失败！")
-                activity.applicationContext.showToastMessage("加入书架失败！")
+                if (result != BookDataProviderHelper.INSERT_BOOKSHELF_FULL) {
+                    activity.applicationContext.showToastMessage("加入书架失败！")
+                }
             } else {
                 Logger.v("加入书架成功！")
 
