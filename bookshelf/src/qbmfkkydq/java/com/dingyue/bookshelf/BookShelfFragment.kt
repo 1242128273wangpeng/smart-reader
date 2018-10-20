@@ -66,7 +66,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
     }
 
     private val bookshelfLayoutManager: ShelfGridLayoutManager by lazy {
-        ShelfGridLayoutManager(activity, 3)
+        ShelfGridLayoutManager(requireContext(), 3)
     }
 
     private val headMenuPopup: HeadMenuPopup by lazy {
@@ -403,7 +403,9 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
             if (rAlpha > 255) {
                 rAlpha = 255
             }
-            ll_container.setBackgroundColor(Color.argb(rAlpha, 42, 202, 176))
+            ll_container?.let {
+                ll_container.setBackgroundColor(Color.argb(rAlpha, 42, 202, 176))
+            }
             var rPercent = percent
             if (rPercent > 1) {
                 rPercent = 1f

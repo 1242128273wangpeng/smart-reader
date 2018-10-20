@@ -15,4 +15,5 @@ interface IBuildConfigProvider :IProvider{
     fun getContentApiHost():String
     fun getPackageName():String
     fun getVersionCode():Int
+    fun getCDNHost(): String
 }

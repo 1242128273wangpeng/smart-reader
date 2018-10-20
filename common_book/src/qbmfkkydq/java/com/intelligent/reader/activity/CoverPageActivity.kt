@@ -22,6 +22,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.searchbook.SearchBookActivity
 import com.dy.media.MediaLifecycle
@@ -55,9 +57,6 @@ import kotlin.collections.ArrayList
 @Route(path = RouterConfig.COVER_PAGE_ACTIVITY)
 class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageContract, CoverRecommendAdapter.RecommendItemClickListener {
 
-
-    private var mBackground = 0
-    private var mTextColor = 0
     private var loadingPage: LoadingPage? = null
 
     private var mBook: Book? = null
@@ -67,7 +66,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
-    private var transformReadDialog: TransformReadDialog?=null
+    private var transformReadDialog: TransformReadDialog? = null
     private var coverDetail: Book? = null
     private var mRecommendBooks: List<RecommendBean> = ArrayList()
 
@@ -155,7 +154,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
-            transformReadDialog=TransformReadDialog(this)
+            transformReadDialog = TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
                 val data = HashMap<String, String>()
@@ -223,17 +222,23 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     /***
      * 处理跳转阅读页请求
      * **/
-     override fun handleReadingAction(coverDetail: Book?) {
-        this.coverDetail=coverDetail
+    override fun handleReadingAction(coverDetail: Book?) {
+        this.coverDetail = coverDetail
         if (this.isFinishing) {
             return
         }
 
         if (!this.isFinishing) {
-            if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+            transformReadDialog?.isShowing?.let {
+                if (!it) {
+                    val isChecked = SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)
+                    if (isChecked) {
+                        intoReadingActivity()
+                    } else {
+                        transformReadDialog?.show()
+                    }
+                }
             }
-
 
         }
     }
@@ -241,7 +246,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     /***
      * 处理跳转目录操作
      * **/
-    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean,coverDetail: Book?) {
+    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean, coverDetail: Book?) {
         if (coverDetail != null) {
 
             val bundle = Bundle()
@@ -256,7 +261,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             this.startActivity(intent)
         }
     }
-    override fun showCleanDialog():Dialog{
+
+    override fun showCleanDialog(): Dialog {
         val cleanDialog = MyDialog(this, R.layout.dialog_download_clean)
         cleanDialog.setCanceledOnTouchOutside(false)
         cleanDialog.setCancelable(false)
@@ -268,7 +274,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     /***
      * 判断是否跳转到搜索页
      * **/
-    override  fun checkStartSearchActivity(view: View) {
+    override fun checkStartSearchActivity(view: View) {
         val intent = Intent()
         if (view is RecommendItemView) {
             intent.putExtra("word", view.title)
@@ -366,7 +372,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_source_form.text = ("来源：" + if (book.fromQingoo()) "青果阅读" else book.host)
             }
 
-            txt_score.text = String.format("%.1f", book.score) + "分"
+            txt_score.text = (String.format("%.1f", book.score) + "分")
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
                 txt_book_des!!.text = book.desc
@@ -440,7 +446,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      */
     private fun buildLabel(text: String, index: Int): TextView {
 
-        var position = index % labelColor.size
+        val position = index % labelColor.size
         val left = resources.getDimensionPixelOffset(R.dimen.dimen_margin_6)
         val right = resources.getDimensionPixelOffset(R.dimen.dimen_margin_6)
         val top = resources.getDimensionPixelOffset(R.dimen.dimen_margin_4)
@@ -483,8 +489,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         val book: Book? = coverPagePresenter?.coverDetail
 
         if (book != null && book_cover_download != null) {
-//            val isSub = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(book.book_id) != null
-//            if (isSub) {
             val status = CacheManager.getBookStatus(book)
             if (status == DownloadState.FINISH) {
                 book_cover_download.setText(R.string.download_status_complete)
@@ -496,9 +500,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             } else {
                 book_cover_download.setText(R.string.download_status_total)
             }
-//            } else {
-//                book_cover_download.setText(R.string.download_status_total)
-//            }
 
         }
     }
@@ -582,9 +583,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun onClick(view: View) {
-        /*if (coverPagePresenter != null) {
-            coverPagePresenter!!.goToBookSearchActivity(view)
-        }*/
         when (view.id) {
             R.id.book_cover_back -> {
                 val data = HashMap<String, String>()
@@ -601,9 +599,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD)
 
-                if (coverPagePresenter != null) {
-                    coverPagePresenter!!.handleReadingAction()
-                }
+                coverPagePresenter?.handleReadingAction()
             }
 
             R.id.book_cover_download -> {
@@ -617,14 +613,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     coverPagePresenter!!.handleDownloadContinueOrStop()
                 }
             }
-        /*R.id.book_cover_catalog_view_nobg, R.id.book_cover_catalog_view -> {
-            StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
-
-            if (coverPagePresenter != null) {
-                coverPagePresenter!!.startCatalogActivity(true)
-            }
-        }*/
             R.id.book_cover_chapter_view, R.id.book_cover_last_chapter -> {
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.startCatalogActivity(false)
@@ -638,32 +626,23 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 已经在书架
      */
     private fun initializeRemoveShelfButton() {
-//        mBackground = R.drawable.cover_bottom_btn_remove_bg
-//        mTextColor = R.color.color_theme_alpha
         book_cover_bookshelf!!.setTextColor(Color.parseColor("#4C2AD1BE"))
         book_cover_bookshelf!!.isEnabled = false
         book_cover_bookshelf!!.setText(R.string.have_in_bookshelf)
-//        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     /**
      * 添加到书架
      */
     private fun initializeInsertShelfButton() {
-//        mBackground = R.drawable.cover_bottom_btn_add_bg
-//        mTextColor = R.color.color_theme_alpha
         book_cover_bookshelf!!.setText(R.string.add_bookshelf)
         book_cover_bookshelf!!.setTextColor(Color.parseColor("#FF2AD1BE"))
         book_cover_bookshelf!!.isEnabled = true
-//        book_cover_bookshelf!!.setTextColor(resources.getColor(mTextColor))
-        //        book_cover_bookshelf!!.setBackgroundResource(mBackground)
     }
 
     override fun onTaskStatusChange() {
         super.onTaskStatusChange()
         changeDownloadButtonStatus()
     }
-
 
 }

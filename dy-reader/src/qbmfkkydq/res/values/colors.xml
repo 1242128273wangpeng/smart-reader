@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="reader_popup_item_background">#80000000</color>
+
+    <color name="reading_backdrop_nightly">#080809</color>
+    <color name="reading_text_color_nightly">#3F3F3F</color>
+</resources>
