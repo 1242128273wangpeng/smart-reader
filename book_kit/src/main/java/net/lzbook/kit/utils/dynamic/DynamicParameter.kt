@@ -2,17 +2,20 @@ package net.lzbook.kit.utils.dynamic
 
 import android.content.Context
 import com.baidu.mobstat.StatService
-import com.ding.basic.net.Config
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.AdControlByChannelBean
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.bean.Map
 import com.ding.basic.bean.Parameter
-import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.net.Config
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
-import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
+import com.dingyue.contract.web.WebResourceCache
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -24,9 +27,6 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.isNumeric
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
-import com.dingyue.contract.web.WebResourceCache
 import java.util.*
 
 class DynamicParameter(private val context: Context) {
@@ -48,6 +48,7 @@ class DynamicParameter(private val context: Context) {
     private var mReqVersion: Int = -1
 
     fun setDynamicParameter() {
+        prepareCheck()
 
         installParams()
 
@@ -58,6 +59,21 @@ class DynamicParameter(private val context: Context) {
         DynamicService.startDynaService(BaseBookApplication.getGlobalContext())
 
     }
+
+    /**
+     * 为了覆盖升级的用户能够强制拉取一次动态参数
+     */
+    private fun prepareCheck() {
+        val versionCode = AppUtils.getVersionCode().toString()
+        val isShouldCheck = SPUtils.getDefaultSharedBoolean(versionCode + SPKey.CHECK_DYNAMIC, true)
+        if (isShouldCheck) {
+            SPUtils.editDefaultShared {
+                putInt(SPKey.DYNAMIC_VERSION, 0)
+                putBoolean(versionCode + SPKey.CHECK_DYNAMIC, false)
+            }
+        }
+    }
+
 
     fun requestAdControl(){
         RequestRepositoryFactory.loadRequestRepositoryFactory(
