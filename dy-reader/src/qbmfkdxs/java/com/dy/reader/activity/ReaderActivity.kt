@@ -279,7 +279,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (hasFocus && !ReaderStatus.isMenuShow) {
+        if (hasFocus && !ReaderStatus.isMenuShow && !ReaderSettings.instance.isAutoReading) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }

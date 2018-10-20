@@ -23,6 +23,7 @@ import com.intelligent.reader.R
 import com.intelligent.reader.activity.SearchBookActivity
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkdxs.frag_web_view.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.utils.AppLog
 
@@ -161,8 +162,24 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.img_search -> {
-                val intent = Intent(activity, SearchBookActivity::class.java)
                 try {
+                    var pageCode = StartLogClickUtil.RECOMMEND_PAGE
+                    if (!TextUtils.isEmpty(url)) {
+                        when (type) {
+                            "recommend", "recommendMan", "recommendWoman", "recommendFinish", "recommendFantasy", "recommendModern" -> {
+                                pageCode = StartLogClickUtil.RECOMMEND_PAGE
+                            }
+                            "rank" -> {
+                                pageCode = StartLogClickUtil.TOP_PAGE
+                            }
+                            "category" -> {
+                                pageCode = StartLogClickUtil.CLASS_PAGE
+                            }
+                        }
+                    }
+
+                    StartLogClickUtil.upLoadEventLog(requireContext(), pageCode, StartLogClickUtil.SEARCH)
+                    val intent = Intent(activity, SearchBookActivity::class.java)
                     startActivity(intent)
                 } catch (exception: Exception) {
                     exception.printStackTrace()

@@ -184,6 +184,11 @@ class RecommendFragment : Fragment() {
                     bundle.putString("url", RequestService.WEB_RECOMMEND_FINISH_DETAIL.replace("{packageName}", AppUtils.getPackageName()) + "- -完结")
                     bundle.putString("title", "完结")
                     RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
+                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.FINISHRECOMMEND_PAGE, StartLogClickUtil.SEQUENCE)
+                    val data = HashMap<String, String>()
+                    data.put("pk", StartLogClickUtil.FINISHRECOMMEND_PAGE)
+                    StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE, data)
+
                 }
                 4 -> {
 
@@ -191,6 +196,10 @@ class RecommendFragment : Fragment() {
                         bundle.putString("url", RequestService.WEB_RECOMMEND_FANTASY_DETAIL.replace("{packageName}", AppUtils.getPackageName()) + "-玄幻-" + recommendCateList.get(0).id)
                         bundle.putString("title", "玄幻")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.XUANHUANRECOMMEND_PAGE, StartLogClickUtil.SEQUENCE)
+                        val data = HashMap<String, String>()
+                        data.put("pk", StartLogClickUtil.XUANHUANRECOMMEND_PAGE)
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
                     }
                 }
                 5 -> {
@@ -198,6 +207,10 @@ class RecommendFragment : Fragment() {
                         bundle.putString("url", RequestService.WEB_RECOMMEND_MODERN_DETAIL.replace("{packageName}", AppUtils.getPackageName()) + "-现代言情-" + recommendCateList.get(1).id)
                         bundle.putString("title", "现代言情")
                         RouterUtil.navigation(requireActivity(), RouterConfig.TABULATION_ACTIVITY, bundle)
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CITYLOVERECOMMEND_PAGE, StartLogClickUtil.SEQUENCE)
+                        val data = HashMap<String, String>()
+                        data.put("pk", StartLogClickUtil.CITYLOVERECOMMEND_PAGE)
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
                     }
                 }
             }
@@ -205,10 +218,28 @@ class RecommendFragment : Fragment() {
     }
 
     private fun uploadTabSwitchLog(position: Int) {
-        val data = HashMap<String, String>()
-        data["type"] = if (position == 0) "1" else "2"
-        StartLogClickUtil.upLoadEventLog(activity,
-                StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.SWITCHTAB, data)
+        var type = "RECOMMEND"
+        when (position) {
+            0 -> {
+                type = "RECOMMEND"
+            }
+            1 -> {
+                type = "MALE"
+            }
+            2 -> {
+                type = "FEMALE"
+            }
+            3 -> {
+                type = "FINISH"
+            }
+            4 -> {
+                type = "XUANHUANRECOMMEND"
+            }
+            5 -> {
+                type = "CITYLOVERECOMMEND"
+            }
+        }
+        StartLogClickUtil.upLoadEventLog(requireContext(), StartLogClickUtil.RECOMMEND_PAGE, type)
     }
 
     private inner class CategoryPageAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

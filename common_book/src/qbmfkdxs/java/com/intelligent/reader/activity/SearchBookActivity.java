@@ -229,8 +229,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                                 bundle.putString("url", redirect.getUrl());
                                 bundle.putString("title", redirect.getTitle());
                                 bundle.putString("from", "authorType");
-                                RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY,
-                                        bundle);
+                                RouterUtil.navigation(SearchBookActivity.this,
+                                        RouterConfig.TABULATION_ACTIVITY, bundle);
                             }
                         } catch (JsonSyntaxException e) {
                             e.printStackTrace();
@@ -640,11 +640,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 if (search_result_clear != null) {
                     search_result_clear.setVisibility(View.GONE);
                 }
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCHRESULT_PAGE,
-                        StartLogClickUtil.CLEAR);
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
-                        StartLogClickUtil.BARCLEAR);
+                        StartLogClickUtil.CLEAR);
                 break;
 
             case R.id.search_result_outcome:

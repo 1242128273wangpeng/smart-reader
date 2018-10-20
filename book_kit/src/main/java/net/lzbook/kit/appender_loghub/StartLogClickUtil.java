@@ -371,6 +371,13 @@ public class StartLogClickUtil {
     public static final String QG_TJY_BOOKCLICK = "BOOKCLICK";//点击搜索
     public static final String QG_TJY_MORE = "MORE";//点击搜索
 
+    //精选玄幻
+    public static final String XUANHUANRECOMMEND_PAGE = "XUANHUANRECOMMEND";//精选玄幻
+    public static final String CITYLOVERECOMMEND_PAGE = "CITYLOVERECOMMEND";//精选现代
+    public static final String FINISHRECOMMEND_PAGE = "FINISHRECOMMEND";//精选完结
+    public static final String SEQUENCE = "SEQUENCE";//点击筛选
+
+
     //青果榜单页
     public static final String QG_BDY_MODULEEXPOSE = "MODULEEXPOSE";//模块露出
     public static final String QG_BDY_BOOKEXPOSE = "BOOKEXPOSE";//各书籍位置露出
@@ -378,7 +385,6 @@ public class StartLogClickUtil {
     public static final String QG_BDY_BOOKCLICK = "BOOKCLICK";//点击搜索
     public static final String QG_BDY_MORE = "MORE";//点击搜索
     public static final String QG_SWITCHTAB = "SWITCHTAB";//点击搜索
-
 
 
     //青果分类页

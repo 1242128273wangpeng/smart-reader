@@ -279,12 +279,12 @@ class TabulationActivity : FrameActivity() {
         data["type"] = "1"
 
         when (fromType) {
-            "class" -> {
+            "category" -> {
                 data["firstclass"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.BACK, data)
             }
 
-            "top" -> {
+            "ranking" -> {
                 data["firsttop"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.BACK, data)
             }
@@ -307,12 +307,12 @@ class TabulationActivity : FrameActivity() {
         val data = HashMap<String, String?>()
 
         when (fromType) {
-            "class" -> {
+            "category" -> {
                 data["firstclass"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH, data)
             }
 
-            "top" -> {
+            "ranking" -> {
                 data["firsttop"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH, data)
             }
