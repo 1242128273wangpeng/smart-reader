@@ -24,6 +24,7 @@ import android.view.WindowManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
+import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.dingyue.contract.router.RouterConfig;
@@ -207,7 +208,7 @@ public class SplashActivity extends FrameActivity {
         complete_count = 0;
         initialization_count = 0;
 
-        initializeDataFusion()
+        initializeDataFusion();
 
         startInitTask();
         // 安装快捷方式
@@ -224,7 +225,7 @@ public class SplashActivity extends FrameActivity {
         RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext());
 
-        books = loadRequest.loadBooks();
+        List<Book> books = loadRequest.loadBooks();
 
         if (books != null) {
             for (Book book : books) {
