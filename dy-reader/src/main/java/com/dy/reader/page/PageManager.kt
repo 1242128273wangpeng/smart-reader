@@ -133,20 +133,33 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
     }
 
     fun isReadyForward(): Boolean {
-        if (!rightPage.isLoaded.get() && rightPage.position.group < ReaderStatus.chapterList.size && !DataProvider.isGroupExist(rightPage.position.group)) {
-            DataProvider.loadGroupWithBusyUI(rightPage.position.book_id, rightPage.position.group, {
+        if (!rightPage.isLoaded.get() && rightPage.position.group < ReaderStatus.chapterList.size) {
+            if (!DataProvider.isGroupExist(rightPage.position.group)) {
+                DataProvider.loadGroupWithBusyUI(rightPage.position.book_id, rightPage.position.group)
+            } else {
                 rightPage.refresh()
-            })
+            }
         }
         return rightPage.isLoaded.get()
     }
 
     fun isReadyBack(): Boolean {
-        if (!leftPage.isLoaded.get() && leftPage.position.group >= 0 && !DataProvider.isGroupExist(leftPage.position.group)) {
-            DataProvider.loadGroupWithBusyUI(leftPage.position.book_id, leftPage.position.group, {
+        if (!leftPage.isLoaded.get() && leftPage.position.group >= 0) {
+            if (!DataProvider.isGroupExist(leftPage.position.group)) {
+                DataProvider.loadGroupWithBusyUI(leftPage.position.book_id, leftPage.position.group)
+            } else {
                 leftPage.refresh()
-            })
+            }
         }
         return leftPage.isLoaded.get()
+    }
+
+    fun refreshLeftAndRightPage() {
+        try {
+            leftPage.refresh()
+            rightPage.refresh()
+        } catch (ex: Exception) {
+            Logger.e("refreshLeftAndRightPage: " + ex.message)
+        }
     }
 }
