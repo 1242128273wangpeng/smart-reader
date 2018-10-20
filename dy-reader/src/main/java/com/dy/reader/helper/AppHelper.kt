@@ -1,13 +1,10 @@
 package com.dy.reader.helper
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.opengl.GLSurfaceView
 import android.os.Handler
 import android.os.Looper
-import android.util.DisplayMetrics
 import android.view.ViewConfiguration
-import android.view.WindowManager
 import com.dy.reader.Reader
 import net.lzbook.kit.utils.logger.AppLog
 import java.util.concurrent.Executors
@@ -27,13 +24,7 @@ object AppHelper {
     val pagingTouchSlop by lazy {
         viewConfiguration.scaledPagingTouchSlop
     }
-
-    val displayMetrics by lazy {
-        var metrics = DisplayMetrics()
-        val wm = Reader.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        wm.defaultDisplay.getRealMetrics(metrics)
-        metrics
-    }
+    
 
     var screenDensity = 0.toFloat()
 
@@ -44,7 +35,7 @@ object AppHelper {
     var screenHeight = 0
 
     val MIN_FLYING_VELOCITY by lazy {
-        400 * displayMetrics.density
+        400 * Reader.context.resources.displayMetrics.density
     }
 
 
@@ -95,7 +86,7 @@ object AppHelper {
      * @return
      */
     fun dp2px(dpValue: Int): Int {
-        val scale = displayMetrics.density
+        val scale = Reader.context.resources.displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
     }
 
@@ -105,7 +96,7 @@ object AppHelper {
      * @return
      */
     fun sp2px(spValue: Int): Int {
-        val fontScale = displayMetrics.scaledDensity
+        val fontScale = Reader.context.resources.displayMetrics.scaledDensity
         return (spValue * fontScale + 0.5f).toInt()
     }
 
@@ -116,7 +107,7 @@ object AppHelper {
      * @return
      */
     fun px2dp(pxValue: Int): Int {
-        val scale = displayMetrics.density
+        val scale = Reader.context.resources.displayMetrics.density
         return (pxValue / scale + 0.5f).toInt()
     }
 
@@ -127,7 +118,7 @@ object AppHelper {
      */
 
     fun px2sp(pxValue: Int): Int {
-        val fontScale = displayMetrics.scaledDensity
+        val fontScale = Reader.context.resources.displayMetrics.scaledDensity
         return (pxValue / fontScale + 0.5f).toInt()
     }
 }
