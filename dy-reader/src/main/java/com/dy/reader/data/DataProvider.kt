@@ -434,7 +434,7 @@ object DataProvider {
                                         ?: "")
                                 separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
-
+                                PageManager.refreshLeftAndRightPage()
                                 callback?.invoke(true)
                             },
                             onError = {
