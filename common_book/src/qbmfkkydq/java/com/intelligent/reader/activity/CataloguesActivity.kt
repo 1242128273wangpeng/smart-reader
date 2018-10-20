@@ -4,6 +4,7 @@ package com.intelligent.reader.activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.Menu
@@ -22,6 +23,8 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
@@ -32,7 +35,6 @@ import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.bean.OfflineDownloadEvent
-import net.lzbook.kit.view.CataloguesContract
 import net.lzbook.kit.presenter.CataloguesPresenter
 import net.lzbook.kit.receiver.OffLineDownLoadReceiver
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
@@ -44,6 +46,7 @@ import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.view.CataloguesContract
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -58,15 +61,12 @@ import java.util.concurrent.Callable
 class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollListener, OnItemClickListener, CataloguesContract {
 
     override fun insertBookShelfResult(result: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun changeShelfButtonClickable(clickable: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun bookSubscribeState(subscribe: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     var type = 2
@@ -102,7 +102,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var downLoadReceiver: OffLineDownLoadReceiver? = null
     private var mCataloguesPresenter: CataloguesPresenter? = null
 
-    private var transformReadDialog: TransformReadDialog?=null
+    private var transformReadDialog: TransformReadDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,8 +112,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             e.printStackTrace()
         }
 
-        colorSelected = resources.getColor(R.color.theme_primary_ffffff)
-        colorNormal = resources.getColor(R.color.theme_primary)
+        colorSelected = ContextCompat.getColor(this, R.color.theme_primary_ffffff)
+        colorNormal = ContextCompat.getColor(this, R.color.theme_primary)
 
         initUI()
         initListener()
@@ -275,10 +275,16 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
-   override fun showReadDialog(){
+    override fun showReadDialog() {
+
         if (!this.isFinishing) {
-            if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+            if (!transformReadDialog!!.isShowing) {
+                val isChecked = SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)
+                if (isChecked) {
+                    intoReadingActivity()
+                } else {
+                    transformReadDialog?.show()
+                }
             }
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }
@@ -400,8 +406,9 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun notifyChangeDownLoad(event:OfflineDownloadEvent) {
+    fun notifyChangeDownLoad(event: OfflineDownloadEvent) {
         if (mCatalogAdapter != null) {
             mCatalogAdapter!!.notifyDataSetChanged()
         }
@@ -563,13 +570,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        var isCatalog = true
-        if (parent === catalog_main) {
-            isCatalog = true
-
-        } else {
-            isCatalog = false
-        }
+        val isCatalog = parent === catalog_main
 
         if (mCataloguesPresenter != null) {
             mCataloguesPresenter!!.catalogToReading(position, isCatalog)
@@ -586,7 +587,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         if (loadingPage != null) {
             loadingPage!!.onSuccess()
         }
-        catalog_chapter_count!!.text = "共" + chapterList.size + "章"
+        catalog_chapter_count!!.text = ("共" + chapterList.size + "章")
         if (mCatalogAdapter != null) {
             if (fromEnd) {
                 isPositive = false
@@ -597,11 +598,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
 
         //设置选中的条目
-        var position = 0
-        if (is_last_chapter) {
-            position = chapterList.size
+        val position = if (is_last_chapter) {
+            chapterList.size
         } else {
-            position = sequence
+            sequence
         }
 
         if (catalog_main != null) {

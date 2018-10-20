@@ -275,6 +275,8 @@
     <string name="translate_code_read">
         您将查看的本小说内容由第三方网站提供，本软件仅提供技术转码服务，以便给您更好的阅读体验，您也可根据页面指引直接浏览原网页。
     </string>
+    <string name="reading_continue">继续阅读</string>
+    <string name="not_show_next_time">下次不再提示</string>
 
     <string name="notice_user_letter">致用户的一封信</string>
     <string name="notice_user_content"
@@ -322,5 +324,6 @@
     <string name="theme_night"></string>
     <string name="mode_day">日间模式</string>
     <string name="mode_night">夜间模式</string>
+
 
 </resources>
