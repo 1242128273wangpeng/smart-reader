@@ -24,7 +24,7 @@ object AppHelper {
     val pagingTouchSlop by lazy {
         viewConfiguration.scaledPagingTouchSlop
     }
-    
+
 
     var screenDensity = 0.toFloat()
 
@@ -35,7 +35,7 @@ object AppHelper {
     var screenHeight = 0
 
     val MIN_FLYING_VELOCITY by lazy {
-        400 *Reader.context.resources.displayMetrics.density
+        400 * Reader.context.resources.displayMetrics.density
     }
 
 
