@@ -39,6 +39,7 @@ import kotlin.collections.ArrayList
  * Created by xian on 18-3-21
  */
 object DataProvider {
+    private var loadFailList = ArrayList<String>()
 
     init {
         EventBus.getDefault().register(this)
@@ -434,12 +435,19 @@ object DataProvider {
                                         ?: "")
                                 separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
-                                PageManager.refreshLeftAndRightPage()
+                                if (loadFailList.contains(ReaderStatus.chapterList[group].chapter_id)) {
+                                    PageManager.refreshLeftAndRightPage()
+                                    loadFailList.remove(ReaderStatus.chapterList[group].chapter_id)
+                                }
+
                                 callback?.invoke(true)
                             },
                             onError = {
                                 AppLog.e("DataProvider", "onError = ")
                                 it.printStackTrace()
+                                if (!loadFailList.contains(ReaderStatus.chapterList[group].chapter_id)) {
+                                    loadFailList.add(ReaderStatus.chapterList[group].chapter_id)
+                                }
                                 callback?.invoke(false)
                             }
                     ))
