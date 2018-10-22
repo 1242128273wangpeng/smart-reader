@@ -292,12 +292,12 @@ interface RequestService {
         /***
          * 精选玄幻详情
          * **/
-        const val WEB_RECOMMEND_FANTASY_DETAIL = "/h5/{packageName}/finishDetail"
+        const val WEB_RECOMMEND_FANTASY_DETAIL = "/h5/{packageName}/categoryDetail"
 
         /***
          * 精选现代详情
          * **/
-        const val WEB_RECOMMEND_MODERN_DETAIL = "/h5/{packageName}/finishDetail"
+        const val WEB_RECOMMEND_MODERN_DETAIL = "/h5/{packageName}/categoryDetail"
 
         /***
          * 作者主页
