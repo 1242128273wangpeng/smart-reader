@@ -23,5 +23,6 @@
 
     <string name="micro_api_host">https://unionapi.bookapi.cn</string>
     <string name="content_api_host">https://unioncontent.bookapi.cn</string>
+    <string name="cdn_host">https://sta.fengxianghuawu.com</string>
 
 </resources>

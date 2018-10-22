@@ -85,4 +85,11 @@ public class BuildConfigProvider implements IBuildConfigProvider {
     public int getVersionCode() {
         return BuildConfig.VERSION_CODE;
     }
+
+    @NotNull
+    @Override
+    public String getCDNHost() {
+        return BuildConfig.cdn_host;
+    }
 }
+

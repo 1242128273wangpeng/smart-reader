@@ -1,16 +1,12 @@
 package net.lzbook.kit.presenter
 
 import android.content.pm.PackageManager
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.CoverCheckItem
-import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
-import com.orhanobut.logger.Logger
-import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.ReadConfig
@@ -22,8 +18,6 @@ import net.lzbook.kit.utils.book.CheckNovelUpdHelper
 import net.lzbook.kit.utils.book.DeleteBookHelper
 import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.download.CacheManager
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.view.HomeView
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -144,15 +138,14 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * 上传用户应用列表
      * **/
     private fun updateApplicationList() {
-        Observable.create(ObservableOnSubscribe<String> { emitter ->
-            Logger.e("UpdateApplicationList")
-            emitter.onNext(AppUtils.scanLocalInstallAppList(packageManager))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(onNext = { message ->
-                    StartLogClickUtil.upLoadApps(message)
-                })
+//        Observable.create(ObservableOnSubscribe<List<String>> { emitter ->
+//            emitter.onNext(mutableListOf(AppUtils.scanLocalInstallAppList(packageManager), AppUtils.loadUserApplicationList(BookApplication.getGlobalContext(), packageManager)))
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeBy(onNext = {
+//                    StartLogClickUtil.upLoadApps(it[0], it[1])
+//                })
     }
 
 }

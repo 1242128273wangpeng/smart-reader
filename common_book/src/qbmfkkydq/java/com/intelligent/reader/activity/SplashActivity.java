@@ -1,10 +1,11 @@
 package com.intelligent.reader.activity;
 
+import static android.view.KeyEvent.KEYCODE_BACK;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,7 +33,6 @@ import com.intelligent.reader.R;
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.service.CheckNovelUpdateService;
-import net.lzbook.kit.ui.activity.GuideActivity;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ShieldManager;
@@ -46,8 +46,6 @@ import net.lzbook.kit.utils.user.UserManager;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
     private static String TAG = "SplashActivity";
@@ -56,7 +54,7 @@ public class SplashActivity extends FrameActivity {
     public int complete_count = 0;
     public ViewGroup ad_view;
     private RequestRepositoryFactory requestRepositoryFactory;
-    private  List<Book> books;
+    private List<Book> books;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -132,39 +130,21 @@ public class SplashActivity extends FrameActivity {
                 false);
         Constants.book_list_sort_type = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("booklist_sort_type", 0);
-        gotoActivity(versionCode, firstGuide);
+        gotoActivity();
     }
 
-    private void gotoActivity(int versionCode, boolean firstGuide) {
-        firstGuide = false;    // 不进入引导界面，开启时请注释掉
-        if (firstGuide) {
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                    getApplicationContext()).edit();
-            editor.putBoolean(versionCode + "first_guide", false);
-            editor.apply();
-            try {
-                Intent intent = new Intent();
-                intent.setClass(SplashActivity.this, GuideActivity.class);
-                intent.putExtra("fromA", "Loading");
-                startActivity(intent);
-                finish();
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Intent intent = new Intent();
-            intent.setClass(SplashActivity.this, HomeActivity.class);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            }
-            finish();
+    private void gotoActivity() {
+
+        Intent intent = new Intent();
+        intent.setClass(SplashActivity.this, HomeActivity.class);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
+        finish();
     }
 
     private void initShield() {
@@ -232,7 +212,8 @@ public class SplashActivity extends FrameActivity {
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = requestRepositoryFactory.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2
+                        && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     requestRepositoryFactory.updateBook(book);
                     requestRepositoryFactory.deleteBookFix(book.getBook_id());
@@ -243,13 +224,11 @@ public class SplashActivity extends FrameActivity {
     }
 
 
-
     private void startInitTask() {
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
     }
-
 
 
     private boolean isGo = true;
@@ -258,7 +237,7 @@ public class SplashActivity extends FrameActivity {
 //        if (ad_view == null) return;
 //        if (Constants.isHideAD) {
 //            AppLog.e(TAG, "Limited AD display!");
-            handler.sendEmptyMessage(0);
+        handler.sendEmptyMessage(0);
 //            return;
 //        }
 //        if (isGo) {
@@ -296,43 +275,29 @@ public class SplashActivity extends FrameActivity {
 
         //判断是否展示广告
 //        if (sharedPreUtil != null) {
-            long limited_time = SPUtils.INSTANCE.getDefaultSharedLong(
-                    SPKey.AD_LIMIT_TIME_DAY, 0L);
-            if (limited_time == 0) {
-                limited_time = System.currentTimeMillis();
-                try {
-                    SPUtils.INSTANCE.putDefaultSharedLong(SPKey.AD_LIMIT_TIME_DAY,
-                            limited_time);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        long limited_time = SPUtils.INSTANCE.getDefaultSharedLong(
+                SPKey.AD_LIMIT_TIME_DAY, 0L);
+        if (limited_time == 0) {
+            limited_time = System.currentTimeMillis();
+            try {
+                SPUtils.INSTANCE.putDefaultSharedLong(SPKey.AD_LIMIT_TIME_DAY,
+                        limited_time);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            AppLog.e(TAG, "Limited_Time : " + limited_time);
-            AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
-            AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
+        }
+        AppLog.e(TAG, "Limited_Time : " + limited_time);
+        AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
+        AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
-            int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
-            boolean init_ad = false;
+        int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
+        boolean init_ad = false;
 
-            if (user_index == 0) {
-                if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
-                        false)) {
-                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 1);
-                    init_ad = true;
-                } else {
-                    init_ad = false;
-                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                    if (Constants.new_app_ad_switch) {
-                        Constants.isHideAD = false;
-                    } else {
-                        Constants.isHideAD = true;
-                    }
-                }
-            } else if (user_index == 1) {
-                if (SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
-                        false)) {
-                    init_ad = true;
-                }
+        if (user_index == 0) {
+            if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
+                    false)) {
+                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 1);
+                init_ad = true;
             } else {
                 init_ad = false;
                 //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
@@ -342,30 +307,44 @@ public class SplashActivity extends FrameActivity {
                     Constants.isHideAD = true;
                 }
             }
+        } else if (user_index == 1) {
+            if (SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
+                    false)) {
+                init_ad = true;
+            }
+        } else {
+            init_ad = false;
+            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+            if (Constants.new_app_ad_switch) {
+                Constants.isHideAD = false;
+            } else {
+                Constants.isHideAD = true;
+            }
+        }
 
-            if (init_ad) {
-                int ad_limit_time_day = SPUtils.INSTANCE.getDefaultSharedInt(
-                        SPKey.USER_NEW_AD_LIMIT_DAY, 0);
-                if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
-                    ad_limit_time_day = Constants.ad_limit_time_day;
-                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_AD_LIMIT_DAY,
-                            ad_limit_time_day);
-                }
+        if (init_ad) {
+            int ad_limit_time_day = SPUtils.INSTANCE.getDefaultSharedInt(
+                    SPKey.USER_NEW_AD_LIMIT_DAY, 0);
+            if (ad_limit_time_day == 0 || Constants.ad_limit_time_day != ad_limit_time_day) {
+                ad_limit_time_day = Constants.ad_limit_time_day;
+                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_AD_LIMIT_DAY,
+                        ad_limit_time_day);
+            }
 
-                if (limited_time + (ad_limit_time_day * (Constants.DEVELOPER_MODE
-                        ? Constants.read_rest_time : Constants.one_day_time)) > System
-                        .currentTimeMillis()) {
-                    Constants.isHideAD = true;
+            if (limited_time + (ad_limit_time_day * (Constants.DEVELOPER_MODE
+                    ? Constants.read_rest_time : Constants.one_day_time)) > System
+                    .currentTimeMillis()) {
+                Constants.isHideAD = true;
+            } else {
+                SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
+                //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
+                if (Constants.new_app_ad_switch) {
+                    Constants.isHideAD = false;
                 } else {
-                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
-                    //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                    if (Constants.new_app_ad_switch) {
-                        Constants.isHideAD = false;
-                    } else {
-                        Constants.isHideAD = true;
-                    }
+                    Constants.isHideAD = true;
                 }
             }
+        }
 //        } else {
 //            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
 //            if (Constants.new_app_ad_switch) {
@@ -447,7 +426,8 @@ public class SplashActivity extends FrameActivity {
                 e.printStackTrace();
             }
 
-            boolean b = SPUtils.INSTANCE.getDefaultSharedBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID, false);
+            boolean b = SPUtils.INSTANCE.getDefaultSharedBoolean(Constants.UPDATE_CHAPTER_SOURCE_ID,
+                    false);
 
             if (!b) {
                 List<Book> bookOnlineList = requestRepositoryFactory.loadBooks();
@@ -455,10 +435,12 @@ public class SplashActivity extends FrameActivity {
                     for (int i = 0; i < bookOnlineList.size(); i++) {
                         Book iBook = bookOnlineList.get(i);
                         if (!TextUtils.isEmpty(iBook.getBook_id())) {
-                            Chapter lastChapter = requestRepositoryFactory.queryLastChapter(iBook.getBook_id());
+                            Chapter lastChapter = requestRepositoryFactory.queryLastChapter(
+                                    iBook.getBook_id());
                             if (lastChapter != null) {
                                 lastChapter.setBook_source_id(iBook.getBook_source_id());
-                                requestRepositoryFactory.updateChapterBySequence(iBook.getBook_id() , lastChapter);
+                                requestRepositoryFactory.updateChapterBySequence(iBook.getBook_id(),
+                                        lastChapter);
                             }
                         }
                     }
@@ -486,7 +468,7 @@ public class SplashActivity extends FrameActivity {
                 // 统计阅读章节数
                 if (Constants.readedCount == 0) {
                     Constants.readedCount = SPUtils.INSTANCE.getDefaultSharedInt(
-                            SPKey.READED_CONT,0);
+                            SPKey.READED_CONT, 0);
                 }
 
                 //

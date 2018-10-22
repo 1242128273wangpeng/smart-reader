@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
 import android.support.annotation.RawRes
 import android.support.v4.content.ContextCompat
+import com.ding.basic.util.sp.SPKey
 import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
@@ -18,7 +19,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.InstanceCreator
 import com.google.gson.annotations.SerializedName
 import net.lzbook.kit.constants.Constants
-import com.ding.basic.util.sp.SPKey
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream
@@ -27,7 +27,7 @@ import java.text.NumberFormat
 
 
 /**
- * Created by xian on 18-3-24.
+ * Created by xian on 18-3-24
  */
 class ReaderSettings {
 
@@ -47,6 +47,9 @@ class ReaderSettings {
         private val preferences by lazy {
             Reader.context.getSharedPreferences(READER_CONFIG, Context.MODE_PRIVATE)
         }
+
+        const val DEFAULT_BRIGHTNESS = 80
+        const val NOT_SET_BRIGHTNESS = -1
     }
 
     private class GsonCreator : InstanceCreator<ReaderSettings> {
@@ -59,7 +62,7 @@ class ReaderSettings {
     enum class ConfigType {
         ANIMATION,
         PAGE_REFRESH, CHAPTER_REFRESH, FONT_REFRESH, AUTO_PAUSE, AUTO_RESUME,
-        GO_TO_BOOKEND,CHAPTER_SUCCESS,
+        GO_TO_BOOKEND, CHAPTER_SUCCESS, ADDSHLEF_SUCCESS,
         TITLE_COCLOR_REFRESH
     }
 
@@ -125,14 +128,14 @@ class ReaderSettings {
 
         isAutoBrightness = sharedPreferences.getBoolean("auto_brightness", true)
         isFullScreenRead = sharedPreferences.getBoolean("full_screen_read", false)
-        screenBrightness = sharedPreferences.getInt("screen_bright", -1)
+        screenDayBrightness = sharedPreferences.getInt("screen_bright", -1)
         readLightThemeMode = sharedPreferences.getInt("current_light_mode", 51)
         readThemeMode = sharedPreferences.getInt("content_mode", 51)
 
         try {
             readInterlineaSpace = sharedPreferences!!.getInt("read_interlinear_space", 3) * 0.1f
             readInterlineaSpace = java.lang.Float.valueOf(numberFormat.format(readInterlineaSpace.toDouble()))!!
-            readParagraphSpace = sharedPreferences!!.getInt("read_paragraph_space", 10) * 0.1f
+            readParagraphSpace = sharedPreferences.getInt("read_paragraph_space", 10) * 0.1f
             readParagraphSpace = java.lang.Float.valueOf(numberFormat.format(readParagraphSpace.toDouble()))!!
         } catch (e: NumberFormatException) {
             e.printStackTrace()
@@ -263,13 +266,55 @@ class ReaderSettings {
         }
 
     @SerializedName(value = "isAutoBrightness")
-    var isAutoBrightness = true
+    var isDayAutoBrightness = true
+
+    @SerializedName(value = "isNightAutoBrightness")
+    var isNightAutoBrightness = false
+
+    @Transient
+    var isAutoBrightness = false
+        get() {
+            return if (readThemeMode == 61) {
+                isNightAutoBrightness
+            } else {
+                isDayAutoBrightness
+            }
+        }
+        set(value) {
+            if (readThemeMode == 61) {
+                isNightAutoBrightness = value
+            } else {
+                isDayAutoBrightness = value
+            }
+            field = value
+        }
 
     @SerializedName(value = "isVolumeTurnover")
     var isVolumeTurnover = true
 
     @SerializedName(value = "screenBrightness")
-    var screenBrightness = 10
+    var screenDayBrightness = NOT_SET_BRIGHTNESS
+
+    @SerializedName(value = "screenNightBrightness")
+    var screenNightBrightness = NOT_SET_BRIGHTNESS
+
+    @Transient
+    var screenBrightness = 0
+        get() {
+            return if (readThemeMode == 61) {
+                screenNightBrightness
+            } else {
+                screenDayBrightness
+            }
+        }
+        set(value) {
+            if (readThemeMode == 61) {
+                screenNightBrightness = value
+            } else {
+                screenDayBrightness = value
+            }
+            field = value
+        }
 
     @SerializedName(value = "fontColor")
     @ColorInt

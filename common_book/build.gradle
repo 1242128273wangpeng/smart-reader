@@ -632,6 +632,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwqbmfkk.muxinvideo.com\""
             buildConfigField "String", "micro_api_host", "\"https://aqbmfkkydqunionapi.basicnos.cn\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfkkydqunioncontent.basicnos.cn\""
+            buildConfigField "String", "cdn_host", "\"https://sta-cnqbmfkkydqreader.bookapi.cn\""
         }
 
         mfxsqbyd {
@@ -662,7 +663,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwmfxsqb.fengxianghuawu.com\""
             buildConfigField "String", "micro_api_host", "\"https://amfxsqbydunionapi.mantantd.cn\""
             buildConfigField "String", "content_api_host", "\"https://amfxsqbydunioncontent.mantantd.cn\""
-
+            buildConfigField "String", "cdn_host", "\"https://sta.fengxianghuawu.com\""
         }
 
     }
