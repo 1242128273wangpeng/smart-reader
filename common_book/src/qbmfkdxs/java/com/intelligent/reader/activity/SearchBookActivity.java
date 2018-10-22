@@ -119,6 +119,23 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             }
 
         }
+
+        if (search_result_content != null) {
+            String keyword = search_result_input.getText().toString();
+            if (!TextUtils.isEmpty(keyword)) {
+                search_result_content.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            search_result_content.loadUrl("javascript:refreshNew()");
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                            finish();
+                        }
+                    }
+                });
+            }
+        }
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {

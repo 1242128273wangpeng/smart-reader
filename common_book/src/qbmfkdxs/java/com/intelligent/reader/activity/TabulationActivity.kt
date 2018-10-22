@@ -105,6 +105,16 @@ class TabulationActivity : FrameActivity() {
     override fun onResume() {
         super.onResume()
         StatService.onResume(this)
+        if (web_tabulation_content != null) {
+            web_tabulation_content?.post {
+                try {
+                    web_tabulation_content.loadUrl("javascript:refreshNew()")
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    finish()
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -307,7 +317,7 @@ class TabulationActivity : FrameActivity() {
         val data = HashMap<String, String?>()
 
         when (fromType) {
-            "category" -> {
+            "class" -> {
                 data["firstclass"] = title
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH, data)
             }
