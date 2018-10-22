@@ -15,7 +15,6 @@
         app:indicatorColor="#00C298"
         app:indicatorMargin="13dp"
         app:indicatorTextSize="17sp"
-        android:paddingLeft="12dp"
         app:selectedIndicatorTextSize="24sp"
         app:indicatorTextColor="@color/text_color_dark"
         android:layout_width="match_parent"

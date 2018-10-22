@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.intelligent.reader.R;
 
+import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 
 /**
@@ -219,7 +220,7 @@ public class FlymeTabScaleStrip extends HorizontalScrollView {
         float leftPadding = currentTab.getLeft();
         // 当前tab的右边相对于父容器左边距
         float rightPadding = currentTab.getRight();
-        float tempPadding = 30f;
+        float tempPadding = 60f;
         // 如果出现位移
 
         float centerPosition = 0.0f;
@@ -228,33 +229,24 @@ public class FlymeTabScaleStrip extends HorizontalScrollView {
             View nextTab = container.getChildAt(currentPosition + 1);
             final float nextTabLeft = nextTab.getLeft();
             final float nextTabRight = nextTab.getRight();
+            AppLog.e("current11",
+                    leftPadding + "=====" + nextTabLeft + "==" + (nextTabLeft - leftPadding)
+                            + "===");
             // 位置是在滑动过程中不断变化的
             leftPadding = (currentPositionOffset * nextTabLeft
                     + (1f - currentPositionOffset) * leftPadding);
             rightPadding = (currentPositionOffset * nextTabRight
                     + (1f - currentPositionOffset) * rightPadding);
         }
-        centerPosition = (rightPadding - leftPadding) / 2 + leftPadding;
-
-        float left = centerPosition - tempPadding - formatPercent(currentPositionOffset)
-                * tempPadding;
-        float right = centerPosition + tempPadding + formatPercent(currentPositionOffset)
-                * tempPadding;
-
 
         if (bitmap == null) {
             bitmap = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.recommend_bottom_line_icon);
         }
         // 绘制
-//        canvas.drawRect(left, height - indicatorHeight, right, height, paint);
         mBrounds = new RectF();
-        mBrounds.set(left, height - indicatorHeight, right, height);
-        mSrcRect = new Rect();
-        mSrcRect.set(0, 0, AppUtils.px2dip(context, 25f), bitmap.getHeight());
-
-//        canvas.drawRoundRect(mBrounds, AppUtils.px2dip(context,125f),AppUtils.px2dip(context,
-// 125f),paint);
+        mBrounds.set(leftPadding + indicatorMargin, height - indicatorHeight,
+                leftPadding + indicatorMargin + selectedTextSize, height);
         canvas.drawBitmap(bitmap, null, mBrounds, paint);
     }
 
