@@ -18,6 +18,7 @@ import com.ding.basic.Config
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.showToastMessage
+import com.dingyue.contract.web.CustomWebClient
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -35,6 +36,7 @@ import java.util.*
 class DisclaimerActivity : iyouqu.theme.FrameActivity() {
 
     private var gestureDetector: GestureDetector? = null
+    private var customWebClient: CustomWebClient? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -69,16 +71,11 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
         if (isFormDisclaimerPage) {
             txt_title.text = resources.getString(R.string.disclaimer_statement)
             web_disclaimer.visibility = View.VISIBLE
-            web_disclaimer.webViewClient = object : WebViewClient() {
-                override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,
-                                                error: SslError?) {
-                    handler?.proceed()
-                }
-            }
+            customWebClient = CustomWebClient(this, web_disclaimer)
+            customWebClient?.initWebViewSetting()
+            web_disclaimer?.webViewClient = customWebClient
             val pkName = AppUtils.getPackageName()
             web_disclaimer.loadUrl("${Config.cdnHost}/${if (pkName != "cn.mfxsqbyd.reader") pkName.replace("\\.".toRegex(), "-") else pkName}/protocol/protocol.html")
-            val fontSize = resources.getDimension(R.dimen.text_size_12)
-            web_disclaimer.settings.defaultFontSize = fontSize.toInt()
 
             //可以打开调试模式
             rl_disclaimer.setOnClickListener {
