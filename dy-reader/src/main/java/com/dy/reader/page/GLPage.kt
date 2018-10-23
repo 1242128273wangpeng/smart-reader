@@ -52,6 +52,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                 }
 
                 canvas = Canvas(bitmap)
+                canvas?.density = Reader.context.resources.displayMetrics.densityDpi
             }
         }
 
