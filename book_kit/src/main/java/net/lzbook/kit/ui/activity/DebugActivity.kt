@@ -137,7 +137,11 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         btn_debug_show_toast.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHOW_TOAST_LOG, false)
         var backId=AppUtils.getDrawableByName(this,"icon_back_left")
         if(backId!=-1) {
-            iv_back.setImageResource(backId)
+            try{
+               iv_back.setImageResource(backId)
+            }catch (e:Throwable){
+                e.printStackTrace()
+            }
         }
         iv_back.setOnClickListener(this)
 
