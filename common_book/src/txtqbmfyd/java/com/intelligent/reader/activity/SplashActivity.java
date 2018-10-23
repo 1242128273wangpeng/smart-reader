@@ -533,7 +533,8 @@ public class SplashActivity extends FrameActivity {
             AppLog.e(TAG, "Current_Time : " + System.currentTimeMillis());
             AppLog.e(TAG, "AD_Limited_day : " + Constants.ad_limit_time_day);
 
-            int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
+//            int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
+            int user_index = 2;
             boolean init_ad = false;
 
             if (user_index == 0) {
