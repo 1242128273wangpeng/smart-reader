@@ -17,8 +17,6 @@ class SearchBookActivity : BaseSearchActivity() {
 
     override fun headLayout(): Int = R.layout.activity_search_book
 
-    override fun isShowHistoryFragment(): Boolean = false
-
     override fun initFragment() {
 
         // 接收HotWordFragment子条目的点击事件

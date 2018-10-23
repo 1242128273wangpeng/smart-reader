@@ -14,25 +14,27 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.view.TransformReadDialog
-import net.lzbook.kit.view.CataloguesContract
+import kotlinx.android.synthetic.qbmfrmxs.act_catalog.*
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.bean.OfflineDownloadEvent
 import net.lzbook.kit.presenter.CataloguesPresenter
 import net.lzbook.kit.receiver.OffLineDownLoadReceiver
-import kotlinx.android.synthetic.qbmfrmxs.act_catalog.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.bean.OfflineDownloadEvent
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.router.RouterConfig
-import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.view.CataloguesContract
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -224,8 +226,14 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     override fun showReadDialog(){
         if (!this.isFinishing) {
-            if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+            if (!transformReadDialog!!.isShowing()) {
+                val isChecked = SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)
+                if (isChecked) {
+                    intoReadingActivity()
+                } else {
+                    transformReadDialog?.show()
+                }
+
             }
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }

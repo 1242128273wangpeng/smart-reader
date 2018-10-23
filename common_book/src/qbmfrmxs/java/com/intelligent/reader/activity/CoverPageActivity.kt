@@ -15,6 +15,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.SearchBookActivity
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
@@ -209,10 +211,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
 
         if (!this.isFinishing) {
-            if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+            if (!transformReadDialog!!.isShowing()) {
+                transformReadDialog?.isShowing()?.let {
+                    if (!it) {
+                        val isChecked = SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)
+                        if (isChecked) {
+                            intoReadingActivity()
+                        } else {
+                            transformReadDialog?.show()
+                        }
+                    }
+                }
             }
-
 
         }
     }

@@ -68,7 +68,7 @@ class DynamicParameter(private val context: Context) {
         val isShouldCheck = SPUtils.getDefaultSharedBoolean(versionCode + SPKey.CHECK_DYNAMIC, true)
         if (isShouldCheck) {
             SPUtils.editDefaultShared {
-                putInt(SPKey.DYNAMIC_VERSION, 0)
+                putInt(SPKey.DYNAMIC_VERSION, -1)
                 putBoolean(versionCode + SPKey.CHECK_DYNAMIC, false)
             }
         }

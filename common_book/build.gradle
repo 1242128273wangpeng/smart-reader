@@ -603,6 +603,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://show.fengxianghuawu.com\""
             buildConfigField "String", "micro_api_host", "\"https://aqbmfrmxsunionapi.jingytech.com\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfrmxsunioncontent.jingytech.com\""
+            buildConfigField "String", "cdn_host", "\"https://sta.fengxianghuawu.com\""
 
         }
 

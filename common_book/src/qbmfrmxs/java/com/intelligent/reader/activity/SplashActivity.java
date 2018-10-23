@@ -141,10 +141,10 @@ public class SplashActivity extends FrameActivity {
                 false);
         Constants.book_list_sort_type = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("booklist_sort_type", 0);
-        gotoActivity(versionCode, firstGuide);
+        gotoActivity();
     }
 
-    private void gotoActivity(int versionCode, boolean firstGuide) {
+    private void gotoActivity() {
 
         Intent intent = new Intent();
         intent.setClass(SplashActivity.this, HomeActivity.class);
@@ -156,8 +156,8 @@ public class SplashActivity extends FrameActivity {
             e.printStackTrace();
         }
         finish();
-
     }
+
 
     private void initShield() {
         ShieldManager shieldManager = new ShieldManager(getApplicationContext());

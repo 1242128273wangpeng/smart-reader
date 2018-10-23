@@ -13,9 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
-
 import com.dy.reader.R
-import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
 import com.dy.reader.page.Position
@@ -23,7 +21,6 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-
 import kotlinx.android.synthetic.qbmfrmxs.reader_option_bottom.view.*
 import kotlinx.android.synthetic.qbmfrmxs.reader_option_detail.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -98,6 +95,16 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         ckb_reader_full_screen.isChecked = readerSettings.isFullScreenRead
 
         resetBtn(Constants.isSlideUp)
+
+        rl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
 
     }
 
@@ -214,7 +221,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         val screenBrightness = readerSettings.screenBrightness
 
         if (screenBrightness >= 0) {
-            skbar_reader_brightness_change?.progress = screenBrightness
+            skbar_reader_brightness_change?.progress = if (screenBrightness <= 20) 0 else screenBrightness
         } else {
             skbar_reader_brightness_change?.progress = 5
         }
@@ -456,6 +463,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
+                changeBrightnessByModeChange()
             }
             R.id.img_reader_font_reduce// 减小字号
             -> {
@@ -658,6 +666,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     fun changePageBackgroundWrapper(index: Int) {
         if (readerSettings.readThemeMode == 61) {
             presenter?.chageNightMode(index, false)
+            changeBrightnessByModeChange()
         } else {
             setNovelMode(index)
         }
@@ -951,6 +960,29 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
         }
     }
+
+    private fun changeBrightnessByModeChange() {
+        if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+            setBrightnessBackground(false)
+            readerSettings.isAutoBrightness = false
+            ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+        }
+
+        if (readerSettings.isAutoBrightness) {
+            ckb_reader_brightness_system?.isChecked = true
+            readPresenter?.startAutoBrightness()
+            val screenBrightness = readerSettings.screenBrightness
+            if (screenBrightness > 0) {
+                skbar_reader_brightness_change?.progress = screenBrightness
+            }
+            skbar_reader_brightness_change?.progress = 0
+        } else {
+            ckb_reader_brightness_system?.isChecked = false
+            setScreenBright()
+            setScreenBrightProgress()
+        }
+    }
+
 
     companion object {
         private val SETTING_OPTION = 1
