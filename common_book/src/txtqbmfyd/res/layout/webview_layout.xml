@@ -87,25 +87,29 @@
         </RelativeLayout>
     </RelativeLayout>
 
-
-    <net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
-        android:id="@+id/srl_web_view_refresh"
+    <RelativeLayout
+        android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_web_view_head">
-
-        <com.intelligent.reader.widget.topshadow.TopShadowWebView
-            android:id="@+id/web_view_content"
+        <net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
+            android:id="@+id/srl_web_view_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"/>
-    </net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout>
+            android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/img_head_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="@drawable/top_shadow_bg"
-        android:visibility="gone"/>
+            <com.intelligent.reader.widget.topshadow.TopShadowWebView
+                android:id="@+id/web_view_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"/>
+        </net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout>
+        <ImageView
+            android:id="@+id/img_head_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/top_shadow"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
 </RelativeLayout>

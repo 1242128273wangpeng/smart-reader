@@ -174,7 +174,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
-            android:src="@drawable/bookshelf_common_shadow_bg"
+            android:src="@drawable/top_shadow"
             android:visibility="gone"/>
 
     </RelativeLayout>
