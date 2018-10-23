@@ -61,7 +61,7 @@ class TransformReadDialog(val activity: Activity) {
     }
 
     fun show() {
-        dialog.ckb_not_show_next_time.isChecked = false
+        dialog.ckb_not_show_next_time.isChecked = true
         dialog.show()
     }
 
