@@ -68,7 +68,7 @@ class DynamicParameter(private val context: Context) {
         val isShouldCheck = context.getSharedBoolean(versionCode + SharedPreUtil.CHECK_DYNAMIC, true)
         if (isShouldCheck) {
             context.editShared {
-                putInt(SharedPreUtil.DYNAMIC_VERSION, 0)
+                putInt(SharedPreUtil.DYNAMIC_VERSION, -1)
                 putBoolean(versionCode + SharedPreUtil.CHECK_DYNAMIC, false)
             }
         }
