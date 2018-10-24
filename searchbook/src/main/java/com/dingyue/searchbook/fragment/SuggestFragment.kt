@@ -17,6 +17,7 @@ import com.dingyue.searchbook.view.ISuggestView
 import kotlinx.android.synthetic.main.fragment_listview.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.enterCover
+import net.lzbook.kit.utils.toast.ToastUtil
 import java.util.*
 
 /**
@@ -92,63 +93,68 @@ class SuggestFragment : Fragment(), ISuggestView {
 
     private fun onSuggestItemClick(suggestList: MutableList<Any>) {
         listView.setOnItemClickListener { _, _, position, _ ->
-            val obj = suggestList[position]
-            if (obj is SearchCommonBeanYouHua) {
-                searchCommonBean = obj
-            } else {
-                return@setOnItemClickListener
-            }
-
-            val suggest = searchCommonBean.suggest
-            val searchType: String
-            var isAuthor = 0
-            val data = HashMap<String, String>()
-
-
-            when (searchCommonBean.wordtype) {
-                "label" -> {
-                    searchType = "1"
-                }
-                "author" -> {
-                    searchType = "2"
-                    isAuthor = searchCommonBean.isAuthor
-                }
-                "name" -> {
-                    searchType = "3"
-                    data.put("bookid", searchCommonBean.book_id)
-
-                    //统计进入到书籍封面页
-                    val data1 = HashMap<String, String>()
-                    data1.put("BOOKID", searchCommonBean.book_id)
-                    data1.put("source", "SEARCH")
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data1)
-
-                    requireActivity().enterCover(
-                            author = searchCommonBean.author,
-                            book_id = searchCommonBean.book_id,
-                            book_source_id = searchCommonBean.book_source_id)
-                }
-                else -> {
-                    searchType = "0"
-                }
-            }
-
-            if (!TextUtils.isEmpty(suggest) && suggestList.isNotEmpty()) {
-                if (!TextUtils.isEmpty(suggest)) {
-                    data.put("keyword", suggest)
-                    data.put("type", searchType)
-                    data.put("enterword", suggest.trim({ it <= ' ' }))
-
-                    itemGapViewCount = (0 until position).count { suggestList[it] !is SearchCommonBeanYouHua }
-
-                    data.put("rank", (position + 1 - itemGapViewCount).toString())
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
+            try {
+                val obj = suggestList[position]
+                if (obj is SearchCommonBeanYouHua) {
+                    searchCommonBean = obj
+                } else {
+                    return@setOnItemClickListener
                 }
 
-                if (searchType != "3") {
-                    onSuggestClickListener?.onSuggestClick(suggest, searchType, isAuthor)
+                val suggest = searchCommonBean.suggest
+                val searchType: String
+                var isAuthor = 0
+                val data = HashMap<String, String>()
+
+
+                when (searchCommonBean.wordtype) {
+                    "label" -> {
+                        searchType = "1"
+                    }
+                    "author" -> {
+                        searchType = "2"
+                        isAuthor = searchCommonBean.isAuthor
+                    }
+                    "name" -> {
+                        searchType = "3"
+                        data.put("bookid", searchCommonBean.book_id)
+
+                        //统计进入到书籍封面页
+                        val data1 = HashMap<String, String>()
+                        data1.put("BOOKID", searchCommonBean.book_id)
+                        data1.put("source", "SEARCH")
+                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data1)
+
+                        requireActivity().enterCover(
+                                author = if (searchCommonBean.author == null) "" else searchCommonBean.author,
+                                book_id = searchCommonBean.book_id,
+                                book_source_id = searchCommonBean.book_source_id)
+                    }
+                    else -> {
+                        searchType = "0"
+                    }
                 }
 
+                if (!TextUtils.isEmpty(suggest) && suggestList.isNotEmpty()) {
+                    if (!TextUtils.isEmpty(suggest)) {
+                        data.put("keyword", suggest)
+                        data.put("type", searchType)
+                        data.put("enterword", suggest.trim({ it <= ' ' }))
+
+                        itemGapViewCount = (0 until position).count { suggestList[it] !is SearchCommonBeanYouHua }
+
+                        data.put("rank", (position + 1 - itemGapViewCount).toString())
+                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
+                    }
+
+                    if (searchType != "3") {
+                        onSuggestClickListener?.onSuggestClick(suggest, searchType, isAuthor)
+                    }
+
+                }
+            }catch (e:Throwable){
+                e.printStackTrace()
+                ToastUtil.showToastMessage("跳转失败")
             }
         }
     }
