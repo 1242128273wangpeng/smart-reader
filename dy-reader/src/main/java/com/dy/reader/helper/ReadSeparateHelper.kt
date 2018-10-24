@@ -101,11 +101,6 @@ object ReadSeparateHelper {
             }
         }
         val text = sb.toString()
-        if (ReaderStatus.position.offset > text.length) {
-            ReaderStatus.position.offset = 0
-        } else if (ReaderStatus.position.offset < 0) {
-            ReaderStatus.position.offset = 0
-        }
 
         val contentList = getNovelText(readerSettings.mPaint!!, text, readerSettings.mWidth)
         val size = contentList.size
