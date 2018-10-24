@@ -6,7 +6,10 @@ import android.app.FragmentManager
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.WindowManager
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventLoading
@@ -16,8 +19,8 @@ import com.dy.reader.page.GLReaderView
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import net.lzbook.kit.ui.activity.base.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.frag_read_setting.*
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.CallBackDownload
 import org.greenrobot.eventbus.EventBus
@@ -211,6 +214,9 @@ class ReadSettingFragment : DialogFragment() , CallBackDownload {
 
     override fun onDestroy() {
         super.onDestroy()
+        if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
+            CacheManager.listeners.remove(this)
+        }
         EventBus.getDefault().unregister(this)
         mPresenter?.clear()
     }
