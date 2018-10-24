@@ -129,7 +129,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mCollapsed = !mCollapsed;
         mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        try {
+            mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
         Map<String, String> data = new HashMap<>();
 
         if (mCollapsedStatus != null) {
@@ -232,12 +236,20 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
         Resources resources = BaseBookApplication.getGlobalContext().getResources();
         if (mExpandDrawable == null) {
-            int img_Id = resources.getIdentifier("icon_close_text", "drawable", AppUtils.getPackageName());
-            mExpandDrawable = getResources().getDrawable(img_Id);
+            try {
+                int img_Id = resources.getIdentifier("icon_close_text", "drawable", AppUtils.getPackageName());
+                mExpandDrawable = getResources().getDrawable(img_Id);
+            }catch (Throwable e){
+                e.printStackTrace();
+            }
         }
         if (mCollapseDrawable == null) {
-            int img_Id = resources.getIdentifier("icon_open_text", "drawable", AppUtils.getPackageName());
-            mCollapseDrawable = getResources().getDrawable(img_Id);
+            try {
+                int img_Id = resources.getIdentifier("icon_open_text", "drawable", AppUtils.getPackageName());
+                mCollapseDrawable = getResources().getDrawable(img_Id);
+            }catch (Throwable e){
+                e.printStackTrace();
+            }
         }
 
         typedArray.recycle();
@@ -252,7 +264,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mButton.setCompoundDrawablePadding(12);
         mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        try{
+            mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
         mButton.setOnClickListener(this);
     }
 
@@ -264,7 +280,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mCollapsed = isCollapsed;
         mButton.setText(mCollapsed ? "展开" : "收起");
 //        mButton.setTextColor(Color.GRAY);
-        mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        try {
+            mButton.setCompoundDrawablesWithIntrinsicBounds(null, null, mCollapsed ? mExpandDrawable : mCollapseDrawable, null);
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
         setText(text);
         getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
         requestLayout();
