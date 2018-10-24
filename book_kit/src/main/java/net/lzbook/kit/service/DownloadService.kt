@@ -26,9 +26,9 @@ import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.BookTask
-import net.lzbook.kit.utils.encrypt.v17.util.NovelException
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.download.*
+import net.lzbook.kit.utils.encrypt.v17.util.NovelException
 import net.lzbook.kit.utils.runOnMain
 import java.io.ByteArrayInputStream
 import java.io.IOException
@@ -71,49 +71,53 @@ class DownloadService : Service(), Runnable {
     override fun run() {
 
         while (!shouldExit) {
-            val task = CacheManager.getNextTask()
-            if (task != null) {
+            try {
+                val task = CacheManager.getNextTask()
+                if (task != null) {
 
-                if (task.state != DownloadState.WAITTING) {
+                    if (task.state != DownloadState.WAITTING) {
+                        CacheManager.innerListener.onTaskStatusChange(task.book_id)
+                        continue
+                    }
+
+                    task.startSequence = Math.max(0, task.startSequence)
+                    task.state = DownloadState.DOWNLOADING
+                    if (task.book_id == null) {
+                        Log.e("cache", "cache book_id == null ${task.book}")
+                        task.state = DownloadState.PAUSEED
+                        continue
+                    }
                     CacheManager.innerListener.onTaskStatusChange(task.book_id)
-                    continue
-                }
 
-                task.startSequence = Math.max(0, task.startSequence)
-                task.state = DownloadState.DOWNLOADING
-                if (task.book_id == null) {
-                    Log.e("cache", "cache book_id == null ${task.book}")
-                    task.state = DownloadState.PAUSEED
-                    continue
-                }
-                CacheManager.innerListener.onTaskStatusChange(task.book_id)
+                    if (task.isOldTaskProgress) {
+                        val editor = getSharedPreferences(CacheManager.DOWN_INDEX, Context.MODE_PRIVATE).edit()
+                        editor.remove(task.book_id)
+                        editor.apply()
+                        DataCache.deleteOtherSourceCache(task.book)
+                    }
 
-                if (task.isOldTaskProgress) {
-                    val editor = getSharedPreferences(CacheManager.DOWN_INDEX, Context.MODE_PRIVATE).edit()
-                    editor.remove(task.book_id)
-                    editor.apply()
-                    DataCache.deleteOtherSourceCache(task.book)
-                }
+                    val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
 
-                val requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
-
-                if (requestRepositoryFactory.getChapterCount(task.book_id) <= 0) {
-                    requestBookCatalog(task)
+                    if (requestRepositoryFactory.getChapterCount(task.book_id) <= 0) {
+                        requestBookCatalog(task)
+                    } else {
+                        try {
+                            downBook(task, requestRepositoryFactory.queryAllChapters(task.book_id), requestRepositoryFactory)
+                        } catch (e: Exception) {
+                        }
+                    }
                 } else {
-                    try {
-                        downBook(task, requestRepositoryFactory.queryAllChapters(task.book_id), requestRepositoryFactory)
-                    } catch (e: Exception) {
+                    synchronized(lock) {
+                        try {
+                            lock.wait()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            shouldExit = true
+                        }
                     }
                 }
-            } else {
-                synchronized(lock) {
-                    try {
-                        lock.wait()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        shouldExit = true
-                    }
-                }
+            }catch (e:Throwable){
+                e.printStackTrace()
             }
         }
     }
