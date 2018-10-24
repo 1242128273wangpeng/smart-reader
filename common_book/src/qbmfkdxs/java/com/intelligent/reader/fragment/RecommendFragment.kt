@@ -199,7 +199,7 @@ class RecommendFragment : Fragment() {
                         StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.XUANHUANRECOMMEND_PAGE, StartLogClickUtil.SEQUENCE)
                         val data = HashMap<String, String>()
                         data.put("pk", StartLogClickUtil.XUANHUANRECOMMEND_PAGE)
-                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE, data)
                     }
                 }
                 5 -> {
@@ -210,7 +210,7 @@ class RecommendFragment : Fragment() {
                         StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CITYLOVERECOMMEND_PAGE, StartLogClickUtil.SEQUENCE)
                         val data = HashMap<String, String>()
                         data.put("pk", StartLogClickUtil.CITYLOVERECOMMEND_PAGE)
-                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
+                        StartLogClickUtil.upLoadEventLog(requireActivity(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE, data)
                     }
                 }
             }
