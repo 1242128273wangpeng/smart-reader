@@ -22,9 +22,6 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import net.lzbook.kit.utils.theme.ThemeHelper
-import kotlinx.android.synthetic.txtqbmfyd.reader_option_detail.view.*
-import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_background.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_bottom.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_chapter_change.view.*
@@ -33,8 +30,12 @@ import kotlinx.android.synthetic.txtqbmfyd.reader_option_font.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.ResourceUtil
+import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.onEnd
+import net.lzbook.kit.utils.preventClickShake
+import net.lzbook.kit.utils.theme.ThemeHelper
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 
@@ -157,8 +158,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
             SETTING_DETAIL -> {
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.DISMISS_TOP_MENU))
-                ll_reader_setting_detail?.visibility = View.VISIBLE
-                rl_reader_option_bottom?.visibility = View.GONE
+                rl_reader_option_bottom?.visibility = View.VISIBLE
 
                 read_setting_backdrop_group.setOnCheckedChangeListener(null)
 
@@ -311,7 +311,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         img_reader_night?.preventClickShake(this)
 
-        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
+//        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {
@@ -439,6 +439,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
             R.id.rl_reader_background -> {
                 checkOptionLayout(R.id.rl_reader_background)
+                changeBottomSettingView(SETTING_DETAIL)
             }
 
             R.id.rl_reader_font , R.id.ibtn_reader_font-> {
