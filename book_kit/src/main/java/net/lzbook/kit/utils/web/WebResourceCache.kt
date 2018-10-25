@@ -14,10 +14,10 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
+import java.io.File
 import java.math.BigInteger
 import java.net.URL
 import java.security.MessageDigest
-import java.io.*
 
 /**
  * Desc 请描述这个文件
@@ -82,7 +82,7 @@ class WebResourceCache {
             null
         } else {
             val fileName = loadCacheFileName(url, "MD5")
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "" + fileExtension
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
 
             val file = File(filePath)
 
@@ -123,7 +123,7 @@ class WebResourceCache {
             val fileName = loadCacheFileName(url, "MD5")
             val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
 
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "" + fileExtension
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
 
             val file = File(filePath)
 
