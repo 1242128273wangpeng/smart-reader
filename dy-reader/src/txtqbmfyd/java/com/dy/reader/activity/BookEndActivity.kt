@@ -26,6 +26,7 @@ import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -138,6 +139,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
             try {
+                val ref = WeakReference(this).get() ?: return@loadBookEndMedia
+                if (ref.isFinishing) return@loadBookEndMedia
                 if (isSuccess) {
                     rl_book_end_ad?.visibility = View.VISIBLE
                     rl_book_end_ad?.addView(view)
