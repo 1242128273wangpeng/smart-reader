@@ -41,8 +41,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import net.lzbook.kit.utils.router.RouterConfig;
-import net.lzbook.kit.utils.router.RouterUtil;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
@@ -51,24 +49,26 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.service.DynamicService;
 import net.lzbook.kit.utils.ATManager;
-import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.ResourceUtil;
+import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
+import net.lzbook.kit.utils.swipeback.SwipeBackHelper;
+import net.lzbook.kit.utils.theme.StateListListenerDrawable;
+import net.lzbook.kit.utils.theme.ThemeHelper;
+import net.lzbook.kit.utils.theme.ThemeMode;
+import net.lzbook.kit.utils.theme.statusbar.impl.FlymeHelper;
+import net.lzbook.kit.utils.theme.statusbar.impl.MIUIHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.lzbook.kit.utils.theme.StateListListenerDrawable;
-import net.lzbook.kit.utils.theme.ThemeHelper;
-import net.lzbook.kit.utils.theme.ThemeMode;
-import net.lzbook.kit.utils.theme.statusbar.impl.FlymeHelper;
-import net.lzbook.kit.utils.theme.statusbar.impl.MIUIHelper;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
-import net.lzbook.kit.utils.swipeback.SwipeBackHelper;
 
 public abstract class FrameActivity extends AppCompatActivity implements SwipeBackHelper.SlideBackManager,
         SwipeBackHelper.SlideAnimListener, LifecycleOwner {
@@ -450,7 +450,12 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        try {
+            super.onSaveInstanceState(outState);
+        }catch (Throwable e){
+            e.printStackTrace();
+            AppLog.e("onSaveInstanceState:"+e.getMessage());
+        }
     }
 
     /**
