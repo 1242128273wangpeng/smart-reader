@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ding.basic.bean.Book;
-import com.intelligent.reader.receiver.LoginInvalidReceiver;
+import net.lzbook.kit.receiver.LoginInvalidReceiver;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.bean.BookTask;

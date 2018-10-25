@@ -1,4 +1,4 @@
-package com.intelligent.reader.receiver
+package net.lzbook.kit.receiver
 
 import android.app.Activity
 import android.content.BroadcastReceiver

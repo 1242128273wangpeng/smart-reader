@@ -355,7 +355,7 @@
 -keep class kotlin.** { *; }
 -keep class kotlinx.** { *; }
 
--keep public class com.intelligent.reader.receiver.** { *; }
+-keep public class net.lzbook.kit.receiver.** { *; }
 -keep public class net.lzbook.kit.book.component.service.** { *; }
 -keep public class net.lzbook.kit.tasks.** { *; }
 -keep public class com.intelligent.reader.view.** { *; }
