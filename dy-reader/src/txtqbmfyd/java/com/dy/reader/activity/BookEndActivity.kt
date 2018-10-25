@@ -11,7 +11,6 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
-import net.lzbook.kit.utils.router.RouterConfig
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
@@ -20,11 +19,13 @@ import com.dy.reader.listener.SourceClickListener
 import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import kotlinx.android.synthetic.txtqbmfyd.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.router.RouterConfig
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -136,11 +137,15 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
-            if (isSuccess) {
-                rl_book_end_ad.visibility = View.VISIBLE
-                rl_book_end_ad.addView(view)
-            } else {
-                rl_book_end_ad.visibility = View.GONE
+            try {
+                if (isSuccess) {
+                    rl_book_end_ad?.visibility = View.VISIBLE
+                    rl_book_end_ad?.addView(view)
+                } else {
+                    rl_book_end_ad?.visibility = View.GONE
+                }
+            }catch (e:Throwable){
+                AppLog.e("loadBookEndMedia:"+e.message)
             }
         }
     }
