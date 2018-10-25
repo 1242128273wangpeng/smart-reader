@@ -41,6 +41,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.book.RepairHelp
+import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
@@ -313,18 +314,25 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        dl_reader_content.removeDrawerListener(mDrawerListener)
-        EventBus.getDefault().unregister(this)
-        ReaderStatus.clear()
-        DataProvider.clear()
-        AppHelper.glSurfaceView = null
-        mReadPresenter.onDestroy()
-        ReaderStatus.chapterList.clear()
-        MediaLifecycle.onDestroy()
-        ReadMediaManager.onDestroy()
-        nativeMediaView?.onDestroy()
-        nativeMediaView = null
-
+        try {
+            dl_reader_content.removeDrawerListener(mDrawerListener)
+            EventBus.getDefault().unregister(this)
+            ReaderStatus.clear()
+            DataProvider.clear()
+            AppHelper.glSurfaceView = null
+            mReadPresenter.onDestroy()
+            ReaderStatus.chapterList.clear()
+            MediaLifecycle.onDestroy()
+            try {
+                ReadMediaManager.onDestroy()
+            } catch (e: Throwable) {
+                AppLog.e("ReaderActivity:onDestroy" + e.message)
+            }
+            nativeMediaView?.onDestroy()
+            nativeMediaView = null
+        } catch (e: Throwable) {
+            AppLog.e("ReaderActivity:onDestroy" + e.message)
+        }
     }
 
 
