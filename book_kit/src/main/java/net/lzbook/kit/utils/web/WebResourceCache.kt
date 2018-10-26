@@ -1,4 +1,4 @@
-package com.dingyue.contract.web
+package net.lzbook.kit.utils.web
 
 import android.annotation.SuppressLint
 import android.os.Build

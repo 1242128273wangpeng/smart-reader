@@ -15,7 +15,6 @@ import com.ding.basic.net.api.RequestAPI
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.contract.web.WebResourceCache
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -27,6 +26,7 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.isNumeric
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.web.WebResourceCache
 import java.util.*
 
 class DynamicParameter(private val context: Context) {
@@ -75,21 +75,21 @@ class DynamicParameter(private val context: Context) {
     }
 
 
-    fun requestAdControl(){
+    fun requestAdControl() {
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestAdControlDynamic(
                 object : RequestSubscriber<AdControlByChannelBean>() {
                     override fun requestResult(result: AdControlByChannelBean?) {
-                        if(result != null && result.respCode == "20000" && result.data != null && result.data!!.isNotEmpty()){
+                        if (result != null && result.respCode == "20000" && result.data != null && result.data!!.isNotEmpty()) {
                             checkAdControlResult(result)
-                        }else{
-                            saveAdControlParams(false,null)
+                        } else {
+                            saveAdControlParams(false, null)
                         }
                     }
 
                     override fun requestError(message: String) {
                         Logger.e("请求广告动态参数异常！")
-                        saveAdControlParams(false,null)
+                        saveAdControlParams(false, null)
                     }
 
                     override fun requestComplete() {
@@ -179,19 +179,20 @@ class DynamicParameter(private val context: Context) {
             saveAdControlParams(false, null)
         }
     }
-    private fun saveAdControlParams(hasAdContol:Boolean , bean:AdControlByChannelBean.DataBean?){
 
-        if(hasAdContol){
+    private fun saveAdControlParams(hasAdContol: Boolean, bean: AdControlByChannelBean.DataBean?) {
+
+        if (hasAdContol) {
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_STATUS, bean?.status)
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_PGK, bean?.packageName)
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_CHANNELID, bean?.channelId)
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_VERSION, bean?.version)
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_ADTYPE, bean?.adSpaceType)
-        }else{
+        } else {
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_STATUS, "0")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_PGK,"")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_CHANNELID,"")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_VERSION,"")
+            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_PGK, "")
+            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_CHANNELID, "")
+            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_VERSION, "")
             SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_ADTYPE, "")
         }
         setAdControl()
@@ -316,11 +317,9 @@ class DynamicParameter(private val context: Context) {
 
             val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            for (resource in resourceList) {
-                if (resource.isNotEmpty()) {
-                    customWebViewCache.checkWebViewResourceCached(resource)
-                }
-            }
+            resourceList
+                    .filter { it.isNotEmpty() }
+                    .forEach { customWebViewCache.checkWebViewResourceCached(it) }
         }
     }
 
@@ -466,37 +465,38 @@ class DynamicParameter(private val context: Context) {
         }
     }
 
-    private fun setAdControl(){
+    private fun setAdControl() {
         //广告渠道控制 总开关
-        val adConstrolStatus = SPUtils.getOnlineConfigSharedString(SPKey.AD_CONTROL_STATUS,"0")
-        if(adConstrolStatus.isNotEmpty()){
+        val adConstrolStatus = SPUtils.getOnlineConfigSharedString(SPKey.AD_CONTROL_STATUS, "0")
+        if (adConstrolStatus.isNotEmpty()) {
             Constants.ad_control_status = adConstrolStatus
         }
 
         //广告渠道控制 包名
         val adConstrolPkg = SPUtils.getOnlineConfigSharedString(SPKey.AD_CONTROL_PGK)
-        if(adConstrolPkg.isNotEmpty()){
+        if (adConstrolPkg.isNotEmpty()) {
             Constants.ad_control_pkg = adConstrolPkg
         }
 
         //广告渠道控制 渠道号
         val adConstrolChannelId = SPUtils.getOnlineConfigSharedString(SPKey.AD_CONTROL_CHANNELID)
-        if(adConstrolChannelId.isNotEmpty()){
+        if (adConstrolChannelId.isNotEmpty()) {
             Constants.ad_control_channelId = adConstrolChannelId
         }
 
         //广告渠道控制 版本号
         val adConstrolVersion = SPUtils.getOnlineConfigSharedString(SPKey.AD_CONTROL_VERSION)
-        if(adConstrolVersion.isNotEmpty()){
+        if (adConstrolVersion.isNotEmpty()) {
             Constants.ad_control_version = adConstrolVersion
         }
 
         //广告渠道控制 广告位
         val adConstrolAdType = SPUtils.getOnlineConfigSharedString(SPKey.AD_CONTROL_ADTYPE)
-        if(adConstrolAdType.isNotEmpty()){
+        if (adConstrolAdType.isNotEmpty()) {
             Constants.ad_control_adTpye = adConstrolAdType
         }
     }
+
     private fun setAd() {
 
         //广告总开关
