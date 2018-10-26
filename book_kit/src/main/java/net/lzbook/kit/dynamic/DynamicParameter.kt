@@ -24,6 +24,7 @@ import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.isNumeric
 import net.lzbook.kit.utils.loge
+import okhttp3.HttpUrl
 import java.util.*
 
 class DynamicParameter(private val context: Context) {
@@ -74,21 +75,21 @@ class DynamicParameter(private val context: Context) {
         }
     }
 
-    fun requestAdControl(){
+    fun requestAdControl() {
         RequestRepositoryFactory.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestAdControlDynamic(
                 object : RequestSubscriber<AdControlByChannelBean>() {
                     override fun requestResult(result: AdControlByChannelBean?) {
-                        if(result != null && result.respCode == "20000" && result.data != null && result.data!!.isNotEmpty()){
+                        if (result != null && result.respCode == "20000" && result.data != null && result.data!!.isNotEmpty()) {
                             checkAdControlResult(result)
-                        }else{
-                            saveAdControlParams(false,null)
+                        } else {
+                            saveAdControlParams(false, null)
                         }
                     }
 
                     override fun requestError(message: String) {
                         Logger.e("请求广告动态参数异常！")
-                        saveAdControlParams(false,null)
+                        saveAdControlParams(false, null)
                     }
 
                     override fun requestComplete() {
@@ -103,7 +104,7 @@ class DynamicParameter(private val context: Context) {
      */
     fun requestCheck() {
         RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-                .requestDynamicCheck(object :RequestSubscriber<BasicResult<Int>>() {
+                .requestDynamicCheck(object : RequestSubscriber<BasicResult<Int>>() {
                     override fun requestResult(result: BasicResult<Int>?) {
                         if (result?.data != null) {
                             mReqVersion = result.data!!
@@ -178,20 +179,21 @@ class DynamicParameter(private val context: Context) {
             saveAdControlParams(false, null)
         }
     }
-    private fun saveAdControlParams(hasAdContol:Boolean , bean:AdControlByChannelBean.DataBean?){
 
-        if(hasAdContol){
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_STATUS, bean?.status)
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_PGK, bean?.packageName)
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_CHANNELID, bean?.channelId)
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_VERSION, bean?.version)
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_ADTYPE, bean?.adSpaceType)
-        }else{
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_STATUS, "0")
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_PGK,"")
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_CHANNELID,"")
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_VERSION,"")
-            mShareUtilConfig.putString(SharedPreUtil.AD_CONTROL_ADTYPE, "")
+    private fun saveAdControlParams(hasAdContol: Boolean, bean: AdControlByChannelBean.DataBean?) {
+
+        if (hasAdContol) {
+            putDynamicString(SharedPreUtil.AD_CONTROL_STATUS, bean?.status)
+            putDynamicString(SharedPreUtil.AD_CONTROL_PGK, bean?.packageName)
+            putDynamicString(SharedPreUtil.AD_CONTROL_CHANNELID, bean?.channelId)
+            putDynamicString(SharedPreUtil.AD_CONTROL_VERSION, bean?.version)
+            putDynamicString(SharedPreUtil.AD_CONTROL_ADTYPE, bean?.adSpaceType)
+        } else {
+            putDynamicString(SharedPreUtil.AD_CONTROL_STATUS, "0")
+            putDynamicString(SharedPreUtil.AD_CONTROL_PGK, "")
+            putDynamicString(SharedPreUtil.AD_CONTROL_CHANNELID, "")
+            putDynamicString(SharedPreUtil.AD_CONTROL_VERSION, "")
+            putDynamicString(SharedPreUtil.AD_CONTROL_ADTYPE, "")
         }
         setAdControl()
     }
@@ -209,53 +211,53 @@ class DynamicParameter(private val context: Context) {
             }
         }
 
-        mShareUtilConfig.putString(SharedPreUtil.CHANNEL_LIMIT, map.channel_limit)
-        mShareUtilConfig.putString(SharedPreUtil.RECOMMEND_BOOKCOVER, map.recommend_bookcover)
-        mShareUtilConfig.putString(SharedPreUtil.DAY_LIMIT, map.day_limit)
-        mShareUtilConfig.putString(SharedPreUtil.DY_SHELF_BOUNDARY_SWITCH, map.DY_shelf_boundary_switch)
-        mShareUtilConfig.putString(SharedPreUtil.BAIDU_STAT_ID, map.baidu_stat_id)
-        mShareUtilConfig.putString(SharedPreUtil.DY_AD_SWITCH, if (isShowAd) "true" else map.DY_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_AD_NEW_STATISTICS_SWITCH, map.Dy_ad_new_statistics_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_READPAGE_STATISTICS_SWITCH, map.Dy_readPage_statistics_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_AD_READPAGE_SLIDE_SWITCH_NEW, map.Dy_ad_readPage_slide_switch_new)
-        mShareUtilConfig.putString(SharedPreUtil.DY_AD_OLD_REQUEST_SWITCH, map.DY_ad_old_request_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_ADFREE_NEW_USER, map.DY_adfree_new_user)
-        mShareUtilConfig.putString(SharedPreUtil.DY_SPLASH_AD_SWITCH, map.DY_splash_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_SHELF_AD_SWITCH, map.DY_shelf_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.BOOK_SHELF_STATE, map.book_shelf_state)
-        mShareUtilConfig.putString(SharedPreUtil.DY_SHELF_AD_FREQ, map.DY_shelf_ad_freq)
-        mShareUtilConfig.putString(SharedPreUtil.DY_PAGE_END_AD_SWITCH, map.DY_page_end_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_PAGE_END_AD_FREQ, map.DY_page_end_ad_freq)
-        mShareUtilConfig.putString(SharedPreUtil.DY_BOOK_END_AD_SWITCH, map.DY_book_end_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_REST_AD_SWITCH, map.DY_rest_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_REST_AD_SEC, map.DY_rest_ad_sec)
-        mShareUtilConfig.putString(SharedPreUtil.DY_PAGE_MIDDLE_AD_SWITCH, map.DY_page_middle_ad_switch)
-        mShareUtilConfig.putString(SharedPreUtil.DY_IS_NEW_READING_END, map.DY_is_new_reading_end)
-        mShareUtilConfig.putString(SharedPreUtil.DY_SWITCH_AD_SEC, map.DY_switch_ad_sec)
-        mShareUtilConfig.putString(SharedPreUtil.DY_ACTIVITED_SWITCH_AD, map.DY_activited_switch_ad)
-        mShareUtilConfig.putString(SharedPreUtil.DY_SWITCH_AD_CLOSE_SEC, map.DY_switch_ad_close_sec)
-        mShareUtilConfig.putString(SharedPreUtil.PUSH_KEY, map.push_key)
-        mShareUtilConfig.putString(SharedPreUtil.AD_LIMIT_TIME_DAY, map.ad_limit_time_day)
-        mShareUtilConfig.putString(SharedPreUtil.BAIDU_EXAMINE, map.baidu_examine)
-        mShareUtilConfig.putString(SharedPreUtil.USER_TRANSFER_FIRST, map.user_transfer_first)
-        mShareUtilConfig.putString(SharedPreUtil.USER_TRANSFER_SECOND, map.user_transfer_second)
-        mShareUtilConfig.putString(SharedPreUtil.DY_AD_NEW_REQUEST_DOMAIN_NAME, map.DY_ad_new_request_domain_name)
-        mShareUtilConfig.putString(SharedPreUtil.NO_NET_READ_NUMBER, map.noNetReadNumber)
+        putDynamicString(SharedPreUtil.CHANNEL_LIMIT, map.channel_limit)
+        putDynamicString(SharedPreUtil.RECOMMEND_BOOKCOVER, map.recommend_bookcover)
+        putDynamicString(SharedPreUtil.DAY_LIMIT, map.day_limit)
+        putDynamicString(SharedPreUtil.DY_SHELF_BOUNDARY_SWITCH, map.DY_shelf_boundary_switch)
+        putDynamicString(SharedPreUtil.BAIDU_STAT_ID, map.baidu_stat_id)
+        putDynamicString(SharedPreUtil.DY_AD_SWITCH, if (isShowAd) "true" else map.DY_ad_switch)
+        putDynamicString(SharedPreUtil.DY_AD_NEW_STATISTICS_SWITCH, map.Dy_ad_new_statistics_switch)
+        putDynamicString(SharedPreUtil.DY_READPAGE_STATISTICS_SWITCH, map.Dy_readPage_statistics_switch)
+        putDynamicString(SharedPreUtil.DY_AD_READPAGE_SLIDE_SWITCH_NEW, map.Dy_ad_readPage_slide_switch_new)
+        putDynamicString(SharedPreUtil.DY_AD_OLD_REQUEST_SWITCH, map.DY_ad_old_request_switch)
+        putDynamicString(SharedPreUtil.DY_ADFREE_NEW_USER, map.DY_adfree_new_user)
+        putDynamicString(SharedPreUtil.DY_SPLASH_AD_SWITCH, map.DY_splash_ad_switch)
+        putDynamicString(SharedPreUtil.DY_SHELF_AD_SWITCH, map.DY_shelf_ad_switch)
+        putDynamicString(SharedPreUtil.BOOK_SHELF_STATE, map.book_shelf_state)
+        putDynamicString(SharedPreUtil.DY_SHELF_AD_FREQ, map.DY_shelf_ad_freq)
+        putDynamicString(SharedPreUtil.DY_PAGE_END_AD_SWITCH, map.DY_page_end_ad_switch)
+        putDynamicString(SharedPreUtil.DY_PAGE_END_AD_FREQ, map.DY_page_end_ad_freq)
+        putDynamicString(SharedPreUtil.DY_BOOK_END_AD_SWITCH, map.DY_book_end_ad_switch)
+        putDynamicString(SharedPreUtil.DY_REST_AD_SWITCH, map.DY_rest_ad_switch)
+        putDynamicString(SharedPreUtil.DY_REST_AD_SEC, map.DY_rest_ad_sec)
+        putDynamicString(SharedPreUtil.DY_PAGE_MIDDLE_AD_SWITCH, map.DY_page_middle_ad_switch)
+        putDynamicString(SharedPreUtil.DY_IS_NEW_READING_END, map.DY_is_new_reading_end)
+        putDynamicString(SharedPreUtil.DY_SWITCH_AD_SEC, map.DY_switch_ad_sec)
+        putDynamicString(SharedPreUtil.DY_ACTIVITED_SWITCH_AD, map.DY_activited_switch_ad)
+        putDynamicString(SharedPreUtil.DY_SWITCH_AD_CLOSE_SEC, map.DY_switch_ad_close_sec)
+        putDynamicString(SharedPreUtil.PUSH_KEY, map.push_key)
+        putDynamicString(SharedPreUtil.AD_LIMIT_TIME_DAY, map.ad_limit_time_day)
+        putDynamicString(SharedPreUtil.BAIDU_EXAMINE, map.baidu_examine)
+        putDynamicString(SharedPreUtil.USER_TRANSFER_FIRST, map.user_transfer_first)
+        putDynamicString(SharedPreUtil.USER_TRANSFER_SECOND, map.user_transfer_second)
+        putDynamicString(SharedPreUtil.DY_AD_NEW_REQUEST_DOMAIN_NAME, map.DY_ad_new_request_domain_name)
+        putDynamicString(SharedPreUtil.NO_NET_READ_NUMBER, map.noNetReadNumber)
 
-        mShareUtilConfig.putString(SharedPreUtil.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
+        putDynamicString(SharedPreUtil.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
         if (mShareUtilConfig.getBoolean(SharedPreUtil.START_PARAMS, true)) {
-            mShareUtilConfig.putString(SharedPreUtil.NOVEL_HOST, map.novel_host)
-            mShareUtilConfig.putString(SharedPreUtil.WEBVIEW_HOST, map.httpsWebView_host)
-            mShareUtilConfig.putString(SharedPreUtil.UNION_HOST, map.union_host)
-            mShareUtilConfig.putString(SharedPreUtil.CONTENT_HOST, map.content_host)
+            putDynamicString(SharedPreUtil.NOVEL_HOST, map.novel_host?.parseUrl())
+            putDynamicString(SharedPreUtil.WEBVIEW_HOST, map.httpsWebView_host?.parseUrl())
+            putDynamicString(SharedPreUtil.UNION_HOST, map.union_host?.parseUrl())
+            putDynamicString(SharedPreUtil.CONTENT_HOST, map.content_host?.parseUrl())
         }
 
-        mShareUtilConfig.putString(SharedPreUtil.USER_TAG_HOST, map.user_tag_host)
+        putDynamicString(SharedPreUtil.USER_TAG_HOST, map.user_tag_host?.parseUrl())
 
-        mShareUtilConfig.putString(SharedPreUtil.DY_STATIC_RESOURCE_RULE, map.DY_static_resource_rule)
+        putDynamicString(SharedPreUtil.DY_STATIC_RESOURCE_RULE, map.DY_static_resource_rule)
 
-        mShareUtilConfig.putString(SharedPreUtil.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
+        putDynamicString(SharedPreUtil.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
 
         // 保存动态参数校验版本号
         if (mCurVersion < mReqVersion) {
@@ -263,6 +265,11 @@ class DynamicParameter(private val context: Context) {
             AppLog.d("requestDynamicCheck", "mReqVersion = " + mReqVersion)
         }
 
+    }
+
+    private fun putDynamicString(key: String, value: String?) {
+        if (value == null) return
+        mShareUtilConfig.putString(key, value)
     }
 
     private fun startRequestCDNDynamic() {
@@ -465,37 +472,38 @@ class DynamicParameter(private val context: Context) {
         }
     }
 
-    private fun setAdControl(){
+    private fun setAdControl() {
         //广告渠道控制 总开关
-        val adConstrolStatus = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_STATUS,"0")
-        if(adConstrolStatus.isNotEmpty()){
+        val adConstrolStatus = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_STATUS, "0")
+        if (adConstrolStatus.isNotEmpty()) {
             Constants.ad_control_status = adConstrolStatus
         }
 
         //广告渠道控制 包名
         val adConstrolPkg = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_PGK)
-        if(adConstrolPkg.isNotEmpty()){
+        if (adConstrolPkg.isNotEmpty()) {
             Constants.ad_control_pkg = adConstrolPkg
         }
 
         //广告渠道控制 渠道号
         val adConstrolChannelId = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_CHANNELID)
-        if(adConstrolChannelId.isNotEmpty()){
+        if (adConstrolChannelId.isNotEmpty()) {
             Constants.ad_control_channelId = adConstrolChannelId
         }
 
         //广告渠道控制 版本号
         val adConstrolVersion = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_VERSION)
-        if(adConstrolVersion.isNotEmpty()){
+        if (adConstrolVersion.isNotEmpty()) {
             Constants.ad_control_version = adConstrolVersion
         }
 
         //广告渠道控制 广告位
         val adConstrolAdType = mShareUtilConfig.getString(SharedPreUtil.AD_CONTROL_ADTYPE)
-        if(adConstrolAdType.isNotEmpty()){
+        if (adConstrolAdType.isNotEmpty()) {
             Constants.ad_control_adTpye = adConstrolAdType
         }
     }
+
     private fun setAd() {
 
         //广告总开关
@@ -641,6 +649,15 @@ class DynamicParameter(private val context: Context) {
             Constants.new_app_ad_switch = newAppAdSwitch.toBoolean()
         }
 
+    }
+
+    private fun String.parseUrl(): String? {
+        val httpUrl = HttpUrl.parse(this)
+        return if (httpUrl != null) {
+            this
+        } else {
+            null
+        }
     }
 
     companion object {
