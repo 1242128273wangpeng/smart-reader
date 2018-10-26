@@ -15,6 +15,7 @@ import com.dy.reader.setting.ReaderStatus
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.uiThread
 import org.json.JSONException
 import java.io.Closeable
 import java.lang.ref.WeakReference
@@ -232,16 +233,34 @@ object ReadMediaManager {
     private fun removeOldAd(group: Int) {
         val iterator = adCache.map.iterator()
         val cacheNum = if (readerSettings.animation == GLReaderView.AnimationType.LIST) 6 else 2
+
+        val removeList = mutableListOf<AdBean>()
+
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (getAdGroupForString(item.key).toInt() > group + cacheNum || getAdGroupForString(item.key).toInt() < group - cacheNum) {
-                if(item.value.view is Closeable){
-                    (item.value.view as Closeable).close()
-                }
+
+                removeList.add(item.value)
                 iterator.remove()
             }
         }
+
+        uiThread {
+            try {
+                removeList.forEach {
+                    if(it.view?.parent != null && it.view?.parent is ViewGroup){
+                        (it.view?.parent as ViewGroup).removeView(it.view)
+                    }
+                    if (it.view is Closeable) {
+                        (it.view as Closeable).close()
+                    }
+                }
+            }catch (t:Throwable){
+                t.printStackTrace()
+            }
+        }
     }
+
 
     private fun releaseAdView() {
         val iterator = adCache.map.values.iterator()
