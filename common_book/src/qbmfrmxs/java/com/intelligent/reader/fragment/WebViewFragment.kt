@@ -12,17 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
-
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.webview_layout.*
-
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.webview.CustomWebClient
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.web.CustomWebClient
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
 
 
 open class WebViewFragment : Fragment() {
@@ -65,7 +63,7 @@ open class WebViewFragment : Fragment() {
         return inflater.inflate(R.layout.webview_layout, container, false)
     }
 
-    fun setTitle(title:String){
+    fun setTitle(title: String) {
         txt_web_view_header_title?.text = title
     }
 
@@ -104,7 +102,7 @@ open class WebViewFragment : Fragment() {
             customWebClient = CustomWebClient(requireContext(), wv_web_view_result)
         }
 
-        customWebClient?.setWebSettings()
+        customWebClient?.initWebViewSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             wv_web_view_result?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
@@ -176,7 +174,7 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun loadingWebView(url: String) {
-        customWebClient?.doClear()
+        customWebClient?.initParameter()
 
         if (wv_web_view_result != null && url.isNotEmpty()) {
             try {
@@ -189,36 +187,25 @@ open class WebViewFragment : Fragment() {
     }
 
     private fun initWebViewCallback() {
-        customWebClient?.setStartedAction { url ->
+        customWebClient?.setLoadingWebViewStart { url ->
             Logger.i("LoadStartedAction: $url")
         }
 
-        customWebClient?.setErrorAction {
+        customWebClient?.setLoadingWebViewError {
             Logger.i("LoadErrorAction")
 
-            if (loadingPage != null) {
-                loadingPage?.onErrorVisable()
-            }
+            loadingPage?.onErrorVisable()
         }
 
-        customWebClient?.setFinishedAction {
+        customWebClient?.setLoadingWebViewFinish {
             Logger.i("LoadFinishAction: $type")
-
-            if (loadingPage != null) {
-                loadingPage?.onSuccessGone()
-            }
+            loadingPage?.onSuccessGone()
         }
 
-        if (loadingPage != null) {
-            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-
-                if (customWebClient != null) {
-                    customWebClient?.doClear()
-                }
-
-                wv_web_view_result?.reload()
-            })
-        }
+        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+            customWebClient?.initParameter()
+            wv_web_view_result?.reload()
+        })
     }
 
     override fun onDestroy() {
@@ -226,31 +213,24 @@ open class WebViewFragment : Fragment() {
 
         handler.removeCallbacksAndMessages(null)
 
-        if (wv_web_view_result != null) {
-            wv_web_view_result?.clearCache(false)
+        wv_web_view_result?.clearCache(false)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            rl_web_view_main?.removeView(wv_web_view_result)
 
-                if (rl_web_view_main != null) {
-                    rl_web_view_main?.removeView(wv_web_view_result)
-                }
+            wv_web_view_result?.stopLoading()
+            wv_web_view_result?.settings?.javaScriptEnabled = false
+            wv_web_view_result?.clearHistory()
+            wv_web_view_result?.removeAllViews()
+            wv_web_view_result?.destroy()
+        } else {
+            wv_web_view_result?.stopLoading()
+            wv_web_view_result?.settings?.javaScriptEnabled = false
+            wv_web_view_result?.clearHistory()
+            wv_web_view_result?.removeAllViews()
+            wv_web_view_result?.destroy()
 
-                wv_web_view_result?.stopLoading()
-                wv_web_view_result?.settings?.javaScriptEnabled = false
-                wv_web_view_result?.clearHistory()
-                wv_web_view_result?.removeAllViews()
-                wv_web_view_result?.destroy()
-            } else {
-                wv_web_view_result?.stopLoading()
-                wv_web_view_result?.settings?.javaScriptEnabled = false
-                wv_web_view_result?.clearHistory()
-                wv_web_view_result?.removeAllViews()
-                wv_web_view_result?.destroy()
-
-                if (rl_web_view_main != null) {
-                    rl_web_view_main?.removeView(wv_web_view_result)
-                }
-            }
+            rl_web_view_main?.removeView(wv_web_view_result)
         }
 
         if (BuildConfig.DEBUG) {

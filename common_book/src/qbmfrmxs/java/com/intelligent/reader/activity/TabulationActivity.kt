@@ -16,32 +16,33 @@ import com.baidu.mobstat.StatService
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-
 import com.ding.basic.net.api.service.RequestService
-
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
-import net.lzbook.kit.bean.PagerDesc
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.act_tabulation.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.bean.PagerDesc
 import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.enterSearch
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
-import net.lzbook.kit.utils.webview.CustomWebClient
+import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
-import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.utils.enterSearch
-import net.lzbook.kit.utils.router.RouterUtil
 import java.util.*
 
+/**
+ * WebView二级页面
+ */
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
 class TabulationActivity : FrameActivity(), View.OnClickListener {
 
@@ -142,7 +143,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
             customWebClient = CustomWebClient(this, wv_tabulation_result)
         }
 
-        customWebClient?.setWebSettings()
+        customWebClient?.initWebViewSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             wv_tabulation_result?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
@@ -161,17 +162,13 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     }
 
     private fun initListener() {
-        if (txt_tabulation_title != null && !TextUtils.isEmpty(currentTitle)) {
+        if (!TextUtils.isEmpty(currentTitle)) {
             txt_tabulation_title?.text = currentTitle
         }
 
-        if (img_tabulation_back != null) {
-            img_tabulation_back?.setOnClickListener(this)
-        }
+        img_tabulation_back?.setOnClickListener(this)
 
-        if (img_tabulation_search != null) {
-            img_tabulation_search?.setOnClickListener(this)
-        }
+        img_tabulation_search?.setOnClickListener(this)
 
         addTouchListener()
     }
@@ -253,31 +250,29 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
         handler.removeCallbacksAndMessages(null)
 
-        if (wv_tabulation_result != null) {
 
-            wv_tabulation_result?.clearCache(true)
+        wv_tabulation_result?.clearCache(true)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-                if (wv_tabulation_result?.parent != null) {
-                    (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
-                }
+            if (wv_tabulation_result?.parent != null) {
+                (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
+            }
 
-                wv_tabulation_result?.stopLoading()
-                wv_tabulation_result?.settings?.javaScriptEnabled = false
-                wv_tabulation_result?.clearHistory()
-                wv_tabulation_result?.removeAllViews()
-                wv_tabulation_result?.destroy()
-            } else {
-                wv_tabulation_result?.stopLoading()
-                wv_tabulation_result?.settings?.javaScriptEnabled = false
-                wv_tabulation_result?.clearHistory()
-                wv_tabulation_result?.removeAllViews()
-                wv_tabulation_result?.destroy()
+            wv_tabulation_result?.stopLoading()
+            wv_tabulation_result?.settings?.javaScriptEnabled = false
+            wv_tabulation_result?.clearHistory()
+            wv_tabulation_result?.removeAllViews()
+            wv_tabulation_result?.destroy()
+        } else {
+            wv_tabulation_result?.stopLoading()
+            wv_tabulation_result?.settings?.javaScriptEnabled = false
+            wv_tabulation_result?.clearHistory()
+            wv_tabulation_result?.removeAllViews()
+            wv_tabulation_result?.destroy()
 
-                if (wv_tabulation_result?.parent != null) {
-                    (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
-                }
+            if (wv_tabulation_result?.parent != null) {
+                (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
             }
         }
     }
@@ -334,7 +329,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
     private fun loadingData(url: String?) {
         if (customWebClient != null) {
-            customWebClient?.doClear()
+            customWebClient?.initParameter()
         }
 
         if (!TextUtils.isEmpty(url) && wv_tabulation_result != null) {
@@ -348,31 +343,22 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     }
 
     private fun initWebViewCallback() {
-        customWebClient?.setStartedAction { url -> Logger.i("LoadStartedAction: $url") }
+        customWebClient?.setLoadingWebViewStart { url -> Logger.i("LoadStartedAction: $url") }
 
-        customWebClient?.setErrorAction {
+        customWebClient?.setLoadingWebViewError {
             Logger.i("LoadErrorAction")
-
-            if (loadingPage != null) {
-                loadingPage?.onErrorVisable()
-            }
+            loadingPage?.onErrorVisable()
         }
 
-        customWebClient?.setFinishedAction {
+        customWebClient?.setLoadingWebViewFinish {
             Logger.i("LoadFinishAction")
-
-            if (loadingPage != null) {
-                loadingPage?.onSuccessGone()
-            }
+            loadingPage?.onSuccessGone()
         }
 
         if (loadingPage != null) {
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
 
-                if (customWebClient != null) {
-                    customWebClient?.doClear()
-                }
-
+                customWebClient?.initParameter()
                 wv_tabulation_result?.reload()
             })
         }

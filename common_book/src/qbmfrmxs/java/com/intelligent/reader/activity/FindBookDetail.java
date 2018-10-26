@@ -53,6 +53,7 @@ import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 /**
  * WebView二级页面
  */
+@Deprecated
 public class FindBookDetail extends FrameActivity implements View.OnClickListener {
 
     private static String TAG = FindBookDetail.class.getSimpleName();
