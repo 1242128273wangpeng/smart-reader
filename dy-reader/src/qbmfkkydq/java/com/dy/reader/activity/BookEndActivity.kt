@@ -21,12 +21,14 @@ import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfkkydq.act_book_end.*
 import kotlinx.android.synthetic.qbmfkkydq.bookend_recommend_books_layout.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.ui.widget.LoadingPage
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -195,11 +197,17 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
-            if (isSuccess) {
-                rl_ad_view.visibility = View.VISIBLE
-                rl_ad_view.addView(view)
-            } else {
-                rl_ad_view.visibility = View.GONE
+            try {
+                val ref = WeakReference(this).get() ?: return@loadBookEndMedia
+                if (ref.isFinishing) return@loadBookEndMedia
+                if (isSuccess) {
+                    rl_ad_view?.visibility = View.VISIBLE
+                    rl_ad_view?.addView(view)
+                } else {
+                    rl_ad_view?.visibility = View.GONE
+                }
+            }catch (e:Throwable){
+                AppLog.e("loadBookEndMedia:"+e.message)
             }
         }
     }
