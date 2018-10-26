@@ -1,8 +1,5 @@
 package net.lzbook.kit.utils;
 
-import static android.content.Context.BATTERY_SERVICE;
-import static android.content.Context.TELEPHONY_SERVICE;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -82,6 +79,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.TELEPHONY_SERVICE;
 
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
@@ -414,19 +414,23 @@ public class AppUtils {
      */
     public static String getBatteryLevel() {
         int level = 0;
-        //API 21 之后用 BATTERY_SERVICE 主动去获取电量
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            BatteryManager batteryManager =
-                    (BatteryManager) BaseBookApplication.getGlobalContext().getSystemService(
-                            BATTERY_SERVICE);
-            if (batteryManager != null) {
-                level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        try {
+            //API 21 之后用 BATTERY_SERVICE 主动去获取电量
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                BatteryManager batteryManager =
+                        (BatteryManager) BaseBookApplication.getGlobalContext().getSystemService(
+                                BATTERY_SERVICE);
+                if (batteryManager != null) {
+                    level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+                }
+            } else {
+                Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
+                        .registerReceiver(null,
+                                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
             }
-        } else {
-            Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
-                    .registerReceiver(null,
-                            new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+        }catch (Throwable e){
+            AppLog.e("getBatteryLevel:"+e.getMessage());
         }
         return level + "%";
     }
