@@ -265,11 +265,29 @@ object ReadMediaManager {
     private fun releaseAdView() {
         synchronized(adCache.map) {
             val iterator = adCache.map.values.iterator()
+
+            val removeList = mutableListOf<AdBean>()
+
             while (iterator.hasNext()) {
                 val adView = iterator.next()
-                if (adView.view != null && adView.view is Closeable) {
-                    val nativeAdView = adView.view as Closeable
-                    nativeAdView.close()
+                removeList.add(adView)
+                iterator.remove()
+            }
+
+
+            uiThread {
+
+                try {
+                    removeList.forEach{
+                        if(it.view?.parent != null && it.view?.parent is ViewGroup){
+                            (it.view?.parent as ViewGroup).removeView(it.view)
+                        }
+                        if (it.view is Closeable) {
+                            (it.view as Closeable).close()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -324,7 +342,11 @@ object ReadMediaManager {
 
         if (ReadMediaManager.tonken != curTonken) {
             if(views?.isEmpty() == false &&  views[0] is Closeable){
-                (views[0] as Closeable).close()
+                try {
+                    (views[0] as Closeable).close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 //            adCache.put(adType, AdBean(height, null, false, mark))
             adCache.remove(adType)

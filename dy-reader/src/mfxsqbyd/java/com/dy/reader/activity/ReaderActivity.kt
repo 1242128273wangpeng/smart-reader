@@ -527,7 +527,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
             if (adView.loaded) {//加载成功
-                if (adView.view != null) {
+                if (adView.view != null && adView.view?.parent == null) {
 
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null
