@@ -248,11 +248,11 @@ object ReadMediaManager {
         uiThread {
             try {
                 removeList.forEach {
-                    if(it.view?.parent != null && it.view?.parent is ViewGroup){
-                        (it.view?.parent as ViewGroup).removeView(it.view)
-                    }
-                    if (it.view is Closeable) {
-                        (it.view as Closeable).close()
+                    if(it.view?.parent == null) {
+
+                        if (it.view is Closeable) {
+                            (it.view as Closeable).close()
+                        }
                     }
                 }
             }catch (t:Throwable){
@@ -279,11 +279,11 @@ object ReadMediaManager {
 
                 try {
                     removeList.forEach{
-                        if(it.view?.parent != null && it.view?.parent is ViewGroup){
-                            (it.view?.parent as ViewGroup).removeView(it.view)
-                        }
-                        if (it.view is Closeable) {
-                            (it.view as Closeable).close()
+                        if(it.view?.parent == null) {
+
+                            if (it.view is Closeable) {
+                                (it.view as Closeable).close()
+                            }
                         }
                     }
                 } catch (e: Exception) {
