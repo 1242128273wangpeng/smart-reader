@@ -15,21 +15,20 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dingyue.searchbook.fragment.HotWordFragment
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.ClassifyFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.widget.ClearCacheDialog
@@ -39,32 +38,24 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.qbmfrmxs.act_home.*
 import kotlinx.android.synthetic.qbmfrmxs.home_drawer_layout_main.*
 import kotlinx.android.synthetic.qbmfrmxs.home_drawer_layout_menu.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
-import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
-import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.cache.DataCleanManager
 import net.lzbook.kit.utils.cache.UIHelper
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.encrypt.MD5Utils
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.logger.PersonalLogger
-import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.view.HomeView
 import java.io.File
@@ -72,8 +63,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
-class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface, WebViewFragment.FragmentCallback {
-
+class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
     private val fragmentTypeBookShelf = 0 //书架
     private val fragmentTypeRecommend = 1 //精选
     private val fragmentTypeSearchBook = 2 //搜索
@@ -719,105 +709,5 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             }
             true
         })
-    }
-
-    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
-        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@setOnSearchClick
-                }
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "0"//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-
-                this.enterSearch(
-                        keyWord, search_type, filter_type, filter_word, sort_type,
-                        "fromClass")
-
-                AppLog.e("kkk", "$search_type===")
-
-            } catch (e: Exception) {
-                AppLog.e(TAG, "Search failed")
-                e.printStackTrace()
-            }
-        }
-        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onAnotherWebClick
-            }
-            AppLog.e(TAG, "doAnotherWeb")
-            try {
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, TabulationActivity::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("title", name)
-                startActivity(intent)
-                AppLog.e(TAG, "EnterAnotherWeb")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
-
-        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onEnterCover
-            }
-
-            if (!isFinishing) {
-                val intent = Intent()
-                intent.putExtra("book_id", book_id)
-                intent.putExtra("book_source_id", book_source_id)
-                intent.setClass(applicationContext, CoverPageActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        //为webview 加载广告提供回调
-        jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@onWebGameClick
-                }
-                var title = if (TextUtils.isEmpty(name)) {
-                    AppUtils.getPackageName()
-                } else {
-                    name
-                }
-                val welfareIntent = Intent()
-                welfareIntent.putExtra("url", url)
-                welfareIntent.putExtra("title", title)
-                welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
-                startActivity(welfareIntent)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
-            AppLog.e("福利中心", "下载游戏: $name : $url")
-
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@onGameAppClick
-                }
-                val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("name", name)
-                startService(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-    }
-
-    override fun startLoad(webView: WebView, url: String): String {
-        return url
     }
 }

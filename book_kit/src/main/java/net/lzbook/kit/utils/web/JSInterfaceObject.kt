@@ -233,12 +233,13 @@ abstract class JSInterfaceObject(var activity: Activity) {
     }
 
     /**
-     * 搜索无结果页
+     * 搜索无结果页推荐词点击事件
      */
     @JavascriptInterface
     abstract fun startSearchActivity(data: String?)
 
     /**
+     * WebView二级页面
      * 搜索作者主页
      */
     @JavascriptInterface

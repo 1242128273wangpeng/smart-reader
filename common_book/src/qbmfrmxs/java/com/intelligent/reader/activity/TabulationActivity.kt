@@ -9,34 +9,29 @@ import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.ding.basic.RequestRepositoryFactory
-import com.ding.basic.bean.Book
-import com.ding.basic.bean.Chapter
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfrmxs.act_tabulation.*
-import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.PagerDesc
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.download.CacheManager
-import net.lzbook.kit.utils.enterSearch
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.web.CustomWebClient
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
+import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
 
@@ -49,7 +44,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     private var handler: Handler = Handler()
 
     private var currentUrl: String? = null
-
     private var currentTitle: String? = null
 
     private var fromType: String? = null
@@ -57,7 +51,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     private var customWebClient: CustomWebClient? = null
 
     private var urls: ArrayList<String>? = null
-
     private var names: ArrayList<String>? = null
 
     private var loadingPage: LoadingPage? = null
@@ -66,8 +59,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     private var backClickCount: Int = 0
 
     private var isSupport = true
-
-    private var jsInterfaceHelper: JSInterfaceHelper? = null
 
     private var mPagerDesc: PagerDesc? = null
 
@@ -151,14 +142,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
 
         wv_tabulation_result?.webViewClient = customWebClient
 
-        if (wv_tabulation_result != null) {
-            jsInterfaceHelper = JSInterfaceHelper(this, wv_tabulation_result)
-        }
-
-        if (jsInterfaceHelper != null && wv_tabulation_result != null) {
-            wv_tabulation_result.addJavascriptInterface(jsInterfaceHelper, "J_search")
-        }
-
     }
 
     private fun initListener() {
@@ -230,52 +213,11 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
                     }
                 }
 
-                RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
+                RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY)
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        StatService.onResume(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        StatService.onPause(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        handler.removeCallbacksAndMessages(null)
-
-
-        wv_tabulation_result?.clearCache(true)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            if (wv_tabulation_result?.parent != null) {
-                (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
-            }
-
-            wv_tabulation_result?.stopLoading()
-            wv_tabulation_result?.settings?.javaScriptEnabled = false
-            wv_tabulation_result?.clearHistory()
-            wv_tabulation_result?.removeAllViews()
-            wv_tabulation_result?.destroy()
-        } else {
-            wv_tabulation_result?.stopLoading()
-            wv_tabulation_result?.settings?.javaScriptEnabled = false
-            wv_tabulation_result?.clearHistory()
-            wv_tabulation_result?.removeAllViews()
-            wv_tabulation_result?.destroy()
-
-            if (wv_tabulation_result?.parent != null) {
-                (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
-            }
-        }
-    }
 
     override fun onBackPressed() {
         if (urls != null) {
@@ -393,114 +335,54 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     }
 
 
+    @SuppressLint("AddJavascriptInterface")
     private fun initJSHelp() {
-        jsInterfaceHelper?.setOnSearchClick(JSInterfaceHelper.onSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onSearchClick
+
+        wv_tabulation_result?.addJavascriptInterface(object : JSInterfaceObject(this@TabulationActivity) {
+
+            @JavascriptInterface
+            override fun startSearchActivity(data: String?) {
+
             }
-            try {
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "1"//0 代表从分类过来 1 代表从FindBookDetail
-                StartLogClickUtil.upLoadEventLog(this@TabulationActivity,
-                        StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-                        data)
 
-                this.enterSearch(
-                        keyWord, search_type, filter_type, filter_word, sort_type,
-                        "findBookDetail")
+            @JavascriptInterface
+            override fun startTabulationActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
 
-                AppLog.i(TAG, "enterSearch success")
-            } catch (e: Exception) {
-                AppLog.e(TAG, "Search failed")
-                e.printStackTrace()
-            }
-        })
+                    try {
+                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
 
-        jsInterfaceHelper?.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            AppLog.e(TAG, "doCover")
-
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onEnterCover
-            }
-            val data = HashMap<String, String>()
-            data["BOOKID"] = book_id
-            data["source"] = "WEBVIEW"
-            StartLogClickUtil.upLoadEventLog(this@TabulationActivity,
-                    StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
-
-
-            val intent = Intent()
-            intent.setClass(applicationContext, CoverPageActivity::class.java)
-            val bundle = Bundle()
-            bundle.putString("author", author)
-            bundle.putString("book_id", book_id)
-            bundle.putString("book_source_id", book_source_id)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        })
-
-        jsInterfaceHelper?.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            AppLog.e(TAG, "doAnotherWeb")
-            val packageName = AppUtils.getPackageName()
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onAnotherWebClick
-            }
-            if ("cc.kdqbxs.reader" == packageName || "cn.txtkdxsdq.reader" == packageName) {
-                try {
-                    val intent = Intent()
-                    intent.setClass(this@TabulationActivity, FindBookDetail::class.java)
-                    intent.putExtra("url", url)
-                    intent.putExtra("title", name)
-                    startActivity(intent)
-                    AppLog.e(TAG, "EnterAnotherWeb")
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                        if (redirect?.url != null && redirect.title != null) {
+                            try {
+                                refreshTabulationContent(redirect.url, redirect.title)
+                            } catch (exception: Exception) {
+                                exception.printStackTrace()
+                            }
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
                 }
-
-            } else {
-                try {
-                    currentUrl = url
-                    currentTitle = name
-
-                    urls?.add(currentUrl ?: "")
-                    names?.add(currentTitle ?: "")
-                    loadWebViewData(currentUrl, name)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
             }
-        })
 
-        if (isNeedInterceptSlide()) {
-            jsInterfaceHelper?.setOnH5PagerInfo(JSInterfaceHelper.OnH5PagerInfoListener { x, y, width, height -> mPagerDesc = PagerDesc(y, x, x + width, y + height) })
-
-        }
-
-        jsInterfaceHelper?.setOnInsertBook(JSInterfaceHelper.OnInsertBook { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
-            AppLog.e(TAG, "doInsertBook")
-            val book = genCoverBook(host, book_id, book_source_id, name, author, status,
-                    category, imgUrl, last_chapter, chapter_count, updateTime, parameter,
-                    extra_parameter, dex)
-            val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).insertBook(book) > 0
-            if (succeed) {
-                Toast.makeText(this@TabulationActivity.applicationContext,
-                        R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        jsInterfaceHelper?.setOnDeleteBook(JSInterfaceHelper.OnDeleteBook { book_id ->
-            AppLog.e(TAG, "doDeleteBook")
-            RequestRepositoryFactory.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).deleteBook(book_id)
-            CacheManager.stop(book_id)
-            CacheManager.resetTask(book_id)
-            Toast.makeText(this@TabulationActivity.applicationContext,
-                    R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show()
-        })
+        }, "J_search")
     }
+
+    private fun refreshTabulationContent(url: String?, title: String?) {
+        currentUrl = url
+        currentTitle = title
+
+        urls?.add(currentUrl ?: "")
+        names?.add(currentTitle ?: "")
+
+        runOnMain {
+            loadWebViewData(currentUrl, currentTitle)
+        }
+    }
+
 
     private fun isNeedInterceptSlide(): Boolean {
         val packageName = AppUtils.getPackageName()
@@ -509,33 +391,10 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
                 && (currentTitle!!.contains("男频") || currentTitle!!.contains("女频")))
     }
 
-    private fun genCoverBook(host: String, book_id: String, book_source_id: String, name: String,
-                             author: String, status: String, category: String,
-                             imgUrl: String, last_chapter: String, chapter_count: String, update_time: Long,
-                             parameter: String, extra_parameter: String, dex: Int): Book {
-        val book = Book()
-        book.status = status
-        book.update_date_fusion = 0
-        book.book_id = book_id
-        book.book_source_id = book_source_id
-        book.name = name
-        book.label = category
-        book.author = author
-        book.img_url = imgUrl
-        book.host = host
-        book.chapter_count = Integer.valueOf(chapter_count)
-
-        val lastChapter = Chapter()
-        lastChapter.name = last_chapter
-        lastChapter.update_time = update_time
-        book.last_update_success_time = System.currentTimeMillis()
-        return book
-
-    }
 
     private fun addTouchListener() {
         if (wv_tabulation_result != null && isNeedInterceptSlide()) {
-            wv_tabulation_result.setOnTouchListener(View.OnTouchListener { v, event ->
+            wv_tabulation_result.setOnTouchListener({ _, event ->
                 val y = event.rawY
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -560,6 +419,49 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
                 }
                 false
             })
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        handler.removeCallbacksAndMessages(null)
+
+
+        wv_tabulation_result?.clearCache(true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            if (wv_tabulation_result?.parent != null) {
+                (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
+            }
+
+            wv_tabulation_result?.stopLoading()
+            wv_tabulation_result?.settings?.javaScriptEnabled = false
+            wv_tabulation_result?.clearHistory()
+            wv_tabulation_result?.removeAllViews()
+            wv_tabulation_result?.destroy()
+        } else {
+            wv_tabulation_result?.stopLoading()
+            wv_tabulation_result?.settings?.javaScriptEnabled = false
+            wv_tabulation_result?.clearHistory()
+            wv_tabulation_result?.removeAllViews()
+            wv_tabulation_result?.destroy()
+
+            if (wv_tabulation_result?.parent != null) {
+                (wv_tabulation_result?.parent as ViewGroup).removeView(wv_tabulation_result)
+            }
         }
     }
 }
