@@ -50,7 +50,6 @@ public class BookApplication extends BaseBookApplication {
     }
 
     private static final String TAG = "BookApplication";
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -109,21 +108,19 @@ public class BookApplication extends BaseBookApplication {
                         }
                     });
 
-                    FeedbackAPI.init(BookApplication.this,
-                            ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
-                            ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
-                }
-
-                try {
-                    ApplicationInfo appInfo = getPackageManager()
-                            .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-
-                    if (!AppUtils.hasReYun()) {
-                        String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
-                        AppLog.e("reyun", reyunAppKey);
-                        Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
-                                reyunAppKey, "_default_");
-                    }
+                   FeedbackAPI.init(BookApplication.this, ReplaceConstants.getReplaceConstants().ALIFEEDBACK_KEY,
+                           ReplaceConstants.getReplaceConstants().ALIFEEDBACK_SECRET);
+               }
+               try {
+                   ApplicationInfo appInfo = getPackageManager()
+                           .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                   String umengAppkey = appInfo.metaData.getString("UMENG_APPKEY");
+                   String pushSecret = appInfo.metaData.getString("UMENG_PUSH_SECRET");
+                   if(!AppUtils.hasReYun()){
+                       String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
+                       AppLog.e("reyun",reyunAppKey);
+                       Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),reyunAppKey,AppUtils.getChannelId());
+                   }
 
                     // 友盟推送初始化
                     if (!AppUtils.hasUPush()) return;
