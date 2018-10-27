@@ -23,6 +23,7 @@ import com.dingyue.searchbook.fragment.SuggestFragment
 import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.interfaces.OnResultListener
 import kotlinx.android.synthetic.main.activity_base_search.*
+import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
@@ -316,7 +317,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
     /**
      * 处理软键盘事件
      */
-    fun showSoftKeyboard(view: View?) {
+    private fun showSoftKeyboard(view: View?) {
         val handler = Handler()
         handler.postDelayed({
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -364,6 +365,22 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
 
     override fun onResume() {
         super.onResume()
+
+        //判断结果页是否展示，调js刷新方法
+        if (lastFragment == searchResultFragment) {
+            val keyword = inputEditText.text.toString()
+            if (keyword.isNotEmpty()) {
+                search_result_content?.post {
+                    try {
+                        search_result_content?.loadUrl("javascript:refreshNew()")
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                        finish()
+                    }
+                }
+            }
+        }
+
         StatService.onResume(this)
     }
 

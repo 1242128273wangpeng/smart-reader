@@ -53,8 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:hint="@string/debug_input_host"
+        android:maxLines="1"
         android:paddingEnd="@dimen/dimen_margin_20"
         android:paddingStart="@dimen/dimen_margin_20"
+        android:singleLine="true"
         android:textColor="#000000"/>
 
     <TextView

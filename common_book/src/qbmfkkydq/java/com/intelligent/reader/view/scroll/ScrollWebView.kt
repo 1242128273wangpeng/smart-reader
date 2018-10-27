@@ -6,12 +6,9 @@ import android.support.v4.view.MotionEventCompat
 import android.support.v4.view.NestedScrollingChild
 import android.support.v4.view.NestedScrollingChildHelper
 import android.support.v4.view.ViewCompat
-import android.webkit.WebView
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.view.ViewConfiguration
-import android.view.ViewGroup
-import com.intelligent.reader.fragment.RecommendFragment
+import android.webkit.WebView
 
 /**
  * Date: 2018/7/23 14:38
@@ -26,19 +23,18 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
     private var mLastY: Int = 0
     private var bannerRect: RectF? = null
 
-
     init {
         init()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        var x = ev.x.toInt()
-        var y = ev.y.toInt()
+        val x = ev.x.toInt()
+        val y = ev.y.toInt()
 
         when (ev.action) {
             MotionEvent.ACTION_DOWN -> {
                 // 如果按下位置在滑动banner区域内，则拦截本次事件
-                if (bannerRect != null && bannerRect!!.contains(ev.getX(), ev.getY() - scrollY)){
+                if (bannerRect != null && bannerRect!!.contains(ev.getX(), ev.getY() - scrollY)) {
                     requestDisallowInterceptTouchEvent(true)
                 }
             }
@@ -50,10 +46,6 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
 
         return super.dispatchTouchEvent(ev)
     }
-
-
-
-
 
 
     fun setBannerRect(rect: RectF) {
@@ -175,6 +167,31 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
      * 滑动操作处理结束
      */
 
+
+    /**
+     * 滑动处理
+     */
+
+    private var prohibitSlideAreaList = mutableListOf<RectF>()
+    private var scrollChangeListener: ScrollWebView.ScrollChangeListener? = null
+
+    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+        super.onScrollChanged(l, t, oldl, oldt)
+        scrollChangeListener?.onScrollChanged(l, t, oldl, oldt)
+    }
+
+
+    interface ScrollChangeListener {
+        fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int)
+    }
+
+    fun insertProhibitSlideArea(rectF: RectF) {
+        prohibitSlideAreaList.add(rectF)
+    }
+
+    fun insertScrollChangeListener(scrollChangeListener: ScrollWebView.ScrollChangeListener?) {
+        this.scrollChangeListener = scrollChangeListener
+    }
 
 }
 

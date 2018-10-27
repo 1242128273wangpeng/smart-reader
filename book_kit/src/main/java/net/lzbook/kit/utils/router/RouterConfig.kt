@@ -6,6 +6,15 @@ package net.lzbook.kit.utils.router
  */
 object RouterConfig {
 
+
+    /**
+     * book_kit
+     */
+    const val DEBUG_ACTIVITY = "/book_kit/DebugActivity"
+
+    const val SWITCH_AD_ACTIVITY = "/book_kit/SwitchADActivity"
+
+
     /**
      * common_book
      */
@@ -18,17 +27,15 @@ object RouterConfig {
 
     const val LOGIN_ACTIVITY = "/common_book/LoginActivity"
 
-    const val DEBUG_ACTIVITY = "/book_kit/DebugActivity"
-
     const val FIND_BOOK_DETAIL_ACTIVITY = "/common_book/FindBookDetail"
+
+    const val TABULATION_ACTIVITY = "/common_book/TabulationActivity"
 
     const val CATALOGUES_ACTIVITY = "/common_book/CataloguesActivity"
 
     const val COVER_PAGE_ACTIVITY = "/common_book/CoverPageActivity"
 
-    const val TABULATION_ACTIVITY = "/common_book/TabulationActivity"
 
-    const val SWITCH_AD_ACTIVITY = "/book_kit/SwitchADActivity"
 
     /**
      * dy_reader

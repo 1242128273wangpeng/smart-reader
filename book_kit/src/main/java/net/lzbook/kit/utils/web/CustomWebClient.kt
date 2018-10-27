@@ -16,7 +16,6 @@ import android.webkit.WebSettings.LayoutAlgorithm
 import android.webkit.WebSettings.RenderPriority
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.contract.web.WebResourceCache
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.toast.ToastUtil
