@@ -18,39 +18,27 @@ import android.webkit.WebView
  */
 class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : WebView(context, attrs), NestedScrollingChild {
 
-    val Tag = "ScrollWebView"
-    private var mLastX: Int = 0
-    private var mLastY: Int = 0
-    private var bannerRect: RectF? = null
-
     init {
         init()
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        val x = ev.x.toInt()
-        val y = ev.y.toInt()
 
-        when (ev.action) {
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        val x = event.x
+        val y = event.y
+
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 // 如果按下位置在滑动banner区域内，则拦截本次事件
-                if (bannerRect != null && bannerRect!!.contains(ev.getX(), ev.getY() - scrollY)) {
-                    requestDisallowInterceptTouchEvent(true)
-                }
+                prohibitSlideAreaList
+                        .filter { it.contains(x, scrollY + y) }
+                        .forEach { requestDisallowInterceptTouchEvent(true) }
             }
-
         }
 
-        mLastX = x
-        mLastY = y
-
-        return super.dispatchTouchEvent(ev)
+        return super.dispatchTouchEvent(event)
     }
 
-
-    fun setBannerRect(rect: RectF) {
-        bannerRect = rect;
-    }
 
     /**
      * 滑动操作处理开始
