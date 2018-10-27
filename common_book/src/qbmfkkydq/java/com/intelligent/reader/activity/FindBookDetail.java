@@ -1,6 +1,8 @@
 package com.intelligent.reader.activity;
 
 
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -22,8 +24,9 @@ import com.baidu.mobstat.StatService;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.net.Config;
 import com.ding.basic.net.api.service.RequestService;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -38,8 +41,6 @@ import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.oneclick.OneClickUtil;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
@@ -49,14 +50,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
-
 /**
  * WebView二级页面
+ * TabulationActivity
  */
+@Deprecated
 public class FindBookDetail extends FrameActivity implements View.OnClickListener {
 
-    private static String TAG = FindBookDetail.class.getSimpleName();
     String rankType;
     private RelativeLayout find_book_detail_main;
     private ImageView find_book_detail_back;
@@ -82,7 +82,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            setContentView(R.layout.act_find_detail);
+            setContentView(R.layout.act_tabulation);
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
@@ -103,7 +103,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             onBackPressed();
             return;
         }
-        fromType =  SPUtils.INSTANCE.getDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH,
+        fromType = SPUtils.INSTANCE.getDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH,
                 "other");
         AppUtils.disableAccessibility(this);
         initView();
@@ -123,15 +123,14 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_detail_content = findViewById(R.id.rank_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(RequestService.AUTHOR_V4)||currentUrl.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
+        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
+                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
             find_book_detail_search.setVisibility(View.GONE);
         } else {
             find_book_detail_search.setVisibility(View.VISIBLE);
         }
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            find_book_detail_main.setLayerType(View.LAYER_TYPE_NONE, null);
-        }
+        find_book_detail_main.setLayerType(View.LAYER_TYPE_NONE, null);
 
 
         loadingpage = new LoadingPage(this, find_book_detail_main, LoadingPage.setting_result);
@@ -172,10 +171,8 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     @Override
     public boolean shouldLightStatusBase() {
-        if("cc.quanben.novel".equals(AppUtils.getPackageName())){
-            return true;
-        }
-        return super.shouldLightStatusBase();
+        return "cc.quanben.novel".equals(AppUtils.getPackageName())
+                || super.shouldLightStatusBase();
     }
 
     @Override
@@ -184,39 +181,50 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             case R.id.find_book_detail_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                if (fromType.equals("class")) {
-                    data.put("firstclass", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                            StartLogClickUtil.BACK, data);
-                } else if (fromType.equals("top")) {
-                    data.put("firsttop", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                            StartLogClickUtil.BACK, data);
-                } else if (fromType.equals("recommend")) {
-                    data.put("firstrecommend", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                            StartLogClickUtil.BACK, data);
-                } else if (fromType.equals("authorType")) {
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
-                            StartLogClickUtil.BACK, data);
+                switch (fromType) {
+                    case "class":
+                        data.put("firstclass", currentTitle);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
+                                StartLogClickUtil.BACK, data);
+                        break;
+                    case "top":
+                        data.put("firsttop", currentTitle);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
+                                StartLogClickUtil.BACK, data);
+                        break;
+                    case "recommend":
+                        data.put("firstrecommend", currentTitle);
+                        StartLogClickUtil.upLoadEventLog(this,
+                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
+                                StartLogClickUtil.BACK, data);
+                        break;
+                    case "authorType":
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
+                                StartLogClickUtil.BACK, data);
+                        break;
                 }
                 clickBackBtn();
                 break;
             case R.id.find_book_detail_search:
                 Map<String, String> postData = new HashMap<>();
 
-                if (fromType.equals("class")) {
-                    postData.put("firstclass", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
-                } else if (fromType.equals("top")) {
-                    postData.put("firsttop", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
-                } else if (fromType.equals("recommend")) {
-                    postData.put("firstrecommend", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
+                switch (fromType) {
+                    case "class":
+                        postData.put("firstclass", currentTitle);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
+                                StartLogClickUtil.SEARCH, postData);
+                        break;
+                    case "top":
+                        postData.put("firsttop", currentTitle);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
+                                StartLogClickUtil.SEARCH, postData);
+                        break;
+                    case "recommend":
+                        postData.put("firstrecommend", currentTitle);
+                        StartLogClickUtil.upLoadEventLog(this,
+                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
+                                StartLogClickUtil.SEARCH, postData);
+                        break;
                 }
 
                 RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
@@ -306,7 +314,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             setPullImageVisible(true);
             //刷新popwindow的UI
             rankType = analysisUrl(currentUrl).get("rankType");
-//            updatePopView();
         } else {//如果不可以切换周榜和月榜总榜
             setPullImageVisible(false);
             setTitle(name);
@@ -323,12 +330,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    loadingData(url);
-                }
-            });
+            handler.post(() -> loadingData(url));
         } else {
             loadingData(url);
         }
@@ -355,32 +357,21 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         if (customWebClient != null) {
-            customWebClient.setStartedAction(new CustomWebClient.onStartedCallback() {
-                @Override
-                public void onLoadStarted(String url) {
-                    AppLog.e(TAG, "onLoadStarted: " + url);
+            customWebClient.setStartedAction(url -> AppLog.e(TAG, "onLoadStarted: " + url));
+
+            customWebClient.setErrorAction(() -> {
+                AppLog.e(TAG, "onErrorReceived");
+                if (loadingpage != null) {
+                    loadingpage.onErrorVisable();
                 }
             });
 
-            customWebClient.setErrorAction(new CustomWebClient.onErrorCallback() {
-                @Override
-                public void onErrorReceived() {
-                    AppLog.e(TAG, "onErrorReceived");
-                    if (loadingpage != null) {
-                        loadingpage.onErrorVisable();
-                    }
+            customWebClient.setFinishedAction(() -> {
+                AppLog.e(TAG, "onLoadFinished");
+                if (loadingpage != null) {
+                    loadingpage.onSuccessGone();
                 }
-            });
-
-            customWebClient.setFinishedAction(new CustomWebClient.onFinishedCallback() {
-                @Override
-                public void onLoadFinished() {
-                    AppLog.e(TAG, "onLoadFinished");
-                    if (loadingpage != null) {
-                        loadingpage.onSuccessGone();
-                    }
-                    addCheckSlide(find_detail_content);
-                }
+                addCheckSlide(find_detail_content);
             });
         }
 
@@ -400,165 +391,130 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     }
 
     private void initJSHelp() {
-        jsInterfaceHelper.setOnSearchClick(new JSInterfaceHelper.onSearchClick() {
-            @Override
-            public void doSearch(String keyWord, String search_type, String filter_type,
-                    String filter_word, String sort_type) {
-                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
-                    return;
-                }
-                try {
+        jsInterfaceHelper.setOnSearchClick(
+                (keyWord, search_type, filter_type, filter_word, sort_type) -> {
+                    if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
+                        return;
+                    }
+                    try {
+                        Map<String, String> data = new HashMap<>();
+                        data.put("keyword", keyWord);
+                        data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
+                        StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
+                                StartLogClickUtil.SYSTEM_PAGE,
+                                StartLogClickUtil.SYSTEM_SEARCHRESULT,
+                                data);
+
+                        EnterUtilKt.enterSearch(FindBookDetail.this,
+                                keyWord, search_type, filter_type, filter_word, sort_type,
+                                "findBookDetail");
+
+                        AppLog.i(TAG, "enterSearch success");
+                    } catch (Exception e) {
+                        AppLog.e(TAG, "Search failed");
+                        e.printStackTrace();
+                    }
+                });
+
+        jsInterfaceHelper.setOnEnterCover(
+                (host, book_id, book_source_id, name, author, parameter, extra_parameter) -> {
+                    AppLog.e(TAG, "doCover");
+
+                    if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
+                        return;
+                    }
                     Map<String, String> data = new HashMap<>();
-                    data.put("keyword", keyWord);
-                    data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
+                    data.put("BOOKID", book_id);
+                    data.put("source", "WEBVIEW");
                     StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
-                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-                            data);
+                            StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
 
-                    EnterUtilKt.enterSearch(FindBookDetail.this,
-                            keyWord, search_type, filter_type, filter_word, sort_type,
-                            "findBookDetail");
 
-                    AppLog.i(TAG, "enterSearch success");
+                    Intent intent = new Intent();
+                    intent.setClass(getApplicationContext(), CoverPageActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("author", author);
+                    bundle.putString("book_id", book_id);
+                    bundle.putString("book_source_id", book_source_id);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                });
+
+        jsInterfaceHelper.setOnAnotherWebClick((url, name) -> {
+            AppLog.e(TAG, "doAnotherWeb");
+            String packageName = AppUtils.getPackageName();
+            if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
+                return;
+            }
+            if ("cc.kdqbxs.reader".equals(packageName)
+                    || "cn.txtkdxsdq.reader".equals(packageName)) {
+                try {
+                    Intent intent = new Intent();
+                    intent.setClass(FindBookDetail.this, FindBookDetail.class);
+                    intent.putExtra("url", url);
+                    intent.putExtra("title", name);
+                    startActivity(intent);
+                    AppLog.e(TAG, "EnterAnotherWeb");
                 } catch (Exception e) {
-                    AppLog.e(TAG, "Search failed");
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    currentUrl = url;
+                    currentTitle = name;
+                    urls.add(currentUrl);
+                    names.add(currentTitle);
+                    loadWebData(currentUrl, name);
+//                    setTitle(name);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        });
 
-        jsInterfaceHelper.setOnEnterCover(new JSInterfaceHelper.onEnterCover() {
-
-            @Override
-            public void doCover(final String host, final String book_id,
-                    final String book_source_id, final String name, final String author,
-                    final String parameter, final String extra_parameter) {
-                AppLog.e(TAG, "doCover");
-
-                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
-                    return;
-                }
-                Map<String, String> data = new HashMap<>();
-                data.put("BOOKID", book_id);
-                data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
-                        StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
-
-
-                Intent intent = new Intent();
-                intent.setClass(getApplicationContext(), CoverPageActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("author", author);
-                bundle.putString("book_id", book_id);
-                bundle.putString("book_source_id", book_source_id);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-
-        jsInterfaceHelper.setOnAnotherWebClick(new JSInterfaceHelper.onAnotherWebClick() {
-
-            @Override
-            public void doAnotherWeb(String url, String name) {
-                AppLog.e(TAG, "doAnotherWeb");
-                String packageName = AppUtils.getPackageName();
-                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
-                    return;
-                }
-                if ("cc.kdqbxs.reader".equals(packageName)
-                        || "cn.txtkdxsdq.reader".equals(packageName)) {
-                    try {
-                        Intent intent = new Intent();
-                        intent.setClass(FindBookDetail.this, FindBookDetail.class);
-                        intent.putExtra("url", url);
-                        intent.putExtra("title", name);
-                        startActivity(intent);
-                        AppLog.e(TAG, "EnterAnotherWeb");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        currentUrl = url;
-                        currentTitle = name;
-                        urls.add(currentUrl);
-                        names.add(currentTitle);
-                        loadWebData(currentUrl, name);
-//                    setTitle(name);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
         });
 
         if (isNeedInterceptSlide()) {
-            jsInterfaceHelper.setOnH5PagerInfo(new JSInterfaceHelper.OnH5PagerInfoListener() {
-                @Override
-                public void onH5PagerInfo(float x, float y, float width, float height) {
-                    mPagerDesc = new PagerDesc(y, x, x + width, y + height);
-                }
-            });
+            jsInterfaceHelper.setOnH5PagerInfo((x, y, width, height) ->
+                    mPagerDesc = new PagerDesc(y, x, x + width, y + height));
 
         }
 
-        jsInterfaceHelper.setOnInsertBook(new JSInterfaceHelper.OnInsertBook() {
-            @Override
-            public void doInsertBook(final String host, final String book_id,
-                    final String book_source_id, final String name, final String author,
-                    final String status, final String category, final String imgUrl,
-                    final String last_chapter, final String
-                    chapter_count, final long updateTime, final String parameter,
-                    final String extra_parameter, final int
-                    dex) {
-                AppLog.e(TAG, "doInsertBook");
-                Book book = genCoverBook(host, book_id, book_source_id, name, author, status,
-                        category, imgUrl, last_chapter, chapter_count, updateTime, parameter,
-                        extra_parameter, dex);
-                boolean succeed = (RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).insertBook(book) > 0);
-                if (succeed) {
-                    Toast.makeText(FindBookDetail.this.getApplicationContext(),
-                            R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        jsInterfaceHelper.setOnInsertBook(
+                (host, book_id, book_source_id, name, author, status, category, imgUrl,
+                        last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex)
+                        -> {
+                    AppLog.e(TAG, "doInsertBook");
+                    Book book = genCoverBook(host, book_id, book_source_id, name, author, status,
+                            category, imgUrl, last_chapter, chapter_count, updateTime, parameter,
+                            extra_parameter, dex);
+                    boolean succeed =
+                            (RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                    BaseBookApplication.getGlobalContext()).insertBook(book) > 0);
+                    if (succeed) {
+                        Toast.makeText(FindBookDetail.this.getApplicationContext(),
+                                R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-        jsInterfaceHelper.setOnDeleteBook(new JSInterfaceHelper.OnDeleteBook() {
-            @Override
-            public void doDeleteBook(String book_id) {
-                AppLog.e(TAG, "doDeleteBook");
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).deleteBook(book_id);
-                CacheManager.INSTANCE.stop(book_id);
-                CacheManager.INSTANCE.resetTask(book_id);
-                Toast.makeText(FindBookDetail.this.getApplicationContext(),
-                        R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
-            }
+        jsInterfaceHelper.setOnDeleteBook(book_id -> {
+            AppLog.e(TAG, "doDeleteBook");
+            RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).deleteBook(book_id);
+            CacheManager.INSTANCE.stop(book_id);
+            CacheManager.INSTANCE.resetTask(book_id);
+            Toast.makeText(FindBookDetail.this.getApplicationContext(),
+                    R.string.bookshelf_delete_success, Toast.LENGTH_SHORT).show();
         });
     }
 
     private void setTitle(final String name) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                find_book_detail_title.setText(name);
-            }
-        });
+        runOnUiThread(() -> find_book_detail_title.setText(name));
     }
 
     private void setPullImageVisible(boolean visible) {
 
     }
 
-    private void setSearchBtnVisibel(boolean visibel) {
-        if (visibel) {
-            find_book_detail_search.setVisibility(View.VISIBLE);
-        } else {
-            find_book_detail_search.setVisibility(View.GONE);
-        }
-    }
 
     private Map<String, String> analysisUrl(String ulr) {
         Map<String, String> map = new HashMap<>();
@@ -574,47 +530,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         return map;
     }
 
-    private void reLoadWebData(String currentUrl, int type) {
-        String url = "";
-        Map<String, String> map = new HashMap<>();
-        if (currentUrl != null) {
-            String[] array = currentUrl.split("\\?");
-            if (array.length
-                    == 2) {//如果传递过来的url带参数   /cn.kkqbtxtxs.reader/v3/rank/more
-                // .do?type=100&rankType=0
-                url = array[0];
-                map = UrlUtils.getUrlParams(array[1]);
-            }
-        }
-        switch (type) {
-            case 0:
-                map.put("rankType", "week");
-                break;
-            case 1:
-                map.put("rankType", "month");
-                break;
-            case 2:
-                map.put("rankType", "total");
-                break;
-        }
-
-        url = UrlUtils.buildUrl(url, map);
-        if (url.contains(Config.INSTANCE.loadRequestAPIHost())) {
-            int start = url.lastIndexOf(Config.INSTANCE.loadRequestAPIHost())
-                    + Config.INSTANCE.loadRequestAPIHost().length();
-            this.currentUrl = url.substring(start, url.length());
-        }
-
-        //如果可以切换周榜和月榜总榜
-        if (map != null && map.get("qh") != null && map.get("qh").equals("true")) {
-            setPullImageVisible(true);
-        } else {//如果不可以切换周榜和月榜总榜
-            setPullImageVisible(false);
-        }
-
-        startLoading(handler, url);
-        webViewCallback();
-    }
 
     private void clickBackBtn() {
         if (urls.size() - backClickCount <= 1) {
@@ -647,41 +562,38 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     private void addTouchListener() {
         if (find_detail_content != null && isNeedInterceptSlide()) {
-            find_detail_content.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    float y = event.getRawY();
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            if (find_detail_content != null) {
-                                int[] loction = new int[2];
-                                find_detail_content.getLocationOnScreen(loction);
-                                h5Margin = loction[1];
+            find_detail_content.setOnTouchListener((v, event) -> {
+                float y = event.getRawY();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (find_detail_content != null) {
+                            int[] loction = new int[2];
+                            find_detail_content.getLocationOnScreen(loction);
+                            h5Margin = loction[1];
+                        }
+                        if (null != mPagerDesc) {
+                            float top = mPagerDesc.getTop();
+                            float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
+                            DisplayMetrics metric = getResources().getDisplayMetrics();
+                            top = (int) (top * metric.density) + h5Margin;
+                            bottom = (int) (bottom * metric.density) + h5Margin;
+                            if (y > top && y < bottom) {
+                                isSupport = false;
+                            } else {
+                                isSupport = true;
                             }
-                            if (null != mPagerDesc) {
-                                float top = mPagerDesc.getTop();
-                                float bottom = top + (mPagerDesc.getBottom() - mPagerDesc.getTop());
-                                DisplayMetrics metric = getResources().getDisplayMetrics();
-                                top = (int) (top * metric.density) + h5Margin;
-                                bottom = (int) (bottom * metric.density) + h5Margin;
-                                if (y > top && y < bottom) {
-                                    isSupport = false;
-                                } else {
-                                    isSupport = true;
-                                }
-                            }
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            isSupport = true;
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            break;
-                        default:
-                            isSupport = true;
-                            break;
-                    }
-                    return false;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isSupport = true;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                    default:
+                        isSupport = true;
+                        break;
                 }
+                return false;
             });
         }
     }

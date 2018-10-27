@@ -28,12 +28,13 @@ import net.lzbook.kit.utils.webview.UrlUtils
  */
 class RecommendFragment : Fragment() {
 
+    var statusBarHeight = 0
 
-    var statusBarHeight=0;
+    private val fragments: ArrayList<ScrollWebFragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        statusBarHeight=getResources().getDimensionPixelSize(getResources().getIdentifier("status_bar_height", "dimen", "android"));
+        statusBarHeight = resources.getDimensionPixelSize(resources.getIdentifier("status_bar_height", "dimen", "android"))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,17 +47,16 @@ class RecommendFragment : Fragment() {
         initView()
     }
 
-    val fragments: ArrayList<ScrollWebFragment> = ArrayList()
 
     private fun initView() {
 
 
-        ll_search_layout.post{
-            if(statusBarHeight==0){
-                statusBarHeight=AppUtils.dip2px(context,20f)
+        ll_search_layout.post {
+            if (statusBarHeight == 0) {
+                statusBarHeight = AppUtils.dip2px(context, 20f)
             }
-            val params:LinearLayout.LayoutParams= ll_search_layout.layoutParams as LinearLayout.LayoutParams;
-            params.topMargin=params.topMargin+statusBarHeight;
+            val params: LinearLayout.LayoutParams = ll_search_layout.layoutParams as LinearLayout.LayoutParams
+            params.topMargin = params.topMargin + statusBarHeight
         }
 
         view_pager.offscreenPageLimit = 4
@@ -112,12 +112,11 @@ class RecommendFragment : Fragment() {
 
         })
 
-
     }
 
 
     private fun getBundle(url: String): Bundle {
-        val bundle = Bundle();
+        val bundle = Bundle()
         val map = HashMap<String, String>()
         bundle.putString("url", UrlUtils.buildWebUrl(url, map))
         return bundle

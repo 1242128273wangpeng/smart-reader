@@ -395,7 +395,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     @Override
     @JavascriptInterface
     public void enterCategory(final String gid, final String nid,
-                              final String name, final String lastSort) {
+            final String name, final String lastSort) {
         if (gid == null || nid == null || lastSort == null || name == null)
             return;
 
@@ -564,7 +564,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
 
     public interface onEnterCategory {
         void doCategory(final int gid, final int nid, final String name,
-                        final int lastSort);
+                final int lastSort);
     }
 
 

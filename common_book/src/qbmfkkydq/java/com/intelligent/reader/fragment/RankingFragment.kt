@@ -39,7 +39,7 @@ class RankingFragment : Fragment() {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
 
-        val webFragment = WebViewFragment();
+        val webFragment = WebViewFragment()
         val bundle = Bundle()
         bundle.putString("url"
                 , UrlUtils.buildWebUrl(RequestService.WEB_RANK_H5.replace("{packageName}"

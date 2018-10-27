@@ -1,34 +1,29 @@
 package com.intelligent.reader.fragment.scroll
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
-import android.text.TextUtils
-import android.view.InflateException
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import android.widget.FrameLayout
+import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
-import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.view.scroll.ScrollWebView
 import com.orhanobut.logger.Logger
+import kotlinx.android.synthetic.qbmfkkydq.webview_scroll_layout.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.CustomWebClient
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
-import java.lang.ref.WeakReference
+import net.lzbook.kit.utils.web.JSInterfaceObject
 
 /**
  * Desc：推荐Fragment子页面：精选、男频、女频、完本
@@ -39,25 +34,13 @@ import java.lang.ref.WeakReference
 class ScrollWebFragment : Fragment(), View.OnClickListener {
 
     var url: String? = null
-    private var weakReference: WeakReference<Activity>? = null
-    private var rootView: View? = null
-    private var contentLayout: FrameLayout? = null
-    private var contentView: ScrollWebView? = null
-    private var customWebClient: CustomWebClient? = null
-    private var jsInterfaceHelper: JSInterfaceHelper? = null
-    private var fragmentCallback: WebViewFragment.FragmentCallback? = null
     private var loadingPage: LoadingPage? = null
-    private var handler: Handler? = null
+    private var customWebClient: CustomWebClient? = null
+    private var customChangeListener: ScrollWebView.ScrollChangeListener? = null
 
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        this.weakReference = WeakReference<Activity>(activity)
-        this.fragmentCallback = activity as WebViewFragment.FragmentCallback?
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handler = Handler()
         val bundle = this.arguments
         if (bundle != null) {
             this.url = bundle.getString("url")
@@ -65,109 +48,126 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        try {
-            rootView = inflater.inflate(R.layout.webview_scroll_layout, container, false)
-        } catch (e: InflateException) {
-            e.printStackTrace()
-        }
-
-        if (weakReference != null) {
-            AppUtils.disableAccessibility(weakReference!!.get())
-        }
-
-        return rootView
+        return inflater.inflate(R.layout.webview_scroll_layout, container, false)
     }
 
-    @SuppressLint("JavascriptInterface")
-    private fun initView() {
-        if (rootView != null) {
-            contentLayout = view!!.findViewById(R.id.fl_content_layout)
-            contentView = view!!.findViewById(R.id.web_content_view)
-            contentView!!.setLayerType(View.LAYER_TYPE_NONE, null)
-        }
-
-        if (weakReference != null) {
-            loadingPage = LoadingPage(weakReference!!.get(), contentLayout)
-            //            //父布局为scroll时，loading视图高度为包裹内容，这里手动给它赋值，高度按照推荐页内容调整
-            //            底部导航栏，顶部搜索栏、tab栏等高度和margin
-            //            loadingPage.getLayoutParams().height =
-            //                    getContext().getResources().getDisplayMetrics()
-            //                            .heightPixels - AppUtils.dip2px(context, 36f + 34f + 50f + 13f);
-
-        }
-
-        if (contentView != null && context != null) {
-            customWebClient = CustomWebClient(context, contentView)
-        }
-
-        if (contentView != null && customWebClient != null) {
-            customWebClient?.initWebViewSetting()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                contentView!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-            contentView!!.webViewClient = customWebClient
-        }
-
-        if (contentView != null && context != null) {
-            jsInterfaceHelper = JSInterfaceHelper(context, contentView)
-        }
-
-        if (jsInterfaceHelper != null && contentView != null) {
-            contentView!!.addJavascriptInterface(jsInterfaceHelper, "J_search")
-            contentView!!.addJavascriptInterface(JsPositionInterface(), "J_banner")
-        }
-
-
-        if (fragmentCallback != null && jsInterfaceHelper != null) {
-            fragmentCallback!!.webJsCallback(jsInterfaceHelper!!)
-        }
-
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        AppUtils.disableAccessibility(requireContext())
         initView()
-        url?.let {
-            loadWebData(it)
-        }
+        requestWebViewData(url)
     }
 
-    fun loadWebData(url: String) {
-        var urlNew = url
-        AppLog.e("loadWebData url: " + url)
-        if (fragmentCallback != null) {
-            urlNew = fragmentCallback!!.startLoad(contentView, urlNew)
+    @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
+    private fun initView() {
+
+        web_content_view?.setLayerType(View.LAYER_TYPE_NONE, null)
+
+        loadingPage = LoadingPage(requireActivity(), fl_content_layout)
+        //            //父布局为scroll时，loading视图高度为包裹内容，这里手动给它赋值，高度按照推荐页内容调整
+        //            底部导航栏，顶部搜索栏、tab栏等高度和margin
+        //            loadingPage.getLayoutParams().height =
+        //                    getContext().getResources().getDisplayMetrics()
+        //                            .heightPixels - AppUtils.dip2px(context, 36f + 34f + 50f + 13f);
+
+        customWebClient = CustomWebClient(requireContext(), web_content_view)
+
+        customWebClient?.initWebViewSetting()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            web_content_view?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        AppLog.e("loadWebData url2: " + urlNew)
-        startLoading(handler, urlNew)
+
+        web_content_view?.webViewClient = customWebClient
+
+
+        if (customChangeListener != null) {
+            web_content_view.insertScrollChangeListener(customChangeListener)
+        }
+
+        web_content_view?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
+
+            @JavascriptInterface
+            override fun startSearchActivity(data: String?) {
+
+            }
+
+            @JavascriptInterface
+            override fun startTabulationActivity(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+
+                    try {
+                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
+
+                        if (redirect?.url != null && redirect.title != null) {
+                            val bundle = Bundle()
+                            bundle.putString("url", redirect.url)
+                            bundle.putString("title", redirect.title)
+
+                            if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
+                                when {
+                                    redirect.from == "recommend" -> bundle.putString("from", "recommend")
+                                    redirect.from == "rank" -> bundle.putString("from", "rank")
+                                    redirect.from == "category" -> bundle.putString("from", "category")
+                                    else -> bundle.putString("from", "other")
+                                }
+                            } else {
+                                bundle.putString("from", "other")
+                            }
+
+                            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+
+            }
+
+
+        }, "J_search")
+
+        web_content_view?.addJavascriptInterface(JsPositionInterface(), "J_position")
+
+    }
+
+
+    private fun requestWebViewData(url: String?) {
+        startLoadingWebViewData(url)
         initWebViewCallback()
     }
 
-    private fun startLoading(handler: Handler?, url: String) {
-        if (contentView == null) {
+    private fun startLoadingWebViewData(url: String?) {
+        if (web_content_view == null) {
             return
         }
-
-        handler?.post { loadingData(url) } ?: loadingData(url)
-    }
-
-    private fun loadingData(url: String) {
-        customWebClient?.initParameter()
-        if (!TextUtils.isEmpty(url) && contentView != null) {
-            try {
-                AppLog.e("WebViewFragment LoadingData ==> " + url)
-                contentView!!.loadUrl(url)
-            } catch (e: NullPointerException) {
-                e.printStackTrace()
-                weakReference!!.get()?.finish()
-            }
-
+        web_content_view?.post {
+            handleLoadingWebViewData(url)
         }
     }
 
+
+    private fun handleLoadingWebViewData(url: String?) {
+        customWebClient?.initParameter()
+
+        if (url != null && url.isNotEmpty()) {
+            try {
+                web_content_view?.loadUrl(url)
+            } catch (exception: NullPointerException) {
+                exception.printStackTrace()
+                requireActivity().finish()
+            }
+        }
+    }
+
+
     private fun initWebViewCallback() {
-        if (rootView == null) {
+        if (web_content_view == null) {
             return
         }
 
@@ -177,24 +177,18 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
             }
 
             customWebClient?.setLoadingWebViewError {
-                if (loadingPage != null) {
-                    loadingPage?.onErrorVisable()
-                }
+                loadingPage?.onErrorVisable()
             }
 
             customWebClient?.setLoadingWebViewFinish {
-                if (loadingPage != null) {
-                    loadingPage?.onSuccessGone()
-                }
+                loadingPage?.onSuccessGone()
             }
         }
 
 
         loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-            if (customWebClient != null) {
-                customWebClient?.initParameter()
-            }
-            contentView!!.reload()
+            customWebClient?.initParameter()
+            web_content_view?.reload()
         })
 
 
@@ -215,26 +209,19 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (contentView != null) {
-            contentView!!.clearCache(true) //清空缓存
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (contentLayout != null) {
-                    contentLayout!!.removeView(contentView)
-
-                }
-                contentView!!.stopLoading()
-                contentView!!.removeAllViews()
-                contentView!!.destroy()
-            } else {
-                contentView!!.stopLoading()
-                contentView!!.removeAllViews()
-                contentView!!.destroy()
-                if (contentLayout != null) {
-                    contentLayout!!.removeView(contentView)
-                }
-            }
-            contentView = null
+        web_content_view?.clearCache(true) //清空缓存
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fl_content_layout?.removeView(web_content_view)
+            web_content_view?.stopLoading()
+            web_content_view?.removeAllViews()
+            web_content_view?.destroy()
+        } else {
+            web_content_view?.stopLoading()
+            web_content_view?.removeAllViews()
+            web_content_view?.destroy()
+            fl_content_layout?.removeView(web_content_view)
         }
+
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }
@@ -248,23 +235,18 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
     inner class JsPositionInterface {
 
         @JavascriptInterface
-        fun getH5ViewPagerInfo(x: String, y: String, width: String, height: String) {
-            AppLog.e("jsPosition" + x + " " + y + " " +
-                    width + " " + height + " " + contentView!!.scaleX + "  " + contentView!!.scaleY)
+        fun insertProhibitSlideArea(x: String, y: String, width: String, height: String) {
             try {
-                val bWidht = java.lang.Float.parseFloat(width)
-                val bHeight = java.lang.Float.parseFloat(height)
-                val scale = contentView!!.resources.displayMetrics.widthPixels / (bWidht + 1)
+                val viewWidth = java.lang.Float.parseFloat(width)
+                val viewHeight = java.lang.Float.parseFloat(height)
+                val scale = web_content_view.resources.displayMetrics.widthPixels / viewWidth
 
-
-                contentView!!.setBannerRect(RectF(
-                        java.lang.Float.parseFloat(x), java.lang.Float.parseFloat(y), bWidht * scale,
-                        bHeight * scale))
-            } catch (e: Exception) {
-                e.printStackTrace()
+                web_content_view.insertProhibitSlideArea(RectF(
+                        x.toFloat() * scale, y.toFloat() * scale, (x.toFloat() + viewWidth) * scale,
+                        (y.toFloat() + viewHeight) * scale))
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
-
         }
-
     }
 }
