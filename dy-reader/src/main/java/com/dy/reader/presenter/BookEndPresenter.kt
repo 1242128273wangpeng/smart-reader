@@ -295,9 +295,12 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
             CommonUtil.showToastMessage("没有书籍可换了~")
         }
 
-        for (i in recommendIndex until recommendIndex + 6) {
-            recommendList.add(recommendBookList[i % recommendBookList.size])
+        if (recommendBookList.size > 0) {
+            for (i in recommendIndex until recommendIndex + 6) {
+                recommendList.add(recommendBookList[i % recommendBookList.size])
+            }
         }
+
 
         recommendIndex += 6
 
