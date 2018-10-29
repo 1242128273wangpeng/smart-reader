@@ -460,13 +460,14 @@ object DataProvider {
 
     private fun loadGroupForVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
+            val index = if (group < 0) 0 else group
             mDisposable.add(readerRepository.requestSingleChapter(ReaderStatus.chapterList[group])
                     .subscribeOn(Schedulers.io())
                     .subscribeBy(
                             onNext = {
                                 var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
                                         ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
+                                separateContent = ReadMediaManager.insertChapterAd(index, ReadMediaManager.tonken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                 runOnMain {
                                     callback?.invoke(true, it)
