@@ -161,7 +161,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
                                     position.offset = lastPosition.offset
 
-                                    if (textureID == -1) {
+                                    if (textureID <= 0) {
                                         textureID = com.dy.reader.helper.loadTexture(bitmap!!)[INDEX_TEXTURE_ID]
                                     } else {
                                         com.dy.reader.helper.loadTexture(bitmap!!, textureID)
@@ -170,7 +170,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
                                     glCheckErr()
 
-                                    if (textureID != -1) {
+                                    if (textureID > 0) {
                                         isLoaded.set(true)
                                         println("loadTexture $position")
                                     } else {

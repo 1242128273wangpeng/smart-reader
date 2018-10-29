@@ -79,6 +79,7 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
 
     fun prepare(position: Position) {
         if (PageManager::leftPage.isInitialized) {
+            Logger.e("unloadTexture")
             leftPage.unloadTexture()
             currentPage.unloadTexture()
             rightPage.unloadTexture()
