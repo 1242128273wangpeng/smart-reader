@@ -249,7 +249,6 @@ object ReadMediaManager {
             try {
                 removeList.forEach {
                     if(it.view?.parent == null) {
-
                         if (it.view is Closeable) {
                             (it.view as Closeable).close()
                         }
@@ -280,7 +279,6 @@ object ReadMediaManager {
                 try {
                     removeList.forEach{
                         if(it.view?.parent == null) {
-
                             if (it.view is Closeable) {
                                 (it.view as Closeable).close()
                             }
