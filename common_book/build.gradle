@@ -569,10 +569,8 @@ android {
             buildConfigField "String", "alifeedback_secret", "\"becf9b2d02e1caa350b0f9f8b84bb1bd\""
             buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmf.zhuishuwang.com\""
             buildConfigField "String", "book_webview_host", "\"https://uwqbmf.zhuishuwang.com\""
-//            buildConfigField "String", "micro_api_host", "\"https://ajrdkunionapi.basicnos.cn\""
-            buildConfigField "String", "micro_api_host", "\"https://uniontest.bookapi.cn\""
-            buildConfigField "String", "content_api_host", "\"https://uniontest.bookapi.cn\""
-//            buildConfigField "String", "content_api_host", "\"https://ajrdkunioncontent.basicnos.cn\""
+            buildConfigField "String", "micro_api_host", "\"https://ajrdkunionapi.basicnos.cn\""
+            buildConfigField "String", "content_api_host", "\"https://ajrdkunioncontent.basicnos.cn\""
             buildConfigField "String", "cdn_host", "\"https://sta-ccquanbennovel.zhuishuwang.com\""
         }
 
