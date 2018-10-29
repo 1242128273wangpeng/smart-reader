@@ -596,14 +596,14 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                 } else {
                     ReadMediaManager.loadAdComplete = { type: String ->
-                        if (type == adType) showAd()//本页的广告请求回来，重走方法
+                        if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)) showAd()//本页的广告请求回来，重走方法
                     }
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
                 ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
-                    if (type == adType) showAd()//本页的广告请求回来，重走方法
+                    if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)) showAd()//本页的广告请求回来，重走方法
                 }
             }
         } else {
@@ -663,12 +663,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
                 }
             } else {
-                if (ReaderStatus.isMenuShow) {
-                    mReadSettingFragment.show(false)
-                    ReaderStatus.isMenuShow = false
-                } else {
+                if (pac_reader_ad?.visibility == View.GONE && !ReaderStatus.isMenuShow) {
                     mReadSettingFragment.show(true)
                     ReaderStatus.isMenuShow = true
+                }else{
+                    mReadSettingFragment.show(false)
+                    ReaderStatus.isMenuShow = false
+
                 }
             }
             return true
