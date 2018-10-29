@@ -123,7 +123,7 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
             return
         }
 
-//        if (!PageManager.isReady) {
+        if (!PageManager.isReady) {
 
             PageManager.prepare(ReaderStatus.position)
 
@@ -131,19 +131,28 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
 
             PageManager.currentPage.ready()
 
-            queueEvent {
-                PageManager.currentPage.loadTexture {
-                    PageManager.rightPage.loadTexture {
-                        PageManager.leftPage.loadTexture()
+            initLoadTexture()
+        }
+    }
 
-                        postDelayed({
-                            EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
-                        }, 200)
-                    }
+    private fun initLoadTexture() {
+        queueEvent {
+            PageManager.currentPage.loadTexture {
+                PageManager.rightPage.loadTexture {
+                    PageManager.leftPage.loadTexture()
+
+                    postDelayed({
+                        EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
+                    }, 200)
+                }
+
+                if (it) {
                     requestRender()
+                } else {
+                    initLoadTexture()
                 }
             }
-//        }
+        }
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
