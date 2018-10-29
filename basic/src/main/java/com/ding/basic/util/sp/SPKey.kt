@@ -17,6 +17,26 @@ class SPKey {
             return "onlineconfig_agent_online_setting_" + buidCofig.getPackageName()
         }
 
+
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        /**
+         * 无网下展示的WebView的Css和JS地址
+         */
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
+
+        /**
+         * 保存WebView上一次加载的url
+         */
+        const val HOME_RECOMMEND_URL = "home_recommend_url"
+        const val HOME_RANK_URL = "home_rank_url"
+        const val HOME_CATEGORY_MALE_URL = "home_category_male_url"
+        const val HOME_CATEGORY_FEMALE_URL = "home_category_female_url"
+
+
+
         // 当前阅读的书籍
         const val CURRENT_READ_BOOK = "current_read_book"
 
@@ -118,11 +138,6 @@ class SPKey {
 
         const val BOOK_SHELF_STATE = "book_shelf_state"//九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
 
-        /***
-         * WebView静态资源拦截规则
-         * **/
-        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
-        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
 
 
         /**
