@@ -557,7 +557,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             return
         }
         //add广告
-        pac_reader_ad.removeAllViews()
+        pac_reader_ad?.removeAllViews()
         val adType = ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
@@ -587,10 +587,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
                         val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
-                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
+                        pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
-                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams())
+                        pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams())
                         pac_reader_ad?.visibility = View.VISIBLE
                     }
 
@@ -666,14 +666,13 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
                 }
             } else {
-                if (ReaderStatus.isMenuShow) {
-                    mReadSettingFragment.show(false)
-                    ReaderStatus.isMenuShow = false
-                } else {
+                if (pac_reader_ad?.visibility == View.GONE && !ReaderStatus.isMenuShow) {
                     mReadSettingFragment.show(true)
                     ReaderStatus.isMenuShow = true
+                } else {
+                    mReadSettingFragment.show(false)
+                    ReaderStatus.isMenuShow = false
                 }
-
             }
 
             return true
