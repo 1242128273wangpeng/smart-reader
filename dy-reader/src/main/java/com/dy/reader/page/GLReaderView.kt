@@ -123,7 +123,7 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
             return
         }
 
-        if (!PageManager.isReady) {
+//        if (!PageManager.isReady) {
 
             PageManager.prepare(ReaderStatus.position)
 
@@ -143,7 +143,7 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
                     requestRender()
                 }
             }
-        }
+//        }
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
