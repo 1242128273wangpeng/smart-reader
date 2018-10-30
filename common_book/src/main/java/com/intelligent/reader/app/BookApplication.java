@@ -122,7 +122,8 @@ public class BookApplication extends BaseBookApplication {
                         String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
                         AppLog.e("reyun", reyunAppKey);
                         Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
-                                reyunAppKey, "_default_");
+                                reyunAppKey, AppUtils.getChannelId());
+
                     }
 
                     // 友盟推送初始化
