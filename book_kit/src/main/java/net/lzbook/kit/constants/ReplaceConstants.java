@@ -25,7 +25,7 @@ public class ReplaceConstants {
     public String ALIFEEDBACK_KEY;
     public String ALIFEEDBACK_SECRET;
 
-    public final static String BUILD_CONFIG_PROVIDER="/common_book/SwitchADActivity";
+    public final static String BUILD_CONFIG_PROVIDER="/common_book/BuildConfigProvider";
 
     private ReplaceConstants() {
 //        APP_PATH = Constants.SDCARD_PATH + ResourceUtil.getStringById(R.string.app_path);
