@@ -12,7 +12,7 @@ import com.ding.basic.db.dao.*
  * Created by crazylei.
  * 如果你想升级数据库请按规则书写migration, 并添加调用, 最后不要忘记升级数据库版本
  */
-@Database(entities = [Book::class, BookFix::class, Bookmark::class, HistoryInfo::class, SearchRecommendBook.DataBean::class, LoginRespV4::class], version = 4)
+@Database(entities = [Book::class, BookFix::class, Bookmark::class, HistoryInfo::class, SearchRecommendBook.DataBean::class, LoginRespV4::class, WebPageFavorite::class], version = 5)
 abstract class BookDatabase : RoomDatabase() {
 
     abstract fun bookDao(): BookDao
@@ -21,6 +21,7 @@ abstract class BookDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
     abstract fun searchDao(): SearchDao
     abstract fun userDao(): UserDao
+    abstract fun webFavoriteDao(): WebFavoriteDao
 
 
     companion object {
@@ -35,7 +36,8 @@ abstract class BookDatabase : RoomDatabase() {
                             .addMigrations(
                                     migration1_2,
                                     migration2_3,
-                                    migration3_4
+                                    migration3_4,
+                                    migration4_5
                             )
                             .build()
                 }
@@ -65,6 +67,13 @@ abstract class BookDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE `book` ADD COLUMN `list_version_fix` INTEGER NOT NULL DEFAULT -1")
                 database.execSQL("ALTER TABLE `book` ADD COLUMN `force_fix` INTEGER NOT NULL DEFAULT 0")
                 database.execSQL("ALTER TABLE `book` ADD COLUMN `chapter_fix_state` INTEGER DEFAULT 0")
+            }
+        }
+
+        private val migration4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // 新增网页收藏表
+                database.execSQL("CREATE TABLE IF NOT EXISTS `web_page_favorite` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `web_link` TEXT NOT NULL, `create_time` INTEGER NOT NULL)")
             }
         }
 

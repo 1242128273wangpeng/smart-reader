@@ -30,7 +30,8 @@ class LocalRequestRepository private constructor(private var context: Context,
                                                  private var bookmarkDao: BookmarkDao,
                                                  private var historyDao: HistoryDao,
                                                  private var searchDao: SearchDao,
-                                                 private var userDao: UserDao) {
+                                                 private var userDao: UserDao,
+                                                 private var webFavoriteDao: WebFavoriteDao) {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -48,7 +49,8 @@ class LocalRequestRepository private constructor(private var context: Context,
                                 database!!.bookmarkDao(),
                                 database!!.historyDao(),
                                 database!!.searchDao(),
-                                database!!.userDao())
+                                database!!.userDao(),
+                                database!!.webFavoriteDao())
                     }
                 }
             }
@@ -472,4 +474,15 @@ class LocalRequestRepository private constructor(private var context: Context,
     fun getCount(book_id:String): Int {
         return ChapterDataProviderHelper.loadChapterDataProviderHelper(context, book_id).getCount()
     }
+
+    fun getAllWebFavorite(): List<WebPageFavorite>? = webFavoriteDao.getAll()
+
+    fun deleteAllWebFavorite() = webFavoriteDao.deleteAll()
+
+    fun deleteWebFavoriteById(id: Int) = webFavoriteDao.deleteById(id)
+
+    fun insertFavorite(obj: WebPageFavorite) = webFavoriteDao.insertOrUpdate(obj)
+
+    fun getWebFavoriteCount() = webFavoriteDao.getCount()
+
 }
