@@ -18,13 +18,14 @@ import com.dy.reader.ReadMediaManager
 import com.dy.reader.helper.ReadSeparateHelper
 import com.dy.reader.holder.HomePagerHolder
 import com.dy.reader.mode.NovelLineBean
+import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.PageContentView
 import com.dy.reader.page.SpacingTextView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.mode.NovelPageBean
-import net.lzbook.kit.constants.Constants
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.bean.ReadViewEnums
+import net.lzbook.kit.constants.Constants
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
@@ -242,7 +243,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 itemView.layoutParams.height = page.height.toInt()
                 return
             }
-
+            fl_reader_content_ad.addOnChildViewRemoveListener()
             fl_reader_content_ad.removeAllViews()
             if (page.isLastPage) {//6-3
                 val adView = ReadMediaManager.adCache.get(page.adType)
@@ -267,7 +268,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                     fl_reader_content_ad.visibility = View.VISIBLE
                     val adViewLayoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     if (this.parent != null) {
-                        (this.tag as ViewGroup?)?.removeAllViews()
+                        (this.parent as ViewGroup?)?.removeAllViews()
                     }
                     this.tag = fl_reader_content_ad
                     fl_reader_content_ad.removeAllViews()
@@ -399,6 +400,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
         }
 
         override fun bindHolder(page: NovelPageBean) {
+            fl_reader_content_ad.addOnChildViewRemoveListener()
             fl_reader_content_ad.removeAllViews()
             if (!Constants.isHideAD && !TextUtils.isEmpty(page.adType)) {
 
@@ -421,7 +423,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 //5-3广告位
                 adView?.view?.apply {
                     if (this.parent != null) {
-                        (this.tag as ViewGroup).removeAllViews()
+                        (this.parent as ViewGroup).removeAllViews()
                     }
                     if (this.parent == null) {
                         this.tag = fl_reader_content_ad
@@ -467,5 +469,19 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     interface OnLoadViewClickListener {
         fun onLoadViewClick(type: Int)
     }
+
+    private fun ViewGroup.addOnChildViewRemoveListener() {
+        setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+            override fun onChildViewRemoved(parent: View?, child: View?) {
+                child?.clearFocus()
+                Logger.e("上下广告布局移除子View: ${child?.javaClass} : ${child?.hasFocus()}")
+            }
+
+            override fun onChildViewAdded(parent: View?, child: View?) {
+                Logger.e("上下广告布局添加子View: ${child?.javaClass} : ${child?.hasFocus()}")
+            }
+        })
+    }
+
 }
 

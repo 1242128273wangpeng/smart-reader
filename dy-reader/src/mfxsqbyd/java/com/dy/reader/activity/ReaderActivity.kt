@@ -527,7 +527,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
             if (adView.loaded) {//加载成功
-                if (adView.view != null) {
+                if (adView.view != null && adView.view?.parent == null) {
 
                     //加载成功后清除掉回调
                     ReadMediaManager.loadAdComplete = null
@@ -548,14 +548,14 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                 } else {
                     ReadMediaManager.loadAdComplete = { type: String ->
-                        if (type == adType) showAd()//本页的广告请求回来，重走方法
+                        if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)) showAd()//本页的广告请求回来，重走方法
                     }
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
                 ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
-                    if (type == adType) showAd()//本页的广告请求回来，重走方法
+                    if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)) showAd()//本页的广告请求回来，重走方法
                 }
             }
         } else {
@@ -609,9 +609,12 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     }
                 }
             } else {
-                if (!ReaderStatus.isMenuShow) {
+                if (pac_reader_ad?.visibility == View.GONE && !ReaderStatus.isMenuShow) {
                     mReadSettingFragment.show(true)
                     ReaderStatus.isMenuShow = true
+                }else{
+                    mReadSettingFragment.show(false)
+                    ReaderStatus.isMenuShow = false
                 }
 
             }

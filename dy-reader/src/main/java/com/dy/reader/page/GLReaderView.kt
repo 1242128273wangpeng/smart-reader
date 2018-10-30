@@ -131,16 +131,25 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
 
             PageManager.currentPage.ready()
 
-            queueEvent {
-                PageManager.currentPage.loadTexture {
-                    PageManager.rightPage.loadTexture {
-                        PageManager.leftPage.loadTexture()
+            initLoadTexture()
+        }
+    }
 
-                        postDelayed({
-                            EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
-                        }, 200)
-                    }
+    private fun initLoadTexture() {
+        queueEvent {
+            PageManager.currentPage.loadTexture {
+                PageManager.rightPage.loadTexture {
+                    PageManager.leftPage.loadTexture()
+
+                    postDelayed({
+                        EventBus.getDefault().post(EventLoading(EventLoading.Type.SUCCESS))
+                    }, 200)
+                }
+
+                if (it) {
                     requestRender()
+                } else {
+                    initLoadTexture()
                 }
             }
         }

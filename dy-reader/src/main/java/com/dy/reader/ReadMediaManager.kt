@@ -15,6 +15,7 @@ import com.dy.reader.setting.ReaderStatus
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.uiThread
 import org.json.JSONException
 import java.io.Closeable
 import java.lang.ref.WeakReference
@@ -223,7 +224,7 @@ object ReadMediaManager {
      */
     fun clearAllAd(){
         releaseAdView()
-        adCache.map.clear()
+        adCache.clear()
     }
 
     /**
@@ -232,24 +233,60 @@ object ReadMediaManager {
     private fun removeOldAd(group: Int) {
         val iterator = adCache.map.iterator()
         val cacheNum = if (readerSettings.animation == GLReaderView.AnimationType.LIST) 6 else 2
+
+        val removeList = mutableListOf<AdBean>()
+
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (getAdGroupForString(item.key).toInt() > group + cacheNum || getAdGroupForString(item.key).toInt() < group - cacheNum) {
-                if(item.value.view is Closeable){
-                    (item.value.view as Closeable).close()
-                }
+
+                removeList.add(item.value)
                 iterator.remove()
+            }
+        }
+
+        uiThread {
+            try {
+                removeList.forEach {
+                    if(it.view?.parent == null) {
+                        if (it.view is Closeable) {
+                            (it.view as Closeable).close()
+                        }
+                    }
+                }
+            }catch (t:Throwable){
+                t.printStackTrace()
             }
         }
     }
 
+
     private fun releaseAdView() {
-        val iterator = adCache.map.values.iterator()
-        while (iterator.hasNext()) {
-            val adView = iterator.next()
-            if (adView.view != null && adView.view is Closeable) {
-                val nativeAdView = adView.view as Closeable
-                nativeAdView.close()
+        synchronized(adCache.map) {
+            val iterator = adCache.map.values.iterator()
+
+            val removeList = mutableListOf<AdBean>()
+
+            while (iterator.hasNext()) {
+                val adView = iterator.next()
+                removeList.add(adView)
+                iterator.remove()
+            }
+
+
+            uiThread {
+
+                try {
+                    removeList.forEach{
+                        if(it.view?.parent == null) {
+                            if (it.view is Closeable) {
+                                (it.view as Closeable).close()
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -277,9 +314,23 @@ object ReadMediaManager {
      */
     class DataCache {
         val map: TreeMap<String, AdBean> = TreeMap()
-        fun put(key: String, ad: AdBean) = map.put(key, ad)
+        fun put(key: String, ad: AdBean) {
+            synchronized(map) {
+                map.put(key, ad)
+            }
+        }
         fun get(key: String): AdBean? = map[key]
-        fun clear() = map.clear()
+        fun remove(key: String) {
+            synchronized(map) {
+                map.remove(key)
+            }
+        }
+
+        fun clear() {
+            synchronized(map) {
+                map.clear()
+            }
+        }
     }
 
     /**
@@ -289,10 +340,14 @@ object ReadMediaManager {
 
         if (ReadMediaManager.tonken != curTonken) {
             if(views?.isEmpty() == false &&  views[0] is Closeable){
-                (views[0] as Closeable).close()
+                try {
+                    (views[0] as Closeable).close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 //            adCache.put(adType, AdBean(height, null, false, mark))
-            adCache.map.remove(adType)
+            adCache.remove(adType)
             Log.e("mediaAction", "token改变了")
             return
         }
