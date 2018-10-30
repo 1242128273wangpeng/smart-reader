@@ -8,7 +8,10 @@ import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
-import android.view.*
+import android.view.KeyEvent
+import android.view.SurfaceHolder
+import android.view.View
+import android.view.WindowManager
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
@@ -34,8 +37,6 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.util.getVivoRoundedSize
-import com.dy.reader.util.vivoNotch
 import com.dycm_adsdk.view.NativeView
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
@@ -533,7 +534,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
             if (adView.loaded) {//加载成功
-                if (adView.view != null) {
+                if (adView.view != null && adView.view?.parent == null) {
 
                     if (adView.view is NativeView) {
                         (adView.view as NativeView).setHideAdListener {
