@@ -50,6 +50,9 @@ dependencies {
     implementation files('libs/Baidu_Mtj_3.9.1.0.jar')
     implementation files('libs/open_sdk_r6008_lite.jar')
 
+    //HTML抓取SDK
+//    api files('libs/jsoup-1.11.3.jar')
+
     if(rootProject.ext.hasad) {
         System.err.println("reader hasad")
         api "com.dy.media:hasad:${rootProject.ext.media_version}"
