@@ -122,7 +122,8 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
             rl_head = (RelativeLayout) rootView.findViewById(R.id.rl_head);
             img_sex = rootView.findViewById(R.id.img_sex);
             img_shadow = rootView.findViewById(R.id.img_shadow);
-            if (Build.VERSION.SDK_INT >= 11 && contentView != null) {
+
+            if (contentView != null) {
                 contentView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
             if(img_sex != null){
@@ -166,8 +167,12 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
         }
 
         if (type.equals("recommend_male") || type.equals("recommend_female")) {
-            rl_head.setVisibility(View.GONE);
-            img_shadow.setVisibility(View.GONE);
+            if (rl_head != null) {
+                rl_head.setVisibility(View.GONE);
+            }
+            if (img_shadow != null) {
+                img_shadow.setVisibility(View.GONE);
+            }
         }
         if(img_sex != null){
             if ("rankBoy".equals(type)) {
