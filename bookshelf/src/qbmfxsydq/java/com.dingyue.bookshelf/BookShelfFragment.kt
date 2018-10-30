@@ -255,9 +255,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfAdapter.notifyDataSetChanged()
             BookShelfLogger.uploadFirstOpenBooks()
         }
-        if(bookShelfPresenter.iBookList.isNotEmpty()){
-            BookShelfLogger.uploadFirstOpenBooks(bookShelfPresenter.iBookList)
-        }
     }
 
     /**
@@ -348,7 +345,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (isAdded && !requireActivity().isFinishing) {
             updateUI()
             bookShelfDeleteDialog.dismiss()
