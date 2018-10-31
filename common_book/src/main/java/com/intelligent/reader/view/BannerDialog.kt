@@ -1,10 +1,8 @@
 package com.intelligent.reader.view
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.animation.GlideAnimation
@@ -32,7 +30,8 @@ class BannerDialog(val activity: Activity) {
 
     private val dialog = MyDialog(activity, R.layout.dialog_banner, Gravity.CENTER)
 
-    private val bannerWebUrl = "/v4/cn.dingyueWeb.reader/activity/banner"
+    private var bannerWebTitle = "推荐书单"
+    private var bannerWebUrl = "/v4/cn.dingyueWeb.reader/activity/banner"
 
     init {
 
@@ -48,7 +47,8 @@ class BannerDialog(val activity: Activity) {
 
             val bundle = Bundle()
             bundle.putString("url", bannerWebUrl)
-            bundle.putString("title", "推荐书单")
+            bundle.putString("title", bannerWebTitle)
+            bundle.putString("from", "banner_dialog")
             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
 
             dialog.dismiss()
@@ -73,10 +73,19 @@ class BannerDialog(val activity: Activity) {
 
     }
 
-    fun show(imgUrl: String) {
-        if (imgUrl.isEmpty()) {
+    fun show(bannerInfo: BannerInfo) {
+        val imgUrl = bannerInfo.url
+        if (imgUrl?.isEmpty() == true) {
             updateBannerInfo()
-        } else {
+        }
+
+        val activityUrl = bannerInfo.nativeActivityUrl
+        if (imgUrl?.isNotEmpty() == true && activityUrl?.isNotEmpty() == true) {
+
+            val strArr = activityUrl.split(",")[0]
+            bannerWebTitle = strArr[0].toString()
+            bannerWebUrl = strArr[1].toString()
+
             Glide.with(activity)
                     .load(imgUrl)
                     .into(simpleTarget)
