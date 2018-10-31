@@ -107,34 +107,28 @@ class SearchResultFragment : Fragment(), ISearchResultView {
             return
         }
 
-        if (customWebClient != null) {
-            customWebClient?.setLoadingWebViewStart { url ->
+        customWebClient?.setLoadingWebViewStart {
 
-                searchResultPresenter.setStartedAction()
-            }
+            searchResultPresenter.setStartedAction()
+        }
 
-            customWebClient?.setLoadingWebViewError {
-                if (loadingPage != null) {
-                    loadingPage?.onErrorVisable()
-                }
-            }
-
-            customWebClient?.setLoadingWebViewFinish {
-                searchResultPresenter.onLoadFinished()
-                if (loadingPage != null) {
-                    hideLoading()
-                }
+        customWebClient?.setLoadingWebViewError {
+            if (loadingPage != null) {
+                loadingPage?.onErrorVisable()
             }
         }
 
-        if (loadingPage != null) {
-            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebClient != null) {
-                    customWebClient?.initParameter()
-                }
-                search_result_content?.reload()
-            })
+        customWebClient?.setLoadingWebViewFinish {
+            searchResultPresenter.onLoadFinished()
+            if (loadingPage != null) {
+                hideLoading()
+            }
         }
+
+        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+            customWebClient?.initParameter()
+            search_result_content?.reload()
+        })
     }
 
     override fun onSearchWordResult(searchWord: String) {

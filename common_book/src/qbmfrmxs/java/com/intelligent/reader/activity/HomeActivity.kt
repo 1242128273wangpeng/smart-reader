@@ -95,6 +95,14 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         val bundle = Bundle()
         bundle.putString("type", "recommend")
         val uri = RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName())
+//        val url = if (NetWorkUtils.isNetworkAvailable(this))
+//            UrlUtils.buildWebUrl(uri, HashMap()) else
+//            SPUtils.getDefaultSharedString(SPKey.HOME_RECOMMEND_URL)
+//        SPUtils.putDefaultSharedString(SPKey.HOME_RECOMMEND_URL, url)
+//        bundle.putString("url", url)
+//        AppLog.e("DingYue-当前的url：" + url)
+//        AppLog.e("DingYue-服务端url：" + UrlUtils.buildWebUrl(uri, HashMap()))
+//        AppLog.e("DingYue-存储的url：" + SPUtils.getDefaultSharedString(SPKey.HOME_RECOMMEND_URL))
         bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
         fragment.arguments = bundle
         fragment
