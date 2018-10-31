@@ -191,6 +191,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"/>
 
+        <!--网页收藏-->
+        <activity
+            android:name=".activity.WebFavoriteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
+
         <!-- 设置页 -->
         <activity
             android:name=".activity.SettingActivity"
