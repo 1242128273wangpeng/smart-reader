@@ -274,6 +274,18 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             return 0
         }
 
+        var localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id)
+
+        if (localBook == null) {
+            localBook = ReaderStatus.book
+            localBook.readed = 1
+            localBook.chapter_count = ReaderStatus.chapterList.size
+
+            if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(localBook) <= 0) {
+                return 0
+            }
+        }
+
         if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) == null && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book) <= 0) {
             return 0
         }
