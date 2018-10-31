@@ -14,7 +14,6 @@ import com.ding.basic.util.putObject
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
@@ -40,11 +39,6 @@ class BannerDialog(val activity: Activity) {
         dialog.setCancelable(true)
 
         dialog.img_banner.setOnClickListener {
-            //            val intent = Intent()
-//            intent.setClass(activity, FindBookDetail::class.java)
-//            intent.putExtra("url", bannerWebUrl)
-//            intent.putExtra("title", bannerWebTitle)
-//            activity.startActivity(intent)
 
             val bundle = Bundle()
             bundle.putString("url", bannerWebUrl)
@@ -83,9 +77,9 @@ class BannerDialog(val activity: Activity) {
         val activityUrl = bannerInfo.nativeActivityUrl
         if (imgUrl?.isNotEmpty() == true && activityUrl?.isNotEmpty() == true) {
 
-            val strArr = activityUrl.split(",")
-            bannerWebTitle = strArr[0]
-            bannerWebUrl = strArr[1]
+            val strArr = activityUrl.split(",")[0]
+            bannerWebTitle = strArr[0].toString()
+            bannerWebUrl = strArr[1].toString()
 
             Glide.with(activity)
                     .load(imgUrl)
