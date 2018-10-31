@@ -2,6 +2,7 @@ package com.intelligent.reader.presenter
 
 import android.content.Context
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.bean.WebPageFavorite
 import com.intelligent.reader.view.WebFavoriteView
 
 /**
@@ -18,7 +19,17 @@ class WebFavoritePresenter(private val view: WebFavoriteView, private val contex
      * 获取收藏列表
      */
     fun initData() {
-        val list = requestRepository.getAllWebFavorite()
+        var list = requestRepository.getAllWebFavorite()
+        list = ArrayList()
+        // TODO 模拟数据
+        (0..5).map {
+            val item = WebPageFavorite()
+            item.id = it
+            item.webTitle = "百度地址:xxxxxx_$it"
+            item.webLink = "https://wwww.baiduxxxxxx_$it.com"
+            item.createTime = System.currentTimeMillis()
+            list.add(item)
+        }
         if (list.isEmpty()) {
             // 显示无数据页面
             view.showEmptyView()
@@ -27,7 +38,6 @@ class WebFavoritePresenter(private val view: WebFavoriteView, private val contex
             view.showFavoriteList(list)
         }
     }
-
 
 
 }

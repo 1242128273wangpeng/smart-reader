@@ -35,7 +35,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
         setContentView(R.layout.act_web_favorite)
         img_back.setOnClickListener { finish() }
         txt_right_handle.setOnClickListener { rightClick() }
-
+        presenter.initData()
     }
 
     private fun rightClick() {

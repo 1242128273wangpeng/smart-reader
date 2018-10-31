@@ -2,6 +2,7 @@ package com.ding.basic.bean
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
@@ -30,5 +31,7 @@ class WebPageFavorite: Serializable {
     @ColumnInfo(name = "create_time")
     var createTime: Long = 0
 
+    @Ignore
+    var selected = false
 
 }

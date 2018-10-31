@@ -377,6 +377,10 @@ class HomeActivity : BaseCacheableActivity(),
         txt_web_favorite_red_point.visibility = if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE)) View.GONE else View.VISIBLE
 
         txt_web_favorite.setOnClickListener {
+            if (txt_web_favorite_red_point.visibility == View.VISIBLE) {
+                SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, true)
+                txt_web_favorite_red_point.visibility = View.GONE
+            }
             // TODO 打点统计
             startActivity(Intent(this, WebFavoriteActivity::class.java))
         }
