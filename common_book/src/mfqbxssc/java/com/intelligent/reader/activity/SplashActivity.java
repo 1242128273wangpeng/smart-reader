@@ -250,6 +250,11 @@ public class SplashActivity extends FrameActivity {
         } else {
             doOnCreate();
         }
+        Map<String, String> attributes = new HashMap<String, String>();
+        long l = System.currentTimeMillis();
+        attributes.put("time", "" + AppUtils.min_formatter.format(l));
+        attributes.put("time1", "" + l);
+        StatServiceUtils.statCustomEvent(this, StatServiceUtils.app_start_time, attributes);
     }
 
     private void onUpgradeProgress(int progress) {
