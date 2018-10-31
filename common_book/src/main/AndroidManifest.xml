@@ -296,6 +296,7 @@
         <activity
             android:name=".activity.SwitchADActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- 微信回调activity -->
 
