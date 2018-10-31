@@ -327,18 +327,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
             bookMark.chapter_content = content_text
             mBookDataHelper.insertBookMark(bookMark)
-
-
-            // [修复]不在书架的书添加书签后并同时添加书架，不保留书籍阅读状态
-            val book = ReaderStatus.book
-            book.sequence = ReaderStatus.position.group
-            book.offset = ReaderStatus.position.offset
-            book.chapter_count = ReaderStatus.chapterCount
-            book.last_read_time = System.currentTimeMillis()
-            book.readed = 1
-            RequestRepositoryFactory.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).updateBook(book)
-
             return 1
         } else {
             var logMap = HashMap<String, String>()
