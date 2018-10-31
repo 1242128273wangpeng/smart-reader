@@ -27,6 +27,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -196,11 +197,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            val ref = WeakReference(this).get() ?: return@loadBookEndMedia
+            if (ref.isFinishing) return@loadBookEndMedia
             if (isSuccess) {
-                rl_ad_view.visibility = View.VISIBLE
-                rl_ad_view.addView(view)
+                rl_ad_view?.visibility = View.VISIBLE
+                rl_ad_view?.addView(view)
             } else {
-                rl_ad_view.visibility = View.GONE
+                rl_ad_view?.visibility = View.GONE
             }
         }
     }
