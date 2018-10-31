@@ -15,7 +15,7 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
@@ -231,6 +231,11 @@ class TabulationActivity : FrameActivity() {
         web_tabulation_content?.webViewClient = customWebClient
 
         web_tabulation_content?.addJavascriptInterface(object : JSInterfaceObject(this@TabulationActivity) {
+
+            @JavascriptInterface
+            override fun onSearchNoResult(keyword: String?) {
+
+            }
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {

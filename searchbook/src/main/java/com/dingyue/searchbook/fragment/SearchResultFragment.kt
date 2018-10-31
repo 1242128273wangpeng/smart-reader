@@ -15,6 +15,7 @@ import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
 import kotlinx.android.synthetic.main.fragment_search_result.*
+import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -73,7 +74,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun getCurrentActivity(): Activity = requireActivity()
 
-    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
+    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface")
     override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
@@ -100,6 +101,12 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         search_result_content?.loadUrl(url)
     }
 
+    /**
+     * 百度抓取数据展示
+     */
+    override fun onWebSearchResult(res: List<CrawlerResult>?) {
+
+    }
 
     private fun webViewCallback() {
 
@@ -184,8 +191,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         searchResultPresenter.onDestroy()
         search_result_content?.clearCache(false) //清空缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            search_result_content?.stopLoading()
             search_result_content?.removeAllViews()
+            search_result_content?.stopLoading()
         } else {
             search_result_content?.stopLoading()
             search_result_content?.removeAllViews()

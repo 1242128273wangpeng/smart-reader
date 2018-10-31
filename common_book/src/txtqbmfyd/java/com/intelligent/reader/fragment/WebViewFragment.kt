@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.view_refresh_header.view.*
@@ -198,6 +198,11 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         web_view_content?.webViewClient = customWebClient
 
         web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
+
+            @JavascriptInterface
+            override fun onSearchNoResult(keyword: String?) {
+
+            }
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {

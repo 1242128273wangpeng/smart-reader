@@ -1,6 +1,7 @@
 package com.dingyue.searchbook.interfaces
 
 import android.os.Bundle
+import net.lzbook.kit.bean.CrawlerResult
 
 
 /**
@@ -28,5 +29,7 @@ interface OnSearchResult {
     fun onEnterReadResult(bundle: Bundle)
 
     fun onLoadKeyWord(keyWord: String?, searchType: String?) {}
+
+    fun onWebSearchResult(res: List<CrawlerResult>?) // 数据抓取回调
 
 }

@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".SearchBookActivity"
+            android:name=".activity.SearchBookActivity"
             android:configChanges="keyboard"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
