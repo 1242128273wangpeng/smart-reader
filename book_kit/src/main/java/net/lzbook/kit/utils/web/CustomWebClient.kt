@@ -49,6 +49,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
     companion object {
         private val staticResourceRule = SPUtils.getOnlineConfigSharedString(SPKey.DY_STATIC_RESOURCE_RULE)
+//        private val staticResourceRule = "img.qingoo.cn,st.bookapi.cn"
 
         val interceptHostList = staticResourceRule.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     }
