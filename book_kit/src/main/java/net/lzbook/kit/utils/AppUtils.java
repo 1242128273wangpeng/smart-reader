@@ -728,13 +728,12 @@ public class AppUtils {
      * 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
      */
     public static String getPackageNameFor_() {
-        initValues();
-        if ("cn.mfxsqbyd.reader".equals(APPLICATION_ID)) {
-            APPLICATION_ID = AppUtils.getPackageName();
+        String app_id=AppUtils.getPackageName();
+        if ("cn.mfxsqbyd.reader".equals(app_id)) {
+            return app_id;
         } else {
-            APPLICATION_ID = AppUtils.getPackageName().replace(".", "-");
+            return app_id.replace(".", "-");
         }
-        return APPLICATION_ID;
     }
 
     public static boolean hasUPush() {
