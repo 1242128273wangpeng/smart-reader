@@ -17,6 +17,6 @@ class CrawlerResult {
     var updateTime :String?="" //章节更新时间
 
     override fun toString(): String {
-        return "title="+title+"\nauthor="+author+"\nabstract="+abstract+"\nsource="+source+"\nnewChapter"+newChapter+"\nnewChapterUrl="+newChapterUrl+"\nurl="+url+"\nupdateTime="+updateTime
+        return "title=$title\nauthor=$author\nabstract=$abstract\nsource=$source\nnewChapter$newChapter\nnewChapterUrl=$newChapterUrl\nurl=$url\nupdateTime=$updateTime"
     }
 }

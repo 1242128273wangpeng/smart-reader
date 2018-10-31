@@ -1,7 +1,5 @@
 package net.lzbook.kit.utils
 
-import android.os.Handler
-import android.os.Message
 import android.text.TextUtils
 import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.utils.logger.AppLog
@@ -23,50 +21,38 @@ object BDCrawler{
     val USERAGENT="Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
     var TIMEOUT=10*1000
     var cachedThreadPool = Executors.newCachedThreadPool()
-//    var crawlerCallback:CrawlerCallback?=null
-    var callbackList = mutableListOf<CrawlerCallback?>()
-    private val handler: Handler by lazy{
-         object : Handler(){
-                override fun handleMessage(msg: Message) {
-//                    if(msg.what==0){
-//                        crawlerCallback?.onSuccess(msg.obj as MutableList<CrawlerResult>)
-//                    }else if(msg.what==1){
-//                        crawlerCallback?.onFail()
-//                    }
-                }
-            }
-    }
+    var callbackList = mutableListOf<CrawlerTask?>()
 
     /**
      * 开始抓取
      */
     fun startCrawler(keyWord:String,crawlerCallback: CrawlerCallback){
-        cachedThreadPool.submit(CrawlerTask(keyWord,crawlerCallback))
+        var crawlerTask=CrawlerTask(keyWord,crawlerCallback)
+        callbackList.add(crawlerTask)
+        cachedThreadPool.submit(crawlerTask)
     }
 
     /**
      * 取消抓取
      */
     fun cancelCrawler(){
-        for (i in callbackList.indices){
-            var crawlerCallback=callbackList.get(i)
-            crawlerCallback = null
-        }
+        callbackList.forEach({
+            it?.crawlerCallback = null
+        })
         callbackList.clear()
     }
 
     interface CrawlerCallback{
-        fun onSuccess(resultList: List<CrawlerResult>)
+        fun onSuccess(resultList: MutableList<CrawlerResult>)
         fun onFail()
     }
 
     /**
      * 加载网页任务
      */
-    class CrawlerTask(var keyWord:String,var crawlerCallback: CrawlerCallback) :Runnable{
+    class CrawlerTask(var keyWord:String,var crawlerCallback: CrawlerCallback?) :Runnable{
 
         override fun run() {
-            callbackList.add(crawlerCallback)
             keyWord+="免费阅读"
             val sword = URLEncoder.encode(keyWord, "utf-8")
 //           var path="https://m.baidu.com/s?word={0}&ref=www_iphone&ssid=0&from=0&bd_page_type=1&uid=0&pu=usm%403%2Csz%40320_1001%2Cta%40iphone_2_5.0_3_537";
@@ -79,12 +65,19 @@ object BDCrawler{
                         .userAgent(USERAGENT)
                         .timeout(TIMEOUT)
                         .get()
+                if(crawlerCallback==null){
+                    return
+                }
                 parsePage(doc, resultList)
                 AppLog.i(TAG + "pageSize:"+resultList.size)
                 if(resultList.size>0){
-                    crawlerCallback?.onSuccess(resultList)
+                    runOnMain {
+                        crawlerCallback?.onSuccess(resultList)
+                    }
                 }else{
-                    crawlerCallback?.onFail()
+                    runOnMain {
+                        crawlerCallback?.onFail()
+                    }
                     return
                 }
                 if(crawlerCallback==null){
@@ -94,7 +87,7 @@ object BDCrawler{
                     val elements1 = doc.getElementsByClass("new-nextpage-only")
                     if (elements1 != null) {
                         val href = elements1[0].attr("href")
-                        AppLog.i(TAG + "====================================nextpage1：$href")
+                        AppLog.i(TAG + "page1 path：$href")
                         if (!TextUtils.isEmpty(href)) {
                             resultList= mutableListOf()
                             val doc1 = Jsoup.connect(href)
@@ -107,7 +100,9 @@ object BDCrawler{
                             parsePage(doc1,resultList)
                             AppLog.i(TAG + "pageSize:"+resultList.size)
                             if(resultList.size>0){
-                                crawlerCallback?.onSuccess(resultList)
+                                runOnMain {
+                                    crawlerCallback?.onSuccess(resultList)
+                                }
                             }
                             if(crawlerCallback==null){
                                 return
@@ -116,7 +111,7 @@ object BDCrawler{
                                 val elements2 = doc1.getElementsByClass("new-nextpage")
                                 if (elements2 != null) {
                                     val href2 = elements2[0].attr("href")
-                                   AppLog.i(TAG+"===============================nextpage2：$href2")
+                                    AppLog.i(TAG+"page2 path：$href2")
                                     if (!TextUtils.isEmpty(href2)) {
                                         resultList = mutableListOf()
                                         val doc2 = Jsoup.connect(href2)
@@ -129,7 +124,9 @@ object BDCrawler{
                                         parsePage(doc2,resultList)
                                         AppLog.i(TAG + "pageSize:"+resultList.size)
                                         if(resultList.size>0){
-                                            crawlerCallback?.onSuccess(resultList)
+                                            runOnMain {
+                                                crawlerCallback?.onSuccess(resultList)
+                                            }
                                         }
                                     }
                                 }
@@ -143,7 +140,9 @@ object BDCrawler{
                 }
             }catch (e:Throwable){
                 e.printStackTrace()
-                handler.sendEmptyMessage(1)
+                runOnMain {
+                    crawlerCallback?.onFail()
+                }
             }
         }
     }
@@ -157,9 +156,9 @@ object BDCrawler{
         for (i in elements.indices) {
             var result : CrawlerResult
             val srcid = elements[i].attr("srcid")
-            if ("nvl_normal" == srcid || "nvl_site" == srcid) {
+            if ("nvl_normal" .equals(srcid) || "nvl_site" .equals(srcid) || "nvl_trans".equals(srcid)) {
                 continue
-            } else if ("nvl_flow" == srcid) {
+            } else if ("nvl_flow" .equals(srcid)) {
                 result=CrawlerResult()
                 val json = elements[i].attr("data-log")
                 try {
@@ -172,6 +171,16 @@ object BDCrawler{
                 }
 
                 val titleE = elements[i].getElementsByClass("c-title-text")
+                try {
+                    if (TextUtils.isEmpty(result.url)) {
+                        var els = titleE.parents()
+                        if (els.size > 1) {
+                            result.url = els.get(1).attr("href")
+                        }
+                    }
+                }catch (e:Throwable){
+
+                }
                 result.title = titleE.text()
                 val authorE = elements[i].getElementsByClass("wa-nvl-common-excerpt-info")
                 try {
@@ -219,7 +228,11 @@ object BDCrawler{
                 } catch (e: Exception) {
 
                 }
-                resultList.add(result)
+                if(TextUtils.isEmpty(result.title)||TextUtils.isEmpty(result.abstract)||TextUtils.isEmpty(result.source)){
+                    AppLog.i(TAG+"抓取的数据缺失，丢掉...")
+                }else {
+                    resultList.add(result)
+                }
             } else {
                 result=CrawlerResult()
                 val json = elements[i].attr("data-log")
@@ -233,6 +246,16 @@ object BDCrawler{
                 }
 
                 val titleE = elements[i].getElementsByClass("c-title-text")
+                try {
+                    if (TextUtils.isEmpty(result.url)) {
+                        var els = titleE.parents()
+                        if (els.size > 1) {
+                            result.url = els.get(1).attr("href")
+                        }
+                    }
+                }catch (e:Throwable){
+
+                }
                 result.title = titleE.text()
 //                val authorE = elements[i].getElementsByClass("c-color-gray c-row")
                 val authorE = elements[i].select(".c-color-gray").select(".c-row")
@@ -300,10 +323,13 @@ object BDCrawler{
                         result.source = sourceE1[0].text()
                     }
                 }
-                resultList.add(result)
+                if(TextUtils.isEmpty(result.title)||TextUtils.isEmpty(result.abstract)||TextUtils.isEmpty(result.source)){
+                    AppLog.i(TAG+"抓取的数据缺失，丢掉...")
+                }else {
+                    resultList.add(result)
+                }
             }
             AppLog.i(TAG+result)
-            AppLog.i(TAG+"===================================")
         }
     }
 }
