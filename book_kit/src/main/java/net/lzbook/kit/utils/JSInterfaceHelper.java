@@ -1,6 +1,10 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.app.BaseBookApplication;
+import android.content.Context;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
@@ -8,15 +12,10 @@ import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.token.Token;
 import com.orhanobut.logger.Logger;
 
+import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.request.UrlUtils;
-
-import android.content.Context;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Deprecated
 public class JSInterfaceHelper implements WebViewJsInterface {
 
     Context context;

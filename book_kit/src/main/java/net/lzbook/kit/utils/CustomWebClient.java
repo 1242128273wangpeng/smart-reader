@@ -1,7 +1,5 @@
 package net.lzbook.kit.utils;
 
-import net.lzbook.kit.app.BaseBookApplication;
-
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -21,9 +19,12 @@ import android.webkit.WebViewClient;
 
 import com.dingyue.contract.util.CommonUtil;
 
+import net.lzbook.kit.app.BaseBookApplication;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+@Deprecated
 public class CustomWebClient extends WebViewClient {
     private final static String TAG = "CustomWebClient";
     public WebSettings webSetting;

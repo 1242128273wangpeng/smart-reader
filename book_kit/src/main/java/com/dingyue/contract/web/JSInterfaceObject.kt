@@ -4,10 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.JavascriptInterface
+import com.ding.basic.Config
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.util.buildMicroParameters
+import com.ding.basic.util.buildMicroRequestAction
+import com.ding.basic.util.loadMicroRequestSign
+import com.ding.basic.util.loadRequestUrlParameters
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
@@ -17,9 +22,10 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
+
 import net.lzbook.kit.request.UrlUtils
 import java.io.Serializable
-import java.util.*
+import java.util.HashMap
 
 /**
  * Desc 请描述这个文件
@@ -29,6 +35,9 @@ import java.util.*
  */
 abstract class JSInterfaceObject(var activity: Activity) {
 
+    /***
+     * H5调用原生方法：拼接请求链接
+     * **/
     @JavascriptInterface
     fun buildRequestUrl(data: String?): String? {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -51,6 +60,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
         }
     }
 
+    /***
+     * H5调用原生方法：跳转到封面页
+     * **/
     @JavascriptInterface
     fun startCoverActivity(data: String?) {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -75,10 +87,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
         }
     }
 
-
-    /**
-     * 进入阅读页
-     */
+    /***
+     * H5调用原生方法：跳转到阅读页
+     * **/
     @JavascriptInterface
     fun startReaderActivity(data: String?) {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -93,14 +104,16 @@ abstract class JSInterfaceObject(var activity: Activity) {
                 bundle.putInt("offset", book.offset)
                 bundle.putSerializable("book", book)
                 val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle,
-                        flags)
+                RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
         }
     }
 
+    /***
+     * H5调用原生方法：加入书架
+     * **/
     @JavascriptInterface
     fun insertBookShelf(data: String?): Boolean {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -125,6 +138,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
         }
     }
 
+    /***
+     * H5调用原生方法：移除书架
+     * **/
     @JavascriptInterface
     fun removeBookShelf(data: String?): Boolean {
         if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -148,6 +164,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
         }
     }
 
+    /***
+     * H5调用原生方法：获取书架书籍列表
+     * **/
     @JavascriptInterface
     fun loadBookShelfInfo(): String {
         val stringBuilder = StringBuilder()
@@ -167,6 +186,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
         return stringBuilder.toString()
     }
 
+    /***
+     * H5调用原生方法：统计打点
+     * **/
     @JavascriptInterface
     fun statisticsWebInformation(data: String?) {
         if (data != null && !data.isNullOrEmpty()) {
@@ -181,12 +203,110 @@ abstract class JSInterfaceObject(var activity: Activity) {
         }
     }
 
+    /***
+     * H5调用原生方法：拼接请求链接(微服务接口)
+     * **/
+    @JavascriptInterface
+    fun buildMicroRequestUrl(url: String): String {
+        val result = buildMicroRequest(url)
+        Logger.e("拼接精选页面链接: $result")
+        return result
+    }
 
+    /***
+     * H5调用原生方法：鉴权失败请求重试接口(微服务接口)
+     * **/
+    @JavascriptInterface
+    fun authAccessMicroRequest(url: String): String {
+        if (Config.loadAuthExpire() - System.currentTimeMillis() <= 5000) {
+            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).requestAuthAccessSync()
+
+            Logger.e("WebView请求鉴权接口结果: " + result + " : " + Config.loadPublicKey() + " : " + Config.loadPrivateKey())
+
+        }
+        val result = buildMicroRequest(url)
+        Logger.e("鉴权异常，生成的链接为: $result")
+        return result
+    }
+
+    /**
+     * 搜索无结果页推荐词点击事件
+     */
     @JavascriptInterface
     abstract fun startSearchActivity(data: String?)
 
+    /**
+     * WebView二级页面
+     * 搜索作者主页
+     */
     @JavascriptInterface
     abstract fun startTabulationActivity(data: String?)
+
+
+    protected fun loadBook(data: String): Book {
+
+        val recommend = Gson().fromJson(data, RecommendBean::class.java)
+
+        val book = Book()
+
+        book.book_id = recommend.bookId
+        book.book_source_id = recommend.id
+        book.book_chapter_id = recommend.bookChapterId
+        book.uv = recommend.uv
+        book.name = recommend.bookName
+        book.desc = recommend.description
+        book.host = recommend.host
+        book.label = recommend.label
+        book.genre = recommend.genre
+        book.score = recommend.score
+        book.author = recommend.authorName
+        book.status = recommend.serialStatus
+        book.img_url = recommend.sourceImageUrl
+        book.sub_genre = recommend.subGenre
+        book.book_type = recommend.bookType
+        book.word_count = recommend.wordCountDescp
+
+        val chapter = Chapter()
+        chapter.name = recommend.lastChapterName
+        chapter.update_time = recommend.updateTime
+
+        book.last_chapter = chapter
+
+        return book
+    }
+
+    /***
+     * 获取网络请求链接
+     * **/
+    private fun buildMicroRequest(message: String?): String {
+        var url = message
+
+        var parameters: MutableMap<String, String> = HashMap()
+
+        if (!url.isNullOrEmpty()) {
+
+            val array = url!!.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            url = array[0]
+
+            if (array.size == 2) {
+                parameters = loadRequestUrlParameters(array[1])
+            }
+        }
+
+        parameters = buildMicroParameters(parameters)
+
+        val sign = loadMicroRequestSign(parameters)
+
+        parameters["sign"] = sign
+        parameters["p"] = Config.loadPublicKey()
+
+        Logger.e("签名完成后，携带的公钥为: " + Config.loadPublicKey() + " : " + sign)
+
+        return buildMicroRequestAction(url, parameters)
+    }
+
 
     inner class JSCover : Serializable {
         var book_id: String? = null
@@ -208,38 +328,5 @@ abstract class JSInterfaceObject(var activity: Activity) {
         var word: String? = null
 
         var type: String? = null
-    }
-
-    protected fun loadBook(data: String): Book {
-
-        val recommend = Gson().fromJson(data, RecommendBean::class.java)
-
-        val book = Book()
-
-        book.book_id = recommend.bookId
-        book.book_source_id = recommend.id
-        book.book_chapter_id = recommend.bookChapterId
-
-        book.uv = recommend.uv
-        book.name = recommend.bookName
-        book.desc = recommend.description
-        book.host = recommend.host
-        book.label = recommend.label
-        book.genre = recommend.genre
-        book.score = recommend.score
-        book.author = recommend.authorName
-        book.status = recommend.serialStatus
-        book.img_url = recommend.bookImgUrl
-        book.sub_genre = recommend.subGenre
-        book.book_type = recommend.bookType
-        book.word_count = recommend.wordCountDescp
-
-        val chapter = Chapter()
-        chapter.name = recommend.lastChapterName
-        chapter.update_time = recommend.updateTime
-
-        book.last_chapter = chapter
-
-        return book
     }
 }

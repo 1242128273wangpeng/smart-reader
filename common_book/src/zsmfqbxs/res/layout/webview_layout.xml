@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/view_home_header"
-             android:id="@+id/rl_home_header"
-             android:layout_width="match_parent"
-             android:layout_height="45dp"/>
+    <include
+        android:id="@+id/rl_home_header"
+        layout="@layout/view_home_header"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"/>
 
     <RelativeLayout
         android:id="@+id/rl_web_content"
