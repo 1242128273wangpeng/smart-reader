@@ -85,7 +85,7 @@ object BDCrawler{
                 }
                 try {
                     val elements1 = doc.getElementsByClass("new-nextpage-only")
-                    if (elements1 != null) {
+                    if (elements1 != null&&elements1.size>0) {
                         val href = elements1[0].attr("href")
                         AppLog.i(TAG + "page1 path：$href")
                         if (!TextUtils.isEmpty(href)) {
@@ -109,7 +109,7 @@ object BDCrawler{
                             }
                             try {
                                 val elements2 = doc1.getElementsByClass("new-nextpage")
-                                if (elements2 != null) {
+                                if (elements2 != null&&elements2.size>0) {
                                     val href2 = elements2[0].attr("href")
                                     AppLog.i(TAG+"page2 path：$href2")
                                     if (!TextUtils.isEmpty(href2)) {
@@ -220,6 +220,67 @@ object BDCrawler{
                 }
 //                val newCharaterE = elements[i].getElementsByClass("wa-nvl-flow-chapter-link c-blocka")
                 val newCharaterE = elements[i].select(".wa-nvl-flow-chapter-link").select(".c-blocka")
+                try {
+                    if (newCharaterE != null && newCharaterE.size > 0) {
+                        result.newChapterUrl = newCharaterE[0].attr("href")
+                        result.newChapter = newCharaterE[0].child(0).child(0).text()
+                    }
+                } catch (e: Exception) {
+
+                }
+                if(TextUtils.isEmpty(result.title)||TextUtils.isEmpty(result.abstract)||TextUtils.isEmpty(result.source)){
+                    AppLog.i(TAG+"抓取的数据缺失，丢掉...")
+                }else {
+                    resultList.add(result)
+                }
+            }else if("nvl_zbook".equals(srcid)){
+                result=CrawlerResult()
+                val json = elements[i].attr("data-log")
+                try {
+                    if (!TextUtils.isEmpty(json)) {
+                        val jsonObject = JSONObject(json)
+                        result.url = jsonObject.optString("mu")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                val titleE = elements[i].getElementsByClass("c-title-text")
+                try {
+                    if (TextUtils.isEmpty(result.url)) {
+                        var els = titleE.parents()
+                        if (els.size > 1) {
+                            result.url = els.get(1).attr("href")
+                        }
+                    }
+                }catch (e:Throwable){
+
+                }
+                result.title = titleE.text()
+                val authorE = elements[i].getElementsByClass("wa-nvl-zbook-info")
+                try {
+                    if (authorE != null && authorE.size > 0) {
+                        val child = authorE[0].child(0)
+                        result.author = child.text()
+                    }
+                } catch (e: Exception) {
+
+                }
+
+                try {
+                    if (authorE != null && authorE.size > 0) {
+                        result.abstract=authorE[0].child(1).text()
+                    }
+                } catch (e: Exception) {
+
+                }
+
+                val sourceE = elements[i].getElementsByClass("c-tabs-nav-li-span")
+                if (sourceE != null) {
+                    result.source = sourceE.text()
+                }
+
+                val newCharaterE = elements[i].select(".wa-nvl-zbook-chapter-link").select(".c-blocka")
                 try {
                     if (newCharaterE != null && newCharaterE.size > 0) {
                         result.newChapterUrl = newCharaterE[0].attr("href")
