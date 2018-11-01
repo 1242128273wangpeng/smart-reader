@@ -112,7 +112,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
 
         RepairHelp.showFixMsg(this, ReaderStatus.book, {
-            if (!this.isFinishing) {
+            if (!this!!.isFinishing) {
                 RouterUtil.navigation(this, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             }
         })
@@ -145,9 +145,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientationRunnable = {
-        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
-
+    private val orientationRunnable = {
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
@@ -170,6 +168,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         if (!(ReaderStatus.chapterCount == ReaderStatus.chapterList.size && ReaderSettings.instance.isLandscape)) {
             showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
         }
+
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
@@ -242,7 +241,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         //锁定不可滑出
         override fun onDrawerClosed(drawerView: View) {
             dl_reader_content.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            mCatalogMarkFragment?.dimissDialog()
         }
 
         override fun onDrawerStateChanged(newState: Int) = Unit
@@ -289,7 +287,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         MediaLifecycle.onStop()
     }
 
-
     override fun onBackPressed() {
         if (dl_reader_content.isDrawerOpen(GravityCompat.START)) {
             dl_reader_content.closeDrawers()
@@ -311,7 +308,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerView.removeAllViews()
         dl_reader_content.removeDrawerListener(mDrawerListener)
         EventBus.getDefault().unregister(this)
         ReaderStatus.clear()
@@ -509,7 +505,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.HIDE_AD -> hideAd()
+            EventSetting.Type.HIDE_AD -> {
+                Logger.e("HideADActionTime: ${System.currentTimeMillis()}")
+                hideAd()
+            }
             EventSetting.Type.SHOW_AD -> showAd()
 
             else -> Unit
@@ -517,7 +516,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //如果夜间设置了alpha值之后, 视频将有重影
+//        //如果夜间设置了alpha值之后, 视频将有重影
 //        if (pac_reader_ad != null) {
 //            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
 //        }

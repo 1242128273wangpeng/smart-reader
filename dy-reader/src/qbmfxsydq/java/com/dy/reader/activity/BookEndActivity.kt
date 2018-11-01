@@ -147,7 +147,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
             bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
-            finish()
+//            finish()
         }
         /**
          * 去书城
@@ -155,10 +155,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
             bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
-            finish()
+//            finish()
         }
-
-
     }
 
     private fun initIntent() {

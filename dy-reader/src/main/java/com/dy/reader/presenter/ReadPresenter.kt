@@ -33,10 +33,7 @@ import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.util.TypefaceUtil
-import com.dy.reader.util.getNotchSize
-import com.dy.reader.util.isNotchScreen
-import com.dy.reader.util.xiaomiNotch
+import com.dy.reader.util.*
 import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -79,7 +76,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
-        ReaderStatus.startTime = System.currentTimeMillis()/1000L
+        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -313,6 +310,15 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             }
         }
 
+        if (vivoNotch(Reader.context)) {
+            val uselessSize = getVivoRoundedSize(Reader.context) * 2
+            if (ReaderSettings.instance.isLandscape) {
+                AppHelper.screenWidth -= uselessSize
+            } else {
+                AppHelper.screenHeight -= uselessSize
+            }
+        }
+
         // 保存字体、亮度、阅读模式
         modeSp = readReference?.get()?.getSharedPreferences("config", Context.MODE_PRIVATE)
 //        // 设置字体
@@ -456,6 +462,11 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     fun onPause() {
         isFromCover = false
+
+        if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
+            isSubed = (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null)
+        }
+
         if (isSubed) {
             myNovelHelper?.saveBookmark(ReaderStatus.book.book_id, ReaderStatus.position.group,
                     ReaderStatus.position.offset)
@@ -507,8 +518,12 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
         if (goToBookEndCount == 0) {
             //发送章节消费
-            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                    if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position.groupChildCount.toString() )
+            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus?.book.book_id, ReaderStatus?.currentChapter?.chapter_id, ReaderStatus?.book?.book_source_id,
+                    if (("zn").equals(ReaderStatus?.book?.book_type)) {
+                        "2"
+                    } else {
+                        "1"
+                    }, ReaderStatus?.position.groupChildCount.toString())
             goToBookEndCount++
         }
 

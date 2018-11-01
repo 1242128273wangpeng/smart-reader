@@ -12,6 +12,7 @@ import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
@@ -318,13 +319,21 @@ object ReadMediaManager {
         val map: TreeMap<String, AdBean> = TreeMap()
         fun put(key: String, ad: AdBean) {
             synchronized(map) {
-                map.put(key, ad)
+                if (map.containsKey(key)) {
+                    var value = map[key]
+                    value?.view?.clearFocus()
+                    value?.view = null
+                    value = null
+                }
+                map[key] = ad
+                Logger.e("广告缓存添加: $key : ${map.size}")
             }
         }
         fun get(key: String): AdBean? = map[key]
         fun remove(key: String) {
             synchronized(map) {
                 map.remove(key)
+                Logger.e("广告缓移除: $key : ${map.size}")
             }
         }
 
