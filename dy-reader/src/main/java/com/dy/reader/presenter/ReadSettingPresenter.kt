@@ -286,10 +286,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
         }
 
-        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) == null && RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book) <= 0) {
-            return 0
-        }
-
         if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
