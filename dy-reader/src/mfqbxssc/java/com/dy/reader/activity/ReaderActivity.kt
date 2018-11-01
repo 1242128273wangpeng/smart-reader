@@ -285,10 +285,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mNativeMediaView?.onPause()
     }
 
-    fun addBookToShelf() {
-        mReadPresenter?.addBookShelf(true, false)
-    }
-
     override fun onStop() {
         super.onStop()
         mReadPresenter.onStop()
