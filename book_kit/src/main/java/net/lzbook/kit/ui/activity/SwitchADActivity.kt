@@ -1,24 +1,22 @@
 package net.lzbook.kit.ui.activity
 
-import android.view.KeyEvent.KEYCODE_BACK
-
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-
 import com.alibaba.android.arouter.facade.annotation.Route
-import net.lzbook.kit.utils.router.RouterConfig
 import com.dy.media.MediaCode
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.activity_switch_ad.*
 import net.lzbook.kit.R
+import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler
 
 @Route(path = RouterConfig.SWITCH_AD_ACTIVITY)
@@ -83,10 +81,12 @@ class SwitchADActivity : Activity() {
                     }
 
                     MediaCode.MEDIA_FAILED -> {
+                        loadedAD = false
                         this@SwitchADActivity.finish()
                     }
 
                     MediaCode.MEDIA_DISMISS -> {
+                        loadedAD = false
                         this@SwitchADActivity.finish()
                     }
                 }
