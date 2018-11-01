@@ -8,10 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
-import android.view.KeyEvent
-import android.view.SurfaceHolder
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
@@ -38,6 +35,7 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.view.NativeView
+import com.orhanobut.logger.Logger
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.txtqbmfxs.act_reader.*
@@ -75,6 +73,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         setContentView(R.layout.act_reader)
         ReadMediaManager.init(this)
         pac_reader_ad.frameLayout = fl_menu_gesture
+        initADViewChangeListener()
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this)
 
@@ -529,7 +528,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             return
         }
         //add广告
-        pac_reader_ad.removeAllViews()
+        pac_reader_ad?.removeAllViews()
         val adType = ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
@@ -559,10 +558,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
                         val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
-                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
+                        pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
-                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams())
+                        pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams())
                         pac_reader_ad?.visibility = View.VISIBLE
                     }
 
@@ -616,5 +615,18 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     override fun supportSlideBack(): Boolean = false
+
+    private fun initADViewChangeListener() {
+        pac_reader_ad?.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+            override fun onChildViewRemoved(parent: View?, child: View?) {
+                child?.clearFocus()
+                Logger.e("广告布局移除子View: ${child?.javaClass} : ${child?.hasFocus()}")
+            }
+
+            override fun onChildViewAdded(parent: View?, child: View?) {
+                Logger.e("广告布局添加子View: ${child?.javaClass} : ${child?.hasFocus()}")
+            }
+        })
+    }
 
 }
