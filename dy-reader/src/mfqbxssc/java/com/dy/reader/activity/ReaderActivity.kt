@@ -8,10 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
-import android.view.KeyEvent
-import android.view.SurfaceHolder
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
@@ -38,6 +35,7 @@ import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dycm_adsdk.view.NativeView
+import com.orhanobut.logger.Logger
 import iyouqu.theme.BaseCacheableActivity
 import iyouqu.theme.FrameActivity
 import kotlinx.android.synthetic.mfqbxssc.act_reader.*
@@ -79,6 +77,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         setContentView(R.layout.act_reader)
         ReadMediaManager.init(this)
         pac_reader_ad.frameLayout = fl_menu_gesture
+        initADViewChangeListener()
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this)
 
@@ -147,7 +146,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable = {
+    private val orientaionRunnable = {
         showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
 
         glSurfaceView.visibility = View.GONE
@@ -262,9 +261,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onResume()
-        }
+        mNativeMediaView?.onResume()
 
         mCatalogMarkFragment?.fixBook()
     }
@@ -274,7 +271,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (hasFocus && !ReaderStatus.isMenuShow) {
+        if (hasFocus && !ReaderStatus.isMenuShow && !ReaderSettings.instance.isAutoReading) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -285,10 +282,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         glSurfaceView.onPause()
         mReadPresenter.onPause()
         MediaLifecycle.onPause()
+        mNativeMediaView?.onPause()
+    }
 
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onPause()
-        }
+    fun addBookToShelf() {
+        mReadPresenter?.addBookShelf(true, false)
     }
 
     override fun onStop() {
@@ -541,12 +539,12 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             return
         }
         //add广告
-        pac_reader_ad.removeAllViews()
+        pac_reader_ad?.removeAllViews()
         val adType = ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
             if (adView.loaded) {//加载成功
-                if (adView.view != null) {
+                if (adView.view != null && adView.view?.parent == null) {
 
                     if (adView.view is NativeView) {
                         (adView.view as NativeView).setHideAdListener {
@@ -571,10 +569,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
                         val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
-                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
+                        pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
-                        pac_reader_ad.addView(adView.view, ReadMediaManager.getLayoutParams())
+                        pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams())
                         pac_reader_ad?.visibility = View.VISIBLE
                     }
 
@@ -585,14 +583,14 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                 } else {
                     ReadMediaManager.loadAdComplete = { type: String ->
-                        if (type == adType) showAd()//本页的广告请求回来，重走方法
+                        if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)) showAd()//本页的广告请求回来，重走方法
                     }
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
                 ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
-                    if (type == adType) showAd()//本页的广告请求回来，重走方法
+                    if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group, ReaderStatus.position.index)) showAd()//本页的广告请求回来，重走方法
                 }
             }
         } else {
@@ -659,6 +657,19 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun initADViewChangeListener() {
+        pac_reader_ad?.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+            override fun onChildViewRemoved(parent: View?, child: View?) {
+                child?.clearFocus()
+                Logger.e("广告布局移除子View: ${child?.javaClass} : ${child?.hasFocus()}")
+            }
+
+            override fun onChildViewAdded(parent: View?, child: View?) {
+                Logger.e("广告布局添加子View: ${child?.javaClass} : ${child?.hasFocus()}")
+            }
+        })
     }
 
 }

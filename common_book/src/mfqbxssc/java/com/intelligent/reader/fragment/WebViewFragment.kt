@@ -264,7 +264,7 @@ class WebViewFragment : Fragment() {
                 if (customWebClient != null) {
                     customWebClient?.initParameter()
                 }
-                web_view_content?.reload()
+                web_view_content?.loadUrl(url)
             })
         }
     }
