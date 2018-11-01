@@ -150,9 +150,13 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         web_content_view?.webViewClient = customWebClient
 
         web_content_view?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
+
+            @JavascriptInterface
             override fun startSearchActivity(data: String?) {
+
             }
 
+            @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
                     if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
@@ -170,7 +174,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
                                 when {
                                     redirect.from == "recommend" -> bundle.putString("from", "recommend")
-                                    redirect.from == "rank" -> bundle.putString("from", "rank")
+                                    redirect.from == "ranking" -> bundle.putString("from", "rank")
                                     redirect.from == "category" -> bundle.putString("from", "category")
                                     else -> bundle.putString("from", "other")
                                 }

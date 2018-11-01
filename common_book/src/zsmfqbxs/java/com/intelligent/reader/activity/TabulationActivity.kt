@@ -14,12 +14,14 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.Config
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.request.RequestService
 import com.dingyue.contract.CommonContract
+import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.web.CustomWebClient
 import com.dingyue.contract.web.JSInterfaceObject
@@ -40,6 +42,7 @@ import java.util.*
 /**
  * WebView二级页面
  */
+@Route(path = RouterConfig.TABULATION_ACTIVITY)
 class TabulationActivity : FrameActivity(), View.OnClickListener {
     private var rankType: String? = null
 
