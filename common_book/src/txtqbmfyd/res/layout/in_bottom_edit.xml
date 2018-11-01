@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/img_bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bookshelf_common_shadow_bg"/>
+
+    <LinearLayout
+        android:id="@+id/ll_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/img_bottom_shadow"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_select_all"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_dialog_button"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:singleLine="true"
+            android:text="@string/select_all"
+            android:textColor="#5D646E"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:background="#FFE8E9EC"/>
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/background_dialog_button"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:singleLine="true"
+            android:text="@string/delete"
+            android:textColor="#FF19DD8B"
+            android:textSize="14sp"
+            app:onPressChangeAlpha="true"
+            tools:ignore="MissingPrefix"/>
+    </LinearLayout>
+
+    <net.lzbook.kit.ui.widget.NightShadowView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/img_bottom_shadow"
+        android:visibility="gone"/>
+</RelativeLayout>

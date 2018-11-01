@@ -34,4 +34,8 @@ class WebPageFavorite: Serializable {
     @Ignore
     var selected = false
 
+    override fun toString(): String {
+        return "id:$id,webTitle:$webTitle,webLink:$webLink,createTime:$createTime,selected$selected"
+    }
+
 }

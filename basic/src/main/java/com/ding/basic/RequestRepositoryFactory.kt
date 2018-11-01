@@ -2037,7 +2037,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
      */
     fun addWebFavorite(favorite: WebPageFavorite) {
         // 判断数量
-        if (localRepository.getWebFavoriteCount() > 10) {
+        if (localRepository.getWebFavoriteCount() >= 10) {
             // 删除最老的一条
             localRepository.getAllWebFavorite()?.let { localRepository.deleteWebFavoriteById(it.last().id) }
         }

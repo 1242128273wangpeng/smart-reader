@@ -53,35 +53,46 @@
         android:layout_weight="1"
         android:visibility="gone"/>
 
-    <LinearLayout
-        android:id="@+id/ll_empty_view"
+    <RelativeLayout
+        android:id="@+id/rl_empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
         android:visibility="visible">
 
         <ImageView
+            android:id="@+id/img_empty"
             android:layout_width="112dp"
             android:layout_height="80dp"
+            android:layout_above="@+id/txt_empty_tip"
+            android:layout_centerHorizontal="true"
             android:src="@drawable/icon_empty_favorite"/>
+
         <TextView
+            android:id="@+id/txt_empty_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
             android:text="暂无收藏"
             android:textColor="#8D939D"
             android:textSize="15sp"/>
-    </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"
-        android:text="共0条收藏，最多收藏10条~"
-        android:textColor="#ADB4BE"
-        android:textSize="12sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:text="共0条收藏，最多收藏10条~"
+            android:textColor="#ADB4BE"
+            android:textSize="12sp"/>
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/in_bottom_menu"
+        layout="@layout/in_bottom_edit"
+        android:visibility="gone"/>
+
 
 </LinearLayout>
