@@ -68,7 +68,8 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<BannerInfo> {
                     result.url = ""
                     result
                 } else {
-                    loge("zip")
+                    loge("zip -- push info: $pushInfo" +
+                            "\n banner info: $bannerInfo")
                     val pushTags = pushInfo.tags
                     val bannerTags = bannerInfo.tags
                     val bannerImgUrl = bannerInfo.url
@@ -79,7 +80,6 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<BannerInfo> {
                             result = bannerInfo
                         }
                     }
-                    loge("zip result: $result")
                     context.editShared {
                         putObject(BannerInfo.KEY, bannerInfo)
                     }
