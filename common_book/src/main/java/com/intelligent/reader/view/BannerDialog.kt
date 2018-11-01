@@ -77,9 +77,9 @@ class BannerDialog(val activity: Activity) {
         val activityUrl = bannerInfo.nativeActivityUrl
         if (imgUrl?.isNotEmpty() == true && activityUrl?.isNotEmpty() == true) {
 
-            val strArr = activityUrl.split(",")[0]
-            bannerWebTitle = strArr[0].toString()
-            bannerWebUrl = strArr[1].toString()
+            val strArr = activityUrl.split(",")
+            bannerWebTitle = strArr[0]
+            bannerWebUrl = strArr[1]
 
             Glide.with(activity)
                     .load(imgUrl)
