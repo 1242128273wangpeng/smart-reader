@@ -1,5 +1,8 @@
 package net.lzbook.kit.utils;
 
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.TELEPHONY_SERVICE;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -79,9 +82,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.content.Context.BATTERY_SERVICE;
-import static android.content.Context.TELEPHONY_SERVICE;
 
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
@@ -429,8 +429,8 @@ public class AppUtils {
                                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
             }
-        }catch (Throwable e){
-            AppLog.e("getBatteryLevel:"+e.getMessage());
+        } catch (Throwable e) {
+            AppLog.e("getBatteryLevel:" + e.getMessage());
         }
         return level + "%";
     }
@@ -728,13 +728,12 @@ public class AppUtils {
      * 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
      */
     public static String getPackageNameFor_() {
-        initValues();
-        if ("cn.mfxsqbyd.reader".equals(APPLICATION_ID)) {
-            APPLICATION_ID = AppUtils.getPackageName();
+        String app_id = AppUtils.getPackageName();
+        if ("cn.mfxsqbyd.reader".equals(app_id)) {
+            return app_id;
         } else {
-            APPLICATION_ID = AppUtils.getPackageName().replace(".", "-");
+            return app_id.replace(".", "-");
         }
-        return APPLICATION_ID;
     }
 
     public static boolean hasUPush() {

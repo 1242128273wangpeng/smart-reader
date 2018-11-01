@@ -49,6 +49,15 @@ abstract class JSInterfaceObject(var activity: Activity) {
                 parameters = HashMap()
             }
 
+//            val finalUrl = if (NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext()))
+//                UrlUtils.buildWebUrl(url, parameters) else
+//                SPUtils.getDefaultSharedString(data)
+//            SPUtils.putDefaultSharedString(data, finalUrl)
+//
+//            AppLog.e("DingYue--当前的url：" + finalUrl)
+//            AppLog.e("DingYue--服务端url：" + UrlUtils.buildWebUrl(url, parameters))
+//            AppLog.e("DingYue--存储的url：" + SPUtils.getDefaultSharedString(data))
+//            return finalUrl
             return UrlUtils.buildWebUrl(url, parameters)
         } else {
             return null
