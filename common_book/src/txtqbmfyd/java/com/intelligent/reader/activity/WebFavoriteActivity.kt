@@ -12,6 +12,8 @@ import com.intelligent.reader.view.WebFavoriteView
 import kotlinx.android.synthetic.txtqbmfyd.act_web_favorite.*
 import kotlinx.android.synthetic.txtqbmfyd.in_bottom_edit.*
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 
 /**
@@ -84,6 +86,9 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
     private fun onItemClick(position: Int) {
         if (adapter?.remove == false) {
             ToastUtil.showToastMessage("点击了:${favoriteList?.get(position).toString()}")
+            val bundle = Bundle()
+            bundle.putString("url", "http://m.baidu.com")
+            RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
             // 页面跳转
             return
         }
