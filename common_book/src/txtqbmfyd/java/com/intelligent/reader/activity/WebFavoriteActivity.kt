@@ -32,7 +32,6 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
         rv_favorite_list.visibility = View.GONE
         rl_empty_view.visibility = View.VISIBLE
         txt_right_handle.visibility = View.GONE
-        rl_empty_view.setOnClickListener { presenter.initTempData() } // TODO 临时初始化数据
         hideEdit()
     }
 
@@ -84,10 +83,12 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
      */
     private fun onItemClick(position: Int) {
         if (adapter?.remove == false) {
-            val bundle = Bundle()
-            bundle.putString("url", "http://m.baidu.com")
-            RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
-            finish()
+            if (favoriteList != null && !favoriteList!![position].webLink.isBlank()) {
+                val bundle = Bundle()
+                bundle.putString("url", favoriteList!![position].webLink)
+                RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
+                finish()
+            }
             // 页面跳转
             return
         }
