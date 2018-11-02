@@ -18,7 +18,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
 
     private var books: java.util.ArrayList<Book>? = null
-    fun setBooks(books: java.util.ArrayList<Book>) {
+    fun setBooks(books: java.util.ArrayList<Book>?) {
         this.books = books
     }
 
