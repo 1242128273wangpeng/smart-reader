@@ -18,12 +18,12 @@ import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
 import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.bean.CrawlerResult
-import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.BDCrawler
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.web.CustomWebClient
 
@@ -34,9 +34,11 @@ import net.lzbook.kit.utils.web.CustomWebClient
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019 22:05
  */
-class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.OnItemClickListener {
+class SearchResultFragment : Fragment(), ISearchResultView {
 
     var onResultListener: OnResultListener<String>? = null
+
+    var searchNoResult = false
 
     private var loadingPage: LoadingPage? = null
 
@@ -44,7 +46,7 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
 
     private var webSearchResultAdapter: WebSearchResultAdapter? = null
 
-    private var webSearchResultList: List<CrawlerResult>? = null
+    private var webSearchResultList: MutableList<CrawlerResult>? = null
 
     private var keyWord: String = ""
 
@@ -77,6 +79,8 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
      * searchType：0 全部 1 标签 2 作者 3 书名
      */
     fun loadKeyWord(keyWord: String, searchType: String = "0", isAuthor: Int = 0) {
+        webSearchResultAdapter = null
+        searchNoResult = false
         this.keyWord = keyWord
         searchResultPresenter.loadKeyWord(keyWord, searchType, isAuthor)
     }
@@ -113,42 +117,41 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
 
     // 无结果通知
     override fun onNoResult(keyWord: String?) {
-        showLoading()
+        runOnMain {
+            search_result_content.visibility = View.GONE
+            rv_catch_result.visibility = View.VISIBLE
+            searchNoResult = true
+            showLoading()
+        }
     }
 
     /**
      * 百度抓取数据展示
      */
-    override fun onWebSearchResult(res: List<CrawlerResult>?) {
-        hideLoading()
-        if (res != null) {
-            search_result_content.visibility = View.GONE
-            rv_catch_result.visibility = View.VISIBLE
-            // 适配器加载数据
-            if (webSearchResultAdapter == null) {
-                webSearchResultList = res
+    override fun onWebSearchResult(res: MutableList<CrawlerResult>?) {
+        runOnMain {
+            hideLoading()
+            if (res != null) {
                 rv_catch_result.layoutManager = LinearLayoutManager(requireContext())
-                webSearchResultAdapter = WebSearchResultAdapter(requireContext())
-                webSearchResultAdapter!!.setOnItemClickListener(this)
-                webSearchResultAdapter!!.onLatestChapterClick = {
-                    loge("url: $it")
-                    if (!it.isBlank()) toWebActivity(it)
+                // 适配器加载数据
+                if (webSearchResultAdapter == null) {
+                    webSearchResultList = res
+                    webSearchResultAdapter = WebSearchResultAdapter(requireContext())
+                    webSearchResultAdapter!!.onItemClick = {
+                        if (!it.isNullOrBlank()) toWebActivity(it!!)
+                    }
+                    webSearchResultAdapter!!.onLatestChapterClick = {
+                        loge("url: $it")
+                        if (!it.isNullOrBlank()) toWebActivity(it!!)
+                    }
+                    webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
+                    rv_catch_result.adapter = webSearchResultAdapter
+                } else {
+                    webSearchResultList?.addAll(res)
+                    webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
+                    webSearchResultAdapter?.notifyDataSetChanged()
                 }
-                webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
-                rv_catch_result.adapter = webSearchResultAdapter
-            } else {
-                webSearchResultList?.plus(res)
-                webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
-                webSearchResultAdapter?.notifyDataSetChanged()
-            }
-        } else ToastUtil.showToastMessage("全网搜索无结果")
-    }
-
-    override fun onItemClick(view: View, position: Int) {
-        webSearchResultList?.let {
-            if (!it[position].url.isNullOrBlank()) {
-                toWebActivity(it[position].url!!)
-            }
+            } else ToastUtil.showToastMessage("全网搜索无结果")
         }
     }
 
@@ -177,7 +180,7 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
 
         customWebClient?.setLoadingWebViewFinish {
             searchResultPresenter.onLoadFinished()
-            if (loadingPage != null) {
+            if (loadingPage != null && !searchNoResult) {
                 hideLoading()
             }
         }

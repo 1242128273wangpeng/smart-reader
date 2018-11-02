@@ -22,6 +22,7 @@ import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.webview.UrlUtils
+import org.json.JSONObject
 import java.util.*
 
 
@@ -106,10 +107,10 @@ class SearchResultModel {
             @JavascriptInterface
             override fun onSearchNoResult(keyword: String?) {
                 if (!keyword.isNullOrBlank() && !activity.isFinishing) {
-                    // 无结果回调
-                    listener?.onNoResult(keyword)
+                    // 处理回传的json数据
+                    val key = JSONObject(keyword).getString("keyword")
                     // 获取无结果数据
-                    BDCrawler.startCrawler(keyword!!, object : BDCrawler.CrawlerCallback {
+                    BDCrawler.startCrawler(key!!, object : BDCrawler.CrawlerCallback {
                         override fun onSuccess(resultList: MutableList<CrawlerResult>) {
                             listener?.onWebSearchResult(resultList)
                         }
@@ -118,6 +119,8 @@ class SearchResultModel {
                             listener?.onWebSearchResult(null)
                         }
                     })
+                    // 无结果回调
+                    listener?.onNoResult(key)
                 }
             }
 

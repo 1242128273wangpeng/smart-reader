@@ -16,7 +16,9 @@ import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
  */
 class WebSearchResultAdapter(context: Context) : RecyclerBaseAdapter<CrawlerResult>(context, R.layout.item_web_search_result) {
 
-    var onLatestChapterClick: ((url: String) -> Unit)? = null
+    var onLatestChapterClick: ((url: String?) -> Unit)? = null
+    var onItemClick: ((url: String?) -> Unit)? = null
+    var keyword: String? = null
 
     override fun bindView(itemView: View, data: CrawlerResult, position: Int) {
         with(itemView) {
@@ -26,14 +28,22 @@ class WebSearchResultAdapter(context: Context) : RecyclerBaseAdapter<CrawlerResu
             } else {
                 view_top_tip.visibility = View.GONE
             }
-
+            ll_content.tag = data.url
+            ll_content.setOnClickListener { onItemClick?.invoke(it.tag as String?) }
             // 赋值
             txt_title.text = data.title
-            txt_author.text = data.author
+            if (data.author.isNullOrBlank()) {
+                txt_author.visibility = View.GONE
+            } else {
+                txt_author.visibility = View.VISIBLE
+                txt_author.text = data.author
+            }
             txt_summary.text = data.abstract
             if (!data.newChapter.isNullOrBlank() && !data.newChapterUrl.isNullOrBlank()) {
+                txt_latest_chapter.tag = data.newChapterUrl
                 txt_latest_chapter.visibility = View.VISIBLE
                 txt_latest_chapter.text = data.newChapter
+                txt_latest_chapter.setOnClickListener { onLatestChapterClick?.invoke(it.tag as String?) }
             } else txt_latest_chapter.visibility = View.GONE
             txt_source_from.text = data.source
             txt_update_time.text = data.updateTime

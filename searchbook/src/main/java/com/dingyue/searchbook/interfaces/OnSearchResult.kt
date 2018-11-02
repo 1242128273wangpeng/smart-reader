@@ -32,6 +32,6 @@ interface OnSearchResult {
 
     fun onNoResult(keyWord: String?)
 
-    fun onWebSearchResult(res: List<CrawlerResult>?) // 数据抓取回调
+    fun onWebSearchResult(res: MutableList<CrawlerResult>?) // 数据抓取回调
 
 }

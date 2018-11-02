@@ -96,7 +96,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
         searchResultView.onNoResult(keyWord)
     }
 
-    override fun onWebSearchResult(res: List<CrawlerResult>?) {
+    override fun onWebSearchResult(res: MutableList<CrawlerResult>?) {
         searchResultView.onWebSearchResult(res)
     }
 
