@@ -37,7 +37,6 @@ import com.dy.reader.util.*
 import com.google.gson.Gson
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.component.service.DownloadService
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
 import net.lzbook.kit.utils.AppLog
@@ -54,7 +53,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     private val TAG = ReadPresenter::class.java.simpleName
 
-    var downloadService: DownloadService? = null
     private var mContext: Context = act.applicationContext
     private var sp: SharedPreferences? = null
     private var modeSp: SharedPreferences? = null

@@ -352,8 +352,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
 
             if (allChapterList?.size ?: 0 > loadSequence) {
                 allChapterList?.let {
-                    ReadSeparateHelper.getChapterNameList(it[loadSequence].name
-                            ?: "").forEachIndexed { index, novelLineBean ->
+                    ReadSeparateHelper.getChapterNameList(it[loadSequence].name ?: "").forEachIndexed { index, novelLineBean ->
                         if (index == 0) {
                             txt_reader_loading_sequence.text = novelLineBean.lineContent
                         } else {
@@ -398,7 +397,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
     internal inner class AdViewHolder(itemView: View) : PagerScrollAdapter.ReaderPagerHolder(itemView) {
 
         init {
-            fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad)
+             fl_reader_content_ad = itemView.findViewById(R.id.fl_reader_content_ad)
         }
 
         override fun bindHolder(page: NovelPageBean) {
@@ -425,7 +424,7 @@ class PagerScrollAdapter(val context: Context) : RecyclerView.Adapter<PagerScrol
                 //5-3广告位
                 adView?.view?.apply {
                     if (this.parent != null) {
-                        (this.parent as ViewGroup?)?.removeAllViews()
+                        (this.parent as ViewGroup).removeAllViews()
                     }
                     if (this.parent == null) {
                         this.tag = fl_reader_content_ad

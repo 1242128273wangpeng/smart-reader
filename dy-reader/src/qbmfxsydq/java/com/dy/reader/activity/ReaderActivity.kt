@@ -112,7 +112,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
 
         RepairHelp.showFixMsg(this, ReaderStatus.book, {
-            if (!this!!.isFinishing) {
+            if (!this.isFinishing) {
                 RouterUtil.navigation(this, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             }
         })
@@ -308,17 +308,25 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        dl_reader_content.removeDrawerListener(mDrawerListener)
-        EventBus.getDefault().unregister(this)
-        ReaderStatus.clear()
-        DataProvider.clear()
-        AppHelper.glSurfaceView = null
-        mReadPresenter.onDestroy()
-        ReaderStatus.chapterList.clear()
-        MediaLifecycle.onDestroy()
-        ReadMediaManager.onDestroy()
-        nativeMediaView?.onDestroy()
-        nativeMediaView = null
+        try {
+            dl_reader_content.removeDrawerListener(mDrawerListener)
+            EventBus.getDefault().unregister(this)
+            ReaderStatus.clear()
+            DataProvider.clear()
+            AppHelper.glSurfaceView = null
+            mReadPresenter.onDestroy()
+            ReaderStatus.chapterList.clear()
+            MediaLifecycle.onDestroy()
+            try {
+                ReadMediaManager.onDestroy()
+            } catch (e: Throwable) {
+                Logger.e("ReaderActivity:onDestroy" + e.message)
+            }
+            nativeMediaView?.onDestroy()
+            nativeMediaView = null
+        } catch (e: Throwable) {
+            Logger.e("ReaderActivity:onDestroy" + e.message)
+        }
     }
 
 
@@ -505,10 +513,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.HIDE_AD -> {
-                Logger.e("HideADActionTime: ${System.currentTimeMillis()}")
-                hideAd()
-            }
+            EventSetting.Type.HIDE_AD -> hideAd()
             EventSetting.Type.SHOW_AD -> showAd()
 
             else -> Unit
@@ -557,7 +562,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.loadAdComplete = null
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
-                        val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
                         pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
@@ -647,7 +651,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 }
 
             }
-
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
@@ -656,11 +660,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         pac_reader_ad?.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
             override fun onChildViewRemoved(parent: View?, child: View?) {
                 child?.clearFocus()
-                Logger.e("广告布局移除子View: ${child?.javaClass} : ${child?.hasFocus()}")
             }
 
             override fun onChildViewAdded(parent: View?, child: View?) {
-                Logger.e("广告布局添加子View: ${child?.javaClass} : ${child?.hasFocus()}")
+
             }
         })
     }

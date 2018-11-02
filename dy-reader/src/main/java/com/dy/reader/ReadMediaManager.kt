@@ -12,7 +12,6 @@ import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
-import com.orhanobut.logger.Logger
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
@@ -249,8 +248,7 @@ object ReadMediaManager {
         uiThread {
             try {
                 removeList.forEach {
-                    if (it.view?.parent == null) {
-
+                    if(it.view?.parent == null) {
                         if (it.view is Closeable) {
                             (it.view as Closeable).close()
                         }
@@ -279,9 +277,8 @@ object ReadMediaManager {
             uiThread {
 
                 try {
-                    removeList.forEach {
-                        if (it.view?.parent == null) {
-
+                    removeList.forEach{
+                        if(it.view?.parent == null) {
                             if (it.view is Closeable) {
                                 (it.view as Closeable).close()
                             }
@@ -326,14 +323,12 @@ object ReadMediaManager {
                     value = null
                 }
                 map[key] = ad
-                Logger.e("广告缓存添加: $key : ${map.size}")
             }
         }
         fun get(key: String): AdBean? = map[key]
         fun remove(key: String) {
             synchronized(map) {
                 map.remove(key)
-                Logger.e("广告缓移除: $key : ${map.size}")
             }
         }
 

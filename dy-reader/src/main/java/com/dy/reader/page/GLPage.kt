@@ -3,7 +3,6 @@ package com.dy.reader.page
 import android.content.res.Configuration
 import android.graphics.*
 import android.opengl.GLES20
-import android.text.TextPaint
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -61,8 +60,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
                 AppHelper.workQueueThread.shutdownNow()
 
-                semaphore.release(10)
-
+                if (semaphore.availablePermits() != 1) {
+                    semaphore.release()
+                }
                 canvas = null
                 bitmap = null
                 mOrientation = Configuration.ORIENTATION_UNDEFINED
@@ -77,14 +77,14 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
 
     fun ready(orientation: Int = Configuration.ORIENTATION_PORTRAIT) {
-
-        semaphore = Semaphore(1, true)
-
         createBitmap(orientation)
 
         //修正位置信息
         DataProvider.revisePosition(position)
 
+        if (semaphore.availablePermits() != 1) {
+            semaphore.release()
+        }
 
 //        prepareBitmap(position)
 //
@@ -194,28 +194,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                 }
 
                 adBean?.view?.apply {
-                    if (this.visibility == View.VISIBLE) {
-                        if (this.parent != null) {
-                            var copy: Bitmap? = null
-                            try {
-                                this.buildDrawingCache()
-                                copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
-                            } catch (e: OutOfMemoryError) {
-                                e.printStackTrace()
-                                Glide.get(Reader.context).clearMemory()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                Glide.get(Reader.context).clearMemory()
-                            }
-                            this.destroyDrawingCache()
-                            load(copy)
-                        } else {
-                            ReadMediaManager.frameLayout?.removeAllViews()
+                    try {
+                        if (this.visibility == View.VISIBLE) {
                             if (this.parent != null) {
-                                (this.parent as ViewGroup).removeView(this)
-                            }
-                            ReadMediaManager.frameLayout?.addView(this)
-                            ReadMediaManager.frameLayout?.post {
                                 var copy: Bitmap? = null
                                 try {
                                     this.buildDrawingCache()
@@ -229,11 +210,34 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                                 }
                                 this.destroyDrawingCache()
                                 load(copy)
+                            } else {
                                 ReadMediaManager.frameLayout?.removeAllViews()
+                                if (this.parent != null) {
+                                    (this.parent as ViewGroup).removeView(this)
+                                }
+                                ReadMediaManager.frameLayout?.addView(this)
+                                ReadMediaManager.frameLayout?.post {
+                                    var copy: Bitmap? = null
+                                    try {
+                                        this.buildDrawingCache()
+                                        copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
+                                    } catch (e: OutOfMemoryError) {
+                                        e.printStackTrace()
+                                        Glide.get(Reader.context).clearMemory()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        Glide.get(Reader.context).clearMemory()
+                                    }
+                                    this.destroyDrawingCache()
+                                    load(copy)
+                                    ReadMediaManager.frameLayout?.removeAllViews()
 
+                                }
                             }
+                            return@runOnMain
                         }
-                        return@runOnMain
+                    }catch (e:Throwable){
+                        e.printStackTrace()
                     }
                 }
                 load(null)
@@ -333,13 +337,6 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             } else {
                 println("cant draw page content == null")
             }
-
-            val textPaint = TextPaint()
-            textPaint.style = Paint.Style.FILL
-            textPaint.isAntiAlias = true
-            textPaint.isDither = true
-            textPaint.textSize = 80F
-            textPaint.color = ReaderSettings.instance.fontColor
 
             println("loadBitmap ${posi.group}:${posi.index} use time ${System.currentTimeMillis() - startTime}")
         }
