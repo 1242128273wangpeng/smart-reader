@@ -73,11 +73,11 @@ abstract class JSInterfaceObject(var activity: Activity) {
             try {
                 val cover = Gson().fromJson(data, JSCover::class.java)
 
-                if (cover?.book_id != null && cover.book_source_id != null && cover.book_chapter_id != null) {
+                if (cover?.book_id != null) {
                     val bundle = Bundle()
                     bundle.putString("book_id", cover.book_id)
-                    bundle.putString("book_source_id", cover.book_source_id)
-                    bundle.putString("book_chapter_id", cover.book_chapter_id)
+                    bundle.putString("book_source_id", cover.book_source_id ?: "")
+                    bundle.putString("book_chapter_id", cover.book_chapter_id ?: "")
 
                     RouterUtil.navigation(activity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
                 }
