@@ -64,29 +64,28 @@ class DebugHostActivity : BaseCacheableActivity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                val type = when (intent.getStringExtra("type")) {
+                val type = intent.getStringExtra("type")
+                when (type) {
                     SharedPreUtil.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
-                        SharedPreUtil.NOVEL_HOST
                     }
                     SharedPreUtil.WEBVIEW_HOST -> {
                         Config.insertWebViewHost(et_input_host.text.toString())
-                        SharedPreUtil.WEBVIEW_HOST
                     }
                     SharedPreUtil.UNION_HOST -> {
                         Config.insertMicroAPIHost(et_input_host.text.toString())
-                        SharedPreUtil.UNION_HOST
                     }
                     SharedPreUtil.CONTENT_HOST -> {
                         Config.insertContentAPIHost(et_input_host.text.toString())
-                        SharedPreUtil.CONTENT_HOST
+                    }
+                    SharedPreUtil.USER_TAG_HOST -> {
+                        Config.insertUserTagHost(et_input_host.text.toString())
                     }
                     SharedPreUtil.USER_TAG_HOST -> {
                         Config.insertUserTagHost(et_input_host.text.toString())
                         SharedPreUtil.USER_TAG_HOST
                     }
                     else -> {
-                        ""
                     }
                 }
 
