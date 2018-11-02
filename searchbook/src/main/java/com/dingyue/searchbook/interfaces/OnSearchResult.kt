@@ -30,6 +30,8 @@ interface OnSearchResult {
 
     fun onLoadKeyWord(keyWord: String?, searchType: String?) {}
 
+    fun onNoResult(keyWord: String?)
+
     fun onWebSearchResult(res: List<CrawlerResult>?) // 数据抓取回调
 
 }

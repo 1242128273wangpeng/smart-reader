@@ -10,8 +10,10 @@ import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
+import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.BDCrawler
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -104,9 +106,18 @@ class SearchResultModel {
             @JavascriptInterface
             override fun onSearchNoResult(keyword: String?) {
                 if (!keyword.isNullOrBlank() && !activity.isFinishing) {
-                    // TODO 获取无结果数据
+                    // 无结果回调
+                    listener?.onNoResult(keyword)
+                    // 获取无结果数据
+                    BDCrawler.startCrawler(keyword!!, object : BDCrawler.CrawlerCallback {
+                        override fun onSuccess(resultList: MutableList<CrawlerResult>) {
+                            listener?.onWebSearchResult(resultList)
+                        }
 
-                    listener?.onWebSearchResult(emptyList())
+                        override fun onFail() {
+                            listener?.onWebSearchResult(null)
+                        }
+                    })
                 }
             }
 

@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.BDCrawler
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -110,10 +111,16 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
         search_result_content?.loadUrl(url)
     }
 
+    // 无结果通知
+    override fun onNoResult(keyWord: String?) {
+        showLoading()
+    }
+
     /**
      * 百度抓取数据展示
      */
     override fun onWebSearchResult(res: List<CrawlerResult>?) {
+        hideLoading()
         if (res != null) {
             search_result_content.visibility = View.GONE
             rv_catch_result.visibility = View.VISIBLE
@@ -225,6 +232,7 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
 
     override fun onDestroy() {
         super.onDestroy()
+        BDCrawler.cancelCrawler()
         searchResultPresenter.onDestroy()
         search_result_content?.clearCache(false) //清空缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

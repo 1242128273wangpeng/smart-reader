@@ -92,6 +92,10 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
         loadKeyWord(keyWord!!, searchType!!)
     }
 
+    override fun onNoResult(keyWord: String?) {
+        searchResultView.onNoResult(keyWord)
+    }
+
     override fun onWebSearchResult(res: List<CrawlerResult>?) {
         searchResultView.onWebSearchResult(res)
     }
