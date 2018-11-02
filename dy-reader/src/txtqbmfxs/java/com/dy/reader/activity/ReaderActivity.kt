@@ -251,9 +251,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onResume()
-        }
+        mNativeMediaView?.onResume()
         mCatalogMarkFragment?.fixBook()
     }
 
@@ -262,7 +260,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (hasFocus && !ReaderStatus.isMenuShow) {
+        if (hasFocus && !ReaderStatus.isMenuShow && !ReaderSettings.instance.isAutoReading) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -273,10 +271,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         glSurfaceView.onPause()
         mReadPresenter.onPause()
         MediaLifecycle.onPause()
-
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onPause()
-        }
+        mNativeMediaView?.onPause()
     }
 
     override fun onStop() {
@@ -316,11 +311,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         ReaderStatus.chapterList.clear()
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
-
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onDestroy()
-            mNativeMediaView = null
-        }
+        mNativeMediaView?.onDestroy()
+        mNativeMediaView = null
     }
 
 
@@ -376,27 +368,27 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRecieveEvent(event: EventLoading) {
+    fun onReceiveEvent(event: EventLoading) {
         when {
             event.type == EventLoading.Type.START -> showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
             event.type == EventLoading.Type.PROGRESS_CHANGE -> {
                 if (ReaderStatus.position.group > -1) {
                     rl_reader_bottom.visibility = View.VISIBLE
                     rl_reader_header.visibility = View.VISIBLE
-                    txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
-                    txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
+                    txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
+                    txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
                     if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
                         txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+                        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_SUCCESS, null))
                     }
                 } else {
                     rl_reader_bottom.visibility = View.GONE
                     rl_reader_header.visibility = View.GONE
                 }
-                mReadPresenter.checkManualDialogShow()
+                mReadPresenter?.checkManualDialogShow()
             }
             event.type == EventLoading.Type.RETRY -> showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
             event.type == EventLoading.Type.SUCCESS -> {
-
                 showAd()
                 mLoadingFragment.dismissDiaslog(isResume)
             }
@@ -572,14 +564,20 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                 } else {
                     ReadMediaManager.loadAdComplete = { type: String ->
-                        if (type == adType) showAd()//本页的广告请求回来，重走方法
+                        if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group,
+                                        ReaderStatus.position.index)) {
+                            showAd() //本页的广告请求回来，重走方法
+                        }
                     }
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
                 ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
-                    if (type == adType) showAd()//本页的广告请求回来，重走方法
+                    if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group,
+                                    ReaderStatus.position.index)) {
+                        showAd() //本页的广告请求回来，重走方法
+                    }
                 }
             }
         } else {
@@ -627,6 +625,34 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 Logger.e("广告布局添加子View: ${child?.javaClass} : ${child?.hasFocus()}")
             }
         })
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+            if (ReaderSettings.instance.isAutoReading) {
+
+                if (!ReaderStatus.isMenuShow && ReaderSettings.instance.isAutoReading) {
+                    val fragment = fragmentManager.findFragmentByTag("auto")
+
+                    if (fragment == null) {
+                        AutoReadOptionDialog().show(fragmentManager, "auto")
+                    } else {
+                        if (fragment is AutoReadOptionDialog) {
+                            fragment.dismissAllowingStateLoss()
+                        }
+                    }
+                }
+            } else {
+                if (!ReaderStatus.isMenuShow) {
+                    mReadSettingFragment.show(true)
+                    ReaderStatus.isMenuShow = true
+                }
+
+            }
+
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
 }
