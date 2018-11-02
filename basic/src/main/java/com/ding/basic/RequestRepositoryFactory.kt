@@ -2025,4 +2025,24 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return localRepository.upgradeChapterDBFromOld(book_ids)
     }
 
+    fun getAllWebFavorite(): List<WebPageFavorite> = localRepository.getAllWebFavorite()
+            ?: emptyList()
+
+    fun deleteAllWebFavorite() = localRepository.deleteAllWebFavorite()
+
+    fun deleteWebFavoriteById(id: Int) = localRepository.deleteWebFavoriteById(id)
+
+    /**
+     * 添加网页收藏,最大只能10条
+     */
+    fun addWebFavorite(favorite: WebPageFavorite) {
+        // 判断数量
+        if (localRepository.getWebFavoriteCount() >= 10) {
+            // 删除最老的一条
+            localRepository.getAllWebFavorite()?.let { localRepository.deleteWebFavoriteById(it.last().id) }
+        }
+        localRepository.insertFavorite(favorite)
+    }
+
+
 }

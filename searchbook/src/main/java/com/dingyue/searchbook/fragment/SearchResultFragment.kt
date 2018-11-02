@@ -6,18 +6,24 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import com.dingyue.searchbook.R
+import com.dingyue.searchbook.adapter.WebSearchResultAdapter
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
 import kotlinx.android.synthetic.main.fragment_search_result.*
+import net.lzbook.kit.bean.CrawlerResult
+import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.web.CustomWebClient
 
 
@@ -27,13 +33,17 @@ import net.lzbook.kit.utils.web.CustomWebClient
  * Mail yongzuo_chen@dingyuegroup.cn
  * Date 2018/9/19 0019 22:05
  */
-class SearchResultFragment : Fragment(), ISearchResultView {
+class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.OnItemClickListener {
 
     var onResultListener: OnResultListener<String>? = null
 
     private var loadingPage: LoadingPage? = null
 
     private var customWebClient: CustomWebClient? = null
+
+    private var webSearchResultAdapter: WebSearchResultAdapter? = null
+
+    private var webSearchResultList: List<CrawlerResult>? = null
 
     private var keyWord: String = ""
 
@@ -73,7 +83,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun getCurrentActivity(): Activity = requireActivity()
 
-    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
+    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface")
     override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
@@ -100,6 +110,46 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         search_result_content?.loadUrl(url)
     }
 
+    /**
+     * 百度抓取数据展示
+     */
+    override fun onWebSearchResult(res: List<CrawlerResult>?) {
+        if (res != null) {
+            search_result_content.visibility = View.GONE
+            rv_catch_result.visibility = View.VISIBLE
+            // 适配器加载数据
+            if (webSearchResultAdapter == null) {
+                webSearchResultList = res
+                rv_catch_result.layoutManager = LinearLayoutManager(requireContext())
+                webSearchResultAdapter = WebSearchResultAdapter(requireContext())
+                webSearchResultAdapter!!.setOnItemClickListener(this)
+                webSearchResultAdapter!!.onLatestChapterClick = {
+                    loge("url: $it")
+                    if (!it.isBlank()) toWebActivity(it)
+                }
+                webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
+                rv_catch_result.adapter = webSearchResultAdapter
+            } else {
+                webSearchResultList?.plus(res)
+                webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
+                webSearchResultAdapter?.notifyDataSetChanged()
+            }
+        } else ToastUtil.showToastMessage("全网搜索无结果")
+    }
+
+    override fun onItemClick(view: View, position: Int) {
+        webSearchResultList?.let {
+            if (!it[position].url.isNullOrBlank()) {
+                toWebActivity(it[position].url!!)
+            }
+        }
+    }
+
+    private fun toWebActivity(url: String) {
+        val bundle = Bundle()
+        bundle.putString("url", url)
+        RouterUtil.navigation(requireActivity(), RouterConfig.WEB_VIEW_ACTIVITY, bundle)
+    }
 
     private fun webViewCallback() {
 
@@ -178,8 +228,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         searchResultPresenter.onDestroy()
         search_result_content?.clearCache(false) //清空缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            search_result_content?.stopLoading()
             search_result_content?.removeAllViews()
+            search_result_content?.stopLoading()
         } else {
             search_result_content?.stopLoading()
             search_result_content?.removeAllViews()

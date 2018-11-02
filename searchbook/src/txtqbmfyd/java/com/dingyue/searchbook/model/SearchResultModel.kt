@@ -100,6 +100,16 @@ class SearchResultModel {
 
     fun initJSModel(listener: OnSearchResult?, activity: Activity): JSInterfaceObject {
         return (object : JSInterfaceObject(activity) {
+
+            @JavascriptInterface
+            override fun onSearchNoResult(keyword: String?) {
+                if (!keyword.isNullOrBlank() && !activity.isFinishing) {
+                    // TODO 获取无结果数据
+
+                    listener?.onWebSearchResult(emptyList())
+                }
+            }
+
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {

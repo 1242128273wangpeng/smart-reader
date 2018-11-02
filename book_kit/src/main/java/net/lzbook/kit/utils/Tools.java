@@ -232,6 +232,11 @@ public class Tools {
         return format.format(time);
     }
 
+    public static String formatTime(long time, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.format(time);
+    }
+
 
     public static String digest(String src) {
         try {

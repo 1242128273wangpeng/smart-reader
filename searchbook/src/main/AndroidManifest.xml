@@ -7,12 +7,18 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".SearchBookActivity"
+            android:name=".activity.SearchBookActivity"
             android:configChanges="keyboard"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeTranslucent"
             android:windowSoftInputMode="adjustNothing"/>
+
+        <activity
+            android:name=".activity.WebViewActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeTranslucent"/>
     </application>
 
 </manifest>

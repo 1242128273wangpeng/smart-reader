@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:clickable="false"
+              android:focusable="false"
+              android:focusableInTouchMode="false"
+              android:gravity="center"
+              android:orientation="horizontal">
+
+    <View
+        android:layout_width="54dp"
+        android:layout_height="2dp"
+        android:background="@drawable/result_line"/>
+
+    <TextView
+        android:id="@+id/txt_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="以下收藏结果来自互联网"
+        />
+
+    <View
+        android:layout_width="54dp"
+        android:layout_height="2dp"
+        android:background="@drawable/result_line"/>
+</LinearLayout>

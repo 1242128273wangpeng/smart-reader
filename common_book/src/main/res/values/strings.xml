@@ -64,6 +64,7 @@
     <string name="read_setting">阅读页设置</string>
     <string name="push_setting">推送设置</string>
     <string name="push_sound">推送声音</string>
+    <string name="web_favorite">网页收藏</string>
 
 
     <string name="determine_clear_all_file_cache">确定清除包括下载书籍在内的所有 \n 缓存吗？</string>

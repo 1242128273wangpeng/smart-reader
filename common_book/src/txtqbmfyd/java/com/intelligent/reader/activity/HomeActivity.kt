@@ -92,7 +92,7 @@ class HomeActivity : BaseCacheableActivity(),
     private var currentIndex = 0
     private var versionCode: Int = 0
 
-    private var guideDownload: Boolean = true
+    private var guideType = 0  // 0:删除书籍   1:缓存管理   2:网页收藏
 
 
     private lateinit var apkUpdateUtils: ApkUpdateUtils
@@ -374,6 +374,17 @@ class HomeActivity : BaseCacheableActivity(),
             startActivity(Intent(this, SettingMoreActivity::class.java))
         }
 
+        txt_web_favorite_red_point.visibility = if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE)) View.GONE else View.VISIBLE
+
+        txt_web_favorite.setOnClickListener {
+            if (txt_web_favorite_red_point.visibility == View.VISIBLE) {
+                SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, true)
+                txt_web_favorite_red_point.visibility = View.GONE
+            }
+            // TODO 打点统计
+            startActivity(Intent(this, WebFavoriteActivity::class.java))
+        }
+
         txt_feedback.setOnClickListener {
             PersonalLogger.uploadPersonalFeedback()
             Observable.timer(500, TimeUnit.MILLISECONDS)
@@ -439,14 +450,22 @@ class HomeActivity : BaseCacheableActivity(),
             fl_guide_layout.visibility = View.VISIBLE
             img_guide_remove.visibility = View.VISIBLE
             fl_guide_layout.setOnClickListener {
-                if (guideDownload) {
-                    img_guide_download.visibility = View.VISIBLE
-                    img_guide_remove.visibility = View.GONE
-                    guideDownload = false
-                } else {
-                    SPUtils.putDefaultSharedBoolean(key, true)
-                    img_guide_download.visibility = View.GONE
-                    fl_guide_layout.visibility = View.GONE
+                when (guideType) {
+                    0 -> {
+                        img_guide_remove.visibility = View.GONE
+                        img_guide_download.visibility = View.VISIBLE
+                        guideType = 1
+                    }
+                    1 -> {
+                        img_guide_download.visibility = View.GONE
+                        img_guide_page_favorite.visibility = View.VISIBLE
+                        guideType = 2
+                    }
+                    2 -> {
+                        SPUtils.putDefaultSharedBoolean(key, true)
+                        img_guide_page_favorite.visibility = View.GONE
+                        fl_guide_layout.visibility = View.GONE
+                    }
                 }
             }
         }

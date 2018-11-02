@@ -248,5 +248,9 @@ class SPKey {
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
+
+        const val WEB_FAVORITE_FIRST_USE = "web_favorite_first_use" // 首次使用网页收藏功能标识
+
+        const val WEB_FAVORITE_FIRST_USE_CLICK = "web_favorite_first_use_click" // 首次点击 网页收藏 按钮标识
     }
 }

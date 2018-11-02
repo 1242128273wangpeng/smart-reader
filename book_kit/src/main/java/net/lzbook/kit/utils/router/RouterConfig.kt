@@ -59,4 +59,6 @@ object RouterConfig {
 
     const val SEARCH_BOOK_ACTIVITY = "/searchbook/SearchBookActivity"
 
+    const val WEB_VIEW_ACTIVITY = "/searchbook/WebViewActivity"
+
 }

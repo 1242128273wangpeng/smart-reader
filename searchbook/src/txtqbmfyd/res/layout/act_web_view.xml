@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/base_bg"
+                android:fitsSystemWindows="true">
+
+    <!--标题栏布局容器-->
+
+    <RelativeLayout
+        android:id="@+id/rl_head"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dimen_padding_16"
+            android:src="@drawable/icon_back_left"/>
+
+    </RelativeLayout>
+
+    <!--WebView-->
+    <com.intelligent.reader.widget.topshadow.TopShadowWebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_head"
+        android:background="@color/base_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+    <Button
+        android:id="@+id/btn_page_favorite"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/shape_favorite_button_bg"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
+        android:lines="2"
+        android:text="@string/page_favorite"
+        android:textColor="#212832"
+        android:textSize="14sp"/>
+
+</RelativeLayout>
