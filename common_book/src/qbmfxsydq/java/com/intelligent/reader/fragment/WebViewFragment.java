@@ -368,7 +368,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         customWebClient.doClear();
                     }
                     if(contentView != null){
-                        contentView.reload();
+                        contentView.loadUrl(url);
                     }
 
                 }
