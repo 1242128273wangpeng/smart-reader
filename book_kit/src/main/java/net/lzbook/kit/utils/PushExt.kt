@@ -25,7 +25,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import java.util.*
+import swipeback.ActivityLifecycleHelper
 
 /**
  * Desc Push功能-扩展
@@ -253,3 +253,20 @@ val IS_FROM_PUSH = "is_from_push"
 
 @JvmField
 val EVENT_UPDATE_TAG = "event_update_tag"
+
+fun UMessage?.parsePushReceiveLog(): HashMap<String, String> {
+    val data = HashMap<String, String>()
+    data["pushid"] = this?.msg_id ?: return data
+    data["lateraction"] = this.after_open
+    data["name"] = this.title
+    data["content"] = this.text
+    return data
+}
+
+fun UMessage?.parsePushClickLog(): HashMap<String, String> {
+    val data = parsePushReceiveLog()
+    val hasHome = ActivityLifecycleHelper.hasHome()
+    data["condition"] = if (hasHome) "2" else "1"
+    data["type"] = "1"
+    return data
+}
