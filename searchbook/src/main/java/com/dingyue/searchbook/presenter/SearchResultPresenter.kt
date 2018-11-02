@@ -93,7 +93,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
     }
 
     override fun onWebSearchResult(res: List<CrawlerResult>?) {
-
+        searchResultView.onWebSearchResult(res)
     }
 
     override fun onDestroy() {

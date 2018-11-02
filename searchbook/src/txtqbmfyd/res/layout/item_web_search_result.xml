@@ -64,6 +64,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_latest_chapter_bg"
                 android:padding="8dp"
+                android:visibility="gone"
                 android:text="最新章节:xxxxxx"
                 android:textColor="#212832"
                 android:textSize="13sp"/>

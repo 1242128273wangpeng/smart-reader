@@ -125,6 +125,7 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
                 webSearchResultAdapter!!.setOnItemClickListener(this)
                 webSearchResultAdapter!!.onLatestChapterClick = {
                     loge("url: $it")
+                    if (!it.isBlank()) toWebActivity(it)
                 }
                 webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
                 rv_catch_result.adapter = webSearchResultAdapter
@@ -137,7 +138,17 @@ class SearchResultFragment : Fragment(), ISearchResultView, RecyclerBaseAdapter.
     }
 
     override fun onItemClick(view: View, position: Int) {
+        webSearchResultList?.let {
+            if (!it[position].url.isNullOrBlank()) {
+                toWebActivity(it[position].url!!)
+            }
+        }
+    }
 
+    private fun toWebActivity(url: String) {
+        val bundle = Bundle()
+        bundle.putString("url", url)
+        RouterUtil.navigation(requireActivity(), RouterConfig.WEB_VIEW_ACTIVITY, bundle)
     }
 
     private fun webViewCallback() {

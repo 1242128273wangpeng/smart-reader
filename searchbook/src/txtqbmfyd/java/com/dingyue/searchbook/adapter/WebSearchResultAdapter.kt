@@ -28,7 +28,15 @@ class WebSearchResultAdapter(context: Context) : RecyclerBaseAdapter<CrawlerResu
             }
 
             // 赋值
-
+            txt_title.text = data.title
+            txt_author.text = data.author
+            txt_summary.text = data.abstract
+            if (!data.newChapter.isNullOrBlank() && !data.newChapterUrl.isNullOrBlank()) {
+                txt_latest_chapter.visibility = View.VISIBLE
+                txt_latest_chapter.text = data.newChapter
+            } else txt_latest_chapter.visibility = View.GONE
+            txt_source_from.text = data.source
+            txt_update_time.text = data.updateTime
         }
     }
 }

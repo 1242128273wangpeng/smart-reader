@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.txtqbmfyd.in_bottom_edit.*
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.toast.ToastUtil
 
 /**
  * Desc 网页收藏Activity
@@ -33,7 +32,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
         rv_favorite_list.visibility = View.GONE
         rl_empty_view.visibility = View.VISIBLE
         txt_right_handle.visibility = View.GONE
-        rl_empty_view.setOnClickListener { presenter.initTempData() } // 临时初始化数据
+        rl_empty_view.setOnClickListener { presenter.initTempData() } // TODO 临时初始化数据
         hideEdit()
     }
 
@@ -85,10 +84,10 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
      */
     private fun onItemClick(position: Int) {
         if (adapter?.remove == false) {
-            ToastUtil.showToastMessage("点击了:${favoriteList?.get(position).toString()}")
             val bundle = Bundle()
             bundle.putString("url", "http://m.baidu.com")
             RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
+            finish()
             // 页面跳转
             return
         }
