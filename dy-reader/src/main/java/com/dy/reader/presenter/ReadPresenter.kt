@@ -97,16 +97,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isLandscape && !AppUtils.isNeedAdControl(Constants.ad_control_reader)) {
             MediaControl.startRestMedia(act)
         }
-//        MediaControl.startRestMedia {
-//            if (readerRestDialog?.isShowing() == true) {
-//                return@startRestMedia
-//            }
-//            MediaControl.loadRestMedia(readReference?.get(), { view: View? ->
-//                if (readReference?.get()?.isFinishing == true) return@loadRestMedia
-//                readerRestDialog?.show(view)
-//            })
-//        }
-
         uploadSettingLog(act)
     }
 
@@ -203,7 +193,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         initWindow()
 //        横屏不显示休息广告
         MediaControl.stopRestMedia()
-        if (!ReaderSettings.instance.isLandscape) {
+        if (!Constants.isHideAD && !ReaderSettings.instance.isLandscape) {
             MediaControl.startRestMedia(act)
         }
         ReaderStatus.clear()
