@@ -75,6 +75,7 @@
     <string name="debug_web_host">WebView接口:</string>
     <string name="debug_micro_host">微服务API接口:</string>
     <string name="debug_micro_content_host">微服务内容接口:</string>
+    <string name="debug_user_tag_host">用户标签接口:</string>
     <string name="debug_copy_udid">一键复制UDID</string>
     <string name="debug_copy_device">一键复制 \n DeviceToken</string>
     <string name="debug_copy_success">一键复制成功</string>

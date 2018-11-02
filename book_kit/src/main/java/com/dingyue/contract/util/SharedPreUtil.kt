@@ -62,6 +62,8 @@ class SharedPreUtil(val type: Int) {
         const val WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
         const val UNION_PRE_HOST = "union_pre_host"
         const val CONTENT_PRE_HOST = "content_pre_host"
+        const val USER_TAG_PRE_HOST = "user_tag_pre_host"
+
         /**
          * 检查章节数是否为0
          */

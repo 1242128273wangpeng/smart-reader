@@ -81,6 +81,10 @@ class DebugHostActivity : BaseCacheableActivity() {
                         Config.insertContentAPIHost(et_input_host.text.toString())
                         SharedPreUtil.CONTENT_HOST
                     }
+                    SharedPreUtil.USER_TAG_HOST -> {
+                        Config.insertUserTagHost(et_input_host.text.toString())
+                        SharedPreUtil.USER_TAG_HOST
+                    }
                     else -> {
                         ""
                     }
