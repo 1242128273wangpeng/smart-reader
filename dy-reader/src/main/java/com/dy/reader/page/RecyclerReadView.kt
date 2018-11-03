@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.ding.basic.bean.Chapter
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.adapter.PagerScrollAdapter
 import com.dy.reader.data.DataProvider
@@ -27,7 +28,6 @@ import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.ReadViewEnums
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
@@ -447,9 +447,9 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
 //                ReadState.chapterName = mOriginDataList[position].lines[0].chapterName
                 if(ReaderStatus.position.group < mOriginDataList[position].lines[0].sequence){
                     //发送章节消费
-                    StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(),ReaderStatus?.book.book_id,ReaderStatus?.currentChapter?.chapter_id,ReaderStatus?.book?.book_source_id,
-                            if(("zn").equals(ReaderStatus?.book?.book_type)){"2"}else{"1"},ReaderStatus?.position?.groupChildCount.toString() )
-                    ReaderStatus.startTime = System.currentTimeMillis()/1000L
+                    DyStatService.sendPVData(ReaderStatus.startTime, ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id.orEmpty(), ReaderStatus?.book?.book_source_id,
+                            if (("zn") == ReaderStatus.book.book_type) "2" else "1", ReaderStatus.position.groupChildCount)
+                    ReaderStatus.startTime = System.currentTimeMillis()
                 }
                 ReaderStatus.position.index = getCurrentChapterPage(position)
                 ReaderStatus.position.offset = mOriginDataList[position].offset

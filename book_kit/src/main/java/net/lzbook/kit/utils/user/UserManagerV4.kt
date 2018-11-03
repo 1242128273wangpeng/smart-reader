@@ -37,7 +37,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.user.AvatarReq
 import net.lzbook.kit.bean.user.ThirdLoginReq
@@ -46,6 +45,8 @@ import net.lzbook.kit.constants.UserConstants
 import net.lzbook.kit.utils.*
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.toast.ToastUtil.mainLooperHandler
 import net.lzbook.kit.utils.user.bean.UserNameState
@@ -325,8 +326,7 @@ object UserManagerV4 : IWXAPIEventHandler {
         logi(user.toString())
         repositoryFactory.insertOrUpdate(user)
         if (lastLoginId != null && lastLoginId != user.account_id) {
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.LOGIN, StartLogClickUtil.UIDDIFFUSER)
+            DyStatService.onEvent(EventPoint.LOGIN_UIDDIFFUSER)
         }
         lastLoginId = user.account_id
     }
@@ -370,7 +370,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 登出上传操作---------------------开始
      */
-    fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
+    private fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
         user?.let {
             val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
             repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)

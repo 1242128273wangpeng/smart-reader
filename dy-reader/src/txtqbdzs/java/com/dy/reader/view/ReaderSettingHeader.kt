@@ -13,7 +13,6 @@ import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbdzs.reader_option_header.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -22,6 +21,8 @@ import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 
@@ -116,7 +117,7 @@ class ReaderSettingHeader : FrameLayout {
             }
 
             popup.dismiss()
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, data)
+            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARKEDIT, data)
         }
 
         popup.startBookDetailListener = {
@@ -155,6 +156,7 @@ class ReaderSettingHeader : FrameLayout {
         ibtn_reader_more?.setOnClickListener {
 
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_more)
+            DyStatService.onEvent(EventPoint.READPAGE_MORE, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.chapterId))
 
             readerHeaderMorePopup.show(ibtn_reader_more)
         }

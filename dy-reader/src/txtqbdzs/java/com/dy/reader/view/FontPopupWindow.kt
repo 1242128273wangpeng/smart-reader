@@ -15,11 +15,12 @@ import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.util.TypefaceUtil
 import kotlinx.android.synthetic.txtqbdzs.reader_option_font_layout.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.widget.base.BasePopup
 import net.lzbook.kit.utils.loge
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -90,14 +91,14 @@ class FontPopupWindow(context: Context, layout: Int = R.layout.reader_option_fon
     }
 
     private fun uploadUseFontLog(typeface: Int) {
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE,
-                StartLogClickUtil.FONTSETTING, mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
+        DyStatService.onEvent(EventPoint.READPAGESET_FONTSETTING,
+                mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
     }
 
     private fun uploadDownloadFontLog(name: String) {
         val typeface = TypefaceUtil.getTypefaceCode(name)
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGE_PAGE,
-                StartLogClickUtil.FONTDOWNLOAD, mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
+        DyStatService.onEvent(EventPoint.READPAGESET_FONTDOWNLOAD,
+                mapOf(Pair("type", TypefaceUtil.loadTypefaceTag(typeface))))
     }
 
     fun show(parent: View) {

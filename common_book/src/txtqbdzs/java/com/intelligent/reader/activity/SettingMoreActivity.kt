@@ -1,22 +1,21 @@
 package com.intelligent.reader.activity
 
 import android.os.Bundle
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import com.intelligent.reader.view.PushTimeDialog
 import com.umeng.message.IUmengCallback
 import com.umeng.message.MsgConstant
 import com.umeng.message.PushAgent
 import kotlinx.android.synthetic.txtqbdzs.act_setting_more.*
-import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.SettingItems
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
-import java.util.*
 
 
 class SettingMoreActivity : BaseCacheableActivity() {
@@ -67,17 +66,13 @@ class SettingMoreActivity : BaseCacheableActivity() {
     private fun initListener() {
 
         img_head_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.BACK, data)
+            DyStatService.onEvent(EventPoint.MORESET_BACK, mapOf("type" to "1"))
             finish()
         }
 
         btn_book_update_push.setOnCheckedChangeListener { _, isChecked ->
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more_push)
-            val params1 = HashMap<String, String>()
-            params1.put("type", if (isChecked) "1" else "2")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.PUSHSET, params1)
+            DyStatService.onEvent(EventPoint.MORESET_PUSHSET, mapOf("type" to if (isChecked) "1" else "2"))
 
             settingItemsHelper.putBoolean(settingItemsHelper.openBookPush, isChecked)
             changePushStatus()
@@ -90,9 +85,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
         }
 
         btn_push_sound.setOnCheckedChangeListener { _, isChecked ->
-            val params = HashMap<String, String>()
-            params.put("type", if (isChecked) "1" else "2")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.PUSHAUDIO, params)
+            DyStatService.onEvent(EventPoint.MORESET_PUSHAUDIO, mapOf("type" to if (isChecked) "1" else "2"))
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_more_push_voi)
 
             setPushSound(isChecked, isChecked)
@@ -246,7 +239,8 @@ class SettingMoreActivity : BaseCacheableActivity() {
     }
 
     override fun onBackPressed() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),StartLogClickUtil.MORESET_PAGE,StartLogClickUtil.BACK,mapOf("type" to "2"))
+        DyStatService.onEvent(EventPoint.MORESET_BACK, mapOf("type" to "2"))
+        super.onBackPressed()
     }
 
 }

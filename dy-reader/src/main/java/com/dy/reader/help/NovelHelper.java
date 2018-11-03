@@ -7,6 +7,7 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.ChapterState;
 import com.ding.basic.bean.Source;
 import com.ding.basic.RequestRepositoryFactory;
+import com.dingyue.statistics.DyStatService;
 import com.dy.reader.dialog.ReaderAddShelfDialog;
 import com.dy.reader.dialog.ReaderAutoReadDialog;
 import com.dy.reader.dialog.ReaderChangeSourceDialog;
@@ -15,7 +16,7 @@ import com.dy.reader.listener.SourceClickListener;
 import com.dy.reader.setting.ReaderStatus;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
 
@@ -191,9 +192,8 @@ public class NovelHelper {
 
                 Map<String, String> map1 = new HashMap<>();
                 map1.put("type", "2");
-                StartLogClickUtil.upLoadEventLog(actReference.get(),
-                        StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE,
-                        map1);
+                DyStatService.onEvent(EventPoint.READPAGEMORE_SOURCECHANGE, map1);
+
                 readerChangeSourceDialog.dismiss();
             }
         });
@@ -203,9 +203,7 @@ public class NovelHelper {
             public Unit invoke() {
                 Map<String, String> map1 = new HashMap<>();
                 map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(),
-                        StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE,
-                        map1);
+                DyStatService.onEvent(EventPoint.READPAGEMORE_SOURCECHANGE, map1);
                 readerChangeSourceDialog.dismiss();
                 return null;
             }
@@ -216,9 +214,7 @@ public class NovelHelper {
             public Unit invoke() {
                 Map<String, String> map1 = new HashMap<>();
                 map1.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(actReference.get(),
-                        StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGE,
-                        map1);
+                DyStatService.onEvent(EventPoint.READPAGEMORE_SOURCECHANGE, map1);
                 readerChangeSourceDialog.dismiss();
 
                 if (ReaderStatus.INSTANCE.getCurrentChapter() != null

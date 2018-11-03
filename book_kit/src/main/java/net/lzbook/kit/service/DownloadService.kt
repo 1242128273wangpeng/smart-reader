@@ -17,6 +17,7 @@ import com.ding.basic.bean.PackageInfo
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.DataCache
+import com.dingyue.statistics.DyStatService
 import com.orhanobut.logger.Logger
 import com.tencent.mm.opensdk.utils.Log
 import io.reactivex.Flowable
@@ -24,8 +25,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.BookTask
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.download.*
 import net.lzbook.kit.utils.encrypt.v17.util.NovelException
@@ -298,32 +299,31 @@ class DownloadService : Service(), Runnable {
                 try {
                     bytes = getHttpData(url)
 
-                    data.put("STATUS", "1")
-                    data.put("bookid", task.book.book_id!!)
-                    data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
-                    data.put("url1", fileUrlList.get(0))
-                    data.put("url2", fileUrlList.last())
-                    data.put("url3", url)
-                    data.put("starttime", "" + startDownTime);
-                    data.put("endtime", "" + System.currentTimeMillis())
-                    data.put("times", "" + (System.currentTimeMillis() - startDownTime))
-                    StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.DOWNLOADPACKE, data)
-
+                    data["STATUS"] = "1"
+                    data["bookid"] = task.book.book_id
+                    data["type"] = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1"
+                    data["url1"] = fileUrlList[0]
+                    data["url2"] = fileUrlList.last()
+                    data["url3"] = url
+                    data["starttime"] = "" + startDownTime
+                    data["endtime"] = "" + System.currentTimeMillis()
+                    data["times"] = "" + (System.currentTimeMillis() - startDownTime)
+                    DyStatService.onEvent(EventPoint.SYSTEM_DOWNLOADPACKE, data)
                     break
                 } catch (e: Exception) {
                     e.printStackTrace()
                     if (tryTimes >= RETRY_TIMES) {
-                        data.put("STATUS", "2");
-                        data.put("reason", e.javaClass.simpleName + ":" + e.message)
-                        data.put("bookid", task.book.book_id!!)
-                        data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
-                        data.put("url1", fileUrlList.get(0))
-                        data.put("url2", fileUrlList.last())
-                        data.put("url3", url);
-                        data.put("starttime", "" + startDownTime)
-                        data.put("endtime", "" + System.currentTimeMillis())
-                        data.put("times", "" + (System.currentTimeMillis() - startDownTime))
-                        StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.DOWNLOADPACKE, data)
+                        data["STATUS"] = "2"
+                        data["reason"] = e.javaClass.simpleName + ":" + e.message
+                        data["bookid"] = task.book.book_id
+                        data["type"] = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1"
+                        data["url1"] = fileUrlList[0]
+                        data["url2"] = fileUrlList.last()
+                        data["url3"] = url
+                        data["starttime"] = "" + startDownTime
+                        data["endtime"] = "" + System.currentTimeMillis()
+                        data["times"] = "" + (System.currentTimeMillis() - startDownTime)
+                        DyStatService.onEvent(EventPoint.SYSTEM_DOWNLOADPACKE, data)
                         break
                     } else {
                         runOnMain {
@@ -343,46 +343,33 @@ class DownloadService : Service(), Runnable {
             if (bytes != null) {
                 val startParseTime = System.currentTimeMillis()
                 try {
-                    val z = parse(bytes!!, info, task, chapterMap)
+                    val z = parse(bytes, info, task, chapterMap)
                     val data = HashMap<String, String>()
-                    data.put("STATUS", "1")
-                    data.put("bookid", task.book.book_id!!);
-                    data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
-                    data.put("url1", fileUrlList.get(0))
-                    data.put("url2", fileUrlList.last())
-                    data.put("url3", url)
-                    data.put("starttime", "" + startParseTime);
-                    data.put("endtime", "" + System.currentTimeMillis())
-                    data.put("times", "" + (System.currentTimeMillis() - startParseTime))
-                    StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.RESOLVEPACKE, data)
+                    data["STATUS"] = "1"
+                    data["bookid"] = task.book.book_id
+                    data["type"] = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1"
+                    data["url1"] = fileUrlList[0]
+                    data["url2"] = fileUrlList.last()
+                    data["url3"] = url
+                    data["starttime"] = "" + startParseTime
+                    data["endtime"] = "" + System.currentTimeMillis()
+                    data["times"] = "" + (System.currentTimeMillis() - startParseTime)
+                    DyStatService.onEvent(EventPoint.SYSTEM_RESOLVEPACKE, data)
                     return z
                 } catch (e2: Exception) {
                     e2.printStackTrace()
                     val data = HashMap<String, String>()
-                    data.put("STATUS", "2")
-                    data.put("reason", e2.javaClass.simpleName + ":" + e2.message)
-                    data.put("bookid", task.book.book_id!!);
-                    data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
-                    data.put("url1", fileUrlList.get(0))
-                    data.put("url2", fileUrlList.last())
-                    data.put("url3", url)
-                    data.put("starttime", "" + startParseTime)
-                    data.put("endtime", "" + System.currentTimeMillis())
-                    data.put("times", "" + (System.currentTimeMillis() - startParseTime))
-                    StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.RESOLVEPACKE, data)
-                } catch (e:OutOfMemoryError){
-                    val data = HashMap<String, String>()
-                    data.put("STATUS", "2")
-                    data.put("reason", e.javaClass.simpleName + ":" + e.message)
-                    data.put("bookid", task.book.book_id!!)
-                    data.put("type", if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1")
-                    data.put("url1", fileUrlList.get(0))
-                    data.put("url2", fileUrlList.last())
-                    data.put("url3", url)
-                    data.put("starttime", "" + startParseTime)
-                    data.put("endtime", "" + System.currentTimeMillis())
-                    data.put("times", "" + (System.currentTimeMillis() - startParseTime))
-                    StartLogClickUtil.upLoadEventLog(CacheManager.app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.RESOLVEPACKE, data)
+                    data["STATUS"] = "2"
+                    data["reason"] = e2.javaClass.simpleName + ":" + e2.message
+                    data["bookid"] = task.book.book_id
+                    data["type"] = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else "1"
+                    data["url1"] = fileUrlList[0]
+                    data["url2"] = fileUrlList.last()
+                    data["url3"] = url;
+                    data["starttime"] = "" + startParseTime
+                    data["endtime"] = "" + System.currentTimeMillis()
+                    data["times"] = "" + (System.currentTimeMillis() - startParseTime)
+                    DyStatService.onEvent(EventPoint.SYSTEM_RESOLVEPACKE, data)
                 }
             }
         }

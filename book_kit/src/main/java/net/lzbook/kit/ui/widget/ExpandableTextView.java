@@ -36,9 +36,11 @@ import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dingyue.statistics.DyStatService;
+
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.HashMap;
@@ -144,7 +146,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         } else {
             data.put("type", "1");
         }
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.INTRODUCTION, data);
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_INTRODUCTION, data);
 
         mAnimating = true;
 

@@ -508,9 +508,14 @@ android {
             buildConfigField "String", "alifeedback_key", "\"23731453\""
             buildConfigField "String", "alifeedback_secret", "\"9fd4a66d6d0db1af289ff64443fdab6e\""
             buildConfigField "String", "book_novel_deploy_host", "\"https://uatqbmf.zhuishuwang.com\""
+//            buildConfigField "String", "book_novel_deploy_host", "\"http://8053.uzn.bookapi.cn/\""
+//            buildConfigField "String", "book_webview_host", "\"http://8041.uzn.bookapi.cn/\""
             buildConfigField "String", "book_webview_host", "\"https://uwtqbmf.zhuishuwang.com\""
-            buildConfigField "String", "micro_api_host", "\"https://utxtqbmfdzsunionapi.zhuishuwang.com\""
-            buildConfigField "String", "content_api_host", "\"https://utxtqbmfdzsunioncontent.zhuishuwang.com\""
+            buildConfigField "String", "micro_api_host", "\"https://atxtqbmfdzsunionapi.jingytech.com\""
+//            buildConfigField "String", "micro_api_host", "\"https://uniontest.bookapi.cn\""
+            buildConfigField "String", "content_api_host", "\"https://atxtqbmfdzsunionapi.jingytech.com\""
+//            buildConfigField "String", "content_api_host", "\"https://uniontest.bookapi.cn\""
+            buildConfigField "String", "cdn_host", "\"https://sta.zhuishuwang.com\""
         }
 
         txtqbmfyd {

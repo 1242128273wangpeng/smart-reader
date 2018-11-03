@@ -10,10 +10,11 @@ import android.widget.TextView;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.RequestRepositoryFactory;
+import com.dingyue.statistics.DyStatService;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.toast.ToastUtil;
@@ -60,9 +61,8 @@ public class RepairHelp {
                     }
                     Map<String, String> data2 = new HashMap<>();
                     data2.put("type", "1");
-                    data2.put("bookid",book.getBook_id());
-                    StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE,
-                            StartLogClickUtil.REPAIRDEDIALOGUE, data2);
+                    data2.put("bookid", book.getBook_id());
+                    DyStatService.onEvent(EventPoint.READPAGE_REPAIRDEDIALOGUE, data2);
                 }
             });
             TextView dialog_cancel = myDialog.findViewById(R.id.publish_stay);
@@ -78,9 +78,8 @@ public class RepairHelp {
                     if (!isComfire) {
                         Map<String, String> data2 = new HashMap<>();
                         data2.put("type", "2");
-                        data2.put("bookid",book.getBook_id());
-                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE,
-                                StartLogClickUtil.REPAIRDEDIALOGUE, data2);
+                        data2.put("bookid", book.getBook_id());
+                        DyStatService.onEvent(EventPoint.READPAGE_REPAIRDEDIALOGUE, data2);
                     }
                 }
             });

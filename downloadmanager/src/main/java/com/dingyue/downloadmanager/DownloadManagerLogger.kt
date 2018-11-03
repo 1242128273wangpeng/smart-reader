@@ -1,8 +1,9 @@
 package com.dingyue.downloadmanager
 
 import com.ding.basic.bean.Book
+import com.dingyue.statistics.DyStatService
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.StatServiceUtils
@@ -17,27 +18,17 @@ import java.util.*
 object DownloadManagerLogger {
 
     fun uploadCacheManagerBack() {
-        val data = HashMap<String, String>()
-        data["type"] = "1"
-
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_BACK, data)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_BACK, mapOf("type" to "1"))
     }
 
     fun uploadCacheManagerBookClick(book: Book) {
-        val data = HashMap<String, String>()
-        data["STATUS"] = if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0"
-
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_BOOK_CLICK, data)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_BOOKCLICK, mapOf("STATUS" to if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0"))
     }
 
     fun uploadCacheManagerButtonClick(status: DownloadState, bookId: String, progress: Int) {
-        val context = BaseBookApplication.getGlobalContext()
         val data = HashMap<String, String>()
         if (status == DownloadState.NOSTART) {
             data["type"] = "1"
-            data["bookid"] = bookId
         } else if (status == DownloadState.DOWNLOADING || status == DownloadState.WAITTING) {
             data["type"] = "2"
             data["speed"] = "$progress/100"
@@ -45,45 +36,29 @@ object DownloadManagerLogger {
             data["type"] = "1"
         }
         data["bookid"] = bookId
-
-        StartLogClickUtil.upLoadEventLog(context,  StartLogClickUtil.PAGE_CACHE_MANAGER,
-                StartLogClickUtil.ACTION_CACHE_MANAGER_CACHE_BUTTON, data)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_CACHEBUTTON, data)
     }
 
     fun uploadCacheManagerEdit() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_down_m_click_edit)
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_CACHE_MANAGER,
-                StartLogClickUtil.ACTION_CACHE_MANAGER_CACHE_EDIT)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_down_m_click_edit)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_CACHEEDIT)
     }
 
     fun uploadCacheManagerMore() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_MORE)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_MORE)
     }
 
     fun uploadCacheManagerBookCity() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_TO_BOOK_CITY)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_TOBOOKCITY)
     }
 
     fun uploadCacheManagerSort(type: Int) {
-        val data = HashMap<String, String>()
-        data["type"] = type.toString()
-
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_CACHE_MANAGER, StartLogClickUtil.ACTION_CACHE_MANAGER_SORT, data)
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_SORT, mapOf("type" to type.toString()))
     }
 
     fun uploadCacheMangerEditCancel() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_down_m_click_cancel)
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_CACHE_MANAGER_EDIT,
-                StartLogClickUtil.ACTION_CACHE_MANAGER_EDIT_CANCEL)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_down_m_click_cancel)
+        DyStatService.onEvent(EventPoint.CHCHEEDIT_CANCLE)
     }
 
     fun uploadCacheManagerEditDelete(books: List<Book>) {
@@ -115,20 +90,12 @@ object DownloadManagerLogger {
         data["bookid"] = bookIds.toString()
         data["number"] = books.size.toString()
 
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_CACHE_MANAGER_EDIT, StartLogClickUtil.ACTION_CACHE_MANAGER_EDIT_DELETE, data)
+        DyStatService.onEvent(EventPoint.CHCHEEDIT_DELETE, data)
     }
 
     fun uploadCacheManagerEditSelectAll(checkedAll: Boolean) {
-        val context = BaseBookApplication.getGlobalContext()
-
-        val data = HashMap<String, String>()
-        data["type"] = if (checkedAll) "1" else "2"
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_down_m_click_select_all)
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_CACHE_MANAGER_EDIT,
-                StartLogClickUtil.ACTION_CACHE_MANAGER_EDIT_SELECT_ALL, data)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_down_m_click_select_all)
+        DyStatService.onEvent(EventPoint.CHCHEEDIT_SELECTALL, mapOf("type" to if (checkedAll) "1" else "2"))
     }
 
     fun uploadCacheManagerEditDeleteLog() {

@@ -24,10 +24,12 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.net.Config;
 import com.ding.basic.net.api.service.RequestService;
-import com.ding.basic.RequestRepositoryFactory;
-import com.ding.basic.net.api.service.RequestService;
+
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
+
+import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -42,8 +44,6 @@ import net.lzbook.kit.utils.webview.CustomWebClient;
 import net.lzbook.kit.utils.EnterUtilKt;
 import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.oneclick.AntiShake;
-import net.lzbook.kit.utils.webview.CustomWebClient;
-import net.lzbook.kit.utils.webview.JSInterfaceHelper;
 import net.lzbook.kit.utils.webview.UrlUtils;
 
 import java.util.ArrayList;
@@ -190,21 +190,16 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 data.put("type", "1");
                 switch (fromType) {
                     case "class":
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                                StartLogClickUtil.BACK, data);
+                        DyStatService.onEvent(EventPoint.FIRSTCLASS_BACK, data);
                         break;
                     case "top":
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                                StartLogClickUtil.BACK, data);
+                        DyStatService.onEvent(EventPoint.FIRSTTOP_BACK, data);
                         break;
                     case "recommend":
-                        StartLogClickUtil.upLoadEventLog(this,
-                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                                StartLogClickUtil.BACK, data);
+                        DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_BACK, data);
                         break;
                     case "author":
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
-                                StartLogClickUtil.BACK, data);
+                        DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data);
                         break;
                 }
                 clickBackBtn();
@@ -216,19 +211,15 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 switch (fromType) {
                     case "class":
                         postData.put("firstclass", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                                StartLogClickUtil.SEARCH, postData);
+                        DyStatService.onEvent(EventPoint.FIRSTCLASS_SEARCH, postData);
                         break;
                     case "top":
                         postData.put("firsttop", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                                StartLogClickUtil.SEARCH, postData);
+                        DyStatService.onEvent(EventPoint.FIRSTTOP_SEARCH, postData);
                         break;
                     case "recommend":
                         postData.put("firstrecommend", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this,
-                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                                StartLogClickUtil.SEARCH, postData);
+                        DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, postData);
                         break;
                 }
 
@@ -454,9 +445,7 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", keyWord);
                     data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
-                    StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
-                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-                            data);
+                    DyStatService.onEvent(EventPoint.SYSTEM_SEARCHRESULT, data);
 
                     EnterUtilKt.enterSearch(LabelsDetailActivity.this,
                             keyWord, search_type, filter_type, filter_word, sort_type,
@@ -482,10 +471,9 @@ public class LabelsDetailActivity extends FrameActivity implements View.OnClickL
                 AppLog.e(TAG, "doCover");
 
                 Map<String, String> data = new HashMap<>();
-                data.put("BOOKID", book_id);
+                data.put("bookid", book_id);
                 data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(LabelsDetailActivity.this,
-                        StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data);
 
                 Intent intent = new Intent();
                 intent.putExtra("author", author);

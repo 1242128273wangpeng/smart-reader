@@ -10,12 +10,12 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
+import com.dingyue.statistics.DyStatService
 
 import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.BookRouter
-import java.util.HashMap
 
 /**
  * Date: 2018/7/13 10:51
@@ -88,10 +88,7 @@ class BookEndRecommendAdapter(private val context: Activity) : RecyclerView.Adap
 
         private fun navigateCoverOrRead(img: RecommendBookImageView) {
             img.getBook()?.let {
-                val data = HashMap<String, String>()
-                data.put("bookid", it.book_id)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.BOOKENDPAGE_PAGE,
-                        StartLogClickUtil.RECOMMENDEDBOOK, data)
+                DyStatService.onEvent(EventPoint.READFINISH_RECOMMENDEDBOOK, mapOf("bookid" to it.book_id))
                 BookRouter.navigateCoverOrRead(context, it,
                         BookRouter.NAVIGATE_TYPE_BOOKEND)
             }

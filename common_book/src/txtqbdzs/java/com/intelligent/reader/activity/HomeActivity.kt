@@ -19,29 +19,32 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import com.intelligent.reader.fragment.WebViewFragment
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.MD5Utils
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.bookshelf.BookShelfLogger
+import com.dingyue.statistics.DyStatService
+import com.dingyue.statistics.log.AppLog
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
-import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.view.PushSettingDialog
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.txtqbdzs.act_home.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.bean.PagerDesc
 import net.lzbook.kit.constants.ActionConstants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.service.DownloadAPKService
@@ -50,8 +53,6 @@ import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.BannerDialog
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.encrypt.MD5Utils
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
@@ -63,7 +64,7 @@ import net.lzbook.kit.view.HomeView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.File
-import java.util.*
+
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
@@ -126,15 +127,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val dialog = PushSettingDialog(this)
         dialog.openPushListener = {
             openPushSetting()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPNOWOPEN)
+            DyStatService.onEvent(EventPoint.SHELF_CACHEMANAGE)
         }
         lifecycle.addObserver(dialog)
         dialog
     }
 
     private val bannerDialog: BannerDialog by lazy {
-        BannerDialog(this,Intent(this, FindBookDetail::class.java))
+        BannerDialog(this, Intent(this, FindBookDetail::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,7 +157,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         checkUrlDevelop()
 
-        AndroidLogStorage.getInstance().clear()
+        DyStatService.clearInvalidData()
 
 
         homePresenter.initDownloadService()
@@ -208,7 +208,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     override fun onDestroy() {
         super.onDestroy()
 
-        AndroidLogStorage.getInstance().clear()
+        DyStatService.clearInvalidData()
 
         this.unregisterReceiver(homeBroadcastReceiver)
         MediaLifecycle.onDestroy()
@@ -297,10 +297,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
 
         home_edit_back.setOnClickListener {
+            // 书架编辑页，返回按钮点位
+            BookShelfLogger.uploadBookShelfEditBack()
             bookShelfFragment?.dismissRemoveMenu()
         }
 
         home_edit_cancel.setOnClickListener {
+            // 书架编辑页，右上角取消点位
+            BookShelfLogger.uploadBookShelfEditCancel()
             bookShelfFragment?.dismissRemoveMenu()
         }
     }
@@ -441,10 +445,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
         jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
             try {
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "0"//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
+                DyStatService.onEvent(EventPoint.SYSTEM_SEARCHRESULT, mapOf("keyword" to keyWord, "type" to "0"))//0 代表从分类过来
 
                 this.enterSearch(
                         keyWord, search_type, filter_type, filter_word, sort_type,
@@ -637,10 +638,14 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             bookshelf_search_view.visibility = View.GONE
             content_head_editor.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
+            // 书架编辑 不允许滑动
+            view_pager.isScrollable = false
         } else {
             content_head_editor.visibility = View.GONE
             bookshelf_search_view.visibility = View.VISIBLE
             AnimationHelper.smoothScrollTo(view_pager, 0)
+            // 书架编辑还原,允许滑动
+            view_pager.isScrollable = true
         }
     }
 

@@ -11,12 +11,11 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.Config;
 import com.ding.basic.bean.LoginResp;
 import com.ding.basic.bean.LoginRespV4;
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import com.dingyue.statistics.DyStatService;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.encrypt.URLBuilderIntterface;
@@ -63,8 +62,11 @@ public abstract class BaseBookApplication extends Application {
 
             CacheManager.INSTANCE.checkService();
 
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
-                    StartLogClickUtil.APPINIT);
+            // 设置日志
+            DyStatService.setDebugOn(Constants.SHOW_LOG);
+            // 统计SDK初始化
+            DyStatService.init(this, OpenUDID.getOpenUDIDInContext(this), AppUtils.getChannelId());
+            DyStatService.onEvent(EventPoint.SYSTEM_APPINIT);
 
             Config.INSTANCE.beginInit(this);
         }

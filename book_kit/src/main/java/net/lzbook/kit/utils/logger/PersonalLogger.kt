@@ -1,7 +1,8 @@
 package net.lzbook.kit.utils.logger
 
+import com.dingyue.statistics.DyStatService
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.StatServiceUtils
 
 /**
@@ -22,66 +23,43 @@ object PersonalLogger {
     }
 
     fun uploadPersonalNightModeChange() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_PERSONAL, StartLogClickUtil.ACTION_PERSONAL_NIGHT_MODE)
+        DyStatService.onEvent(EventPoint.PERSONAL_NIGHTMODE)
     }
 
     fun uploadPersonalPushSetting() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_PERSONAL,
-                StartLogClickUtil.ACTION_PERSONAL_MORE_SET)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_more)
+        DyStatService.onEvent(EventPoint.PERSONAL_MORESET)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.me_set_click_more)
     }
 
     fun uploadPersonalFeedback() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_PERSONAL,
-                StartLogClickUtil.ACTION_PERSONAL_HELP)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_help)
+        DyStatService.onEvent(EventPoint.PERSONAL_HELP)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.me_set_click_help)
     }
 
     fun uploadPersonalMark() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_PERSONAL,
-                StartLogClickUtil.ACTION_PERSONAL_COMMENT)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_help)
+        DyStatService.onEvent(EventPoint.PERSONAL_COMMENT)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.me_set_click_help)
     }
 
     fun uploadPersonalDisclaimer() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_PERSONAL, StartLogClickUtil.ACTION_PERSONAL_PROCTCOL)
+        DyStatService.onEvent(EventPoint.PERSONAL_PROCTCOL)
     }
 
     fun uploadPersonalCheckUpdate() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_PERSONAL,
-                StartLogClickUtil.ACTION_PERSONAL_VERSION)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_click_ver)
+        DyStatService.onEvent(EventPoint.PERSONAL_VERSION)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.me_set_click_ver)
     }
 
     fun uploadPersonalClearCache() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_PERSONAL,
-                StartLogClickUtil.ACTION_PERSONAL_CACHE_CLEAR)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.me_set_cli_clear_cache)
+        DyStatService.onEvent(EventPoint.PERSONAL_CACHECLEAR)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.me_set_cli_clear_cache)
     }
 
-
     fun uploadPersonalAutoCache(isChecked: Boolean) {
-        val data = HashMap<String, String>()
-        data["type"] = if (isChecked) "1" else "0"
+        DyStatService.onEvent(EventPoint.PERSONAL_WIFI_AUTOCACHE, mapOf("type" to if (isChecked) "1" else "0"))
+    }
 
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_PERSONAL, StartLogClickUtil.ACTION_PERSONAL_WIFI_AUTO_CACHE, data)
+    fun uploadPersonalADPage() {
+        DyStatService.onEvent(EventPoint.PERSONAL_ADPAGE)
     }
 }

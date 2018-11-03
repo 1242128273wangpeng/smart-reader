@@ -12,6 +12,7 @@ import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
 import io.reactivex.BackpressureStrategy
@@ -20,7 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import java.util.*
@@ -163,8 +164,7 @@ fun Activity.openPushSetting() {
     }
     try {
         startActivity(intent)
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MAIN_PAGE,
-                StartLogClickUtil.POPUPSET)
+        DyStatService.onEvent(EventPoint.MAIN_POPUPSET)
     } catch (e: Exception) {
         //打开设置界面
         startActivity(Intent(Settings.ACTION_SETTINGS))
@@ -208,16 +208,14 @@ private fun Context.uploadPushLog(msg: UMessage) {
     if (msg.activity == "com.intelligent.reader.activity.CoverPageActivity") {
         // 封面页打点
         if (msg.extra?.containsKey("book_id") == true) {
-            data.put("BOOKID", msg.extra["book_id"] ?: "")
+            data["bookid"] = msg.extra["book_id"] ?: ""
         }
-        data.put("source", "PUSH")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                StartLogClickUtil.ENTER, data)
+        data["source"] = "PUSH"
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data)
     } else if (msg.activity == "com.intelligent.reader.activity.FindBookDetail") {
         //H5 页面打点
-        data.put("source", "PUSH")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKLIST,
-                StartLogClickUtil.ENTER, data)
+        data["source"] = "PUSH"
+        DyStatService.onEvent(EventPoint.BOOKLIST_ENTER, data)
     }
 }
 

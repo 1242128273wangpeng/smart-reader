@@ -10,6 +10,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
@@ -21,14 +22,13 @@ import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbdzs.act_book_end.*
 import kotlinx.android.synthetic.txtqbdzs.bookend_recommend_books_layout.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.ui.widget.LoadingPage
-import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
 
@@ -41,8 +41,6 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         } else {
             loadingPage.onSuccess()
             bookEndAdapter.setBooks(recommends)
-
-
         }
 
     }
@@ -90,7 +88,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         initIntent()
 
         loadBookSource()
-        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
+        DyStatService.onEvent(EventPoint.READFINISH_ENTER, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -113,9 +111,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
     private fun initListener() {
         iv_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, data)
+            DyStatService.onEvent(EventPoint.READFINISH_BACK, mapOf("type" to "1"))
             finish()
         }
 
@@ -127,10 +123,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
             } else {
                 changeSourceDialog.show(sourceList)
             }
-            val map = HashMap<String, String>()
-            bookId?.let { map.put("bookid", it) }
-            bookChapterId?.let { map.put("chapterid", it) }
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.SOURCECHANGE, map)
+            DyStatService.onEvent(EventPoint.READFINISH_SOURCECHANGE, mapOf("bookid" to bookId.orEmpty(), "chapterid" to bookChapterId.orEmpty()))
 
         }
         /**
@@ -150,7 +143,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
          */
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
+            DyStatService.onEvent(EventPoint.READFINISH_TOSHELF, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
             finish()
         }
         /**
@@ -158,7 +151,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
          */
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
+            DyStatService.onEvent(EventPoint.READFINISH_TOBOOKSTORE, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
             finish()
         }
 
@@ -212,19 +205,12 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
     private fun refreshRecommendBooks() {
         bookEndPresenter.changeRecommendBooks()
-        val refresh = HashMap<String, String>()
-        refresh.put("module", "1")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE,
-                StartLogClickUtil.REPLACE, refresh)
+        DyStatService.onEvent(EventPoint.READFINISH_REPLACE, mapOf("module" to "1"))
     }
 
     private fun refreshNewBooks() {
         bookEndPresenter.changeRecommendBooks()
-
-        val data = HashMap<String, String>()
-        data.put("module", "2")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE,
-                StartLogClickUtil.REPLACE, data)
+        DyStatService.onEvent(EventPoint.READFINISH_REPLACE, mapOf("module" to "2"))
     }
 
     override fun onResume() {
@@ -266,6 +252,11 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
             this.sourceList.clear()
             this.sourceList.addAll(sourceList)
         }
+    }
+
+    override fun onBackPressed() {
+        DyStatService.onEvent(EventPoint.READFINISH_BACK, mapOf("type" to "2"))
+        super.onBackPressed()
     }
 
 }

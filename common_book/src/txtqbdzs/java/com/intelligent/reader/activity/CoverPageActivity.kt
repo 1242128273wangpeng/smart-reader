@@ -27,6 +27,7 @@ import com.ding.basic.bean.RecommendBean
 
 import com.ding.basic.net.api.service.RequestService
 import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.statistics.DyStatService
 
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
@@ -39,6 +40,7 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
@@ -469,12 +471,12 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         textView.setPadding(left, top, right, bottom)
         textView.setOnClickListener {
 
-            var data = HashMap<String, String>()
-            data.put("bookid", mBook?.book_id + "")
-            data.put("name", mBook?.name + "")
-            data.put("lablekey", text)
-            data.put("rank", (index+1).toString())
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
+            val data = HashMap<String, String>()
+            data["bookid"] = mBook?.book_id + ""
+            data["name"] = mBook?.name + ""
+            data["lablekey"] = text
+            data["rank"] = (index + 1).toString()
+            DyStatService.onEvent(EventPoint.BOOOKDETAIL_LABLECLICK, data)
 
 
             val intent = Intent()
@@ -571,12 +573,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (position < 0 || position > mRecommendBooks.size) return
 
         val recommendBooks = mRecommendBooks[position]
-
-        val data = HashMap<String, String>()
-        data.put("bookid", recommendBooks.bookId)
-        data.put("TbookID", recommendBooks.bookId)
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                StartLogClickUtil.RECOMMENDEDBOOK, data)
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_RECOMMENDEDBOOK, mapOf("bookid" to bookId.orEmpty(), "TbookID" to recommendBooks.bookId))
 
         val book = Book()
         book.author = recommendBooks.authorName
@@ -606,11 +603,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
                     val list = mRecommendAuthorOtherBooks[position]
 
-                    val data = HashMap<String, String>()
-                    data.put("bookid", bookId!!)
-                    data.put("TbookID", list.bookId)
-                    StartLogClickUtil.upLoadEventLog(this@CoverPageActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                            StartLogClickUtil.AUTHORBOOKROCOM, data)
+                    DyStatService.onEvent(EventPoint.BOOOKDETAIL_AUTHORBOOKROCOM, mapOf("bookid" to bookId.orEmpty(), "TbookID" to list.bookId))
 
                     val book = Book()
                     book.author = list.authorName
@@ -647,11 +640,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
                     val list = mRecommendBooks[position]
 
-                    val data = HashMap<String, String>()
-                    data.put("bookid", bookId!!)
-                    data.put("TbookID", list.bookId)
-                    StartLogClickUtil.upLoadEventLog(this@CoverPageActivity, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                            StartLogClickUtil.RECOMMENDEDBOOK, data)
+                    DyStatService.onEvent(EventPoint.BOOOKDETAIL_RECOMMENDEDBOOK, mapOf("bookid" to bookId.orEmpty(), "TbookID" to list.bookId))
 
                     val book = Book()
                     book.author = list.authorName
@@ -691,9 +680,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }*/
         when (view.id) {
             R.id.book_cover_back -> {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_BACK, mapOf("type" to "1"))
                 finish()
             }
 
@@ -703,7 +690,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             R.id.book_cover_reading -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEREAD)
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.handleReadingAction()
@@ -712,28 +699,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             R.id.book_cover_download -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
-                val dataDownload = HashMap<String, String>()
-                dataDownload["bookId"] = bookId!!
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_CASHEALL, mapOf("bookid" to bookId.orEmpty()))
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.handleDownloadAction()
                 }
             }
-        /*R.id.book_cover_catalog_view_nobg, R.id.book_cover_catalog_view -> {
-            StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
 
-            if (coverPagePresenter != null) {
-                coverPagePresenter!!.startCatalogActivity(true)
-            }
-        }*/
             R.id.book_cover_chapter_view, R.id.book_cover_last_chapter -> {
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.startCatalogActivity(false)
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_LATESTCHAPTER)
             }
         }
     }

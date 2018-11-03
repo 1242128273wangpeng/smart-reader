@@ -19,7 +19,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.BlockingLinkedHashMap
 import net.lzbook.kit.bean.BookTask
@@ -33,6 +32,8 @@ import net.lzbook.kit.utils.file.FileUtils
 import net.lzbook.kit.utils.runOnMain
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 import java.io.File
 import java.io.IOException
 
@@ -104,19 +105,19 @@ object CacheManager {
                 notifyTaskStatusChange()
 
                 val data = HashMap<String, String>()
-                data.put("status", "2")
-                data.put("reason", t.javaClass.simpleName + ":" + t.message)
-                data.put("bookId", bookTask.book.book_id)
+                data["status"] = "2"
+                data["reason"] = t.javaClass.simpleName + ":" + t.message
+                data["bookId"] = bookTask.book.book_id
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
-                data.put(str, obj)
-                data.put("cache_tyte", if (bookTask.isFullCache) "全本缓存" else "从当前章缓存")
-                data.put("host", bookTask.book.host!!)
-                data.put("start_chapterid", bookTask.start_chapterid)
-                data.put("end_chapterid", bookTask.end_chapterid)
-                data.put("cache_chapters", "" + bookTask.cache_chapters)
-                data.put("cache_times", "" + bookTask.cache_times)
-                StartLogClickUtil.upLoadEventLog(app, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.CASHERESULT, data)
+                data[str] = obj
+                data["cache_tyte"] = if (bookTask.isFullCache) "全本缓存" else "从当前章缓存"
+                data["host"] = bookTask.book.host!!
+                data["start_chapterid"] = bookTask.start_chapterid
+                data["end_chapterid"] = bookTask.end_chapterid
+                data["cache_chapters"] = bookTask.cache_chapters.toString()
+                data["cache_times"] = bookTask.cache_times.toString()
+                DyStatService.onEvent(EventPoint.SYSTEM_CASHERESULT, data)
 
                 bookTask.state = DownloadState.PAUSEED
                 bookTask.isAutoState = false
@@ -166,19 +167,18 @@ object CacheManager {
                 saveTaskInfo(bookTask)
 
                 val data = HashMap<String, String>()
-                data.put("status", "1")
-                data.put("bookId", bookTask.book.book_id)
+                data["status"] = "1"
+                data["bookId"] = bookTask.book.book_id
                 val str = "type"
                 val obj = if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_MOBILE) "0" else if (NetWorkUtils.NETWORK_TYPE == 81) "1" else "2"
-                data.put(str, obj)
-                data.put("cache_tyte", if (bookTask.isFullCache) "全本缓存" else "从当前章缓存")
-                data.put("host", bookTask.book.host!!)
-                data.put("start_chapterid", bookTask.start_chapterid)
-                data.put("end_chapterid", bookTask.end_chapterid)
-                data.put("cache_chapters", "" + bookTask.cache_chapters)
-                data.put("cache_times", "" + bookTask.cache_times)
-                StartLogClickUtil.upLoadEventLog(app, StartLogClickUtil.SYSTEM_PAGE
-                        , StartLogClickUtil.CASHERESULT, data)
+                data[str] = obj
+                data["cache_tyte"] = if (bookTask.isFullCache) "全本缓存" else "从当前章缓存"
+                data["host"] = bookTask.book.host!!
+                data["start_chapterid"] = bookTask.start_chapterid
+                data["end_chapterid"] = bookTask.end_chapterid
+                data["cache_chapters"] = "" + bookTask.cache_chapters
+                data["cache_times"] = "" + bookTask.cache_times
+                DyStatService.onEvent(EventPoint.SYSTEM_CASHERESULT, data)
 
                 notifyTaskStatusChange()
 

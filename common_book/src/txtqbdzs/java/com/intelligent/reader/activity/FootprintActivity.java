@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HistoryInfo;
+import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.EventBookStore;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.ui.adapter.HisAdapter;
 import net.lzbook.kit.ui.adapter.LoadMoreAdapterWrapper;
@@ -262,7 +263,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
             case R.id.book_history_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PERHISTORY_PAGE, StartLogClickUtil.BACK, data);
+                DyStatService.onEvent(EventPoint.PERHISTORY_BACK, data);
                 finish();
                 break;
             case R.id.book_history_clear:
@@ -272,7 +273,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
                 mLoginTV.setClickable(false);
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, 1);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HISTORYLOGIN);
+                DyStatService.onEvent(EventPoint.PERSONAL_HISTORYLOGIN);
                 break;
             case R.id.footprint_empty_find:
                 Intent storeIntent = new Intent();

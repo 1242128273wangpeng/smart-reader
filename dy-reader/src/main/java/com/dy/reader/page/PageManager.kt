@@ -1,11 +1,11 @@
 package com.dy.reader.page
 
 import android.annotation.SuppressLint
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.data.DataProvider
 import com.dy.reader.helper.AppHelper
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 
 @SuppressLint("StaticFieldLeak")
 /**
@@ -112,9 +112,13 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
         if (ReaderStatus.position.group != -1 && ReaderStatus.position.index == ReaderStatus.position.groupChildCount - 1) {
             Logger.e("打点统计PV: " + ReaderStatus.position.group + " : " + ReaderStatus.position.groupChildCount + " : " + ReaderStatus.position.index)
 
-            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id,  ReaderStatus.book.book_source_id, if("zn" == ReaderStatus.book.book_type){ "2" }else{ "1" }, ReaderStatus.position.groupChildCount.toString())
+            DyStatService.sendPVData(ReaderStatus.startTime, ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id.toString(), ReaderStatus.book.book_source_id, if ("zn" == ReaderStatus.book.book_type) {
+                "2"
+            } else {
+                "1"
+            }, ReaderStatus.position.groupChildCount)
 
-            ReaderStatus.startTime = System.currentTimeMillis() / 1000L
+            ReaderStatus.startTime = System.currentTimeMillis()
         }
 
         ReaderStatus.position = currentPage.position

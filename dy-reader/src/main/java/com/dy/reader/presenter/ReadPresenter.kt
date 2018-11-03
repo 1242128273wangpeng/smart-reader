@@ -17,6 +17,7 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaControl
 import com.dy.reader.R
 import com.dy.reader.Reader
@@ -34,8 +35,8 @@ import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.*
 import com.google.gson.Gson
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.service.DownloadService
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -74,7 +75,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
-        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
+        ReaderStatus.startTime = System.currentTimeMillis()
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -128,8 +129,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         params["readgap"] = formatSpaceGapType(settings.readInterlineaSpace).toString()
         params["pageturn"] = settings.animation_mode.toString()
 
-        StartLogClickUtil.upLoadEventLog(act, StartLogClickUtil.READPAGE_PAGE
-                , StartLogClickUtil.DEFAULTSETTING)
+        DyStatService.onEvent(EventPoint.READPAGE_DEFAULTSETTINGS, params)
     }
 
     private fun formatSpaceGapType(space: Float): Int {
@@ -356,16 +356,14 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                     Toast.LENGTH_SHORT).show()
         }
         val map1 = HashMap<String, String>()
-        if (ReaderStatus.book != null) {
-            map1.put("bookid", ReaderStatus.book.book_id!!)
-        }
+        map1["bookid"] = ReaderStatus.book.book_id
         if (ReaderStatus.currentChapter != null) {
-            map1.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
+            map1["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
         }
         if (isAddShelf) {
-            StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADD, map1)
+            DyStatService.onEvent(EventPoint.READPAGE_POPUPSHELFADD, map1)
         } else {
-            StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.POPUPSHELFADDCANCLE, map1)
+            DyStatService.onEvent(EventPoint.READPAGE_POPUPSHELFADDCANCLE, map1)
         }
 
         goBackToHome()
@@ -383,17 +381,13 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         }
         if (act.resources!!.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_portrait_btn)
-            val data = HashMap<String, String>()
-            data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data)
+            DyStatService.onEvent(EventPoint.READPAGESET_HPMODEL, mapOf("type" to "2"))
             ReaderSettings.instance.isLandscape = false
             act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             screen_mode.putInt("screen_mode", Configuration.ORIENTATION_PORTRAIT)
         } else if (act.resources!!.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.rb_click_landscape_btn)
-            val data = HashMap<String, String>()
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.HPMODEL, data)
+            DyStatService.onEvent(EventPoint.READPAGESET_HPMODEL, mapOf("type" to "1"))
             ReaderSettings.instance.isLandscape = true
             act.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             isFromCover = false
@@ -507,12 +501,12 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
         if (goToBookEndCount == 0) {
             //发送章节消费
-            StartLogClickUtil.sendPVData(ReaderStatus.startTime.toString(), ReaderStatus?.book.book_id, ReaderStatus?.currentChapter?.chapter_id, ReaderStatus?.book?.book_source_id,
-                    if (("zn").equals(ReaderStatus.book?.book_type)) {
+            DyStatService.sendPVData(ReaderStatus.startTime, ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id.orEmpty(), ReaderStatus.book.book_source_id,
+                    if (("zn") == ReaderStatus.book.book_type) {
                         "2"
                     } else {
                         "1"
-                    }, ReaderStatus?.position.groupChildCount.toString())
+                    }, ReaderStatus.position.groupChildCount)
             goToBookEndCount++
         }
 
@@ -542,8 +536,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun updateOriginLog() {
-        val data = HashMap<String, String>()
-        data.put("bookid", ReaderStatus.book.book_id)
-        StartLogClickUtil.upLoadEventLog(readReference?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
+        DyStatService.onEvent(EventPoint.READPAGE_ORIGINALLINK, mapOf("bookid" to ReaderStatus.book.book_id))
     }
 }

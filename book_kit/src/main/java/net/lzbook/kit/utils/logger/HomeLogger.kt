@@ -1,12 +1,12 @@
 package net.lzbook.kit.utils.logger
 
 import com.ding.basic.RequestRepositoryFactory
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.AppUtils
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
-import java.util.*
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 
 /**
  * Desc HomeActivity相关打点
@@ -34,15 +34,11 @@ object HomeLogger {
                 books.forEachIndexed { index, book ->
                     bookIdList.append(book.book_id)
                     bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
-                    bookIdList.append(if (index == books.size-1) "" else "$")
+                    bookIdList.append(if (index == books.size - 1) "" else "$")
                 }
                 SPUtils.putDefaultSharedLong(SPKey.HOME_TODAY_FIRST_POST_BOOKIDS, currentTime)
 
-                val data = HashMap<String, String>()
-                data["bookid"] = bookIdList.toString()
-
-                StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                        StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_BOOK_LIST, data)
+                DyStatService.onEvent(EventPoint.MAIN_BOOKLIST, mapOf("bookid" to bookIdList.toString()))
             }
         }
     }
@@ -52,63 +48,43 @@ object HomeLogger {
      * HomeActivity点击书架
      * **/
     fun uploadHomeBookShelfSelected() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_BOOK_SHELF)
+        DyStatService.onEvent(EventPoint.MAIN_BOOKSHELF)
     }
 
     /***
      * HomeActivity点击推荐
      * **/
     fun uploadHomeRecommendSelected() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_RECOMMEND)
+        DyStatService.onEvent(EventPoint.MAIN_RECOMMEND)
     }
 
     /***
      * HomeActivity点击榜单
      * **/
     fun uploadHomeRankSelected() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_TOP)
+        DyStatService.onEvent(EventPoint.MAIN_TOP)
     }
 
     /***
-     * HomeActivity点击榜单
+     * HomeActivity点击分类
      * **/
     fun uploadHomeCategorySelected() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_CLASS)
+        DyStatService.onEvent(EventPoint.MAIN_CLASS)
     }
 
     /***
      * HomeActivity点击 设置/个人中心
      * **/
     fun uploadHomePersonal() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_PERSONAL)
-    }
-
-    /***
-     * HomeActivity点击 搜索
-     * **/
-    fun uploadHomeSearch() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_SEARCH)
+        DyStatService.onEvent(EventPoint.MAIN_PERSONAL)
     }
 
     fun uploadHomeSearch(currPageType: Int) {
-        if (currPageType == 2) {
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
-        } else if (currPageType == 3) {
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
-        } else if (currPageType == 4) {
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
-        } else {
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH)
+        when (currPageType) {
+            2 -> DyStatService.onEvent(EventPoint.RECOMMEND_SEARCH)
+            3 -> DyStatService.onEvent(EventPoint.TOP_SEARCH)
+            4 -> DyStatService.onEvent(EventPoint.CLASS_SEARCH)
+            else -> DyStatService.onEvent(EventPoint.MAIN_SEARCH)
         }
     }
 
@@ -116,7 +92,6 @@ object HomeLogger {
      * HomeActivity点击 下载管理
      * **/
     fun uploadHomeCacheManager() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_CACHE_MANAGE)
+        DyStatService.onEvent(EventPoint.MAIN_CACHEMANAGE)
     }
 }

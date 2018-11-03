@@ -41,12 +41,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.dingyue.statistics.DyStatService;
 import com.umeng.message.PushAgent;
 
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.service.DynamicService;
 import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AppUtils;
@@ -245,7 +246,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public void onBackPressed() {
         Map<String, String> data = new HashMap<>();
         data.put("type", "2");
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data);
+        DyStatService.onEvent(EventPoint.SYSTEM_BACK, data);
 
         if (swipeBackHelper != null && swipeBackHelper.isSliding()) return;//滑动返回未结束
 
@@ -406,7 +407,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         if (!isAppOnForeground()) {
             checkDynamicParameterTime = System.currentTimeMillis();
             isActive = false;
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.HOME);
+            DyStatService.onEvent(EventPoint.SYSTEM_HOME);
             isCurrentRunningForeground = false;
             restoreSystemDisplayState();
         }
@@ -428,8 +429,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
             inTime = System.currentTimeMillis();
             Map<String, String> data = new HashMap<>();
             data.put("time", String.valueOf(inTime - outTime));
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.ACTIVATE, data);
-            if(inTime - checkDynamicParameterTime > Constants.checkDynamicTime){
+            DyStatService.onEvent(EventPoint.SYSTEM_ACTIVATE, data);
+            if (inTime - checkDynamicParameterTime > Constants.checkDynamicTime) {
                 DynamicService.keepService(BaseBookApplication.getGlobalContext());
             }
         }

@@ -613,6 +613,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     coverPagePresenter!!.handleDownloadContinueOrStop()
                 }
             }
+
             R.id.book_cover_chapter_view, R.id.book_cover_last_chapter -> {
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.startCatalogActivity(false)

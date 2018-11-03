@@ -14,14 +14,14 @@ import kotlinx.android.synthetic.main.dialog_share.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
 import com.ding.basic.net.Config
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.AppUtils
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.user.UserManagerV4
-import java.util.*
 
 class ApplicationShareDialog(var activity: Activity?) {
 
@@ -38,46 +38,36 @@ class ApplicationShareDialog(var activity: Activity?) {
         dialog.ll_share_wechat.setOnClickListener {
             requestShareInformation("Wechat")
 
-            val data = HashMap<String, String>()
-            data["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_SHARE, data)
+            DyStatService.onEvent(EventPoint.SHAREPAGE_SHARE, mapOf("type" to "1"))
         }
 
         dialog.ll_share_wechat_circle.setOnClickListener {
             requestShareInformation("WechatCircle")
 
-            val data = HashMap<String, String>()
-            data["type"] = "2"
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_SHARE, data)
+            DyStatService.onEvent(EventPoint.SHAREPAGE_SHARE, mapOf("type" to "2"))
         }
 
         dialog.ll_share_qq.setOnClickListener {
             requestShareInformation("QQ")
 
-            val data = HashMap<String, String>()
-            data["type"] = "3"
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_SHARE, data)
+            DyStatService.onEvent(EventPoint.SHAREPAGE_SHARE, mapOf("type" to "3"))
         }
 
         dialog.ll_share_qzone.setOnClickListener {
             requestShareInformation("Qzone")
 
-            val data = HashMap<String, String>()
-            data["type"] = "4"
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_SHARE, data)
+            DyStatService.onEvent(EventPoint.SHAREPAGE_SHARE, mapOf("type" to "4"))
         }
 
         dialog.ll_share_url.setOnClickListener {
             requestShareInformation("Url")
 
-            val data = HashMap<String, String>()
-            data["type"] = "5"
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_SHARE, data)
+            DyStatService.onEvent(EventPoint.SHAREPAGE_SHARE, mapOf("type" to "5"))
         }
 
         dialog.tv_share_cancel.setOnClickListener {
             dismiss()
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_CANCEL)
+            DyStatService.onEvent(EventPoint.SHAREPAGE_CANCEL)
         }
     }
 

@@ -18,7 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.model.BookCoverViewModel
 import net.lzbook.kit.ui.widget.RecommendItemView
 import net.lzbook.kit.utils.AppUtils
@@ -33,6 +32,8 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.view.CoverPageContract
 import java.util.*
@@ -168,11 +169,7 @@ class CoverPagePresenter(private val book_id: String?,
 
                 ToastUtil.showToastMessage("成功从书架移除！")
 
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-                data["bookid"] = coverDetail!!.book_id
-
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_SHELFADD, mapOf("type" to "2", "bookid" to coverDetail!!.book_id))
 
                 coverPageContract.changeDownloadButtonStatus()
 
@@ -217,12 +214,7 @@ class CoverPagePresenter(private val book_id: String?,
                 ToastUtil.showToastMessage("加入书架失败！")
             } else {
                 Logger.v("加入书架成功！")
-
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-                data["bookid"] = coverDetail!!.book_id
-
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.SHELFADD, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_SHELFADD, mapOf("type" to "1", "bookid" to coverDetail!!.book_id))
 
                 ToastUtil.showToastMessage("成功添加到书架！")
 

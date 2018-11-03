@@ -320,11 +320,4 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
         }
         return ""
     }
-
-    fun uploadLog(book: Book?,type:String){
-        val data = HashMap<String,String>()
-        data.put("bookid",book?.book_id.toString())
-        data.put("chapterid",book?.book_chapter_id.toString())
-        StartLogClickUtil.upLoadEventLog(activity,StartLogClickUtil.READFINISH_PAGE,type,data)
-    }
 }

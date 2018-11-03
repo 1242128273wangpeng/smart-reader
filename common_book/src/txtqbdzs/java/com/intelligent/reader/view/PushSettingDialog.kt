@@ -6,9 +6,10 @@ import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.OnLifecycleEvent
 import android.support.v4.app.NotificationManagerCompat
 import android.view.Gravity
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbdzs.dialog_push_setting.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.MyDialog
 
 
@@ -31,19 +32,16 @@ class PushSettingDialog(val activity: Activity) : LifecycleObserver {
 
         dialog.img_close.setOnClickListener {
             dialog.dismiss()
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
-                    StartLogClickUtil.POPUPCLOSE)
+            DyStatService.onEvent(EventPoint.MAIN_PUSHCLOSE)
         }
 
         dialog.txt_open_push.setOnClickListener {
             openPushListener?.invoke()
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
-                    StartLogClickUtil.POPUPNOWOPEN)
+            DyStatService.onEvent(EventPoint.MAIN_POPUPNOWOPEN)
         }
 
         dialog.setOnShowListener {
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
-                    StartLogClickUtil.POPUPEXPOSE)
+            DyStatService.onEvent(EventPoint.MAIN_PUSHEXPOSE)
         }
 
     }

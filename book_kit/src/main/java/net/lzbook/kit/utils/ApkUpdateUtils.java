@@ -16,11 +16,12 @@ import android.widget.Toast;
 import com.ding.basic.bean.ApplicationUpdate;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
+import com.dingyue.statistics.DyStatService;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.app.base.BaseBookApplication;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.service.DownloadIntentService;
 import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.ui.widget.MyDialog;
@@ -140,9 +141,9 @@ public class ApkUpdateUtils {
                 updateDialog.dismiss();
 
                 if (type == 1) {
-                    StartLogClickUtil.upLoadEventLog(reference.get(), StartLogClickUtil.SHELF_PAGE, StartLogClickUtil.VERSIONUPDATE2);
+                    DyStatService.onEvent(EventPoint.SHELF_VERSIONUPDATE);
                 } else {
-                    StartLogClickUtil.upLoadEventLog(reference.get(), StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSIONUPDATE);
+                    DyStatService.onEvent(EventPoint.PERSONAL_VERSIONUPDATE);
                 }
 
             }

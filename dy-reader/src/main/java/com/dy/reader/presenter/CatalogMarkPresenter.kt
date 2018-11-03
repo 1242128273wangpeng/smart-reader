@@ -8,6 +8,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.util.DataCache
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventReaderConfig
@@ -18,8 +19,8 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.router.RouterConfig
@@ -34,12 +35,7 @@ import java.util.*
 class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter {
 
     override fun onClickFixBook(activity: Activity) {
-        val data = java.util.HashMap<String, String>()
-        data.put("bookid", ReaderStatus.book.book_id!!)
-        if (ReaderStatus.currentChapter != null) {
-            data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
-        }
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DIRECTORYREPAIR, data)
+        DyStatService.onEvent(EventPoint.READPAGE_DIRECTORYREPAIR, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter!!.chapter_id))
     }
 
     private var requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
@@ -72,17 +68,8 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         view?.setChangeAble(false)
         if (type == 1) {
-            val data = java.util.HashMap<String, String>()
-            ReaderStatus.book?.let {
-                data.put("bookid", it.book_id!!)
-            }
-            ReaderStatus.chapterId?.let {
-                data.put("chapterid", it)
-            }
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
+            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARK, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter!!.chapter_id))
         }
-
-
 
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
 
@@ -112,13 +99,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
 //        (activity as ReaderActivity).onJumpChapter(chapter.sequence, 0)
         EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, Position(ReaderStatus.book.book_id, chapter.sequence, 0 )))
-
-
-        val data = java.util.HashMap<String, String>()
-        data.put("bookid", ReaderStatus.book.book_id)
-        data.put("chapterid", chapter.chapter_id!!)
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG1, data)
-
+        DyStatService.onEvent(EventPoint.READPAGE_CATALOG, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to chapter.chapter_id))
     }
 
     override fun gotoBookMark(activity: Activity, mark: Bookmark) {
@@ -136,12 +117,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
             RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
         }
 
-        val data = java.util.HashMap<String, String>()
-        data.put("bookid", ReaderStatus.book.book_id)
-        if (ReaderStatus.currentChapter != null) {
-            data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
-        }
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
+        DyStatService.onEvent(EventPoint.READPAGE_BOOKMARK, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter!!.chapter_id))
 
     }
 

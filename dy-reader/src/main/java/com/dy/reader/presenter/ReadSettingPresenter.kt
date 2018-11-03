@@ -23,7 +23,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.ChapterErrorBean
 import net.lzbook.kit.utils.AppUtils
@@ -38,7 +37,8 @@ import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.ui.widget.ApplicationShareDialog
-import com.ding.basic.db.provider.ChapterDataProviderHelper
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
 
 import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
@@ -74,9 +74,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 val iBook = requestRepositoryFactory.loadBook(ReaderStatus.book.book_id)
                 if (iBook != null && source.book_source_id != iBook.book_source_id) {
                     //弹出切源提示
-                    val map2 = java.util.HashMap<String, String>()
-                    map2.put("type", "1")
-                    StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.READ_SOURCECHANGECONFIRM, map2)
+                    DyStatService.onEvent(EventPoint.READPAGEMORE_SOURCECHANGECONFIRM, mapOf("type" to "1"))
                     intoCatalogActivity(source, true)
                     return
                 }
@@ -131,11 +129,9 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     fun showMore() {
         val data = java.util.HashMap<String, String>()
-        data.put("bookid", ReaderStatus.book.book_id)
-        ReaderStatus.chapterId?.let {
-            data.put("chapterid", it)
-        }
-        StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.MORE1, data)
+        data["bookid"] = ReaderStatus.book.book_id
+        data["chapterid"] = ReaderStatus.chapterId
+        DyStatService.onEvent(EventPoint.READPAGE_MORE,data)
     }
 
     /**
@@ -167,7 +163,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                         data["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
                     }
                     data["type"] = "1"
-                    StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
+                    DyStatService.onEvent(EventPoint.READPAGE_CACHE, data)
 
                 }
             }
@@ -186,7 +182,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                         data["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
                     }
                     data["type"] = "2"
-                    StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
+                    DyStatService.onEvent(EventPoint.READPAGE_CACHE, data)
                 }
             }
 
@@ -199,7 +195,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                     data["chapterid"] = ReaderStatus.currentChapter!!.chapter_id
                 }
                 data["type"] = "0"
-                StartLogClickUtil.upLoadEventLog(activity.get()!!, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CACHE, data)
+                DyStatService.onEvent(EventPoint.READPAGE_CACHE, data)
             }
 
             readerCacheDialog.show()
@@ -279,11 +275,11 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
 
         if (!requestRepositoryFactory.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
-            var logMap = HashMap<String, String>()
-            logMap.put("type", "1")
-            logMap.put("bookid",ReaderStatus.book?.book_id)
-            logMap.put("chapterid",ReaderStatus?.chapterId)
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
+            val logMap = HashMap<String, String>()
+            logMap["type"] = "1"
+            logMap["bookid"] = ReaderStatus.book.book_id
+            logMap["chapterid"] = ReaderStatus.chapterId
+            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARKEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
@@ -329,18 +325,18 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             requestRepositoryFactory.insertBookMark(bookMark)
             return 1
         } else {
-            var logMap = HashMap<String, String>()
-            logMap.put("type", "2")
-            logMap.put("bookid", ReaderStatus.book!!.book_id)
-            logMap.put("chapterid", ReaderStatus.chapterId.toString())
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
-            requestRepositoryFactory.deleteBookMark(ReaderStatus.book!!.book_id!!, ReaderStatus.position.group, ReaderStatus.position.offset)
+            val logMap = HashMap<String, String>()
+            logMap["type"] = "2"
+            logMap["bookid"] = ReaderStatus.book.book_id
+            logMap["chapterid"] = ReaderStatus.chapterId
+            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARKEDIT, logMap)
+            requestRepositoryFactory.deleteBookMark(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }
     }
 
     fun bookInfo() {
-        StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.BOOKDETAIL)
+        DyStatService.onEvent(EventPoint.READPAGEMORE_BOOKDETAIL)
         //先这样实现吧...
         if (activity.get() is ReaderActivity) {
 //            (activity.get() as ReaderActivity).showMenu(false)
@@ -354,10 +350,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             RouterUtil.navigation(activity.get()!!, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
         }
 
-        val data = java.util.HashMap<String, String>()
-        data.put("ENTER", "READPAGE")
-        StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
-
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, mapOf("bookid" to ReaderStatus.book.book_id, "source" to "READPAGE"))
     }
 
     fun openWeb() {
@@ -377,19 +370,14 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            val data = java.util.HashMap<String, String>()
-            if (ReaderStatus != null) {
-                data.put("bookid", ReaderStatus.book.book_id)
-            }
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ORIGINALLINK, data)
+            DyStatService.onEvent(EventPoint.READPAGE_ORIGINALLINK, mapOf("bookid" to ReaderStatus.book.book_id))
         } else {
             ToastUtil.showToastMessage("无法查看原文链接")
         }
     }
 
     fun showShareDialog() {
-        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
-        
+        DyStatService.onEvent(EventPoint.READPAGE_SHARE)
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             val applicationShareDialog = ApplicationShareDialog(activity.get())
             applicationShareDialog.show()
@@ -413,16 +401,14 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
 
             activity.get()?.mThemeHelper?.setMode(ThemeMode.THEME1)
-            data.put("type", "2")
-            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            DyStatService.onEvent(EventPoint.READPAGE_NIGHTMODE, mapOf("type" to "2")) // 2代表日间
         } else {
 
             //夜间模式只有一种背景
             ReaderSettings.instance.readLightThemeMode = ReaderSettings.instance.readThemeMode
             ReaderSettings.instance.readThemeMode = 61
             activity.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.NIGHTMODE1, data)
+            DyStatService.onEvent(EventPoint.READPAGE_NIGHTMODE, mapOf("type" to "1")) // 1代表夜间
         }
 //        ReaderSettings.instance.save()
 
@@ -454,7 +440,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 ToastUtil.showToastMessage("请到错误章节反馈")
                 return
             }
-            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
+            DyStatService.onEvent(EventPoint.READPAGEMORE_FEEDBACK)
             val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
             readerFeedbackDialog.insertSubmitListener {
@@ -519,7 +505,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
         val loadDataManager = LoadDataManager(activity?.get())
         loadDataManager.submitBookError(chapterErrorBean)
-        StartLogClickUtil.upLoadChapterError(chapterErrorBean)
+        DyStatService.onChapterError(chapterErrorBean.toMap())
         val time = Observable.timer(1000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -545,25 +531,14 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
     fun jumpNextChapterLog(type: Int) {
         val data = java.util.HashMap<String, String>()
-        ReaderStatus.book?.let {
-            data.put("bookid", it.book_id!!)
-        }
-        ReaderStatus.chapterId?.let {
-            data.put("chapterid", it)
-        }
-        data.put("type", type.toString())
-        StartLogClickUtil.upLoadEventLog(activity?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CHAPTERTURN, data)
+        data["bookid"] = ReaderStatus.book.book_id
+        data["chapterid"] = ReaderStatus.chapterId
+        data["type"] = type.toString()
+        DyStatService.onEvent(EventPoint.READPAGE_CHAPTERTURN, data)
     }
 
     fun readCatalogLog() {
-        val data = java.util.HashMap<String, String>()
-        ReaderStatus.book?.let {
-            data.put("bookid", it.book_id!!)
-        }
-        ReaderStatus.chapterId?.let {
-            data.put("chapterid", it)
-        }
-        StartLogClickUtil.upLoadEventLog(activity?.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG, data)
+        DyStatService.onEvent(EventPoint.READPAGE_CATALOG, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.chapterId))
     }
 
 
@@ -571,7 +546,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         //先这样实现吧...
         val activity = this.activity.get()
         if (activity is ReaderActivity) {
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BACK)
+            DyStatService.onEvent(EventPoint.READPAGE_BACK, mapOf("type" to "1"))
             activity.onBackPressed()
         }
     }

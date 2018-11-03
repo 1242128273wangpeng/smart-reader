@@ -10,9 +10,11 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.R
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.user.UserManager
@@ -24,7 +26,7 @@ import net.lzbook.kit.utils.user.UserManager
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/9/5 15:29
  */
-class BannerDialog(val activity: Activity,var intent:Intent) {
+class BannerDialog(val activity: Activity,var intent: Intent) {
 
     private val dialog = MyDialog(activity, R.layout.dialog_banner, Gravity.CENTER)
 
@@ -50,21 +52,16 @@ class BannerDialog(val activity: Activity,var intent:Intent) {
             dialog.dismiss()
 
             // 弹窗点击，status记录登录状态：1未登录、2已登录
-            val data = HashMap<String, String>()
-            data.put("status", if (UserManager.isUserLogin) "2" else "1")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.BANNER_POPUP_CLICK, data)
+            DyStatService.onEvent(EventPoint.SHELF_BANNERPOPUPCLICK, mapOf("status" to if (UserManager.isUserLogin) "2" else "1"))
         }
 
         dialog.img_close.setOnClickListener {
             dialog.dismiss()
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.BANNER_POPUP_CLOSE)
+            DyStatService.onEvent(EventPoint.SHELF_BANNERPOPUPCLOSE)
         }
 
         dialog.setOnShowListener {
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.BANNER_POPUP_SHOW)
+            DyStatService.onEvent(EventPoint.SHELF_BANNERPOPUPSHOW)
         }
 
     }

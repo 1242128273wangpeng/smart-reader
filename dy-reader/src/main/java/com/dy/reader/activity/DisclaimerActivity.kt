@@ -13,16 +13,16 @@ import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import java.util.*
 
 /**
  * Function：使用协议 / 转码声明
@@ -88,9 +88,7 @@ class DisclaimerActivity : FrameActivity() {
 
 
         img_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PROCTCOL_PAGE, StartLogClickUtil.BACK, data)
+            DyStatService.onEvent(EventPoint.PROCTCOL_BACK, mapOf("type" to "1"))
             finish()
         }
 

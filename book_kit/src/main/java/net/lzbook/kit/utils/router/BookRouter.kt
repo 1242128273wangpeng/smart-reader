@@ -6,8 +6,9 @@ import android.os.Bundle
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.util.DataCache
+import com.dingyue.statistics.DyStatService
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.book.FootprintUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -90,7 +91,7 @@ object BookRouter {
                 NAVIGATE_TYPE_BOOKEND -> data["source"] = "BOOKENDPAGE"
             }
 
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data)
+            DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data)
 
             bundle.putString("author", book.author)
             bundle.putString("book_id", book.book_id)

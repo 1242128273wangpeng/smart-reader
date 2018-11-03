@@ -12,6 +12,7 @@ import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import com.umeng.message.MessageSharedPrefs
 import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.R
@@ -110,7 +111,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                 updateChapter(isChecked)
             }
             R.id.btn_debug_show_toast -> {
-                SPUtils.putOnlineConfigSharedBoolean(SPKey.SHOW_TOAST_LOG, isChecked)
+//                sp.putBoolean(SharedPreUtil.SHOW_TOAST_LOG, isChecked)
+                DyStatService.eventToastOpen = btn_debug_show_toast.isChecked
             }
         }
 
@@ -143,6 +145,9 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                 e.printStackTrace()
             }
         }
+//        btn_debug_show_toast.isChecked = sp.getBoolean(SharedPreUtil.SHOW_TOAST_LOG, false)
+        btn_debug_show_toast.isChecked = DyStatService.eventToastOpen
+
         iv_back.setOnClickListener(this)
 
         tv_api.setOnClickListener(this)

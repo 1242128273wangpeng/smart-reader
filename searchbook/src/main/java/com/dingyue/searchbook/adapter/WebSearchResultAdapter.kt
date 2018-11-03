@@ -5,7 +5,7 @@ import android.text.Html
 import android.view.View
 import android.widget.TextView
 import com.dingyue.searchbook.R
-import kotlinx.android.synthetic.txtqbmfyd.item_web_search_result.view.*
+import kotlinx.android.synthetic.main.item_web_search_result.view.*
 import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
 

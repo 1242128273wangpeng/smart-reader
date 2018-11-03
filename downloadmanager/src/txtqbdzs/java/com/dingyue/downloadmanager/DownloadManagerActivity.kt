@@ -10,17 +10,18 @@ import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
 
-import com.dingyue.downloadmanager.R.id.*
 import com.dingyue.downloadmanager.contract.BookHelperContract
 import com.dingyue.downloadmanager.contract.CacheManagerContract
 import com.dingyue.downloadmanager.recl.DownloadItemDecoration
 import com.dingyue.downloadmanager.recl.DownloadManagerAdapter
+import com.dingyue.statistics.DyStatService
 
 import kotlinx.android.synthetic.txtqbdzs.act_download_manager.*
 import kotlinx.android.synthetic.txtqbdzs.item_download_manager_task_header.view.*
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.download.DownloadState
@@ -28,7 +29,6 @@ import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.uiThread
-import org.antlr.v4.runtime.misc.MurmurHash.finish
 
 @Route(path = RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
 class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
@@ -133,11 +133,17 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
 
     private fun initView() {
         img_head_back.setOnClickListener {
-            DownloadManagerLogger.uploadCacheManagerBack()
+            if (downloadManagerAdapter.remove) {
+                // 缓存编辑页返回
+                DyStatService.onEvent(EventPoint.CHCHEEDIT_BACK, mapOf("type" to "1"))
+            } else {
+                // 缓存管理页返回
+                DownloadManagerLogger.uploadCacheManagerBack()
+            }
             finish()
         }
 
-        txt_head_cancel.setOnClickListener{
+        txt_head_cancel.setOnClickListener {
             dismissMenu()
         }
 
@@ -209,6 +215,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
             if (isTaskRoot) {
                 RouterUtil.navigation(this, RouterConfig.SPLASH_ACTIVITY)
             }
+            DyStatService.onEvent(EventPoint.CACHEMANAGE_BACK, mapOf("type" to "2"))
             super.onBackPressed()
         }
     }

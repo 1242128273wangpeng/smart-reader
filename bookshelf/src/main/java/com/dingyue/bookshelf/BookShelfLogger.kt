@@ -2,12 +2,13 @@ package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
 import com.ding.basic.RequestRepositoryFactory
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import java.util.*
 
 /**
@@ -17,36 +18,28 @@ import java.util.*
  * Date 2018/5/11 10:33
  */
 object BookShelfLogger {
+
     /***
      * 书架点击更多
      * **/
     fun uploadBookShelfMore() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_SHELF,
-                StartLogClickUtil.ACTION_SHELF_MORE)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_click_mine_menu)
+        DyStatService.onEvent(EventPoint.SHELF_MORE)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_click_mine_menu)
     }
 
     /***
      * 书架点击搜索
      * **/
     fun uploadBookShelfSearch() {
-        val context = BaseBookApplication.getGlobalContext()
-
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_SHELF,
-                StartLogClickUtil.ACTION_SHELF_SEARCH)
-
-        StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_click_search_btn)
+        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_click_search_btn)
+        DyStatService.onEvent(EventPoint.SHELF_SEARCH)
     }
 
     /***
      * 书架点击 设置/个人中心
      * **/
     fun uploadBookShelfPersonal() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_PERSONAL)
+        DyStatService.onEvent(EventPoint.SHELF_PERSONAL)
         StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
                 StatServiceUtils.bs_click_mine_menu)
     }
@@ -55,36 +48,28 @@ object BookShelfLogger {
      * 书架点击书架排序
      * **/
     fun uploadBookShelfBookSort() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_BOOK_SORT)
+        DyStatService.onEvent(EventPoint.SHELF_BOOKSORT)
     }
 
     /***
      * 书架点击书籍
      * **/
     fun uploadBookShelfBookClick(book: Book, position: Int) {
-        val data = HashMap<String, String>()
-        data["bookid"] = book.book_id
-        data["rank"] = (position + 1).toString()
-
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_BOOK_CLICK, data)
+        DyStatService.onEvent(EventPoint.SHELF_BOOKCLICK, mapOf("bookid" to book.book_id, "rank" to (position + 1).toString()))
     }
 
     /***
      * 书架点击去书城
      * **/
     fun uploadBookShelfToBookCity() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_TO_BOOK_CITY)
+        DyStatService.onEvent(EventPoint.SHELF_TOBOOKCITY)
     }
 
     /***
      * 书架点击下载管理
      * **/
     fun uploadBookShelfCacheManager() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
+        DyStatService.onEvent(EventPoint.SHELF_CACHEMANAGE)
         StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
                 StatServiceUtils.bs_click_download_btn)
     }
@@ -93,27 +78,21 @@ object BookShelfLogger {
      * 书架点击应用分享
      * **/
     fun uploadBookShelfShare() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
+        DyStatService.onEvent(EventPoint.SHELF_CACHEMANAGE)
     }
 
     /***
      * 书架长按进入书架编辑状态
      * **/
     fun uploadBookShelfLongClickBookShelfEdit() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_LONG_TIME_BOOK_SHELF_EDIT)
+        DyStatService.onEvent(EventPoint.SHELF_LONGTIMEBOOKSHELFEDIT)
     }
-
-
-
 
     /***
      * 书架排序弹窗点击 按最近阅读排序、按更新时间排序
      * **/
     fun uploadBookShelfSortCancel() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF_SORT, StartLogClickUtil.ACTION_SHELF_SORT_CANCEL)
+        DyStatService.onEvent(EventPoint.SHELFSORT_CANCLE)
     }
 
     /***
@@ -122,27 +101,22 @@ object BookShelfLogger {
     fun uploadBookShelfSortType(type: Int) {
         val data = HashMap<String, String>()
         data["type"] = type.toString()
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF_SORT, StartLogClickUtil.ACTION_SHELF_SORT_BOOK_SORT, data)
+        DyStatService.onEvent(EventPoint.SHELFSORT_BOOKSORT)
     }
-
-
 
 
     /***
      * 书架编辑点击返回
      * **/
     fun uploadBookShelfEditBack() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_BACK)
+        DyStatService.onEvent(EventPoint.SHELFEDIT_BACK, mapOf("type" to "1"))
     }
 
     /***
      * 书架编辑点击取消
      * **/
     fun uploadBookShelfEditCancel() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_CANCEL)
+        DyStatService.onEvent(EventPoint.SHELFEDIT_CANCLE)
     }
 
     /***
@@ -164,19 +138,14 @@ object BookShelfLogger {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.bs_click_delete_ok_btn)
         }
 
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.PAGE_SHELF_EDIT,
-                StartLogClickUtil.ACTION_SHELF_EDIT_DELETE, data)
+        DyStatService.onEvent(EventPoint.SHELFEDIT_DELETE, data)
     }
 
     /***
      * 书架编辑点击全选
      * **/
     fun uploadBookShelfEditSelectAll(all: Boolean) {
-        val data = HashMap<String, String>()
-        data["type"] = if (all) "1" else "2"
-
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF_EDIT, StartLogClickUtil.ACTION_SHELF_EDIT_SELECT_ALL, data)
+        DyStatService.onEvent(EventPoint.SHELFEDIT_SELECTALL, mapOf("type" to if (all) "1" else "2"))
     }
 
     fun uploadFirstOpenBooks() {
@@ -194,10 +163,7 @@ object BookShelfLogger {
                 bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
                 bookIdList.append(if (index == books.size) "" else "$")
             }
-            val data = HashMap<String, String>()
-            data.put("bookid", bookIdList.toString())
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                    StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKLIST, data)
+            DyStatService.onEvent(EventPoint.MAIN_BOOKLIST, mapOf("bookid" to bookIdList.toString()))
             SPUtils.putDefaultSharedLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime)
         }
     }

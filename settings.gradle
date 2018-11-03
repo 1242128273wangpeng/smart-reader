@@ -1,2 +1,3 @@
 include ':common_book', ':book_kit', ':bookshelf', ':resource', ':downloadmanager', ':basic', ':dy-reader', ':searchbook'
 //include ':dy-media'
+//include ':dy-statistics-sdk'

@@ -14,6 +14,7 @@ import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.rx.SchedulerHelper
+import com.dingyue.statistics.DyStatService
 import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
@@ -21,8 +22,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.model.BookCoverViewModel
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -123,8 +124,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                 cataloguesContract.successAddIntoShelf(true)
             }
         }
-
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_SHELFEDIT, data)
+        DyStatService.onEvent(EventPoint.BOOKCATALOG_SHELFADD)
     }
 
 
@@ -174,7 +174,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                 val logData = HashMap<String, String>()
                 logData["bookid"] = book.book_id
                 logData["chapterid"] = tempChapter.chapter_id
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_CATALOGCHAPTER, logData)
+                DyStatService.onEvent(EventPoint.BOOKCATALOG_CATALOGCHAPTER)
             }
         } else {
             val bookmark = bookmarkList[position]
@@ -238,11 +238,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
     fun startDownload() {
         //全本缓存的点击统计
         StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_all_load)
-
-        val data = HashMap<String, String>()
-        data.put("bookid", book.book_id)
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG,
-                StartLogClickUtil.CATALOG_CASHEALL, data)
+        DyStatService.onEvent(EventPoint.BOOKCATALOG_CASHEALL, mapOf("bookid" to book.book_id))
 
         val requestFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
         val subscribedBook = requestFactory.checkBookSubscribe(book.book_id)
@@ -369,11 +365,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
                 ToastUtil.showToastMessage("成功从书架移除！")
 
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-                data["bookid"] = localBook.book_id
-
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.SHELFEDIT, data)
+                DyStatService.onEvent(EventPoint.BOOKCATALOG_SHELFEDIT, mapOf("type" to "2", "bookid" to localBook.book_id))
 
                 cataloguesContract.changeDownloadButtonStatus()
 
@@ -419,11 +411,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             } else {
                 Logger.v("加入书架成功！")
 
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-                data["bookid"] = book.book_id
-
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.SHELFEDIT, data)
+                DyStatService.onEvent(EventPoint.BOOKCATALOG_SHELFEDIT, mapOf("type" to "1","bookid" to book.book_id))
 
                 ToastUtil.showToastMessage("成功添加到书架！")
 
@@ -436,10 +424,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
      * 缓存书籍内容
      * **/
     fun handleDownloadAction() {
-        val dataDownload = HashMap<String, String>()
-        dataDownload["bookId"] = book.book_id
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKCATALOG,
-                StartLogClickUtil.CASHEALL, dataDownload)
+        DyStatService.onEvent(EventPoint.BOOKCATALOG_CASHEALL, mapOf("bookid" to book.book_id))
 
         if (TextUtils.isEmpty(book.book_id)) {
             return

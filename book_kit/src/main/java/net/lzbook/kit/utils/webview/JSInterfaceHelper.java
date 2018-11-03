@@ -8,9 +8,9 @@ import android.webkit.WebView;
 
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
+import com.dingyue.statistics.DyStatService;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.utils.logger.AppLog;
 
 import java.util.HashMap;
@@ -375,7 +375,8 @@ public class JSInterfaceHelper implements WebViewJsInterface {
             //截取功能编码
             String functionCode = data.get("func_code");
             data.remove("func_code");
-            StartLogClickUtil.upLoadEventLog(context, pageCode, functionCode, data);
+            DyStatService.onEvent(pageCode, functionCode, data);
+            AppLog.e("h5页面打点： pageCode:[" + pageCode + "],identify:[" + functionCode + "]");
         }
     }
 

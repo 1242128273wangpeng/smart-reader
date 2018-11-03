@@ -1,9 +1,10 @@
 package net.lzbook.kit.utils.upush
 
 import android.content.Context
+import com.dingyue.statistics.DyStatService
 import com.umeng.message.UmengNotificationClickHandler
 import com.umeng.message.entity.UMessage
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.openPushActivity
 
@@ -18,26 +19,18 @@ class PushNotificationHandler : UmengNotificationClickHandler() {
     //打开 App
     override fun launchApp(context: Context?, msg: UMessage?) {
         super.launchApp(context, msg)
-        val data = mapOf(Pair("type", "1"))
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
-                StartLogClickUtil.PUSHCLICK, data)
-
+        DyStatService.onEvent(EventPoint.SYSTEM_PUSHCLICK, mapOf("type" to "1"))// 1表示点击
     }
 
     //忽略通知
     override fun dismissNotification(context: Context?, msg: UMessage?) {
         super.dismissNotification(context, msg)
-        val data = mapOf(Pair("type", "2"))
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
-                StartLogClickUtil.PUSHCLICK, data)
+        DyStatService.onEvent(EventPoint.SYSTEM_PUSHCLICK, mapOf("type" to "2"))// 2表示取消
     }
 
     override fun openActivity(context: Context?, msg: UMessage?) {
         loge("msg.extra: ${msg?.extra}")
-
-        val data = mapOf(Pair("type", "1"))
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
-                StartLogClickUtil.PUSHCLICK, data)
+        DyStatService.onEvent(EventPoint.SYSTEM_PUSHCLICK, mapOf("type" to "1"))// 1表示点击
 
         if (msg?.activity?.trim()?.isNotEmpty() == true) {
             context?.openPushActivity(msg)
@@ -46,9 +39,6 @@ class PushNotificationHandler : UmengNotificationClickHandler() {
 
     override fun openUrl(context: Context?, msg: UMessage?) {
         super.openUrl(context, msg)
-
-        val data = mapOf(Pair("type", "1"))
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
-                StartLogClickUtil.PUSHCLICK, data)
+        DyStatService.onEvent(EventPoint.SYSTEM_PUSHCLICK, mapOf("type" to "1"))// 1表示点击
     }
 }

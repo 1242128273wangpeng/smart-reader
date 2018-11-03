@@ -41,9 +41,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dingyue.statistics.DyStatService;
+
 import net.lzbook.kit.R;
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.AppUtils;
 
 import java.util.HashMap;
@@ -154,7 +156,7 @@ public class ExpandTextView extends RelativeLayout implements View.OnClickListen
         } else {
             data.put("type", "1");
         }
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.INTRODUCTION, data);
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_INTRODUCTION, data);
 
         mAnimating = true;
 

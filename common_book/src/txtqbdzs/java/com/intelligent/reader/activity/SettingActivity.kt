@@ -17,7 +17,6 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
@@ -34,12 +33,13 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.utils.logger.PersonalLogger
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.theme.StatusBarCompat
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
-import java.util.*
-
 
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
@@ -318,7 +318,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
         when (paramView.getId()) {
             R.id.rl_welfare// 福利中心
             -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.ADPAGE)
+                PersonalLogger.uploadPersonalADPage()
                 val welfareIntent = Intent()
                 welfareIntent.putExtra("url", "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html")
                 welfareIntent.putExtra("title", "福利中心")
@@ -326,8 +326,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 startActivity(welfareIntent)
             }
             R.id.rl_setting_more -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET)
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more)
+                PersonalLogger.uploadPersonalPushSetting()
                 startActivity(Intent(this@SettingActivity, SettingMoreActivity::class.java))
             }
 //            R.id.rl_style_change -> {
@@ -337,19 +336,16 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             R.id.tv_login_info -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.iv_mine_image, R.id.user_login_layout_left -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.check_update_rl -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.VERSION)
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver)
+                PersonalLogger.uploadPersonalCheckUpdate()
                 checkUpdate()
             }
             R.id.rl_feedback -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HELP)
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help)
+                PersonalLogger.uploadPersonalFeedback()
                 handler.removeCallbacks(feedbackRunnable)
                 handler.postDelayed(feedbackRunnable, 500)
             }
             R.id.rl_mark -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.COMMENT)
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help)
+                PersonalLogger.uploadPersonalMark()
                 try {
                     val uri = Uri.parse("market://details?id=" + getPackageName())
                     val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -362,8 +358,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             }
 
             R.id.disclaimer_statement_rl -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.PROCTCOL)
+                PersonalLogger.uploadPersonalDisclaimer()
                 val bundle = Bundle()
                 bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true)
                 RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle) }
@@ -375,15 +370,12 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             R.id.rl_readpage_bbs -> Toast.makeText(getApplicationContext(), R.string.enter_community, Toast.LENGTH_SHORT).show()
             R.id.clear_cache_rl//清除缓存的处理
             -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache)
+                PersonalLogger.uploadPersonalClearCache()
                 clearCacheDialog()
             }
 
             R.id.top_setting_back, R.id.setting_back -> {
-                val data = HashMap<String, String>()
-                data.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.BACK, data)
+                DyStatService.onEvent(EventPoint.PERSONAL_BACK, mapOf("type" to "1"))
                 goBackToHome()
             }
             else -> {
@@ -447,6 +439,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     }
 
     override fun onBackPressed() {
+        DyStatService.onEvent(EventPoint.PERSONAL_BACK, mapOf("type" to "2"))
         goBackToHome()
     }
 
@@ -490,7 +483,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
     //夜间模式切换按钮的回调
     override fun onCheckedChanged(view: SwitchButton, isChecked: Boolean) {
         if (view.id == R.id.bt_night_shift) {
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.NIGHTMODE)
+            PersonalLogger.uploadPersonalNightModeChange()
             ReaderSettings.instance.initValues()
             if (isChecked) {
                 tv_night_shift!!.setText(R.string.mode_day)
@@ -506,9 +499,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             nightShift(isChecked, true)
         } else if (view.id == R.id.bt_wifi_auto) {
             SPUtils.putDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, isChecked)
-            val data = HashMap<String, String>()
-            data.put("type", if (isChecked) "1" else "0")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.WIFI_AUTOCACHE, data)
+            PersonalLogger.uploadPersonalAutoCache(isChecked)
         }
     }
 

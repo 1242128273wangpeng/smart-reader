@@ -23,11 +23,12 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.Config;
 import com.ding.basic.net.api.service.RequestService;
+import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.PagerDesc;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.AppUtils;
@@ -185,19 +186,15 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                 data.put("type", "1");
                 if (fromType.equals("class")) {
                     data.put("firstclass", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                            StartLogClickUtil.BACK, data);
+                    DyStatService.onEvent(EventPoint.FIRSTCLASS_BACK, data);
                 } else if (fromType.equals("top")) {
                     data.put("firsttop", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                            StartLogClickUtil.BACK, data);
+                    DyStatService.onEvent(EventPoint.FIRSTTOP_BACK, data);
                 } else if (fromType.equals("recommend")) {
                     data.put("firstrecommend", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                            StartLogClickUtil.BACK, data);
+                    DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_BACK, data);
                 } else if (fromType.equals("authorType")) {
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
-                            StartLogClickUtil.BACK, data);
+                    DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data);
                 }
                 clickBackBtn();
                 break;
@@ -206,16 +203,13 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
                 if (fromType.equals("class")) {
                     postData.put("firstclass", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
+                    DyStatService.onEvent(EventPoint.FIRSTCLASS_SEARCH, postData);
                 } else if (fromType.equals("top")) {
                     postData.put("firsttop", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
+                    DyStatService.onEvent(EventPoint.FIRSTTOP_SEARCH, postData);
                 } else if (fromType.equals("recommend")) {
                     postData.put("firstrecommend", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
+                    DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, postData);
                 }
 
                 RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
@@ -409,9 +403,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", keyWord);
                     data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
-                    StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
-                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-                            data);
+                    DyStatService.onEvent(EventPoint.SYSTEM_SEARCHRESULT, data);
 
                     EnterUtilKt.enterSearch(FindBookDetail.this,
                             keyWord, search_type, filter_type, filter_word, sort_type,
@@ -437,11 +429,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     return;
                 }
                 Map<String, String> data = new HashMap<>();
-                data.put("BOOKID", book_id);
+                data.put("bookid", book_id);
                 data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
-                        StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
-
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data);
 
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), CoverPageActivity.class);

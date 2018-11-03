@@ -11,6 +11,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
@@ -22,6 +23,7 @@ import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbmfyd.act_book_end.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.logger.AppLog
@@ -58,7 +60,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         bookEndPresenter = BookEndPresenter(this, this)
 
         loadBookSource()
-        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
+        DyStatService.onEvent(EventPoint.READFINISH_ENTER, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -86,7 +88,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         txt_bookshelf.setOnClickListener {
             if (bookEndPresenter != null) {
                 bookEndPresenter!!.startBookShelf()
-                bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
+                DyStatService.onEvent(EventPoint.READFINISH_TOSHELF, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
             }
             finish()
         }
@@ -94,7 +96,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         txt_bookstore.setOnClickListener {
             if (bookEndPresenter != null) {
                 bookEndPresenter!!.startBookStore()
-                bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
+                DyStatService.onEvent(EventPoint.READFINISH_TOBOOKSTORE, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
             }
             finish()
         }

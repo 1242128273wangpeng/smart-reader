@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.bumptech.glide.Glide
 import com.ding.basic.bean.Book
+import com.dingyue.statistics.DyStatService
 
 import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
 import kotlinx.android.synthetic.txtqbdzs.item_bookend_recommend.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.BookRouter
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -66,10 +66,7 @@ class BookEndAdapter(private val activity: Activity) : BaseAdapter() {
 
     private fun navigateCoverOrRead(img: RecommendBookImageView) {
         img.getBook()?.let {
-            val data = HashMap<String, String>()
-            data.put("bookid", it.book_id)
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOKENDPAGE_PAGE,
-                    StartLogClickUtil.RECOMMENDEDBOOK, data)
+            DyStatService.onEvent(EventPoint.READFINISH_RECOMMENDEDBOOK, mapOf("bookid" to it.book_id))
             BookRouter.navigateCoverOrRead(activity, it,
                     BookRouter.NAVIGATE_TYPE_BOOKEND)
         }
