@@ -75,8 +75,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.act_reader)
         ReadMediaManager.init(this)
-        initADViewChangeListener()
         pac_reader_ad.frameLayout = fl_menu_gesture
+        initADViewChangeListener()
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this)
 
@@ -259,9 +259,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onResume()
-        }
+        mNativeMediaView?.onResume()
         mCatalogMarkFragment?.fixBook()
     }
 
@@ -270,7 +268,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (hasFocus && !ReaderStatus.isMenuShow) {
+        if (hasFocus && !ReaderStatus.isMenuShow && !ReaderSettings.instance.isAutoReading) {
             window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
         }
     }
@@ -281,10 +279,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         glSurfaceView.onPause()
         mReadPresenter.onPause()
         MediaLifecycle.onPause()
-
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onPause()
-        }
+        mNativeMediaView?.onPause()
     }
 
     override fun onStop() {
@@ -324,11 +319,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         ReaderStatus.chapterList.clear()
         MediaLifecycle.onDestroy()
         ReadMediaManager.onDestroy()
-
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onDestroy()
-            mNativeMediaView = null
-        }
+        mNativeMediaView?.onDestroy()
+        mNativeMediaView = null
     }
 
 
@@ -580,14 +572,20 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
                 } else {
                     ReadMediaManager.loadAdComplete = { type: String ->
-                        if (type == adType) showAd()//本页的广告请求回来，重走方法
+                        if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group,
+                                ReaderStatus.position.index)) {
+                            showAd() //本页的广告请求回来，重走方法
+                        }
                     }
                 }
             } else {//加载失败
                 val adMark = ReadMediaManager.generateAdMark()
-                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight,AppHelper.screenWidth, ReadMediaManager.tonken)
+                ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
-                    if (type == adType) showAd()//本页的广告请求回来，重走方法
+                    if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group,
+                            ReaderStatus.position.index)) {
+                        showAd() //本页的广告请求回来，重走方法
+                    }
                 }
             }
         } else {
