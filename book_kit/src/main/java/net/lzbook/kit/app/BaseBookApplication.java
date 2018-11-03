@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
@@ -71,6 +72,12 @@ public abstract class BaseBookApplication extends Application {
 
             Config.INSTANCE.beginInit(this);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        AppUtils.setCustomDensity(null, this);
     }
 
     @Override

@@ -1278,7 +1278,7 @@ public class AppUtils {
 
      ******************/
 
-    public static boolean joinQQGroup(Activity activity,String key) {
+    public static boolean joinQQGroup(Activity activity, String key) {
 
         Intent intent = new Intent();
         intent.setData(Uri.parse(
@@ -1355,7 +1355,18 @@ public class AppUtils {
                     }
                 });
             }
-            float targetDensity = displayMetrics.widthPixels / 360F;
+
+            int orientation = application.getResources().getConfiguration().orientation;
+
+            float targetDensity;
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                targetDensity = displayMetrics.widthPixels / 360F;
+            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                targetDensity = displayMetrics.heightPixels / 360F;
+            } else {
+                targetDensity = displayMetrics.widthPixels / 360F;
+            }
+
             float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
             int targetDensityDpi = (int) (160 * targetDensity);
 
@@ -1363,10 +1374,12 @@ public class AppUtils {
             displayMetrics.scaledDensity = targetScaleDensity;
             displayMetrics.densityDpi = targetDensityDpi;
 
-            DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
-            activityDisplayMetrics.density = targetDensity;
-            activityDisplayMetrics.scaledDensity = targetScaleDensity;
-            activityDisplayMetrics.densityDpi = targetDensityDpi;
+            if (activity != null) {
+                DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
+                activityDisplayMetrics.density = targetDensity;
+                activityDisplayMetrics.scaledDensity = targetScaleDensity;
+                activityDisplayMetrics.densityDpi = targetDensityDpi;
+            }
         } catch (Throwable e) {
             AppLog.e("setCustomDensity:" + e.getMessage());
         }
