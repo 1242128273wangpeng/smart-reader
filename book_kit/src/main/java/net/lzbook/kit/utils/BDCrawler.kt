@@ -60,7 +60,6 @@ object BDCrawler {
             val sword = URLEncoder.encode(keyWord, "utf-8")
             var path = path.replace("{0}", sword)
             AppLog.i(TAG + "keyWord：" + keyWord + ",path：$path")
-            var resultList = mutableListOf<CrawlerResult>()
             try {
                 val doc = Jsoup.connect(path)
                         .userAgent(USERAGENT)
@@ -69,6 +68,7 @@ object BDCrawler {
                 if (crawlerCallback == null) {
                     return
                 }
+                var resultList = mutableListOf<CrawlerResult>()
                 parsePage(doc, resultList)
                 AppLog.i(TAG + "pageSize:" + resultList.size)
                 if (resultList.size > 0) {
@@ -90,7 +90,6 @@ object BDCrawler {
                         val href = elements1[0].attr("href")
                         AppLog.i(TAG + "page1 path：$href")
                         if (!TextUtils.isEmpty(href)) {
-                            resultList = mutableListOf()
                             val doc1 = Jsoup.connect(href)
                                     .userAgent(USERAGENT)
                                     .timeout(TIMEOUT)
@@ -98,11 +97,12 @@ object BDCrawler {
                             if (crawlerCallback == null) {
                                 return
                             }
-                            parsePage(doc1, resultList)
-                            AppLog.i(TAG + "pageSize:" + resultList.size)
-                            if (resultList.size > 0) {
+                            var resultList1 = mutableListOf<CrawlerResult>()
+                            parsePage(doc1, resultList1)
+                            AppLog.i(TAG + "pageSize:" + resultList1.size)
+                            if (resultList1.size > 0) {
                                 runOnMain {
-                                    crawlerCallback?.onSuccess(resultList)
+                                    crawlerCallback?.onSuccess(resultList1)
                                 }
                             }
                             if (crawlerCallback == null) {
@@ -114,7 +114,6 @@ object BDCrawler {
                                     val href2 = elements2[0].attr("href")
                                     AppLog.i(TAG + "page2 path：$href2")
                                     if (!TextUtils.isEmpty(href2)) {
-                                        resultList = mutableListOf()
                                         val doc2 = Jsoup.connect(href2)
                                                 .userAgent(USERAGENT)
                                                 .timeout(TIMEOUT)
@@ -122,11 +121,12 @@ object BDCrawler {
                                         if (crawlerCallback == null) {
                                             return
                                         }
-                                        parsePage(doc2, resultList)
-                                        AppLog.i(TAG + "pageSize:" + resultList.size)
-                                        if (resultList.size > 0) {
+                                        var resultList2 = mutableListOf<CrawlerResult>()
+                                        parsePage(doc2, resultList2)
+                                        AppLog.i(TAG + "pageSize:" + resultList2.size)
+                                        if (resultList2.size > 0) {
                                             runOnMain {
-                                                crawlerCallback?.onSuccess(resultList)
+                                                crawlerCallback?.onSuccess(resultList2)
                                             }
                                         }
                                     }
@@ -157,7 +157,7 @@ object BDCrawler {
         for (i in elements.indices) {
             var result: CrawlerResult
             val srcid = elements[i].attr("srcid")
-            if ("nvl_normal".equals(srcid) || "nvl_site".equals(srcid) || "nvl_trans".equals(srcid)) {
+            if ("nvl_normal".equals(srcid) || "nvl_site".equals(srcid) || "nvl_trans".equals(srcid) || "www_video_normal".equals(srcid)) {
                 continue
             } else if ("nvl_flow".equals(srcid)) {
                 result = CrawlerResult()
