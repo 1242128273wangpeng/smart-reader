@@ -109,6 +109,8 @@ class SearchResultModel {
                 if (!keyword.isNullOrBlank() && !activity.isFinishing) {
                     // 处理回传的json数据
                     val key = JSONObject(keyword).getString("keyword")
+                    // 无结果回调
+                    listener?.onNoResult(key)
                     // 获取无结果数据
                     BDCrawler.startCrawler(key!!, object : BDCrawler.CrawlerCallback {
                         override fun onSuccess(resultList: MutableList<CrawlerResult>) {
@@ -119,8 +121,6 @@ class SearchResultModel {
                             listener?.onWebSearchResult(null)
                         }
                     })
-                    // 无结果回调
-                    listener?.onNoResult(key)
                 }
             }
 

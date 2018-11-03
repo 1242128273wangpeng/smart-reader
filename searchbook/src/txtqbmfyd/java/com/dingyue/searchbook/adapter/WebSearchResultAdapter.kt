@@ -1,6 +1,7 @@
 package com.dingyue.searchbook.adapter
 
 import android.content.Context
+import android.text.Html
 import android.view.View
 import android.widget.TextView
 import com.dingyue.searchbook.R
@@ -31,14 +32,16 @@ class WebSearchResultAdapter(context: Context) : RecyclerBaseAdapter<CrawlerResu
             ll_content.tag = data.url
             ll_content.setOnClickListener { onItemClick?.invoke(it.tag as String?) }
             // 赋值
-            txt_title.text = data.title
+            var title = data.title?.replace("<em>","<font color='#DC0000'>")?.replace("</em>","</font>")
+            txt_title.text = Html.fromHtml(title)
             if (data.author.isNullOrBlank()) {
                 txt_author.visibility = View.GONE
             } else {
                 txt_author.visibility = View.VISIBLE
                 txt_author.text = data.author
             }
-            txt_summary.text = data.abstract
+            var abstract = data.abstract?.replace("<em>","<font color='#DC0000'>")?.replace("</em>","</font>")
+            txt_summary.text =  Html.fromHtml(abstract)
             if (!data.newChapter.isNullOrBlank() && !data.newChapterUrl.isNullOrBlank()) {
                 txt_latest_chapter.tag = data.newChapterUrl
                 txt_latest_chapter.visibility = View.VISIBLE

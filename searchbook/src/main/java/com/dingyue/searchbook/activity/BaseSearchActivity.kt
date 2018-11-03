@@ -128,6 +128,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                 isRunTextWatcher = true
                 showEditCursor(true)
                 showInputEditClickEvent()
+                searchResultFragment.resetResult()
             }
             R.id.search_result_focus -> {
                 focusTextView.visibility = View.GONE
@@ -138,6 +139,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
 
                 showFragment(historyFragment)
                 historyFragment.loadHistoryRecord()
+                searchResultFragment.resetResult()
             }
             R.id.search_result_btn -> {
                 val keyword = inputEditText.text.toString()
@@ -145,6 +147,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                     ToastUtil.showToastMessage(R.string.search_click_check_isright)
                 } else {
                     showFragment(searchResultFragment)
+                    searchResultFragment.resetResult()
                     searchResultFragment.loadKeyWord(keyword)
                 }
             }

@@ -126,33 +126,48 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     /**
+     * 重置结果页
+     */
+    fun resetResult(){
+        if(rv_catch_result.visibility ==View.VISIBLE) {
+            search_result_content.visibility = View.VISIBLE
+            rv_catch_result.visibility = View.GONE
+            searchNoResult = false
+            if(webSearchResultAdapter!=null) {
+                webSearchResultList?.clear()
+                webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
+                webSearchResultAdapter?.notifyDataSetChanged()
+            }
+            BDCrawler.cancelCrawler()
+        }
+    }
+
+    /**
      * 百度抓取数据展示
      */
     override fun onWebSearchResult(res: MutableList<CrawlerResult>?) {
-        runOnMain {
-            hideLoading()
-            if (res != null) {
-                rv_catch_result.layoutManager = LinearLayoutManager(requireContext())
-                // 适配器加载数据
-                if (webSearchResultAdapter == null) {
-                    webSearchResultList = res
-                    webSearchResultAdapter = WebSearchResultAdapter(requireContext())
-                    webSearchResultAdapter!!.onItemClick = {
-                        if (!it.isNullOrBlank()) toWebActivity(it!!)
-                    }
-                    webSearchResultAdapter!!.onLatestChapterClick = {
-                        loge("url: $it")
-                        if (!it.isNullOrBlank()) toWebActivity(it!!)
-                    }
-                    webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
-                    rv_catch_result.adapter = webSearchResultAdapter
-                } else {
-                    webSearchResultList?.addAll(res)
-                    webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
-                    webSearchResultAdapter?.notifyDataSetChanged()
+        hideLoading()
+        if (res != null) {
+            rv_catch_result.layoutManager = LinearLayoutManager(requireContext())
+            // 适配器加载数据
+            if (webSearchResultAdapter == null) {
+                webSearchResultList = res
+                webSearchResultAdapter = WebSearchResultAdapter(requireContext())
+                webSearchResultAdapter!!.onItemClick = {
+                    if (!it.isNullOrBlank()) toWebActivity(it!!)
                 }
-            } else ToastUtil.showToastMessage("全网搜索无结果")
-        }
+                webSearchResultAdapter!!.onLatestChapterClick = {
+                    loge("url: $it")
+                    if (!it.isNullOrBlank()) toWebActivity(it!!)
+                }
+                webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
+                rv_catch_result.adapter = webSearchResultAdapter
+            } else {
+                webSearchResultList?.addAll(res)
+                webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
+                webSearchResultAdapter?.notifyDataSetChanged()
+            }
+        } else ToastUtil.showToastMessage("全网搜索无结果")
     }
 
     private fun toWebActivity(url: String) {
