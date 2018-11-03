@@ -542,7 +542,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
             if (adView.loaded) {//加载成功
-                if (adView.view != null) {
+                if (adView.view != null && adView.view?.parent == null) {
 
                     if (adView.view is NativeView) {
                         (adView.view as NativeView).setHideAdListener {
