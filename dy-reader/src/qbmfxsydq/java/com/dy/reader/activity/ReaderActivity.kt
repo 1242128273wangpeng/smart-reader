@@ -119,6 +119,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         mCatalogMarkFragment?.fixBook()
 
+        PageManager.init()
+
         initGuide()
     }
 
@@ -309,6 +311,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onDestroy() {
         super.onDestroy()
         try {
+            PageManager.destroy()
             dl_reader_content.removeDrawerListener(mDrawerListener)
             EventBus.getDefault().unregister(this)
             ReaderStatus.clear()
