@@ -77,6 +77,9 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
     var isReady = false
         private set
 
+    var destroy = false
+        private set
+
     fun prepare(position: Position) {
         if (PageManager::leftPage.isInitialized) {
             Logger.e("unloadTexture")
@@ -97,6 +100,14 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
     fun clear() {
         isReady = false
         GLPage.destroy()
+    }
+
+    fun init() {
+        destroy = false
+    }
+
+    fun destroy() {
+        destroy = true
     }
 
     fun forwardPage() {

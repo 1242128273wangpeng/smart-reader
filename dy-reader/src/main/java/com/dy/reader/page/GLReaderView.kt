@@ -123,7 +123,7 @@ class GLReaderView : GLSurfaceView, GLSurfaceView.Renderer {
             return
         }
 
-        if (!PageManager.isReady) {
+        if (!PageManager.isReady && !PageManager.destroy) {
 
             PageManager.prepare(ReaderStatus.position)
 
