@@ -125,7 +125,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         })
 
         mCatalogMarkFragment?.fixBook()
-
+        PageManager.init()
         initGuide()
     }
 
@@ -324,20 +324,24 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerView.removeAllViews()
-        dl_reader_content.removeDrawerListener(mDrawerListener)
-        EventBus.getDefault().unregister(this)
-        ReaderStatus.clear()
-        DataProvider.clear()
-        AppHelper.glSurfaceView = null
-        mReadPresenter.onDestroy()
+        try {
+            PageManager.destroy()
+            recyclerView.removeAllViews()
+            dl_reader_content.removeDrawerListener(mDrawerListener)
+            EventBus.getDefault().unregister(this)
+            ReaderStatus.clear()
+            DataProvider.clear()
+            AppHelper.glSurfaceView = null
+            mReadPresenter.onDestroy()
 
-        MediaLifecycle.onDestroy()
-        ReadMediaManager.onDestroy()
+            MediaLifecycle.onDestroy()
+            ReadMediaManager.onDestroy()
 
-        if (mNativeMediaView != null) {
-            mNativeMediaView?.onDestroy()
-            mNativeMediaView = null
+            if (mNativeMediaView != null) {
+                mNativeMediaView?.onDestroy()
+                mNativeMediaView = null
+            }
+        } catch (e: Exception) {
         }
     }
 
