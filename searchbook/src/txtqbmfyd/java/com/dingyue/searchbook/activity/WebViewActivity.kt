@@ -62,6 +62,7 @@ class WebViewActivity : FrameActivity() {
 
 
     private fun initWebView() {
+        web_view?.topShadow = img_head_shadow
         if (Build.VERSION.SDK_INT >= 14) web_view.setLayerType(View.LAYER_TYPE_NONE, null)
 
         customWebClient = CustomWebClient(this, web_view)
@@ -92,7 +93,7 @@ class WebViewActivity : FrameActivity() {
 
     private fun showLoading() {
         if (loadingPage == null) {
-            loadingPage = LoadingPage(this, rl_main, LoadingPage.setting_result)
+            loadingPage = LoadingPage(this, rl_content, LoadingPage.setting_result)
         }
     }
 

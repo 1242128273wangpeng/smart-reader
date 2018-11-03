@@ -24,14 +24,26 @@
     </RelativeLayout>
 
     <!--WebView-->
-    <com.intelligent.reader.widget.topshadow.TopShadowWebView
-        android:id="@+id/web_view"
+    <RelativeLayout
+        android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_head"
-        android:background="@color/base_bg"
-        android:focusable="true"
-        android:focusableInTouchMode="true"/>
+        android:layout_below="@id/rl_head">
+        <com.intelligent.reader.widget.topshadow.TopShadowWebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/base_bg"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+        <ImageView
+            android:id="@+id/img_head_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/top_shadow"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_page_favorite"
