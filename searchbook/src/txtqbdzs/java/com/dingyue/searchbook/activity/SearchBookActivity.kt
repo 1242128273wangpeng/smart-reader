@@ -1,4 +1,4 @@
-package com.dingyue.searchbook
+package com.dingyue.searchbook.activity
 
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.searchbook.activity.BaseSearchActivity
