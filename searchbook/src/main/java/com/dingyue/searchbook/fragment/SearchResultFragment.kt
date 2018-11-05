@@ -108,6 +108,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
         search_result_content?.webViewClient = customWebClient
         search_result_content?.addJavascriptInterface(jsInterface, "J_search")
+        BDCrawler.setUserAgent(search_result_content?.settings?.userAgentString)
     }
 
 

@@ -3,7 +3,6 @@ package net.lzbook.kit.utils
 import android.text.TextUtils
 import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.utils.logger.AppLog
-import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -19,7 +18,7 @@ import java.util.concurrent.Executors
  */
 object BDCrawler {
     val TAG = "BDCrawler:"
-    val USERAGENT = "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
+    var USERAGENT = "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
     val TIMEOUT = 10 * 1000
     //           var path="https://m.baidu.com/s?word={0}&ref=www_iphone&ssid=0&from=0&bd_page_type=1&uid=0&pu=usm%403%2Csz%40320_1001%2Cta%40iphone_2_5.0_3_537";
     var path = "https://m.baidu.com/s?word={0}"
@@ -45,6 +44,16 @@ object BDCrawler {
         callbackList.clear()
     }
 
+    /**
+     * 设置UserAgent
+     */
+    fun setUserAgent(userAgent: String?) {
+        if (!userAgent.isNullOrBlank()) {
+            this.USERAGENT = userAgent!!
+            AppLog.i(TAG + "setUserAgent：" + USERAGENT)
+        }
+    }
+
     interface CrawlerCallback {
         fun onSuccess(resultList: MutableList<CrawlerResult>)
         fun onFail()
@@ -60,6 +69,7 @@ object BDCrawler {
             val sword = URLEncoder.encode(keyWord, "utf-8")
             var path = path.replace("{0}", sword)
             AppLog.i(TAG + "keyWord：" + keyWord + ",path：$path")
+            AppLog.i(TAG + "USERAGENT：" + USERAGENT)
             try {
                 val doc = Jsoup.connect(path)
                         .userAgent(USERAGENT)
@@ -191,16 +201,6 @@ object BDCrawler {
      * 解析自然结果类型Item
      */
     fun parseNormalItem(elements: Elements, i: Int, result: CrawlerResult) {
-        val json = elements[i].attr("data-log")
-        try {
-            if (!TextUtils.isEmpty(json)) {
-                val jsonObject = JSONObject(json)
-                result.url = jsonObject.optString("mu")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         val titleE = elements[i].getElementsByClass("c-title-text")
         try {
             if (TextUtils.isEmpty(result.url)) {
@@ -224,13 +224,13 @@ object BDCrawler {
                     result.author = child.child(0).text()
                     try {
                         result.updateTime = child.child(1).text()
-                    } catch (e: Exception) {
+                    } catch (e: Throwable) {
 
                     }
 
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
         }
 
         val tipE = elements[i].getElementsByClass("c-line-clamp2")
@@ -261,7 +261,7 @@ object BDCrawler {
                     result.abstract = span[0].html()
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
 
@@ -298,16 +298,6 @@ object BDCrawler {
      * 解析Zbook类型Item
      */
     fun parseZbookItem(elements: Elements, i: Int, result: CrawlerResult) {
-        val json = elements[i].attr("data-log")
-        try {
-            if (!TextUtils.isEmpty(json)) {
-                val jsonObject = JSONObject(json)
-                result.url = jsonObject.optString("mu")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         val titleE = elements[i].getElementsByClass("c-title-text")
         try {
             if (TextUtils.isEmpty(result.url)) {
@@ -328,7 +318,7 @@ object BDCrawler {
                 val child = authorE[0].child(0).child(0)
                 result.author = child.text()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
 
@@ -336,7 +326,7 @@ object BDCrawler {
             if (authorE != null && authorE.size > 0) {
                 result.abstract = authorE[0].child(1).html()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
 
@@ -345,7 +335,7 @@ object BDCrawler {
             if (sourceE != null) {
                 result.source = sourceE.text()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
         try {
@@ -355,7 +345,7 @@ object BDCrawler {
                     result.source = sourceE[0].child(0).child(0).text()
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
 
@@ -365,7 +355,7 @@ object BDCrawler {
                 result.newChapterUrl = newCharaterE[0].attr("href")
                 result.newChapter = newCharaterE[0].child(0).child(0).text()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
     }
@@ -374,16 +364,6 @@ object BDCrawler {
      * 解析flow类型Item
      */
     fun parseFlowItem(elements: Elements, i: Int, result: CrawlerResult) {
-        val json = elements[i].attr("data-log")
-        try {
-            if (!TextUtils.isEmpty(json)) {
-                val jsonObject = JSONObject(json)
-                result.url = jsonObject.optString("mu")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         val titleE = elements[i].getElementsByClass("c-title-text")
         try {
             if (TextUtils.isEmpty(result.url)) {
@@ -404,7 +384,7 @@ object BDCrawler {
                 val child = authorE[0].child(0)
                 result.author = child.childNode(0).toString()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
 
@@ -412,7 +392,7 @@ object BDCrawler {
             if (authorE != null && authorE.size > 0) {
                 result.abstract = authorE[0].child(1).child(0).child(0).html()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
 
@@ -441,7 +421,7 @@ object BDCrawler {
                 result.newChapterUrl = newCharaterE[0].attr("href")
                 result.newChapter = newCharaterE[0].child(0).child(0).text()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
 
         }
     }
