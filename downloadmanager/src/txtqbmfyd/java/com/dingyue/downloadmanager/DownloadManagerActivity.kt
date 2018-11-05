@@ -76,6 +76,7 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
     private val topMenuPopup: DownloadManagerMenuPopup by lazy {
         val popup = DownloadManagerMenuPopup(this)
         popup.setOnEditClickListener {
+            DownloadManagerLogger.uploadCacheManagerEdit()
             showMenu()
         }
         popup.setOnTimeSortingClickListener {
@@ -144,9 +145,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
                 txt_head_select_all.text = getString(R.string.select_all)
                 checkAll(false)
             }
-        }
-        txt_head_title.setOnClickListener {
-            finish()
         }
 
         img_head_more.setOnClickListener {
@@ -317,8 +315,6 @@ class DownloadManagerActivity : BaseCacheableActivity(), CallBackDownload,
         txt_head_title.text = getString(R.string.edit_cache)
         txt_head_select_all.text = getString(R.string.select_all)
         txt_head_select_all.visibility = View.VISIBLE
-
-        DownloadManagerLogger.uploadCacheManagerEdit()
     }
 
     override fun dismissMenu() {

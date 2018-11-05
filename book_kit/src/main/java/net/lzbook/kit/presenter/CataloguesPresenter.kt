@@ -124,7 +124,6 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                 cataloguesContract.successAddIntoShelf(true)
             }
         }
-        DyStatService.onEvent(EventPoint.BOOKCATALOG_SHELFADD)
     }
 
 
@@ -239,7 +238,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
     fun startDownload() {
         //全本缓存的点击统计
         StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.b_details_click_all_load)
-        DyStatService.onEvent(EventPoint.BOOKCATALOG_CASHEALL, mapOf("bookid" to book.book_id))
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_CASHEALL, mapOf("bookid" to book.book_id))
 
         val requestFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
         val subscribedBook = requestFactory.checkBookSubscribe(book.book_id)
@@ -366,7 +365,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
                 ToastUtil.showToastMessage("成功从书架移除！")
 
-                DyStatService.onEvent(EventPoint.BOOKCATALOG_SHELFEDIT, mapOf("type" to "2", "bookid" to localBook.book_id))
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_SHELFADD, mapOf("type" to "2", "bookid" to localBook.book_id))
 
                 cataloguesContract.changeDownloadButtonStatus()
 
@@ -412,7 +411,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
             } else {
                 Logger.v("加入书架成功！")
 
-                DyStatService.onEvent(EventPoint.BOOKCATALOG_SHELFEDIT, mapOf("type" to "1","bookid" to book.book_id))
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_SHELFADD, mapOf("type" to "1","bookid" to book.book_id))
 
                 ToastUtil.showToastMessage("成功添加到书架！")
 
@@ -425,7 +424,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
      * 缓存书籍内容
      * **/
     fun handleDownloadAction() {
-        DyStatService.onEvent(EventPoint.BOOKCATALOG_CASHEALL, mapOf("bookid" to book.book_id))
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_CASHEALL, mapOf("bookid" to book.book_id))
 
         if (TextUtils.isEmpty(book.book_id)) {
             return

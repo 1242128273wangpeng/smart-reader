@@ -33,7 +33,6 @@ import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.PagerDesc;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.ui.activity.base.FrameActivity;

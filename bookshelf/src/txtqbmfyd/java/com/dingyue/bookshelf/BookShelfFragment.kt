@@ -201,7 +201,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         img_head_personal.setOnClickListener {
             bookShelfInterface?.changeDrawerLayoutState()
-            BookShelfLogger.uploadBookShelfPersonal()
+            HomeLogger.uploadHomePersonal()
             SPUtils.putDefaultSharedBoolean(SPKey.BOOKSHELF_PERSON_RED,true)
             redpoint_home_setting.visibility = View.GONE
         }

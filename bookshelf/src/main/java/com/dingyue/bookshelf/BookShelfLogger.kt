@@ -24,15 +24,6 @@ object BookShelfLogger {
     }
 
     /***
-     * 书架点击 设置/个人中心
-     * **/
-    fun uploadBookShelfPersonal() {
-        DyStatService.onEvent(EventPoint.SHELF_PERSONAL)
-        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(),
-                StatServiceUtils.bs_click_mine_menu)
-    }
-
-    /***
      * 书架点击书架排序
      * **/
     fun uploadBookShelfBookSort() {

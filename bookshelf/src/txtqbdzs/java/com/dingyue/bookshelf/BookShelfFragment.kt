@@ -22,6 +22,7 @@ import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
@@ -227,7 +228,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
             uiThread {
                 bookShelfAdapter.notifyDataSetChanged()
-                BookShelfLogger.uploadFirstOpenBooks()
+                HomeLogger.uploadHomeBookListInformation()
             }
         }
     }

@@ -325,7 +325,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
         when (view.id) {
             R.id.book_cover_back -> {
-                DyStatService.onEvent(EventPoint.BOOOKDETAIL_BACK, mapOf("type" to "1"))
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_BACK)
                 finish()
             }
 

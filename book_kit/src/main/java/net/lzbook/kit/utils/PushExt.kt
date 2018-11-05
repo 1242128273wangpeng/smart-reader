@@ -164,7 +164,7 @@ fun Activity.openPushSetting() {
     }
     try {
         startActivity(intent)
-        DyStatService.onEvent(EventPoint.MAIN_POPUPSET)
+        DyStatService.onEvent(EventPoint.MAIN_PUSHSET)
     } catch (e: Exception) {
         //打开设置界面
         startActivity(Intent(Settings.ACTION_SETTINGS))

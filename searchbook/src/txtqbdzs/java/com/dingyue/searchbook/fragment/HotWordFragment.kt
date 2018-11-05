@@ -10,8 +10,9 @@ import com.ding.basic.bean.SearchRecommendBook
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.adapter.HotWordAdapter
 import com.dingyue.searchbook.adapter.RecommendAdapter
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.txtqbdzs.fragment_hotword.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
@@ -59,22 +60,22 @@ class HotWordFragment : BaseHotWordFragment(), RecommendAdapter.RecommendItemCli
         StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_allhotword)
 
         val data = HashMap<String, String>()
-        data.put("topicword", dataBean.keyword ?: "")
-        data.put("rank", dataBean.sort.toString())
-        data.put("type", dataBean.superscript ?: "")
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
+        data["topicword"] = dataBean.keyword.orEmpty()
+        data["rank"] = dataBean.sort.toString()
+        data["type"] = dataBean.superscript.orEmpty()
+        DyStatService.onEvent(EventPoint.SEARCH_TOPIC, data)
         hotWordPresenter.onKeyWord(dataBean.keyword)
-        onResultListener?.onSuccess(dataBean.keyword ?: "")
+        onResultListener?.onSuccess(dataBean.keyword.orEmpty())
 
     }
 
     override fun onRecommendItemClick(view: View, position: Int, dataBean: SearchRecommendBook.DataBean) {
 
         val data = HashMap<String, String>()
-        data.put("rank", (position + 1).toString() + "")
-        data.put("type", "1")
-        data.put("bookid", dataBean.bookId!!)
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HOTREADCLICK, data)
+        data["rank"] = (position + 1).toString()
+        data["type"] = "1"
+        data["bookid"] = dataBean.bookId!!
+        DyStatService.onEvent(EventPoint.SEARCH_HOTREADCLICK, data)
 
         requireActivity().enterCover(
                 book_id = dataBean.bookId,

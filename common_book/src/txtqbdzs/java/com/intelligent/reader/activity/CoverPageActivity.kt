@@ -26,7 +26,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 
 import com.ding.basic.net.api.service.RequestService
-import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.dingyue.statistics.DyStatService
 
 import com.dy.media.MediaLifecycle
@@ -36,7 +36,6 @@ import com.intelligent.reader.view.TransformReadDialog
 import net.lzbook.kit.view.CoverPageContract
 import net.lzbook.kit.presenter.CoverPagePresenter
 import kotlinx.android.synthetic.txtqbdzs.act_book_cover.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.ReplaceConstants
@@ -159,10 +158,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             transformReadDialog=TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "1"))
 
                 intoReadingActivity()
 
@@ -172,10 +168,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             transformReadDialog?.insertCancelListener {
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "2"))
 
                 if (!this.isFinishing) {
                     transformReadDialog?.dismiss()

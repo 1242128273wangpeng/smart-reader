@@ -279,7 +279,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap["type"] = "1"
             logMap["bookid"] = ReaderStatus.book.book_id
             logMap["chapterid"] = ReaderStatus.chapterId
-            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARKEDIT, logMap)
+            DyStatService.onEvent(EventPoint.READPAGE_LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
@@ -329,7 +329,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             logMap["type"] = "2"
             logMap["bookid"] = ReaderStatus.book.book_id
             logMap["chapterid"] = ReaderStatus.chapterId
-            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARKEDIT, logMap)
+            DyStatService.onEvent(EventPoint.READPAGE_LABELEDIT, logMap)
             requestRepositoryFactory.deleteBookMark(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)
             return 2
         }

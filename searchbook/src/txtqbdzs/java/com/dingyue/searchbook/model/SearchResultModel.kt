@@ -13,9 +13,10 @@ import com.dingyue.searchbook.R
 import com.dingyue.searchbook.interfaces.JSInterface
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
+import com.dingyue.statistics.DyStatService
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.book.FootprintUtils
 import net.lzbook.kit.utils.download.CacheManager
@@ -128,10 +129,9 @@ class SearchResultModel {
         jsInterfaceModel.cover = (object : JSInterface.OnEnterCover {
             override fun doCover(host: String?, book_id: String?, book_source_id: String?, name: String, author: String, parameter: String, extra_parameter: String) {
                 val data = HashMap<String, String>()
-                data.put("BOOKID", book_id ?: "")
-                data.put("source", "WEBVIEW")
-                StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.BOOOKDETAIL_PAGE,
-                        StartLogClickUtil.ENTER, data)
+                data["bookid"] = book_id.orEmpty()
+                data["source"] = "WEBVIEW"
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data)
 
                 val book = Book()
                 book.book_id = book_id ?: ""

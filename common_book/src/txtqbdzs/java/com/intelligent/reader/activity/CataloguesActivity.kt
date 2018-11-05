@@ -270,7 +270,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
             if (!transformReadDialog!!.isShow()) {
                 transformReadDialog!!.show()
             }
-            DyStatService.onEvent(EventPoint.BOOKCATALOG_TRANSCODEREAD)
         }
     }
 

@@ -35,7 +35,6 @@ public class EventPoint {
     public static final String MAIN_PUSHCLOSE = "MAIN_PUSHCLOSE";// 通知权限弹窗关闭
     public static final String MAIN_POPUPNOWOPEN = "MAIN_POPUPNOWOPEN";// 通知权限弹窗点击现在开启
     public static final String MAIN_PUSHSET = "MAIN_PUSHSET";// 通知权限弹窗前往系统设置页
-    public static final String MAIN_POPUPSET = "MAIN_POPUPSET";// 通知权限弹窗前往系统设置页
 
 
     /** ------------------SEARCH搜索页 对应的点位编码-------------------**/
@@ -52,12 +51,6 @@ public class EventPoint {
     public static final String SEARCH_BACK = "SEARCH_BACK"; // 屏幕左上方点击返回按钮
 
 
-    /** ------------------SEARCHRESULT搜索结果页 对应的点位编码----------**/
-    public static final String SEARCHRESULT_BOOKCLICK = "SEARCHRESULT_BOOKCLICK"; // 某本书点击
-    public static final String SEARCHRESULT_CLEAR = "SEARCHRESULT_CLEAR"; // 点击清空，重回搜索页
-    public static final String SEARCHRESULT_BACK = "SEARCHRESULT_BACK"; // 返回
-
-
     /** ------------------NORESULT搜索 无 结果页 对应的点位编码----------**/
     public static final String NORESULT_FEEDBACK = "NORESULT_FEEDBACK"; // 点击找书反馈
     public static final String NORESULT_BACK = "NORESULT_BACK"; // 返回
@@ -72,8 +65,6 @@ public class EventPoint {
 
 
     /** ------------------书架页面 对应的点位编码       ----------------**/
-//    public static final String SHELF_SEARCH = "SHELF_SEARCH"; // 点击搜索框
-    public static final String SHELF_PERSONAL = "SHELF_PERSONAL"; // 点击个人中心
     public static final String SHELF_BOOKCLICK = "SHELF_BOOKCLICK"; // 书籍点击
     public static final String SHELF_TOBOOKCITY = "SHELF_TOBOOKCITY"; // 书架无书籍时，点击跳转书城
     public static final String SHELF_LONGTIMEBOOKSHELFEDIT = "SHELF_LONGTIMEBOOKSHELFEDIT"; // 长按编辑书架
@@ -81,7 +72,6 @@ public class EventPoint {
     public static final String SHELF_MORE = "SHELF_MORE"; // 点击更多
     public static final String SHELF_BOOKSORT = "SHELF_BOOKSORT"; // 点击更多菜单中的排序
     public static final String SHELF_VERSIONUPDATE = "SHELF_VERSIONUPDATE"; // 版本更新
-    public static final String SHELF_POPUPNOWOPEN = "SHELF_POPUPNOWOPEN"; // 通知权限弹窗点击现在开启
     public static final String SHELF_BANNERPOPUPCLICK = "SHELF_BANNERPOPUPCLICK"; // 活动弹窗点击
     public static final String SHELF_BANNERPOPUPSHOW = "SHELF_BANNERPOPUPSHOW"; // 活动弹窗曝光
     public static final String SHELF_BANNERPOPUPCLOSE = "SHELF_BANNERPOPUPCLOSE"; // 活动弹窗关闭
@@ -137,7 +127,6 @@ public class EventPoint {
 
 
     /** -----------------------阅读 页面 对应的点位编码  -------------**/
-    public static final String READPAGE_BOOKMARKEDIT = "READPAGE_BOOKMARKEDIT"; // 添加书签 (仅智胜替使用,下次发布修改)
     public static final String READPAGE_LABELEDIT = "READPAGE_LABELEDIT"; // 添加书签(其他壳均在使用)
     public static final String READPAGE_ORIGINALLINK = "READPAGE_ORIGINALLINK"; // 点击源网页链接
     public static final String READPAGE_CACHE = "READPAGE_CACHE"; // 点击阅读页内缓存
@@ -203,7 +192,6 @@ public class EventPoint {
     /** -----------------------分类页面 对应的点位编码----------------**/
     public static final String CLASS_SEARCH = "CLASS_SEARCH"; // 点击搜索
     public static final String CLASS_SWITCHTAB = "CLASS_SWITCHTAB"; // 切换男女标签
-    public static final String CLASS_ENTRYPAGE = "CLASS_ENTRYPAGE"; // 进入分类首页
 
 
     /** -----------------------点击分类之后的一级页面 对应的点位编码----**/
@@ -259,11 +247,7 @@ public class EventPoint {
 
 
     /** -----------------------书籍目录页 对应的点位编码------------**/
-    public static final String BOOKCATALOG_TRANSCODEREAD = "BOOKCATALOG_TRANSCODEREAD"; // 点击转码阅读
-    public static final String BOOKCATALOG_SHELFADD = "BOOKCATALOG_SHELFADD"; // 点击加入书架
-    public static final String BOOKCATALOG_SHELFEDIT = "BOOKCATALOG_SHELFEDIT"; // 点击编辑书架
     public static final String BOOKCATALOG_CATALOGCHAPTER = "BOOKCATALOG_CATALOGCHAPTER"; // 目录中点击某章节
-    public static final String BOOKCATALOG_CASHEALL = "BOOKCATALOG_CASHEALL"; // 点击全本缓存
     public static final String BOOKCATALOG_BACK = "BOOKCATALOG_BACK"; // 书籍目录返回
 
 
