@@ -57,7 +57,7 @@ class WebViewActivity : FrameActivity() {
             favorite.webLink = web_view.url
             favorite.createTime = System.currentTimeMillis()
             requestRepositoryFactory?.addWebFavorite(favorite)
-            if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE_CLICK)) {
+            if (!SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE_CLICK)) {
                 ToastUtil.showToastMessage("收藏成功，可在个人中心-网页收藏中查看")
                 SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE_CLICK, true)
             } else {
