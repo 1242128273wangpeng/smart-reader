@@ -16,12 +16,13 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import com.dingyue.searchbook.activity.SearchBookActivity
+import com.dingyue.statistics.DyStatService
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.txtqbmfyd.act_tabulation.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.PagerDesc
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
@@ -287,27 +288,27 @@ class TabulationActivity : FrameActivity() {
      * 统计列表返回点击事件
      * **/
     private fun statisticsTabulationBack() {
-        val data = HashMap<String, String?>()
+        val data = HashMap<String, String>()
         data["type"] = "1"
 
         when (fromType) {
             "category" -> {
-                data["FIRSTCLASS"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.BACK, data)
+                data["firstclass"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTCLASS_BACK, data)
             }
 
             "rank" -> {
-                data["FIRSTTOP"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.BACK, data)
+                data["firsttop"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTTOP_BACK, data)
             }
 
             "recommend" -> {
-                data["FIRSTRECOMMEND"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.BACK, data)
+                data["firstrecommend"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_BACK, data)
             }
 
             "authorType" -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE, StartLogClickUtil.BACK, data)
+                DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data)
             }
         }
     }
@@ -316,25 +317,25 @@ class TabulationActivity : FrameActivity() {
      * 统计列表搜索点击事件
      * **/
     private fun statisticsTabulationSearch() {
-        val data = HashMap<String, String?>()
+        val data = HashMap<String, String>()
 
         when (fromType) {
             "category" -> {
-                data["firstclass"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH, data)
+                data["firstclass"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTCLASS_SEARCH, data)
             }
 
             "rank" -> {
-                data["firsttop"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH, data)
+                data["firsttop"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTTOP_SEARCH, data)
             }
 
             "recommend" -> {
-                data["firstrecommend"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.SEARCH, data)
+                data["firstrecommend"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, data)
             }
             "authorType" -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE, StartLogClickUtil.SEARCH, data)
+                DyStatService.onEvent(EventPoint.AUTHORPAGE_SEARCH, data)
             }
         }
     }

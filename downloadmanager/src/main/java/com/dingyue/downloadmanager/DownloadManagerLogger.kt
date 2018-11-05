@@ -22,7 +22,7 @@ object DownloadManagerLogger {
     }
 
     fun uploadCacheManagerBookClick(book: Book) {
-        DyStatService.onEvent(EventPoint.CACHEMANAGE_BOOKCLICK, mapOf("STATUS" to if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0"))
+        DyStatService.onEvent(EventPoint.CACHEMANAGE_BOOKCLICK, mapOf("status" to if (CacheManager.getBookStatus(book) === DownloadState.FINISH) "1" else "0"))
     }
 
     fun uploadCacheManagerButtonClick(status: DownloadState, bookId: String, progress: Int) {

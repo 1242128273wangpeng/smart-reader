@@ -8,6 +8,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.ding.basic.net.Config;
+import com.dingyue.statistics.DyStatService;
 import com.dy.media.MediaConfig;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -78,6 +79,8 @@ public class ShieldManager {
                     stopAchieveUserLocation();
                     //为InMobi广告sdk设置Location
 //                    LogUtils.e(TAG,"location:"+aMapLocation.toString());
+                    // 统计SDK初始化位置信息
+                    DyStatService.setLocationInfo(Constants.longitude, Constants.latitude, Constants.adCityInfo, Constants.cityCode, Constants.adLocationDetail);
                 } else {
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                     AppLog.e("AmapError", "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:" + aMapLocation.getErrorInfo());

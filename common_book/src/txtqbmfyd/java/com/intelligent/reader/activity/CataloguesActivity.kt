@@ -15,15 +15,15 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
-import com.intelligent.reader.R.id.backIv
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.txtqbmfyd.act_catalog.*
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.bean.OfflineDownloadEvent
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.view.CataloguesContract
 import net.lzbook.kit.presenter.CataloguesPresenter
 import net.lzbook.kit.receiver.OffLineDownLoadReceiver
@@ -153,10 +153,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             transformReadDialog=TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "1"))
 
                 intoReadingActivity()
 
@@ -166,10 +163,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             }
 
             transformReadDialog?.insertCancelListener {
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "2"))
 
                 if (!this.isFinishing) {
                     transformReadDialog?.dismiss()
@@ -217,7 +211,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
             if (!transformReadDialog!!.isShow()) {
                 transformReadDialog!!.show()
             }
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
+            DyStatService.onEvent(EventPoint.BOOKCATALOG_TRANSCODEREAD)
         }
     }
 
@@ -323,15 +317,13 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener,
     override fun onClick(v: View) {
         when (v.id) {
             R.id.backIv -> {
-                val data = HashMap<String, String>()
-                data.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CATALOG, StartLogClickUtil.BACK, data)
                 if (!fromCover) {
                     if (cataloguesPresenter != null) {
                         sequence = Math.min(sequence, (chapterList.size ?: 1) - 1)
                         cataloguesPresenter!!.activityResult(sequence)
                     }
                 }
+                DyStatService.onEvent(EventPoint.BOOKCATALOG_BACK, mapOf("type" to "1"))
                 finish()
             }
             R.id.catalog_empty_refresh -> getChapterData()

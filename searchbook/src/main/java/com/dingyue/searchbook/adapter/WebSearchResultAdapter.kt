@@ -18,7 +18,7 @@ import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
 class WebSearchResultAdapter(context: Context) : RecyclerBaseAdapter<CrawlerResult>(context, R.layout.item_web_search_result) {
 
     var onLatestChapterClick: ((url: String?) -> Unit)? = null
-    var onItemClick: ((url: String?) -> Unit)? = null
+    var onItemClick: ((position: Int) -> Unit)? = null
     var keyword: String? = null
 
     override fun bindView(itemView: View, data: CrawlerResult, position: Int) {
@@ -29,8 +29,8 @@ class WebSearchResultAdapter(context: Context) : RecyclerBaseAdapter<CrawlerResu
             } else {
                 view_top_tip.visibility = View.GONE
             }
-            ll_content.tag = data.url
-            ll_content.setOnClickListener { onItemClick?.invoke(it.tag as String?) }
+            ll_content.tag = position
+            ll_content.setOnClickListener { onItemClick?.invoke(it.tag as Int) }
             // 赋值
             var title = data.title?.replace("<em>","<font color='#DC0000'>")?.replace("</em>","</font>")
             txt_title.text = Html.fromHtml(title)

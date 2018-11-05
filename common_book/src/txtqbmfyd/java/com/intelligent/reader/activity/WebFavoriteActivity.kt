@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.ding.basic.bean.WebPageFavorite
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.WebFavoriteAdapter
 import com.intelligent.reader.presenter.WebFavoritePresenter
 import com.intelligent.reader.view.WebFavoriteView
 import kotlinx.android.synthetic.txtqbmfyd.act_web_favorite.*
 import kotlinx.android.synthetic.txtqbmfyd.in_bottom_edit.*
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -27,6 +29,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
 
     private var favoriteList: List<WebPageFavorite>? = null
     private var adapter: WebFavoriteAdapter? = null
+    private var uploadFirst = true
 
     override fun showEmptyView() {
         rv_favorite_list.visibility = View.GONE
@@ -52,7 +55,10 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
     }
 
     private fun initView() {
-        img_back.setOnClickListener { finish() }
+        img_back.setOnClickListener {
+            DyStatService.onEvent(EventPoint.WEBCOLLECT_BACK, mapOf("type" to "1"))
+            finish()
+        }
         txt_right_handle.setOnClickListener { rightClick() }
         btn_select_all.setOnClickListener { selectAllOrNot() }
         btn_delete.isEnabled = false
@@ -75,6 +81,10 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
                 adapter?.setData(it)
                 adapter?.notifyDataSetChanged()
             }
+            if (uploadFirst) {
+                DyStatService.onEvent(EventPoint.WEBCOLLECT_LINKLIST, mapOf("number" to it.size.toString()))
+                uploadFirst = false
+            }
         }
     }
 
@@ -84,6 +94,11 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
     private fun onItemClick(position: Int) {
         if (adapter?.remove == false) {
             if (favoriteList != null && !favoriteList!![position].webLink.isBlank()) {
+                val data = HashMap<String, String>()
+                data["title"] = favoriteList!![position].webTitle
+                data["link"] = favoriteList!![position].webLink
+                data["rank"] = (position + 1).toString()
+                DyStatService.onEvent(EventPoint.WEBCOLLECT_LINKCLICK, data)
                 val bundle = Bundle()
                 bundle.putString("url", favoriteList!![position].webLink)
                 RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
@@ -103,7 +118,13 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
      * 右上角操作按钮 点击事件
      */
     private fun rightClick() {
-        if (adapter?.remove == true) hideEdit() else showEdit()
+        if (adapter?.remove == true) {
+            DyStatService.onEvent(EventPoint.WEBCHCHEEDIT_CANCLE)
+            hideEdit()
+        } else {
+            DyStatService.onEvent(EventPoint.WEBCOLLECT_CACHEEDIT)
+            showEdit()
+        }
     }
 
     /**
@@ -142,7 +163,21 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
     private fun deleteClick() {
         val selectedList = if (adapter?.selectAll == true) favoriteList else favoriteList?.filter { it.selected }
         if (selectedList == null || selectedList.isEmpty()) return
+        uploadDeleteLog(selectedList)
         presenter.deleteFavorite(selectedList)
+    }
+
+    /**
+     * 上传删除点位 日志
+     */
+    private fun uploadDeleteLog(list: List<WebPageFavorite>) {
+        val data = HashMap<String, String>()
+        data["number"] = list.size.toString()
+        val title = StringBuilder()
+        list.forEach { title.append(it.webTitle).append("_") }
+        title.deleteCharAt(title.length - 1)
+        data["title"] = title.toString()
+        DyStatService.onEvent(EventPoint.WEBCHCHEEDIT_DELETE, data)
     }
 
     /**
@@ -160,6 +195,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
      */
     private fun selectAllOrNot() {
         adapter?.let {
+            DyStatService.onEvent(EventPoint.WEBCHCHEEDIT_SELECTALL, mapOf("type" to if (it.selectAll) "2" else "1"))
             if (!it.selectAll) {
                 // 全选
                 btn_select_all.text = "取消全选"

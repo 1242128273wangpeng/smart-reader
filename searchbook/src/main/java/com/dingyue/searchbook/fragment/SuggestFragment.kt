@@ -14,8 +14,9 @@ import com.dingyue.searchbook.R
 import com.dingyue.searchbook.adapter.SuggestAdapter
 import com.dingyue.searchbook.presenter.SuggestPresenter
 import com.dingyue.searchbook.view.ISuggestView
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.fragment_listview.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.enterCover
 import net.lzbook.kit.utils.toast.ToastUtil
 import java.util.*
@@ -117,13 +118,13 @@ class SuggestFragment : Fragment(), ISuggestView {
                     }
                     "name" -> {
                         searchType = "3"
-                        data.put("bookid", searchCommonBean.book_id)
+                        data["bookid"] = searchCommonBean.book_id
 
                         //统计进入到书籍封面页
                         val data1 = HashMap<String, String>()
-                        data1.put("BOOKID", searchCommonBean.book_id)
-                        data1.put("source", "SEARCH")
-                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data1)
+                        data1["bookid"] = searchCommonBean.book_id
+                        data1["source"] = "SEARCH"
+                        DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data1)
 
                         requireActivity().enterCover(
                                 author = if (searchCommonBean.author == null) "" else searchCommonBean.author,
@@ -137,14 +138,14 @@ class SuggestFragment : Fragment(), ISuggestView {
 
                 if (!TextUtils.isEmpty(suggest) && suggestList.isNotEmpty()) {
                     if (!TextUtils.isEmpty(suggest)) {
-                        data.put("keyword", suggest)
-                        data.put("type", searchType)
-                        data.put("enterword", suggest.trim({ it <= ' ' }))
+                        data["keyword"] = suggest
+                        data["type"] = searchType
+                        data["enterword"] = suggest.trim { it <= ' ' }
 
                         itemGapViewCount = (0 until position).count { suggestList[it] !is SearchCommonBeanYouHua }
 
-                        data.put("rank", (position + 1 - itemGapViewCount).toString())
-                        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TIPLISTCLICK, data)
+                        data["rank"] = (position + 1 - itemGapViewCount).toString()
+                        DyStatService.onEvent(EventPoint.SEARCH_TIPLISTCLICK, data)
                     }
 
                     if (searchType != "3") {

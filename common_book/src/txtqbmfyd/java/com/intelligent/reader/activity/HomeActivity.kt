@@ -29,6 +29,7 @@ import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.setting.ReaderSettings
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.CategoryFragment
@@ -45,9 +46,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.txtqbmfyd.act_home.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_main.*
 import kotlinx.android.synthetic.txtqbmfyd.home_drawer_layout_menu.*
-import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.presenter.HomePresenter
@@ -182,7 +180,7 @@ class HomeActivity : BaseCacheableActivity(),
 
         checkUrlDevelop()
 
-        AndroidLogStorage.getInstance().clear()
+        DyStatService.clearInvalidData()
 
         showCacheMessage()
 
@@ -232,7 +230,7 @@ class HomeActivity : BaseCacheableActivity(),
     override fun onDestroy() {
         super.onDestroy()
 
-        AndroidLogStorage.getInstance().clear()
+        DyStatService.clearInvalidData()
 
         this.unregisterReceiver(homeBroadcastReceiver)
 
@@ -289,18 +287,6 @@ class HomeActivity : BaseCacheableActivity(),
 
             override fun onPageSelected(position: Int) {
                 onChangeNavigation(position)
-
-                when (position) {
-                    1 -> {
-                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.ENTRYPAGE)
-                    }
-                    2 -> {
-                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.TOP_PAGE, StartLogClickUtil.ENTRYPAGE)
-                    }
-                    3 -> {
-                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.ENTRYPAGE)
-                    }
-                }
             }
         })
 
@@ -381,7 +367,7 @@ class HomeActivity : BaseCacheableActivity(),
                 SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, true)
                 txt_web_favorite_red_point.visibility = View.GONE
             }
-            // TODO 打点统计
+            PersonalLogger.uploadPersonalWebCollect()
             startActivity(Intent(this, WebFavoriteActivity::class.java))
         }
 

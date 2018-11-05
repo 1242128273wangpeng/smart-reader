@@ -12,22 +12,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import net.lzbook.kit.utils.web.JSInterfaceObject
 import com.dingyue.searchbook.activity.SearchBookActivity
+import com.dingyue.statistics.DyStatService
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.view_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.webview_layout.*
-import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.web.CustomWebClient
+import net.lzbook.kit.utils.web.JSInterfaceObject
 
 open class WebViewFragment : Fragment(), View.OnClickListener {
 
@@ -176,13 +177,16 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         }
 
         rl_recommend_search?.setOnClickListener {
+            if (type == "rank") {
+                HomeLogger.uploadHomeSearch(3)
+            } else if (type == "recommend") {
+                HomeLogger.uploadHomeSearch(2)
+            }
             startActivity(Intent(requireContext(), SearchBookActivity::class.java))
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
         }
 
         img_ranking_search?.setOnClickListener {
             startActivity(Intent(requireContext(), SearchBookActivity::class.java))
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
         }
 
         loadingPage = LoadingPage(requireActivity(), web_view_root)
@@ -260,6 +264,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
                     refreshHeader.img_refresh_arrow.visibility = View.GONE
                     refreshHeader.pgbar_refresh_loading.visibility = View.VISIBLE
                     refreshContentData()
+                    if (type == "recommend") DyStatService.onEvent(EventPoint.RECOMMEND_DROPDOWN)
                 }
 
                 override fun onPullDistance(distance: Int) {}
@@ -304,9 +309,6 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         srl_web_view_refresh?.onRefreshComplete()
 
         handleRefreshContentData("javascript:refreshNew()")
-
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.DROPDOWN)
     }
 
     /***

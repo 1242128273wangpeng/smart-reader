@@ -3,8 +3,9 @@ package com.dingyue.searchbook.fragment
 import com.ding.basic.bean.HotWordBean
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.adapter.HotWordAdapter
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.txtqbmfyd.fragment_hotword.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 
@@ -34,10 +35,10 @@ class HotWordFragment : BaseHotWordFragment() {
 
             val bean = hotWordList[position]
             val data = HashMap<String, String>()
-            data.put("topicword", bean.keyword ?: "")
-            data.put("rank", bean.sort.toString())
-            data.put("type", bean.superscript ?: "")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
+            data["topicword"] = bean.keyword.orEmpty()
+            data["rank"] = bean.sort.toString()
+            data["type"] = bean.superscript.orEmpty()
+            DyStatService.onEvent(EventPoint.SEARCH_TOPIC, data)
             hotWordPresenter.onKeyWord(bean.keyword)
             onResultListener?.onSuccess(bean.keyword ?: "")
         }

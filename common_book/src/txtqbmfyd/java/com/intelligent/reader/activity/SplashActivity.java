@@ -32,6 +32,7 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
+import com.dingyue.statistics.DyStatService;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -41,9 +42,9 @@ import com.intelligent.reader.R;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.service.CheckNovelUpdateService;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
@@ -283,8 +284,7 @@ public class SplashActivity extends FrameActivity {
 
                         Map<String, String> data = new HashMap<>();
                         data.put("status", "2");
-                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+                        DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
 
                         deleteOldDB();
                         doOnCreate();
@@ -324,9 +324,7 @@ public class SplashActivity extends FrameActivity {
                             }
                             Map<String, String> data = new HashMap<>();
                             data.put("status", "2");
-                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
-                                    data);
+                            DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
                             //删除之前的数据库
                             deleteOldDB();
                             doOnCreate();
@@ -336,9 +334,7 @@ public class SplashActivity extends FrameActivity {
                         public void run() throws Exception {
                             Map<String, String> data = new HashMap<>();
                             data.put("status", "1");
-                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
-                                    data);
+                            DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
                             //删除之前的数据库
                             deleteOldDB();
                             doOnCreate();
@@ -347,8 +343,7 @@ public class SplashActivity extends FrameActivity {
         } else {
             Map<String, String> data = new HashMap<>();
             data.put("status", "1");
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+            DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
             //删除之前的数据库
             deleteOldDB();
             doOnCreate();

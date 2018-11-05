@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.setting.ReaderSettings
@@ -14,9 +15,8 @@ import com.dy.reader.view.SignSeekBar
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import kotlinx.android.synthetic.txtqbmfyd.dialog_reader_auto_read_option.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.StatServiceUtils
-import java.util.HashMap
 import org.greenrobot.eventbus.EventBus
 
 class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
@@ -125,9 +125,7 @@ class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
 
             }
             R.id.txt_auto_read_stop -> {
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-                StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_AUTOREAD, mapOf("type" to "2"))
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_cancel)
                 readerSettings.isAutoReading = false
                 dismiss()

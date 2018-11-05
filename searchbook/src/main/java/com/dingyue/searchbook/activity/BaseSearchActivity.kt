@@ -22,13 +22,15 @@ import com.dingyue.searchbook.fragment.SearchResultFragment
 import com.dingyue.searchbook.fragment.SuggestFragment
 import com.dingyue.searchbook.interfaces.OnKeyWordListener
 import com.dingyue.searchbook.interfaces.OnResultListener
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.activity_base_search.*
 import kotlinx.android.synthetic.main.fragment_search_result.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
 import net.lzbook.kit.utils.toast.ToastUtil
+import java.util.HashMap
 
 /**
  * Desc 搜索Activity父类
@@ -115,14 +117,17 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.img_back -> finish()
+            R.id.img_back -> {
+                if (searchResultFragment.searchNoResult) DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_BACK) else DyStatService.onEvent(EventPoint.SEARCH_BACK)
+                finish()
+            }
             R.id.search_result_clear -> {
                 isRunTextWatcher = true
                 inputEditText.setText("")
                 clearImgView.visibility = View.GONE
 
                 showSoftKeyboard(inputEditText)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR)
+                if (searchResultFragment.searchNoResult) DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_BARCLEAR) else DyStatService.onEvent(EventPoint.SEARCH_BARCLEAR)
             }
             R.id.search_result_input -> {
                 isRunTextWatcher = true
@@ -140,12 +145,17 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                 showFragment(historyFragment)
                 historyFragment.loadHistoryRecord()
                 searchResultFragment.resetResult()
+                DyStatService.onEvent(EventPoint.SEARCH_BAR)
             }
             R.id.search_result_btn -> {
                 val keyword = inputEditText.text.toString()
                 if (TextUtils.isEmpty(keyword.trim())) {
                     ToastUtil.showToastMessage(R.string.search_click_check_isright)
                 } else {
+                    val data = HashMap<String, String>()
+                    data["type"] = "0"
+                    data["keyword"] = keyword
+                    DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
                     showFragment(searchResultFragment)
                     searchResultFragment.resetResult()
                     searchResultFragment.loadKeyWord(keyword)
@@ -355,6 +365,10 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                     if (TextUtils.isEmpty(keyword.trim())) {
                         ToastUtil.showToastMessage(R.string.search_click_check_isright)
                     } else {
+                        val data = HashMap<String, String>()
+                        data["type"] = "1"
+                        data["keyword"] = keyword
+                        DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
                         showFragment(searchResultFragment)
                         searchResultFragment.loadKeyWord(keyword)
                         hideKeyboard()

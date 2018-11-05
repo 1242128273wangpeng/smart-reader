@@ -2,16 +2,16 @@ package com.intelligent.reader.activity
 
 import android.os.Bundle
 import com.baidu.mobstat.StatService
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import com.intelligent.reader.widget.PushTimeDialog
-import kotlinx.android.synthetic.txtqbmfyd.act_setting_more.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.bean.SettingItems
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import kotlinx.android.synthetic.txtqbmfyd.act_setting_more.*
+import net.lzbook.kit.bean.SettingItems
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.SettingItemsHelper
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
-import java.util.*
 
 class SettingMoreActivity : BaseCacheableActivity() {
 
@@ -65,26 +65,20 @@ class SettingMoreActivity : BaseCacheableActivity() {
     private fun initListener() {
 
         img_head_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.BACK, data)
+            DyStatService.onEvent(EventPoint.MORESET_BACK, mapOf("type" to "1"))
             finish()
         }
 
         btn_push.setOnCheckedChangeListener { _, isChecked ->
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more_push)
-            val params1 = HashMap<String, String>()
-            params1.put("type", if (isChecked) "1" else "2")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.PUSHSET, params1)
+            DyStatService.onEvent(EventPoint.MORESET_PUSHSET, mapOf("type" to if (isChecked) "1" else "2"))
 
             changePushStatus(isChecked)
         }
 
 
         btn_push_sound.setOnCheckedChangeListener { _, isChecked ->
-            val params = HashMap<String, String>()
-            params.put("type", if (isChecked) "1" else "2")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MORESET_PAGE, StartLogClickUtil.PUSHAUDIO, params)
+            DyStatService.onEvent(EventPoint.MORESET_PUSHAUDIO, mapOf("type" to if (isChecked) "1" else "2"))
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_more_push_voi)
 
             setPushSound(isChecked, isChecked)

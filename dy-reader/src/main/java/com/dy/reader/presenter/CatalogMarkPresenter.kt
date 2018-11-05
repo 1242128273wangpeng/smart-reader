@@ -88,9 +88,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
     }
 
     override fun gotoChapter(activity: Activity, chapter: Chapter) {
-        val isChapterExist: Boolean
-
-        isChapterExist = DataCache.isChapterCached(chapter)
+        val isChapterExist = DataCache.isChapterCached(chapter)
 
         if (!isChapterExist && NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
                 ToastUtil.showToastMessage(R.string.no_net)
@@ -99,7 +97,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
 //        (activity as ReaderActivity).onJumpChapter(chapter.sequence, 0)
         EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, Position(ReaderStatus.book.book_id, chapter.sequence, 0 )))
-        DyStatService.onEvent(EventPoint.READPAGE_CATALOG, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to chapter.chapter_id))
+        DyStatService.onEvent(EventPoint.BOOKCATALOG_CATALOGCHAPTER, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to chapter.chapter_id))
     }
 
     override fun gotoBookMark(activity: Activity, mark: Bookmark) {

@@ -7,10 +7,11 @@ import android.view.View
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.publish_hint_dialog.*
 import kotlinx.android.synthetic.txtqbmfyd.act_login.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.router.RouterConfig
@@ -80,9 +81,7 @@ class LoginActivity : FrameActivity() {
         }
 
         ibtn_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+            DyStatService.onEvent(EventPoint.SYSTEM_BACK, mapOf("type" to "1"))
             if (flagLoginEnd) {
                 setLoginResult()
                 finish()
@@ -121,9 +120,7 @@ class LoginActivity : FrameActivity() {
     }
 
     override fun onBackPressed() {
-        val data = HashMap<String, String>()
-        data.put("type", "2")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+        DyStatService.onEvent(EventPoint.SYSTEM_BACK, mapOf("type" to "2"))
         if (flagLoginEnd) {
             setLoginResult()
             finish()

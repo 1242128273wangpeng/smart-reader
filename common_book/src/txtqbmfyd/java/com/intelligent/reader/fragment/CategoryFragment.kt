@@ -9,10 +9,12 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfyd.category_fragment_layout.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.webview.UrlUtils
@@ -40,9 +42,8 @@ class CategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         content_head_search.setOnClickListener {
+            HomeLogger.uploadHomeSearch(4)
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
-            StartLogClickUtil.upLoadEventLog(activity,
-                    StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
         }
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         category_view_page.adapter = mCategoryPageAdapter
@@ -62,10 +63,7 @@ class CategoryFragment : Fragment() {
     }
 
     private fun uploadTabSwitchLog(position: Int) {
-        val data = HashMap<String, String>()
-        data["type"] = if (position == 0) "1" else "2"
-        StartLogClickUtil.upLoadEventLog(activity,
-                StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.SWITCHTAB, data)
+        DyStatService.onEvent(EventPoint.CLASS_SWITCHTAB, mapOf("type" to if (position == 0) "1" else "2"))
     }
 
     // 男频

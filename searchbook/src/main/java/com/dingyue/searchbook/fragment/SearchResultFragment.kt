@@ -16,8 +16,10 @@ import com.dingyue.searchbook.adapter.WebSearchResultAdapter
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.presenter.SearchResultPresenter
 import com.dingyue.searchbook.view.ISearchResultView
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.bean.CrawlerResult
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.BDCrawler
 import net.lzbook.kit.utils.loge
@@ -122,6 +124,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
             rv_catch_result.visibility = View.VISIBLE
             searchNoResult = true
             showLoading()
+            DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_ENTER, mapOf("enterword" to keyWord.orEmpty()))
         }
     }
 
@@ -146,28 +149,37 @@ class SearchResultFragment : Fragment(), ISearchResultView {
      * 百度抓取数据展示
      */
     override fun onWebSearchResult(res: MutableList<CrawlerResult>?) {
-        hideLoading()
-        if (res != null) {
-            rv_catch_result.layoutManager = LinearLayoutManager(requireContext())
-            // 适配器加载数据
-            if (webSearchResultAdapter == null) {
-                webSearchResultList = res
-                webSearchResultAdapter = WebSearchResultAdapter(requireContext())
-                webSearchResultAdapter!!.onItemClick = {
-                    if (!it.isNullOrBlank()) toWebActivity(it!!)
+        runOnMain {
+            hideLoading()
+            if (res != null) {
+                rv_catch_result.layoutManager = LinearLayoutManager(requireContext())
+                // 适配器加载数据
+                if (webSearchResultAdapter == null) {
+                    webSearchResultList = res
+                    webSearchResultAdapter = WebSearchResultAdapter(requireContext())
+                    webSearchResultAdapter!!.onItemClick = {
+                        val item = webSearchResultList!![it]
+                        val data = HashMap<String, String>()
+                        data["enterword"] = keyWord
+                        data["link"] = item.url.orEmpty()
+                        data["host"] = item.source.orEmpty()
+                        data["rank"] = (it + 1).toString()
+                        DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_LINKCLICK, data)
+                        toWebActivity(item.url.orEmpty())
+                    }
+                    webSearchResultAdapter!!.onLatestChapterClick = {
+                        loge("url: $it")
+                        if (!it.isNullOrBlank()) toWebActivity(it!!)
+                    }
+                    webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
+                    rv_catch_result.adapter = webSearchResultAdapter
+                } else {
+                    webSearchResultList?.addAll(res)
+                    webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
+                    webSearchResultAdapter?.notifyDataSetChanged()
                 }
-                webSearchResultAdapter!!.onLatestChapterClick = {
-                    loge("url: $it")
-                    if (!it.isNullOrBlank()) toWebActivity(it!!)
-                }
-                webSearchResultAdapter!!.setData(webSearchResultList.orEmpty())
-                rv_catch_result.adapter = webSearchResultAdapter
-            } else {
-                webSearchResultList?.addAll(res)
-                webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
-                webSearchResultAdapter?.notifyDataSetChanged()
-            }
-        } else ToastUtil.showToastMessage("全网搜索无结果")
+            } else ToastUtil.showToastMessage("全网搜索无结果")
+        }
     }
 
     private fun toWebActivity(url: String) {

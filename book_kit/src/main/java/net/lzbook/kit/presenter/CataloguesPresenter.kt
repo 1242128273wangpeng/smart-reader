@@ -141,6 +141,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
         }
     }
 
+    @Deprecated("no use ?")
     fun showReadDialog() {
         cataloguesContract.showReadDialog()
     }
@@ -174,7 +175,7 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
                 val logData = HashMap<String, String>()
                 logData["bookid"] = book.book_id
                 logData["chapterid"] = tempChapter.chapter_id
-                DyStatService.onEvent(EventPoint.BOOKCATALOG_CATALOGCHAPTER)
+                DyStatService.onEvent(EventPoint.BOOKCATALOG_CATALOGCHAPTER, logData)
             }
         } else {
             val bookmark = bookmarkList[position]

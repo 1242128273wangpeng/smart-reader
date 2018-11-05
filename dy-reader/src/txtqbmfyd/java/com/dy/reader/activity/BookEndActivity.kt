@@ -21,7 +21,6 @@ import com.dy.reader.presenter.BookEndContract
 import com.dy.reader.presenter.BookEndPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbmfyd.act_book_end.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
@@ -77,9 +76,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     }
     private fun initListener() {
         iv_back.setOnClickListener {
-            val data = HashMap<String, String>()
-            data["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, data)
+            DyStatService.onEvent(EventPoint.READFINISH_BACK, mapOf("type" to "1"))
             finish()
         }
 

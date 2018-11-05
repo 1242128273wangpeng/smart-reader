@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
@@ -28,8 +29,8 @@ import kotlinx.android.synthetic.txtqbmfyd.reader_option_chapter_change.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_detail.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_font.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.ResourceUtil
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
@@ -317,9 +318,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             when (id) {
                 R.id.rbtn_reader_spacing_0_2 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_01)
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "4")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_READGAP, mapOf("type" to "4"))
                     if (rbtn_reader_spacing_0_2!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.2f
                         setInterLinearSpaceMode()
@@ -327,9 +326,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 R.id.rbtn_reader_spacing_0_5 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_02)
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "3")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_READGAP, mapOf("type" to "3"))
                     if (rbtn_reader_spacing_0_5!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.3f
                         setInterLinearSpaceMode()
@@ -337,9 +334,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 R.id.rbtn_reader_spacing_1_0 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_03)
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "2")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_READGAP, mapOf("type" to "2"))
                     if (rbtn_reader_spacing_1_0!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.4f
                         setInterLinearSpaceMode()
@@ -347,9 +342,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 R.id.rbtn_reader_spacing_1_5 -> {
                     StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_hangju_04)
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "1")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.READGAP, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_READGAP, mapOf("type" to "1"))
                     if (rbtn_reader_spacing_1_5!!.isChecked) {
                         readerSettings.readInterlineaSpace = 0.5f
                         setInterLinearSpaceMode()
@@ -477,7 +470,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             R.id.ll_reader_brightness_system, R.id.read_setting_auto_power// 跟随系统 更改按钮背景
             -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.SYSFOLLOW)
+                DyStatService.onEvent(EventPoint.READPAGESET_SYSFOLLOW)
                 changeSystemLight()
             }
             R.id.ckb_reader_landscape -> {
@@ -485,13 +478,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
             R.id.ckb_reader_auto_read -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_auto_read_btn)
-                val data = java.util.HashMap<String, String>()
-                if (Constants.isSlideUp) {
-                    data.put("type", "2")
-                } else {
-                    data.put("type", "1")
-                }
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_AUTOREAD, mapOf("type" to if (Constants.isSlideUp) "2" else "1"))
 
                 readerSettings.isAutoReading = true
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE,false))
@@ -502,13 +489,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_fullscreen_read_btn)
                 readerSettings.isFullScreenRead = ckb_reader_full_screen.isChecked
-                val data = java.util.HashMap<String, String>()
-                if (readerSettings.isFullScreenRead) {
-                    data.put("type", "1")
-                } else {
-                    data.put("type", "2")
-                }
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.FULLSCREENPAGEREAD, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_FULLSCREENPAGEREAD, mapOf("type" to if (readerSettings.isFullScreenRead) "1" else "2"))
             }
             else -> {
             }
@@ -602,9 +583,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             setFontSize()
         }
         val data = java.util.HashMap<String, String>()
-        data.put("type", "2")
-        data.put("FONT", readerSettings.fontSize.toString())
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
+        data["type"] = "2"
+        data["FONT"] = readerSettings.fontSize.toString()
+        DyStatService.onEvent(EventPoint.READPAGESET_WORDSIZE, data)
     }
 
     /**
@@ -623,9 +604,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             setFontSize()
         }
         val data = java.util.HashMap<String, String>()
-        data.put("type", "1")
-        data.put("FONT", readerSettings.fontSize.toString())
-        StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
+        data["type"] = "1"
+        data["FONT"] = readerSettings.fontSize.toString()
+        DyStatService.onEvent(EventPoint.READPAGESET_WORDSIZE, data)
     }
 
     fun setFontSize() {
@@ -745,9 +726,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             R.id.rbtn_reader_backdrop_first -> {
                 changePageBackgroundWrapper(51)
                 if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "1")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_BACKGROUNDCOLOR, mapOf("type" to "1"))
                 }
                 lastIndex = current
 
@@ -756,80 +735,60 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
                 changePageBackgroundWrapper(52)
                 if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "2")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_BACKGROUNDCOLOR, mapOf("type" to "2"))
                 }
                 lastIndex = current
             }
             R.id.rbtn_reader_backdrop_third -> {
                 changePageBackgroundWrapper(53)
                 if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "3")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_BACKGROUNDCOLOR, mapOf("type" to "3"))
                 }
                 lastIndex = current
             }
             R.id.rbtn_reader_backdrop_fourth -> {
                 changePageBackgroundWrapper(54)
                 if (current != lastIndex) {
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "4")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_BACKGROUNDCOLOR, mapOf("type" to "4"))
                 }
                 lastIndex = current
             }
             R.id.rbtn_reader_backdrop_fifth -> {
                 changePageBackgroundWrapper(55)
                 if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "6")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_BACKGROUNDCOLOR, mapOf("type" to "6"))
                 }
                 lastIndex = current
             }
             R.id.rbtn_reader_backdrop_sixth -> {
                 changePageBackgroundWrapper(56)
                 if (current != lastIndex) {
-
-                    val data = java.util.HashMap<String, String>()
-                    data.put("type", "5")
-                    StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.BACKGROUNDCOLOR, data)
+                    DyStatService.onEvent(EventPoint.READPAGESET_BACKGROUNDCOLOR, mapOf("type" to "5"))
                 }
                 lastIndex = current
             }
 
             R.id.rbtn_reader_animation_slide -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_01)
-                val data = java.util.HashMap<String, String>()
-                data.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_PAGETURN, mapOf("type" to "1"))
                 changePageMode(0)
                 resetBtn(false)
             }
             R.id.rbtn_reader_animation_simulation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_02)
-                val data = java.util.HashMap<String, String>()
-                data.put("type", "3")
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_PAGETURN, mapOf("type" to "3"))
                 changePageMode(1)
                 resetBtn(false)
             }
             R.id.rbtn_reader_animation_translation -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_03)
-                val data = java.util.HashMap<String, String>()
-                data.put("type", "2")
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_PAGETURN, mapOf("type" to "2"))
                 changePageMode(2)
                 resetBtn(false)
             }
             R.id.rbtn_reader_animation_up_down -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_flip_page_04)
-                val data = java.util.HashMap<String, String>()
-                data.put("type", "4")
-                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.PAGETURN, data)
+                DyStatService.onEvent(EventPoint.READPAGESET_PAGETURN, mapOf("type" to "4"))
                 changePageMode(3)
                 resetBtn(true)
             }
@@ -959,9 +918,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
             readerSettings.screenBrightness = Math.max(20, seekBar.progress)
 
-            val data = java.util.HashMap<String, String>()
-            data.put("lightvalue", seekBar.progress.toString())
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.LIGHTEDIT, data)
+            DyStatService.onEvent(EventPoint.READPAGESET_LIGHTEDIT, mapOf("lightvalue" to seekBar.progress.toString()))
 
         }
     }

@@ -1,14 +1,10 @@
 package com.dingyue.bookshelf
 
 import com.ding.basic.bean.Book
-import com.ding.basic.RequestRepositoryFactory
-import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.pointpage.EventPoint
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import com.ding.basic.util.sp.SPUtils
 import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.utils.StatServiceUtils
 import java.util.*
 
 /**
@@ -25,14 +21,6 @@ object BookShelfLogger {
     fun uploadBookShelfMore() {
         DyStatService.onEvent(EventPoint.SHELF_MORE)
         StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_click_mine_menu)
-    }
-
-    /***
-     * 书架点击搜索
-     * **/
-    fun uploadBookShelfSearch() {
-        StatServiceUtils.statAppBtnClick(BaseBookApplication.getGlobalContext(), StatServiceUtils.bs_click_search_btn)
-        DyStatService.onEvent(EventPoint.SHELF_SEARCH)
     }
 
     /***
@@ -146,26 +134,6 @@ object BookShelfLogger {
      * **/
     fun uploadBookShelfEditSelectAll(all: Boolean) {
         DyStatService.onEvent(EventPoint.SHELFEDIT_SELECTALL, mapOf("type" to if (all) "1" else "2"))
-    }
-
-    fun uploadFirstOpenBooks() {
-
-        //判断用户是否是当日首次打开应用,并上传书架的id
-        val lastTime = SPUtils.getDefaultSharedLong(Constants.TODAY_FIRST_POST_BOOKIDS, 0)
-        val currentTime = System.currentTimeMillis()
-
-        val isSameDay = AppUtils.isToday(lastTime, currentTime)
-        if (!isSameDay) {
-            val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
-            val bookIdList = StringBuilder()
-            books?.forEachIndexed { index, book ->
-                bookIdList.append(book.book_id)
-                bookIdList.append(if (book.readed == 1) "_1" else "_0")//1已读，0未读
-                bookIdList.append(if (index == books.size) "" else "$")
-            }
-            DyStatService.onEvent(EventPoint.MAIN_BOOKLIST, mapOf("bookid" to bookIdList.toString()))
-            SPUtils.putDefaultSharedLong(Constants.TODAY_FIRST_POST_BOOKIDS, currentTime)
-        }
     }
 
 }

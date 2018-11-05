@@ -10,10 +10,10 @@ import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.net.Config
 import com.ding.basic.util.*
+import com.dingyue.statistics.DyStatService
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
@@ -210,7 +210,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
             val functionCode = parameters["func_code"]
             parameters.remove("func_code")
 
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), pageCode, functionCode, parameters)
+            if (!pageCode.isNullOrBlank() && !functionCode.isNullOrBlank()) DyStatService.onEvent(pageCode!!, functionCode!!, parameters)
         }
     }
 

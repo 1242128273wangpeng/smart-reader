@@ -13,7 +13,6 @@ import com.ding.basic.util.sp.SPUtils
 import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.R
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil

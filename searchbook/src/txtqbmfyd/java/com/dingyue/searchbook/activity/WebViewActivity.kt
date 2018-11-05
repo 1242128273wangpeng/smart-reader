@@ -10,7 +10,9 @@ import com.ding.basic.bean.WebPageFavorite
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.R
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.txtqbmfyd.act_web_view.*
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.antiShakeClick
@@ -44,6 +46,7 @@ class WebViewActivity : FrameActivity() {
     private fun clickFavorite() {
         if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
             loge("title:[${web_view.title}],url:[${web_view.url}]")
+            DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_WEBCOLLECT, mapOf("title" to web_view.title, "link" to web_view.url))
             btn_page_favorite.isEnabled = false
             val favorite = WebPageFavorite()
             favorite.webTitle = web_view.title

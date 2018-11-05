@@ -2,8 +2,9 @@ package com.dingyue.searchbook.fragment
 
 import android.view.View
 import com.dingyue.searchbook.R
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.fragment_listview.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.ConfirmDialog
 import net.lzbook.kit.utils.StatServiceUtils
 
@@ -21,7 +22,7 @@ class HistoryFragment : BaseHistoryFragment() {
         historyDeleteView = View.inflate(context, R.layout.item_history_delete_layout, null)
         historyDeleteView?.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.b_search_click_his_clear)
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH, StartLogClickUtil.BARCLEAR)
+            DyStatService.onEvent(EventPoint.SEARCH_BARCLEAR)
             showClearHistoryDialog()
         }
         listView.addFooterView(historyDeleteView)
@@ -41,23 +42,18 @@ class HistoryFragment : BaseHistoryFragment() {
         val dialog = ConfirmDialog(requireActivity())
         dialog.setTitle(requireActivity().getString(R.string.prompt))
         dialog.setContent(requireActivity().getString(R.string.determine_clear_serach_history))
-        dialog.setOnConfirmListener({
-            val data = java.util.HashMap<String, String>()
-            data.put("type", "1")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
+        dialog.setOnConfirmListener {
+            DyStatService.onEvent(EventPoint.SEARCH_HISTORYCLEAR, mapOf("type" to "1"))
             historyPresenter.removeHistoryRecord()
             historyAdapter?.notifyDataSetChanged()
             dialog.dismiss()
-        })
+        }
 
 
-        dialog.setOnCancelListener({
-            val data = java.util.HashMap<String, String>()
-            data.put("type", "0")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE,
-                    StartLogClickUtil.HISTORYCLEAR, data)
+        dialog.setOnCancelListener {
+            DyStatService.onEvent(EventPoint.SEARCH_HISTORYCLEAR, mapOf("type" to "0"))
             dialog.dismiss()
-        })
+        }
 
         dialog.show()
 

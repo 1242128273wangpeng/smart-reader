@@ -24,11 +24,12 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.Config;
 import com.ding.basic.net.api.service.RequestService;
+import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.PagerDesc;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.AppUtils;
@@ -184,41 +185,41 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
             case R.id.find_book_detail_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                if (fromType.equals("class")) {
-                    data.put("firstclass", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                            StartLogClickUtil.BACK, data);
-                } else if (fromType.equals("top")) {
-                    data.put("firsttop", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                            StartLogClickUtil.BACK, data);
-                } else if (fromType.equals("recommend")) {
-                    data.put("firstrecommend", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                            StartLogClickUtil.BACK, data);
-                } else if (fromType.equals("authorType")) {
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
-                            StartLogClickUtil.BACK, data);
+                switch (fromType) {
+                    case "class":
+                        data.put("firstclass", currentTitle);
+                        DyStatService.onEvent(EventPoint.FIRSTCLASS_BACK, data);
+                        break;
+                    case "top":
+                        data.put("firsttop", currentTitle);
+                        DyStatService.onEvent(EventPoint.FIRSTTOP_BACK, data);
+                        break;
+                    case "recommend":
+                        data.put("firstrecommend", currentTitle);
+                        DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_BACK, data);
+                        break;
+                    case "authorType":
+                        DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data);
+                        break;
                 }
                 clickBackBtn();
                 break;
             case R.id.find_book_detail_search:
                 Map<String, String> postData = new HashMap<>();
-
-                if (fromType.equals("class")) {
-                    postData.put("firstclass", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
-                } else if (fromType.equals("top")) {
-                    postData.put("firsttop", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
-                } else if (fromType.equals("recommend")) {
-                    postData.put("firstrecommend", currentTitle);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                            StartLogClickUtil.SEARCH, postData);
+                switch (fromType) {
+                    case "class":
+                        postData.put("firstclass", currentTitle);
+                        DyStatService.onEvent(EventPoint.FIRSTCLASS_SEARCH, postData);
+                        break;
+                    case "top":
+                        postData.put("firsttop", currentTitle);
+                        DyStatService.onEvent(EventPoint.FIRSTTOP_SEARCH, postData);
+                        break;
+                    case "recommend":
+                        postData.put("firstrecommend", currentTitle);
+                        DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, postData);
+                        break;
                 }
-
                 RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
                 break;
 
@@ -410,9 +411,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     Map<String, String> data = new HashMap<>();
                     data.put("keyword", keyWord);
                     data.put("type", "1");//0 代表从分类过来 1 代表从FindBookDetail
-                    StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
-                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT,
-                            data);
+                    DyStatService.onEvent(EventPoint.SYSTEM_SEARCHRESULT, data);
 
                     EnterUtilKt.enterSearch(FindBookDetail.this,
                             keyWord, search_type, filter_type, filter_word, sort_type,
@@ -438,10 +437,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                     return;
                 }
                 Map<String, String> data = new HashMap<>();
-                data.put("BOOKID", book_id);
+                data.put("bookid", book_id);
                 data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(FindBookDetail.this,
-                        StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ENTER, data);
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_ENTER, data);
 
 
                 Intent intent = new Intent();

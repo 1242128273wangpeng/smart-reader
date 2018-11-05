@@ -27,6 +27,7 @@ import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.BookRouter.NAVIGATE_TYPE_BOOKSHELF
@@ -207,7 +208,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
         img_head_search.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
-            BookShelfLogger.uploadBookShelfSearch()
+            HomeLogger.uploadHomeSearch(1)
         }
 
         img_head_menu.setOnClickListener {
@@ -315,7 +316,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, false)
         uiThread {
             bookShelfAdapter.notifyDataSetChanged()
-            BookShelfLogger.uploadFirstOpenBooks()
         }
     }
 

@@ -62,4 +62,8 @@ object PersonalLogger {
     fun uploadPersonalADPage() {
         DyStatService.onEvent(EventPoint.PERSONAL_ADPAGE)
     }
+
+    fun uploadPersonalWebCollect() {
+        DyStatService.onEvent(EventPoint.PERSONAL_WEBCOLLECT)
+    }
 }

@@ -16,13 +16,14 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.dingyue.searchbook.activity.SearchBookActivity
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.txtqbmfyd.act_book_cover.*
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.presenter.CoverPagePresenter
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
@@ -119,10 +120,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             transformReadDialog=TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "1"))
 
                 intoReadingActivity()
 
@@ -132,10 +130,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
             transformReadDialog?.insertCancelListener {
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "2"))
 
                 if (!this.isFinishing) {
                     transformReadDialog?.dismiss()
@@ -155,7 +150,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     }
 
                     if (!TextUtils.isEmpty(recommendBean.bookId)) {
-                        data["Tbookid"] = recommendBean.bookId!!
+                        data["Tbookid"] = recommendBean.bookId
                     }
 
                     val book = Book()
@@ -163,8 +158,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     book.book_source_id = recommendBean.id
                     book.book_chapter_id = recommendBean.bookChapterId
                     BookRouter.navigateCover(this, book)
-
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.RECOMMENDEDBOOK, data)
+                    DyStatService.onEvent(EventPoint.BOOOKDETAIL_RECOMMENDEDBOOK, data)
                 }
             }
         }
@@ -331,9 +325,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         }
         when (view.id) {
             R.id.book_cover_back -> {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.BACK, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_BACK, mapOf("type" to "1"))
                 finish()
             }
 
@@ -344,7 +336,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             R.id.book_cover_reading -> {
                 //转码阅读点击的统计
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEREAD)
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.handleReadingAction()
                 }
@@ -353,8 +345,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             R.id.book_cover_download_iv -> {
                 bookId?.let {
                     StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
-                    val dataDownload = HashMap<String, String>()
-                    dataDownload["bookId"] = it
 
                     if (coverPagePresenter != null) {
                         requestBookDownloadState(it)
@@ -363,7 +353,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                             CacheManager.stop(it)
                         } else {
                             coverPagePresenter?.handleDownloadAction()
-                            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                            DyStatService.onEvent(EventPoint.BOOOKDETAIL_CASHEALL, mapOf("bookid" to it))
                         }
                     }
                 }
@@ -371,7 +361,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             R.id.book_catalog_tv -> {
                 //书籍详情页查看目录点击
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_CATALOG)
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.startCatalogActivity(true)
                 }
@@ -380,7 +370,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.startCatalogActivity(false)
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_LATESTCHAPTER)
             }
         }
     }
