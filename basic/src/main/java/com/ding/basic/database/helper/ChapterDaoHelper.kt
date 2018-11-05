@@ -135,12 +135,20 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
 
     @Synchronized
     override fun deleteAllChapters() {
-        chapterDao.deleteAllChapters()
+        try {
+            chapterDao.deleteAllChapters()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
     override fun deleteChapters(sequence: Int) {
-        chapterDao.deleteChapters(sequence)
+        try {
+            chapterDao.deleteChapters(sequence)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
@@ -199,11 +207,19 @@ class ChapterDaoHelper private constructor(private val chapterDao: ChapterDao) :
 
     @Synchronized
     fun updateBookChapterId(book_chapter_id: String){
-        chapterDao.updateBookChapterId(book_chapter_id)
+        try {
+            chapterDao.updateBookChapterId(book_chapter_id)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
     fun updateBookSourceId(book_source_id: String){
-        chapterDao.updateBookSourceId(book_source_id)
+        try {
+            chapterDao.updateBookSourceId(book_source_id)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 }

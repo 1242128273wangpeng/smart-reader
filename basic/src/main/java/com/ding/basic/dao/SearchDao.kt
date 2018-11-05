@@ -19,6 +19,7 @@ interface SearchDao : BaseDao<SearchRecommendBook.DataBean> {
     /************************** 删 ****************************/
 
     @Query("DELETE FROM search_recommend")
+    @Throws(Exception::class)
     fun deleteAllSearchs()
 
     /************************** 改 ****************************/

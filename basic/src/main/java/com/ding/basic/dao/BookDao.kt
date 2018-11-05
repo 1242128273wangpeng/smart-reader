@@ -26,9 +26,11 @@ interface BookDao :BaseDao<Book>{
     fun updateBooks(books: List<Book>): Int
 
     @Query("DELETE FROM book WHERE book_id = :book_id")
+    @Throws(Exception::class)
     fun deleteBook(book_id: String): Int
 
     @Query("DELETE FROM book WHERE id = :id")
+    @Throws(Exception::class)
     fun deleteBookById(id: Int): Int
 
     @Query("SELECT * FROM book WHERE book_id = :book_id")
@@ -43,6 +45,7 @@ interface BookDao :BaseDao<Book>{
     fun deleteBooks(books: List<Book>)
 
     @Query("DELETE FROM book")
+    @Throws(Exception::class)
     fun deleteShelfBooks()
 
     @Query("SELECT * FROM book")

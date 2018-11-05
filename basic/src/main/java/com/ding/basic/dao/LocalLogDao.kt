@@ -28,6 +28,7 @@ interface LocalLogDao : BaseDao<LocalLog> {
     fun query(type: String): List<LocalLog>
 
     @Query("DELETE FROM LocalLog WHERE time <= :time")
+    @Throws(Exception::class)
     fun deleteOutOfDate(time: Long)
 
     @Query("SELECT COUNT(*) FROM LocalLog")

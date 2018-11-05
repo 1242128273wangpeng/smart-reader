@@ -155,7 +155,11 @@ class AndroidLogStorage {
 
             //清除过期七天的数据
             val minTimMillis = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)
-            localLogDao?.deleteOutOfDate(minTimMillis)
+            try {
+                localLogDao?.deleteOutOfDate(minTimMillis)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
 
             if (!isConsumeMinority) {
                 isConsumeMinority = true

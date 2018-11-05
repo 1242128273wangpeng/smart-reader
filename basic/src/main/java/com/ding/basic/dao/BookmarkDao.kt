@@ -20,15 +20,19 @@ interface BookmarkDao : BaseDao<Bookmark> {
     /**************************删****************************/
 
     @Query("DELETE FROM book_mark WHERE ID = :id")
+    @Throws(Exception::class)
     fun deleteById(id: Int)
 
     @Query("DELETE FROM book_mark WHERE book_id = :book_id")
+    @Throws(Exception::class)
     fun deleteByBookId(book_id: String)
 
     @Query("DELETE FROM book_mark WHERE book_id = :book_id AND sequence = :sequence AND offset = :offset")
+    @Throws(Exception::class)
     fun deleteByExatly(book_id: String, sequence: Int, offset: Int)
 
     @Query("DELETE FROM book_mark")
+    @Throws(Exception::class)
     fun deleteAllMarks()
 
     /**************************改****************************/

@@ -422,10 +422,15 @@ public class AppUtils {
                 level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             }
         } else {
-            Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
-                    .registerReceiver(null,
-                            new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+            try {
+                Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
+                        .registerReceiver(null,
+                                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+                level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
         return level + "%";
     }

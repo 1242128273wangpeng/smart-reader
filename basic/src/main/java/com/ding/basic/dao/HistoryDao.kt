@@ -1,10 +1,7 @@
 package com.ding.basic.dao
 
 import android.arch.persistence.room.*
-import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.HistoryInfo
-import com.ding.basic.bean.SearchRecommendBook
-import io.reactivex.Flowable
 
 /**
  * Created by yuchao on 2018/3/16 0016.
@@ -20,9 +17,11 @@ interface HistoryDao: BaseDao<HistoryInfo> {
     /************************** 删 ****************************/
 
     @Query("DELETE FROM history_info")
+    @Throws(Exception::class)
     fun deleteAllHistory()
 
     @Query("DELETE FROM history_info WHERE browse_time = (SELECT MIN(browse_time) FROM history_info)")
+    @Throws(Exception::class)
     fun deleteSmallTime()
 
     /************************** 改 ****************************/

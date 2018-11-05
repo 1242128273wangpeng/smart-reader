@@ -31,10 +31,12 @@ interface ChapterDao : BaseDao<Chapter> {
      * 删除表中所有数据
      */
     @Query("DELETE FROM chapters")
+    @Throws(Exception::class)
     fun deleteAllChapters()
 
 
     @Query("DELETE FROM chapters WHERE sequence >= :sequence")
+    @Throws(Exception::class)
     fun deleteChapters(sequence: Int)
 
     /**************************改****************************/
@@ -49,12 +51,14 @@ interface ChapterDao : BaseDao<Chapter> {
      * 更新表中所有book_chapter_id
      */
     @Query("UPDATE chapters SET book_chapter_id = :book_chapter_id")
+    @Throws(Exception::class)
     fun updateBookChapterId(book_chapter_id: String): Int
 
     /**
      * 更新表中所有book_source_id
      */
     @Query("UPDATE chapters SET book_source_id = :book_source_id")
+    @Throws(Exception::class)
     fun updateBookSourceId(book_source_id: String): Int
 
     /**************************查****************************/

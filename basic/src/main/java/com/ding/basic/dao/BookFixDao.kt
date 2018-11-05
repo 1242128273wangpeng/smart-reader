@@ -14,6 +14,7 @@ interface BookFixDao :BaseDao<BookFix>{
     fun insertBookFix(bookFix: BookFix)
 
     @Query("DELETE FROM book_fix WHERE book_id = :id")
+    @Throws(Exception::class)
     fun deleteBookFix(id: String)
 
     @Query("SELECT * FROM book_fix")

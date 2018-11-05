@@ -158,10 +158,15 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteBook(book_id: String, context: Context): Boolean {
-        val result = bookdao.deleteBook(book_id) != -1
-        ChapterDaoHelper.deleteDataBase(book_id, context)
-        deleteBookFix(book_id)
-        return result
+        return try {
+            val result = bookdao.deleteBook(book_id) != -1
+            ChapterDaoHelper.deleteDataBase(book_id, context)
+            deleteBookFix(book_id)
+            result
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            false
+        }
     }
 
     @Synchronized
@@ -172,13 +177,21 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     }
 
     override fun deleteBooksById(books: List<Book>) {
-        books.forEach {
-            bookdao.deleteBookById(it.id)
+        try {
+            books.forEach {
+                bookdao.deleteBookById(it.id)
+            }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
     override fun deleteShelfBooks() {
-        return bookdao.deleteShelfBooks()
+        try {
+            return bookdao.deleteShelfBooks()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     override fun loadBook(book_id: String): Book? {
@@ -214,8 +227,12 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteBookFix(id: String) {
-        if (loadBookFix(id) != null) {
-            bookFixDao.deleteBookFix(id)
+        try {
+            if (loadBookFix(id) != null) {
+                bookFixDao.deleteBookFix(id)
+            }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -234,14 +251,22 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteBookMark(ids: ArrayList<Int>) {
-        ids.forEach({
-            bookmarkDao.deleteById(it)
-        })
+        try {
+            ids.forEach({
+                bookmarkDao.deleteById(it)
+            })
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
     override fun deleteBookMark(book_id: String) {
-        bookmarkDao.deleteByBookId(book_id)
+        try {
+            bookmarkDao.deleteByBookId(book_id)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
@@ -256,11 +281,20 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteBookMark(book_id: String, sequence: Int, offset: Int) {
-        bookmarkDao.deleteByExatly(book_id, sequence, offset)
+        try {
+            bookmarkDao.deleteByExatly(book_id, sequence, offset)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
+
     @Synchronized
     fun deleteAllBookMark(){
-        bookmarkDao.deleteAllMarks()
+        try {
+            bookmarkDao.deleteAllMarks()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
@@ -280,7 +314,11 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteAllHistory() {
-        historyDao.deleteAllHistory()
+        try {
+            historyDao.deleteAllHistory()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     @Synchronized
@@ -295,7 +333,11 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
 
     @Synchronized
     override fun deleteSmallTimeHistory() {
-        historyDao.deleteSmallTime()
+        try {
+            historyDao.deleteSmallTime()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     fun insertOrUpdate(user: LoginRespV4) {
@@ -307,7 +349,11 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
     }
 
     fun deleteLoginUser() {
-        userDao.deleteUsers()
+        try {
+            userDao.deleteUsers()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
 
