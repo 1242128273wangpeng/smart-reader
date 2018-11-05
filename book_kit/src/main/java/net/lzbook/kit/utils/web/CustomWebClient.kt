@@ -46,6 +46,10 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
      * **/
     private var loadingWebViewError: (() -> Unit)? = null
 
+    /***
+     * WebView每次加载开始监听
+     * **/
+    private var loadingEveryWebViewStart: ((url: String?) -> Unit)? = null
 
     companion object {
         private val staticResourceRule = SPUtils.getOnlineConfigSharedString(SPKey.DY_STATIC_RESOURCE_RULE)
@@ -104,6 +108,9 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             }
             loadingWebViewError?.invoke()
         }
+        if(loadingEveryWebViewStart != null){
+            loadingEveryWebViewStart?.invoke(url)
+        }
         super.onPageStarted(view, url, favicon)
     }
 
@@ -151,6 +158,13 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
      * **/
     fun setLoadingWebViewStart(loadingWebViewStart: (url: String?) -> Unit) {
         this.loadingWebViewStart = loadingWebViewStart
+    }
+
+    /***
+     * 设置每次加载WebView开始监听
+     * **/
+    fun setLoadingEveryWebViewStart(loadingEveryWebViewStart: (url: String?) -> Unit) {
+        this.loadingEveryWebViewStart = loadingEveryWebViewStart
     }
 
     /***

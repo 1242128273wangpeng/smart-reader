@@ -2044,5 +2044,11 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         localRepository.insertFavorite(favorite)
     }
 
+    fun getWebFavoriteByTitleAndLink(title: String,web_link: String)= localRepository.getByTitleAndLink(title,web_link)
 
+    fun deleteWebFavoriteList(list :List<WebPageFavorite>?){
+        list?.forEach({
+            deleteWebFavoriteById(it.id)
+        })
+    }
 }

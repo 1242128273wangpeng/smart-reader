@@ -485,4 +485,6 @@ class LocalRequestRepository private constructor(private var context: Context,
 
     fun getWebFavoriteCount() = webFavoriteDao.getCount()
 
+    fun getByTitleAndLink(title: String,web_link: String) = webFavoriteDao.getByTitleAndLink(title,web_link)
+
 }

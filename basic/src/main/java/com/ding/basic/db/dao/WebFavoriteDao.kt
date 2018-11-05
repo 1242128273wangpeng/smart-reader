@@ -28,4 +28,7 @@ interface WebFavoriteDao : BaseDao<WebPageFavorite> {
     @Query("SELECT COUNT(*) FROM web_page_favorite")
     fun getCount(): Int
 
+    @Query("SELECT * FROM web_page_favorite WHERE title = :title AND web_link = :web_link")
+    fun getByTitleAndLink(title: String,web_link: String): List<WebPageFavorite>?
+
 }

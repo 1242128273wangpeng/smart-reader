@@ -59,6 +59,7 @@
         android:lines="2"
         android:text="@string/page_favorite"
         android:textColor="#212832"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -32,12 +32,16 @@ class WebViewActivity : FrameActivity() {
 
     private var customWebClient: CustomWebClient? = null
     private var loadingPage: LoadingPage? = null
+    private var requestRepositoryFactory: RequestRepositoryFactory? = null
+    private var isFavorite: Boolean = false
+    private var list: List<WebPageFavorite>? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_web_view)
+        requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this);
         img_back.setOnClickListener { finish() }
-        btn_page_favorite.antiShakeClick { clickFavorite() }
+        btn_page_favorite.antiShakeClick { click() }
         initWebView()
         initWebViewCallback()
         if (intent.hasExtra("url")) web_view.loadUrl(intent.getStringExtra("url"))
@@ -52,7 +56,7 @@ class WebViewActivity : FrameActivity() {
             favorite.webTitle = web_view.title
             favorite.webLink = web_view.url
             favorite.createTime = System.currentTimeMillis()
-            RequestRepositoryFactory.loadRequestRepositoryFactory(this).addWebFavorite(favorite)
+            requestRepositoryFactory?.addWebFavorite(favorite)
             if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE_CLICK)) {
                 ToastUtil.showToastMessage("收藏成功，可在个人中心-网页收藏中查看")
                 SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE_CLICK, true)
@@ -61,6 +65,26 @@ class WebViewActivity : FrameActivity() {
             }
             btn_page_favorite.isEnabled = true
         }
+    }
+
+    fun click() {
+        if (isFavorite) {
+            cancelFavorite()
+            changeBtnStatus()
+        } else {
+            clickFavorite()
+            changeBtnStatus()
+        }
+    }
+
+    /**
+     * 取消收藏
+     */
+    fun cancelFavorite() {
+        btn_page_favorite.isEnabled = false
+        requestRepositoryFactory?.deleteWebFavoriteList(list)
+        ToastUtil.showToastMessage("已取消")
+        btn_page_favorite.isEnabled = true
     }
 
 
@@ -79,9 +103,25 @@ class WebViewActivity : FrameActivity() {
     private fun initWebViewCallback() {
 
         if (customWebClient != null) {
-            customWebClient?.setLoadingWebViewStart { showLoading() }
-            customWebClient?.setLoadingWebViewError { loadingPage?.onErrorVisable() }
-            customWebClient?.setLoadingWebViewFinish { hideLoading() }
+            customWebClient?.setLoadingWebViewStart {
+                showLoading()
+            }
+            customWebClient?.setLoadingEveryWebViewStart {
+                btn_page_favorite.visibility = View.GONE
+            }
+            customWebClient?.setLoadingWebViewError {
+                loadingPage?.onErrorVisable()
+                btn_page_favorite.visibility = View.GONE
+            }
+
+            customWebClient?.setLoadingWebViewFinish {
+                hideLoading()
+                if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
+                    changeBtnStatus()
+                } else {
+                    btn_page_favorite.visibility = View.GONE
+                }
+            }
         }
 
         if (loadingPage != null) {
@@ -91,6 +131,21 @@ class WebViewActivity : FrameActivity() {
                 }
                 web_view?.reload()
             })
+        }
+    }
+
+    /**
+     * 改变收藏按钮状态
+     */
+    fun changeBtnStatus() {
+        list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
+        btn_page_favorite.visibility = View.VISIBLE
+        if (list != null && list!!.isNotEmpty()) {
+            isFavorite = true
+            btn_page_favorite.setText(R.string.page_cancel_favorite)
+        } else {
+            isFavorite = false
+            btn_page_favorite.setText(R.string.page_favorite)
         }
     }
 

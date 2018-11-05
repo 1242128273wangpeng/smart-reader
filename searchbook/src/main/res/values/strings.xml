@@ -17,6 +17,7 @@
 
     <string name="change">换一换</string>
     <string name="page_favorite">收藏\n网页</string>
+    <string name="page_cancel_favorite">取消\n收藏</string>
 
 
 </resources>
