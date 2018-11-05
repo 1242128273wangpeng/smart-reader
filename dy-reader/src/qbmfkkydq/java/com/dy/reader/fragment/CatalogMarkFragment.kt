@@ -17,7 +17,6 @@ import android.widget.TextView
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.util.DataCache
-
 import com.dy.reader.R
 import com.dy.reader.adapter.BaseRecyclerHolder
 import com.dy.reader.adapter.ListRecyclerAdapter
@@ -28,12 +27,11 @@ import com.dy.reader.view.ReaderDeleteBookmarkPopup
 import kotlinx.android.synthetic.qbmfkkydq.frag_catalog_mark.*
 import kotlinx.android.synthetic.qbmfkkydq.item_reader_bookmark.view.*
 import kotlinx.android.synthetic.qbmfkkydq.item_reader_catalog.view.*
-
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.ui.widget.LoadingPage
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -43,7 +41,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     val presenter: CatalogMark.Presenter by lazy {
         CatalogMarkPresenter(this)
     }
-
+    var deleteBookmarkPopup: ReaderDeleteBookmarkPopup? = null
     var chapterList = mutableListOf<Chapter>()
 
     private var bookmarkList = mutableListOf<Bookmark>()
@@ -99,23 +97,23 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
             val transX = requireActivity().window.decorView.width - rl_book_content.width
 
-            val deleteBookmarkPopup = ReaderDeleteBookmarkPopup(requireActivity())
+            deleteBookmarkPopup = ReaderDeleteBookmarkPopup(requireActivity())
 
-            deleteBookmarkPopup.deleteBookmarkListener = {
+            deleteBookmarkPopup?.deleteBookmarkListener = {
                 presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
-                deleteBookmarkPopup.dismiss()
+                deleteBookmarkPopup?.dismiss()
             }
 
-            deleteBookmarkPopup.clearBookmarkListener = {
+            deleteBookmarkPopup?.clearBookmarkListener = {
                 presenter.deleteAllBookMark(requireActivity())
-                deleteBookmarkPopup.dismiss()
+                deleteBookmarkPopup?.dismiss()
             }
 
-            deleteBookmarkPopup.dismissList = {
+            deleteBookmarkPopup?.dismissList = {
                 view_content_mask.visibility = View.GONE
             }
 
-            deleteBookmarkPopup.showAtLocation(view_content_mask, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
+            deleteBookmarkPopup?.showAtLocation(view_content_mask, Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, -transX / 2, 0)
 
             true
         }
@@ -145,7 +143,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     private fun initListener() {
         img_fix_book.setOnClickListener {
             RepairHelp.fixBook(requireActivity(), presenter.getBook(), {
-                if (!requireActivity().isFinishing) {
+                if (isAdded && !requireActivity().isFinishing) {
                     RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
                 }
             })
@@ -187,6 +185,10 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
         } else {
             presenter.loadBookMark(requireActivity(), 2)
         }
+    }
+
+    fun dismissDialog() {
+        deleteBookmarkPopup?.dismiss()
     }
 
     fun fixBook() {
