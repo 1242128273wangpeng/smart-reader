@@ -64,6 +64,8 @@ class WebViewActivity : FrameActivity() {
                 ToastUtil.showToastMessage("收藏成功")
             }
             btn_page_favorite.isEnabled = true
+        }else{
+            ToastUtil.showToastMessage("收藏失败")
         }
     }
 
@@ -116,11 +118,7 @@ class WebViewActivity : FrameActivity() {
 
             customWebClient?.setLoadingWebViewFinish {
                 hideLoading()
-                if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
-                    changeBtnStatus()
-                } else {
-                    btn_page_favorite.visibility = View.GONE
-                }
+                changeBtnStatus()
             }
         }
 
@@ -138,7 +136,11 @@ class WebViewActivity : FrameActivity() {
      * 改变收藏按钮状态
      */
     fun changeBtnStatus() {
-        list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
+        if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
+            list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
+        }else{
+            list = null
+        }
         btn_page_favorite.visibility = View.VISIBLE
         if (list != null && list!!.isNotEmpty()) {
             isFavorite = true
