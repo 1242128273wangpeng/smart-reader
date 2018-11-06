@@ -29,7 +29,7 @@ import com.ding.basic.db.dao.ChapterDao
  * The Room database that contains the Chapter table
  * 如果你想升级数据库请按规则书写migration, 并添加调用, 最后不要忘记升级数据库版本
  */
-@Database(entities = arrayOf(Chapter::class), version = 2)
+@Database(entities = arrayOf(Chapter::class), version = 3)
 abstract class ChaptersDatabase : RoomDatabase() {
 
     abstract fun chapterDao(): ChapterDao
@@ -44,6 +44,7 @@ abstract class ChaptersDatabase : RoomDatabase() {
                 return Room.databaseBuilder(context.applicationContext, ChaptersDatabase::class.java, "$CHAPTER_DATABASE$book_id.db")
                         .allowMainThreadQueries()
                         .addMigrations(migration1_2)
+                        .addMigrations(migration2_3)
                         .build()
             }
         }
@@ -51,6 +52,12 @@ abstract class ChaptersDatabase : RoomDatabase() {
         private val migration1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE `chapters` ADD COLUMN `fix_state` INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        private val migration2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE `chapters` ADD COLUMN `defaultCode` INTEGER NOT NULL DEFAULT 0")
             }
         }
     }

@@ -339,13 +339,6 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                 println("cant draw page content == null")
             }
 
-            val textPaint = TextPaint()
-            textPaint.style = Paint.Style.FILL
-            textPaint.isAntiAlias = true
-            textPaint.isDither = true
-            textPaint.textSize = 80F
-            textPaint.color = ReaderSettings.instance.fontColor
-
             println("loadBitmap ${posi.group}:${posi.index} use time ${System.currentTimeMillis() - startTime}")
         }
     }

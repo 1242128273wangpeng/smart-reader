@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.URLBuilder
 import com.orhanobut.logger.AndroidLogAdapter
@@ -172,9 +173,9 @@ object Config {
         parameters["channelId"] = loadRequestParameter("channelId")
         parameters["packageName"] = loadRequestParameter("packageName")
 
-        parameters["cityCode"] = loadRequestParameter("cityCode")
-        parameters["latitude"] = loadRequestParameter("latitude")
-        parameters["longitude"] = loadRequestParameter("longitude")
+        parameters["cityCode"] = ParameterConfig.cityCode
+        parameters["latitude"] = ParameterConfig.latitude.toString()
+        parameters["longitude"] = ParameterConfig.longitude.toString()
 
         return URLBuilder.buildUrl(requestAPIHost, url, parameters)
     }

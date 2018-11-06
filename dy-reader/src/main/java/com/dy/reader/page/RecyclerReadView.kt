@@ -25,6 +25,7 @@ import com.dy.reader.mode.NovelPageBean
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import com.dy.reader.util.ThemeUtil
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.reader_loading.view.*
 import kotlinx.android.synthetic.main.reader_vertical_pager.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
@@ -241,6 +242,7 @@ class RecyclerReadView @JvmOverloads constructor(context: Context?, attrs: Attri
             mFirstRead = true
         }
         DataProvider.loadPre(ReaderStatus.position.group + 2, ReaderStatus.position.group + 6)
+        DataProvider.checkReadChapter(ReaderStatus.position.group - 6, ReaderStatus.position.group - 2)
 
         getChapterData(ReaderStatus.position.group, ReadViewEnums.PageIndex.current, false)
 

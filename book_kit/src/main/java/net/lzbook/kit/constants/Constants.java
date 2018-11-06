@@ -395,10 +395,16 @@ public class Constants {
      * -1不传sex字段
      * 0全部； 1男； 2女；
      */
+    //逐步规范全局参数使用，请使用ParameterConfig中的参数
+    @Deprecated
     public static int SBOY = 1;
+    @Deprecated
     public static int SGIRL = 2;
+    @Deprecated
     public static int SDEFAULT = 0;
+    @Deprecated
     public static int NONE = -1;
+    @Deprecated
     public static int SGENDER = NONE;
 
 

@@ -3,6 +3,7 @@ package com.ding.basic.util
 import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
 import com.ding.basic.net.token.Token
+import com.orhanobut.logger.Logger
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.net.URLDecoder
@@ -42,6 +43,40 @@ fun loadMassageParameters(message: String?): HashMap<String, String> {
         }
     }
     return parameters
+}
+
+/***
+ * 拼接数据流请求链接
+ * **/
+fun buildMicroRequest(message: String?, fromWebView: Boolean): String {
+    var url = message
+
+    var parameters: MutableMap<String, String> = HashMap()
+
+    if (!url.isNullOrEmpty()) {
+
+        val array = url!!.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+        url = array[0]
+
+        if (array.size == 2) {
+            parameters = loadRequestUrlParameters(array[1])
+        }
+    }
+
+    parameters = buildMicroParameters(parameters)
+
+    val sign = loadMicroRequestSign(parameters)
+
+    parameters["sign"] = sign
+
+    if (fromWebView) {
+        parameters["p"] = Config.loadPublicKey()
+    }
+
+    Logger.e("签名完成后，携带的公钥为: " + Config.loadPublicKey() + " : " + sign)
+
+    return buildMicroRequestAction(url, parameters)
 }
 
 /***
@@ -91,21 +126,13 @@ fun buildMicroParameters(parameters: MutableMap<String, String>): MutableMap<Str
         parameters["channelId"] = Config.loadRequestParameter("channelId")
     }
 
-    if (parameters["latitude"].isNullOrEmpty()) {
-        parameters["latitude"] = Config.loadRequestParameter("latitude")
-    }
-
-    if (parameters["longitude"].isNullOrEmpty()) {
-        parameters["longitude"] = Config.loadRequestParameter("longitude")
-    }
-
-    if (parameters["cityCode"].isNullOrEmpty()) {
-        parameters["cityCode"] = Config.loadRequestParameter("cityCode")
-    }
-
     if (parameters["packageName"].isNullOrEmpty()) {
         parameters["packageName"] = Config.loadRequestParameter("packageName")
     }
+
+    parameters["cityCode"] = ParameterConfig.cityCode
+    parameters["latitude"] = ParameterConfig.latitude
+    parameters["longitude"] = ParameterConfig.longitude
 
     if (parameters["gender"].isNullOrEmpty()) {
         if (ParameterConfig.GENDER_TYPE == ParameterConfig.GENDER_BOY) {
@@ -144,6 +171,7 @@ fun loadMicroRequestSign(parameters: Map<String, String>): String {
     }
 
     if (stringBuilder.isNotEmpty()) {
+        Logger.i("String: $stringBuilder")
         try {
             return String(Hex.encodeHex(DigestUtils.md5(stringBuilder.toString())))
         } catch (exception: Exception) {

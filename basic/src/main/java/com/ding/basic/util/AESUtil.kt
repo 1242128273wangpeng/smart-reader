@@ -65,7 +65,7 @@ object AESUtil {
     /***
      * 解密
      * **/
-    fun decrypt(auth: String, key: String?): String? {
+    fun decrypt(auth: String?, key: String?): String? {
         try {
             if (key == null) {
                 Logger.e("鉴权解密：Key为空！")
@@ -81,13 +81,18 @@ object AESUtil {
 
             val secretKeySpec = SecretKeySpec(keyBytes, "AES")
 
-            cipher!!.init(Cipher.DECRYPT_MODE, secretKeySpec, parameterSpec)
+            cipher?.init(Cipher.DECRYPT_MODE, secretKeySpec, parameterSpec)
 
             val encryptedBytes = Base64.decode(auth, Base64.DEFAULT)
 
             try {
-                val result = cipher!!.doFinal(encryptedBytes)
-                return String(result)
+                val result = cipher?.doFinal(encryptedBytes)
+
+                return if (result != null) {
+                    String(result)
+                } else {
+                    null
+                }
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
@@ -105,29 +110,4 @@ object AESUtil {
     private fun convertString(input: String): ByteArray {
         return input.toByteArray(Charset.forName("UTF-8"))
     }
-
-
-    //    private void check() {
-    //        Map<String, String[]> parameterMap = new TreeMap<>(request.getParameterMap());
-    ////验签
-    //        StringBuilder sb = new StringBuilder();
-    //        parameterMap.entrySet().forEach(stringEntry -> {
-    //            if (!StringUtils.equals(stringEntry.getKey(), "sign")) {
-    //                sb.append(stringEntry.getKey());
-    //                sb.append("=");
-    //                sb.append(stringEntry.getValue()[0]);
-    //            }
-    //        });
-    //        sb.append("privateKey=");
-    //        sb.append(privateKey);
-    //
-    //
-    //        String sign = DigestUtils.md5Hex(sb.toString());
-    //    }
-
-
-    //    public static void main(String[] args) {
-    //        String s = "aWo1MEY5vZgvIP+NNhb2bU6MpVvg7wND+dedeKhM47o2sLppZdYmeMT/ZPblKjn2KA6HtqJ8RnXq7KzvE+59kjFTWT7JWK3krutnh3L4O011AxrndvTDtF3qqoqE05zJRLTXbv7CZgQ6w6COkzkspg==";
-    //        System.out.println(decrypt(s, "wangpeng12345678"));
-    //    }
 }

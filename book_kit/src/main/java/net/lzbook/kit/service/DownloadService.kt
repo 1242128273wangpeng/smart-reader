@@ -450,11 +450,15 @@ class DownloadService : Service(), Runnable {
                     tryTimes++
                     try {
                         val sourceChapter = getSourceChapter(chapter)
+
                         if (TextUtils.isEmpty(sourceChapter.content)) {
                             sourceChapter.content = "null"
                         }
-                        if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
-                            throw IOException("cant save chapter")
+
+                        if (sourceChapter.defaultCode == 0) {
+                            if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
+                                throw IOException("cant save chapter")
+                            }
                         }
 
                         break
@@ -592,29 +596,19 @@ class DownloadService : Service(), Runnable {
                                         if (TextUtils.isEmpty(sourceChapter.content)) {
                                             sourceChapter.content = "null"
                                         }
-//                                    if(DataCache.isChapterContentAvailable(sourceChapter.content)) {
-                                        if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
-                                            throw IOException("cant save chapter")
-                                        }
 
+                                        if (sourceChapter.defaultCode == 0) {
+                                            if (!DataCache.saveChapter(sourceChapter.content, sourceChapter)) {
+                                                throw IOException("cant save chapter")
+                                            }
+                                        }
 
                                         tempCacheChapterCount++
                                     }
 
-//                                    synchronized(sourceArr as Object){
-//                                        sourceArr.notify()
-//                                    }
                                 }, onError = {
                                     error = it
-
-//                                    synchronized(sourceArr as Object){
-//                                        sourceArr.notify()
-//                                    }
                                 })
-
-//                        synchronized(sourceArr as Object){
-//                            sourceArr.wait()
-//                        }
 
                         if (error != null) {
                             throw  error!!

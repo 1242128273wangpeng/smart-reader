@@ -25,7 +25,10 @@ class ReaderRepositoryFactory private constructor() : ReaderRepository {
     override fun requestSingleChapter(chapter: Chapter): Flowable<Chapter> {
 
         return RequestRepositoryFactory.loadRequestRepositoryFactory(Reader.context).requestChapterContent(chapter).doOnNext {
-            writeChapterCache(it, ReaderStatus.book)
+            if (it.defaultCode == 0) {
+                writeChapterCache(it, ReaderStatus.book)
+            }
+
             if (it.content == "null"|| TextUtils.isEmpty(it.content)) {
                 it.content = "文章内容较短，可能非正文，正在抓紧修复中..."
             }

@@ -64,6 +64,10 @@ open class Chapter : Serializable {
     @Ignore
     var status = ChapterState.CONTENT_NORMAL
 
+    //章节内容是否为默认章节内容
+    @ColumnInfo(name = "defaultCode")
+    var defaultCode: Int = 0
+
     /************************************ 大壳字段 ************************************/
 
     //是否收费章节 0为免费 1为付费

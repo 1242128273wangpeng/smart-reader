@@ -19,7 +19,7 @@ import kotlin.properties.Delegates
  */
 object MicroAPI {
 
-    private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(MicroRequestInterceptor()).build()
+    private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(MicroRequestInterceptor()).build()
 
     private var microService: MicroService by Delegates.notNull()
 

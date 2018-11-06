@@ -49,15 +49,6 @@ abstract class JSInterfaceObject(var activity: Activity) {
                 parameters = HashMap()
             }
 
-//            val finalUrl = if (NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext()))
-//                UrlUtils.buildWebUrl(url, parameters) else
-//                SPUtils.getDefaultSharedString(data)
-//            SPUtils.putDefaultSharedString(data, finalUrl)
-//
-//            AppLog.e("DingYue--当前的url：" + finalUrl)
-//            AppLog.e("DingYue--服务端url：" + UrlUtils.buildWebUrl(url, parameters))
-//            AppLog.e("DingYue--存储的url：" + SPUtils.getDefaultSharedString(data))
-//            return finalUrl
             return UrlUtils.buildWebUrl(url, parameters)
         } else {
             return null
@@ -219,7 +210,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
      * **/
     @JavascriptInterface
     fun buildMicroRequestUrl(url: String): String {
-        val result = buildMicroRequest(url)
+        val result = buildMicroRequest(url, true)
         Logger.e("拼接精选页面链接: $result")
         return result
     }
@@ -234,9 +225,8 @@ abstract class JSInterfaceObject(var activity: Activity) {
                     BaseBookApplication.getGlobalContext()).requestAuthAccessSync()
 
             Logger.e("WebView请求鉴权接口结果: " + result + " : " + Config.loadPublicKey() + " : " + Config.loadPrivateKey())
-
         }
-        val result = buildMicroRequest(url)
+        val result = buildMicroRequest(url, true)
         Logger.e("鉴权异常，生成的链接为: $result")
         return result
     }
@@ -289,38 +279,6 @@ abstract class JSInterfaceObject(var activity: Activity) {
 
         return book
     }
-
-    /***
-     * 获取网络请求链接
-     * **/
-    private fun buildMicroRequest(message: String?): String {
-        var url = message
-
-        var parameters: MutableMap<String, String> = HashMap()
-
-        if (!url.isNullOrEmpty()) {
-
-            val array = url!!.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-
-            url = array[0]
-
-            if (array.size == 2) {
-                parameters = loadRequestUrlParameters(array[1])
-            }
-        }
-
-        parameters = buildMicroParameters(parameters)
-
-        val sign = loadMicroRequestSign(parameters)
-
-        parameters["sign"] = sign
-        parameters["p"] = Config.loadPublicKey()
-
-        Logger.e("签名完成后，携带的公钥为: " + Config.loadPublicKey() + " : " + sign)
-
-        return buildMicroRequestAction(url, parameters)
-    }
-
 
     inner class JSCover : Serializable {
         var book_id: String? = null
