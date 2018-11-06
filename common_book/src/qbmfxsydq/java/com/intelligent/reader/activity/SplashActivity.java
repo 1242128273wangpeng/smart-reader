@@ -859,7 +859,11 @@ public class SplashActivity extends FrameActivity {
             }
 
             //开启缓存服务
-            CacheManager.INSTANCE.checkService();
+            try {
+                CacheManager.INSTANCE.checkService();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
 
             return null;
         }
