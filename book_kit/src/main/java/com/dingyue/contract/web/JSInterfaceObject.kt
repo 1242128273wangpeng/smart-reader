@@ -270,6 +270,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
         val chapter = Chapter()
         chapter.name = recommend.lastChapterName
         chapter.update_time = recommend.updateTime
+        chapter.serial_number = recommend.lastSerialNumber.toInt()
 
         book.last_chapter = chapter
 
