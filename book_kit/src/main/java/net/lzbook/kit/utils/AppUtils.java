@@ -1361,16 +1361,9 @@ public class AppUtils {
                 });
             }
 
-            int orientation = application.getResources().getConfiguration().orientation;
 
-            float targetDensity;
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                targetDensity = displayMetrics.widthPixels / 360F;
-            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                targetDensity = displayMetrics.heightPixels / 360F;
-            } else {
-                targetDensity = displayMetrics.widthPixels / 360F;
-            }
+            int width = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
+            float targetDensity = width / 360f;
 
             float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
             int targetDensityDpi = (int) (160 * targetDensity);
