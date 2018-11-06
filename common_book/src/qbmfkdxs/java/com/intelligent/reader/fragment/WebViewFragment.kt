@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.qbmfkdxs.frag_web_view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
 
 open class WebViewFragment : Fragment(), View.OnClickListener {
 
@@ -76,7 +77,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        AppUtils.disableAccessibility(requireActivity())
         initParameter()
 
         viewPrepared = true

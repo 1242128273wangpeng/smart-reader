@@ -77,7 +77,7 @@ class TabulationActivity : FrameActivity() {
         setContentView(R.layout.act_tabulation)
 
         val intent = intent
-
+        AppUtils.disableAccessibility(this)
         if (intent != null) {
             this.url = intent.getStringExtra("url")
             urls.add(this.url)
