@@ -51,6 +51,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     private var webSearchResultList: MutableList<CrawlerResult>? = null
 
     private var keyWord: String = ""
+    var isLoading = false
 
     private val searchResultPresenter: SearchResultPresenter  by lazy {
         SearchResultPresenter(this)
@@ -132,12 +133,12 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     /**
      * 重置结果页
      */
-    fun resetResult(){
-        if(rv_catch_result.visibility ==View.VISIBLE) {
+    fun resetResult() {
+        if (rv_catch_result.visibility == View.VISIBLE) {
             search_result_content.visibility = View.VISIBLE
             rv_catch_result.visibility = View.GONE
             searchNoResult = false
-            if(webSearchResultAdapter!=null) {
+            if (webSearchResultAdapter != null) {
                 webSearchResultList?.clear()
                 webSearchResultAdapter?.setData(webSearchResultList.orEmpty())
                 webSearchResultAdapter?.notifyDataSetChanged()
@@ -199,6 +200,9 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
             searchResultPresenter.setStartedAction()
         }
+        customWebClient?.setLoadingEveryWebViewStart {
+            isLoading = true
+        }
 
         customWebClient?.setLoadingWebViewError {
             if (loadingPage != null) {
@@ -207,6 +211,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         }
 
         customWebClient?.setLoadingWebViewFinish {
+            isLoading = false
             searchResultPresenter.onLoadFinished()
             if (loadingPage != null && !searchNoResult) {
                 hideLoading()

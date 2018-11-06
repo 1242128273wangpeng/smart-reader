@@ -29,8 +29,9 @@ import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import java.util.HashMap
+import java.util.*
 
 /**
  * Desc 搜索Activity父类
@@ -131,6 +132,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
             }
             R.id.search_result_input -> {
                 isRunTextWatcher = true
+                searchResultFragment.isLoading = false
                 showEditCursor(true)
                 showInputEditClickEvent()
                 searchResultFragment.resetResult()
@@ -138,6 +140,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
             R.id.search_result_focus -> {
                 focusTextView.visibility = View.GONE
                 defaultRelativeLayout.visibility = View.VISIBLE
+                searchResultFragment.isLoading = false
 
                 inputEditText.requestFocus()
                 showSoftKeyboard(inputEditText)
@@ -152,13 +155,18 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                 if (TextUtils.isEmpty(keyword.trim())) {
                     ToastUtil.showToastMessage(R.string.search_click_check_isright)
                 } else {
-                    val data = HashMap<String, String>()
-                    data["type"] = "0"
-                    data["keyword"] = keyword
-                    DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
-                    showFragment(searchResultFragment)
-                    searchResultFragment.resetResult()
-                    searchResultFragment.loadKeyWord(keyword)
+                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
+                        return
+                    }
+                    if (!searchResultFragment.isLoading) {
+                        val data = HashMap<String, String>()
+                        data["type"] = "0"
+                        data["keyword"] = keyword
+                        DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
+                        showFragment(searchResultFragment)
+                        searchResultFragment.resetResult()
+                        searchResultFragment.loadKeyWord(keyword)
+                    }
                 }
             }
         }
