@@ -20,7 +20,6 @@ interface UserDao : BaseDao<LoginRespV4> {
     fun queryUserInfo(): LoginRespV4
 
     @Query("DELETE FROM user")
-    @Throws(Exception::class)
     fun deleteUsers()
 
 
