@@ -703,7 +703,7 @@ class DownloadService : Service(), Runnable {
                         , notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
 
-                val notify = NotificationCompat.Builder(CacheManager.app).setSmallIcon(R.drawable.icon)
+                val notify = NotificationCompat.Builder(CacheManager.app).setSmallIcon(applicationContext.applicationInfo.icon)
                         .setContentTitle(CacheManager.app.getString(R.string.downloadservice_nofify_ticker) + task.book.name + "》")
                         .setContentText(content)
                         .setContentIntent(pendingIntent)

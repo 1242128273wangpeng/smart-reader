@@ -572,7 +572,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                         pac_reader_ad?.visibility = View.VISIBLE
                     }
 
-                    if (!PageManager.currentPage.filledAD) {
+                    if (!PageManager.destroy && !PageManager.currentPage.filledAD) {
                         EventBus.getDefault()
                                 .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
                     }
@@ -648,7 +648,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 if (pac_reader_ad?.visibility == View.GONE && !ReaderStatus.isMenuShow) {
                     mReadSettingFragment.show(true)
                     ReaderStatus.isMenuShow = true
-                }else{
+                } else {
                     mReadSettingFragment.show(false)
                     ReaderStatus.isMenuShow = false
                 }

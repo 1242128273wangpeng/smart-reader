@@ -169,7 +169,7 @@ public class SplashActivity extends FrameActivity {
                 false);
         Constants.book_list_sort_type = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("booklist_sort_type", 0);
-        gotoActivity(versionCode, firstGuide);
+        gotoActivity(versionCode, false);
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {

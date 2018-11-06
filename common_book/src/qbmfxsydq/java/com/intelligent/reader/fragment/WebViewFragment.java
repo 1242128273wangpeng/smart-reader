@@ -124,7 +124,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
             img_shadow = rootView.findViewById(R.id.img_shadow);
 
             if (contentView != null) {
-                contentView.setLayerType(View.LAYER_TYPE_NONE, null);
+                contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
             if(img_sex != null){
                 img_sex.setOnClickListener(new View.OnClickListener() {

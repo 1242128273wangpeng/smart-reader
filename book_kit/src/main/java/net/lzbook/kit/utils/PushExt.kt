@@ -15,6 +15,7 @@ import com.ding.basic.util.putObject
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
+import com.dingyue.contract.util.showToastMessage
 import com.umeng.message.PushAgent
 import com.umeng.message.entity.UMessage
 import io.reactivex.BackpressureStrategy
@@ -167,9 +168,17 @@ fun Activity.openPushSetting() {
         startActivity(intent)
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MAIN_PAGE,
                 StartLogClickUtil.POPUPSET)
-    } catch (e: Exception) {
+    } catch (exception: Exception) {
+        exception.printStackTrace()
         //打开设置界面
-        startActivity(Intent(Settings.ACTION_SETTINGS))
+        try {
+            startActivity(Intent(Settings.ACTION_SETTINGS))
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            if (!isFinishing) {
+                applicationContext?.showToastMessage("未找到权限设置界面，请在应用列表打开通知权限！")
+            }
+        }
     }
 }
 

@@ -34,10 +34,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.LoadingPage
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.SharedPreferencesUtils
-import net.lzbook.kit.utils.StatServiceUtils
-import net.lzbook.kit.utils.Tools
+import net.lzbook.kit.utils.*
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -245,13 +242,13 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
         historyDatas = Tools.getHistoryWord(mContext)
         historyAdapter = SearchHistoryAdapter(mContext, historyDatas!!)
         if (historyAdapter != null) {
-            historyAdapter!!.setPositionClickListener(this)
+            historyAdapter?.setPositionClickListener(this)
         }
 
         if (mHistoryListView != null) {
 
-            mHistoryListView!!.adapter = historyAdapter
-            mHistoryListView!!.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, position ->
+            mHistoryListView?.adapter = historyAdapter
+            mHistoryListView?.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, position ->
                 StatServiceUtils.statAppBtnClick(mContext, StatServiceUtils.b_search_click_his_word)
                 if (historyDatas != null && !historyDatas!!.isEmpty() && position > -1 &&
                         position < historyDatas!!.size) {
@@ -621,8 +618,10 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             if (historyWord != null) {
                 historyDatas!!.addAll(historyWord)
             }
-            if (historyAdapter != null) {
-                historyAdapter!!.notifyDataSetChanged()
+            runOnMain {
+                if (historyAdapter != null) {
+                    historyAdapter?.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -663,17 +662,26 @@ class SearchViewHelper(activity: Activity, rootLayout: ViewGroup, searchEditText
             historyDatas!!.add(0, keyword)
             Tools.saveHistoryWord(mContext, historyDatas)
         }
-        if (historyAdapter != null) {
-            historyAdapter!!.notifyDataSetChanged()
+
+        runOnMain {
+            if (historyAdapter != null) {
+                historyAdapter?.notifyDataSetChanged()
+            }
         }
     }
 
 
     private fun clearHistory(index: Int) {
-        if (historyDatas != null && index < historyDatas!!.size)
+        if (historyDatas != null && index < historyDatas!!.size) {
             historyDatas!!.removeAt(index)
-        if (historyAdapter != null)
-            historyAdapter!!.notifyDataSetChanged()
+        }
+
+        runOnMain {
+            if (historyAdapter != null) {
+                historyAdapter?.notifyDataSetChanged()
+            }
+        }
+
         Tools.saveHistoryWord(mContext, historyDatas)
     }
 
