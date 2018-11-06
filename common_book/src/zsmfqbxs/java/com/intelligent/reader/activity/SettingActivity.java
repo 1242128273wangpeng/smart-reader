@@ -18,7 +18,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
 import com.ding.basic.bean.LoginResp;
+import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.router.RouterConfig;
 import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
@@ -48,12 +48,13 @@ import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.UIHelper;
 import net.lzbook.kit.utils.update.ApkUpdateUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.greenrobot.eventbus.EventBus;
 import iyouqu.theme.BaseCacheableActivity;
 import iyouqu.theme.ThemeMode;
 import swipeback.ActivityLifecycleHelper;
@@ -441,6 +442,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     @Override
     public void onClick(View paramView) {
+        if (CommonContract.INSTANCE.isDoubleClick()) {
+            return;
+        }
 
         switch (paramView.getId()) {
             case R.id.rl_setting_more:
@@ -449,11 +453,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more);
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
-//            case R.id.rl_style_change:
-//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change);
-//                startActivity(new Intent(SettingActivity.this, StyleChangeActivity.class));
-////                finish();
-//                break;
             case R.id.tv_login_info:
                 Toast.makeText(getApplicationContext(), R.string.enter_community,
                         Toast.LENGTH_SHORT).show();
@@ -514,11 +513,6 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 welfareIntent.setClass(SettingActivity.this, WelfareCenterActivity.class);
                 startActivity(welfareIntent);
                 break;
-//            case R.id.rl_readpage_setting:
-//                //阅读页设置
-//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_read);
-//                startActivity(new Intent(SettingActivity.this, ReadingSettingActivity.class));
-//                break;
             case R.id.rl_readpage_bbs:
                 Toast.makeText(getApplicationContext(), R.string.enter_community,
                         Toast.LENGTH_SHORT).show();

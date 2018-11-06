@@ -80,6 +80,19 @@ object CommonContract {
     /***
      * 防止按钮两次点击
      * **/
+    fun isDoubleClick(): Boolean {
+        val time = System.currentTimeMillis()
+        val interval = time - lastClickTime
+        return if (interval > 800) {
+            lastClickTime = time
+            false
+        } else {
+            true
+        }
+    }
+    /***
+     * 防止按钮两次点击
+     * **/
     fun isDoubleClick(time: Long): Boolean {
         val interval = time - lastClickTime
         return if (interval > 800) {

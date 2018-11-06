@@ -159,10 +159,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_empty_add_book?.setOnClickListener {
             BookShelfLogger.uploadBookShelfToBookCity()
         }
-        img_head_setting?.setOnClickListener(View.OnClickListener {
-            BookShelfLogger.uploadBookShelfPersonal()
-            RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
-            EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_setting))
+        img_head_setting?.setOnClickListener({
+            if (!CommonContract.isDoubleClick()) {
+                BookShelfLogger.uploadBookShelfPersonal()
+                RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
+                EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_setting))
+            }
         })
         img_head_search?.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
@@ -378,7 +380,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true && !requireActivity().isFinishing) {
-                if (updateCount == 1 ) {
+                if (updateCount == 1) {
                     if (isAdded) {
                         CommonUtil.showToastMessage(
                                 "《$bookName${requireActivity().getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",
