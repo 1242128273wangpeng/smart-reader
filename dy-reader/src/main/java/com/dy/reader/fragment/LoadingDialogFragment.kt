@@ -134,6 +134,10 @@ class LoadingDialogFragment : DialogFragment() {
         if (isResumed) {
             if (activity != null && !activity.isFinishing && activity.fragmentManager != null) {
                 super.dismiss()
+            } else {
+                try {
+                    super.dismiss()
+                }catch (e: Exception){}
             }
         } else {
             dismissAllowingStateLoss()
