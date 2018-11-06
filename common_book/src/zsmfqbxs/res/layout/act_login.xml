@@ -47,15 +47,15 @@
             android:layout_height="match_parent">
 
         <TextView
-                android:id="@+id/tv_spell_bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="zhuishumianfeiquanbenxiaoshuo"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp"
-                android:layout_alignParentBottom="true"
-                android:textColor="#7d7d7d"
-                android:textSize="9sp"/>
+            android:id="@+id/tv_spell_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="#7d7d7d"
+            android:textSize="9sp"/>
 
         <LinearLayout
                 android:id="@+id/ll_login_btn"
