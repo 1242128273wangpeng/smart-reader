@@ -431,8 +431,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         }
 
         if (!isCurrentRunningForeground && !Constants.isHideAD && Constants.isShowSwitchSplashAd && NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE && !AppUtils.isNeedAdControl(Constants.ad_control_other)) {
-//            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
-            boolean isShowSwitchSplash = inTime - outTime > 30 * 1000;
+            boolean isShowSwitchSplash = inTime - outTime > Constants.switchSplash_ad_sec * 1000;
             outTime = System.currentTimeMillis();
             if (isShowSwitchSplash) {
                 getWindow().getDecorView().postDelayed(new Runnable() {
