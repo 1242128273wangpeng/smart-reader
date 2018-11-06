@@ -127,6 +127,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                             adBitmap?.apply {
 
                                 if (adBean?.mark == "8-1") {
+                                    canvas?.density?.let {
+                                        adBitmap.density = it
+                                    }
                                     canvas?.drawBitmap(adBitmap, 0F, AppHelper.screenHeight - adBean.height.toFloat(), null)
                                     filledAD = true
                                 } else {
