@@ -536,7 +536,6 @@ public class SplashActivity extends FrameActivity {
                 SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
             }
         }
-        Constants.isHideAD = !Constants.new_app_ad_switch;
         //强制关闭广告
 //        Constants.isHideAD = true;
     }

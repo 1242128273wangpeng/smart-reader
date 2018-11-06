@@ -14,6 +14,7 @@ import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.BDCrawler
+import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -109,6 +110,7 @@ class SearchResultModel {
                 if (!keyword.isNullOrBlank() && !activity.isFinishing) {
                     // 处理回传的json数据
                     val key = JSONObject(keyword).getString("keyword")
+                    loge("====无结果=== keyword:$keyword")
                     // 无结果回调
                     listener?.onNoResult(key)
                     // 获取无结果数据
