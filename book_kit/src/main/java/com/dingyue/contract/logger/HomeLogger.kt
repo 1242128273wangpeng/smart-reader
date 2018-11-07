@@ -56,6 +56,16 @@ object HomeLogger {
                 StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_BOOK_SHELF)
     }
 
+
+    /***
+     * HomeActivity点击推荐
+     * **/
+    fun uploadHomeRecommendSelected() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_RECOMMEND)
+    }
+
+
     /***
      * HomeActivity点击书城
      * **/
