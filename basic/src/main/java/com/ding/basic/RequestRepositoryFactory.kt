@@ -9,13 +9,11 @@ import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
 import com.ding.basic.db.repository.LocalRequestRepository
-import com.ding.basic.net.Config
 import com.ding.basic.net.RequestSubscriber
 import com.ding.basic.net.ResultCode
 import com.ding.basic.net.repository.InternetRequestRepository
 import com.ding.basic.net.rx.CommonResultMapper
 import com.ding.basic.net.rx.SchedulerHelper
-import com.ding.basic.util.AESUtil
 import com.ding.basic.util.ChapterCacheUtil
 import com.ding.basic.util.DataCache
 import com.ding.basic.util.ParserUtil
@@ -175,13 +173,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({ result ->
                     if (result != null) {
                         when {
-                            result.checkPrivateKeyExpire() -> requestAuthAccess {
-                                if (it) {
-                                    requestBookDetail(book_id, book_source_id, book_chapter_id, requestSubscriber)
-                                } else {
-                                    requestSubscriber.onError(Throwable("鉴权请求异常！"))
-                                }
-                            }
                             result.checkResultAvailable() -> {
                                 requestSubscriber.onNext(result.data)
 
@@ -190,7 +181,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                     if (localBook != null && !TextUtils.isEmpty(localBook.book_id)) {
                                         if (TextUtils.isEmpty(localBook.book_chapter_id) && !TextUtils.isEmpty(result.data?.book_chapter_id)) {
-                                            localRepository.updateBookChapterId(localBook.book_id,result.data?.book_chapter_id!!)
+                                            localRepository.updateBookChapterId(localBook.book_id, result.data?.book_chapter_id!!)
                                         }
                                     }
                                 }
@@ -241,7 +232,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         val book = localRepository.checkBookSubscribe(book_id)
 
                         if (book != null) {
-                            localRepository.insertOrUpdateChapter(book_id,resList)
+                            localRepository.insertOrUpdateChapter(book_id, resList)
                             book.chapter_count = localRepository.getCount(book_id)
                             if (result.data!!.listVersion!! > book.list_version) {
                                 book.list_version = result.data!!.listVersion!!
@@ -267,15 +258,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 }
                 .compose(SchedulerHelper.schedulerHelper(type))
                 .subscribe({
-                    if (it.checkPrivateKeyExpire()) {
-                        requestAuthAccess {
-                            if (it) {
-                                requestCatalog(book_id, book_source_id, book_chapter_id, requestSubscriber, type)
-                            } else {
-                                requestSubscriber.onError(Throwable("鉴权请求异常！"))
-                            }
-                        }
-                    } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
+                    if (it != null && (it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
                         requestSubscriber.onNext(it.data?.chapters)
                     } else {
                         requestSubscriber.onError(Throwable("获取章节目录异常！"))
@@ -320,7 +303,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             localRepository.deleteAllChapters(book_id)
                             localRepository.deleteBookMark(book_id)
 
-                            localRepository.insertOrUpdateChapter(book_id,result.data?.chapters!!)
+                            localRepository.insertOrUpdateChapter(book_id, result.data?.chapters!!)
 
                             val lastChapter = localRepository.queryLastChapter(book_id)
 
@@ -352,15 +335,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 }
                 .compose(SchedulerHelper.schedulerHelper(type))
                 .subscribe({
-                    if (it.checkPrivateKeyExpire()) {
-                        requestAuthAccess {
-                            if (it) {
-                                requestBookCatalog(book_id, book_source_id, book_chapter_id, requestSubscriber, type)
-                            } else {
-                                requestSubscriber.onError(Throwable("鉴权请求异常！"))
-                            }
-                        }
-                    } else if ((it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
+                    if (it != null && (it.code == ResultCode.RESULT_SUCCESS || it.code == ResultCode.LOCAL_RESULT) && it.data != null) {
                         val resList = noRepeatList(it.data!!.chapters!!)
 
                         for (chapter in resList) {
@@ -511,10 +486,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return if (content == null || content.isEmpty() || content == "null") {
             internetRepository.requestChapterContent(chapter).map {
                 when {
-                    it.checkPrivateKeyExpire() -> {
-                        requestAuthAccess(null)
-                        throw IllegalAccessException("接口鉴权失败！")
-                    }
                     it.checkResultAvailable() -> {
                         if (it.data?.content != null && !TextUtils.isEmpty(it.data?.content)) {
                             it.data?.content = it.data?.content?.replace("\\n", "\n")
@@ -549,12 +520,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     fun requestChapterContentSync(chapter: Chapter): String {
         val basicResult = internetRepository.requestChapterContentSync(chapter.chapter_id, chapter.book_id, chapter.book_source_id, chapter.book_chapter_id)?.execute()?.body()
         if (basicResult != null) {
-            if (basicResult.checkPrivateKeyExpire()) {
-                if (requestAuthAccessSync()) {
-                    return requestChapterContentSync(chapter)
-                }
-
-            } else if (basicResult.checkResultAvailable()) {
+            if (basicResult.checkResultAvailable()) {
                 if (basicResult.data?.content != null) {
                     basicResult.data?.content = basicResult.data?.content?.replace("\\n", "\n")
                     basicResult.data?.content = basicResult.data?.content?.replace("\\n \\n", "\n")
@@ -562,6 +528,8 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                     basicResult.data?.content = basicResult.data?.content?.replace("\\", "")
                 }
                 return basicResult.data?.content ?: ""
+            } else {
+                throw IllegalArgumentException("内容接口请求异常！")
             }
         }
 
@@ -574,15 +542,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({ result ->
                     if (result != null) {
                         val bookUpdates = ArrayList<BookUpdate>()
-                        if (result.checkPrivateKeyExpire()) {
-                            requestAuthAccess {
-                                if (it) {
-                                    requestBookUpdate(checkBody, books, requestSubscriber)
-                                } else {
-                                    requestSubscriber.onError(Throwable("鉴权请求异常！"))
-                                }
-                            }
-                        } else if (result.checkResultAvailable()) {
+                        if (result.checkResultAvailable()) {
                             val updateBooks = result.data!!.books
                             if (updateBooks != null) {
                                 var bookUpdate: BookUpdate
@@ -643,11 +603,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 .subscribe({
                     if (it != null) {
                         when {
-                            it.checkPrivateKeyExpire() -> requestAuthAccess {
-                                if (it) {
-                                    requestCoverBatch(checkBody)
-                                }
-                            }
                             it.checkResultAvailable() -> {
                                 for (book in it.data!!) {
                                     if (!TextUtils.isEmpty(book.book_id) && !TextUtils.isEmpty(book.book_source_id) && !TextUtils.isEmpty(book.book_chapter_id)) {
@@ -722,10 +677,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
                                         // 保存在chapter表中
                                         if (book.fromQingoo()) {
-                                            localRepository.updateBookSourceId(book.book_id,it.book_source_id)
+                                            localRepository.updateBookSourceId(book.book_id, it.book_source_id)
                                         }
 
-                                        localRepository.updateBookChapterId(book.book_id,it.book_chapter_id)
+                                        localRepository.updateBookChapterId(book.book_id, it.book_chapter_id)
                                     }
                                     if (!TextUtils.isEmpty(it.desc)) {
                                         book.desc = it.desc
@@ -1714,7 +1669,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     continue
                                 }
 
-                                val fixChapter = localRepository.getChapterById(it.book_id,chapter.chapter_id)
+                                val fixChapter = localRepository.getChapterById(it.book_id, chapter.chapter_id)
 
                                 if (fixChapter == null) {
                                     localNoChapterID = true
@@ -1743,7 +1698,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     }
                                 }
 
-                                localRepository.updateChapter(it.book_id,fixChapter)
+                                localRepository.updateChapter(it.book_id, fixChapter)
                             }
 
                             book.c_version = it.c_version
@@ -1760,43 +1715,13 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         }
     }
 
-//    private fun fixChapterContent(chapter: Chapter?, fixState: ContextFixState) {
-//        if (chapter != null && DataCache.isNewCacheExists(chapter)) {
-//
-//            try {
-//                chapter.content = RequestRepositoryFactory.loadRequestRepositoryFactory(context).requestChapterContentSync(chapter)
-//
-//                var content = chapter.content
-//                if (TextUtils.isEmpty(content)) {
-//                    content = "null"
-//                }
-//
-//                fixState.addContState(DataCache.fixChapter(content, chapter))
-//            } catch (e: Exception) {
-//                fixState.addContState(false)
-//                e.printStackTrace()
-//            }
-//
-//        }
-//    }
-
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
                               , type: Int, startChapterID: String
                               , requestSubscriber: RequestSubscriber<BasicResult<CacheTaskConfig>>) {
         internetRepository.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)!!
                 .subscribeBy(
                         onNext = { ret ->
-                            if (ret.checkPrivateKeyExpire()) {
-                                requestAuthAccess {
-                                    if (it) {
-                                        requestDownTaskConfig(bookID, bookSourceID, type, startChapterID, requestSubscriber)
-                                    } else {
-                                        requestSubscriber.onError(Throwable("鉴权请求异常！"))
-                                    }
-                                }
-                            } else {
-                                requestSubscriber.onNext(ret)
-                            }
+                            requestSubscriber.onNext(ret)
                         },
 
                         onError = { t ->
@@ -1804,52 +1729,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         }
 
                 )
-    }
-
-    @Synchronized
-    fun requestAuthAccess(callback: ((Boolean) -> Unit)?) {
-        internetRepository.requestAuthAccess()!!
-                .compose(SchedulerHelper.schedulerHelper<BasicResult<String>>())
-                .subscribeWith(object : ResourceSubscriber<BasicResult<String>>() {
-                    override fun onNext(result: BasicResult<String>?) {
-                        if (result != null && result.checkResultAvailable()) {
-                            Logger.e("鉴权请求结果正常！")
-
-                            val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
-
-                            if (message != null && message.isNotEmpty()) {
-                                val access = Gson().fromJson(message, Access::class.java)
-                                if (access != null) {
-                                    if (access.publicKey != null) {
-                                        Config.insertPublicKey(access.publicKey!!)
-                                    }
-
-                                    if (access.privateKey != null) {
-                                        Config.insertPrivateKey(access.privateKey!!)
-                                    }
-
-                                    if (access.expire > 0 ) {
-                                        Config.insertAuthExpire(access.expire.toLong())
-                                    }
-                                }
-                            }
-
-                            callback?.invoke(true)
-                        } else {
-                            Logger.e("鉴权请求结果异常！")
-                            callback?.invoke(false)
-                        }
-                    }
-
-                    override fun onError(throwable: Throwable) {
-                        Logger.e("鉴权请求异常！")
-                        callback?.invoke(false)
-                    }
-
-                    override fun onComplete() {
-                        Logger.e("鉴权请求完成！")
-                    }
-                })
     }
 
     fun requestPushTags(udid: String): Flowable<PushInfo> {
@@ -1886,38 +1765,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         it.updateMillSecs = System.currentTimeMillis()
                         it
                     }
-        }
-    }
-
-    fun requestAuthAccessSync(): Boolean {
-        val result = internetRepository.requestAuthAccessSync().execute().body()
-
-        if (result != null && result.checkResultAvailable()) {
-            Logger.e("鉴权请求结果正常！")
-
-            val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
-
-            if (message != null && message.isNotEmpty()) {
-                val access = Gson().fromJson(message, Access::class.java)
-                if (access != null) {
-                    if (access.publicKey != null) {
-                        Config.insertPublicKey(access.publicKey!!)
-                    }
-
-                    if (access.privateKey != null) {
-                        Config.insertPrivateKey(access.privateKey!!)
-                    }
-
-                    if (access.expire > 0 ) {
-                        Config.insertAuthExpire(access.expire.toLong())
-                    }
-                }
-            }
-
-            return true
-        } else {
-            Logger.e("鉴权请求结果异常！")
-            return false
         }
     }
 
@@ -1974,7 +1821,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun queryChapterBySequence(book_id: String, sequence: Int): Chapter? {
-        return localRepository.queryChapterBySequence(book_id,sequence)
+        return localRepository.queryChapterBySequence(book_id, sequence)
     }
 
     fun getChapterCount(book_id: String): Int {
@@ -1990,7 +1837,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun deleteChapters(book_id: String, sequence: Int) {
-       localRepository.deleteChapters(book_id,sequence)
+        localRepository.deleteChapters(book_id, sequence)
     }
 
     fun deleteAllChapters(book_id: String) {
@@ -1998,14 +1845,14 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun insertOrUpdateChapter(book_id: String, chapterList: List<Chapter>): Boolean {
-        return localRepository.insertOrUpdateChapter(book_id,chapterList)
+        return localRepository.insertOrUpdateChapter(book_id, chapterList)
     }
 
     fun updateChapterBySequence(book_id: String, chapter: Chapter) {
-        localRepository.updateChapterBySequence(book_id,chapter)
+        localRepository.updateChapterBySequence(book_id, chapter)
     }
 
-    fun getCount(book_id: String):Int{
+    fun getCount(book_id: String): Int {
         return localRepository.getCount(book_id)
     }
 

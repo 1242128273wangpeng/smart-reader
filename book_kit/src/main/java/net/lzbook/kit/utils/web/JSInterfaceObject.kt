@@ -8,7 +8,7 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
 import com.ding.basic.bean.RecommendBean
-import com.ding.basic.net.Config
+import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
@@ -220,11 +220,10 @@ abstract class JSInterfaceObject(var activity: Activity) {
      * **/
     @JavascriptInterface
     fun authAccessMicroRequest(url: String): String {
-        if (Config.loadAuthExpire() - System.currentTimeMillis() <= 5000) {
-            val result = RequestRepositoryFactory.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).requestAuthAccessSync()
+        if (MicroAPI.expire - System.currentTimeMillis() <= 5000) {
+            val result = MicroAPI.requestAuthAccessSync()
 
-            Logger.e("WebView请求鉴权接口结果: " + result + " : " + Config.loadPublicKey() + " : " + Config.loadPrivateKey())
+            Logger.e("WebView请求鉴权接口结果: " + result + " : " + MicroAPI.publicKey + " : " + MicroAPI.privateKey)
         }
         val result = buildMicroRequest(url, true)
         Logger.e("鉴权异常，生成的链接为: $result")

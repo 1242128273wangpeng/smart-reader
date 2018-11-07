@@ -18,8 +18,10 @@ object ParameterConfig {
     //城市信息
     var city = ""
 
+
     //地区编号
     var areaCode = ""
+
 
     //城市编号
     var cityCode = ""
@@ -42,6 +44,7 @@ object ParameterConfig {
             }
         }
 
+
     //纬度信息
     var latitude = ""
         get() {
@@ -62,6 +65,7 @@ object ParameterConfig {
                 field = value
             }
         }
+
 
     //经度信息
     var longitude = ""
@@ -84,6 +88,7 @@ object ParameterConfig {
             }
         }
 
+
     //详细地址
     var locationDetail = ""
 
@@ -100,10 +105,13 @@ object ParameterConfig {
      * **/
     //男频标识
     var GENDER_BOY = 0x81
+
     //女频标识
     var GENDER_GIRL = 0x82
+
     //默认标识（跳过选项）
     var GENDER_DEFAULT = 0x80
+
     //男女频数据
     var GENDER_TYPE = GENDER_DEFAULT
 }

@@ -599,10 +599,10 @@ android {
             buildConfigField "String", "push_key", "\"DOGRj3vpV9F6KamswYShmdHM\""
             buildConfigField "String", "alifeedback_key", "\"24812888\""
             buildConfigField "String", "alifeedback_secret", "\"2baf3d5d4f949e5189afbe37a8e1302e\""
-            buildConfigField "String", "book_novel_deploy_host", "\"https://news.fengxianghuawu.com\""
-            buildConfigField "String", "book_webview_host", "\"https://show.fengxianghuawu.com\""
-            buildConfigField "String", "micro_api_host", "\"https://aqbmfrmxsunionapi.jingytech.com\""
-            buildConfigField "String", "content_api_host", "\"https://aqbmfrmxsunioncontent.jingytech.com\""
+            buildConfigField "String", "book_novel_deploy_host", "\"https://news.fengxianghuawu.com:443\""
+            buildConfigField "String", "book_webview_host", "\"https://show.fengxianghuawu.com:443\""
+            buildConfigField "String", "micro_api_host", "\"https://aqbmfrmxsunionapi.jingytech.com:443\""
+            buildConfigField "String", "content_api_host", "\"https://aqbmfrmxsunioncontent.jingytech.com:443\""
             buildConfigField "String", "cdn_host", "\"https://sta.fengxianghuawu.com\""
 
         }

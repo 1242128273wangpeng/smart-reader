@@ -262,4 +262,8 @@ object SPUtils {
     fun loadSharedString(key: String, value: String = ""): String {
         return defaultPreferences?.getString(key, value) ?: value
     }
+
+    fun insertSharedString(key: String, value: String) {
+        defaultPreferences?.edit()?.putString(key, value)?.apply()
+    }
 }

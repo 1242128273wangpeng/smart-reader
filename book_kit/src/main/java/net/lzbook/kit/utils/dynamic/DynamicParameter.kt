@@ -325,17 +325,27 @@ class DynamicParameter(private val context: Context) {
 
 
     private fun insertRequestParams() {
+        MicroAPI.microHost = SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST)
+        ContentAPI.contentHost = SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST)
+
         Config.insertRequestAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST))
         Config.insertWebViewHost(SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST))
-        Config.insertMicroAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST))
-        Config.insertContentAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST))
         Config.insertUserTagHost(SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST))
+
     }
 
     private fun initApi() {
-        ContentAPI.initMicroService()
         MicroAPI.initMicroService()
+        ContentAPI.initContentService()
         RequestAPI.initializeDataRequestService()
+
+        if (MicroAPI.publicKey?.isEmpty() == true || MicroAPI.privateKey?.isEmpty() == true) {
+            MicroAPI.requestAuthAccess()
+        }
+
+        if (ContentAPI.publicKey?.isEmpty() == true || ContentAPI.privateKey?.isEmpty() == true) {
+            ContentAPI.requestAuthAccess()
+        }
     }
 
     private fun setBaidu() {
@@ -347,7 +357,6 @@ class DynamicParameter(private val context: Context) {
         try {
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID)
             StatService.setAppChannel(AppUtils.getChannelId())
-//            StatService.setSendLogStrategy(context, SendStrategyEnum.APP_START, 1, false)
             StatService.start(context)
             StatService.setOn(context, StatService.EXCEPTION_LOG)
             StatService.setDebugOn(Constants.DEVELOPER_MODE)

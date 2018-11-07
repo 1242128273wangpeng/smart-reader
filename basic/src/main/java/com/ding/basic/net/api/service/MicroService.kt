@@ -30,7 +30,7 @@ interface MicroService {
     }
 
     @GET(AUTH_ACCESS)
-    fun requestAuthAccess(): Flowable<BasicResult<String>>?
+    fun requestAuthAccess(): Flowable<BasicResult<String>>
 
     @GET(AUTH_ACCESS)
     fun requestAuthAccessSync(): Call<BasicResult<String>>

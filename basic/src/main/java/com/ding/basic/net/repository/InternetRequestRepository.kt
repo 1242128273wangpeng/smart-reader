@@ -229,18 +229,6 @@ class InternetRequestRepository private constructor() {
         return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
-    /***************** 微服务 *****************/
-
-    fun requestAuthAccess(): Flowable<BasicResult<String>>? {
-        return MicroAPI.requestAuthAccess()
-    }
-
-    /***************** 微服务同步鉴权 *****************/
-
-    fun requestAuthAccessSync(): Call<BasicResult<String>> {
-        return MicroAPI.requestAuthAccessSync()
-    }
-
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
         return MicroAPI.requestBookDetail(book_id, book_source_id, book_chapter_id)
     }

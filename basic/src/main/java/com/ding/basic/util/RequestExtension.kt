@@ -2,6 +2,8 @@ package com.ding.basic.util
 
 import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.token.Token
 import com.orhanobut.logger.Logger
 import org.apache.commons.codec.binary.Hex
@@ -71,12 +73,42 @@ fun buildMicroRequest(message: String?, fromWebView: Boolean): String {
     parameters["sign"] = sign
 
     if (fromWebView) {
-        parameters["p"] = Config.loadPublicKey()
+        parameters["p"] = MicroAPI.publicKey ?: ""
     }
 
-    Logger.e("签名完成后，携带的公钥为: " + Config.loadPublicKey() + " : " + sign)
+    Logger.e("签名完成后，携带的公钥为: " + MicroAPI.publicKey + " : " + sign)
 
     return buildMicroRequestAction(url, parameters)
+}
+
+/***
+ * 拼接数据流请求链接
+ * **/
+fun buildContentRequest(message: String?): String {
+    var url = message
+
+    var parameters: MutableMap<String, String> = HashMap()
+
+    if (!url.isNullOrEmpty()) {
+
+        val array = url!!.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+        url = array[0]
+
+        if (array.size == 2) {
+            parameters = loadRequestUrlParameters(array[1])
+        }
+    }
+
+    parameters = buildMicroParameters(parameters)
+
+    val sign = loadContentRequestSign(parameters)
+
+    parameters["sign"] = sign
+
+    Logger.e("签名完成后，携带的公钥为: " + ContentAPI.publicKey + " : " + sign)
+
+    return buildContentRequestAction(url, parameters)
 }
 
 /***
@@ -149,7 +181,6 @@ fun buildMicroParameters(parameters: MutableMap<String, String>): MutableMap<Str
     return parameters
 }
 
-
 /***
  * 获取网络请求签名
  * **/
@@ -165,9 +196,41 @@ fun loadMicroRequestSign(parameters: Map<String, String>): String {
         }
     }
 
-    if (Config.loadPrivateKey().isNotEmpty()) {
+    if (MicroAPI.privateKey?.isNotEmpty() == true) {
         stringBuilder.append("privateKey=")
-        stringBuilder.append(Config.loadPrivateKey())
+        stringBuilder.append(MicroAPI.privateKey)
+    }
+
+    if (stringBuilder.isNotEmpty()) {
+        Logger.i("String: $stringBuilder")
+        try {
+            return String(Hex.encodeHex(DigestUtils.md5(stringBuilder.toString())))
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
+    return ""
+}
+
+/***
+ * 获取网络请求签名
+ * **/
+fun loadContentRequestSign(parameters: Map<String, String>): String {
+    val parameterMap = TreeMap(parameters)
+    val stringBuilder = StringBuilder()
+
+    parameterMap.entries.forEach {
+        if ("sign" != it.key) {
+            stringBuilder.append(it.key)
+            stringBuilder.append("=")
+            stringBuilder.append(it.value)
+        }
+    }
+
+    if (ContentAPI.privateKey?.isNotEmpty() == true) {
+        stringBuilder.append("privateKey=")
+        stringBuilder.append(ContentAPI.privateKey)
     }
 
     if (stringBuilder.isNotEmpty()) {
@@ -204,5 +267,30 @@ fun buildMicroRequestAction(url: String?, parameters: Map<String, String>): Stri
         "?"
     }
 
-    return (Config.loadMicroAPIHost() + requestTag + joiner + Token.Companion.escapeParameters(parametersMap))
+    return (MicroAPI.microHost + requestTag + joiner + Token.escapeParameters(parametersMap))
+}
+
+/***
+ * 获取网络请求链接
+ * **/
+fun buildContentRequestAction(url: String?, parameters: Map<String, String>): String {
+    var result = url
+
+    try {
+        result = URLDecoder.decode(url, "UTF-8")
+    } catch (exception: Exception) {
+        exception.printStackTrace()
+    }
+
+    val requestTag = Token.encodeRequestTag(result)
+
+    val parametersMap = Token.encodeParameters(parameters)
+
+    val joiner = if (requestTag != null && requestTag.contains("?")) {
+        "&"
+    } else {
+        "?"
+    }
+
+    return (ContentAPI.contentHost + requestTag + joiner + Token.escapeParameters(parametersMap))
 }

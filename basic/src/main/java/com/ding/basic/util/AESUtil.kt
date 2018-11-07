@@ -68,13 +68,17 @@ object AESUtil {
     fun decrypt(auth: String?, key: String?): String? {
         try {
             if (key == null) {
-                Logger.e("鉴权解密：Key为空！")
+                Logger.e("鉴权解密: Key为空！")
                 return null
             }
 
             if (key.length != 16) {
-                Logger.e("鉴权解密：Key长度不为16位！")
+                Logger.e("鉴权解密: Key长度不为16位！")
                 return null
+            }
+
+            if (auth == null) {
+                Logger.e("鉴权解密: auth为空！")
             }
 
             val keyBytes = convertString(key)
