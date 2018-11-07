@@ -248,8 +248,7 @@ object ReadMediaManager {
         uiThread {
             try {
                 removeList.forEach {
-                    if (it.view?.parent == null) {
-
+                    if(it.view?.parent == null) {
                         if (it.view is Closeable) {
                             (it.view as Closeable).close()
                         }
@@ -278,9 +277,8 @@ object ReadMediaManager {
             uiThread {
 
                 try {
-                    removeList.forEach {
-                        if (it.view?.parent == null) {
-
+                    removeList.forEach{
+                        if(it.view?.parent == null) {
                             if (it.view is Closeable) {
                                 (it.view as Closeable).close()
                             }
@@ -318,7 +316,13 @@ object ReadMediaManager {
         val map: TreeMap<String, AdBean> = TreeMap()
         fun put(key: String, ad: AdBean) {
             synchronized(map) {
-                map.put(key, ad)
+                if (map.containsKey(key)) {
+                    var value = map[key]
+                    value?.view?.clearFocus()
+                    value?.view = null
+                    value = null
+                }
+                map[key] = ad
             }
         }
         fun get(key: String): AdBean? = map[key]

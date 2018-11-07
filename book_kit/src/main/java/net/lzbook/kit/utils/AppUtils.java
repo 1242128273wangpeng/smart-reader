@@ -422,10 +422,15 @@ public class AppUtils {
                 level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             }
         } else {
-            Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
-                    .registerReceiver(null,
-                            new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+            try {
+                Intent batteryInfoIntent = BaseBookApplication.getGlobalContext()
+                        .registerReceiver(null,
+                                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+                level = batteryInfoIntent != null ? batteryInfoIntent.getIntExtra("level", 0) : 0;
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
         return level + "%";
     }
@@ -675,13 +680,13 @@ public class AppUtils {
             BufferedReader br = new BufferedReader(fr);
             String text = br.readLine();
             String[] array = text.split(":\\s+", 2);
-            for (int i = 0; i < array.length; i++) {
-            }
             return array[1];
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException exception) {
+            exception.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
 
@@ -1356,16 +1361,9 @@ public class AppUtils {
                 });
             }
 
-            int orientation = application.getResources().getConfiguration().orientation;
 
-            float targetDensity;
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                targetDensity = displayMetrics.widthPixels / 360F;
-            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                targetDensity = displayMetrics.heightPixels / 360F;
-            } else {
-                targetDensity = displayMetrics.widthPixels / 360F;
-            }
+            int width = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
+            float targetDensity = width / 360f;
 
             float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
             int targetDensityDpi = (int) (160 * targetDensity);
