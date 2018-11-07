@@ -13,6 +13,7 @@ import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
+import com.dingyue.contract.util.runOnMain
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 import net.lzbook.kit.app.BaseBookApplication

@@ -423,6 +423,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwmfqb.youshiit.com\""
             buildConfigField "String", "micro_api_host", "\"https://amfqbxsscunionapi.jingytech.com\""
             buildConfigField "String", "content_api_host", "\"https://amfqbxsscunioncontent.jingytech.com\""
+            buildConfigField "String", "cdn_host", "\"\""
         }
 
         zsmfqbxs {
