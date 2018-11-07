@@ -112,7 +112,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         initIntent(intent)
     }
 
-    val defaultLines: Int = 4
     private fun initListener() {
         book_cover_back?.antiShakeClick(this)
         book_cover_author!!.antiShakeClick(this)
@@ -122,18 +121,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_bookshelf!!.antiShakeClick(this)
         book_cover_reading!!.antiShakeClick(this)
         book_cover_download!!.antiShakeClick(this)
-        txt_book_des.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                if (txt_book_des.maxLines <= defaultLines) {
-                    txt_book_des.maxLines = txt_book_des.lineCount
-                    iv_bookdes_icon.visibility = GONE
-                } else {
-                    iv_bookdes_icon.visibility = VISIBLE
-                    txt_book_des.maxLines = defaultLines
-                }
-
-            }
-        }
 
     }
 
@@ -375,18 +362,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             txt_score.text = (String.format("%.1f", book.score) + "分")
 
             if (book.desc != null && !TextUtils.isEmpty(book.desc)) {
-                txt_book_des!!.text = book.desc
-                if (txt_book_des.lineCount > defaultLines) {
-                    iv_bookdes_icon.visibility = VISIBLE
-                } else {
-                    iv_bookdes_icon.visibility = GONE
-                }
-
+                book_cover_description.text = book.desc
             } else {
-                iv_bookdes_icon.visibility = GONE
-                txt_book_des!!.text = resources.getString(R.string.book_cover_no_description)
+                book_cover_description.text = resources.getString(R.string
+                        .book_cover_no_description)
             }
-
 
             if (book.last_chapter != null) {
 
