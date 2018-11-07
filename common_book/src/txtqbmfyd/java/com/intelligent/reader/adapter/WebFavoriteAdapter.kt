@@ -28,7 +28,7 @@ class WebFavoriteAdapter(context: Context) : RecyclerBaseAdapter<WebPageFavorite
             if (remove) {
                 img_select.visibility = View.VISIBLE
                 ll_content.translationX = tranX.toFloat()
-                img_select.setImageResource(if (data.selected || selectAll) R.drawable.download_manager_item_check_icon else R.drawable.download_manager_item_uncheck_icon)
+                img_select.setImageResource(if (data.selected) R.drawable.download_manager_item_check_icon else R.drawable.download_manager_item_uncheck_icon)
             } else {
                 img_select.visibility = View.GONE
                 ll_content.translationX = 0f

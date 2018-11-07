@@ -108,10 +108,25 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
             return
         }
         favoriteList?.let {
+            if (it[position].selected && adapter?.selectAll == true) {
+                // 取消单项选中时,重置全选状态
+                adapter?.selectAll = false
+                btn_select_all.text = "全选"
+            }
             it[position].selected = it[position].selected.not()
+            // 判断是否全部选中
+            if (favoriteList?.filter { item -> !item.selected }?.size == 0) {
+                adapter?.selectAll = true
+                btn_select_all.text = "取消全选"
+            }
             refreshUI()
             refreshDeleteButtonState()
         }
+    }
+
+    private fun checkAllSelected() {
+        // 判断是否全部选中
+
     }
 
     /**
@@ -202,6 +217,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
                 it.selectAll = true
                 btn_delete.isEnabled = true
                 btn_delete.text = "删除(${favoriteList!!.size})"
+                favoriteList?.map { item -> item.selected = true }
                 refreshUI()
             } else {
                 // 取消全选
