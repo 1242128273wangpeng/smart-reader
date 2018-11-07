@@ -18,12 +18,12 @@
     <color name="search_hot_word_orange">#fd9929</color>
 
     <!--新壳4热词-->
-    <color name="search_hotWord_bg1">#FCF6F6</color>
-    <color name="search_hotWord_bg2">#F7FDF9</color>
-    <color name="search_hotWord_bg3">#FDFCF7</color>
-    <color name="search_hotWord_bg4">#F6FAFC</color>
-    <color name="search_hotWord_bg5">#FDF7FC</color>
-    <color name="search_hotWord_bg6">#F7F7FD</color>
+    <color name="search_hotWord_bg1">#FFEFEF</color>
+    <color name="search_hotWord_bg2">#E9FEF0</color>
+    <color name="search_hotWord_bg3">#FFFAE2</color>
+    <color name="search_hotWord_bg4">#E4F6FF</color>
+    <color name="search_hotWord_bg5">#FEEEFC</color>
+    <color name="search_hotWord_bg6">#ECECFD</color>
     <color name="search_divider">#f0f0f0</color>
 
 </resources>
