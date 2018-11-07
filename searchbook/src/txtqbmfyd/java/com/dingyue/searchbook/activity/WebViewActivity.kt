@@ -12,6 +12,7 @@ import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.R
 import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.txtqbmfyd.act_web_view.*
+import net.lzbook.kit.bean.WebFavoriteUpdateBean
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
@@ -20,6 +21,7 @@ import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.web.CustomWebClient
+import org.greenrobot.eventbus.EventBus
 
 /**
  * Desc 加载网页数据
@@ -64,6 +66,8 @@ class WebViewActivity : FrameActivity() {
                 ToastUtil.showToastMessage("收藏成功")
             }
             btn_page_favorite.isEnabled = true
+            SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, false)
+            EventBus.getDefault().post(WebFavoriteUpdateBean())
         }else{
             ToastUtil.showToastMessage("收藏失败")
         }
@@ -87,6 +91,8 @@ class WebViewActivity : FrameActivity() {
         requestRepositoryFactory?.deleteWebFavoriteList(list)
         ToastUtil.showToastMessage("已取消")
         btn_page_favorite.isEnabled = true
+        SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, false)
+        EventBus.getDefault().post(WebFavoriteUpdateBean())
     }
 
 
@@ -122,14 +128,6 @@ class WebViewActivity : FrameActivity() {
             }
         }
 
-        if (loadingPage != null) {
-            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebClient != null) {
-                    customWebClient?.initParameter()
-                }
-                web_view?.reload()
-            })
-        }
     }
 
     /**
@@ -154,6 +152,12 @@ class WebViewActivity : FrameActivity() {
     private fun showLoading() {
         if (loadingPage == null) {
             loadingPage = LoadingPage(this, rl_content, LoadingPage.setting_result)
+            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+                if (customWebClient != null) {
+                    customWebClient?.initParameter()
+                }
+                web_view?.reload()
+            })
         }
     }
 

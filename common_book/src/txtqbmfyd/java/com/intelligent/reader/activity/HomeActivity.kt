@@ -360,7 +360,7 @@ class HomeActivity : BaseCacheableActivity(),
             startActivity(Intent(this, SettingMoreActivity::class.java))
         }
 
-        txt_web_favorite_red_point.visibility = if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE)) View.GONE else View.VISIBLE
+        txt_web_favorite_red_point.visibility = if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE,true)) View.GONE else View.VISIBLE
 
         txt_web_favorite.setOnClickListener {
             if (txt_web_favorite_red_point.visibility == View.VISIBLE) {
@@ -747,6 +747,7 @@ class HomeActivity : BaseCacheableActivity(),
             dl_home_content.closeMenu()
         } else {
             dl_home_content.openMenu()
+            txt_web_favorite_red_point.visibility = if (SPUtils.getDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE,true)) View.GONE else View.VISIBLE
         }
     }
 

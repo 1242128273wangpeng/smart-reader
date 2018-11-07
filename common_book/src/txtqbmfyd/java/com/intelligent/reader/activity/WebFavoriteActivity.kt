@@ -12,10 +12,13 @@ import com.intelligent.reader.presenter.WebFavoritePresenter
 import com.intelligent.reader.view.WebFavoriteView
 import kotlinx.android.synthetic.txtqbmfyd.act_web_favorite.*
 import kotlinx.android.synthetic.txtqbmfyd.in_bottom_edit.*
+import net.lzbook.kit.bean.WebFavoriteUpdateBean
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * Desc 网页收藏Activity
@@ -30,6 +33,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
     private var favoriteList: List<WebPageFavorite>? = null
     private var adapter: WebFavoriteAdapter? = null
     private var uploadFirst = true
+    private var isReload = false
 
     override fun showEmptyView() {
         rv_favorite_list.visibility = View.GONE
@@ -50,8 +54,22 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_web_favorite)
+        EventBus.getDefault().register(this)
         initView()
         presenter.initData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(isReload){
+            isReload = false
+            presenter.initData()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun initView() {
@@ -102,7 +120,6 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
                 val bundle = Bundle()
                 bundle.putString("url", favoriteList!![position].webLink)
                 RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
-                finish()
             }
             // 页面跳转
             return
@@ -229,6 +246,14 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
                 refreshUI()
             }
         }
+    }
+
+    /**
+     * 刷新界面通知
+     */
+    @Subscribe
+    fun reLoadDataEvent(bean: WebFavoriteUpdateBean){
+        isReload = true
     }
 
     override fun onBackPressed() {
