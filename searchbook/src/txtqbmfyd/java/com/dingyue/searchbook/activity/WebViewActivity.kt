@@ -3,7 +3,9 @@ package com.dingyue.searchbook.activity
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
+import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.WebPageFavorite
@@ -35,15 +37,31 @@ class WebViewActivity : FrameActivity() {
     private var customWebClient: CustomWebClient? = null
     private var loadingPage: LoadingPage? = null
     private var requestRepositoryFactory: RequestRepositoryFactory? = null
-    private var isFavorite: Boolean = false
     private var list: List<WebPageFavorite>? = null
+    private var isLoadFinish = true
+    private val chromeClient: WebChromeClient by lazy {
+        object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                if (newProgress > 80) {
+                    if (!isLoadFinish) {
+                        isLoadFinish = true
+                        hideLoading()
+                        btn_page_favorite.visibility = View.VISIBLE
+
+                    }
+                }
+            }
+        }
+    }
+
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_web_view)
         requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this);
-        img_back.setOnClickListener { finish() }
-        btn_page_favorite.antiShakeClick { click() }
+        img_back.setOnClickListener { onBackPressed() }
+        img_close.setOnClickListener { finish() }
+        btn_page_favorite.antiShakeClick { clickFavorite() }
         initWebView()
         initWebViewCallback()
         if (intent.hasExtra("url")) web_view.loadUrl(intent.getStringExtra("url"))
@@ -52,6 +70,11 @@ class WebViewActivity : FrameActivity() {
     private fun clickFavorite() {
         if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
             loge("title:[${web_view.title}],url:[${web_view.url}]")
+            list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
+            if (list != null && list!!.isNotEmpty()) {
+                ToastUtil.showToastMessage("已收藏过")
+                return
+            }
             DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_WEBCOLLECT, mapOf("title" to web_view.title, "link" to web_view.url))
             btn_page_favorite.isEnabled = false
             val favorite = WebPageFavorite()
@@ -68,33 +91,10 @@ class WebViewActivity : FrameActivity() {
             btn_page_favorite.isEnabled = true
             SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, false)
             EventBus.getDefault().post(WebFavoriteUpdateBean())
-        }else{
+        } else {
             ToastUtil.showToastMessage("收藏失败")
         }
     }
-
-    fun click() {
-        if (isFavorite) {
-            cancelFavorite()
-            changeBtnStatus()
-        } else {
-            clickFavorite()
-            changeBtnStatus()
-        }
-    }
-
-    /**
-     * 取消收藏
-     */
-    fun cancelFavorite() {
-        btn_page_favorite.isEnabled = false
-        requestRepositoryFactory?.deleteWebFavoriteList(list)
-        ToastUtil.showToastMessage("已取消")
-        btn_page_favorite.isEnabled = true
-        SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, false)
-        EventBus.getDefault().post(WebFavoriteUpdateBean())
-    }
-
 
     private fun initWebView() {
         web_view?.topShadow = img_head_shadow
@@ -106,47 +106,34 @@ class WebViewActivity : FrameActivity() {
             web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
         web_view.webViewClient = customWebClient
+        web_view.webChromeClient = chromeClient
     }
 
     private fun initWebViewCallback() {
 
         if (customWebClient != null) {
             customWebClient?.setLoadingWebViewStart {
-                showLoading()
+
             }
             customWebClient?.setLoadingEveryWebViewStart {
+                isLoadFinish = false
                 btn_page_favorite.visibility = View.GONE
+                showLoading()
             }
             customWebClient?.setLoadingWebViewError {
+                isLoadFinish = true
                 loadingPage?.onErrorVisable()
-                btn_page_favorite.visibility = View.GONE
             }
 
             customWebClient?.setLoadingWebViewFinish {
-                hideLoading()
-                changeBtnStatus()
+                if (!isLoadFinish) {
+                    isLoadFinish = true
+                    hideLoading()
+                    btn_page_favorite.visibility = View.VISIBLE
+                }
             }
         }
 
-    }
-
-    /**
-     * 改变收藏按钮状态
-     */
-    fun changeBtnStatus() {
-        if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
-            list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
-        }else{
-            list = null
-        }
-        btn_page_favorite.visibility = View.VISIBLE
-        if (list != null && list!!.isNotEmpty()) {
-            isFavorite = true
-            btn_page_favorite.setText(R.string.page_cancel_favorite)
-        } else {
-            isFavorite = false
-            btn_page_favorite.setText(R.string.page_favorite)
-        }
     }
 
     private fun showLoading() {
@@ -185,4 +172,6 @@ class WebViewActivity : FrameActivity() {
         }
         super.onBackPressed()
     }
+
+
 }

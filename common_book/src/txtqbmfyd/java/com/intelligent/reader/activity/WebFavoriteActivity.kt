@@ -61,7 +61,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
 
     override fun onResume() {
         super.onResume()
-        if(isReload){
+        if (isReload) {
             isReload = false
             presenter.initData()
         }
@@ -139,11 +139,6 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
             refreshUI()
             refreshDeleteButtonState()
         }
-    }
-
-    private fun checkAllSelected() {
-        // 判断是否全部选中
-
     }
 
     /**
@@ -252,7 +247,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
      * 刷新界面通知
      */
     @Subscribe
-    fun reLoadDataEvent(bean: WebFavoriteUpdateBean){
+    fun reLoadDataEvent(bean: WebFavoriteUpdateBean) {
         isReload = true
     }
 
