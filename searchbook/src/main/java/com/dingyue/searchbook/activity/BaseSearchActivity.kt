@@ -127,7 +127,10 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
             R.id.search_result_input -> {
                 isRunTextWatcher = true
                 showEditCursor(true)
-                showInputEditClickEvent()
+
+                if (!inputEditText.isFocusable) {
+                    showInputEditClickEvent()//搜索框无焦点的时候调用
+                }
             }
             R.id.search_result_focus -> {
                 focusTextView.visibility = View.GONE
@@ -278,6 +281,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
 
         showFragment(suggestFragment)
         suggestFragment.obtainKeyWord(inputEditText.text.toString())
+
     }
 
     /**
