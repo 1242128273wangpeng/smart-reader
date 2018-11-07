@@ -36,7 +36,6 @@
         android:layout_marginRight="@dimen/dimen_margin_20"
         android:src="@drawable/search_history_clear_yh"
         android:scaleType="center"
-
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"/>
 

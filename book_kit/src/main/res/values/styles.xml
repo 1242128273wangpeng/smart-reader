@@ -96,4 +96,34 @@
         <item name="android:windowEnterAnimation">@anim/home_clear_cache_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/home_clear_cache_exit_anim</item>
     </style>
+
+
+
+    <!-- 导航栏 -->
+    <declare-styleable name="NavigationBarStrip">
+        <attr name="indicatorMarginBottom" format="dimension" />
+
+        <attr name="indicatorColor" format="color" />
+        <attr name="indicatorFactor" format="float" />
+        <attr name="indicatorHeight" format="dimension" />
+        <attr name="indicatorPadding" format="dimension" />
+        <attr name="indicatorTextSize" format="dimension" />
+
+        <attr name="indicatorType" format="enum">
+            <enum name="line" value="0" />
+            <enum name="point" value="1" />
+        </attr>
+
+        <attr name="indicatorGravity" format="enum">
+            <enum name="top" value="0" />
+            <enum name="bottom" value="1" />
+        </attr>
+
+        <attr name="indicatorRadius" format="dimension" />
+        <attr name="indicatorAnimationDuration" format="integer" />
+
+        <attr name="indicatorInactiveColor" format="color" />
+        <attr name="indicatorActiveColor" format="color" />
+    </declare-styleable>
+
 </resources>

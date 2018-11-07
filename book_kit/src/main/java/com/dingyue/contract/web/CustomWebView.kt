@@ -2,10 +2,6 @@ package com.dingyue.contract.web
 
 import android.content.Context
 import android.graphics.RectF
-import android.support.v4.view.MotionEventCompat
-import android.support.v4.view.NestedScrollingChild
-import android.support.v4.view.NestedScrollingChildHelper
-import android.support.v4.view.ViewCompat
 import android.webkit.WebView
 import android.util.AttributeSet
 import android.view.MotionEvent

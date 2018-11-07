@@ -156,24 +156,24 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             }
         })
 
-        txt_empty_add_book.setOnClickListener {
+        txt_empty_add_book?.setOnClickListener {
             BookShelfLogger.uploadBookShelfToBookCity()
         }
-        img_head_setting!!.setOnClickListener(View.OnClickListener {
+        img_head_setting?.setOnClickListener(View.OnClickListener {
             BookShelfLogger.uploadBookShelfPersonal()
             RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
             EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_setting))
         })
-        img_head_search!!.setOnClickListener {
+        img_head_search?.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
             BookShelfLogger.uploadBookShelfSearch()
         }
-        img_head_download!!.setOnClickListener {
+        img_head_download?.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             BookShelfLogger.uploadBookShelfCacheManager()
         }
 
-        txt_empty_add_book.setOnClickListener {
+        txt_empty_add_book?.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
         }

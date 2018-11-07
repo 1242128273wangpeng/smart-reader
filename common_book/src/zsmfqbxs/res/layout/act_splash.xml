@@ -4,8 +4,7 @@
     android:id="@+id/loading_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
-    android:clickable="true">
+    android:background="@color/color_white">
 
 
     <RelativeLayout
@@ -32,5 +31,10 @@
         android:adjustViewBounds="true"
         android:orientation="vertical"
         android:scaleType="fitXY"/>
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

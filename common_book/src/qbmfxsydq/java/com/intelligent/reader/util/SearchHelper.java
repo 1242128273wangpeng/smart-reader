@@ -528,7 +528,7 @@ public class SearchHelper {
                 AppLog.e("kk",
                         searchWord + "==" + searchType + "==" + filterType + "==" + filterWord
                                 + "===" + sortType);
-                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_V4, params);
+                mUrl = UrlUtils.buildWebUrl(RequestService.SEARCH_VUE, params);
             }
 
         }

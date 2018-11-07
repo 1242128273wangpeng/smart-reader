@@ -22,7 +22,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
@@ -1855,6 +1854,10 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                                     if (access.privateKey != null) {
                                         Config.insertPrivateKey(access.privateKey!!)
                                     }
+
+                                    if (access.expire > 0 ) {
+                                        Config.insertAuthExpire(access.expire.toLong())
+                                    }
                                 }
                             }
 
@@ -1914,29 +1917,39 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     override fun requestAuthAccessSync(): Boolean {
-        val result = InternetRequestRepository.loadInternetRequestRepository(context).requestAuthAccessSync().execute().body()
+        try {
+            val result = InternetRequestRepository.loadInternetRequestRepository(context).requestAuthAccessSync().execute().body()
 
-        if (result != null && result.checkResultAvailable()) {
-            Logger.e("鉴权请求结果正常！")
+            if (result != null && result.checkResultAvailable()) {
+                Logger.e("鉴权请求结果正常！")
 
-            val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
+                val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
 
-            if (message != null && message.isNotEmpty()) {
-                val access = Gson().fromJson(message, Access::class.java)
-                if (access != null) {
-                    if (access.publicKey != null) {
-                        Config.insertPublicKey(access.publicKey!!)
+                if (message != null && message.isNotEmpty()) {
+                    val access = Gson().fromJson(message, Access::class.java)
+                    if (access != null) {
+                        if (access.publicKey != null) {
+                            Config.insertPublicKey(access.publicKey!!)
+                        }
+
+                        if (access.privateKey != null) {
+                            Config.insertPrivateKey(access.privateKey!!)
+                        }
+
+                        if (access.expire > 0 ) {
+                            Config.insertAuthExpire(access.expire.toLong())
+                        }
                     }
-
-                    if (access.privateKey != null) {
-                        Config.insertPrivateKey(access.privateKey!!)
-                    }
+                    Logger.e("鉴权结果PublicKey: " + access.publicKey + " : " + access.privateKey)
                 }
-            }
 
-            return true
-        } else {
-            Logger.e("鉴权请求结果异常！")
+                return true
+            } else {
+                Logger.e("鉴权请求结果异常！")
+                return false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
             return false
         }
     }

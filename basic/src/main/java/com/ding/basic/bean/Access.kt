@@ -9,7 +9,7 @@ import java.io.Serializable
  * Date 2018/6/12 14:48
  */
 class Access :Serializable {
-    var expire: String? = null
+    var expire: Int = 0
     var publicKey: String? = null
     var privateKey: String? = null
 }

@@ -49,6 +49,7 @@ public class StartLogClickUtil {
     public static final String ACTION_HOME_BOOK_LIST = "BOOKLIST";
     public static final String ACTION_HOME_BOOK_SHELF = "BOOKSHELF";
     public static final String ACTION_HOME_RECOMMEND = "RECOMMEND";
+    public static final String ACTION_HOME_BOOKSTORE = "BOOKSTORE";
     public static final String ACTION_HOME_TOP = "TOP";
     public static final String ACTION_HOME_CLASS = "CLASS";
     public static final String ACTION_HOME_PERSONAL = "PERSONAL";
@@ -395,6 +396,17 @@ public class StartLogClickUtil {
 
 
     public static final String DROPDOWN = "DROPDOWN";//下拉刷新
+
+
+    public static final String PAGE_BOOKSTORE = "BOOKSTORE";
+    public static final String ACTION_RECOMMEND = "RECOMMEND";
+    public static final String ACTION_MALE = "MALE";
+    public static final String ACTION_FEMALE = "FEMALE";
+    public static final String ACTION_FINISH = "FINISH";
+
+    public static final String PAGE_FIRSTRECOMMEND = "FIRSTRECOMMEND";
+
+
 
     private static List<String> prePageList = new ArrayList<>();
 

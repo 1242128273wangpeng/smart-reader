@@ -57,6 +57,18 @@ public interface WebViewJsInterface {
      */
     String buildAjaxUrl(String url);
 
+
+    /***
+     * 精选接入数据流，添加接口拼接方式
+     * **/
+    String buildMicroRequestUrl(String url);
+
+    /***
+     * 精选页鉴权失败时调用
+     * **/
+    String authAccessMicroRequest(String url);
+
+
     /**
      * 进入 CoverPageActivity
      * @param host 未使用参数

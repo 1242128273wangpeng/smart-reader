@@ -45,7 +45,6 @@ object Config {
      * **/
     private var userTagHost: String = "https://znapi-bigdata.zhuishuwang.com"
 
-
     /***
      * 设置页福利中心地址
      * **/
@@ -65,6 +64,11 @@ object Config {
      * 请求私钥
      * **/
     private var privateKey: String = ""
+
+    /***
+     * 鉴权过期时间
+     * **/
+    private var authExpire = 0L
 
     /***
      * 请求公共参数
@@ -102,6 +106,10 @@ object Config {
         return webViewHost
     }
 
+    fun loadMicroWebViewHost(): String {
+        return microAPIHost
+    }
+
     fun insertRequestAPIHost(requestAPIHost: String) {
         if (!TextUtils.isEmpty(requestAPIHost)) {
             Config.requestAPIHost = requestAPIHost
@@ -131,7 +139,7 @@ object Config {
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
-                .tag("DingYue").methodCount(0).showThreadInfo(false).build()
+                .tag("DingYue").methodCount(0).showThreadInfo(true).build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
@@ -236,5 +244,13 @@ object Config {
         }
 
         return privateKey
+    }
+
+    fun insertAuthExpire(authExpire: Long) {
+        this.authExpire = System.currentTimeMillis() + (authExpire * 1000)
+    }
+
+    fun loadAuthExpire(): Long {
+        return authExpire
     }
 }

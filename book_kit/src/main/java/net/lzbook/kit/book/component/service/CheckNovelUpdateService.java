@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 
+import com.ding.basic.Config;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookUpdate;
 import com.ding.basic.bean.Chapter;
@@ -134,7 +135,7 @@ public class CheckNovelUpdateService extends Service {
         }
 
         if (isFirst) {
-            timerHandler.sendEmptyMessage(1);
+            timerHandler.sendEmptyMessageDelayed(1, Constants.authAccessRefreshTime);
             timerHandler.sendEmptyMessageDelayed(0, Constants.refreshTime);
             isFirst = false;
         }

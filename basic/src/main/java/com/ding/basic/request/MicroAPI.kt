@@ -2,6 +2,7 @@ package com.ding.basic.request
 
 import com.ding.basic.Config
 import com.ding.basic.bean.*
+import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -9,6 +10,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
 /**
@@ -17,7 +19,7 @@ import kotlin.properties.Delegates
  */
 object MicroAPI {
 
-    private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(MicroRequestInterceptor()).build()
+    private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addNetworkInterceptor(MicroRequestInterceptor()).connectTimeout(3, TimeUnit.SECONDS).build()
 
     private var microService: MicroService by Delegates.notNull()
 
@@ -32,6 +34,8 @@ object MicroAPI {
                 .client(okHttpClient)
                 .baseUrl(Config.loadMicroAPIHost())
                 .build()
+
+        Logger.e("InitMicroService: " + Config.loadMicroAPIHost())
 
         microService = retrofit.create(MicroService::class.java)
     }

@@ -37,7 +37,6 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * **/
     fun initParameters() {
         val sharePreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-//        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BookApplication.getGlobalContext())
 
         //初始化阅读页背景
         if (sharePreUtil.getInt(SharedPreUtil.CONTENT_MODE) < 50) {

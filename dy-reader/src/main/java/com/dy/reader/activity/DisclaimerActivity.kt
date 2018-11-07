@@ -125,7 +125,7 @@ class DisclaimerActivity : iyouqu.theme.FrameActivity() {
             dialog.dismiss()
         }
         confirmBtn.setOnClickListener {
-            if ("鼎阅集团" == adminEditText.text.toString()) {
+            if ("小说我最屌" == adminEditText.text.toString()) {
                 RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
             } else {
                 this.showToastMessage("身份验证失败")

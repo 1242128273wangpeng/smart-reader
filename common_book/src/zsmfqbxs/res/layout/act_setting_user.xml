@@ -13,8 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:clipToPadding="true"
-        android:fitsSystemWindows="true"
-        android:focusableInTouchMode="true">
+        android:fitsSystemWindows="true">
         <!--通过Visiblie和gong来控制是否展现Textview的drawable展现-->
         <RelativeLayout
             android:layout_width="match_parent"
@@ -146,7 +145,6 @@
                 android:id="@+id/user_login_layout_left"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:focusableInTouchMode="true"
                 android:visibility="gone">
 
                 <ImageView
@@ -223,7 +221,6 @@
                 android:id="@+id/user_login_layout"
                 android:layout_width="match_parent"
                 android:layout_height="166dp"
-                android:focusableInTouchMode="true"
                 android:visibility="gone">
 
                 <ImageView

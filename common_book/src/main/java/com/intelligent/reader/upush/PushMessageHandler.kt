@@ -1,16 +1,12 @@
 package com.intelligent.reader.upush
 
 import android.content.Context
-import android.text.TextUtils
-import com.dingyue.contract.util.CommonUtil
 import com.umeng.message.UmengMessageHandler
 import com.umeng.message.entity.UMessage
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.dynamic.DynamicParameter
-import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.loge
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 
 /**

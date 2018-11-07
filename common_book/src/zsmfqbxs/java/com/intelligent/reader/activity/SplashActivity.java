@@ -2,6 +2,8 @@ package com.intelligent.reader.activity;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
+import static com.dy.reader.Reader.context;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -19,10 +21,12 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +47,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.GenderHelper;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
@@ -80,7 +85,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
-public class SplashActivity extends FrameActivity {
+public class SplashActivity extends FrameActivity implements GenderHelper.GenderSelectedListener {
     private static String TAG = "SplashActivity";
     private final MHandler handler = new MHandler(this);
     public int initialization_count = 0;
@@ -91,6 +96,10 @@ public class SplashActivity extends FrameActivity {
     private TextView txt_upgrade;
     private ProgressBar progress_upgrade;
     private List<Book> books;
+
+    private boolean isIniting;
+    // 开屏选男女
+    private boolean mStepInFlag;
 
     public static void checkAndInstallShotCut(Context ctt) {
         if (!queryShortCut(ctt)) {
@@ -166,7 +175,7 @@ public class SplashActivity extends FrameActivity {
                 false);
         Constants.book_list_sort_type = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("booklist_sort_type", 0);
-        gotoActivity(versionCode, firstGuide);
+        gotoActivity(versionCode, false);
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
@@ -230,6 +239,17 @@ public class SplashActivity extends FrameActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        try {
+            setContentView(R.layout.act_splash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ad_view = findViewById(R.id.ad_view);
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestAuthAccess(null);
+
         String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
         File bookDBFile = getDatabasePath(bookDBName);
 
@@ -247,7 +267,7 @@ public class SplashActivity extends FrameActivity {
             txt_name.setText(R.string.app_name);
             upgradeBookDB(bookDBName, chapterDBList);
         } else {
-            doOnCreate();
+            initGenderOrData();
         }
     }
 
@@ -305,7 +325,7 @@ public class SplashActivity extends FrameActivity {
                                 , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
 
                         deleteOldDB();
-                        doOnCreate();
+                        initGenderOrData();
                     }
                 }, new Action() {
                     @Override
@@ -347,7 +367,7 @@ public class SplashActivity extends FrameActivity {
                                     data);
                             //删除之前的数据库
                             deleteOldDB();
-                            doOnCreate();
+                            initGenderOrData();
                         }
                     }, new Action() {
                         @Override
@@ -359,7 +379,7 @@ public class SplashActivity extends FrameActivity {
                                     data);
                             //删除之前的数据库
                             deleteOldDB();
-                            doOnCreate();
+                            initGenderOrData();
                         }
                     });
         } else {
@@ -369,7 +389,7 @@ public class SplashActivity extends FrameActivity {
                     , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
             //删除之前的数据库
             deleteOldDB();
-            doOnCreate();
+            initGenderOrData();
         }
     }
 
@@ -399,7 +419,6 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void doOnCreate() {
-
         try {
             setContentView(R.layout.act_splash);
         } catch (Exception e) {
@@ -407,12 +426,18 @@ public class SplashActivity extends FrameActivity {
         }
 
         ad_view = findViewById(R.id.ad_view);
+        isIniting = true;
         complete_count = 0;
         initialization_count = 0;
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
 
         updateBookLastChapter();
 
         initializeDataFusion();
+
+        checkBookChapterCount();
 
         // 安装快捷方式
         new InstallShotCutTask().execute();
@@ -492,6 +517,42 @@ public class SplashActivity extends FrameActivity {
         // 初始化任务
         InitTask initTask = new InitTask();
         initTask.execute();
+    }
+
+
+    /**
+     * 检查章节数是否为0
+     * 解决阅读进度不更新的问题
+     */
+    private void checkBookChapterCount(){
+        if (sharedPreUtil == null) {
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+
+        boolean isCheckChapterCount = sharedPreUtil.getBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, false);
+
+        if (!isCheckChapterCount) {
+
+            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                    BaseBookApplication.getGlobalContext()).loadBooks();
+
+            if (bookList != null && bookList.size() > 0) {
+                for (Book book : bookList) {
+
+                    if (book.getChapter_count() <= 0 && !TextUtils.isEmpty(book.getBook_id())) {
+                        int chapterCount = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
+                                context,
+                                book.getBook_id()).getCount();
+                        book.setChapter_count(chapterCount);
+
+                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                    }
+                }
+            }
+            sharedPreUtil.putBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, true);
+        }
+
     }
 
     /***
@@ -728,8 +789,6 @@ public class SplashActivity extends FrameActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-
-
             // 2 动态参数
             try {
                 DynamicParameter dynamicParameter = new DynamicParameter(getApplicationContext());
@@ -840,5 +899,53 @@ public class SplashActivity extends FrameActivity {
     @Override
     public boolean supportSlideBack() {
         return false;
+    }
+
+    private void initGenderOrData() {
+        if (initChooseGender()) {
+            FrameLayout frameLayout = findViewById(R.id.content_frame);
+            frameLayout.removeAllViews();
+            View view = LayoutInflater.from(this).inflate(R.layout.view_splash_gender, null);
+            if (view != null) {
+                frameLayout.addView(view);
+                final GenderHelper genderHelper = new GenderHelper(view);
+                genderHelper.insertGenderSelectedListener(SplashActivity.this);
+                final TextView txt_gender_skip = view.findViewById(R.id.txt_gender_skip);
+                txt_gender_skip.setOnClickListener(v -> {
+
+                    Map<String,String> data = new HashMap<>();
+                    data.put("type","0");
+                    StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
+
+                    txt_gender_skip.setText("努力加载中...");
+                    txt_gender_skip.setClickable(false);
+                    genderHelper.jumpAnimation();
+                    sharedPreUtil.putInt(SharedPreUtil.GENDER_TAG, Constants.SDEFAULT);
+                    mStepInFlag = true;
+                    Constants.SGENDER = Constants.SDEFAULT;
+                    doOnCreate();
+                });
+            } else {
+                mStepInFlag = true;
+                doOnCreate();
+            }
+        } else {
+            doOnCreate();
+        }
+    }
+
+    private boolean initChooseGender() {
+        AppUtils.initDensity(getApplicationContext());
+        if( sharedPreUtil == null){
+            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        }
+        Constants.SGENDER = sharedPreUtil.getInt(SharedPreUtil.GENDER_TAG, Constants.NONE);
+        return Constants.SGENDER == Constants.NONE;
+    }
+
+    @Override
+    public void genderSelected() {
+        mStepInFlag = true;
+        doOnCreate();
     }
 }

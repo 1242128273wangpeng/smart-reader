@@ -119,7 +119,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         find_book_detail_back = findViewById(R.id.find_book_detail_back);
         find_book_detail_title = findViewById(R.id.find_book_detail_title);
         find_book_detail_search = findViewById(R.id.find_book_detail_search);
-        find_detail_content = findViewById(R.id.rank_content);
+        find_detail_content = findViewById(R.id.find_book_detail_content);
         initListener();
         //判断是否是作者主页
         if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
@@ -305,9 +305,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         //如果可以切换周榜和月榜总榜
         if (map != null && map.get("qh") != null && map.get("qh").equals("true")) {
             setPullImageVisible(true);
-            //刷新popwindow的UI
             rankType = analysisUrl(currentUrl).get("rankType");
-//            updatePopView();
         } else {//如果不可以切换周榜和月榜总榜
             setPullImageVisible(false);
             setTitle(name);
@@ -324,12 +322,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
         }
 
         if (handler != null) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    loadingData(url);
-                }
-            });
+            handler.post(() -> loadingData(url));
         } else {
             loadingData(url);
         }
@@ -490,7 +483,6 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
                         urls.add(currentUrl);
                         names.add(currentTitle);
                         loadWebData(currentUrl, name);
-//                    setTitle(name);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

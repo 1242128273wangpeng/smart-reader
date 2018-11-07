@@ -2,7 +2,6 @@ package com.intelligent.reader.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.GridView;
 import android.widget.ListView;
 
 /**

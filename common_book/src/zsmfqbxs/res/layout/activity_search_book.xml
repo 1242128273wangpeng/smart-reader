@@ -93,8 +93,8 @@
                         android:paddingLeft="@dimen/dimen_padding_10"
                         android:paddingRight="@dimen/dimen_padding_10"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/search_edit_clear"
-                        android:visibility="visible"/>
+                        android:src="@drawable/search_edit_clear_icon"
+                        android:visibility="gone"/>
 
                 <net.lzbook.kit.book.view.HWEditText
                         android:id="@+id/search_result_input"

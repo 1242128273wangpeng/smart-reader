@@ -1,6 +1,7 @@
 package com.intelligent.reader.view
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import com.bumptech.glide.Glide
@@ -14,6 +15,7 @@ import com.ding.basic.util.putObject
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
+import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.view.MyDialog
@@ -39,6 +41,11 @@ class BannerDialog(val activity: Activity) {
         dialog.setCancelable(true)
 
         dialog.img_banner.setOnClickListener {
+//            val intent = Intent()
+//            intent.setClass(activity, FindBookDetail::class.java)
+//            intent.putExtra("url", bannerWebUrl)
+//            intent.putExtra("title", bannerWebTitle)
+//            activity.startActivity(intent)
 
             val bundle = Bundle()
             bundle.putString("url", bannerWebUrl)

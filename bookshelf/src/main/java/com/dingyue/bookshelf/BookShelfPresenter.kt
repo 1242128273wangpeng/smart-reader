@@ -129,6 +129,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 }
                 return 0
             } else {
+                System.setProperty("java.util.Arrays.useLegacyMergeSort", "true")
                 Collections.sort(books, CommonContract.MultiComparator(Constants.book_list_sort_type))
                 iBookList.addAll(books)
 
@@ -199,8 +200,10 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
             views.add(BookShelfADView(activity))
         }
 
-        handleADResult(views)
-        view?.onAdRefresh()
+        runOnMain {
+            handleADResult(views)
+            view?.onAdRefresh()
+        }
     }
 
 

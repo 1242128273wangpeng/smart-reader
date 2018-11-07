@@ -69,7 +69,6 @@ class SharedPreUtil(val type: Int) {
          */
         const val CHECK_CHAPTER_COUNT = "check_chapter_count"
 
-
         /**
          * DynamicParameter
          */
@@ -121,13 +120,6 @@ class SharedPreUtil(val type: Int) {
         const val NEW_APP_AD_SWITCH = "new_app_ad_switch"//新壳广告开关
 
         const val BOOK_SHELF_STATE = "book_shelf_state"//九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
-
-        /***
-         * WebView静态资源拦截规则
-         * **/
-        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
-        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
-
 
         /**
          * 广告分版本，分渠道，分广告位开关控制
@@ -233,6 +225,14 @@ class SharedPreUtil(val type: Int) {
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
+
+
+
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
     }
 
 

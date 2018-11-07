@@ -86,12 +86,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter = ReadPresenter(this)
         mReadPresenter.onCreateInit(savedInstanceState)
 
-//        3-1 休息广告位
-//        MediaControl.startRestMedia {
-//            re_rest_view.visibility = View.VISIBLE
-//            MediaControl.loadRestMedia(this,re_rest_view,{ int: Int? ->
-//            })
-//        }
 
         dl_reader_content.layoutParams.width = AppHelper.screenWidth
         dl_reader_content.layoutParams.height = AppHelper.screenHeight
@@ -152,7 +146,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         mReadPresenter.onNewIntent(intent)
     }
 
-    val orientaionRunnable  = {
+    val orientaionRunnable = {
         showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
 
         glSurfaceView.visibility = View.GONE
@@ -180,7 +174,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
         if ((ReaderSettings.instance.isLandscape && newConfig.orientation != Configuration.ORIENTATION_PORTRAIT) ||
                 (!ReaderSettings.instance.isLandscape && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            if(lastOrientation != newConfig.orientation) {
+            if (lastOrientation != newConfig.orientation) {
                 lastOrientation = newConfig.orientation
                 AppHelper.mainHandler.removeCallbacks(orientaionRunnable)
                 AppHelper.mainHandler.postDelayed(orientaionRunnable, 500)
@@ -266,10 +260,10 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
         mReadPresenter.onResume()
         MediaLifecycle.onResume()
-
         if (mNativeMediaView != null) {
             mNativeMediaView?.onResume()
         }
+        mCatalogMarkFragment?.fixBook()
     }
 
     override fun shouldShowNightShadow(): Boolean = false
@@ -322,7 +316,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerView.removeAllViews()
         dl_reader_content.removeDrawerListener(mDrawerListener)
         EventBus.getDefault().unregister(this)
         ReaderStatus.clear()
@@ -363,7 +356,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     fun showDisclaimerActivity() {
         try {
             val bundle = Bundle()
-            bundle.putBoolean(Constants.FROM_READING_PAGE, true)
+            bundle.putBoolean(RouterUtil.FROM_READING_PAGE, true)
             RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -380,7 +373,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 val uri = Uri.parse(url!!.trim { it <= ' ' })
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -391,42 +384,31 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         }
     }
 
-    fun full(isFull: Boolean) {
-//        if (!Constants.isFullWindowRead) {
-//            return
-//        }
-//        if (isFull) {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        } else {
-//            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-//        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRecieveEvent(event: EventLoading) {
-        if (event.type == EventLoading.Type.START) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
-        } else if (event.type == EventLoading.Type.PROGRESS_CHANGE) {
-            if (ReaderStatus.position.group > -1) {
-                rl_reader_bottom.visibility = View.VISIBLE
-                rl_reader_header.visibility = View.VISIBLE
-                txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
-                if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
-                    txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+        when {
+            event.type == EventLoading.Type.START -> showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+            event.type == EventLoading.Type.PROGRESS_CHANGE -> {
+                if (ReaderStatus.position.group > -1) {
+                    rl_reader_bottom.visibility = View.VISIBLE
+                    rl_reader_header.visibility = View.VISIBLE
+                    txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
+                    txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
+                    if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
+                        txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
+                    }
+                } else {
+                    rl_reader_bottom.visibility = View.GONE
+                    rl_reader_header.visibility = View.GONE
                 }
-            } else {
-                rl_reader_bottom.visibility = View.GONE
-                rl_reader_header.visibility = View.GONE
+                mReadPresenter.checkManualDialogShow()
             }
-            mReadPresenter?.checkManualDialogShow()
-        } else if (event.type == EventLoading.Type.RETRY) {
-            showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
-        } else if (event.type == EventLoading.Type.SUCCESS) {
+            event.type == EventLoading.Type.RETRY -> showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
+            event.type == EventLoading.Type.SUCCESS -> {
 
-            showAd()
-            mLoadingFragment.dismissDiaslog(isResume)
+                showAd()
+                mLoadingFragment.dismissDiaslog(isResume)
+            }
         }
     }
 
@@ -534,7 +516,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
+//            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
             EventSetting.Type.HIDE_AD -> hideAd()
             EventSetting.Type.SHOW_AD -> showAd()
 
@@ -543,7 +525,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun showAd() {
-        //如果夜间设置了alpha值之后, 视频将有重影
+//        //如果夜间设置了alpha值之后, 视频将有重影
 //        if (pac_reader_ad != null) {
 //            pac_reader_ad.alpha = if (mThemeHelper.isNight) 0.5f else 1f
 //        }

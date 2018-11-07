@@ -22,6 +22,7 @@ object BookHelperContract {
 
     fun querySortedBookList(type: Int): List<Book>? {
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true")
         Collections.sort<Book>(books, CommonContract.MultiComparator(type))
         Collections.sort<Book>(books, CommonContract.CachedComparator())
         return books

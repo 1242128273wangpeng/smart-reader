@@ -1,4 +1,4 @@
-package com.dingyue.downloadmanager;
+package net.lzbook.kit.utils;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -26,6 +26,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
+
+import net.lzbook.kit.R;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

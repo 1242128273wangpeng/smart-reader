@@ -62,12 +62,14 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         if (mHistoryDatas != null && !mHistoryDatas!!.isEmpty() && position > -1 &&
                 position < mHistoryDatas!!.size) {
             val history = mHistoryDatas!![position.toInt()]
-            view?.setEditText(history)
-            startSearch(history, "0")
+            if (history != null) {
+                view?.setEditText(history)
+                startSearch(history, "0")
 
-            val data = HashMap<String, String>()
-            data.put("keyword", history)
-            StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data)
+                val data = HashMap<String, String>()
+                data.put("keyword", history)
+                StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HISTORY, data)
+            }
         }
     }
 
@@ -240,6 +242,8 @@ class SearchHelpPresenter(override var view: SearchView.HelpView?) : IPresenter<
         for (item in suggestList) {
             mSuggestList!!.add(item)
         }
+        if (mSearchHandler == null)
+            return
         mSearchHandler.post {
             view?.onSuggestBack()
         }
