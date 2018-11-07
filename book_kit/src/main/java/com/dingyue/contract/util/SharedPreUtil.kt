@@ -62,6 +62,8 @@ class SharedPreUtil(val type: Int) {
         const val WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
         const val UNION_PRE_HOST = "union_pre_host"
         const val CONTENT_PRE_HOST = "content_pre_host"
+        const val USER_TAG_PRE_HOST = "user_tag_pre_host"
+
         /**
          * 检查章节数是否为0
          */
@@ -70,6 +72,7 @@ class SharedPreUtil(val type: Int) {
         /**
          * DynamicParameter
          */
+        const val CHECK_DYNAMIC = "check_dynamic" //用于判断覆盖安装时强制拉取动态参数
         const val DYNAMIC_VERSION = "dynamic_version"
         const val CHANNEL_LIMIT = "channel_limit"
         const val DAY_LIMIT = "day_limit"

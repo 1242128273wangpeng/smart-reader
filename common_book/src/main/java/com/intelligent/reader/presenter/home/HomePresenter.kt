@@ -8,7 +8,6 @@ import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
 import com.intelligent.reader.app.BookApplication
-import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers

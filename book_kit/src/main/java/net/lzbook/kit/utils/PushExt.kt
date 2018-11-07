@@ -24,7 +24,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import java.util.HashMap
+import java.util.*
 
 /**
  * Desc Push功能-扩展
@@ -32,7 +32,7 @@ import java.util.HashMap
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/8/30 17:08
  */
-fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
+fun PushAgent.updateTags(context: Context, udid: String): Flowable<BannerInfo> {
     loge("更新用户标签")
     val pushTagsFlowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
             .requestPushTags(udid)
@@ -61,13 +61,15 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                             it.printStackTrace()
                         })
             }
-            .zipWith(bannerInfoFlowable, BiFunction<PushInfo, BannerInfo, String> { pushInfo, bannerInfo ->
+            .zipWith(bannerInfoFlowable, BiFunction<PushInfo, BannerInfo, BannerInfo> { pushInfo, bannerInfo ->
+                var result = BannerInfo()
                 if (bannerInfo.hasShowed) {
                     loge("此次活动弹窗已经展示过")
-                    ""
+                    result.url = ""
+                    result
                 } else {
-                    loge("zip")
-                    var result = ""
+                    loge("zip -- push info: $pushInfo" +
+                            "\n banner info: $bannerInfo")
                     val pushTags = pushInfo.tags
                     val bannerTags = bannerInfo.tags
                     val bannerImgUrl = bannerInfo.url
@@ -75,10 +77,9 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                             && bannerImgUrl?.isNotEmpty() == true) {
                         bannerTags.retainAll(pushTags) // 求交集
                         if (bannerTags.isNotEmpty()) {
-                            result = bannerImgUrl
+                            result = bannerInfo
                         }
                     }
-                    loge("zip result: $result")
                     context.editShared {
                         putObject(BannerInfo.KEY, bannerInfo)
                     }

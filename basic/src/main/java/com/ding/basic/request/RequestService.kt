@@ -214,7 +214,6 @@ interface RequestService {
         const val WEB_RANK_H5_BOY = "/h5/{packageName}/rankBoy"
         const val WEB_RANK_H5_Girl = "/h5/{packageName}/rankGirl"
 
-
         /**
          * PUSH标签
          */
@@ -239,11 +238,6 @@ interface RequestService {
          * 二维码 拉新
          */
         const val QR_CODE = "/h5/{packageName}/share"
-
-
-
-
-
 
 
 

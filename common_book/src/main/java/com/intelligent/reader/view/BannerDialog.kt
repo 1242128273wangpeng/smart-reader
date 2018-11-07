@@ -2,6 +2,7 @@ package com.intelligent.reader.view
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.view.Gravity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
@@ -11,6 +12,8 @@ import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.util.editShared
 import com.ding.basic.util.getSharedObject
 import com.ding.basic.util.putObject
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.router.RouterUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.FindBookDetail
 import kotlinx.android.synthetic.main.dialog_banner.*
@@ -29,7 +32,8 @@ class BannerDialog(val activity: Activity) {
 
     private val dialog = MyDialog(activity, R.layout.dialog_banner, Gravity.CENTER)
 
-    private val bannerWebUrl = "/v4/cn.dingyueWeb.reader/activity/banner"
+    private var bannerWebTitle = "推荐书单"
+    private var bannerWebUrl = "/v4/cn.dingyueWeb.reader/activity/banner"
 
     init {
 
@@ -37,16 +41,17 @@ class BannerDialog(val activity: Activity) {
         dialog.setCancelable(true)
 
         dialog.img_banner.setOnClickListener {
-            val intent = Intent()
-            intent.setClass(activity, FindBookDetail::class.java)
-            intent.putExtra("url", bannerWebUrl)
-            intent.putExtra("title", "推荐书单")
-            activity.startActivity(intent)
+//            val intent = Intent()
+//            intent.setClass(activity, FindBookDetail::class.java)
+//            intent.putExtra("url", bannerWebUrl)
+//            intent.putExtra("title", bannerWebTitle)
+//            activity.startActivity(intent)
 
-//            val bundle = Bundle()
-//            bundle.putString("url", bannerWebUrl)
-//            bundle.putString("title", "推荐书单")
-//            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
+            val bundle = Bundle()
+            bundle.putString("url", bannerWebUrl)
+            bundle.putString("title", bannerWebTitle)
+            bundle.putString("from", "banner_dialog")
+            RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
 
             dialog.dismiss()
 
@@ -70,10 +75,19 @@ class BannerDialog(val activity: Activity) {
 
     }
 
-    fun show(imgUrl: String) {
-        if (imgUrl.isEmpty()) {
+    fun show(bannerInfo: BannerInfo) {
+        val imgUrl = bannerInfo.url
+        if (imgUrl?.isEmpty() == true) {
             updateBannerInfo()
-        } else {
+        }
+
+        val activityUrl = bannerInfo.nativeActivityUrl
+        if (imgUrl?.isNotEmpty() == true && activityUrl?.isNotEmpty() == true) {
+
+            val strArr = activityUrl.split(",")
+            bannerWebTitle = strArr[0]
+            bannerWebUrl = strArr[1]
+
             Glide.with(activity)
                     .load(imgUrl)
                     .into(simpleTarget)

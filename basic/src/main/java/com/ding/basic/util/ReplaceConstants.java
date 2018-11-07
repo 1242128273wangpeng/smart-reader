@@ -21,6 +21,7 @@ public class ReplaceConstants {
     public String ALIFEEDBACK_SECRET;
 
 
+
     public String BOOK_NOVEL_DEPLOY_HOST;
     public String BOOK_WEBVIEW_HOST;
 

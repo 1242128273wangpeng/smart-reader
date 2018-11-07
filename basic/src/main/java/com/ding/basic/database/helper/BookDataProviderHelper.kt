@@ -9,8 +9,8 @@ import com.ding.basic.database.BookDatabase
 import com.ding.basic.database.provider.BookDataProvider
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
-import java.util.*
 import net.lzbook.kit.data.db.help.ChapterDaoHelper
+import java.util.*
 
 /**
  * Created on 2018/3/16.
@@ -106,6 +106,8 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
             bookInterfaceHelper = null
             database?.close()
         }
+
+        const val INSERT_BOOKSHELF_FULL = -50L
     }
 
     override fun checkBookSubscribe(book_id: String): Book? {
@@ -121,7 +123,7 @@ class BookDataProviderHelper private constructor(private var bookdao: BookDao,
         }
         if (loadBookCount()!! > MAX_COUNT) {
             Toast.makeText(context, "书架已满，请整理书架", Toast.LENGTH_SHORT).show()
-            return 0
+            return INSERT_BOOKSHELF_FULL
         } else if (checkBookSubscribe(book.book_id) != null) {
             Toast.makeText(context, "已在书架中", Toast.LENGTH_SHORT).show()
             return 0

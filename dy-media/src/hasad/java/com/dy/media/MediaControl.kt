@@ -19,6 +19,7 @@ import com.dycm_adsdk.callback.AdMultiResultCallBack
 import com.dycm_adsdk.callback.AdResultCallBack
 import com.dycm_adsdk.callback.DYSplashCallBack
 import com.dycm_adsdk.view.NativeView
+import java.lang.ref.WeakReference
 
 
 /**
@@ -287,7 +288,8 @@ object MediaControl : IMediaControl {
                                 override fun adDismissed() {
                                     Log.e("3-1", "3-1广告监控函数 ：adDismissed")
                                     restMediaHandler?.postDelayed({
-                                        if (activity != null && !activity.isFinishing && isShowing) {
+                                        val ref = WeakReference(activity).get()
+                                        if (ref != null && !ref.isFinishing && isShowing) {
                                             dismiss()
                                         }
 
@@ -297,7 +299,8 @@ object MediaControl : IMediaControl {
                                 override fun adLoadFail(dyError: DyError?) {
                                     Log.e("3-1", "3-1广告监控函数 ：拉取失败")
                                     restMediaHandler?.postDelayed({
-                                        if (activity != null && !activity.isFinishing && isShowing) {
+                                        val ref = WeakReference(activity).get()
+                                        if (ref != null && !ref.isFinishing && isShowing) {
                                             dismiss()
                                         }
                                     }, 200)
@@ -316,8 +319,13 @@ object MediaControl : IMediaControl {
                             })
                         }
 
-                        if (activity != null && !activity.isFinishing && !isShowing) {
-                            show()
+                        try {
+                            val ref = WeakReference(activity).get()
+                            if (ref != null && !ref.isFinishing && !isShowing) {
+                                show()
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }

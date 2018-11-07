@@ -1032,7 +1032,8 @@ public class AppUtils {
                     }
 
                     for (PackageInfo packageInfo : packages) {
-                        if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags) <= 0) {
+                        if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags)
+                                <= 0) {
                             appInfo = new JSONObject();
 
                             packageInfo.applicationInfo.loadLabel(packageManager);
@@ -1040,9 +1041,11 @@ public class AppUtils {
                             String packageName = packageInfo.packageName;
 
                             //应用名称
-                            appInfo.put("app_name", packageInfo.applicationInfo.loadLabel(packageManager).toString().replace(":", "").replace("`", ""));
+                            appInfo.put("app_name", packageInfo.applicationInfo.loadLabel(
+                                    packageManager).toString().replace(":", "").replace("`", ""));
                             //应用包名
-                            appInfo.put("app_package_name", packageName.replace(":", "").replace("`", ""));
+                            appInfo.put("app_package_name",
+                                    packageName.replace(":", "").replace("`", ""));
                             //应用安装时间
                             appInfo.put("app_install_time", packageInfo.firstInstallTime);
                             //应用最近一次更新时间
@@ -1054,15 +1057,19 @@ public class AppUtils {
 
                                     if (usagePackageName.equals(packageName)) {
                                         //应用近1月总运行时长
-                                        appInfo.put("app_last_month_run_time", usageStats.getTotalTimeInForeground());
-                                        appInfo.put("app_last_month_used_time", usageStats.getLastTimeUsed());
+                                        appInfo.put("app_last_month_run_time",
+                                                usageStats.getTotalTimeInForeground());
+                                        appInfo.put("app_last_month_used_time",
+                                                usageStats.getLastTimeUsed());
                                     }
 
                                     try {
-                                        Field field = usageStats.getClass().getDeclaredField("mLaunchCount");
+                                        Field field = usageStats.getClass().getDeclaredField(
+                                                "mLaunchCount");
                                         if (field != null) {
                                             //应用近1月启动次数
-                                            appInfo.put("app_last_month_start_num", field.getInt(usageStats));
+                                            appInfo.put("app_last_month_start_num",
+                                                    field.getInt(usageStats));
                                         }
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
@@ -1339,7 +1346,6 @@ public class AppUtils {
                         if (newConfig != null && newConfig.fontScale > 0) {
                             sNoncompatScaleDensity =
                                     application.getResources().getDisplayMetrics().scaledDensity;
-
                         }
                     }
 
@@ -1349,19 +1355,31 @@ public class AppUtils {
                     }
                 });
             }
-            float targetDensity = displayMetrics.widthPixels / 360F;
-            float targetScaleDensity =
-                    targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
+
+            int orientation = application.getResources().getConfiguration().orientation;
+
+            float targetDensity;
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                targetDensity = displayMetrics.widthPixels / 360F;
+            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                targetDensity = displayMetrics.heightPixels / 360F;
+            } else {
+                targetDensity = displayMetrics.widthPixels / 360F;
+            }
+
+            float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
             int targetDensityDpi = (int) (160 * targetDensity);
 
             displayMetrics.density = targetDensity;
             displayMetrics.scaledDensity = targetScaleDensity;
             displayMetrics.densityDpi = targetDensityDpi;
 
-            DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
-            activityDisplayMetrics.density = targetDensity;
-            activityDisplayMetrics.scaledDensity = targetScaleDensity;
-            activityDisplayMetrics.densityDpi = targetDensityDpi;
+            if (activity != null) {
+                DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
+                activityDisplayMetrics.density = targetDensity;
+                activityDisplayMetrics.scaledDensity = targetScaleDensity;
+                activityDisplayMetrics.densityDpi = targetDensityDpi;
+            }
         } catch (Throwable e) {
             AppLog.e("setCustomDensity:" + e.getMessage());
         }

@@ -24,15 +24,18 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
 import iyouqu.theme.ThemeHelper
-import kotlinx.android.synthetic.mfxsqbyd.reader_option_detail.view.*
-import kotlinx.android.synthetic.mfxsqbyd.reader_option_mode.view.*
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_background.view.*
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_bottom.view.*
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_chapter_change.view.*
+import kotlinx.android.synthetic.mfxsqbyd.reader_option_detail.view.*
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_font.view.*
+import kotlinx.android.synthetic.mfxsqbyd.reader_option_mode.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.ResourceUtil
+import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
 
@@ -306,7 +309,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         img_reader_night?.preventClickShake(this)
 
-        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
+//        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {

@@ -25,6 +25,8 @@ class RecommendBean : Serializable {
 
     var sourceImageUrl: String? = null
 
+    var bookImgUrl: String? = null
+
     var host: String? = null
 
     var bookChapterId: String = ""
