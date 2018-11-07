@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.baidu.mobstat.StatService
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPKey
@@ -278,6 +279,9 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         }
 
         txt_push_setting.setOnClickListener {
+            //TODO 上线关闭
+            ParameterConfig.cityCode = ParameterConfig.cityCode + ".1"
+
             PersonalLogger.uploadPersonalPushSetting()
             startActivity(Intent(this, SettingMoreActivity::class.java))
         }

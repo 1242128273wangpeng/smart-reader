@@ -29,6 +29,7 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.runOnMain
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -412,7 +413,11 @@ object DataProvider {
                         Logger.e("向前检查章节异常: ${requestChapter.name} : ${requestChapter.defaultCode}")
                         mDisposable.add(readerRepository.requestSingleChapter(requestChapter)
                                 .subscribeOn(Schedulers.io())
-                                .subscribe())
+                                .subscribe({
+                                    if (it.defaultCode == 0) {
+                                        ToastUtil.showToastMessage(it.name + "内容已修复！")
+                                    }
+                                }))
                     }
                 }
             }

@@ -1,27 +1,29 @@
 package com.dy.reader.activity
 
-import android.net.http.SslError
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.Gravity
 import android.view.View
-import android.webkit.SslErrorHandler
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.WebSettings
 import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
 import com.dy.reader.R
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.web.CustomWebClient
 import java.util.*
 
 /**
@@ -32,6 +34,11 @@ import java.util.*
  */
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : FrameActivity() {
+
+    private var customWebClient: CustomWebClient? = null
+
+    private var loadingPage: LoadingPage? = null
+
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -66,16 +73,51 @@ class DisclaimerActivity : FrameActivity() {
         if (isFormDisclaimerPage) {
             txt_title.text = resources.getString(R.string.disclaimer_statement)
             web_disclaimer.visibility = View.VISIBLE
-            web_disclaimer.webViewClient = object : WebViewClient() {
-                override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,
-                                                error: SslError?) {
-                    handler?.proceed()
-                }
+
+            loadingPage = LoadingPage(this, rl_disclaimer_main, LoadingPage.setting_result)
+
+            if (web_disclaimer != null) {
+                customWebClient = CustomWebClient(this, web_disclaimer)
             }
 
-            // 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
-            web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+            customWebClient?.initWebViewSetting()
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                web_disclaimer?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            }
+
+            web_disclaimer?.webViewClient = customWebClient
+
+            customWebClient?.setLoadingWebViewStart { url -> Logger.i("LoadStartedAction: $url") }
+
+            customWebClient?.setLoadingWebViewError {
+                Logger.i("LoadErrorAction")
+                loadingPage?.onErrorVisable()
+            }
+
+            customWebClient?.setLoadingWebViewFinish {
+                Logger.i("LoadFinishAction")
+                loadingPage?.onSuccessGone()
+            }
+
+            if (loadingPage != null) {
+                loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+
+                    if (NetWorkUtils.isNetworkAvailable(this)) {
+                        customWebClient?.initParameter()
+                        web_disclaimer?.reload()
+                    } else {
+                        loadingPage?.onErrorVisable()
+                    }
+                })
+            }
+
+            if (NetWorkUtils.isNetworkAvailable(this)) {
+                // 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
+                web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+            } else {
+                loadingPage?.onErrorVisable()
+            }
             // 修改字体大小
             val fontSize = resources.getDimension(R.dimen.text_size_small)
             web_disclaimer.settings.defaultFontSize = fontSize.toInt()
