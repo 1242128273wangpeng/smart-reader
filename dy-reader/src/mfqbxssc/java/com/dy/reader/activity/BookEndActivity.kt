@@ -30,6 +30,7 @@ import net.lzbook.kit.user.BookRecommender
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -113,15 +114,15 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
-            finish()
+            bookEndPresenter.uploadLog(book,StartLogClickUtil.TOSHELF)
+//            finish()
         }
 
         //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
-            finish()
+            bookEndPresenter.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
+//            finish()
         }
         //喜欢这本书的人还喜欢（换一换）
         txt_more_refresh.setOnClickListener {
@@ -181,11 +182,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            val ref = WeakReference(this).get() ?: return@loadBookEndMedia
+            if (ref.isFinishing) return@loadBookEndMedia
             if (isSuccess) {
-                rl_book_end_ad.visibility = View.VISIBLE
-                rl_book_end_ad.addView(view)
+                rl_book_end_ad?.visibility = View.VISIBLE
+                rl_book_end_ad?.addView(view)
             } else {
-                rl_book_end_ad.visibility = View.GONE
+                rl_book_end_ad?.visibility = View.GONE
             }
         }
     }

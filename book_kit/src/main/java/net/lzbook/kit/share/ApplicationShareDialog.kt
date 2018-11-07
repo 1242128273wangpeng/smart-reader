@@ -76,7 +76,8 @@ class ApplicationShareDialog(var activity: Activity?) {
 
         dialog.tv_share_cancel.setOnClickListener {
             dismiss()
-            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE, StartLogClickUtil.ACTION_CANCEL)
+            StartLogClickUtil.upLoadEventLog(activity?.applicationContext, StartLogClickUtil.PAGE_SHARE,
+                    StartLogClickUtil.ACTION_CANCEL)
         }
     }
 

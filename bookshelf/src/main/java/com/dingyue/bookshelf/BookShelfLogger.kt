@@ -95,7 +95,7 @@ object BookShelfLogger {
      * **/
     fun uploadBookShelfShare() {
         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHELF_CACHE_MANAGE)
+                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.ACTION_SHARE)
     }
 
     /***

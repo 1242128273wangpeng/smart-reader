@@ -20,7 +20,6 @@ import net.lzbook.kit.app.BaseBookApplication;
 import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.book.download.DownloadState;
 import net.lzbook.kit.book.view.MyDialog;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.data.UpdateCallBack;
 import net.lzbook.kit.data.bean.BookUpdateTaskData;

@@ -31,7 +31,7 @@ class WebViewFragment : Fragment() {
 
     private var url: String? = ""
     private var type: String? = null
-
+    
     private var customWebClient: CustomWebClient? = null
 
     private var loadingPage: LoadingPage? = null
@@ -159,7 +159,7 @@ class WebViewFragment : Fragment() {
                                     else -> bundle.putString("from", "other")
                                 }
                             } else {
-                                bundle.putString("from", "other")
+                                bundle.putString("from", "authorType")
                             }
 
                             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
@@ -199,7 +199,7 @@ class WebViewFragment : Fragment() {
         if (rl_web_view_header != null) {
             rl_web_view_header?.visibility = View.VISIBLE
         }
-
+        
         if (txt_web_view_header_title != null && type != null) {
             if ("rank" == type) {
                 txt_web_view_header_title?.text = "榜单"
@@ -225,7 +225,7 @@ class WebViewFragment : Fragment() {
 
     private fun handleLoadingWebViewData(url: String?) {
         customWebClient?.initParameter()
-
+        
         if (url != null && url.isNotEmpty()) {
             try {
                 web_view_content?.loadUrl(url)
@@ -264,7 +264,7 @@ class WebViewFragment : Fragment() {
                 if (customWebClient != null) {
                     customWebClient?.initParameter()
                 }
-                web_view_content?.reload()
+                web_view_content?.loadUrl(url)
             })
         }
     }

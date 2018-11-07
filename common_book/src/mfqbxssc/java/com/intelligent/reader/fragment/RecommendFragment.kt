@@ -16,6 +16,8 @@ import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.SharedPreUtil
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.mfqbxssc.frag_recommend.*
+import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NavigationBarStrip
@@ -82,22 +84,34 @@ class RecommendFragment : Fragment() {
             }
 
             override fun onPageSelected(position: Int) {
+                val map = java.util.HashMap<String, String>()
                 when (position) {
                     0 -> {
-
+                        map["type"] = "男频"
                     }
                     1 -> {
-
+                        map["type"] = "女频"
                     }
                 }
+                StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                        StartLogClickUtil.RECOMMEND, StartLogClickUtil.SWITCHTAB, map)
+
             }
         })
 
         view_recommend_header_search.setOnClickListener {
+            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                    StartLogClickUtil.RECOMMEND, StartLogClickUtil.SEARCH)
+
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
 
         vp_recommend_content.setCurrentItem(0, false)
+        val map = java.util.HashMap<String, String>()
+        map["type"] = "男频"
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.RECOMMEND, StartLogClickUtil.SWITCHTAB, map)
+
     }
 
     inner class BookStoreAdapter(fragmentManager: FragmentManager, private var navigationBarStrip: NavigationBarStrip, private var viewPager: ViewPager) : FragmentStatePagerAdapter(fragmentManager) {

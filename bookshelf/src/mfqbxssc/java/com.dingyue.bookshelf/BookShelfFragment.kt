@@ -27,7 +27,10 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.share.ApplicationShareDialog
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.uiThread
 import org.greenrobot.eventbus.EventBus
 
 class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager {
@@ -415,7 +418,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (activity != null && !activity!!.isFinishing) {
             updateUI()
             bookShelfDeleteDialog.dismiss()

@@ -289,8 +289,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (!mBookDataHelper.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
-            logMap.put("bookid",ReaderStatus.book?.book_id)
-            logMap.put("chapterid",ReaderStatus?.chapterId)
+            logMap.put("bookid", ReaderStatus.book?.book_id)
+            logMap.put("chapterid", ReaderStatus?.chapterId)
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
@@ -335,17 +335,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             }
             bookMark.chapter_content = content_text
             mBookDataHelper.insertBookMark(bookMark)
-
-
-            // [修复]不在书架的书添加书签后并同时添加书架，不保留书籍阅读状态
-            val book = ReaderStatus.book
-            book.sequence = ReaderStatus.position.group
-            book.offset = ReaderStatus.position.offset
-            book.chapter_count = ReaderStatus.chapterCount
-            book.last_read_time = System.currentTimeMillis()
-            book.readed = 1
-            RequestRepositoryFactory.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).updateBook(book)
 
             return 1
         } else {
@@ -408,8 +397,11 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     fun showShareDialog() {
-        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.ACTION_SHARE)
-        
+        val data = HashMap<String, String>()
+        data["bookid"] = ReaderStatus.book.book_id
+        StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGE_PAGE,
+                StartLogClickUtil.ACTION_SHARE, data)
+
         if (activity.get() != null && !activity.get()!!.isFinishing) {
             val applicationShareDialog = ApplicationShareDialog(activity.get())
             applicationShareDialog.show()
@@ -474,7 +466,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
                 activity.get()?.applicationContext?.showToastMessage("请到错误章节反馈")
                 return
             }
-            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext,StartLogClickUtil.READPAGEMORE_PAGE,StartLogClickUtil.FEEDBACK)
+            StartLogClickUtil.upLoadEventLog(activity.get()?.applicationContext, StartLogClickUtil.READPAGEMORE_PAGE, StartLogClickUtil.FEEDBACK)
             val readerFeedbackDialog = ReaderFeedbackDialog(activity.get()!!)
 
             readerFeedbackDialog.insertSubmitListener {

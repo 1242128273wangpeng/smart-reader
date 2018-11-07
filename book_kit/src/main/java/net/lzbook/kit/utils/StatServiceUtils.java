@@ -4,6 +4,8 @@ import com.baidu.mobstat.StatService;
 
 import android.content.Context;
 
+import java.util.Map;
+
 /**
  * 统计工具
  * Created by q on 2015/12/18.
@@ -185,6 +187,7 @@ public class StatServiceUtils {
     public static final int cover_into = index++;
     public static final int cover_into_his = index++;
     public static final int his_into = index++;
+    public static final int app_start_time = index++;
 
     /**
      * 广告展现
@@ -578,6 +581,12 @@ public class StatServiceUtils {
             StatService.onEvent(mContext, "Ad_adwin_no", "直投平台被选中无物料返回的事件");
         } else if (type_place == ad_adwin_resuc) {
             StatService.onEvent(mContext, "Ad_adwin_resuc", "直投无返回，去容器中重选物料成功的事件");
+        }
+    }
+
+    public static void statCustomEvent(Context mContext, int type_place, Map<String, String> param) {
+        if (type_place == app_start_time) {
+            StatService.onEvent(mContext, "app_start_time", "应用启动时的时间", 1, param);
         }
     }
 

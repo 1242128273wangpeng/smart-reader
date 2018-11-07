@@ -33,7 +33,7 @@
             app:indicatorPadding="21dp"
             app:indicatorRadius="100dp"
             app:indicatorType="line"/>
-
+        
         <View
             android:id="@+id/view_recommend_header_search"
             android:layout_width="140dp"

@@ -17,11 +17,9 @@ import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
-
 import net.lzbook.kit.request.UrlUtils
 import java.io.Serializable
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * Desc 请描述这个文件

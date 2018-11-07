@@ -13,6 +13,7 @@ import com.dingyue.bookshelf.contract.BookHelperContract
 import com.dingyue.contract.CommonContract
 import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
+import com.dingyue.contract.util.runOnMain
 import com.dy.media.IMediaControl
 import com.dy.media.MediaControl
 import net.lzbook.kit.app.BaseBookApplication
@@ -23,7 +24,6 @@ import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.utils.BaseBookHelper
 import net.lzbook.kit.utils.doAsync
-import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
