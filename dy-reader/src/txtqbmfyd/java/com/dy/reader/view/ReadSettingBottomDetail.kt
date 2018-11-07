@@ -312,7 +312,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         img_reader_night?.preventClickShake(this)
 
-        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
+//        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {

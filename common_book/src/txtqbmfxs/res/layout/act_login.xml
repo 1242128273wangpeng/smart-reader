@@ -50,7 +50,7 @@
                 android:id="@+id/tv_spell_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TXTquanbenmianfeixiaoshuo"
+                android:text="TXT全本免费小说"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="10dp"
                 android:layout_alignParentBottom="true"

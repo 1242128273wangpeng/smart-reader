@@ -8,7 +8,6 @@ import com.dingyue.contract.IPresenter
 import com.dingyue.contract.util.SharedPreUtil
 import com.google.gson.Gson
 import com.intelligent.reader.app.BookApplication
-import com.orhanobut.logger.Logger
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -141,14 +140,13 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * 上传用户应用列表
      * **/
     private fun updateApplicationList() {
-        Observable.create(ObservableOnSubscribe<String> { emitter ->
-            Logger.e("UpdateApplicationList")
-            emitter.onNext(AppUtils.scanLocalInstallAppList(packageManager))
+        Observable.create(ObservableOnSubscribe<List<String>> { emitter ->
+            emitter.onNext(mutableListOf(AppUtils.scanLocalInstallAppList(packageManager), AppUtils.loadUserApplicationList(BookApplication.getGlobalContext(), packageManager)))
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(onNext = { message ->
-                    StartLogClickUtil.upLoadApps(message)
+                .subscribeBy(onNext = {
+                    StartLogClickUtil.upLoadApps(it[0], it[1])
                 })
     }
 

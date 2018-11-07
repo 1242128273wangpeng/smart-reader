@@ -406,7 +406,7 @@ class SearchViewHelper(activity: Activity,
                     if (history != null) {
                         data.put("keyword", history)
                     }
-                    data.put("rank", position.toString() + "")
+                    data.put("rank", (position+1).toString() + "")
                     StartLogClickUtil.upLoadEventLog(mActivity,
                             StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARLIST, data)
 

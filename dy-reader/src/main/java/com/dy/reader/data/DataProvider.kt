@@ -39,6 +39,7 @@ import kotlin.collections.ArrayList
  * Created by xian on 18-3-21
  */
 object DataProvider {
+    private var loadFailList = ArrayList<String>()
 
     init {
         EventBus.getDefault().register(this)
@@ -201,8 +202,8 @@ object DataProvider {
                                         ReadMediaManager.clearAllAd()
 
                                         it.forEach {
-                                            var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
-                                                    ?: "", it.name ?: "")
+                                            var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
+                                                    ?: "")
                                             separateContent = ReadMediaManager.insertChapterAd(it.sequence, ReadMediaManager.tonken, separateContent)
                                             chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                         }
@@ -430,16 +431,22 @@ object DataProvider {
                             onNext = {
 
                                 AppLog.e("DataProvider", "onNext = ")
-                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
-                                        ?: "", it.name ?: "")
+                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
+                                        ?: "")
                                 separateContent = ReadMediaManager.insertChapterAd(group, mediaToken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
-
+                                if (loadFailList.contains(ReaderStatus.chapterList[group].chapter_id)) {
+                                    PageManager.refreshLeftAndRightPage()
+                                    loadFailList.remove(ReaderStatus.chapterList[group].chapter_id)
+                                }
                                 callback?.invoke(true)
                             },
                             onError = {
                                 AppLog.e("DataProvider", "onError = ")
                                 it.printStackTrace()
+                                if (!loadFailList.contains(ReaderStatus.chapterList[group].chapter_id)) {
+                                    loadFailList.add(ReaderStatus.chapterList[group].chapter_id)
+                                }
                                 callback?.invoke(false)
                             }
                     ))
@@ -452,13 +459,14 @@ object DataProvider {
 
     private fun loadGroupForVertical(group: Int, callback: ((Boolean, Chapter?) -> Unit)? = null) {
         if (isGroupAvalable(group)) {
+            val index = if (group < 0) 0 else group
             mDisposable.add(readerRepository.requestSingleChapter(ReaderStatus.chapterList[group])
                     .subscribeOn(Schedulers.io())
                     .subscribeBy(
                             onNext = {
-                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it.content
-                                        ?: "", it.name ?: "")
-                                separateContent = ReadMediaManager.insertChapterAd(group, ReadMediaManager.tonken, separateContent)
+                                var separateContent = ReadSeparateHelper.initTextSeparateContent(it, it.name
+                                        ?: "")
+                                separateContent = ReadMediaManager.insertChapterAd(index, ReadMediaManager.tonken, separateContent)
                                 chapterCache.put(it.sequence, NovelChapter(it, separateContent))
                                 runOnMain {
                                     callback?.invoke(true, it)

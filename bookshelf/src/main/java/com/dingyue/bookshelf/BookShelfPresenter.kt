@@ -201,26 +201,6 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
 
         handleADResult(views)
         view?.onAdRefresh()
-
-//        doAsync {
-//            MediaControl.loadBookShelMedia(activity, count, object : IMediaControl.MediaCallback {
-//                override fun requestMediaSuccess(views: List<ViewGroup>) {
-//                    runOnMain {
-//                        handleADResult(views)
-//                        view?.onAdRefresh()
-//                    }
-//                }
-//
-//                override fun requestMediaRepairSuccess(views: List<ViewGroup>) {
-//                    runOnMain {
-//                        handleADResult(views)
-//                        view?.onAdRefresh()
-//                    }
-//
-//                }
-//            })
-//        }
-
     }
 
 

@@ -56,8 +56,8 @@ public class CoverRecommendAdapter extends RecyclerView.Adapter<CoverRecommendAd
             holder.tv_readnum.setText("");
         }
 
-        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getSourceImageUrl())) {
-            Glide.with(weakReference.get()).load(book.getSourceImageUrl()).placeholder(
+        if (holder.iv_recommend_image != null && !TextUtils.isEmpty(book.getBookImgUrl())) {
+            Glide.with(weakReference.get()).load(book.getBookImgUrl()).placeholder(
                     net.lzbook.kit.R.drawable.icon_book_cover_default)
                     .error((net.lzbook.kit.R.drawable.icon_book_cover_default))
                     .into(holder.iv_recommend_image);

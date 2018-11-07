@@ -1,7 +1,5 @@
 package com.ding.basic.bean.push
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
 /**
@@ -13,6 +11,7 @@ import java.io.Serializable
 data class BannerInfo(
         var tags: ArrayList<String>? = null, // 活动标签
         var url: String? = null, // 活动弹窗图片地址
+        var nativeActivityUrl: String? = null, // 活动标题,活动跳转地址
         var updateMillSecs: Long = 0, //上次更新时间
         var hasShowed: Boolean = false //此次活动弹窗是否已经展示过
 ) : Serializable {
