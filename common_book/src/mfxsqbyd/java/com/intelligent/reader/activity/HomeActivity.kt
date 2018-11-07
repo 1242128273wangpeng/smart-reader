@@ -62,6 +62,7 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.cache.DataCleanManager
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.request.UrlUtils
+import net.lzbook.kit.user.UserManager
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.download.DownloadAPKService
@@ -95,6 +96,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
+    private var registerShareCallback = false
 
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
@@ -183,7 +185,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         this.changeHomePagerIndex(currentIndex)
         this.setNightMode(false)
-
+        this.registerShareCallback = false
         StatService.onResume(this)
     }
 
@@ -760,6 +762,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             dl_home_content.closeMenu()
         } else {
             dl_home_content.openMenu()
+        }
+    }
+
+    override fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
         }
     }
 

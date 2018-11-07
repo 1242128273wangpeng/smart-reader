@@ -1,6 +1,5 @@
 package com.dingyue.bookshelf
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
@@ -19,6 +19,7 @@ import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.qbmfkdxs.bookshelf_refresh_header.view.*
@@ -29,7 +30,9 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.data.UpdateCallBack
 import net.lzbook.kit.data.bean.BookUpdateResult
 import net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-import net.lzbook.kit.utils.*
+import net.lzbook.kit.share.ApplicationShareDialog
+import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.uiThread
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -62,6 +65,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
+        popup.setOnShareListener {
+            applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
+            BookShelfLogger.uploadBookShelfShare()
+        }
+        popup.setOnGoneListener {
+            view_head_menu.visibility = View.GONE
+        }
+
         popup
     }
 
@@ -72,6 +84,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         popup
     }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
+        dialog
+    }
+
 
     private val bookShelfSortingPopup: BookShelfSortingPopup by lazy {
         val popup = BookShelfSortingPopup(requireActivity())
@@ -213,6 +231,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_remove_head_cancel.setOnClickListener {
             dismissRemoveMenu()
         }
+
+        val isSharePromptGone = !Constants.SHARE_SWITCH_ENABLE || activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+                ?: false
+        if (isSharePromptGone) {
+            view_head_menu.visibility = View.GONE
+        } else {
+            view_head_menu.visibility = View.VISIBLE
+        }
+
     }
 
     override fun onResume() {
@@ -360,7 +387,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
 
     }
 
-    override fun onBookDelete() {
+    override fun onBookDelete(onlyDeleteCache: Boolean) {
         if (activity != null && activity?.isFinishing == false) {
             updateUI()
             bookShelfDeleteDialog.dismiss()

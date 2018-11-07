@@ -49,8 +49,8 @@
                     android:id="@+id/img_tab_bookshelf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
                     android:contentDescription="@string/module_name"
+                    android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_bookshelf"/>
 
@@ -74,8 +74,8 @@
                     android:id="@+id/img_tab_recommend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
                     android:contentDescription="@string/module_name"
+                    android:focusable="false"
                     android:padding="1dp"
                     android:src="@drawable/home_tab_select_recommend"/>
 
@@ -99,9 +99,9 @@
                     android:id="@+id/img_tab_ranking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/module_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:contentDescription="@string/module_name"
                     android:src="@drawable/home_tab_select_ranking"/>
 
                 <TextView
@@ -124,9 +124,9 @@
                     android:id="@+id/img_tab_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/module_name"
                     android:focusable="false"
                     android:padding="1dp"
-                    android:contentDescription="@string/module_name"
                     android:src="@drawable/home_tab_select_category"/>
 
                 <TextView
@@ -139,35 +139,37 @@
         </LinearLayout>
 
         <FrameLayout
-                android:id="@+id/fl_guide_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
+            android:id="@+id/fl_guide_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:id="@+id/img_guide_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:layout_marginBottom="18.5dp"
+                android:layout_marginRight="12dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_guide_cate"
                 android:visibility="gone"
-                >
+                />
 
             <ImageView
-                    android:id="@+id/img_guide_download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|top"
-                    android:layout_marginTop="@dimen/dimen_margin_40"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/bookshelf_guide_cache"
-                    android:visibility="gone"
-                    />
+                android:id="@+id/img_guide_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/home_guide_bottom"
+                android:layout_marginLeft="22dp"
 
-            <ImageView
-                    android:id="@+id/img_guide_remove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_padding_28"
-                    android:scaleType="fitXY"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="60dp"
-                    android:src="@drawable/bookshelf_guide_delete_books"
-                    android:visibility="gone"
-                    />
+                android:scaleType="fitXY"
+                android:src="@drawable/bookshelf_guide_remove"
+                android:visibility="gone"
+                />
         </FrameLayout>
 
     </RelativeLayout>

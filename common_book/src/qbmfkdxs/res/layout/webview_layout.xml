@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/web_content_layout"
     android:layout_width="match_parent"
-    tools:ignore="RtlHardcoded"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
+        android:layout_height="48dp"
         android:background="@color/color_white"
-        android:layout_height="48dp">
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:id="@+id/rl_head_recommend"
@@ -25,7 +25,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:paddingLeft="10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:ignore="RtlSymmetry">
 
             <ImageView
@@ -49,8 +49,8 @@
         <RelativeLayout
             android:id="@+id/rl_head_other"
             android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="48dp">
+            android:layout_height="48dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/txt_title"
@@ -71,25 +71,20 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="18dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/home_head_search_selector"/>
+                android:background="@drawable/home_head_search_selector"
+                android:scaleType="fitXY"/>
 
         </RelativeLayout>
 
     </RelativeLayout>
 
-    <net.lzbook.kit.pulllist.SuperSwipeRefreshLayout
-        android:id="@+id/bookshelf_refresh_view"
+
+    <WebView
+        android:id="@+id/web_content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rl_head">
-
-        <WebView
-            android:id="@+id/web_content_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"/>
-    </net.lzbook.kit.pulllist.SuperSwipeRefreshLayout>
+        android:layout_below="@+id/rl_head"
+        android:scrollbars="none"/>
 
 
 </RelativeLayout>

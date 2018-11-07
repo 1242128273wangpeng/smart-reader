@@ -2,6 +2,7 @@ package com.dy.reader.view;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class RecyclerViewFastScroller extends LinearLayout {
@@ -61,6 +63,14 @@ public class RecyclerViewFastScroller extends LinearLayout {
 //        if (bubble != null)
 //            bubble.setVisibility(INVISIBLE);
         handle = findViewById(handleResId);
+    }
+
+    public void setHandleImage(@DrawableRes int image) {
+        if (handle != null) {
+            if (handle instanceof ImageView) {
+                ((ImageView) handle).setImageResource(image);
+            }
+        }
     }
 
     @Override

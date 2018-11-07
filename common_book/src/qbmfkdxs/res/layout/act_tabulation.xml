@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_tabulation_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/base_bg"
+    tools:ignore="RtlHardcoded">
+
+    <RelativeLayout
+        android:id="@+id/rl_tabulation_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_bg"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height">
+
+            <ImageView
+                android:id="@+id/img_tabulation_header_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:scaleType="fitCenter"
+                android:src="@drawable/top_back_selector"/>
+
+            <TextView
+                android:id="@+id/txt_tabulation_header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/color_text_most"
+                android:textSize="18sp"/>
+
+            <ImageView
+                android:id="@+id/img_tabulation_header_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/dimen_padding_12"
+                android:paddingRight="@dimen/dimen_padding_12"
+                android:src="@drawable/search_submit_btn"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/web_tabulation_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_tabulation_header"/>
+
+    <View
+        android:id="@+id/view_tabulation_header_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_tabulation_header"
+        android:background="#77000000"
+        android:visibility="gone"/>
+</RelativeLayout>

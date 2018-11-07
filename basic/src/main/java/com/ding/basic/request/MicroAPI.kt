@@ -74,4 +74,20 @@ object MicroAPI {
                               , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
         return microService.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
+
+    /**
+     * 选择兴趣
+     * @param firstType 一级分类
+     * @param secondType 二级分类
+     */
+    fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
+        return microService.requestDefaultBooks(firstType, secondType)
+    }
+
+    /**
+     * 获取兴趣列表
+     */
+    fun getInterestList(): Flowable<BasicResult<List<Interest>>>? {
+        return microService.getInterestList()
+    }
 }

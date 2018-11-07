@@ -44,7 +44,11 @@ private fun huaweiNotch(context: Context): Boolean {
 }
 
 private fun oppoNotch(context: Context): Boolean {
-    return context.getPackageManager().hasSystemFeature("com.oppo.feature.screen.heteromorphism")
+    if (context.packageManager != null) {
+        return context.getPackageManager().hasSystemFeature("com.oppo.feature.screen.heteromorphism")
+    } else {
+        return false
+    }
 }
 
 private val NOTCH_IN_SCREEN_VOIO = 0x00000020//是否有凹槽

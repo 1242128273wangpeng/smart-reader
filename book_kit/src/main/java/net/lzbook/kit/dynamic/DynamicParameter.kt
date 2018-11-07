@@ -259,6 +259,8 @@ class DynamicParameter(private val context: Context) {
 
         putDynamicString(SharedPreUtil.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
 
+        putDynamicString(SharedPreUtil.SHARE_SWITCH, map.share_switch_enable)
+
         // 保存动态参数校验版本号
         if (mCurVersion < mReqVersion) {
             mShareUtilDefault.putInt(SharedPreUtil.DYNAMIC_VERSION, mReqVersion)
@@ -308,6 +310,8 @@ class DynamicParameter(private val context: Context) {
         setNoADTime()
 
         setNetWorkLimit()
+
+        setShareSwitch()
 
         AppLog.d("um_param", " real param ==> " + this.toString())
     }
@@ -657,6 +661,13 @@ class DynamicParameter(private val context: Context) {
             this
         } else {
             null
+        }
+    }
+
+    private fun setShareSwitch() {
+        val shareSwitchEnable = mShareUtilConfig.getString(SharedPreUtil.SHARE_SWITCH)
+        if (shareSwitchEnable.isNotEmpty()) {
+            Constants.SHARE_SWITCH_ENABLE = shareSwitchEnable.toBoolean()
         }
     }
 

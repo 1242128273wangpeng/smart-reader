@@ -7,6 +7,7 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.dynamic.DynamicParameter
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.parsePushReceiveLog
 import net.lzbook.kit.utils.uiThread
 
 /**
@@ -21,14 +22,14 @@ class PushMessageHandler : UmengMessageHandler() {
         super.dealWithNotificationMessage(context, msg)
         loge("msg: ${msg?.text}")
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.SYSTEM_PAGE,
-                StartLogClickUtil.PUSHRECEIVE)
+                StartLogClickUtil.PUSHRECEIVE, msg.parsePushReceiveLog())
     }
 
     //注意：umeng后台需要发送自定义消息类型
     override fun dealWithCustomMessage(context: Context?, msg: UMessage?) {
         super.dealWithCustomMessage(context, msg)
         uiThread {
-            if(msg?.extra?.get("IsDynamicCheck")?.isNotEmpty() == true){
+            if (msg?.extra?.get("IsDynamicCheck")?.isNotEmpty() == true) {
                 DynamicParameter(BaseBookApplication.getGlobalContext()).requestCheck()
             }
 

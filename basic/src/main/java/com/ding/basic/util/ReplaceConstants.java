@@ -21,12 +21,12 @@ public class ReplaceConstants {
     public String ALIFEEDBACK_SECRET;
 
 
-
     public String BOOK_NOVEL_DEPLOY_HOST;
     public String BOOK_WEBVIEW_HOST;
 
     public String MICRO_API_HOST;
     public String CONTENT_API_HOST;
+    public String CDN_HOST;
 
     public final static String BUILD_CONFIG_PROVIDER = "/common_book/BuildConfigProvider";
 
@@ -78,6 +78,7 @@ public class ReplaceConstants {
 
         MICRO_API_HOST = buildConfigProvider.getMicroApiHost();
         CONTENT_API_HOST = buildConfigProvider.getContentApiHost();
+        CDN_HOST = buildConfigProvider.getCDNHost();
 
     }
 

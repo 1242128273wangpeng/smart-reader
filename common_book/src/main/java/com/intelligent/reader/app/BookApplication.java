@@ -118,13 +118,12 @@ public class BookApplication extends BaseBookApplication {
                     ApplicationInfo appInfo = getPackageManager()
                             .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
 
-                    if (!AppUtils.hasReYun()) {
-                        String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
-                        AppLog.e("reyun", reyunAppKey);
-                        Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
-                                reyunAppKey, AppUtils.getChannelId());
-
-                    }
+//                    if (!AppUtils.hasReYun()) {
+                    String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
+                    AppLog.e("reyun", reyunAppKey);
+                    Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
+                            reyunAppKey, "_default_");
+//                    }
 
                     // 友盟推送初始化
                     if (!AppUtils.hasUPush()) return;

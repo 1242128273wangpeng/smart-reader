@@ -46,6 +46,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestDefaultBooks(sex)
     }
 
+    fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
+        return MicroAPI.requestDefaultBooks(firstType, secondType)
+    }
+
     override fun requestApplicationUpdate(parameters: Map<String, String>): Flowable<JsonObject>? {
         return RequestAPI.requestApplicationUpdate(parameters = parameters)
     }
@@ -229,6 +233,10 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
         return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
+    override fun requestRecommendCateList(packageName: String, categoryNames: String): Flowable<BasicResultV4<ArrayList<RecommendCateListBean>>> {
+        return RequestAPI.requestRecommendCateList(packageName, categoryNames)
+    }
+
     /***************** 微服务 *****************/
 
     override fun requestAuthAccess(): Flowable<BasicResult<String>>? {
@@ -273,4 +281,8 @@ class InternetRequestRepository private constructor(context: Context?) : BasicRe
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
         return RequestAPI.downloadFont(fontName)
     }
+
+    fun downloadVoicePlugin(): Flowable<ResponseBody> = RequestAPI.downloadVoicePlugin()
+
+    fun getInterest(): Flowable<BasicResult<List<Interest>>>? = MicroAPI.getInterestList()
 }

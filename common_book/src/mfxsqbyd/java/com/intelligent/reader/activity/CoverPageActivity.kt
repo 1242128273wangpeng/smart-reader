@@ -13,9 +13,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.util.editShared
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.contract.router.BookRouter
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.presenter.coverPage.CoverPageContract
@@ -28,7 +31,9 @@ import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.CallBackDownload
 import net.lzbook.kit.book.download.DownloadState
 import net.lzbook.kit.book.view.LoadingPage
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.share.ApplicationShareDialog
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
@@ -51,6 +56,11 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var bookId: String? = null
     private var bookSourceId: String? = null
     private var bookChapterId: String = ""
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(this)
+        dialog
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,9 +93,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         book_cover_download_iv.setOnClickListener(this)
 //        book_cover_catalog_view_nobg.setOnClickListener(this)
         book_cover_content.topShadow = img_head_shadow
+        img_app_share.setOnClickListener(this)
 
         book_cover_content.scrollChanged = {
             book_cover_bookname.visibility = if (it > AppUtils.dp2px(resources, 178f)) View.VISIBLE else View.GONE
+        }
+
+        if (!Constants.SHARE_SWITCH_ENABLE) {
+            img_app_share.visibility = View.GONE
         }
     }
 
@@ -233,7 +248,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     }
                 }
             }
-            R.id.book_catalog_tv,R.id.rl_catalog -> {
+            R.id.book_catalog_tv, R.id.rl_catalog -> {
                 //书籍详情页查看目录点击
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
@@ -246,6 +261,10 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                     coverPagePresenter?.startCatalogActivity(false)
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
+            }
+            R.id.img_app_share -> {
+                applicationShareDialog.show()
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ACTION_SHARE)
             }
         }
     }
@@ -300,16 +319,13 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     override fun showLoadingFail() {
-        if (loadingPage != null) {
-            loadingPage?.onError()
-        }
+        loadingPage?.onError()
         CommonUtil.showToastMessage("请求失败！")
     }
 
     override fun showLoadingSuccess() {
-        if (loadingPage != null) {
-            loadingPage?.onSuccess()
-        }
+        loadingPage?.onSuccess()
+        checkShowCoverPrompt()
     }
 
 
@@ -336,8 +352,8 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 book_cover_author.text = bookVo.author
             }
 
-            if (book_cover_category2 != null ) {
-                    book_cover_category2.text = bookVo.sub_genre
+            if (book_cover_category2 != null) {
+                book_cover_category2.text = bookVo.sub_genre
             }
 
             if (bookVo.status == "SERIALIZE") {
@@ -393,7 +409,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     override fun changeDownloadButtonStatus() {
-        val book =coverPagePresenter?.coverDetail ?: return
+        val book = coverPagePresenter?.coverDetail ?: return
         val status = CacheManager.getBookStatus(book)
         bookDownloadState = status
 
@@ -414,6 +430,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
 
     }
+
     override fun insertBookShelfResult(result: Boolean) {
         if (result) {
             book_cover_bookshelf!!.setText(R.string.cover_bookshelf_had)
@@ -448,5 +465,20 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun showRecommendFail() {
 
+    }
+
+    private fun checkShowCoverPrompt() {
+        if (!Constants.SHARE_SWITCH_ENABLE) return
+        val hasShareDialogShowed = getSharedBoolean(SharedPreUtil.COVER_SHARE_PROMPT)
+        if (!hasShareDialogShowed) {
+            fl_cover_share_prompt.visibility = View.VISIBLE
+
+            fl_cover_share_prompt.setOnClickListener {
+                fl_cover_share_prompt.visibility = View.GONE
+                editShared {
+                    putBoolean(SharedPreUtil.COVER_SHARE_PROMPT, true)
+                }
+            }
+        }
     }
 }

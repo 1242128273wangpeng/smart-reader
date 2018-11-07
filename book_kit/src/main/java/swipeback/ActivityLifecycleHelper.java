@@ -149,6 +149,15 @@ public class ActivityLifecycleHelper implements Application.ActivityLifecycleCal
         return activity != null && getName(activity).equals("HomeActivity");
     }
 
+    public static Boolean hasHome() {
+        for (Activity activity : getActivities()) {
+            if (getName(activity).equals("HomeActivity")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static String getName(Context context) {
         String contextString = context.toString();
         return contextString.substring(contextString.lastIndexOf(".") + 1, contextString.indexOf("@"));

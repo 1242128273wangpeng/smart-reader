@@ -251,6 +251,9 @@ public class NovelHelper {
             book.setSequence(sequence);
             book.setReaded(1);
             book.setLast_read_time(System.currentTimeMillis());
+            if (book.getChapter_count() <= 0) {
+                book.setChapter_count(ReaderStatus.INSTANCE.getChapterCount());
+            }
 
             if (book.getChapter_count() <= 0) {
                 book.setChapter_count(ReaderStatus.INSTANCE.getChapterCount());

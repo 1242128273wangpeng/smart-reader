@@ -7,6 +7,7 @@ import com.umeng.message.entity.UMessage
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.openPushActivity
+import net.lzbook.kit.utils.parsePushClickLog
 import org.android.agoo.common.AgooConstants
 import org.json.JSONObject
 import swipeback.ActivityLifecycleHelper
@@ -28,7 +29,7 @@ class OfflineNotifyActivity : UmengNotifyClickActivity() {
         //自定义参数解析
         val msg = UMessage(JSONObject(body))
         if (msg.activity?.trim()?.isNotEmpty() == true) {
-            val data = mapOf(Pair("type", "1"))
+            val data = msg.parsePushClickLog()
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
                     StartLogClickUtil.PUSHCLICK, data)
 
@@ -36,7 +37,7 @@ class OfflineNotifyActivity : UmengNotifyClickActivity() {
         } else {
             loge("umsg.activity 为空")
 
-            val data = mapOf(Pair("type", "1"))
+            val data = msg.parsePushClickLog()
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
                     StartLogClickUtil.PUSHCLICK, data)
 

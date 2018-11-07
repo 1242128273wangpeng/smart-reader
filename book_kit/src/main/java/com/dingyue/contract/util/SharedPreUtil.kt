@@ -130,6 +130,10 @@ class SharedPreUtil(val type: Int) {
         const val AD_CONTROL_VERSION = "version" //广告动态参数 app版本号
         const val AD_CONTROL_ADTYPE = "advertisingSpace" //广告动态参数  广告位类型  0 福利中心 1书架页1-1  2书架页1-2  3阅读页广告 4全部
 
+        /**
+         * 分享功能开关
+         */
+        const val SHARE_SWITCH = "SHARE_SWITCH" //分享开关
 
         /**
          * webviewFragment
@@ -165,6 +169,11 @@ class SharedPreUtil(val type: Int) {
         const val HOME_IS_UPLOAD = "IS_UPLOAD"  //是否上传了用户信息  zn_user
         const val HOME_TODAY_FIRST_POST_BOOKIDS = "today_first_post_bookids" //每天上传一次书架上的书
         const val CONTENT_MODE = "content_mode"  //当前阅读页背景
+
+        /**
+         * CoverPageActivity
+         */
+        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
 
         /**
          * SettingActivity
@@ -222,10 +231,24 @@ class SharedPreUtil(val type: Int) {
 
 
         const val APPLICATION_SHARE_ACTION = "application_share_action"
+        const val BOOKSHELF_IMPORT_PROMPT = "bookshelf_import_prompt"
+        const val BOOKSHELF_SHARE_PROMPT = "bookshelf_share_prompt"
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
+        const val READER_SHARE_PROMPT = "reader_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
 
+
+
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
+
+        const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
+
+        const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
 
 
         /***

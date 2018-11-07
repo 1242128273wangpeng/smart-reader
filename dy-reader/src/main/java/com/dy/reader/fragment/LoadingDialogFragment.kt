@@ -137,7 +137,8 @@ class LoadingDialogFragment : DialogFragment() {
             } else {
                 try {
                     super.dismiss()
-                }catch (e: Exception){}
+                } catch (e: Exception) {
+                }
             }
         } else {
             dismissAllowingStateLoss()

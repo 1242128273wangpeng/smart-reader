@@ -275,4 +275,11 @@ object RequestAPI {
         return requestService.downloadFont(url)
     }
 
+    fun downloadVoicePlugin(): Flowable<ResponseBody> = requestService.downloadVoicePlugin()
+
+
+    fun requestRecommendCateList(packageName: String, categoryNames: String): Flowable<BasicResultV4<ArrayList<RecommendCateListBean>>> {
+        return requestService.requestRecommendCateList(packageName, categoryNames)
+    }
+
 }

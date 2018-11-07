@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static android.view.KeyEvent.KEYCODE_BACK;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -16,10 +18,12 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +44,7 @@ import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
 import com.intelligent.reader.app.BookApplication;
+import com.intelligent.reader.util.SelectInterestHelper;
 import com.intelligent.reader.util.ShieldManager;
 import com.orhanobut.logger.Logger;
 
@@ -76,10 +81,9 @@ import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
+    private static final int REQUEST_SELECT_INTEREST = 1001;
     private static String TAG = "SplashActivity";
     private final MHandler handler = new MHandler(this);
     public int initialization_count = 0;
@@ -229,6 +233,14 @@ public class SplashActivity extends FrameActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        try {
+            setContentView(R.layout.act_splash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ad_view = findViewById(R.id.ad_view);
+
         String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
         File bookDBFile = getDatabasePath(bookDBName);
 
@@ -246,7 +258,31 @@ public class SplashActivity extends FrameActivity {
             txt_name.setText(R.string.app_name);
             upgradeBookDB(bookDBName, chapterDBList);
         } else {
+            // 选择兴趣
+            selectInterest();
+        }
+    }
+
+    /**
+     * 选择兴趣
+     */
+    private void selectInterest() {
+        if (sharedPreUtil == null) sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        if (sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 1) == 1) {
             doOnCreate();
+        } else {
+            // 选择兴趣
+            FrameLayout frameLayout = findViewById(R.id.content_frame);
+            View view = LayoutInflater.from(this).inflate(R.layout.select_interest, frameLayout);
+            if (view != null) {
+                final SelectInterestHelper interestHelper = new SelectInterestHelper(view, this);
+                interestHelper.setOverListener(() -> {
+                    doOnCreate();
+                    return null;
+                });
+            } else {
+                doOnCreate();
+            }
         }
     }
 
@@ -398,14 +434,6 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void doOnCreate() {
-
-        try {
-            setContentView(R.layout.act_splash);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ad_view = findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
 
@@ -424,8 +452,9 @@ public class SplashActivity extends FrameActivity {
 
     private void initializeDataFusion() {
 
-        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext());
+        RequestRepositoryFactory loadRequest =
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
 
         books = loadRequest.loadBooks();
 
@@ -441,7 +470,8 @@ public class SplashActivity extends FrameActivity {
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2
+                        && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     loadRequest.updateBook(book);
                     loadRequest.deleteBookFix(book.getBook_id());

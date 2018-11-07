@@ -9,7 +9,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import com.ding.basic.database.helper.BookDataProviderHelper
+import com.ding.basic.repository.RequestRepositoryFactory
+import com.ding.basic.util.editShared
+import com.ding.basic.util.getSharedBoolean
 import com.dingyue.contract.util.CommonUtil
+import com.dingyue.contract.util.SharedPreUtil
 import com.dingyue.contract.util.showToastMessage
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -20,11 +24,12 @@ import net.lzbook.kit.app.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.book.download.DownloadState
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.onEnd
 import org.greenrobot.eventbus.EventBus
 
-class ReadSettingHeader : FrameLayout{
+class ReadSettingHeader : FrameLayout {
 
     var presenter: ReadSettingPresenter? = null
     private var bookDownloadState: DownloadState = DownloadState.NOSTART
@@ -34,7 +39,6 @@ class ReadSettingHeader : FrameLayout{
         if (flag) {
             this.visibility = View.VISIBLE
             isOutAnimationRun = false
-            updateStatus()
             this.startAnimation(menuDownInAnimation)
         } else {
             if (this.visibility == View.VISIBLE && !isOutAnimationRun) {
@@ -66,10 +70,39 @@ class ReadSettingHeader : FrameLayout{
             presenter?.back()
         }
 
-        var isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
+        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
 
-        ibtn_reader_bookmark.isSelected = isMarkPage
+        if (hasPromptShowed) {
+            view_reader_share.visibility = View.INVISIBLE
+        } else {
+            view_reader_share.visibility = View.VISIBLE
+        }
 
+        if (Constants.SHARE_SWITCH_ENABLE) {
+            ibtn_reader_share?.setOnClickListener {
+                context.editShared {
+                    putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+                }
+                view_reader_share.visibility = View.INVISIBLE
+                presenter?.showShareDialog()
+            }
+        } else {
+            ibtn_reader_share.visibility = View.GONE
+        }
+
+        if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) {
+            txt_add_bookshelf?.visibility = View.GONE
+        } else {
+            txt_add_bookshelf?.visibility = View.VISIBLE
+        }
+
+        if (ReaderStatus.book?.book_type == Constants.BOOK_LOCAL) {
+            ibtn_reader_download.visibility = View.GONE
+            ibtn_reader_more.visibility = View.GONE
+        } else {
+            ibtn_reader_download.visibility = View.VISIBLE
+            ibtn_reader_more.visibility = View.VISIBLE
+        }
         ibtn_reader_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
 
@@ -83,32 +116,9 @@ class ReadSettingHeader : FrameLayout{
             EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
         }
 
-        ibtn_reader_bookmark.setOnClickListener { v ->
-            StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
-            val result = presenter?.bookMark()
-            val data = HashMap<String, String>()
-            when (result) {
-                1 -> {
-                    v.context.applicationContext.showToastMessage("书签添加成功")
-                    isMarkPage = true
-                    ibtn_reader_bookmark.isSelected = true
-                    ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_checked_icon)
-                    data["type"] = "1"
-                }
-                2 -> {
-                    v.context.applicationContext.showToastMessage("书签已删除")
-                    isMarkPage = false
-                    ibtn_reader_bookmark.isSelected = false
-                    ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_check_icon)
-                    data["type"] = "0"
-                }
-                else -> {
-                    v.context.applicationContext.showToastMessage("书签添加失败")
-                }
-            }
+        txt_add_bookshelf?.setOnClickListener {
+            presenter?.addBookShelf()
         }
-
-
 
         ibtn_reader_more?.setOnClickListener {
 
@@ -132,13 +142,27 @@ class ReadSettingHeader : FrameLayout{
                 EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
             }
 
-            readerHeaderMorePopup.startBookDetailListener = {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_read_head_bookinfo)
-                presenter?.bookInfo()
+            readerHeaderMorePopup.startBookMarkListener = {
                 readerHeaderMorePopup.dismiss()
+                val result = presenter?.bookMark()
+                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_add_book_mark_btn)
+                val data = HashMap<String, String>()
+                when (result) {
+                    1 -> {
+                        context.applicationContext.showToastMessage("书签添加成功")
+                        data["type"] = "1"
+                    }
+                    2 -> {
+                        context.applicationContext.showToastMessage("书签已删除")
+                        data["type"] = "0"
+                    }
+                    else -> {
+                        context.applicationContext.showToastMessage("书签添加失败")
+                    }
+                }
             }
 
-            readerHeaderMorePopup.showAsDropDown(ibtn_reader_more)
+            readerHeaderMorePopup.show(ibtn_reader_more)
         }
 
         // 初始化动画
@@ -146,14 +170,6 @@ class ReadSettingHeader : FrameLayout{
         menuUpOutAnimation = AnimationUtils.loadAnimation(context.applicationContext, R.anim.menu_push_up_out)
 
         this.visibility = View.GONE
-    }
-
-    fun setBookSource(source: String) {
-        
-    }
-
-    fun setBookMarkImg(@DrawableRes id: Int) {
-        ibtn_reader_bookmark?.setImageResource(id)
     }
 
 
@@ -171,15 +187,4 @@ class ReadSettingHeader : FrameLayout{
         }
     }
 
-    fun updateStatus() {
-        val isMarkPage = BookDataProviderHelper.loadBookDataProviderHelper(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
-
-        if (ibtn_reader_bookmark != null && ibtn_reader_bookmark.visibility == View.VISIBLE) { 
-            if (isMarkPage) {
-                ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_checked_icon)
-            } else {
-                ibtn_reader_bookmark.setImageResource(R.drawable.reader_option_bookmark_check_icon)
-            }
-        }
-    }
 }

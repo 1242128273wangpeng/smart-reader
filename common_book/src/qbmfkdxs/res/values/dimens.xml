@@ -14,4 +14,24 @@
 
     <dimen name="recommend_book_label">4sp</dimen>
     <dimen name="cover_book_text_title_size">16sp</dimen>
+    <dimen name="home_guide_bottom">95dp</dimen>
+
+
+    <dimen name="interest_80">80dp</dimen>
+    <dimen name="interest_100">100dp</dimen>
+    <dimen name="interest_54">54dp</dimen>
+    <dimen name="interest_46">46dp</dimen>
+    <dimen name="interest_29">29dp</dimen>
+    <dimen name="interest_28">28dp</dimen>
+    <dimen name="interest_33">33dp</dimen>
+    <dimen name="interest_10">10dp</dimen>
+
+    <dimen name="interest_83">83dp</dimen>
+    <dimen name="interest_95">95dp</dimen>
+    <dimen name="interest_78">78dp</dimen>
+    <dimen name="interest_70">70dp</dimen>
+    <dimen name="interest_16">16dp</dimen>
+    <dimen name="interest_7">-7dp</dimen>
+    <dimen name="interest_150">150dp</dimen>
+    <dimen name="interest_118">118dp</dimen>
 </resources>

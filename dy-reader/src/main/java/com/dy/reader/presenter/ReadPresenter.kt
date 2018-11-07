@@ -422,6 +422,9 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     fun onResume() {
         if (!ReaderSettings.instance.isAutoBrightness) {
+            if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+                ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+            }
             setScreenBrightness(ReaderSettings.instance.screenBrightness)
         }
         goToBookEndCount = 0

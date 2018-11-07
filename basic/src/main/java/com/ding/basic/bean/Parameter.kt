@@ -77,5 +77,6 @@ data class Map(
         var DY_ad_old_request_switch: String?,
         var user_tag_host: String?,
         var DY_static_resource_rule: String?,
-        var DY_web_static_resources: String?
+        var DY_web_static_resources: String?,
+        var share_switch_enable: String?
 ) : Serializable

@@ -57,6 +57,40 @@ public class LoadDataManager {
         });
     }
 
+    //初始化书架，添加默认书籍（根据兴趣）
+    public void addDefaultBooksWithInterest(String firstType, String secondType) {
+
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext())
+                .requestDefaultBooks(firstType, secondType, new RequestSubscriber<Boolean>() {
+                    @Override
+                    public void requestResult(Boolean result) {
+                        if (result) {
+                            sharedPreferencesUtils.putBoolean(SharedPreUtil.ADD_DEFAULT_BOOKS,
+                                    true);
+
+                            try {
+                                Intent intent = new Intent(
+                                        ActionConstants.ACTION_ADD_DEFAULT_SHELF);
+                                BaseBookApplication.getGlobalContext().sendBroadcast(intent);
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void requestError(@NotNull String message) {
+                        Logger.i("获取默认书籍异常！ " + message);
+                    }
+
+                    @Override
+                    public void requestComplete() {
+                        Logger.i("获取默认书籍完成！");
+                    }
+                });
+    }
+
     //阅读页错误反馈
     public void submitBookError(ChapterErrorBean chapterErrorBean) {
 

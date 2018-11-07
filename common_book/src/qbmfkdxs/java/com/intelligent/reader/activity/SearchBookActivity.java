@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -15,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -24,8 +27,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.dingyue.contract.CommonContract;
 import com.dingyue.contract.router.RouterConfig;
+import com.dingyue.contract.router.RouterUtil;
 import com.dingyue.contract.util.CommonUtil;
+import com.dingyue.contract.web.JSInterfaceObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.intelligent.reader.R;
 import com.intelligent.reader.search.SearchHelper;
 import com.intelligent.reader.util.SearchViewHelper;
@@ -36,8 +44,10 @@ import net.lzbook.kit.book.view.LoadingPage;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.CustomWebClient;
-import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.NetWorkUtils;
+import net.lzbook.kit.utils.Tools;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +56,10 @@ import iyouqu.theme.FrameActivity;
 
 
 @Route(path = RouterConfig.SEARCH_BOOK_ACTIVITY)
-public class SearchBookActivity extends FrameActivity implements OnClickListener, OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
-        TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall, SearchHelper.StartLoadCall {
+public class SearchBookActivity extends FrameActivity implements OnClickListener,
+        OnFocusChangeListener, SearchViewHelper.OnHistoryClickListener,
+        TextWatcher, OnEditorActionListener, SearchHelper.JsCallSearchCall,
+        SearchHelper.StartLoadCall, SearchHelper.JsNoneResultSearchCall {
 
     boolean isSearch = false;
     //记录是否退出当前界面,for:修复退出界面时出现闪影
@@ -66,17 +78,17 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private SearchViewHelper searchViewHelper;
     private Handler handler = new Handler();
     private CustomWebClient customWebClient;
-    private JSInterfaceHelper jsInterfaceHelper;
     private LoadingPage loadingPage;
     private SearchHelper mSearchHelper;
     //静态变量定义是否在在进入searchBookActivity中初始化显示上次的搜索界面
-    public static  boolean isSatyHistory = false;
+    public static boolean isSatyHistory = false;
+    public static final int isNotAuthor = 0;//不是作者
 
     @Override
     public void onJsSearch() {
         if (search_result_content != null) {
             search_result_content.clearView();
-            if (loadingPage == null){
+            if (loadingPage == null) {
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
         }
@@ -89,6 +101,43 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (isSatyHistory && searchViewHelper != null && searchViewHelper.getShowStatus()) {
+            if (mSearchHelper != null && mSearchHelper.getFromClass() != null
+                    && !mSearchHelper.getFromClass().equals("fromClass")) {
+                String historyDates = Tools.getKeyWord();
+
+                if (search_result_input != null) {
+                    search_result_input.requestFocus();
+                    search_result_input.setText(historyDates);
+                    //设置光标的索引
+                    Editable index = search_result_input.getText();
+                    search_result_input.setSelection(index.length());
+                    showSearchViews();
+                }
+            }
+
+        }
+
+        if (search_result_content != null) {
+            String keyword = search_result_input.getText().toString();
+            if (!TextUtils.isEmpty(keyword)) {
+                search_result_content.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            search_result_content.loadUrl("javascript:refreshNew()");
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                            finish();
+                        }
+                    }
+                });
+            }
+        }
+    }
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppLog.e(TAG, "StartActivity");
@@ -100,8 +149,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         }
         initData();
         initView();
-        if (mSearchHelper != null && !TextUtils.isEmpty(mSearchHelper.getWord())){
-            loadDataFromNet();
+        if (mSearchHelper != null && !TextUtils.isEmpty(mSearchHelper.getWord())) {
+            loadDataFromNet(isNotAuthor);
         }
     }
 
@@ -125,12 +174,13 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
         search_result_hint = (FrameLayout) findViewById(R.id.search_result_hint);
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
 
         if (searchViewHelper == null) {
-            searchViewHelper = new SearchViewHelper(getApplicationContext(), this, search_result_hint, search_result_input, mSearchHelper);
+            searchViewHelper = new SearchViewHelper(getApplicationContext(), this,
+                    search_result_hint, search_result_input, mSearchHelper);
         }
 
         initListener();
@@ -146,24 +196,69 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         if (search_result_content != null && customWebClient != null) {
             customWebClient.setWebSettings();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                search_result_content.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+                search_result_content.getSettings().setMixedContentMode(
+                        WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             }
             search_result_content.setWebViewClient(customWebClient);
         }
 
-        if (search_result_content != null) {
-            jsInterfaceHelper = new JSInterfaceHelper(this, search_result_content);
-        }
 
-        if (jsInterfaceHelper != null && search_result_content != null) {
-            search_result_content.addJavascriptInterface(jsInterfaceHelper, "J_search");
-            mSearchHelper.initJSHelp(jsInterfaceHelper);
-        }
+        search_result_content.addJavascriptInterface(
+                new JSInterfaceObject(SearchBookActivity.this) {
+                    @JavascriptInterface
+                    @Override
+                    public void startSearchActivity(@Nullable String data) {
+                        if (!isFinishing() && !TextUtils.isEmpty(data)) {
+                            if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                                return;
+                            }
+                            try {
+                                JSSearch search = new Gson().fromJson(data, JSSearch.class);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!TextUtils.isEmpty(search.getWord())) {
+                                            onNoneResultSearch(search.getWord());
+                                        }
+                                    }
+                                });
 
+                                mSearchHelper.setHotWordType(search.getWord(), search.getType());
+                                mSearchHelper.startLoadData(0);
+
+                            } catch (JsonSyntaxException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @JavascriptInterface
+                    @Override
+                    public void startTabulationActivity(@Nullable String data) {
+                        if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                            return;
+                        }
+                        try {
+                            JSRedirect redirect = new Gson().fromJson(data, JSRedirect.class);
+                            if (!TextUtils.isEmpty(redirect.getTitle()) && !TextUtils.isEmpty(
+                                    redirect.getUrl())) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("url", redirect.getUrl());
+                                bundle.putString("title", redirect.getTitle());
+                                bundle.putString("from", "authorType");
+                                RouterUtil.navigation(SearchBookActivity.this,
+                                        RouterConfig.TABULATION_ACTIVITY, bundle);
+                            }
+                        } catch (JsonSyntaxException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, "J_search");
     }
 
     private void initListener() {
-        if (mSearchHelper != null){
+        if (mSearchHelper != null) {
             mSearchHelper.setJsCallSearchCall(this);
             mSearchHelper.setStartLoadCall(this);
         }
@@ -196,21 +291,21 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
         if (searchViewHelper != null) {
             searchViewHelper.setOnHistoryClickListener(this);
-            searchViewHelper.onHotWordClickListener = new SearchViewHelper.OnHotWordClickListener() {
-                @Override
-                public void hotWordClick(String tag,String searchType) {
-                    if (mSearchHelper != null){
-                        mSearchHelper.setHotWordType(tag,searchType);
-                    }
-                    loadDataFromNet();
-                }
-            };
-
+            searchViewHelper.onHotWordClickListener =
+                    new SearchViewHelper.OnHotWordClickListener() {
+                        @Override
+                        public void hotWordClick(String tag, String searchType) {
+                            if (mSearchHelper != null) {
+                                mSearchHelper.setHotWordType(tag, searchType);
+                            }
+                            loadDataFromNet(isNotAuthor);
+                        }
+                    };
         }
     }
 
     private void initData() {
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         Intent intent = getIntent();
@@ -223,31 +318,54 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     }
 
-    private void loadDataFromNet() {
+    private void loadDataFromNet(int isAuthor) {
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
+//
+//        if (search_result_count != null) {
+//            search_result_count.setText(null);
+//        }
+
 
         if (!TextUtils.isEmpty(mSearchHelper.getWord())) {
-            if (search_result_input != null)
-                search_result_input.setText(mSearchHelper.getWord());
-
+            if (search_result_input != null) {
+                if (isAuthor != 1) {
+                    search_result_input.setText(mSearchHelper.getWord());
+//                    search_result_input.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                } else {
+                    mSearchHelper.setSearchType("2");
+                    search_result_input.setText(Tools.getKeyWord());
+//                    search_result_input.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                }
+            }
             if (search_result_keyword != null) {
-                search_result_keyword.setText(mSearchHelper.getWord());
+                if (isAuthor != 1) {
+                    search_result_keyword.setText(mSearchHelper.getWord());
+//                    search_result_keyword.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                } else {
+                    mSearchHelper.setSearchType("2");
+                    search_result_keyword.setText(Tools.getKeyWord());
+//                    search_result_keyword.setTextColor(getResources().getColor(R.color
+// .search_title_hint));
+                }
             }
 
             if (searchViewHelper != null) {
                 searchViewHelper.addHistoryWord(mSearchHelper.getWord());
-                searchViewHelper.setShowHintEnabled(false);
             }
 
             hideSearchView();
 
-            if (loadingPage == null){
+            if (loadingPage == null) {
                 loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
             }
-            mSearchHelper.startLoadData(0);
+
+            mSearchHelper.startLoadData(isAuthor);
 
         } else {
             showSearchViews();
@@ -297,7 +415,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 @Override
                 public void onLoadStarted(String url) {
                     AppLog.e(TAG, "onLoadStarted: " + url);
-                    if (mSearchHelper == null){
+                    if (mSearchHelper == null) {
                         mSearchHelper = new SearchHelper(SearchBookActivity.this);
                     }
                     mSearchHelper.setStartedAction();
@@ -319,12 +437,12 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 @Override
                 public void onLoadFinished() {
                     AppLog.e(TAG, "onLoadFinished");
-                    if (mSearchHelper == null){
+                    if (mSearchHelper == null) {
                         mSearchHelper = new SearchHelper(SearchBookActivity.this);
                     }
                     mSearchHelper.onLoadFinished();
                     if (loadingPage != null) {
-                        if(isSearch){
+                        if (isSearch) {
                             hideSearchView();
                         }
                         loadingPage.onSuccessGone();
@@ -353,7 +471,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     @Override
     protected void onDestroy() {
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         mSearchHelper.onDestroy();
@@ -368,7 +486,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 search_result_content.stopLoading();
                 search_result_content.removeAllViews();
                 //search_result_content.destroy();
-            }else {
+            } else {
                 search_result_content.stopLoading();
                 search_result_content.removeAllViews();
                 //search_result_content.destroy();
@@ -414,7 +532,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_outcome.setVisibility(View.GONE);
         }
 
-        if (search_result_default != null && search_result_default.getVisibility() != View.VISIBLE) {
+        if (search_result_default != null
+                && search_result_default.getVisibility() != View.VISIBLE) {
             search_result_default.setVisibility(View.VISIBLE);
         }
 
@@ -422,7 +541,7 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_content.setVisibility(View.GONE);
         }
 
-        if (mSearchHelper == null){
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
         mSearchHelper.setWord(search_result_input.getText().toString());
@@ -456,7 +575,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     private void hideSearchView() {
         isSearch = false;
 
-        if (search_result_outcome != null && search_result_outcome.getVisibility() != View.VISIBLE && !isBackPressed) {
+        if (search_result_outcome != null && search_result_outcome.getVisibility() != View.VISIBLE
+                && !isBackPressed) {
             search_result_outcome.setVisibility(View.VISIBLE);
         }
 
@@ -464,7 +584,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             search_result_default.setVisibility(View.GONE);
         }
 
-        if (search_result_content != null && search_result_content.getVisibility() != View.VISIBLE && !isBackPressed) {
+        if (search_result_content != null && search_result_content.getVisibility() != View.VISIBLE
+                && !isBackPressed) {
             search_result_content.setVisibility(View.VISIBLE);
         }
 
@@ -495,7 +616,8 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             @Override
             public void run() {
 
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        INPUT_METHOD_SERVICE);
 
                 // 弹出软键盘
                 if (view != null) {
@@ -507,9 +629,11 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
     }
 
     public void hideInputMethod(final View paramView) {
-        if (paramView == null || paramView.getContext() == null)
+        if (paramView == null || paramView.getContext() == null) {
             return;
-        InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        }
+        InputMethodManager imm = (InputMethodManager) paramView.getContext().getSystemService(
+                INPUT_METHOD_SERVICE);
         if (imm.isActive()) {
             imm.hideSoftInputFromWindow(paramView.getApplicationWindowToken(), 0);
         }
@@ -520,23 +644,25 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
         switch (view.getId()) {
             case R.id.search_result_back:
                 Map<String, String> data1 = new HashMap<>();
-                data1.put("type","1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BACK, data1);
+                data1.put("type", "1");
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
+                        StartLogClickUtil.BACK, data1);
                 backAction();
                 break;
 
             case R.id.search_result_clear:
-                if (search_result_input != null)
+                if (search_result_input != null) {
                     search_result_input.setText(null);
-                if (search_result_clear != null)
+                }
+                if (search_result_clear != null) {
                     search_result_clear.setVisibility(View.GONE);
-
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCHRESULT_PAGE, StartLogClickUtil.CLEAR);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BARCLEAR);
+                }
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
+                        StartLogClickUtil.CLEAR);
                 break;
 
             case R.id.search_result_outcome:
-                if (searchViewHelper != null){
+                if (searchViewHelper != null) {
                     searchViewHelper.setFromEditClick(true);
                 }
                 showSearchViews();
@@ -554,32 +680,38 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                     CommonUtil.showToastMessage(R.string.search_click_check_isright);
                 } else {
                     hideInputMethod(search_result_input);
-                    if (keyword != null && !TextUtils.isEmpty(keyword.trim()) && searchViewHelper != null) {
+                    if (keyword != null && !TextUtils.isEmpty(keyword.trim())
+                            && searchViewHelper != null) {
                         searchViewHelper.addHistoryWord(keyword);
-                        if (mSearchHelper == null){
+                        if (mSearchHelper == null) {
                             mSearchHelper = new SearchHelper(this);
                         }
-                        if (mSearchHelper.getFromClass() != null && !mSearchHelper.getFromClass().equals("other")) {
+                        if (mSearchHelper.getFromClass() != null
+                                && !mSearchHelper.getFromClass().equals("other")) {
                             if (mSearchHelper.getSearchType() != null) {
-                                mSearchHelper.setHotWordType(keyword, mSearchHelper.getSearchType());
+                                mSearchHelper.setHotWordType(keyword,
+                                        mSearchHelper.getSearchType());
                                 AppLog.e("type14", mSearchHelper.getSearchType() + "===");
                             }
                         } else {
-                            if (mSearchHelper.getSearchType() != null && !mSearchHelper.getSearchType().equals("0")) {
+                            if (mSearchHelper.getSearchType() != null
+                                    && !mSearchHelper.getSearchType().equals("0")) {
                                 AppLog.e("type12", mSearchHelper.getSearchType() + "===");
-                                mSearchHelper.setHotWordType(keyword, mSearchHelper.getSearchType());
+                                mSearchHelper.setHotWordType(keyword,
+                                        mSearchHelper.getSearchType());
                             } else {
                                 AppLog.e("type12", 0 + "===");
                                 mSearchHelper.setHotWordType(keyword, "0");
                                 mSearchHelper.setSearchType("0");
                             }
                         }
-                        loadDataFromNet();
+                        loadDataFromNet(isNotAuthor);
 
                         Map<String, String> data = new HashMap<>();
-                        data.put("type","0");
+                        data.put("type", "0");
                         data.put("keyword", keyword);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data);
+                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
+                                StartLogClickUtil.SEARCHBUTTON, data);
                     } else {
                         showSearchViews();
                     }
@@ -593,14 +725,16 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if (search_result_input == null)
+        if (search_result_input == null) {
             return;
+        }
         if (hasFocus) {
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.BAR);
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
+                    StartLogClickUtil.BAR);
             dealSoftKeyboard(search_result_input);
             if (searchViewHelper != null && search_result_input != null) {
                 searchViewHelper.setShowHintEnabled(true);
-                if (mSearchHelper == null){
+                if (mSearchHelper == null) {
                     mSearchHelper = new SearchHelper(this);
                 }
                 if (TextUtils.isEmpty(mSearchHelper.getWord())) {
@@ -630,7 +764,9 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        if (loadingPage != null) {
+            loadingPage.onSuccessGone();
+        }
     }
 
 
@@ -669,22 +805,30 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
             s.clear();
             search_result_main.setVisibility(View.GONE);
         }
+
+        //保存用户搜索词
+        Tools.setUserSearchWord(s.toString());
     }
 
     @Override
-    public void OnHistoryClick(String history,String searchType) {
-        if (mSearchHelper == null){
+    public void OnHistoryClick(String history, String searchType, int isAuthor) {
+        if (mSearchHelper == null) {
             mSearchHelper = new SearchHelper(this);
         }
-        mSearchHelper.setHotWordType(history,searchType);
-        loadDataFromNet();
+        mSearchHelper.setHotWordType(history, searchType);
+        if ("3".equals(searchType)) {
+
+        } else {
+            loadDataFromNet(isAuthor);
+        }
     }
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
                 actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT ||
-                actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                actionId == EditorInfo.IME_ACTION_SEND
+                || actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
             String keyword = null;
             if (search_result_input != null) {
                 keyword = search_result_input.getText().toString();
@@ -696,13 +840,14 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
                 hideInputMethod(v);
                 if (keyword != null && !keyword.equals("") && searchViewHelper != null) {
                     searchViewHelper.addHistoryWord(keyword);
-                    mSearchHelper.setHotWordType(keyword,"0");
-                    loadDataFromNet();
+                    mSearchHelper.setHotWordType(keyword, "0");
+                    loadDataFromNet(isNotAuthor);
 
                     Map<String, String> data = new HashMap<>();
-                    data.put("type","1");
+                    data.put("type", "1");
                     data.put("keyword", keyword);
-                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.SEARCHBUTTON, data);
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SEARCH_PAGE,
+                            StartLogClickUtil.SEARCHBUTTON, data);
                 }
             }
             return true;
@@ -710,4 +855,30 @@ public class SearchBookActivity extends FrameActivity implements OnClickListener
 
         return false;
     }
+
+    @Override
+    public void onNoneResultSearch(String searchWord) {
+
+        if (search_result_default != null
+                && search_result_default.getVisibility() != View.VISIBLE) {
+            search_result_default.setVisibility(View.VISIBLE);
+        }
+
+        if (search_result_input != null) {
+            search_result_input.setText(searchWord);
+        }
+
+        if (searchViewHelper != null) {
+            searchViewHelper.addHistoryWord(searchWord);
+            searchViewHelper.hideHintList();
+        }
+
+        if (search_result_content != null) {
+            search_result_content.clearView();
+            if (loadingPage == null) {
+                loadingPage = new LoadingPage(this, search_result_main, LoadingPage.setting_result);
+            }
+        }
+    }
+
 }

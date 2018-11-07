@@ -14,4 +14,6 @@ interface BookShelfInterface {
 
     fun changeDrawerLayoutState()
 
+    fun registerShareCallback(state: Boolean)
+
 }

@@ -39,6 +39,17 @@
                 android:background="#CE3D3E"
                 android:visibility="gone"/>
 
+            <View
+                android:id="@+id/view_head_menu"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:visibility="gone"
+                android:layout_marginRight="43dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignRight="@+id/img_head_menu"
+                android:background="@drawable/prompt_red_bg"/>
+
             <ImageView
                 android:id="@+id/img_head_menu"
                 android:layout_width="25dp"

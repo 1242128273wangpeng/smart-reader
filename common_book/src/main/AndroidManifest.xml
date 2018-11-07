@@ -271,9 +271,8 @@
             android:name=".activity.GoToCoverOrReadActivity"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:taskAffinity=".gotocoverorreadactivity">
+            android:taskAffinity=".gotocoverorreadactivity"/>
 
-        </activity>
         <!-- 腾讯SSO授权的Activity注册 -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"

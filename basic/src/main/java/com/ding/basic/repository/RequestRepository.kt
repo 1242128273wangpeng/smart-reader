@@ -81,6 +81,9 @@ interface RequestRepository {
 
     fun requestBannerInfo(): Flowable<BannerInfo>
 
+    fun requestRecommendCateList(packageName: String, categoryNames: String, requestSubscriber: RequestSubscriber<ArrayList<RecommendCateListBean>>)
+
+
     /************************* 本地数据 *************************/
 
     fun checkBookSubscribe(book_id: String): Book?

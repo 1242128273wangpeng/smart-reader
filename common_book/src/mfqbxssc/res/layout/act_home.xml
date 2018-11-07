@@ -4,170 +4,163 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:fitsSystemWindows="true"
     tools:ignore="SmallSp, RtlHardcoded, UselessParent">
 
-    <RelativeLayout
+    <net.lzbook.kit.book.view.NonSwipeViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:layout_above="@+id/ll_home_tab"
+        android:background="#FAFAFA"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation"/>
 
-        <net.lzbook.kit.book.view.NonSwipeViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/ll_home_tab"
-            android:background="#FAFAFA"
-            android:flipInterval="30"
-            android:persistentDrawingCache="animation"/>
+    <View
+        android:id="@+id/view_bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/ll_home_tab"
+        android:background="#E6E6E6"/>
 
-        <View
-            android:id="@+id/view_bottom_divider"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_above="@+id/ll_home_tab"
-            android:background="#E6E6E6"/>
+    <LinearLayout
+        android:id="@+id/ll_home_tab"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/ll_home_tab"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:background="#FFFFFF"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:id="@+id/ll_bottom_tab_bookshelf"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/ll_bottom_tab_bookshelf"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+            <ImageView
+                android:id="@+id/img_tab_bookshelf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/module_name"
+                android:focusable="false"
+                android:padding="1dp"
+                android:src="@drawable/home_tab_select_bookshelf"/>
 
-                <ImageView
-                    android:id="@+id/img_tab_bookshelf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:contentDescription="@string/module_name"
-                    android:padding="1dp"
-                    android:src="@drawable/home_tab_select_bookshelf"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bookshelf"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_bottom_tab_recommend"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/img_tab_recommend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:contentDescription="@string/module_name"
-                    android:padding="1dp"
-                    android:src="@drawable/home_tab_select_recommend"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/recommend"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_bottom_tab_ranking"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/img_tab_ranking"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:padding="1dp"
-                    android:contentDescription="@string/module_name"
-                    android:src="@drawable/home_tab_select_ranking"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ranking"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_bottom_tab_category"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/img_tab_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:padding="1dp"
-                    android:contentDescription="@string/module_name"
-                    android:src="@drawable/home_tab_select_category"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/category"
-                    android:textColor="@drawable/home_bottom_tab_text_color_selector"
-                    android:textSize="10sp"/>
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bookshelf"
+                android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                android:textSize="10sp"/>
         </LinearLayout>
 
-        <FrameLayout
-                android:id="@+id/fl_guide_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone"
-                >
+        <LinearLayout
+            android:id="@+id/ll_bottom_tab_recommend"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
-                    android:id="@+id/img_guide_download"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|top"
-                    android:layout_marginTop="@dimen/dimen_margin_40"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/icon_bookshelf_guide_cache"
-                    android:visibility="gone"/>
+                android:id="@+id/img_tab_recommend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/module_name"
+                android:focusable="false"
+                android:padding="1dp"
+                android:src="@drawable/home_tab_select_recommend"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommend"
+                android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_bottom_tab_ranking"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
-                    android:id="@+id/img_guide_remove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_padding_28"
-                    android:scaleType="fitXY"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="60dp"
-                    android:src="@drawable/icon_bookshelf_guide_delete_books"
-                    android:visibility="gone"
-                    />
-        </FrameLayout>
+                android:id="@+id/img_tab_ranking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/module_name"
+                android:focusable="false"
+                android:padding="1dp"
+                android:src="@drawable/home_tab_select_ranking"/>
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ranking"
+                android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                android:textSize="10sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_bottom_tab_category"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_tab_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/module_name"
+                android:focusable="false"
+                android:padding="1dp"
+                android:src="@drawable/home_tab_select_category"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/category"
+                android:textColor="@drawable/home_bottom_tab_text_color_selector"
+                android:textSize="10sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_guide_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_guide_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:layout_marginTop="@dimen/dimen_margin_40"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_bookshelf_guide_cache"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/img_guide_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="60dp"
+            android:layout_marginLeft="@dimen/dimen_padding_28"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_bookshelf_guide_delete_books"
+            android:visibility="gone"/>
+    </FrameLayout>
+
 </RelativeLayout>

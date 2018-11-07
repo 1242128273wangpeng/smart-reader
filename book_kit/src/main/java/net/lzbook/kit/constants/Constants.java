@@ -430,6 +430,7 @@ public class Constants {
     public static String ad_control_other = "6";//广告分渠道控制广告位    4其他广告
 
 
+    public static Boolean SHARE_SWITCH_ENABLE = false; //是否开启分享功能
 
 
 

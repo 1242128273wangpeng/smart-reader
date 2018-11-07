@@ -124,6 +124,7 @@
     </string>
 
     <string name="reading_continue">继续阅读</string>
+    <string name="not_show_next_time">下次不再提示</string>
     <string name="skip_chapter">跳过此章</string>
 
     <string name="refresh">刷新</string>

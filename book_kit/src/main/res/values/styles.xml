@@ -98,32 +98,33 @@
     </style>
 
 
-
     <!-- 导航栏 -->
     <declare-styleable name="NavigationBarStrip">
-        <attr name="indicatorMarginBottom" format="dimension" />
+        <attr name="indicatorMarginBottom" format="dimension"/>
 
-        <attr name="indicatorColor" format="color" />
-        <attr name="indicatorFactor" format="float" />
-        <attr name="indicatorHeight" format="dimension" />
-        <attr name="indicatorPadding" format="dimension" />
-        <attr name="indicatorTextSize" format="dimension" />
+        <attr name="indicatorColor" format="color"/>
+        <attr name="indicatorFactor" format="float"/>
+        <attr name="indicatorHeight" format="dimension"/>
+        <attr name="indicatorPadding" format="dimension"/>
+        <attr name="indicatorActivityTextSize" format="dimension"/>
+        <attr name="indicatorInActivityTextSize" format="dimension"/>
+
 
         <attr name="indicatorType" format="enum">
-            <enum name="line" value="0" />
-            <enum name="point" value="1" />
+            <enum name="line" value="0"/>
+            <enum name="point" value="1"/>
         </attr>
 
         <attr name="indicatorGravity" format="enum">
-            <enum name="top" value="0" />
-            <enum name="bottom" value="1" />
+            <enum name="top" value="0"/>
+            <enum name="bottom" value="1"/>
         </attr>
 
-        <attr name="indicatorRadius" format="dimension" />
-        <attr name="indicatorAnimationDuration" format="integer" />
+        <attr name="indicatorRadius" format="dimension"/>
+        <attr name="indicatorAnimationDuration" format="integer"/>
 
-        <attr name="indicatorInactiveColor" format="color" />
-        <attr name="indicatorActiveColor" format="color" />
+        <attr name="indicatorInactiveColor" format="color"/>
+        <attr name="indicatorActiveColor" format="color"/>
     </declare-styleable>
 
 </resources>

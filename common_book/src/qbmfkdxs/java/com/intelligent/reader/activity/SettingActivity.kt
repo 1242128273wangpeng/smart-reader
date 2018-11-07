@@ -14,6 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.ding.basic.Config
 import com.ding.basic.request.RequestService
+import com.dingyue.contract.CommonContract
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
 import com.dingyue.contract.util.CommonUtil
@@ -161,6 +162,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.tv_qrcode -> {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return
+                }
                 val welfareIntent = Intent()
                 val uri = RequestService.QR_CODE.replace("{packageName}", AppUtils.getPackageName())
                 welfareIntent.putExtra("url", UrlUtils.buildWebUrl(uri, HashMap()))
@@ -169,6 +173,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 startActivity(welfareIntent)
             }
             R.id.rl_welfare -> {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.ADPAGE)
                 val welfareIntent = Intent()
                 welfareIntent.putExtra("url", Config.WelfareHost)
@@ -177,6 +184,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 startActivity(welfareIntent)
             }
             R.id.tv_setting_more -> {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET)
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more)
                 startActivity(Intent(this@SettingActivity, SettingMoreActivity::class.java))
@@ -206,6 +216,9 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
             }
             R.id.tv_disclaimer -> {
+                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    return
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL)
                 val bundle = Bundle()

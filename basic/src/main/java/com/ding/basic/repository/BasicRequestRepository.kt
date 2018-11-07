@@ -33,6 +33,8 @@ interface BasicRequestRepository {
 
     fun requestSubBook(bookName: String , bookAuthor: String): Flowable<JsonObject>? //搜索无结果 订阅
 
+    fun requestRecommendCateList(packageName: String, categoryNames: String): Flowable<BasicResultV4<ArrayList<RecommendCateListBean>>>? //精选（推荐）首页 分类标签数据接口
+
     fun requestHotWordsV4(): Flowable<Result<SearchResult>>?
 
     fun requestChapterContent(chapter: Chapter): Flowable<BasicResult<Chapter>>
