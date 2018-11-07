@@ -3,7 +3,6 @@ package com.dy.reader.page
 import android.content.res.Configuration
 import android.graphics.*
 import android.opengl.GLES20
-import android.text.TextPaint
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -126,6 +125,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                             adBitmap?.apply {
 
                                 if (adBean?.mark == "8-1") {
+                                    canvas?.density?.let {
+                                        adBitmap.density = it
+                                    }
                                     canvas?.drawBitmap(adBitmap, 0F, AppHelper.screenHeight - adBean.height.toFloat(), null)
                                     filledAD = true
                                 } else {
@@ -194,28 +196,9 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                 }
 
                 adBean?.view?.apply {
-                    if (this.visibility == View.VISIBLE) {
-                        if (this.parent != null) {
-                            var copy: Bitmap? = null
-                            try {
-                                this.buildDrawingCache()
-                                copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
-                            } catch (e: OutOfMemoryError) {
-                                e.printStackTrace()
-                                Glide.get(Reader.context).clearMemory()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                Glide.get(Reader.context).clearMemory()
-                            }
-                            this.destroyDrawingCache()
-                            load(copy)
-                        } else {
-                            ReadMediaManager.frameLayout?.removeAllViews()
+                    try {
+                        if (this.visibility == View.VISIBLE) {
                             if (this.parent != null) {
-                                (this.parent as ViewGroup).removeView(this)
-                            }
-                            ReadMediaManager.frameLayout?.addView(this)
-                            ReadMediaManager.frameLayout?.post {
                                 var copy: Bitmap? = null
                                 try {
                                     this.buildDrawingCache()
@@ -229,11 +212,34 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                                 }
                                 this.destroyDrawingCache()
                                 load(copy)
+                            } else {
                                 ReadMediaManager.frameLayout?.removeAllViews()
+                                if (this.parent != null) {
+                                    (this.parent as ViewGroup).removeView(this)
+                                }
+                                ReadMediaManager.frameLayout?.addView(this)
+                                ReadMediaManager.frameLayout?.post {
+                                    var copy: Bitmap? = null
+                                    try {
+                                        this.buildDrawingCache()
+                                        copy = drawingCache?.copy(Bitmap.Config.ARGB_4444, false)
+                                    } catch (e: OutOfMemoryError) {
+                                        e.printStackTrace()
+                                        Glide.get(Reader.context).clearMemory()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                        Glide.get(Reader.context).clearMemory()
+                                    }
+                                    this.destroyDrawingCache()
+                                    load(copy)
+                                    ReadMediaManager.frameLayout?.removeAllViews()
 
+                                }
                             }
+                            return@runOnMain
                         }
-                        return@runOnMain
+                    }catch (e:Throwable){
+                        e.printStackTrace()
                     }
                 }
                 load(null)
@@ -333,13 +339,6 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             } else {
                 println("cant draw page content == null")
             }
-
-            val textPaint = TextPaint()
-            textPaint.style = Paint.Style.FILL
-            textPaint.isAntiAlias = true
-            textPaint.isDither = true
-            textPaint.textSize = 80F
-            textPaint.color = ReaderSettings.instance.fontColor
 
             println("loadBitmap ${posi.group}:${posi.index} use time ${System.currentTimeMillis() - startTime}")
         }

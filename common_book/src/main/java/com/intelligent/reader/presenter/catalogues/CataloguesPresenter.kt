@@ -15,9 +15,9 @@ import com.ding.basic.database.helper.BookDataProviderHelper
 import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestSubscriber
 import com.ding.basic.rx.SchedulerHelper
+import com.dingyue.contract.util.showToastMessage
 import com.dingyue.contract.router.RouterConfig
 import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
 import com.intelligent.reader.R
 import com.intelligent.reader.cover.BookCoverViewModel
 import com.intelligent.reader.view.TransformReadDialog

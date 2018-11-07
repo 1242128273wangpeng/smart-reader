@@ -89,9 +89,7 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
 
         initListener()
 
-        if (Build.VERSION.SDK_INT >= 11) {
-            search_result_content.setLayerType(View.LAYER_TYPE_NONE, null)
-        }
+        search_result_content?.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         if (search_result_content != null) {
             customWebClient = CustomWebClient(this, search_result_content)
@@ -100,9 +98,9 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
         if (search_result_content != null && customWebClient != null) {
             customWebClient?.setWebSettings()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                search_result_content!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             }
-            search_result_content!!.webViewClient = customWebClient
+            search_result_content?.webViewClient = customWebClient
         }
 
         if (search_result_content != null) {
@@ -110,8 +108,8 @@ open class SearchBookActivity : FrameActivity(), OnClickListener, OnFocusChangeL
         }
 
         if (jsInterfaceHelper != null && search_result_content != null) {
-            search_result_content!!.addJavascriptInterface(jsInterfaceHelper, "J_search")
-            mSearchHelper!!.initJSHelp(jsInterfaceHelper)
+            search_result_content?.addJavascriptInterface(jsInterfaceHelper, "J_search")
+            mSearchHelper?.initJSHelp(jsInterfaceHelper)
         }
 
     }

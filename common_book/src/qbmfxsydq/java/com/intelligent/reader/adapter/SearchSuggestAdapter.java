@@ -32,6 +32,7 @@ public class SearchSuggestAdapter extends BaseAdapter {
     //item的类型
     private static final int ITEM_VIEW_TYPE_DATA = 0;
     private static final int ITEM_VIEW_TYPE_GAP = 1;
+    private static final int ITEM_VIEW_TYPE_DEFAULT = 2;
     private static final int ITEM_VIEW_TYPE_COUNT = 2;
 
     public SearchSuggestAdapter(Context context, List<Object> mData, String editInput) {
@@ -52,8 +53,11 @@ public class SearchSuggestAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return mData.get(position) instanceof SearchCommonBeanYouHua ? ITEM_VIEW_TYPE_DATA
-                : ITEM_VIEW_TYPE_GAP;
+        if (position > -1 && position < mData.size()) {
+            return mData.get(position) instanceof SearchCommonBeanYouHua ? ITEM_VIEW_TYPE_DATA : ITEM_VIEW_TYPE_GAP;
+        } else {
+            return ITEM_VIEW_TYPE_DEFAULT;
+        }
     }
 
     @Override

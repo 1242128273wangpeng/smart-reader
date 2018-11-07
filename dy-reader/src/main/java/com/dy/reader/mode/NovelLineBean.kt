@@ -5,7 +5,6 @@ import com.dy.reader.setting.ReaderSettings
 import android.graphics.Rect
 import android.text.TextUtils
 import com.dy.reader.constants.ReadConstants
-import net.lzbook.kit.data.bean.ReadConfig.mWidth
 
 import java.io.Serializable
 import java.util.ArrayList

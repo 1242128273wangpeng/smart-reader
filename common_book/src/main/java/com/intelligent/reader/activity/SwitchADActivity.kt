@@ -27,7 +27,7 @@ class SwitchADActivity : Activity() {
     private var canHandleClickAction = false
 
     private var clickTime = LongArray(2)
-    private var loadedAD=false
+    private var loadedAD = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +69,10 @@ class SwitchADActivity : Activity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        var width=window.decorView.width
-        var height=window.decorView.height
-        if(hasFocus&&!loadedAD&&height>width){
-            loadedAD=true
+        var width = window.decorView.width
+        var height = window.decorView.height
+        if (hasFocus && !loadedAD && height > width) {
+            loadedAD = true
 
             MediaControl.loadSwitchScreenMedia(this, fl_switch_ad_content) { resultCode ->
                 Logger.e("切屏广告: $resultCode")
@@ -83,15 +83,16 @@ class SwitchADActivity : Activity() {
                     }
 
                     MediaCode.MEDIA_FAILED -> {
+                        loadedAD = false
                         this@SwitchADActivity.finish()
                     }
 
                     MediaCode.MEDIA_DISMISS -> {
+                        loadedAD = false
                         this@SwitchADActivity.finish()
                     }
                 }
             }
-
 
 
         }

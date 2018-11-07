@@ -499,7 +499,7 @@ public class SearchHelper {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("author", searchWord);
-                mUrl = RequestService.AUTHOR_h5 + "?author=" + searchWord;
+                mUrl = RequestService.AUTHOR_V4 + "?author=" + searchWord;
                 try {
                     sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
                             "author").apply();//FindBookDetail 返回键时标识
