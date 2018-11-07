@@ -105,10 +105,10 @@ class DebugHostActivity : BaseCacheableActivity() {
             return list
         } else {
 
-            list.add("http://8086.zn.bookapi.cn")
+            list.add("http://119.254.159.100:8081")
             list.add("http://8054.uzn.bookapi.cn")
+            list.add("http://8086.zn.bookapi.cn")
             list.add("https://unionapi.bookapi.cn")
-            list.add("https://uniontest.bookapi.cn")
             list.add("https://unioncontent.bookapi.cn")
 
             SPUtils.putOnlineConfigSharedString(SPKey.HOST_LIST, Gson().toJson(list))
