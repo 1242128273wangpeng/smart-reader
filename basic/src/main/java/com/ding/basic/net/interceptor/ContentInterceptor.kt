@@ -1,29 +1,22 @@
 package com.ding.basic.net.interceptor
 
-import android.text.TextUtils
 import com.ding.basic.bean.Access
 import com.ding.basic.bean.BasicResult
-import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.service.ContentService.Companion.AUTH_ACCESS
 import com.ding.basic.net.token.Token
-import com.ding.basic.util.AESUtil
-import com.ding.basic.util.buildContentRequest
-import com.ding.basic.util.loadContentRequestSign
+import com.ding.basic.util.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
 import okhttp3.*
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.net.URLDecoder
 import java.nio.charset.Charset
-import java.util.zip.GZIPInputStream
 
 class ContentInterceptor : Interceptor {
 
-    private val requestParameters = mutableMapOf<String, String>()
+    private val gson = Gson()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         return handleMicroInterceptAction(chain)
@@ -95,7 +88,7 @@ class ContentInterceptor : Interceptor {
             }
 
             return try {
-                val basicResult = Gson().fromJson(responseResult, BasicResult::class.java)
+                val basicResult = gson.fromJson(responseResult, BasicResult::class.java)
 
                 if (basicResult.checkPrivateKeyExpire()) {
                     Logger.e("网络请求鉴权异常: ${basicResult.code} : ${basicResult.msg}")
@@ -103,7 +96,6 @@ class ContentInterceptor : Interceptor {
                 } else {
                     Logger.e("网络请求结果正常: ${request.url()}")
                     response.newBuilder().body(ResponseBody.create(mediaType, bytes)).build()
-
                 }
             } catch (exception: Exception) {
                 Logger.e("HandleMicroResponseBody Gson: $exception")
@@ -113,48 +105,6 @@ class ContentInterceptor : Interceptor {
             Logger.e("HandleMicroResponseBody: $exception")
             throw exception
         }
-    }
-
-    /***
-     * 判断返回的Response头中是否包含Gzip
-     * **/
-    private fun checkHeadersContainsGzip(headers: Headers): Boolean {
-        var gzip = false
-        for (key in headers.names()) {
-            if (key.equals("Accept-Encoding", ignoreCase = true) && headers.get(key)?.contains("gzip") == true || key.equals("Content-Encoding", ignoreCase = true) && headers.get(key)?.contains("gzip") == true) {
-                gzip = true
-                break
-            }
-        }
-        return gzip
-    }
-
-    /***
-     * 解析GZip格式的返回值
-     * **/
-    @Throws(Exception::class)
-    private fun uncompressGzipString(bytes: ByteArray?): String? {
-        if (bytes == null || bytes.isEmpty()) {
-            return null
-        }
-
-        val byteArrayInputStream = ByteArrayInputStream(bytes)
-
-        val byteArrayOutputStream = ByteArrayOutputStream()
-
-        val zipInputStream = GZIPInputStream(byteArrayInputStream)
-
-        var read: Int = -1
-
-        zipInputStream.use { input ->
-            byteArrayOutputStream.use {
-                while (input.read().also { read = it } != -1) {
-                    it.write(read)
-                }
-            }
-        }
-
-        return byteArrayOutputStream.toString("UTF-8")
     }
 
     /***
@@ -225,7 +175,7 @@ class ContentInterceptor : Interceptor {
             }
 
             try {
-                val basicResult = Gson().fromJson<BasicResult<String>>(responseResult, object : TypeToken<BasicResult<String>>() {}.type)
+                val basicResult = gson.fromJson<BasicResult<String>>(responseResult, object : TypeToken<BasicResult<String>>() {}.type)
 
                 if (basicResult.checkResultAvailable()) {
                     handleAuthResult(basicResult)
@@ -251,7 +201,7 @@ class ContentInterceptor : Interceptor {
         val message = AESUtil.decrypt(result.data, Config.loadAccessKey())
 
         if (message != null && message.isNotEmpty()) {
-            val access = Gson().fromJson(message, Access::class.java)
+            val access = gson.fromJson(message, Access::class.java)
             if (access != null) {
                 if (access.publicKey != null) {
                     ContentAPI.publicKey = access.publicKey
@@ -294,7 +244,7 @@ class ContentInterceptor : Interceptor {
             }
         }
 
-        parameters.putAll(buildRequestParameters())
+        buildRequestParameters(parameters)
 
         val sign = loadContentRequestSign(parameters)
         parameters["sign"] = sign
@@ -316,41 +266,6 @@ class ContentInterceptor : Interceptor {
         Logger.v("Request: " + interimRequest.url().toString() + " : " + ContentAPI.publicKey + " : " + ContentAPI.privateKey)
 
         return interimRequest
-    }
-
-    /***
-     * 拼接链接中的公共参数
-     * **/
-    private fun buildRequestParameters(): Map<String, String> {
-        if (requestParameters["packageName"].isNullOrEmpty()) {
-            requestParameters["packageName"] = Config.loadRequestParameter("packageName")
-        }
-
-        if (requestParameters["os"].isNullOrEmpty()) {
-            requestParameters["os"] = Config.loadRequestParameter("os")
-        }
-
-        if (requestParameters["udid"].isNullOrEmpty()) {
-            requestParameters["udid"] = Config.loadRequestParameter("udid")
-        }
-
-        if (requestParameters["version"].isNullOrEmpty()) {
-            requestParameters["version"] = Config.loadRequestParameter("version")
-        }
-
-        if (requestParameters["channelId"].isNullOrEmpty()) {
-            requestParameters["channelId"] = Config.loadRequestParameter("channelId")
-        }
-
-        requestParameters["cityCode"] = ParameterConfig.cityCode
-        requestParameters["latitude"] = ParameterConfig.latitude
-        requestParameters["longitude"] = ParameterConfig.longitude
-
-        if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
-            requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")
-        }
-
-        return requestParameters
     }
 
     /***

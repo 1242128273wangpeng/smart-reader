@@ -3,10 +3,8 @@ package net.lzbook.kit.constants;
 import android.content.Context;
 import android.os.Environment;
 
-import net.lzbook.kit.R;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ResourceUtil;
 
 import org.apache.http.protocol.HTTP;
 
