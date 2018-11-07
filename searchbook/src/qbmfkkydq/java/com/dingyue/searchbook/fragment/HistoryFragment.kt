@@ -47,6 +47,7 @@ class HistoryFragment : BaseHistoryFragment() {
             StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH, StartLogClickUtil.HISTORYCLEAR, data)
             historyPresenter.removeHistoryRecord()
             historyAdapter?.notifyDataSetChanged()
+            historyDeleteView?.visibility = View.GONE
             dialog.dismiss()
         })
 
