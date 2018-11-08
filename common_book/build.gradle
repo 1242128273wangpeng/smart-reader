@@ -364,7 +364,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwqbzs.lsread.cn\""
             buildConfigField "String", "micro_api_host", "\"https://aqbzsydqunionapi.basicnos.cn\""
             buildConfigField "String", "content_api_host", "\"https://aqbzsydqunioncontent.basicnos.cn\""
-
+            buildConfigField "String", "cdn_host", "\"\""
         }
 
         qbmfxsydq {
@@ -395,6 +395,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwqbmf.bookapi.cn:443\""
             buildConfigField "String", "micro_api_host", "\"https://aqbmfxsydqunionapi.jingytech.com:443\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfxsydqunioncontent.jingytech.com:443\""
+            buildConfigField "String", "cdn_host", "\"https://sta-ccquanbennovel.bookapi.cn\""
         }
 
         mfqbxssc {
@@ -423,7 +424,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwmfqb.youshiit.com\""
             buildConfigField "String", "micro_api_host", "\"https://amfqbxsscunionapi.jingytech.com\""
             buildConfigField "String", "content_api_host", "\"https://amfqbxsscunioncontent.jingytech.com\""
-            buildConfigField "String", "cdn_host", "\"\""
+            buildConfigField "String", "cdn_host", "\"https://sta-cckdqbxsreader.youshiit.com\""
         }
 
         zsmfqbxs {
@@ -452,8 +453,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwzsmf.lsread.cn\""
             buildConfigField "String", "micro_api_host", "\"https://azsmfqbxsunionapi.jingytech.com\""
             buildConfigField "String", "content_api_host", "\"https://azsmfqbxsunioncontent.jingytech.com\""
-
-
+            buildConfigField "String", "cdn_host", "\"https://sta-ccmianfeinovel.lsread.cn\""
         }
 
         txtqbmfxs {
@@ -483,7 +483,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwqbmf.dushixiaoshuo.cn\""
             buildConfigField "String", "micro_api_host", "\"https://atxtqbmfxsunionapi.jingytech.com\""
             buildConfigField "String", "content_api_host", "\"https://atxtqbmfxsunioncontent.jingytech.com\""
-//
+            buildConfigField "String", "cdn_host", "\"https://sta-cclianzainovel.dushixiaoshuo.cn\""
         }
 
         txtqbdzs {
@@ -512,6 +512,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwtqbmf.zhuishuwang.com\""
             buildConfigField "String", "micro_api_host", "\"https://utxtqbmfdzsunionapi.zhuishuwang.com\""
             buildConfigField "String", "content_api_host", "\"https://utxtqbmfdzsunioncontent.zhuishuwang.com\""
+            buildConfigField "String", "cdn_host", "\"https://sta-ccremennovel.zhuishuwang.com\""
         }
 
         txtqbmfyd {
@@ -543,7 +544,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwqbmf.readzq.com:443\""
             buildConfigField "String", "micro_api_host", "\"https://atxtqbmfydunionapi.jingytech.com:443\""
             buildConfigField "String", "content_api_host", "\"https://atxtqbmfydunioncontent.jingytech.com:443\""
-
+            buildConfigField "String", "cdn_host", "\"https://sta-cntxtqbmfydreader.readzq.com\""
         }
 
         qbmfkdxs {
@@ -604,7 +605,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://show.fengxianghuawu.com\""
             buildConfigField "String", "micro_api_host", "\"https://aqbmfrmxsunionapi.jingytech.com\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfrmxsunioncontent.jingytech.com\""
-
+            buildConfigField "String", "cdn_host", "\"https://sta-ccquanbennovel.zhuishuwang.com\""
         }
 
         qbmfkkydq {
@@ -634,6 +635,7 @@ android {
             buildConfigField "String", "book_webview_host", "\"https://uwqbmfkk.muxinvideo.com\""
             buildConfigField "String", "micro_api_host", "\"https://aqbmfkkydqunionapi.basicnos.cn\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfkkydqunioncontent.basicnos.cn\""
+            buildConfigField "String", "cdn_host", "\"https://sta-cnqbmfkkydqreader.bookapi.cn\""
         }
 
         mfxsqbyd {
