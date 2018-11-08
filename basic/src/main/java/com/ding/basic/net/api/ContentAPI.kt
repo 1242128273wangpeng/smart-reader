@@ -58,7 +58,7 @@ object ContentAPI {
             return if (field?.isNotEmpty() == false) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + MicroAPI.microHost, "")
+                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, "")
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -72,7 +72,7 @@ object ContentAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + MicroAPI.microHost, value)
+                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, value)
             }
         }
 
@@ -84,7 +84,7 @@ object ContentAPI {
             return if (field?.isNotEmpty() == true) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + MicroAPI.microHost)
+                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -97,8 +97,8 @@ object ContentAPI {
         set(value) {
             if (value?.isNotEmpty() == true) {
                 field = value
-
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + MicroAPI.microHost, value)
+                Logger.e("PrivateKey Set: Host: $contentHost : privateKey: $value")
+                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost, value)
             }
         }
 
@@ -123,6 +123,11 @@ object ContentAPI {
 
 
     fun initContentService() {
+
+        publicKey = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost)
+
+        privateKey = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
+
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -131,6 +136,10 @@ object ContentAPI {
                 .build()
 
         contentService = retrofit.create(ContentService::class.java)
+
+        if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
+            requestAuthAccess()
+        }
     }
 
     fun requestAuthAccess() {

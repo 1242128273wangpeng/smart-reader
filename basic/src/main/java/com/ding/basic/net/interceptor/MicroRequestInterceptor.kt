@@ -143,8 +143,7 @@ class MicroRequestInterceptor : Interceptor {
         val authenticationUrl = buildMicroRequest(AUTH_ACCESS, false)
 
         val authenticationRequest = Request.Builder().headers(request.headers())
-                .removeHeader("publicKey")
-                .addHeader("accessKey", Config.loadAccessKey()).url(authenticationUrl).build()
+                .removeHeader("publicKey").url(authenticationUrl).build()
 
         return buildMicroRequest(authenticationRequest)
     }

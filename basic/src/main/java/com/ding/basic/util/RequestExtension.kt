@@ -195,7 +195,7 @@ fun buildContentRequest(message: String?): String {
 
     parameters["sign"] = sign
 
-    Logger.e("签名完成后，携带的公钥为: " + ContentAPI.publicKey + " : " + sign)
+    Logger.e("签名完成后，携带的公钥为: " + ContentAPI.publicKey + " : " + ContentAPI.privateKey + " : " + sign)
 
     return buildContentRequestAction(url, parameters)
 }

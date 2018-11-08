@@ -1,9 +1,6 @@
 package net.lzbook.kit.utils.dynamic
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Handler
-import android.os.Message
 import com.baidu.mobstat.StatService
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.AdControlByChannelBean
@@ -34,33 +31,6 @@ import java.util.*
 
 class DynamicParameter(private val context: Context) {
 
-    internal var handler: Handler = @SuppressLint("HandlerLeak") object : Handler() {
-        override fun handleMessage(message: Message) {
-            super.handleMessage(message)
-
-            when (message.what) {
-                0 -> {
-                    Logger.e("更换域名了！！！！")
-                    if (MicroAPI.microHost == "https://aqbmfrmxsunionapi.jingytech.com:443") {
-                        MicroAPI.microHost = "https://syytest.bookapi.cn:443"
-                    } else {
-                        MicroAPI.microHost = "https://aqbmfrmxsunionapi.jingytech.com:443"
-                    }
-
-                    if (ContentAPI.contentHost == "https://aqbmfrmxsunioncontent.jingytech.com:443") {
-                        ContentAPI.contentHost = "https://syytest.bookapi.cn:443"
-                    } else {
-                        ContentAPI.contentHost = "https://aqbmfrmxsunioncontent.jingytech.com:443"
-                    }
-
-                    initApi()
-
-                    this.sendEmptyMessageDelayed(0, 2 * 60 * 1000)
-                }
-            }
-        }
-    }
-
     private var dynamicUrl: String = RequestService.DYNAMIC_PARAMETERS
         @Synchronized get() {
             field = when (field) {
@@ -77,9 +47,6 @@ class DynamicParameter(private val context: Context) {
     private var mReqVersion: Int = -1
 
     fun setDynamicParameter() {
-
-        handler.sendEmptyMessageDelayed(0, 2 * 60 * 1000)
-
         prepareCheck()
 
         installParams()
@@ -363,21 +330,12 @@ class DynamicParameter(private val context: Context) {
         Config.insertRequestAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST))
         Config.insertWebViewHost(SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST))
         Config.insertUserTagHost(SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST))
-
     }
 
     private fun initApi() {
         MicroAPI.initMicroService()
-        ContentAPI.initContentService()
-        RequestAPI.initializeDataRequestService()
-
-        if (MicroAPI.publicKey?.isEmpty() == true || MicroAPI.privateKey?.isEmpty() == true) {
-            MicroAPI.requestAuthAccess()
-        }
-
-        if (ContentAPI.publicKey?.isEmpty() == true || ContentAPI.privateKey?.isEmpty() == true) {
-            ContentAPI.requestAuthAccess()
-        }
+//        ContentAPI.initContentService()
+//        RequestAPI.initializeDataRequestService()
     }
 
     private fun setBaidu() {

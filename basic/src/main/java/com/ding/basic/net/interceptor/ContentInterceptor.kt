@@ -3,6 +3,7 @@ package com.ding.basic.net.interceptor
 import com.ding.basic.bean.Access
 import com.ding.basic.bean.BasicResult
 import com.ding.basic.net.Config
+import com.ding.basic.net.ResultCode
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.service.ContentService.Companion.AUTH_ACCESS
 import com.ding.basic.net.token.Token
@@ -25,6 +26,7 @@ class ContentInterceptor : Interceptor {
     /***
      * 处理数据流请求拦截
      * **/
+    @Synchronized
     private fun handleMicroInterceptAction(chain: Interceptor.Chain): Response {
         try {
             var request = chain.request()
@@ -89,7 +91,7 @@ class ContentInterceptor : Interceptor {
 
             return try {
                 val basicResult = gson.fromJson(responseResult, BasicResult::class.java)
-
+                basicResult.code = ResultCode.PRIVATE_KEY_EXPIRE
                 if (basicResult.checkPrivateKeyExpire()) {
                     Logger.e("网络请求鉴权异常: ${basicResult.code} : ${basicResult.msg}")
                     requestAuthentication(chain, request)
@@ -142,8 +144,7 @@ class ContentInterceptor : Interceptor {
         val authenticationUrl = buildContentRequest(AUTH_ACCESS)
 
         val authenticationRequest = Request.Builder().headers(request.headers())
-                .removeHeader("publicKey")
-                .addHeader("accessKey", Config.loadAccessKey()).url(authenticationUrl).build()
+                .removeHeader("publicKey").url(authenticationUrl).build()
 
         return buildContentRequest(authenticationRequest)
     }
@@ -198,11 +199,13 @@ class ContentInterceptor : Interceptor {
      * 处理鉴权请求结果
      * **/
     private fun handleAuthResult(result: BasicResult<String>) {
-        val message = AESUtil.decrypt(result.data, Config.loadAccessKey())
+        Logger.e("鉴权结果: ${result.data}")
+        val message = AESUtil.decrypt(result.data, ContentAPI.accessKey)
 
         if (message != null && message.isNotEmpty()) {
             val access = gson.fromJson(message, Access::class.java)
             if (access != null) {
+                Logger.e("鉴权结果: $access")
                 if (access.publicKey != null) {
                     ContentAPI.publicKey = access.publicKey
                 }

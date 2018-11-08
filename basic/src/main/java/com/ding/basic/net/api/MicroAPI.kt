@@ -123,6 +123,11 @@ object MicroAPI {
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(MicroRequestInterceptor()).build()
 
     fun initMicroService() {
+
+        publicKey = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
+
+        privateKey = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
+
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -131,6 +136,10 @@ object MicroAPI {
                 .build()
 
         microService = retrofit.create(MicroService::class.java)
+
+        if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
+            requestAuthAccess()
+        }
     }
 
     fun requestAuthAccess() {

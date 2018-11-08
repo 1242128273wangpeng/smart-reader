@@ -279,9 +279,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         }
 
         txt_push_setting.setOnClickListener {
-            //TODO 上线关闭
-            ParameterConfig.cityCode = ParameterConfig.cityCode + ".1"
-
             PersonalLogger.uploadPersonalPushSetting()
             startActivity(Intent(this, SettingMoreActivity::class.java))
         }

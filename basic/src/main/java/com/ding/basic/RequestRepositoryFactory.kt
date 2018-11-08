@@ -498,7 +498,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         chapter
                     }
                     else -> {
-                        throw EmptyResultSetException("接口返回内容异常！")
+                        throw EmptyResultSetException("接口返回内容异常！: $it : ${chapter.name}")
                     }
                 }
             }

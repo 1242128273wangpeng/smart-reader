@@ -2,6 +2,7 @@ package com.ding.basic.config
 
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.orhanobut.logger.Logger
 
 /**
  * Desc 参数配置类，存放应用运行相关的参数，添加参数注意添加注释
@@ -27,12 +28,15 @@ object ParameterConfig {
     var cityCode = ""
         get() {
             return if (field.isNotEmpty()) {
+                Logger.e("获取CityCode: $field")
                 field
             } else {
                 val value = SPUtils.loadSharedString(SPKey.LOCATION_CITY_CODE)
                 field = if (value.isNotEmpty()) {
+                    Logger.e("获取CityCode SP: $field")
                     value
                 } else {
+                    Logger.e("获取CityCode Default: $field")
                     ""
                 }
                 field
@@ -41,6 +45,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
+                SPUtils.insertSharedString(SPKey.LOCATION_CITY_CODE, value)
             }
         }
 
@@ -63,6 +68,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
+                SPUtils.insertSharedString(SPKey.LOCATION_LATITUDE, value)
             }
         }
 
@@ -85,6 +91,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
+                SPUtils.insertSharedString(SPKey.LOCATION_LONGITUDE, value)
             }
         }
 

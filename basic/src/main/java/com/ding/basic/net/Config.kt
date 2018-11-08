@@ -73,7 +73,8 @@ object Config {
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
 
         MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+        ContentAPI.contentHost = "http://20.20.200.206:8080"
+//        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
 
         MicroAPI.initMicroService()
         ContentAPI.initContentService()
