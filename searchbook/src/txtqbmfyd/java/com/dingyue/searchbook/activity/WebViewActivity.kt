@@ -58,9 +58,12 @@ class WebViewActivity : FrameActivity() {
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_web_view)
-        requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this);
+        requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
         img_back.setOnClickListener { onBackPressed() }
-        img_close.setOnClickListener { finish() }
+        img_close.setOnClickListener {
+            DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_CLOSE)
+            finish()
+        }
         btn_page_favorite.antiShakeClick { clickFavorite() }
         initWebView()
         initWebViewCallback()
