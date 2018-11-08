@@ -126,7 +126,7 @@ class WebViewActivity : FrameActivity() {
             }
             customWebClient?.setLoadingWebViewError {
                 isLoadFinish = true
-                loadingPage?.onErrorVisable()
+                loadingPage?.onErrorVisible("页面加载失败，请稍后再试~")
             }
 
             customWebClient?.setLoadingWebViewFinish {
