@@ -22,11 +22,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
-
-import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.R;
 
@@ -64,6 +63,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
     private ViewPager navigationViewPager;
     private ViewPager.OnPageChangeListener onPageChangeListener;
 
+
     private int scrollState;
 
     private float mTabSize;
@@ -95,9 +95,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
     //滑动控件距离底部高度
     private int indicatorMarginBottom;
 
-    private float indicatorActivityTextSize;
-    private float indicatorInActivityTextSize;
-
+    private boolean clickAble = true;
 
     private StripType stripType;
     private StripGravity stripGravity;
@@ -131,6 +129,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         this(context, attrs, 0);
     }
 
+    @SuppressLint("CustomViewStyleable")
     public NavigationBarStrip(final Context context, final AttributeSet attrs,
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -154,6 +153,8 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
 
         int indicatorColor;
 
+        float indicatorTextSize;
+
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs,
                     R.styleable.NavigationBarStrip);
@@ -165,12 +166,8 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
             indicatorColor = typedArray.getColor(R.styleable.NavigationBarStrip_indicatorColor,
                     Color.parseColor("#4D91D0"));
 
-            indicatorActivityTextSize = typedArray.getDimensionPixelSize(
-                    R.styleable.NavigationBarStrip_indicatorActivityTextSize,
-                    Math.round(DEFAULT_INDICATOR_TEXT_SIZE * scaledDensity));
-
-            indicatorInActivityTextSize = typedArray.getDimensionPixelSize(
-                    R.styleable.NavigationBarStrip_indicatorInActivityTextSize,
+            indicatorTextSize = typedArray.getDimensionPixelSize(
+                    R.styleable.NavigationBarStrip_indicatorTextSize,
                     Math.round(DEFAULT_INDICATOR_TEXT_SIZE * scaledDensity));
 
             indicatorHeight = typedArray.getDimension(
@@ -211,10 +208,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
             indicatorMarginBottom = Math.round(DEFAULT_INDICATOR_MARGIN_BOTTOM * density);
 
             indicatorColor = Color.parseColor("#4D91D0");
-
-            indicatorActivityTextSize = Math.round(DEFAULT_INDICATOR_TEXT_SIZE * scaledDensity);
-            indicatorInActivityTextSize = Math.round(DEFAULT_INDICATOR_TEXT_SIZE * scaledDensity);
-
+            indicatorTextSize = Math.round(DEFAULT_INDICATOR_TEXT_SIZE * scaledDensity);
             indicatorHeight = Math.round(DEFAULT_INDICATOR_WIDTH * density);
             indicatorPadding = Math.round(DEFAULT_INDICATOR_PADDING * density);
 
@@ -231,19 +225,18 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
             indicatorInactiveColor = Color.parseColor("#9B9B9B");
         }
 
+        insertStripColor(indicatorColor);
+        insertTitleSize(indicatorTextSize);
+        insertStripWeight(indicatorHeight);
+        insertStripFactor(indicatorFactor);
+        insertStripType(indicatorType);
+        insertStripGravity(indicatorGravity);
 
-        setStripColor(indicatorColor);
-        setTitleSize(indicatorInActivityTextSize);
-        setStripWeight(indicatorHeight);
-        setStripFactor(indicatorFactor);
-        setStripType(indicatorType);
-        setStripGravity(indicatorGravity);
+        insertCornersRadius(indicatorRadius);
+        insertAnimationDuration(indicatorAnimationDuration);
 
-        setCornersRadius(indicatorRadius);
-        setAnimationDuration(indicatorAnimationDuration);
-
-        setActiveColor(indicatorActiveColor);
-        setInactiveColor(indicatorInactiveColor);
+        insertActiveColor(indicatorActiveColor);
+        insertInactiveColor(indicatorInactiveColor);
 
         valueAnimator.setFloatValues(MIN_FRACTION, MAX_FRACTION);
         valueAnimator.setInterpolator(new LinearInterpolator());
@@ -256,88 +249,89 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
     }
 
 
-    public void addTitle(String title) {
+    public void insertTitle(String title) {
         if (!TextUtils.isEmpty(title)) {
             titles.add(title);
             requestLayout();
         }
     }
 
-    public void setStripColor(final int color) {
+    public void insertStripColor(final int color) {
         stripPaint.setColor(color);
         postInvalidate();
     }
 
-    public void setStripWeight(final float stripWeight) {
-        indicatorHeight = stripWeight;
+    public void insertStripWeight(final float stripHeight) {
+        indicatorHeight = stripHeight;
         requestLayout();
     }
 
-    private void setStripGravity(final int index) {
+    private void insertStripGravity(final int index) {
         switch (index) {
             case StripGravity.TOP_INDEX:
-                setStripGravity(StripGravity.TOP);
+                insertStripGravity(StripGravity.TOP);
                 break;
             case StripGravity.BOTTOM_INDEX:
             default:
-                setStripGravity(StripGravity.BOTTOM);
+                insertStripGravity(StripGravity.BOTTOM);
                 break;
         }
     }
 
-    public void setStripGravity(final StripGravity stripGravity) {
+    public void insertStripGravity(final StripGravity stripGravity) {
         this.stripGravity = stripGravity;
         requestLayout();
     }
 
-    private void setStripType(final int index) {
+    private void insertStripType(final int index) {
         switch (index) {
             case StripType.POINT_INDEX:
-                setStripType(StripType.POINT);
+                insertStripType(StripType.POINT);
                 break;
             case StripType.LINE_INDEX:
             default:
-                setStripType(StripType.LINE);
+                insertStripType(StripType.LINE);
                 break;
         }
     }
 
-    public void setStripType(final StripType stripType) {
+    public void insertStripType(final StripType stripType) {
         this.stripType = stripType;
         requestLayout();
     }
 
-    public void setStripFactor(final float factor) {
+    public void insertStripFactor(final float factor) {
         resizeInterpolator.setFactor(factor);
     }
 
-    public void setActiveColor(final int activeColor) {
+    public void insertActiveColor(final int activeColor) {
         indicatorActiveColor = activeColor;
         postInvalidate();
     }
 
-    public void setInactiveColor(final int inactiveColor) {
+    public void insertInactiveColor(final int inactiveColor) {
         indicatorInactiveColor = inactiveColor;
         postInvalidate();
     }
 
-    public void setCornersRadius(final float cornersRadius) {
+    public void insertCornersRadius(final float cornersRadius) {
         indicatorRadius = cornersRadius;
         postInvalidate();
     }
 
-    public void setAnimationDuration(final int animationDuration) {
+    public void insertAnimationDuration(final int animationDuration) {
         this.indicatorAnimationDuration = animationDuration;
         valueAnimator.setDuration(animationDuration);
+        valueAnimator.setInterpolator(new AccelerateInterpolator());
         resetScroller();
     }
 
-    public void setTitleSize(final float titleSize) {
-        titlePaint.setTextSize((int) titleSize);
+    public void insertTitleSize(final float titleSize) {
+        titlePaint.setTextSize(titleSize);
         postInvalidate();
     }
 
-    public void setViewPager(final ViewPager viewPager) {
+    public void insertViewPager(final ViewPager viewPager) {
         if (viewPager == null) {
             mIsViewPagerMode = false;
             return;
@@ -346,9 +340,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         if (viewPager.equals(navigationViewPager)) {
             return;
         }
-        if (navigationViewPager != null) {
-            navigationViewPager.setOnPageChangeListener(null);
-        }
+
         if (viewPager.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not provide adapter instance.");
         }
@@ -375,7 +367,8 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         }
     }
 
-    public void setOnPageChangeListener(final ViewPager.OnPageChangeListener onPageChangeListener) {
+    public void insertOnPageChangeListener(
+            final ViewPager.OnPageChangeListener onPageChangeListener) {
         this.onPageChangeListener = onPageChangeListener;
     }
 
@@ -387,6 +380,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         if (valueAnimator.isRunning()) {
             return;
         }
+
         if (titles.size() == 0) {
             return;
         }
@@ -417,6 +411,7 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         }
 
         mStartStripX = mStripLeft;
+
         mEndStripX = (mIndex * mTabSize) + (stripType == StripType.POINT ? mTabSize * 0.5F : 0.0F);
 
         if (force) {
@@ -443,22 +438,29 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         updateIndicatorPosition(MIN_FRACTION);
     }
 
-    private void updateIndicatorPosition(final float fraction) {
-        mFraction = fraction;
+    public void updateIndicatorPosition(final float mFraction) {
+        this.mFraction = mFraction;
 
-        mStripLeft = mStartStripX + (resizeInterpolator.getResizeInterpolation(fraction,
+        mStripLeft = mStartStripX + (resizeInterpolator.loadResizeInterpolation(mFraction,
                 mIsResizeIn) * (mEndStripX - mStartStripX));
 
         mStripRight =
                 (mStartStripX + (stripType == StripType.LINE ? mTabSize : indicatorHeight)) + (
-                        resizeInterpolator.getResizeInterpolation(fraction, !mIsResizeIn) * (
-                                mEndStripX - mStartStripX));
+                        resizeInterpolator.loadResizeInterpolation(mFraction, !mIsResizeIn) * (
+                                mEndStripX
+                                        - mStartStripX));
 
         postInvalidate();
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(final MotionEvent event) {
+
+        if (!clickAble) {
+            return false;
+        }
+
         if (valueAnimator.isRunning()) {
             return true;
         }
@@ -479,9 +481,13 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
                     navigationViewPager.setCurrentItem((int) (event.getX() / mTabSize), true);
                     break;
                 }
-                if (mIsActionDown) break;
+                if (mIsActionDown) {
+                    break;
+                }
             case MotionEvent.ACTION_UP:
-                if (mIsActionDown) setTabIndex((int) (event.getX() / mTabSize));
+                if (mIsActionDown) {
+                    setTabIndex((int) (event.getX() / mTabSize));
+                }
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_OUTSIDE:
             default:
@@ -493,19 +499,21 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         return true;
     }
 
-    @SuppressLint("DrawAllocation")
     @Override
+    @SuppressLint("DrawAllocation")
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        final float width = MeasureSpec.getSize(widthMeasureSpec);
-        final float height = MeasureSpec.getSize(heightMeasureSpec);
+        int width = View.MeasureSpec.getSize(widthMeasureSpec);
+        int height = View.MeasureSpec.getSize(heightMeasureSpec);
 
-        bounds.set(0.0F, 0.0F, width, height);
+        bounds.set(0.0f, 0.0f, width, height);
 
-        if (titles.size() == 0 || width == 0 || height == 0) return;
+        if (titles.size() == 0 || width == 0f || height == 0f) {
+            return;
+        }
 
-        mTabSize = width / (float) titles.size();
+        mTabSize = width / titles.size();
 
         if (isInEditMode() || !mIsViewPagerMode) {
             mIsSetIndexFromTabBar = true;
@@ -514,7 +522,9 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
 
             mStartStripX =
                     (mIndex * mTabSize) + (stripType == StripType.POINT ? mTabSize * 0.5F : 0.0F);
+
             mEndStripX = mStartStripX;
+
             updateIndicatorPosition(MAX_FRACTION);
         }
     }
@@ -526,7 +536,8 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
                 stripGravity == StripGravity.BOTTOM ? bounds.height() - indicatorHeight : 0.0F,
                 mStripRight - (stripType == StripType.POINT ? indicatorHeight * 0.5F : 0.0F)
                         - indicatorPadding,
-                stripGravity == StripGravity.BOTTOM ? bounds.height() : indicatorHeight);
+                stripGravity == StripGravity.BOTTOM ? bounds.height() - indicatorMarginBottom
+                        : indicatorHeight);
 
         if (indicatorRadius == 0) {
             canvas.drawRect(stripBounds, stripPaint);
@@ -544,8 +555,8 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
                     (bounds.height() - indicatorHeight) * 0.5F + titleBounds.height() * 0.5F
                             - titleBounds.bottom;
 
-            final float interpolation = resizeInterpolator.getResizeInterpolation(mFraction, true);
-            final float lastInterpolation = resizeInterpolator.getResizeInterpolation(mFraction,
+            final float interpolation = resizeInterpolator.loadResizeInterpolation(mFraction, true);
+            final float lastInterpolation = resizeInterpolator.loadResizeInterpolation(mFraction,
                     false);
 
             if (mIsSetIndexFromTabBar) {
@@ -575,25 +586,15 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
     private void updateCurrentTitle(final float interpolation) {
         titlePaint.setColor((int) argbEvaluator.evaluate(interpolation, indicatorInactiveColor,
                 indicatorActiveColor));
-
-        titlePaint.setTextSize(
-                (int) argbEvaluator.evaluate(interpolation, (int) indicatorInActivityTextSize,
-                        (int) indicatorActivityTextSize));
     }
 
     private void updateLastTitle(final float lastInterpolation) {
         titlePaint.setColor((int) argbEvaluator.evaluate(lastInterpolation, indicatorActiveColor,
                 indicatorInactiveColor));
-
-        titlePaint.setTextSize(
-                (int) argbEvaluator.evaluate(lastInterpolation, (int) indicatorActivityTextSize,
-                        (int) indicatorInActivityTextSize));
     }
 
     private void updateInactiveTitle() {
         titlePaint.setColor(indicatorInactiveColor);
-
-        titlePaint.setTextSize((int) indicatorInActivityTextSize);
     }
 
     @Override
@@ -658,25 +659,25 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
 
         private int index;
 
-        SavedState(Parcelable superState) {
-            super(superState);
+        SavedState(Parcelable parcelable) {
+            super(parcelable);
         }
 
-        private SavedState(Parcel in) {
-            super(in);
-            index = in.readInt();
+        private SavedState(Parcel parcel) {
+            super(parcel);
+            index = parcel.readInt();
         }
 
         @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(index);
+        public void writeToParcel(Parcel parcel, int flags) {
+            super.writeToParcel(parcel, flags);
+            parcel.writeInt(index);
         }
 
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
             @Override
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
+            public SavedState createFromParcel(Parcel parcel) {
+                return new SavedState(parcel);
             }
 
             @Override
@@ -718,39 +719,37 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
     }
 
     private static class ResizeInterpolator implements Interpolator {
-        private float mFactor;
-        private boolean mResizeIn;
+        private float factor;
+        private boolean resize;
 
         void setFactor(final float factor) {
-            mFactor = factor;
+            this.factor = factor;
         }
 
         @Override
         public float getInterpolation(final float input) {
-            if (mResizeIn) {
-                return (float) (1.0F - Math.pow((1.0F - input), 2.0F * mFactor));
+            if (resize) {
+                return (float) (1.0F - Math.pow((1.0F - input), 2.0F * factor));
             } else {
-                return (float) (Math.pow(input, 2.0F * mFactor));
+                return (float) (Math.pow(input, 2.0F * factor));
             }
         }
 
-        float getResizeInterpolation(final float input, final boolean resizeIn) {
-            mResizeIn = resizeIn;
+        float loadResizeInterpolation(final float input, final boolean resizeIn) {
+            resize = resizeIn;
             return getInterpolation(input);
         }
     }
 
     private enum StripType {
         LINE, POINT;
-
         private final static int LINE_INDEX = 0;
         private final static int POINT_INDEX = 1;
     }
 
     private enum StripGravity {
-        BOTTOM, TOP;
-
-        private final static int BOTTOM_INDEX = 1;
+        TOP, BOTTOM;
         private final static int TOP_INDEX = 0;
+        private final static int BOTTOM_INDEX = 1;
     }
 }
