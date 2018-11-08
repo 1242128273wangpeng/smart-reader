@@ -25,6 +25,7 @@ import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.activity_base_search.*
 import kotlinx.android.synthetic.main.fragment_search_result.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
@@ -134,8 +135,12 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                 isRunTextWatcher = true
                 searchResultFragment.isLoading = false
                 showEditCursor(true)
-                showInputEditClickEvent()
+                if (!inputEditText.isFocusable) {
+                    showInputEditClickEvent()//搜索框无焦点的时候调用
+                }
                 searchResultFragment.resetResult()
+
+
             }
             R.id.search_result_focus -> {
                 focusTextView.visibility = View.GONE
@@ -299,6 +304,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
 
         showFragment(suggestFragment)
         suggestFragment.obtainKeyWord(inputEditText.text.toString())
+
     }
 
     /**

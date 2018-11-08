@@ -10,16 +10,15 @@ import kotlinx.android.synthetic.qbmfkkydq.dialog_transform_read.*
 import net.lzbook.kit.ui.widget.MyDialog
 
 /**
- * Desc 封面页转码阅读
- * Author zhenxiang
- * Mail zhenxiang_lin@dingyuegroup.cn
- * Date 2018\6\13 0013 16:06
+ * Function：书籍封面转码阅读提示框
+ *
+ * Created by JoannChen on 2018/6/16 0016 10:24
+ * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 class TransformReadDialog(val activity: Activity) : MyDialog(activity, R.layout.dialog_transform_read, Gravity.CENTER) {
 
     private var cancelListener: (() -> Unit)? = null
     private var continueListener: (() -> Unit)? = null
-
 
     init {
 
@@ -49,7 +48,7 @@ class TransformReadDialog(val activity: Activity) : MyDialog(activity, R.layout.
             ckb_not_show_next_time.isChecked = !oldChecked
         }
 
-        ckb_not_show_next_time.isChecked = false
+        ckb_not_show_next_time.isChecked = true
     }
 
     fun insertCancelListener(listener: () -> Unit) {

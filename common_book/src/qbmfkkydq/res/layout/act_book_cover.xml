@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/tools"
+                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
@@ -152,47 +153,38 @@
                 <!--——————————————————————书籍封面介绍结束——————————————————————-->
 
                 <!--——————————————————————内容简介——————————————————————-->
-                <FrameLayout
-                    android:id="@+id/fl_des_layout"
+                <net.lzbook.kit.ui.widget.ExpandTextView
+                    android:id="@+id/book_cover_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rl1"
                     android:layout_marginTop="17dp"
+                    android:orientation="vertical"
                     android:paddingLeft="16dp"
-                    android:paddingRight="16dp">
+                    android:paddingRight="16dp"
+                    expandableTextView:animAlphaStart="1"
+                    expandableTextView:maxCollapsedLines="4">
 
                     <TextView
-                        android:id="@+id/txt_book_des"
+                        android:id="@+id/expandable_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="10dp"
-                        android:maxLines="4"
-                        android:textColor="#5D646E"
-                        android:textSize="14sp"
-                        tools:text="一朝穿越，穆长安觉得自己简直是倒霉透顶，居然穿越成一滴挂在槐树上的眼泪。
-好不容易幻化成人形，虽然是个美人胚子，却成了睿王的第五任冲喜新娘。"/>
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:lineSpacingMultiplier="1.5"
+                        android:text="简介"
+                        android:textColor="@color/cover_info_text_color"
+                        android:textSize="13sp"/>
 
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="@dimen/dimen_margin_20"
-                        android:layout_gravity="bottom|right"
-                        android:layout_marginBottom="@dimen/dimen_margin_12"
-                        android:background="@drawable/book_cover_more_bg">
-
-                        <ImageView
-                            android:id="@+id/iv_bookdes_icon"
-                            android:layout_width="16dp"
-                            android:layout_height="10dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="3dp"
-                            android:padding="3dp"
-                            android:scaleType="center"
-                            android:src="@drawable/bookcover_icon_down"/>
-                    </RelativeLayout>
-
-                </FrameLayout>
-
+                    <ImageView
+                        android:id="@+id/expand_collapse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:paddingBottom="1dp"
+                        android:src="@drawable/bookcover_icon_down"/>
+                </net.lzbook.kit.ui.widget.ExpandTextView>
 
                 <!--——————————————————————内容简介结束——————————————————————-->
 
@@ -202,7 +194,7 @@
                     android:id="@+id/flowLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/fl_des_layout"
+                    android:layout_below="@id/book_cover_description"
                     android:layout_marginTop="16dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
@@ -308,10 +300,10 @@
             android:id="@+id/img_bottom_shadow"
             android:layout_width="match_parent"
             android:layout_height="10dp"
+            android:layout_above="@id/ll_nav_layout"
             android:layout_marginTop="-10dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
-            android:layout_above="@id/ll_nav_layout"
             android:src="@drawable/bottom_shadow_bg"/>
 
         <LinearLayout
