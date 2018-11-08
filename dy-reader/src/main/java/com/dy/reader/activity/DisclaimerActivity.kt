@@ -1,21 +1,18 @@
 package com.dy.reader.activity
 
-import android.graphics.Color
-import android.os.Build
+import android.graphics.Bitmap
+import android.net.http.SslError
 import android.os.Bundle
 import android.os.SystemClock
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.webkit.WebSettings
+import android.webkit.*
 import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
 import com.dy.reader.R
-import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.activity.base.FrameActivity
@@ -26,7 +23,6 @@ import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.web.CustomWebClient
 import java.util.*
 
 /**
@@ -38,22 +34,18 @@ import java.util.*
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : FrameActivity() {
 
-    private var customWebClient: CustomWebClient? = null
-
-    private var loadingPage: LoadingPage? = null
-
+    var loadingPage: LoadingPage? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_disclaimer)
+
 
         // 阅读页转码声明
         val isFromReadingPage = intent.getBooleanExtra(RouterUtil.FROM_READING_PAGE, false)
         if (isFromReadingPage) {
             txt_title.text = resources.getString(R.string.translate_code)
             txt_content.text = resources.getString(R.string.translate_code_description)
-            sl_disclaimer.visibility = View.VISIBLE
-            web_disclaimer.visibility = View.GONE
         }
 
 
@@ -62,8 +54,7 @@ class DisclaimerActivity : FrameActivity() {
         if (isServicePolicy) {
             txt_title.text = resources.getString(R.string.login_service_policy)
             txt_content.text = resources.getString(R.string.service_policy_description)
-            sl_disclaimer.visibility = View.VISIBLE
-            web_disclaimer.visibility = View.GONE
+
         }
 
         // 登录页隐私条款
@@ -71,8 +62,7 @@ class DisclaimerActivity : FrameActivity() {
         if (isPrivacyPolicy) {
             txt_title.text = resources.getString(R.string.login_privacy_policy)
             txt_content.text = resources.getString(R.string.privacy_policy_description)
-            sl_disclaimer.visibility = View.VISIBLE
-            web_disclaimer.visibility = View.GONE
+
         }
 
         // 使用协议页面
@@ -80,63 +70,40 @@ class DisclaimerActivity : FrameActivity() {
         if (isFormDisclaimerPage) {
             txt_title.text = resources.getString(R.string.disclaimer_statement)
             web_disclaimer.visibility = View.VISIBLE
-            sl_disclaimer.visibility = View.GONE
-
-            web_disclaimer?.setLayerType(View.LAYER_TYPE_NONE, null)
-
-            web_disclaimer.setBackgroundColor(Color.TRANSPARENT)
 
             loadingPage = LoadingPage(this, rl_disclaimer_main, LoadingPage.setting_result)
 
-            if (web_disclaimer != null) {
-                customWebClient = CustomWebClient(this, web_disclaimer)
-            }
+            web_disclaimer.webViewClient = object : WebViewClient() {
+                override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,
+                                                error: SslError?) {
+                    handler?.proceed()
+                }
 
-            customWebClient?.initWebViewSetting()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                web_disclaimer?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
+                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                    super.onReceivedError(view, request, error)
+                    loadingPage?.onErrorVisable()
+                }
 
-            web_disclaimer?.webViewClient = customWebClient
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    loadingPage?.onSuccess()
 
-            customWebClient?.setLoadingWebViewStart { url -> Logger.i("LoadStartedAction: $url") }
-
-            customWebClient?.setLoadingWebViewError {
-                Logger.i("LoadErrorAction")
-                loadingPage?.onErrorVisable()
-            }
-
-            customWebClient?.setLoadingWebViewFinish {
-                Logger.i("LoadFinishAction")
-                loadingPage?.onSuccessGone()
-            }
-
-            if (loadingPage != null) {
-                loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-
-                    if (NetWorkUtils.isNetworkAvailable(this)) {
-                        customWebClient?.initParameter()
-                        web_disclaimer?.reload()
-                    } else {
-                        loadingPage?.onErrorVisable()
-                    }
-                })
+                }
             }
 
             if (NetWorkUtils.isNetworkAvailable(this)) {
-
-                if (customWebClient != null) {
-                    customWebClient?.initParameter()
-                }
-
                 // 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
-//                web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
-                web_disclaimer.loadUrl("https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/protocol/protocol.html")
-
+                web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
             } else {
                 loadingPage?.onErrorVisable()
             }
+
+            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+                web_disclaimer.loadUrl("about:blank")
+                web_disclaimer?.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+            })
+
             // 修改字体大小
             val fontSize = resources.getDimension(R.dimen.text_size_small)
             web_disclaimer.settings.defaultFontSize = fontSize.toInt()
@@ -225,34 +192,5 @@ class DisclaimerActivity : FrameActivity() {
     override fun onPause() {
         super.onPause()
         StatService.onPause(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        web_disclaimer?.clearCache(false)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            if (web_disclaimer?.parent != null) {
-                (web_disclaimer?.parent as ViewGroup).removeView(web_disclaimer)
-            }
-
-            web_disclaimer?.stopLoading()
-            web_disclaimer?.settings?.javaScriptEnabled = false
-            web_disclaimer?.clearHistory()
-            web_disclaimer?.removeAllViews()
-            web_disclaimer?.destroy()
-        } else {
-            web_disclaimer?.stopLoading()
-            web_disclaimer?.settings?.javaScriptEnabled = false
-            web_disclaimer?.clearHistory()
-            web_disclaimer?.removeAllViews()
-            web_disclaimer?.destroy()
-
-            if (web_disclaimer?.parent != null) {
-                (web_disclaimer?.parent as ViewGroup).removeView(web_disclaimer)
-            }
-        }
     }
 }
