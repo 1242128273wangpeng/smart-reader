@@ -99,6 +99,47 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    fun requestDefaultBooks(firstType: String, secondType: String, requestSubscriber: RequestSubscriber<Boolean>) {
+        InternetRequestRepository.loadInternetRequestRepository().requestDefaultBooks(firstType, secondType)!!
+                .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
+                .doOnNext {
+                    if (it != null && it.checkPrivateKeyExpire()) {
+                        requestAuthAccess {
+                            if (it) {
+                                requestDefaultBooks(firstType, secondType, requestSubscriber)
+                            }
+                        }
+                    } else if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
+                        for (book in it.data?.coverList!!) {
+                            if (!TextUtils.isEmpty(book.book_id)) {
+
+                                val localBook = LocalRequestRepository.loadLocalRequestRepository(context).checkBookSubscribe(book.book_id)
+
+                                if (localBook == null) {
+                                    LocalRequestRepository.loadLocalRequestRepository(context).insertBook(book)
+                                }
+                            }
+                        }
+                    }
+                }
+                .subscribe({ result ->
+                    if (result != null) {
+                        if (result.checkResultAvailable() && result.data?.coverList != null && result.data?.coverList!!.isNotEmpty()) {
+                            requestSubscriber.onNext(true)
+                        } else {
+                            requestSubscriber.onError(Throwable("获取默认书籍异常！"))
+                        }
+                    } else {
+                        requestSubscriber.onError(Throwable("获取默认书籍异常！"))
+                    }
+                }, { throwable ->
+                    throwable.printStackTrace()
+                    requestSubscriber.onError(throwable)
+                }, {
+                    Logger.v("请求默认书籍完成！")
+                })
+    }
+
     fun requestApplicationUpdate(parameters: Map<String, String>, requestSubscriber: RequestSubscriber<ApplicationUpdate>) {
         internetRepository.requestApplicationUpdate(parameters)!!
                 .compose(SchedulerHelper.schedulerIOHelper<JsonObject>())
@@ -1542,6 +1583,32 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                 })
     }
 
+    /**
+     * 精选（推荐）首页 分类标签数据接口
+     */
+     fun requestRecommendCateList(packageName: String, categoryNames: String, requestSubscriber: RequestSubscriber<java.util.ArrayList<RecommendCateListBean>>) {
+        InternetRequestRepository.loadInternetRequestRepository().requestRecommendCateList(packageName, categoryNames)!!
+                .compose(SchedulerHelper.schedulerHelper())
+                .subscribeWith(object : ResourceSubscriber<BasicResultV4<java.util.ArrayList<RecommendCateListBean>>>() {
+                    override fun onNext(result: BasicResultV4<java.util.ArrayList<RecommendCateListBean>>?) {
+                        if (result != null && result.checkResultAvailable()) {
+                            requestSubscriber.onNext(result.data)
+                        } else {
+                            requestSubscriber.onError(Throwable("获取精选推荐分类标签书籍接口请求异常！"))
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        requestSubscriber.onError(throwable)
+                    }
+
+                    override fun onComplete() {
+                        requestSubscriber.onComplete()
+                    }
+                })
+    }
+
+
 
     /**
      * 搜索无结果页  订阅
@@ -1895,35 +1962,79 @@ class RequestRepositoryFactory private constructor(private val context: Context)
     }
 
     fun requestAuthAccessSync(): Boolean {
+        try {
         val result = internetRepository.requestAuthAccessSync().execute().body()
 
-        if (result != null && result.checkResultAvailable()) {
-            Logger.e("鉴权请求结果正常！")
+            if (result != null && result.checkResultAvailable()) {
+                Logger.e("鉴权请求结果正常！")
 
-            val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
+                val message = AESUtil.decrypt(result.data!!, Config.loadAccessKey())
 
-            if (message != null && message.isNotEmpty()) {
-                val access = Gson().fromJson(message, Access::class.java)
-                if (access != null) {
-                    if (access.publicKey != null) {
-                        Config.insertPublicKey(access.publicKey!!)
+                if (message != null && message.isNotEmpty()) {
+                    val access = Gson().fromJson(message, Access::class.java)
+                    if (access != null) {
+                        if (access.publicKey != null) {
+                            Config.insertPublicKey(access.publicKey!!)
+                        }
+
+                        if (access.privateKey != null) {
+                            Config.insertPrivateKey(access.privateKey!!)
+                        }
+
+                        if (access.expire > 0 ) {
+                            Config.insertAuthExpire(access.expire.toLong())
+                        }
                     }
-
-                    if (access.privateKey != null) {
-                        Config.insertPrivateKey(access.privateKey!!)
-                    }
-
-                    if (access.expire > 0 ) {
-                        Config.insertAuthExpire(access.expire.toLong())
-                    }
+                    Logger.e("鉴权结果PublicKey: " + access.publicKey + " : " + access.privateKey)
                 }
-            }
 
-            return true
-        } else {
-            Logger.e("鉴权请求结果异常！")
+                return true
+            } else {
+                Logger.e("鉴权请求结果异常！")
+                return false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
             return false
         }
+    }
+
+    /**
+     * 下载语音插件
+     */
+    fun downloadVoicePlugin(): Flowable<ResponseBody> {
+        return InternetRequestRepository.loadInternetRequestRepository().downloadVoicePlugin()
+    }
+
+    /**
+     * 获取兴趣列表
+     */
+    fun getInterestList(requestSubscriber: RequestSubscriber<BasicResult<List<Interest>>>) {
+        InternetRequestRepository.loadInternetRequestRepository().getInterest()!!
+                .compose(SchedulerHelper.schedulerHelper<BasicResult<List<Interest>>>())
+                .subscribe({
+                    if (it != null) {
+                        when {
+                            it.checkPrivateKeyExpire() -> requestAuthAccess {
+                                if (it) {
+                                    getInterestList(requestSubscriber)
+                                }
+                            }
+                            it.checkResultAvailable() -> {
+                                requestSubscriber.requestResult(it)
+                            }
+                        }
+                    } else {
+                        Logger.e(" 获取兴趣列表结果异常！")
+                        requestSubscriber.requestError("获取兴趣列表结果异常")
+                    }
+                }, { throwable ->
+                    throwable.printStackTrace()
+                    requestSubscriber.requestError(throwable.toString())
+                    Logger.e(" 获取兴趣列表异常: " + throwable.toString())
+                }, {
+                    Logger.e(" 获取兴趣列表完成！")
+                })
     }
 
     fun downloadFont(fontName: String): Flowable<ResponseBody> {

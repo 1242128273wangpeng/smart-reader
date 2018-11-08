@@ -31,6 +31,7 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.fragment.BookStoreFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.view.HomeView
@@ -83,9 +84,30 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
-    private var recommendFragment: WebViewFragment? = null
-    private var rankingFragment: WebViewFragment? = null
-    private var categoryFragment: WebViewFragment? = null
+    private val bookStoreFragment: BookStoreFragment by lazy {
+        val fragment = BookStoreFragment()
+        fragment
+    }
+
+    private val rankingFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "rank")
+        val uri = RequestService.WEB_RANKING.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
+        fragment
+    }
+
+    private val categoryFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "category")
+        val uri = RequestService.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
+        fragment
+    }
 
     private val pushSettingDialog: PushSettingDialog by lazy {
         val dialog = PushSettingDialog(this)
@@ -96,6 +118,10 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
         lifecycle.addObserver(dialog)
         dialog
+    }
+
+    private val bannerDialog: BannerDialog by lazy {
+        BannerDialog(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +146,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         AndroidLogStorage.getInstance().clear()
 
-
         homePresenter.initDownloadService()
 
         HomeLogger.uploadHomeBookListInformation()
@@ -128,6 +153,8 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
         }
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onResume() {
@@ -172,9 +199,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         MediaLifecycle.onDestroy()
         try {
             bookShelfFragment = null
-            recommendFragment = null
-            rankingFragment = null
-            categoryFragment = null
             homeAdapter = null
             Glide.get(this).clearMemory()
             setContentView(R.layout.common_empty)
@@ -182,6 +206,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             exception.printStackTrace()
         }
         AppUtils.fixInputMethodManagerLeak(applicationContext)
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onBackPressed() {
@@ -230,28 +255,23 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         ll_bottom_tab_recommend.setOnClickListener {
             this.changeHomePagerIndex(1)
-            recommendFragment?.setTitle("推荐", 2);
-            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "recommend")
-            HomeLogger.uploadHomeRecommendSelected()
+            HomeLogger.uploadHomeStoreSelected()
         }
 
         ll_bottom_tab_ranking.setOnClickListener {
             this.changeHomePagerIndex(2)
-            SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "top")
-            rankingFragment?.setTitle("榜单", 3);
+            rankingFragment.setTitle("榜单", 3)
             HomeLogger.uploadHomeRankSelected()
         }
 
         ll_bottom_tab_category.setOnClickListener {
             this.changeHomePagerIndex(3)
             SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "class")
-            categoryFragment?.setTitle("分类", 4);
+            categoryFragment.setTitle("分类", 4)
             HomeLogger.uploadHomeCategorySelected()
         }
 
         setMenuTitleMargin()
-
-
     }
 
     private fun initGuide() {
@@ -418,7 +438,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                 intent.putExtra("url", url)
                 intent.putExtra("title", name)
                 startActivity(intent)
-                AppLog.e(TAG, "EnterAnotherWeb")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -525,36 +544,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment
                 }
                 1 -> {
-                    if (recommendFragment == null) {
-                        recommendFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", "recommend")
-                        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        recommendFragment!!.setArguments(bundle)
-                    }
-                    recommendFragment
+                    bookStoreFragment
                 }
                 2 -> {
-                    if (rankingFragment == null) {
-                        rankingFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", "rank")
-                        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        rankingFragment!!.arguments = bundle
-                    }
                     rankingFragment
                 }
                 3 -> {
-                    if (categoryFragment == null) {
-                        categoryFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", "category")
-                        val uri = RequestService.WEB_CATEGORY_V3.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        categoryFragment!!.arguments = bundle
-                    }
                     categoryFragment
                 }
                 else -> null
@@ -638,6 +633,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
     }
 
     override fun changeDrawerLayoutState() {
+
     }
 
 
@@ -650,6 +646,22 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         }
     }
 
+    @Subscribe(sticky = true)
+    fun onReceiveEvent(type: String) {
+        if (type != EVENT_UPDATE_TAG) return
+
+        val udid = OpenUDID.getOpenUDIDInContext(this)
+        PushAgent.getInstance(this)
+                .updateTags(this, udid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(onNext = {
+                    loge("活动弹窗图片地址: $it")
+                    bannerDialog.show(it)
+                }, onError = {
+                    it.printStackTrace()
+                })
+    }
 
     companion object {
         private const val BACK = 0x80

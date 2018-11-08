@@ -242,7 +242,7 @@ abstract class AbsGLAnimation(val glSurfaceView: GLSurfaceView) : IGLAnimation {
         }
 
 
-        val dx = x - downPoint.x
+//        val dx = x - downPoint.x
 
 //        ToastUtils.showToastNoRepeat("触发结束")
         val useVelocity = Math.abs(xVelocity) > AppHelper.MIN_FLYING_VELOCITY
@@ -309,46 +309,50 @@ abstract class AbsGLAnimation(val glSurfaceView: GLSurfaceView) : IGLAnimation {
             else -> {
 
 
-                originPoint.set(width.toFloat(), 0f)
-                currentPoint.set(width.toFloat(), 0f)
+                if (!useVelocity) {
 
-                if (x >= width / 2 || ReaderSettings.instance.isFullScreenRead) {
+                    originPoint.set(width.toFloat(), 0f)
+                    currentPoint.set(width.toFloat(), 0f)
 
-                    shouldUseEvent = PageManager.isReadyForward()
+
+                    if (x >= width / 2 || ReaderSettings.instance.isFullScreenRead) {
+
+                        shouldUseEvent = PageManager.isReadyForward()
+
+                        if (shouldUseEvent) {
+                            targetPointF.x = 0 - width * getMargin()
+                            targetPointF.y = 0F
+
+                            status = Status.FLYING_TO_LEFT
+
+                            onPageForward()
+                        } else if (PageManager.currentPage.position.group == ReaderStatus.chapterCount - 1
+                                && PageManager.currentPage.position.index == PageManager.currentPage.position.groupChildCount - 1) {
+
+                            EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.GO_TO_BOOKEND))
+                        }
+                    } else {
+
+                        shouldUseEvent = PageManager.isReadyBack()
+
+
+                        if (shouldUseEvent) {
+
+                            targetPointF.x = width + width.toFloat()
+                            targetPointF.y = 0F
+
+                            status = Status.FLYING_TO_RIGHT
+
+                            onPageBack()
+                        }
+                    }
 
                     if (shouldUseEvent) {
-
-                        targetPointF.x = 0 - width * getMargin()
-                        targetPointF.y = 0F
-
-                        status = Status.FLYING_TO_LEFT
-
-                        onPageForward()
-                    } else if (PageManager.currentPage.position.group == ReaderStatus.chapterCount - 1
-                            && PageManager.currentPage.position.index == PageManager.currentPage.position.groupChildCount - 1) {
-
-                        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.GO_TO_BOOKEND))
-                    }
-                } else {
-
-                    shouldUseEvent = PageManager.isReadyBack()
-
-                    if (shouldUseEvent) {
-
-                        targetPointF.x = width + width.toFloat()
-                        targetPointF.y = 0F
-
-                        status = Status.FLYING_TO_RIGHT
-
-                        onPageBack()
-                    }
-                }
-
-                if (shouldUseEvent) {
-                    onConfirmOritation()
+                        onConfirmOritation()
 //                    AppHelper.runInMain {
 //                        glSurfaceView.playSoundEffect(SoundEffectConstants.CLICK)
 //                    }
+                    }
                 }
 
             }

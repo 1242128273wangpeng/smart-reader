@@ -101,7 +101,11 @@ class AndroidLogStorage {
             LocalLog.MINORITY -> {//直接存入数据库
                 dbSingleThread.execute {
                     AppLog.e(TAG, "store 1 ${LocalLog.MINORITY} logs")
-                    localLogDao?.insertOrReplace(localLog)
+                    try {
+                        localLogDao?.insertOrReplace(localLog)
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
                     if (!isConsumeMinority) {
                         isConsumeMinority = true
                         localLogDao?.consume(LocalLog.MINORITY)

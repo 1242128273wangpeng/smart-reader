@@ -1,6 +1,7 @@
 package com.dy.reader.view
 
 import android.content.Context
+import android.view.View
 import android.view.WindowManager
 
 import com.dy.reader.R
@@ -22,11 +23,13 @@ class ReaderHeaderMorePopup(context: Context, layout: Int = R.layout.popup_reade
 
     var startFeedbackListener: (() -> Unit)? = null
 
-    var startBookDetailListener: (() -> Unit)? = null
+    var startBookMarkListener: (() -> Unit)? = null
 
     init {
 
         contentView.ll_header_more_content.requestFocus()
+
+        popupWindow.isFocusable = true
 
         contentView.txt_reader_change_source.setOnClickListener {
             changeSourceListener?.invoke()
@@ -36,12 +39,16 @@ class ReaderHeaderMorePopup(context: Context, layout: Int = R.layout.popup_reade
             startFeedbackListener?.invoke()
         }
 
-        contentView.txt_reader_book_detail.setOnClickListener {
-            startBookDetailListener?.invoke()
+        contentView.txt_reader_book_mark.setOnClickListener {
+            startBookMarkListener?.invoke()
         }
     }
 
     fun insertBookmarkContent(string: String) {
         contentView.txt_reader_feedback.text = string
+    }
+
+    fun show(view: View) {
+        showAsDropDown(view)
     }
 }

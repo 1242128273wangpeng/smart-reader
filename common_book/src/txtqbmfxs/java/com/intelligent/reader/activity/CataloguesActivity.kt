@@ -48,6 +48,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import java.util.concurrent.Callable
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  * Function：小说目录页
@@ -283,6 +285,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(eventBookmark: EventBookmark) {
         if (eventBookmark.type == EventBookmark.type_delete) {
             AppLog.e(TAG, "eventBookmark:" + eventBookmark.bookmark.id + " name:" + eventBookmark.bookmark.chapter_name)
@@ -625,7 +628,6 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     }
 
     override fun changeDownloadButtonStatus() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
+    }
 }

@@ -49,6 +49,7 @@ public class StartLogClickUtil {
     public static final String ACTION_HOME_BOOK_LIST = "BOOKLIST";
     public static final String ACTION_HOME_BOOK_SHELF = "BOOKSHELF";
     public static final String ACTION_HOME_RECOMMEND = "RECOMMEND";
+    public static final String ACTION_HOME_BOOKSTORE = "BOOKSTORE";
     public static final String ACTION_HOME_TOP = "TOP";
     public static final String ACTION_HOME_CLASS = "CLASS";
     public static final String ACTION_HOME_PERSONAL = "PERSONAL";
@@ -370,6 +371,13 @@ public class StartLogClickUtil {
     public static final String QG_TJY_BOOKCLICK = "BOOKCLICK";//点击搜索
     public static final String QG_TJY_MORE = "MORE";//点击搜索
 
+    //精选玄幻
+    public static final String XUANHUANRECOMMEND_PAGE = "XUANHUANRECOMMEND";//精选玄幻
+    public static final String CITYLOVERECOMMEND_PAGE = "CITYLOVERECOMMEND";//精选现代
+    public static final String FINISHRECOMMEND_PAGE = "FINISHRECOMMEND";//精选完结
+    public static final String SEQUENCE = "SEQUENCE";//点击筛选
+
+
     //青果榜单页
     public static final String QG_BDY_MODULEEXPOSE = "MODULEEXPOSE";//模块露出
     public static final String QG_BDY_BOOKEXPOSE = "BOOKEXPOSE";//各书籍位置露出
@@ -377,7 +385,6 @@ public class StartLogClickUtil {
     public static final String QG_BDY_BOOKCLICK = "BOOKCLICK";//点击搜索
     public static final String QG_BDY_MORE = "MORE";//点击搜索
     public static final String QG_SWITCHTAB = "SWITCHTAB";//点击搜索
-
 
 
     //青果分类页
@@ -395,6 +402,17 @@ public class StartLogClickUtil {
 
 
     public static final String DROPDOWN = "DROPDOWN";//下拉刷新
+
+
+    public static final String PAGE_BOOKSTORE = "BOOKSTORE";
+    public static final String ACTION_RECOMMEND = "RECOMMEND";
+    public static final String ACTION_MALE = "MALE";
+    public static final String ACTION_FEMALE = "FEMALE";
+    public static final String ACTION_FINISH = "FINISH";
+
+    public static final String PAGE_FIRSTRECOMMEND = "FIRSTRECOMMEND";
+
+
 
     private static List<String> prePageList = new ArrayList<>();
 

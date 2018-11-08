@@ -104,9 +104,9 @@
 
     <declare-styleable name="FlymeTabStrip">
         <!-- 指示器高度 -->
-        <attr name="indicatorHeight" format="dimension" />
+        <attr name="indicatorFlymeHeight" format="dimension" />
         <!-- 指示器滑动条颜色 -->
-        <attr name="indicatorColor" format="color" />
+        <attr name="indicatorFlymeColor" format="color" />
         <!-- 指示器左右间距 -->
         <attr name="indicatorMargin" format="dimension" />
         <!-- 指示器文字颜色 -->

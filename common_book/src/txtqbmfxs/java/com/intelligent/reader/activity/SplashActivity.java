@@ -204,7 +204,6 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             }
         }
 
-        setContentView(R.layout.act_splash);
         if (bookDBFile.exists()) {
             FrameLayout frameLayout = findViewById(R.id.content_frame);
             View view = LayoutInflater.from(this).inflate(R.layout.act_splash_upgradedb, null);

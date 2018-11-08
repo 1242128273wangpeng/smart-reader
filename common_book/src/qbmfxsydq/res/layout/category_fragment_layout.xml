@@ -17,8 +17,8 @@
 
         <net.lzbook.kit.ui.widget.FlymeTabStrip
                 android:id="@+id/tabstrip"
-                app:indicatorHeight="3dp"
-                app:indicatorColor="@color/theme_primary"
+                app:indicatorFlymeHeight="3dp"
+                app:indicatorFlymeColor="@color/theme_primary"
                 app:indicatorMargin="24dp"
                 app:indicatorTextSize="18sp"
                 app:selectedIndicatorTextSize="18sp"

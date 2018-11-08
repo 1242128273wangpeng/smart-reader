@@ -24,7 +24,7 @@ object AppHelper {
     val pagingTouchSlop by lazy {
         viewConfiguration.scaledPagingTouchSlop
     }
-    
+
 
     var screenDensity = 0.toFloat()
 

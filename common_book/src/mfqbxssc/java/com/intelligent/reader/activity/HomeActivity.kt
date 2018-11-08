@@ -15,20 +15,24 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.ding.basic.net.Config
+import com.ding.basic.Config
+import com.ding.basic.request.RequestService
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.contract.logger.HomeLogger
+import com.dingyue.contract.router.RouterConfig
+import com.dingyue.contract.util.SharedPreUtil
+import com.dingyue.contract.util.showToastMessage
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.view.HomeView
@@ -67,8 +71,7 @@ import java.io.File
 import java.util.*
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
-class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
-        CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
+class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
     private var homePresenter: HomePresenter? = null
 
@@ -90,11 +93,30 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
-    private var recommendFragment: WebViewFragment? = null
+    private val recommendFragment: RecommendFragment by lazy {
+        val fragment = RecommendFragment()
+        fragment
+    }
 
-    private var rankingFragment: WebViewFragment? = null
+    private val rankingFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "rank")
+        val uri = RequestService.WEB_RANKING.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
+        fragment
+    }
 
-    private var categoryFragment: WebViewFragment? = null
+    private val categoryFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+        val bundle = Bundle()
+        bundle.putString("type", "category")
+        val uri = RequestService.WEB_CATEGORY.replace("{packageName}", AppUtils.getPackageName())
+        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
+        fragment.arguments = bundle
+        fragment
+    }
 
     private var registerShareCallback = false
 
@@ -145,7 +167,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         EventBus.getDefault().register(this)
     }
 
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val position: Int
@@ -189,9 +210,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         MediaLifecycle.onDestroy()
         try {
             bookShelfFragment = null
-            recommendFragment = null
-            rankingFragment = null
-            categoryFragment = null
             homeAdapter = null
             homePresenter = null
             Glide.get(this).clearMemory()
@@ -396,107 +414,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         handler.sendMessageDelayed(message, 2000)
     }
 
-    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
-        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@setOnSearchClick
-                }
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "0"//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-
-                this.enterSearch(
-                        keyWord, search_type, filter_type, filter_word, sort_type,
-                        "fromClass")
-
-                AppLog.e("kkk", "$search_type===")
-
-            } catch (e: Exception) {
-                AppLog.e(TAG, "Search failed")
-                e.printStackTrace()
-            }
-        }
-        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onAnotherWebClick
-            }
-            AppLog.e(TAG, "doAnotherWeb")
-            try {
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, FindBookDetail::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("title", name)
-                startActivity(intent)
-                AppLog.e(TAG, "EnterAnotherWeb")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
-
-        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onEnterCover
-            }
-
-            if (!isFinishing) {
-                val intent = Intent()
-                intent.putExtra("book_id", book_id)
-                intent.putExtra("book_source_id", book_source_id)
-                intent.setClass(applicationContext, CoverPageActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        //为webview 加载广告提供回调
-        jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@onWebGameClick
-                }
-                var title = ""
-                if (TextUtils.isEmpty(name)) {
-                    title = AppUtils.getPackageName()
-                } else {
-                    title = name
-                }
-                val welfareIntent = Intent()
-                welfareIntent.putExtra("url", url)
-                welfareIntent.putExtra("title", title)
-                welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
-                startActivity(welfareIntent)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
-            AppLog.e("福利中心", "下载游戏: $name : $url")
-
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@onGameAppClick
-                }
-                val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("name", name)
-                startService(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-    }
-
-    override fun startLoad(webView: WebView, url: String): String {
-        return url
-    }
-
     override fun supportSlideBack(): Boolean {
         return false
     }
@@ -517,36 +434,12 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
                     bookShelfFragment
                 }
                 1 -> {
-                    if (recommendFragment == null) {
-                        recommendFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", WebViewFragment.TYPE_RECOMM)
-                        val uri = "/{packageName}/v3/recommend/index.do".replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        recommendFragment?.arguments = bundle
-                    }
                     recommendFragment
                 }
                 2 -> {
-                    if (rankingFragment == null) {
-                        rankingFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", WebViewFragment.TYPE_RANK)
-                        val uri = "/{packageName}/v3/rank/index.do".replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        rankingFragment?.arguments = bundle
-                    }
                     rankingFragment
                 }
                 3 -> {
-                    if (categoryFragment == null) {
-                        categoryFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", WebViewFragment.TYPE_CATEGORY)
-                        val uri = "/{packageName}/v3/category/index.do".replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        categoryFragment?.arguments = bundle
-                    }
                     categoryFragment
                 }
                 else -> null

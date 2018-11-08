@@ -169,11 +169,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
 
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            val ref = WeakReference(this).get() ?: return@loadBookEndMedia
+            if (ref.isFinishing) return@loadBookEndMedia
             if (isSuccess) {
-                rl_book_end_ad.visibility = View.VISIBLE
-                rl_book_end_ad.addView(view)
+                rl_book_end_ad?.visibility = View.VISIBLE
+                rl_book_end_ad?.addView(view)
             } else {
-                rl_book_end_ad.visibility = View.GONE
+                rl_book_end_ad?.visibility = View.GONE
             }
         }
     }

@@ -16,6 +16,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import java.lang.ref.WeakReference
 import java.util.*
@@ -292,9 +293,12 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
             ToastUtil.showToastMessage("没有书籍可换了~")
         }
 
-        for (i in recommendIndex until recommendIndex + 6) {
-            recommendList.add(recommendBookList[i % recommendBookList.size])
+        if (recommendBookList.size > 0) {
+            for (i in recommendIndex until recommendIndex + 6) {
+                recommendList.add(recommendBookList[i % recommendBookList.size])
+            }
         }
+
 
         recommendIndex += 6
 
@@ -317,5 +321,12 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
             return stringBuilder.toString()
         }
         return ""
+    }
+
+    fun uploadLog(book: Book?,type:String){
+        val data = HashMap<String,String>()
+        data.put("bookid",book?.book_id.toString())
+        data.put("chapterid",book?.book_chapter_id.toString())
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READFINISH_PAGE,type,data)
     }
 }

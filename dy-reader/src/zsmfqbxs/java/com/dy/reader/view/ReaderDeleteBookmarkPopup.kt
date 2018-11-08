@@ -26,6 +26,8 @@ class ReaderDeleteBookmarkPopup(context: Context, layout: Int = R.layout.popup_c
 
     init {
 
+        this.popupWindow.isOutsideTouchable = true
+
         contentView.ll_catalog_mark_content.requestFocus()
 
         contentView.txt_delete_mark.setOnClickListener {

@@ -80,6 +80,10 @@ class DebugHostActivity : BaseCacheableActivity() {
                         Config.insertContentAPIHost(et_input_host.text.toString())
                         SPKey.CONTENT_HOST
                     }
+                    SPKey.USER_TAG_HOST -> {
+                        Config.insertUserTagHost(et_input_host.text.toString())
+                        SPKey.USER_TAG_HOST
+                    }
                     else -> {
                         ""
                     }

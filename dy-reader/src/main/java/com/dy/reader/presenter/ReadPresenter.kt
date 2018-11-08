@@ -53,7 +53,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     private val TAG = ReadPresenter::class.java.simpleName
 
-    var downloadService: DownloadService? = null
     private var mContext: Context = act.applicationContext
     private var sp: SharedPreferences? = null
     private var modeSp: SharedPreferences? = null
@@ -75,7 +74,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun onCreateInit(savedInstanceState: Bundle?) {
-        ReaderStatus.startTime = System.currentTimeMillis()
+        ReaderStatus.startTime = System.currentTimeMillis() / 1000L
         ReaderStatus.chapterList.clear()
         DataProvider.clear()
         ReaderSettings.instance.loadParams()
@@ -98,16 +97,6 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         if (!ReaderSettings.instance.isLandscape && !AppUtils.isNeedAdControl(Constants.ad_control_reader)) {
             MediaControl.startRestMedia(act)
         }
-//        MediaControl.startRestMedia {
-//            if (readerRestDialog?.isShowing() == true) {
-//                return@startRestMedia
-//            }
-//            MediaControl.loadRestMedia(readReference?.get(), { view: View? ->
-//                if (readReference?.get()?.isFinishing == true) return@loadRestMedia
-//                readerRestDialog?.show(view)
-//            })
-//        }
-
         uploadSettingLog(act)
     }
 
@@ -203,7 +192,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         initWindow()
 //        横屏不显示休息广告
         MediaControl.stopRestMedia()
-        if (!ReaderSettings.instance.isLandscape) {
+        if (!Constants.isHideAD && !ReaderSettings.instance.isLandscape) {
             MediaControl.startRestMedia(act)
         }
         ReaderStatus.clear()
@@ -352,8 +341,10 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             }
             val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(ReaderStatus.book)
 
-            Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
-                    Toast.LENGTH_SHORT).show()
+            if (succeed != Constants.INSERT_BOOKSHELF_FULL) {
+                Toast.makeText(readReference?.get(), if (succeed > 0) R.string.reading_add_succeed else R.string.reading_add_fail,
+                        Toast.LENGTH_SHORT).show()
+            }
         }
         val map1 = HashMap<String, String>()
         map1["bookid"] = ReaderStatus.book.book_id
@@ -455,6 +446,11 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
 
     fun onPause() {
         isFromCover = false
+
+        if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
+            isSubed = (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null)
+        }
+
         if (isSubed) {
             myNovelHelper?.saveBookmark(ReaderStatus.book.book_id, ReaderStatus.position.group,
                     ReaderStatus.position.offset)

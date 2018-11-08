@@ -22,6 +22,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.model.BookCoverViewModel
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.MyDialog
@@ -407,7 +409,9 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
 
             if (result <= 0) {
                 Logger.v("加入书架失败！")
-                ToastUtil.showToastMessage("加入书架失败！")
+                if (result != Constants.INSERT_BOOKSHELF_FULL) {
+                    ToastUtil.showToastMessage("加入书架失败！")
+                }
             } else {
                 Logger.v("加入书架成功！")
 

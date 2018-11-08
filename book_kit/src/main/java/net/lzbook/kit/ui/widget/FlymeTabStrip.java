@@ -150,11 +150,11 @@ public class FlymeTabStrip extends HorizontalScrollView {
         int n = typedArray.getIndexCount();
         for (int i = 0; i < n; i++) {
             int attr = typedArray.getIndex(i);
-            if (attr == R.styleable.FlymeTabStrip_indicatorColor) {
+            if (attr == R.styleable.FlymeTabStrip_indicatorFlymeColor) {
                 indicatorColor = typedArray.getColor(attr, Color.YELLOW);
 
                 // 指示器高度，默认2
-            } else if (attr == R.styleable.FlymeTabStrip_indicatorHeight) {
+            } else if (attr == R.styleable.FlymeTabStrip_indicatorFlymeHeight) {
                 indicatorHeight = typedArray.getDimensionPixelSize(attr, 2);
 
                 // 指示器左右间距，默认20

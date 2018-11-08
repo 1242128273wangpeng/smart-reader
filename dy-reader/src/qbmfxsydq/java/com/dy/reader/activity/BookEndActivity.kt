@@ -27,6 +27,7 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.ui.widget.LoadingPage
+import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
 import kotlin.collections.ArrayList
@@ -146,7 +147,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
             bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
-            finish()
+//            finish()
         }
         /**
          * 去书城
@@ -154,10 +155,8 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
             bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
-            finish()
+//            finish()
         }
-
-
     }
 
     private fun initIntent() {
@@ -196,11 +195,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
 
     private fun initBookEndAD() {
         MediaControl.loadBookEndMedia(this) { view, isSuccess ->
+            val ref = WeakReference(this).get() ?: return@loadBookEndMedia
+            if (ref.isFinishing) return@loadBookEndMedia
             if (isSuccess) {
-                rl_ad_view.visibility = View.VISIBLE
-                rl_ad_view.addView(view)
+                rl_ad_view?.visibility = View.VISIBLE
+                rl_ad_view?.addView(view)
             } else {
-                rl_ad_view.visibility = View.GONE
+                rl_ad_view?.visibility = View.GONE
             }
         }
     }

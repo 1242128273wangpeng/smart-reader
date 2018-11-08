@@ -27,6 +27,7 @@ import net.lzbook.kit.utils.isNumeric
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.web.WebResourceCache
+import okhttp3.HttpUrl
 import java.util.*
 
 class DynamicParameter(private val context: Context) {
@@ -183,17 +184,17 @@ class DynamicParameter(private val context: Context) {
     private fun saveAdControlParams(hasAdContol: Boolean, bean: AdControlByChannelBean.DataBean?) {
 
         if (hasAdContol) {
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_STATUS, bean?.status)
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_PGK, bean?.packageName)
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_CHANNELID, bean?.channelId)
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_VERSION, bean?.version)
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_ADTYPE, bean?.adSpaceType)
+            putDynamicString(SPKey.AD_CONTROL_STATUS, bean?.status)
+            putDynamicString(SPKey.AD_CONTROL_PGK, bean?.packageName)
+            putDynamicString(SPKey.AD_CONTROL_CHANNELID, bean?.channelId)
+            putDynamicString(SPKey.AD_CONTROL_VERSION, bean?.version)
+            putDynamicString(SPKey.AD_CONTROL_ADTYPE, bean?.adSpaceType)
         } else {
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_STATUS, "0")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_PGK, "")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_CHANNELID, "")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_VERSION, "")
-            SPUtils.putOnlineConfigSharedString(SPKey.AD_CONTROL_ADTYPE, "")
+            putDynamicString(SPKey.AD_CONTROL_STATUS, "0")
+            putDynamicString(SPKey.AD_CONTROL_PGK, "")
+            putDynamicString(SPKey.AD_CONTROL_CHANNELID, "")
+            putDynamicString(SPKey.AD_CONTROL_VERSION, "")
+            putDynamicString(SPKey.AD_CONTROL_ADTYPE, "")
         }
         setAdControl()
     }
@@ -211,53 +212,55 @@ class DynamicParameter(private val context: Context) {
             }
         }
 
-        SPUtils.putOnlineConfigSharedString(SPKey.CHANNEL_LIMIT, map.channel_limit)
-        SPUtils.putOnlineConfigSharedString(SPKey.RECOMMEND_BOOKCOVER, map.recommend_bookcover)
-        SPUtils.putOnlineConfigSharedString(SPKey.DAY_LIMIT, map.day_limit)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_SHELF_BOUNDARY_SWITCH, map.DY_shelf_boundary_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.BAIDU_STAT_ID, map.baidu_stat_id)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_AD_SWITCH, if (isShowAd) "true" else map.DY_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_AD_NEW_STATISTICS_SWITCH, map.Dy_ad_new_statistics_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_READPAGE_STATISTICS_SWITCH, map.Dy_readPage_statistics_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_AD_READPAGE_SLIDE_SWITCH_NEW, map.Dy_ad_readPage_slide_switch_new)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_AD_OLD_REQUEST_SWITCH, map.DY_ad_old_request_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_ADFREE_NEW_USER, map.DY_adfree_new_user)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_SPLASH_AD_SWITCH, map.DY_splash_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_SHELF_AD_SWITCH, map.DY_shelf_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.BOOK_SHELF_STATE, map.book_shelf_state)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_SHELF_AD_FREQ, map.DY_shelf_ad_freq)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_PAGE_END_AD_SWITCH, map.DY_page_end_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_PAGE_END_AD_FREQ, map.DY_page_end_ad_freq)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_BOOK_END_AD_SWITCH, map.DY_book_end_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_REST_AD_SWITCH, map.DY_rest_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_REST_AD_SEC, map.DY_rest_ad_sec)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_PAGE_MIDDLE_AD_SWITCH, map.DY_page_middle_ad_switch)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_IS_NEW_READING_END, map.DY_is_new_reading_end)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_SWITCH_AD_SEC, map.DY_switch_ad_sec)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_ACTIVITED_SWITCH_AD, map.DY_activited_switch_ad)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_SWITCH_AD_CLOSE_SEC, map.DY_switch_ad_close_sec)
-        SPUtils.putOnlineConfigSharedString(SPKey.PUSH_KEY, map.push_key)
-        SPUtils.putOnlineConfigSharedString(SPKey.AD_LIMIT_TIME_DAY, map.ad_limit_time_day)
-        SPUtils.putOnlineConfigSharedString(SPKey.BAIDU_EXAMINE, map.baidu_examine)
-        SPUtils.putOnlineConfigSharedString(SPKey.USER_TRANSFER_FIRST, map.user_transfer_first)
-        SPUtils.putOnlineConfigSharedString(SPKey.USER_TRANSFER_SECOND, map.user_transfer_second)
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_AD_NEW_REQUEST_DOMAIN_NAME, map.DY_ad_new_request_domain_name)
-        SPUtils.putOnlineConfigSharedString(SPKey.NO_NET_READ_NUMBER, map.noNetReadNumber)
+        putDynamicString(SPKey.CHANNEL_LIMIT, map.channel_limit)
+        putDynamicString(SPKey.RECOMMEND_BOOKCOVER, map.recommend_bookcover)
+        putDynamicString(SPKey.DAY_LIMIT, map.day_limit)
+        putDynamicString(SPKey.DY_SHELF_BOUNDARY_SWITCH, map.DY_shelf_boundary_switch)
+        putDynamicString(SPKey.BAIDU_STAT_ID, map.baidu_stat_id)
+        putDynamicString(SPKey.DY_AD_SWITCH, if (isShowAd) "true" else map.DY_ad_switch)
+        putDynamicString(SPKey.DY_AD_NEW_STATISTICS_SWITCH, map.Dy_ad_new_statistics_switch)
+        putDynamicString(SPKey.DY_READPAGE_STATISTICS_SWITCH, map.Dy_readPage_statistics_switch)
+        putDynamicString(SPKey.DY_AD_READPAGE_SLIDE_SWITCH_NEW, map.Dy_ad_readPage_slide_switch_new)
+        putDynamicString(SPKey.DY_AD_OLD_REQUEST_SWITCH, map.DY_ad_old_request_switch)
+        putDynamicString(SPKey.DY_ADFREE_NEW_USER, map.DY_adfree_new_user)
+        putDynamicString(SPKey.DY_SPLASH_AD_SWITCH, map.DY_splash_ad_switch)
+        putDynamicString(SPKey.DY_SHELF_AD_SWITCH, map.DY_shelf_ad_switch)
+        putDynamicString(SPKey.BOOK_SHELF_STATE, map.book_shelf_state)
+        putDynamicString(SPKey.DY_SHELF_AD_FREQ, map.DY_shelf_ad_freq)
+        putDynamicString(SPKey.DY_PAGE_END_AD_SWITCH, map.DY_page_end_ad_switch)
+        putDynamicString(SPKey.DY_PAGE_END_AD_FREQ, map.DY_page_end_ad_freq)
+        putDynamicString(SPKey.DY_BOOK_END_AD_SWITCH, map.DY_book_end_ad_switch)
+        putDynamicString(SPKey.DY_REST_AD_SWITCH, map.DY_rest_ad_switch)
+        putDynamicString(SPKey.DY_REST_AD_SEC, map.DY_rest_ad_sec)
+        putDynamicString(SPKey.DY_PAGE_MIDDLE_AD_SWITCH, map.DY_page_middle_ad_switch)
+        putDynamicString(SPKey.DY_IS_NEW_READING_END, map.DY_is_new_reading_end)
+        putDynamicString(SPKey.DY_SWITCH_AD_SEC, map.DY_switch_ad_sec)
+        putDynamicString(SPKey.DY_ACTIVITED_SWITCH_AD, map.DY_activited_switch_ad)
+        putDynamicString(SPKey.DY_SWITCH_AD_CLOSE_SEC, map.DY_switch_ad_close_sec)
+        putDynamicString(SPKey.PUSH_KEY, map.push_key)
+        putDynamicString(SPKey.AD_LIMIT_TIME_DAY, map.ad_limit_time_day)
+        putDynamicString(SPKey.BAIDU_EXAMINE, map.baidu_examine)
+        putDynamicString(SPKey.USER_TRANSFER_FIRST, map.user_transfer_first)
+        putDynamicString(SPKey.USER_TRANSFER_SECOND, map.user_transfer_second)
+        putDynamicString(SPKey.DY_AD_NEW_REQUEST_DOMAIN_NAME, map.DY_ad_new_request_domain_name)
+        putDynamicString(SPKey.NO_NET_READ_NUMBER, map.noNetReadNumber)
 
-        SPUtils.putOnlineConfigSharedString(SPKey.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
+        putDynamicString(SPKey.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
         if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-            SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, map.novel_host)
-            SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, map.httpsWebView_host)
-            SPUtils.putOnlineConfigSharedString(SPKey.UNION_HOST, map.union_host)
-            SPUtils.putOnlineConfigSharedString(SPKey.CONTENT_HOST, map.content_host)
+            putDynamicString(SPKey.NOVEL_HOST, map.novel_host?.parseUrl())
+            putDynamicString(SPKey.WEBVIEW_HOST, map.httpsWebView_host?.parseUrl())
+            putDynamicString(SPKey.UNION_HOST, map.union_host?.parseUrl())
+            putDynamicString(SPKey.CONTENT_HOST, map.content_host?.parseUrl())
         }
 
-        SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, map.user_tag_host)
+        putDynamicString(SPKey.USER_TAG_HOST, map.user_tag_host?.parseUrl())
 
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_STATIC_RESOURCE_RULE, map.DY_static_resource_rule)
+        putDynamicString(SPKey.DY_STATIC_RESOURCE_RULE, map.DY_static_resource_rule)
 
-        SPUtils.putOnlineConfigSharedString(SPKey.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
+        putDynamicString(SPKey.DY_WEB_STATIC_RESOURCES, map.DY_web_static_resources)
+
+        putDynamicString(SPKey.SHARE_SWITCH, map.share_switch_enable)
 
         // 保存动态参数校验版本号
         if (mCurVersion < mReqVersion) {
@@ -265,6 +268,11 @@ class DynamicParameter(private val context: Context) {
             AppLog.d("requestDynamicCheck", "mReqVersion = " + mReqVersion)
         }
 
+    }
+
+    private fun putDynamicString(key: String, value: String?) {
+        if (value == null) return
+        SPUtils.putOnlineConfigSharedString(key, value)
     }
 
     private fun startRequestCDNDynamic() {
@@ -303,6 +311,8 @@ class DynamicParameter(private val context: Context) {
         setNoADTime()
 
         setNetWorkLimit()
+
+        setShareSwitch()
 
         AppLog.d("um_param", " real param ==> " + this.toString())
     }
@@ -642,6 +652,22 @@ class DynamicParameter(private val context: Context) {
             Constants.new_app_ad_switch = newAppAdSwitch.toBoolean()
         }
 
+    }
+
+    private fun String.parseUrl(): String? {
+        val httpUrl = HttpUrl.parse(this)
+        return if (httpUrl != null) {
+            this
+        } else {
+            null
+        }
+    }
+
+    private fun setShareSwitch() {
+        val shareSwitchEnable = SPUtils.getOnlineConfigSharedString(SPKey.SHARE_SWITCH)
+        if (shareSwitchEnable.isNotEmpty()) {
+            Constants.SHARE_SWITCH_ENABLE = shareSwitchEnable.toBoolean()
+        }
     }
 
     companion object {

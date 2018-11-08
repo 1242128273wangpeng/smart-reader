@@ -102,6 +102,16 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         resetBtn(Constants.isSlideUp)
 
+        rl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
+
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -291,7 +301,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         rl_reader_night?.preventClickShake(this)
 
-        rg_reader_backdrop_group?.setOnCheckedChangeListener(this)
+//        rg_reader_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {

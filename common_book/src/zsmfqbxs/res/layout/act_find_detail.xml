@@ -44,8 +44,8 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <com.intelligent.reader.widget.topshadow.TopShadowWebView
-            android:id="@+id/rank_content"
+    <WebView
+            android:id="@+id/find_book_detail_content"
             android:layout_below="@+id/find_book_detail_head"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

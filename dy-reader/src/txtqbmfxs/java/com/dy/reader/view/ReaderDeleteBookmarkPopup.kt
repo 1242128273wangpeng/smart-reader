@@ -40,5 +40,7 @@ class ReaderDeleteBookmarkPopup(context: Context, layout: Int = R.layout.popup_c
         this.insertDismissListener(android.widget.PopupWindow.OnDismissListener {
             dismissList?.invoke()
         })
+
+        this.popupWindow.isOutsideTouchable = true
     }
 }

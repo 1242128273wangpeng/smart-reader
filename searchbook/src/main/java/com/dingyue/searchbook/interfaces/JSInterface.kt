@@ -16,6 +16,13 @@ import java.util.*
  * Date：2018/9/26 0025 16:21
  */
 class JSInterface : WebViewJsInterface {
+    override fun buildMicroRequestUrl(url: String?): String {
+        return ""
+    }
+
+    override fun authAccessMicroRequest(url: String?): String {
+        return ""
+    }
 
     var enterApp: OnEnterAppClick? = null
     var anotherWeb: OnAnotherWebClick? = null

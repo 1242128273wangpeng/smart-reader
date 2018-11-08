@@ -247,14 +247,14 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             if (mRecommendBookAdapter == null) {
                 mRecommendBookAdapter = BookEndAdapter(this)
             }
-            mRecommendBookAdapter?.setBooks(recommender!!.recommendBookendBooks1)
+            mRecommendBookAdapter?.setBooks(recommender?.recommendBookendBooks1 ?: ArrayList())
             gv_recommend_book.adapter = mRecommendBookAdapter
         }
         if (two) {
             if (mNewBookAdapter == null) {
                 mNewBookAdapter = BookEndAdapter(this)
             }
-            mNewBookAdapter?.setBooks(recommender!!.recommendBookendBooks2)
+            mNewBookAdapter?.setBooks(recommender?.recommendBookendBooks2 ?: ArrayList())
             gv_new_book.adapter = mNewBookAdapter
         }
         dismissLoading()

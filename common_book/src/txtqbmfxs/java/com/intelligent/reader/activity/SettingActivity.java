@@ -414,6 +414,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         switch (paramView.getId()) {
             case R.id.rl_setting_more:
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.MORESET);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more);
@@ -440,6 +443,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 checkUpdate();
                 break;
             case R.id.rl_feedback:
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.HELP);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
@@ -460,6 +466,9 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 }
                 break;
             case R.id.disclaimer_statement_rl:
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PROCTCOL);
                 Bundle bundle = new Bundle();
@@ -467,12 +476,18 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
                 break;
             case R.id.rl_history_setting:
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.PERSON_HISTORY);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_setting_history));
                 startActivity(new Intent(SettingActivity.this, FootprintActivity.class));
                 break;
             case R.id.rl_welfare:
+                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                    return;
+                }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
                         StartLogClickUtil.ADPAGE);
                 Intent welfareIntent = new Intent();

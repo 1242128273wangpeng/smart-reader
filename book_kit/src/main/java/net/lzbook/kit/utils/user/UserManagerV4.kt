@@ -370,7 +370,7 @@ object UserManagerV4 : IWXAPIEventHandler {
     /**
      * 登出上传操作---------------------开始
      */
-    private fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
+    public fun upUserReadInfo(onComplete: ((success: Boolean) -> Unit)? = null) {
         user?.let {
             val repositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
             repositoryFactory.getUploadBookShelfFlowable(user!!.account_id)

@@ -37,13 +37,10 @@
         android:id="@+id/history_clear"
         android:layout_width="30dp"
         android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/dimen_margin_20"
         android:layout_marginRight="@dimen/dimen_margin_20"
-        android:contentDescription="@string/icon"
+        android:src="@drawable/search_history_clear_yh"
         android:scaleType="center"
-        android:src="@drawable/search_history_clear"/>
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

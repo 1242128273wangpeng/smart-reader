@@ -60,6 +60,18 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
+        popup.setOnImportClickListener {
+            RouterUtil.navigation(requireActivity(), RouterConfig.LOCAL_IMPORT_ACTIVITY)
+            BookShelfLogger.uploadBookShelfLocalImport()
+        }
+        popup.setOnShareListener {
+            applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
+            BookShelfLogger.uploadBookShelfShare()
+        }
+        popup.setOnGoneListener {
+            view_head_menu.visibility = View.GONE
+        }
         popup
     }
 
@@ -137,6 +149,11 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         dialog.setOnAbrogateListener {
             BookShelfLogger.uploadBookShelfEditDelete(0, null, false)
         }
+        dialog
+    }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
         dialog
     }
 
@@ -220,6 +237,16 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_empty_add_book.setOnClickListener {
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
+        }
+
+        val isImportPromptGone = activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT)
+                ?: false
+        val isSharePromptGone = !Constants.SHARE_SWITCH_ENABLE || activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+                ?: false
+        if (isImportPromptGone && isSharePromptGone) {
+            view_head_menu.visibility = View.GONE
+        } else {
+            view_head_menu.visibility = View.VISIBLE
         }
     }
 
@@ -437,7 +464,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             val bookName = firstBook?.book_name
             val bookLastChapterName = firstBook?.last_chapter_name
             if (bookName?.isNotEmpty() == true && bookLastChapterName?.isNotEmpty() == true && !requireActivity().isFinishing) {
-                if (updateCount == 1 ) {
+                if (updateCount == 1) {
                     if (isAdded) {
                         ToastUtil.showToastMessage(
                                 "《$bookName${requireActivity()?.getString(R.string.bookshelf_book_update_chapter)}" + "$bookLastChapterName",

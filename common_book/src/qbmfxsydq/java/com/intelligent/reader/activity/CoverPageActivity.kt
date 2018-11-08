@@ -19,7 +19,6 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-import com.dingyue.searchbook.SearchBookActivity
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
@@ -42,6 +41,7 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.searchbook.activity.SearchBookActivity
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.view.CoverPageContract

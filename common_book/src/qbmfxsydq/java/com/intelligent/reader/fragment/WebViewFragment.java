@@ -121,8 +121,9 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
             rl_head = (RelativeLayout) rootView.findViewById(R.id.rl_head);
             img_sex = rootView.findViewById(R.id.img_sex);
             img_shadow = rootView.findViewById(R.id.img_shadow);
-            if (Build.VERSION.SDK_INT >= 11 && contentView != null) {
-                contentView.setLayerType(View.LAYER_TYPE_NONE, null);
+
+            if (contentView != null) {
+                contentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
             if(img_sex != null){
                 img_sex.setOnClickListener(new View.OnClickListener() {
@@ -165,8 +166,12 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
         }
 
         if (type.equals("recommend_male") || type.equals("recommend_female")) {
-            rl_head.setVisibility(View.GONE);
-            img_shadow.setVisibility(View.GONE);
+            if (rl_head != null) {
+                rl_head.setVisibility(View.GONE);
+            }
+            if (img_shadow != null) {
+                img_shadow.setVisibility(View.GONE);
+            }
         }
         if(img_sex != null){
             if ("rankBoy".equals(type)) {
@@ -362,7 +367,7 @@ public class WebViewFragment extends Fragment implements SelectSexDialog.onAniFi
                         customWebClient.doClear();
                     }
                     if(contentView != null){
-                        contentView.reload();
+                        contentView.loadUrl(url);
                     }
 
                 }

@@ -98,6 +98,16 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         resetBtn(Constants.isSlideUp)
 
+        rl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
+
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -156,7 +166,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         }
     }
 
-    //设置屏蔽亮度
+    //设置屏幕亮度
     private fun setScreenBright() {
         val screenBrightness = readerSettings.screenBrightness
         if (screenBrightness >= 0) {
@@ -215,7 +225,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         val screenBrightness = readerSettings.screenBrightness
 
         if (screenBrightness >= 0) {
-            skbar_reader_brightness_change?.progress = screenBrightness
+            skbar_reader_brightness_change?.progress = if (screenBrightness <= 20) 0 else screenBrightness
         } else {
             skbar_reader_brightness_change?.progress = 5
         }
@@ -286,8 +296,6 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
         rl_reader_setting?.preventClickShake(this)
 
         rl_reader_night?.preventClickShake(this)
-
-        rg_reader_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {
@@ -402,6 +410,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
+                changeBrightnessByModeChange()
             }
             R.id.img_reader_font_reduce// 减小字号
             -> {
@@ -462,6 +471,28 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
             }
             else -> {
             }
+        }
+    }
+
+    private fun changeBrightnessByModeChange() {
+        if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+            setBrightnessBackground(false)
+            readerSettings.isAutoBrightness = false
+            ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+        }
+
+        if (readerSettings.isAutoBrightness) {
+            ckb_reader_brightness_system?.isChecked = true
+            readPresenter?.startAutoBrightness()
+            val screenBrightness = readerSettings.screenBrightness
+            if (screenBrightness > 0) {
+                skbar_reader_brightness_change?.progress = screenBrightness
+            }
+            skbar_reader_brightness_change?.progress = 0
+        } else {
+            ckb_reader_brightness_system?.isChecked = false
+            setScreenBright()
+            setScreenBrightProgress()
         }
     }
 
@@ -576,6 +607,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
     fun changePageBackgroundWrapper(index: Int) {
         if (readerSettings.readThemeMode == 61) {
             presenter?.chageNightMode(index, false)
+            changeBrightnessByModeChange()
         } else {
             setNovelMode(index)
         }

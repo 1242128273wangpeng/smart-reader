@@ -69,6 +69,27 @@ class ReaderSettingHeader : FrameLayout {
         img_reader_back.setOnClickListener {
             presenter?.back()
         }
+        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
+
+        if (hasPromptShowed) {
+            view_reader_share.visibility = View.INVISIBLE
+        } else {
+            view_reader_share.visibility = View.VISIBLE
+        }
+
+        if (Constants.SHARE_SWITCH_ENABLE) {
+            ibtn_reader_share?.setOnClickListener {
+                context.editShared {
+                    putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+                }
+                view_reader_share.visibility = View.INVISIBLE
+                presenter?.showShareDialog()
+            }
+        } else {
+            ibtn_reader_share.visibility = View.GONE
+        }
+
+
 
         txt_reader_source.setOnClickListener {
             presenter?.openWeb()

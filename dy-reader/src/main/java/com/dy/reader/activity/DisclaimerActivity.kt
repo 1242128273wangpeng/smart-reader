@@ -3,6 +3,7 @@ package com.dy.reader.activity
 import android.net.http.SslError
 import android.os.Bundle
 import android.os.SystemClock
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.View
 import android.webkit.SslErrorHandler
@@ -15,7 +16,10 @@ import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
 import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
+import com.dy.reader.R.id.txt_content
+import com.dy.reader.R.id.txt_title
 import kotlinx.android.synthetic.main.act_disclaimer.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.MyDialog
@@ -23,6 +27,7 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.web.CustomWebClient
 
 /**
  * Function：使用协议 / 转码声明
@@ -32,6 +37,8 @@ import net.lzbook.kit.utils.toast.ToastUtil
  */
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : FrameActivity() {
+    private var gestureDetector: GestureDetector? = null
+    private var customWebClient: CustomWebClient? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -60,6 +67,7 @@ class DisclaimerActivity : FrameActivity() {
             txt_content.text = resources.getString(R.string.privacy_policy_description)
 
         }
+
 
         // 使用协议页面
         val isFormDisclaimerPage = intent.getBooleanExtra(RouterUtil.FROM_DISCLAIMER_PAGE, false)
@@ -93,7 +101,6 @@ class DisclaimerActivity : FrameActivity() {
         }
 
     }
-
     /**
      * 存放点击事件次数
      */
@@ -143,7 +150,7 @@ class DisclaimerActivity : FrameActivity() {
             dialog.dismiss()
         }
         confirmBtn.setOnClickListener {
-            if ("鼎阅集团" == adminEditText.text.toString()) {
+            if ("小说我最屌" == adminEditText.text.toString()) {
                 RouterUtil.navigation(this, RouterConfig.DEBUG_ACTIVITY)
             } else {
                 ToastUtil.showToastMessage("身份验证失败")

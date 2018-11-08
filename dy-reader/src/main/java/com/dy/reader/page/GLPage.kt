@@ -3,7 +3,6 @@ package com.dy.reader.page
 import android.content.res.Configuration
 import android.graphics.*
 import android.opengl.GLES20
-import android.text.TextPaint
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -35,12 +34,12 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
     companion object {
 
         val lock = GLPage::class.java
-        val semaphore = Semaphore(1, true)
+        var semaphore = Semaphore(1, true)
 
         private var mOrientation = Configuration.ORIENTATION_UNDEFINED
 
         private var bitmap: Bitmap? = null
-        var canvas: Canvas? = null
+        private var canvas: Canvas? = null
 
         fun createBitmap(orientation: Int) {
             if (mOrientation != orientation) {
@@ -61,9 +60,8 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
                 AppHelper.workQueueThread.shutdownNow()
 
-                if (semaphore.availablePermits() != 1) {
-                    semaphore.release()
-                }
+                semaphore.release(10)
+
                 canvas = null
                 bitmap = null
                 mOrientation = Configuration.ORIENTATION_UNDEFINED
@@ -78,14 +76,14 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
 
     fun ready(orientation: Int = Configuration.ORIENTATION_PORTRAIT) {
+
+        semaphore = Semaphore(1, true)
+
         createBitmap(orientation)
 
         //修正位置信息
         DataProvider.revisePosition(position)
 
-        if (semaphore.availablePermits() != 1) {
-            semaphore.release()
-        }
 
 //        prepareBitmap(position)
 //
@@ -341,13 +339,6 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             } else {
                 println("cant draw page content == null")
             }
-
-            val textPaint = TextPaint()
-            textPaint.style = Paint.Style.FILL
-            textPaint.isAntiAlias = true
-            textPaint.isDither = true
-            textPaint.textSize = 80F
-            textPaint.color = ReaderSettings.instance.fontColor
 
             println("loadBitmap ${posi.group}:${posi.index} use time ${System.currentTimeMillis() - startTime}")
         }

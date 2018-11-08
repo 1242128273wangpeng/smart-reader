@@ -81,9 +81,7 @@ class MicroRequestInterceptor : Interceptor {
             parameters[interimRequest.url().queryParameterName(index)] = interimRequest.url().queryParameterValue(index)
         }
 
-        if (!parameters.containsKey("packageName")) {
-            parameters.putAll(buildRequestParameters())
-        }
+        parameters.putAll(buildRequestParameters())
 
         val sign = loadMicroRequestSign(parameters)
         Logger.e("Sign: $sign")

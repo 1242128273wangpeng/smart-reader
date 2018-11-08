@@ -287,7 +287,7 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
         rl_reader_night?.preventClickShake(this)
 
-        rg_reader_backdrop_group?.setOnCheckedChangeListener(this)
+//        rg_reader_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {

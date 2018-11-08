@@ -1,5 +1,7 @@
 package com.ding.basic.util.sp
 
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.alibaba.android.arouter.launcher.ARouter
 import com.ding.basic.util.IBuildConfigProvider
 import com.ding.basic.util.ReplaceConstants.BUILD_CONFIG_PROVIDER
@@ -18,14 +20,6 @@ class SPKey {
         }
 
 
-        /***
-         * WebView静态资源拦截规则
-         * **/
-        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
-        /**
-         * 无网下展示的WebView的Css和JS地址
-         */
-        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
 
         /**
          * 保存WebView上一次加载的url
@@ -43,10 +37,6 @@ class SPKey {
         // 删除WebView缓存
         const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
 
-        /**
-         * CoverPageActivity
-         */
-        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
 
 
         /**
@@ -80,11 +70,12 @@ class SPKey {
         const val WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
         const val UNION_PRE_HOST = "union_pre_host"
         const val CONTENT_PRE_HOST = "content_pre_host"
+        const val USER_TAG_PRE_HOST = "user_tag_pre_host"
+
         /**
          * 检查章节数是否为0
          */
         const val CHECK_CHAPTER_COUNT = "check_chapter_count"
-
 
         /**
          * DynamicParameter
@@ -149,6 +140,10 @@ class SPKey {
         const val AD_CONTROL_VERSION = "version" //广告动态参数 app版本号
         const val AD_CONTROL_ADTYPE = "advertisingSpace" //广告动态参数  广告位类型  0 福利中心 1书架页1-1  2书架页1-2  3阅读页广告 4全部
 
+        /**
+         * 分享功能开关
+         */
+        const val SHARE_SWITCH = "SHARE_SWITCH" //分享开关
 
         /**
          * webviewFragment
@@ -184,6 +179,11 @@ class SPKey {
         const val HOME_IS_UPLOAD = "IS_UPLOAD"  //是否上传了用户信息  zn_user
         const val HOME_TODAY_FIRST_POST_BOOKIDS = "today_first_post_bookids" //每天上传一次书架上的书
         const val CONTENT_MODE = "content_mode"  //当前阅读页背景
+
+        /**
+         * CoverPageActivity
+         */
+        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
 
         /**
          * SettingActivity
@@ -245,12 +245,29 @@ class SPKey {
 
 
         const val APPLICATION_SHARE_ACTION = "application_share_action"
+        const val BOOKSHELF_IMPORT_PROMPT = "bookshelf_import_prompt"
+        const val BOOKSHELF_SHARE_PROMPT = "bookshelf_share_prompt"
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
+        const val READER_SHARE_PROMPT = "reader_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
 
-        const val WEB_FAVORITE_FIRST_USE = "web_favorite_first_use" // 首次使用网页收藏功能标识
 
+
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
+
+        const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
+
+        const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
+        const val WEB_FAVORITE_FIRST_USE = "web_favorite_first_use" // 首次使用网页收藏功能标识
         const val WEB_FAVORITE_FIRST_USE_CLICK = "web_favorite_first_use_click" // 首次点击 网页收藏 按钮标识
     }
+
+
+
+
 }

@@ -680,13 +680,13 @@ public class AppUtils {
             BufferedReader br = new BufferedReader(fr);
             String text = br.readLine();
             String[] array = text.split(":\\s+", 2);
-            for (int i = 0; i < array.length; i++) {
-            }
             return array[1];
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException exception) {
+            exception.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
 
@@ -1368,7 +1368,11 @@ public class AppUtils {
                     }
                 });
             }
-            float targetDensity = displayMetrics.widthPixels / 360f;
+
+
+            int width = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
+            float targetDensity = width / 360f;
+
             float targetScaleDensity = targetDensity * (sNoncompatScaleDensity / sNoncompatDensity);
             int targetDensityDpi = (int) (160 * targetDensity);
 
@@ -1376,10 +1380,12 @@ public class AppUtils {
             displayMetrics.scaledDensity = targetScaleDensity;
             displayMetrics.densityDpi = targetDensityDpi;
 
-            DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
-            activityDisplayMetrics.density = targetDensity;
-            activityDisplayMetrics.scaledDensity = targetScaleDensity;
-            activityDisplayMetrics.densityDpi = targetDensityDpi;
+            if (activity != null) {
+                DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
+                activityDisplayMetrics.density = targetDensity;
+                activityDisplayMetrics.scaledDensity = targetScaleDensity;
+                activityDisplayMetrics.densityDpi = targetDensityDpi;
+            }
         } catch (Throwable e) {
             AppLog.e("setCustomDensity:" + e.getMessage());
         }

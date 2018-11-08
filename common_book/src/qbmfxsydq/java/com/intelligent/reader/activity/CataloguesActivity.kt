@@ -127,32 +127,29 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     }
 
-
-
-
     private fun initUI() {
 //        目录列表
-        recl_catalog_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        reclfs_catalog_scroll.setRecyclerView(recl_catalog_main)
-        reclfs_catalog_scroll.setViewsToUse(R.layout.catalog_recyclerview_fast_scroller, R.id.img_recycler_view_scroller)
+        recl_catalog_main?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        reclfs_catalog_scroll?.setRecyclerView(recl_catalog_main)
+        reclfs_catalog_scroll?.setViewsToUse(R.layout.catalog_recyclerview_fast_scroller, R.id.img_recycler_view_scroller)
 
 //        标签列表
-        recl_bookmark_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recl_bookmark_main?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        catalog_novel_close.antiShakeClick(this)
+        catalog_novel_close?.antiShakeClick(this)
 
-        tv_catalog_novel_sort.antiShakeClick(this)
+        tv_catalog_novel_sort?.antiShakeClick(this)
 
-        iv_catalog_novel_sort!!.antiShakeClick(this)
-
-
-        tab_bookmark!!.antiShakeClick(this)
-        tab_catalog!!.antiShakeClick(this)
+        iv_catalog_novel_sort?.antiShakeClick(this)
 
 
-        rl_layout_empty_online!!.visibility = View.GONE
+        tab_bookmark?.antiShakeClick(this)
+        tab_catalog?.antiShakeClick(this)
 
-        char_hint!!.visibility = View.INVISIBLE
+
+        rl_layout_empty_online?.visibility = View.GONE
+
+        char_hint?.visibility = View.INVISIBLE
 
 
         currentView = tab_catalog
@@ -163,11 +160,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     private fun initListener() {
 
         if (catalog_empty_refresh != null) {
-            catalog_empty_refresh!!.setOnClickListener(this)
+            catalog_empty_refresh?.setOnClickListener(this)
         }
 
         if (iv_fixbook != null) {
-            iv_fixbook!!.setOnClickListener(this)
+            iv_fixbook?.setOnClickListener(this)
         }
     }
 
@@ -181,21 +178,21 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
                 scrollState = newState
                 if (scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING) {
                     if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter!!.delayOverLayHandler()
+                        mCataloguesPresenter?.delayOverLayHandler()
                     }
                 } else {
                     if (char_hint != null) {
-                        char_hint!!.visibility = View.VISIBLE
+                        char_hint?.visibility = View.VISIBLE
                     }
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (chapterList != null && !chapterList!!.isEmpty()) {
-                    var manager = recl_catalog_main.layoutManager
+                if (chapterList != null && !chapterList?.isEmpty()) {
+                    val manager = recl_catalog_main.layoutManager
                     if (manager is LinearLayoutManager && manager.findFirstVisibleItemPosition() >=0) {
 
-                        char_hint!!.text = String.format(getString(R.string.chapter_sort), chapterList!![manager.findFirstVisibleItemPosition()].sequence + 1)
+                        char_hint?.text = String.format(getString(R.string.chapter_sort), chapterList[manager.findFirstVisibleItemPosition()].sequence + 1)
                     }
 
                 }
@@ -233,7 +230,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
             book = bundle.getSerializable("cover") as Book
         }
 
-        if (book == null || book!!.book_id == null) {
+        if (book == null || book?.book_id == null) {
             exitAndUpdate()
             return
         }
@@ -245,11 +242,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         changeSource = bundle.getBoolean("changeSource", false)
 
         if (book != null) {
-            catalog_novel_name!!.text = book!!.name
-            if (RepairHelp.isShowFixBtn(this, book!!.book_id)) {
-                iv_fixbook!!.visibility = View.VISIBLE
+            catalog_novel_name?.text = book?.name
+            if (RepairHelp.isShowFixBtn(this, book?.book_id)) {
+                iv_fixbook?.visibility = View.VISIBLE
             } else {
-                iv_fixbook!!.visibility = View.GONE
+                iv_fixbook?.visibility = View.GONE
             }
         }
 
@@ -286,7 +283,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         getChapterData()
 
         if (mCataloguesPresenter != null) {
-            mCataloguesPresenter!!.loadBookMark()
+            mCataloguesPresenter?.loadBookMark()
         }
 
     }
@@ -334,11 +331,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
     private fun getChapterData() {
         if (book != null) {
             if (loadingPage != null) {
-                loadingPage!!.onSuccess()
+                loadingPage?.onSuccess()
             }
 
             loadingPage = LoadingPage(this, LoadingPage.setting_result)
-            loadingPage!!.setCustomBackgroud()
+            loadingPage?.setCustomBackgroud()
 
             if (mCataloguesPresenter != null) {
                 mCataloguesPresenter?.requestCatalogList(changeSource)
@@ -359,32 +356,33 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
     private fun dataError() {
         if (loadingPage != null) {
-            loadingPage!!.onError()
+            loadingPage?.onError()
         }
     }
 
+    @Subscribe
     fun onEvent(eventBookmark: EventBookmark) {
         if (eventBookmark.type == EventBookmark.type_delete) {
             AppLog.e(TAG, "eventBookmark:" + eventBookmark.bookmark.id + " name:" + eventBookmark.bookmark.chapter_name)
             val bookmark = eventBookmark.bookmark
             if (mCataloguesPresenter != null) {
-                mCataloguesPresenter!!.onEventReceive(bookmark)
+                mCataloguesPresenter?.onEventReceive(bookmark)
             }
         }
     }
 
     private fun showNullBookMarkNoteLayout() {
         if (currentView === tab_bookmark) {
-            if (bookmarkList != null && bookmarkList!!.size == 0) {
+            if (bookmarkList.size == 0) {
                 if (rl_layout_empty_online != null)
-                    rl_layout_empty_online!!.visibility = View.VISIBLE
+                    rl_layout_empty_online?.visibility = View.VISIBLE
             } else {
                 if (rl_layout_empty_online != null)
-                    rl_layout_empty_online!!.visibility = View.GONE
+                    rl_layout_empty_online?.visibility = View.GONE
             }
         } else {
             if (rl_layout_empty_online != null)
-                rl_layout_empty_online!!.visibility = View.GONE
+                rl_layout_empty_online?.visibility = View.GONE
         }
     }
 
@@ -409,10 +407,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         mCataloguesAdapter.insertCatalog(chapterList)
 
         if (is_last_chapter) {
-            mCataloguesAdapter!!.setSelectedItem(chapterList!!.size)
+            mCataloguesAdapter.setSelectedItem(chapterList.size)
             recl_catalog_main.scrollToPosition(chapterList.size - 1)
         } else {
-            mCataloguesAdapter!!.setSelectedItem(sequence)
+            mCataloguesAdapter.setSelectedItem(sequence)
             recl_catalog_main.scrollToPosition(sequence)
         }
 
@@ -423,7 +421,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
         if (downLoadReceiver == null) {
             downLoadReceiver = OffLineDownLoadReceiver(this)
         }
-        downLoadReceiver!!.registerAction()
+        downLoadReceiver?.registerAction()
     }
 
     override fun onStop() {
@@ -440,233 +438,233 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, CataloguesC
 
         }
         if (mCataloguesPresenter != null) {
-            mCataloguesPresenter!!.removeHandler()
-            mCataloguesPresenter!!.unRegisterRec()
+            mCataloguesPresenter?.removeHandler()
+            mCataloguesPresenter?.unRegisterRec()
         }
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun notifyChangeDownLoad(event: OfflineDownloadEvent)  {
+    fun notifyChangeDownLoad(event: OfflineDownloadEvent) {
         if (mCataloguesAdapter != null) {
             mCataloguesAdapter.notifyDataSetChanged()
         }
-
     }
 
 
     override fun onClick(v: View) {
-        when (v.id) {
-            R.id.catalog_novel_close -> {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
-                if (!fromCover) {
-                    if (mCataloguesPresenter != null) {
-                        sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
-                        mCataloguesPresenter!!.activityResult(sequence)
+            when (v.id) {
+                R.id.catalog_novel_close -> {
+                    val data = HashMap<String, String>()
+                    data["type"] = "1"
+                    StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                    if (!fromCover) {
+                        if (mCataloguesPresenter != null) {
+                            sequence = Math.min(sequence, (chapterList.size ?: 1) - 1)
+                            mCataloguesPresenter?.activityResult(sequence)
+                        }
                     }
+                    finish()
                 }
-                finish()
+                R.id.catalog_empty_refresh -> getChapterData()
+                R.id.tab_catalog -> {
+                    if (recl_catalog_main != null) {
+                        recl_catalog_main.visibility = View.VISIBLE
+                    }
+                    if (rl_catalog_novel != null) {
+                        rl_catalog_novel?.visibility = View.VISIBLE
+                    }
+
+                    if (recl_bookmark_main != null) {
+                        recl_bookmark_main.visibility = View.GONE
+                    }
+                    if (rl_layout_empty_online != null) {
+                        rl_layout_empty_online?.visibility = View.GONE
+                    }
+                    currentView = tab_catalog
+                }
+                R.id.tab_bookmark -> {
+
+                    if (recl_catalog_main != null) {
+                        recl_catalog_main.visibility = View.GONE
+                    }
+                    if (rl_catalog_novel != null) {
+                        rl_catalog_novel?.visibility = View.GONE
+                    }
+
+                    if (recl_bookmark_main != null) {
+                        recl_bookmark_main.visibility = View.VISIBLE
+                    }
+                    currentView = tab_bookmark
+                    showNullBookMarkNoteLayout()
+                }
+                R.id.iv_catalog_novel_sort//正序、逆序
+                    , R.id.tv_catalog_novel_sort -> if (!chapterList.isEmpty()) {
+                    //书签点击的统计
+                    StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
+                    isPositive = !isPositive
+                    if (!is_last_chapter) {
+                        Collections.reverse(chapterList)
+                    } else {
+                        is_last_chapter = false
+                    }
+                    mCataloguesAdapter.insertCatalog(chapterList)
+                    mCataloguesAdapter.notifyDataSetChanged()
+                    changeSortState(isPositive)
+                    recl_catalog_main.scrollToPosition(0)
+                }
+                R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
+                    mCataloguesPresenter?.fixBook()
+                }
+                else -> {
+                }
             }
-            R.id.catalog_empty_refresh -> getChapterData()
-            R.id.tab_catalog -> {
-                if (recl_catalog_main != null) {
-                    recl_catalog_main.visibility = View.VISIBLE
+        }
+
+        private fun changeSortState(b: Boolean) {
+            if (tv_catalog_novel_sort != null && iv_catalog_novel_sort != null) {
+                if (b) {
+                    tv_catalog_novel_sort?.setText(R.string.catalog_negative)
+                    sortIcon = R.drawable.dir_sort_negative
+                    //正序的统计
+                    StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
+
+                    iv_catalog_novel_sort?.setImageResource(sortIcon)
+
+                } else {
+                    tv_catalog_novel_sort?.setText(R.string.catalog_positive)
+                    sortIcon = R.drawable.dir_sort_positive
+                    iv_catalog_novel_sort?.setImageResource(sortIcon)
+                    //倒序的统计
+                    StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)
                 }
-                if (rl_catalog_novel != null) {
-                    rl_catalog_novel!!.visibility = View.VISIBLE
+            }
+        }
+
+        private fun startDeleteBookmarks(currentView: View, list: ArrayList<Int>) {
+            if (list.size > 0) {
+                val mDialog = MyDialog(this@CataloguesActivity, R.layout.publish_hint_dialog, Gravity.CENTER, true)
+                val dialog_prompt = mDialog.findViewById<TextView>(R.id.dialog_title)
+                dialog_prompt.setText(R.string.prompt)
+                val dialog_information = mDialog.findViewById<TextView>(R.id.publish_content)
+                dialog_information.setText(R.string.determine_remove_bookmark)
+                dialog_information.gravity = Gravity.CENTER
+                val dialog_cancel = mDialog.findViewById<Button>(R.id.publish_stay)
+                dialog_cancel.setText(R.string.cancel)
+                val dialog_confirm = mDialog.findViewById<Button>(R.id.publish_leave)
+                dialog_confirm.setText(R.string.delete)
+                dialog_confirm.setOnClickListener {
+                    if (currentView === tab_bookmark) {
+                        if (mCataloguesPresenter != null) {
+                            mCataloguesPresenter?.doDeleteBookmarks(list)
+                        }
+                    }
+                    mDialog?.dismiss()
+                }
+                dialog_cancel.setOnClickListener { mDialog?.dismiss() }
+                try {
+                    mDialog.show()
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
-                if (recl_bookmark_main != null) {
-                    recl_bookmark_main.visibility = View.GONE
-                }
-                if (rl_layout_empty_online != null) {
-                    rl_layout_empty_online!!.visibility = View.GONE
-                }
-                currentView = tab_catalog
             }
-            R.id.tab_bookmark -> {
+        }
 
-                if (recl_catalog_main != null) {
-                    recl_catalog_main.visibility = View.GONE
+        override fun onBackPressed() {
+            if (!fromCover && mCataloguesPresenter != null) {
+                if (!chapterList?.isEmpty()) {
+                    sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
                 }
-                if (rl_catalog_novel != null) {
-                    rl_catalog_novel!!.visibility = View.GONE
-                }
-
-                if (recl_bookmark_main != null) {
-                    recl_bookmark_main.visibility = View.VISIBLE
-                }
-                currentView = tab_bookmark
-                showNullBookMarkNoteLayout()
+                mCataloguesPresenter?.activityResult(sequence)
             }
-            R.id.iv_catalog_novel_sort//正序、逆序
-                , R.id.tv_catalog_novel_sort -> if (chapterList != null && !chapterList!!.isEmpty()) {
-                //书签点击的统计
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
-                isPositive = !isPositive
-                if(!is_last_chapter){
-                    Collections.reverse(chapterList!!)
-                }else{
-                    is_last_chapter = false
+            exitAndUpdate()
+        }
+
+        private fun exitAndUpdate() {
+            //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
+            if (isTaskRoot) {
+                val intent = Intent(this, SplashActivity::class.java)
+                startActivity(intent)
+            }
+            super.onBackPressed()
+        }
+
+        private fun exit() {
+            finish()
+        }
+
+
+        override fun onCreateOptionsMenu(menu: Menu): Boolean {
+            menu.add("menu")
+            return super.onCreateOptionsMenu(menu)
+        }
+
+        override fun requestCatalogSuccess(chapterList: ArrayList<Chapter>) {
+            this.chapterList = chapterList
+            if (loadingPage != null) {
+                loadingPage?.onSuccess()
+            }
+            catalog_chapter_count?.text = "共" + chapterList.size + "章"
+            if (mCataloguesAdapter != null) {
+                if (fromEnd) {
+                    isPositive = false
+                    Collections.reverse(chapterList)
                 }
                 mCataloguesAdapter.insertCatalog(chapterList)
                 mCataloguesAdapter.notifyDataSetChanged()
-                changeSortState(isPositive)
-                recl_catalog_main.scrollToPosition(0)
             }
-            R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
-                mCataloguesPresenter!!.fixBook()
-            }
-            else -> {
-            }
-        }
-    }
 
-    private fun changeSortState(b: Boolean) {
-        if (tv_catalog_novel_sort != null && iv_catalog_novel_sort != null) {
-            if (b) {
-                tv_catalog_novel_sort!!.setText(R.string.catalog_negative)
-                sortIcon = R.drawable.dir_sort_negative
-                //正序的统计
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_zx_btn)
 
-                iv_catalog_novel_sort!!.setImageResource(sortIcon)
-
+            //设置选中的条目
+            var position = 0
+            if (is_last_chapter) {
+                position = chapterList.size
             } else {
-                tv_catalog_novel_sort!!.setText(R.string.catalog_positive)
-                sortIcon = R.drawable.dir_sort_positive
-                iv_catalog_novel_sort!!.setImageResource(sortIcon)
-                //倒序的统计
-                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_dx_btn)
-            }
-        }
-    }
-
-    private fun startDeleteBookmarks(currentView: View, list: ArrayList<Int>) {
-        if (list.size > 0) {
-            val mDialog = MyDialog(this@CataloguesActivity, R.layout.publish_hint_dialog, Gravity.CENTER, true)
-            val dialog_prompt = mDialog.findViewById<TextView>(R.id.dialog_title)
-            dialog_prompt.setText(R.string.prompt)
-            val dialog_information = mDialog.findViewById<TextView>(R.id.publish_content)
-            dialog_information.setText(R.string.determine_remove_bookmark)
-            dialog_information.gravity = Gravity.CENTER
-            val dialog_cancel = mDialog.findViewById<Button>(R.id.publish_stay)
-            dialog_cancel.setText(R.string.cancel)
-            val dialog_confirm = mDialog.findViewById<Button>(R.id.publish_leave)
-            dialog_confirm.setText(R.string.delete)
-            dialog_confirm.setOnClickListener {
-                if (currentView === tab_bookmark) {
-                    if (mCataloguesPresenter != null) {
-                        mCataloguesPresenter!!.doDeleteBookmarks(list)
-                    }
-                }
-                mDialog?.dismiss()
-            }
-            dialog_cancel.setOnClickListener { mDialog?.dismiss() }
-            try {
-                mDialog.show()
-            } catch (e: Exception) {
-                e.printStackTrace()
+                position = sequence
             }
 
-        }
-    }
-
-    override fun onBackPressed() {
-        if (!fromCover && mCataloguesPresenter != null) {
-            if (!chapterList!!.isEmpty()) {
-                sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
+            if (mCataloguesAdapter != null) {
+                mCataloguesAdapter.setSelectedItem(position)
             }
-            mCataloguesPresenter!!.activityResult(sequence)
+            initCatalogAndBookmark()
         }
-        exitAndUpdate()
-    }
 
-    private fun exitAndUpdate() {
-        //如果是从通知栏过来, 且已经退出到home了, 要回到应用中
-        if (isTaskRoot) {
-            val intent = Intent(this, SplashActivity::class.java)
-            startActivity(intent)
+        override fun requestCatalogError() {
+            dataError()
         }
-        super.onBackPressed()
-    }
 
-    private fun exit() {
-        finish()
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.add("menu")
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun requestCatalogSuccess(chapterList: ArrayList<Chapter>) {
-        this.chapterList = chapterList
-        if (loadingPage != null) {
-            loadingPage!!.onSuccess()
-        }
-        catalog_chapter_count!!.text = "共" + chapterList.size + "章"
-        if (mCataloguesAdapter != null) {
-            if (fromEnd) {
-                isPositive = false
-                Collections.reverse(chapterList)
+        override fun handOverLay() {
+            if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && char_hint != null) {
+                char_hint?.visibility = View.INVISIBLE
             }
-            mCataloguesAdapter.insertCatalog(chapterList)
-            mCataloguesAdapter.notifyDataSetChanged()
+        }
+
+        override fun deleteBookmarks(deleteList: ArrayList<Int>) {
+            startDeleteBookmarks(tab_bookmark, deleteList)
+        }
+
+        override fun notifyDataChange(isCatalog: Boolean, bookmarkList: ArrayList<Bookmark>) {
+
+            this.bookmarkList = bookmarkList
+            mBookmarkAdapter.insertBookMark(this.bookmarkList)
+
+            if (isCatalog) {
+                showNullBookMarkNoteLayout()
+            }
         }
 
 
-        //设置选中的条目
-        var position = 0
-        if (is_last_chapter) {
-            position = chapterList.size
-        } else {
-            position = sequence
+        override fun successAddIntoShelf(isAddIntoShelf: Boolean) {
+
         }
 
-        if (mCataloguesAdapter != null) {
-            mCataloguesAdapter.setSelectedItem(position)
+        override fun changeDownloadButtonStatus() {
         }
-        initCatalogAndBookmark()
-    }
 
-    override fun requestCatalogError() {
-        dataError()
-    }
-
-    override fun handOverLay() {
-        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && char_hint != null) {
-            char_hint!!.visibility = View.INVISIBLE
+        override fun shouldLightStatusBase(): Boolean {
+            return true
         }
-    }
 
-    override fun deleteBookmarks(deleteList: ArrayList<Int>) {
-        startDeleteBookmarks(tab_bookmark!!, deleteList)
-    }
-
-    override fun notifyDataChange(isCatalog: Boolean, bookmarkList: ArrayList<Bookmark>) {
-
-        this.bookmarkList = bookmarkList
-        mBookmarkAdapter.insertBookMark(this.bookmarkList!!)
-
-        if (isCatalog) {
-            showNullBookMarkNoteLayout()
-        }
-    }
-
-
-    override fun successAddIntoShelf(isAddIntoShelf: Boolean) {
-
-    }
-
-    override fun changeDownloadButtonStatus() {
-    }
-
-    override fun shouldLightStatusBase(): Boolean {
-        return true
-    }
 }

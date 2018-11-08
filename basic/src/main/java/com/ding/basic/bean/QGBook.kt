@@ -75,7 +75,7 @@ class QGBook private constructor(builder: QGBook.Builder) : Book() {
             return this
         }
 
-        fun host(host: String): QGBook.Builder {
+        fun host(host: String?): QGBook.Builder {
             this.host = host
             return this
         }

@@ -47,8 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:layout_marginRight="1dp"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_marginRight="1dp">
     </fragment>
 </android.support.v4.widget.DrawerLayout>

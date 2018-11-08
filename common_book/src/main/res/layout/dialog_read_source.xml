@@ -2,11 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:focusable="true"
-    android:id="@+id/rootLayout"
     android:scrollbars="vertical">
 
     <LinearLayout
@@ -36,29 +37,56 @@
         <RelativeLayout
             android:id="@+id/rl_change_source_statement"
             android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/txt_transform_read_content"
                 android:layout_width="match_parent"
-                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.5"
                 android:maxLines="4"
-                android:layout_margin="10dp"
                 android:padding="@dimen/padding_4"
                 android:text="@string/translate_code_read"
                 android:textColor="#282828"
                 android:textSize="15sp"/>
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_not_show_next_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/ckb_not_show_next_time"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:background="@drawable/read_source_dialog_ckb_sel"
+                android:button="@null"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="@string/not_show_next_time"
+                android:textColor="#8D939D"
+                android:textSize="@dimen/text_size_small"
+                tools:ignore="RtlHardcoded"/>
+
+        </LinearLayout>
+
         <View
             android:id="@+id/change_source_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:layout_marginTop="13dp"
             android:background="#F1F1F1"/>
 
         <RelativeLayout
@@ -70,8 +98,8 @@
                 android:id="@+id/change_source_bottom_divider"
                 android:layout_width="0.5dp"
                 android:layout_height="42dp"
-                android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
                 android:background="#F1F1F1"/>
 
             <TextView
@@ -101,13 +129,13 @@
     </LinearLayout>
 
     <net.lzbook.kit.ui.widget.NightShadowView
-        android:layout_width="wrap_content"
         android:id="@+id/nightShadowView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/ll_container"
         android:layout_alignLeft="@id/ll_container"
-        android:layout_alignRight="@id/ll_container"
         android:layout_alignTop="@id/ll_container"
+        android:layout_alignRight="@id/ll_container"
+        android:layout_alignBottom="@id/ll_container"
         android:visibility="gone"
         app:cornerRadius="4dp"/>
 </RelativeLayout>

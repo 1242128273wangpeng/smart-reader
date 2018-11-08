@@ -143,13 +143,13 @@ object RequestAPI {
 
     fun requestLogoutAction(parameters: Map<String, String>): Flowable<JsonObject>? {
         val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.LOGIN_ACTION
+                RequestService.LOGOUT_ACTION
         return requestService.requestLogoutAction(url, parameters)
     }
 
     fun requestRefreshToken(parameters: Map<String, String>): Flowable<RefreshResp>? {
         val url = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST +
-                RequestService.LOGIN_ACTION
+                RequestService.REFRESH_TOKEN
         return requestService.requestRefreshToken(url, parameters)
     }
 
@@ -275,6 +275,13 @@ object RequestAPI {
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
         val url = RequestService.FONT_URL + fontName
         return requestService.downloadFont(url)
+    }
+
+    fun downloadVoicePlugin(): Flowable<ResponseBody> = requestService.downloadVoicePlugin()
+
+
+    fun requestRecommendCateList(packageName: String, categoryNames: String): Flowable<BasicResultV4<ArrayList<RecommendCateListBean>>> {
+        return requestService.requestRecommendCateList(packageName, categoryNames)
     }
 
 }

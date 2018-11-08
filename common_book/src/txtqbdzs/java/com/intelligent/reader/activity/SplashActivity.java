@@ -16,10 +16,12 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,10 +78,9 @@ import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-import static android.view.KeyEvent.KEYCODE_BACK;
-
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
+    private static final int REQUEST_SELECT_INTEREST = 1001;
     private static String TAG = "SplashActivity";
     private final MHandler handler = new MHandler(this);
     public int initialization_count = 0;
@@ -232,6 +233,14 @@ public class SplashActivity extends FrameActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        try {
+            setContentView(R.layout.act_splash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ad_view = findViewById(R.id.ad_view);
+
         String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
         File bookDBFile = getDatabasePath(bookDBName);
 
@@ -249,7 +258,31 @@ public class SplashActivity extends FrameActivity {
             txt_name.setText(R.string.app_name);
             upgradeBookDB(bookDBName, chapterDBList);
         } else {
+            // 选择兴趣
+            selectInterest();
+        }
+    }
+
+    /**
+     * 选择兴趣
+     */
+    private void selectInterest() {
+        if (sharedPreUtil == null) sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
+        if (sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 1) == 1) {
             doOnCreate();
+        } else {
+            // 选择兴趣
+            FrameLayout frameLayout = findViewById(R.id.content_frame);
+            View view = LayoutInflater.from(this).inflate(R.layout.select_interest, frameLayout);
+            if (view != null) {
+                final SelectInterestHelper interestHelper = new SelectInterestHelper(view, this);
+                interestHelper.setOverListener(() -> {
+                    doOnCreate();
+                    return null;
+                });
+            } else {
+                doOnCreate();
+            }
         }
     }
 
@@ -395,14 +428,6 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void doOnCreate() {
-
-        try {
-            setContentView(R.layout.act_splash);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        ad_view = findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
 

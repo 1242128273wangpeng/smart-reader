@@ -13,8 +13,7 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:clipToPadding="true"
-            android:background="@color/primary"
-            android:focusableInTouchMode="true">
+            android:background="@color/primary">
 
         <RelativeLayout
                 android:layout_width="match_parent"

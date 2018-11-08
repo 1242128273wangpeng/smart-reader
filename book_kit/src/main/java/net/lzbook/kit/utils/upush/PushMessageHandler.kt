@@ -28,7 +28,7 @@ class PushMessageHandler : UmengMessageHandler() {
     override fun dealWithCustomMessage(context: Context?, msg: UMessage?) {
         super.dealWithCustomMessage(context, msg)
         uiThread {
-            if(msg?.extra?.get("IsDynamicCheck")?.isNotEmpty() == true){
+            if (msg?.extra?.get("IsDynamicCheck")?.isNotEmpty() == true) {
                 DynamicParameter(BaseBookApplication.getGlobalContext()).requestCheck()
             }
 

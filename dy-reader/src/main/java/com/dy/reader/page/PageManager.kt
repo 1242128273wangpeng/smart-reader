@@ -77,6 +77,9 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
     var isReady = false
         private set
 
+    var destroy = false
+        private set
+
     fun prepare(position: Position) {
         if (PageManager::leftPage.isInitialized) {
             Logger.e("unloadTexture")
@@ -97,6 +100,14 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
     fun clear() {
         isReady = false
         GLPage.destroy()
+    }
+
+    fun init() {
+        destroy = false
+    }
+
+    fun destroy() {
+        destroy = true
     }
 
     fun forwardPage() {
@@ -139,9 +150,9 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
 
     fun isReadyForward(): Boolean {
         if (!rightPage.isLoaded.get() && rightPage.position.group < ReaderStatus.chapterList.size) {
-            if(!DataProvider.isGroupExist(rightPage.position.group)) {
+            if (!DataProvider.isGroupExist(rightPage.position.group)) {
                 DataProvider.loadGroupWithBusyUI(rightPage.position.book_id, rightPage.position.group)
-            }else{
+            } else {
                 rightPage.refresh()
             }
         }
@@ -149,22 +160,22 @@ object PageManager : GLPage.RefreshListener, DataProvider.GroupRefreshListener {
     }
 
     fun isReadyBack(): Boolean {
-        if (!leftPage.isLoaded.get() && leftPage.position.group >= 0 ) {
-            if(!DataProvider.isGroupExist(leftPage.position.group)) {
+        if (!leftPage.isLoaded.get() && leftPage.position.group >= 0) {
+            if (!DataProvider.isGroupExist(leftPage.position.group)) {
                 DataProvider.loadGroupWithBusyUI(leftPage.position.book_id, leftPage.position.group)
-            }else{
+            } else {
                 leftPage.refresh()
             }
         }
         return leftPage.isLoaded.get()
     }
 
-    fun refreshLeftAndRightPage(){
+    fun refreshLeftAndRightPage() {
         try {
             leftPage.refresh()
             rightPage.refresh()
-        }catch (ex:Exception){
-            Logger.e("refreshLeftAndRightPage: "+ex.message)
+        } catch (ex: Exception) {
+            Logger.e("refreshLeftAndRightPage: " + ex.message)
         }
     }
 }

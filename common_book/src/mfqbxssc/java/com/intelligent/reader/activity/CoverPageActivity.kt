@@ -463,7 +463,7 @@ class CoverPageActivity : BaseCacheableActivity(),
     /**
      * 添加标签
      */
-    private fun buildLabel(text: String,index :Int, book: Book): TextView {
+    private fun buildLabel(text: String, index: Int, book: Book): TextView {
         val left = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_padding)
         val right = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_padding_right)
         val top = resources.getDimensionPixelOffset(R.dimen.cover_book_flowlayout_top)
@@ -477,17 +477,17 @@ class CoverPageActivity : BaseCacheableActivity(),
         textView.setPadding(left, top, right, bottom)
         textView.setOnClickListener(OnClickListener {
 
-            var data = HashMap<String,String>()
-            data.put("bookid",book.book_id+"")
-            data.put("name",book.name+"")
-            data.put("lablekey",text)
-            data.put("rank",index.toString())
-            StartLogClickUtil.upLoadEventLog(this,StartLogClickUtil.BOOOKDETAIL_PAGE,StartLogClickUtil.LABLECLICK,data)
+            var data = HashMap<String, String>()
+            data.put("bookid", book.book_id + "")
+            data.put("name", book.name + "")
+            data.put("lablekey", text)
+            data.put("rank", index.toString())
+            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LABLECLICK, data)
 
 
             val intent = Intent()
             intent.setClass(this, LabelsDetailActivity::class.java)
-            intent.putExtra("url", RequestService.LABEL_SEARCH_V4+"?keyword=" + text)
+            intent.putExtra("url", RequestService.LABEL_SEARCH_V4 + "?keyword=" + text)
             intent.putExtra("title", text)
             intent.putExtra("fromCover", true)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -582,7 +582,10 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             R.id.img_app_share -> {
                 applicationShareDialog.show()
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.ACTION_SHARE)
+                val data = HashMap<String, String>()
+                data["bookid"] = bookId ?: ""
+                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
+                        StartLogClickUtil.ACTION_SHARE, data)
             }
 
             R.id.book_cover_bookshelf -> if (coverPagePresenter != null) {

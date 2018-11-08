@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:fitsSystemWindows="true"
-        android:focusableInTouchMode="true">
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -172,6 +171,12 @@
                 style="@style/Debug_Widget_Text"
                 android:layout_height="55dp"
                 android:text="@string/debug_micro_content_host"/>
+
+            <TextView
+                android:id="@+id/tv_user_tag_host"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"
+                android:text="@string/debug_user_tag_host"/>
 
 
             <View

@@ -275,12 +275,11 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HISTORYLOGIN);
                 break;
             case R.id.footprint_empty_find:
-                Intent storeIntent = new Intent();
-                storeIntent.setClass(this, HomeActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt(EventBookStore.BOOKSTORE, EventBookStore.TYPE_TO_BOOKSTORE);
-                storeIntent.putExtras(bundle);
-                startActivity(storeIntent);
+                bundle.putInt("position", 1);
+                ATManager.exitReading();
+                finish();
+                RouterUtil.navigation(this, RouterConfig.HOME_ACTIVITY, bundle);
                 break;
             default:
                 break;

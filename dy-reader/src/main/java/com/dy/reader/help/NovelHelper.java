@@ -14,6 +14,7 @@ import com.dy.reader.dialog.ReaderChangeSourceDialog;
 import com.dy.reader.event.EventSetting;
 import com.dy.reader.listener.SourceClickListener;
 import com.dy.reader.setting.ReaderStatus;
+import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.pointpage.EventPoint;
@@ -246,6 +247,9 @@ public class NovelHelper {
             book.setSequence(sequence);
             book.setReaded(1);
             book.setLast_read_time(System.currentTimeMillis());
+            if (book.getChapter_count() <= 0) {
+                book.setChapter_count(ReaderStatus.INSTANCE.getChapterCount());
+            }
 
             if (book.getChapter_count() <= 0) {
                 book.setChapter_count(ReaderStatus.INSTANCE.getChapterCount());
@@ -253,6 +257,7 @@ public class NovelHelper {
 
             RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                     BaseBookApplication.getGlobalContext()).updateBook(book);
+
         }
     }
 

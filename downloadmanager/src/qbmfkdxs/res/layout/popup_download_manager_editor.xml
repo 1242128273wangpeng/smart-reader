@@ -4,82 +4,86 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/v_divider"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#E6E6E6"/>
 
     <LinearLayout
         android:id="@+id/ll_content"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/v_divider"
-        android:background="#ffffff"
-        android:orientation="horizontal"
-        android:padding="15dp">
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_select_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:drawableLeft="@drawable/download_manager_remove_select_all_icon"
-                    android:drawablePadding="3dp"
-                    android:drawableStart="@drawable/download_manager_remove_select_all_icon"
-                    android:gravity="center"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:text="@string/select_all"
-                    android:textColor="#303135"
-                    android:textSize="17sp"/>
-            </LinearLayout>
-        </RelativeLayout>
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <View
-            android:layout_width="0.5dp"
-            android:layout_height="match_parent"
+            android:id="@+id/v_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
             android:background="#E6E6E6"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:orientation="horizontal"
+            android:padding="15dp">
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_delete"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:drawableLeft="@drawable/download_manager_remove_delete_icon"
-                    android:drawablePadding="3dp"
-                    android:drawableStart="@drawable/download_manager_remove_delete_icon"
-                    android:gravity="center"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:text="@string/delete"
-                    android:textColor="#303135"
-                    android:textSize="17sp"/>
-            </LinearLayout>
-        </RelativeLayout>
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
 
+                    <Button
+                        android:id="@+id/btn_select_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:drawableLeft="@drawable/download_manager_remove_select_all_icon"
+                        android:drawablePadding="3dp"
+                        android:drawableStart="@drawable/download_manager_remove_select_all_icon"
+                        android:gravity="center"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:text="@string/select_all"
+                        android:textColor="#303135"
+                        android:textSize="17sp"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="#E6E6E6"/>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:drawableLeft="@drawable/download_manager_remove_delete_icon"
+                        android:drawablePadding="3dp"
+                        android:drawableStart="@drawable/download_manager_remove_delete_icon"
+                        android:gravity="center"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="@string/delete"
+                        android:textColor="#303135"
+                        android:textSize="17sp"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
     <net.lzbook.kit.ui.widget.NightShadowView

@@ -96,6 +96,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
     private var bookShelfFragment: BookShelfFragment? = null
 
+    private var registerShareCallback = false
 
     private val recommendFragment: WebViewFragment by lazy {
         val fragment = WebViewFragment()
@@ -180,7 +181,7 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
 
         this.changeHomePagerIndex(currentIndex)
         this.setNightMode(false)
-
+        this.registerShareCallback = false
         StatService.onResume(this)
     }
 
@@ -755,6 +756,18 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
             dl_home_content.closeMenu()
         } else {
             dl_home_content.openMenu()
+        }
+    }
+
+    override fun registerShareCallback(state: Boolean) {
+        this.registerShareCallback = state
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (registerShareCallback) {
+            UserManager.registerQQShareCallBack(requestCode, resultCode, data)
         }
     }
 

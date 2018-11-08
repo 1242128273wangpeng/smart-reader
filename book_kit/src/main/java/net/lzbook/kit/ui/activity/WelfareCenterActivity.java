@@ -45,7 +45,7 @@ public class WelfareCenterActivity extends FrameActivity implements View.OnClick
     private ImageView welfare_center_search;
     private WebView welfare_center_content;
 
-    private String currentUrl;
+    private String currentUrl = "";
     private String currentTitle;
 
     private ArrayList<String> urls;

@@ -1,6 +1,5 @@
 package com.dy.reader.adapter
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +18,11 @@ import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.router.BookRouter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
 
     private var books: java.util.ArrayList<Book>? = null
-    fun setBooks(books: java.util.ArrayList<Book>) {
+    fun setBooks(books: java.util.ArrayList<Book>?) {
         this.books = books
     }
 

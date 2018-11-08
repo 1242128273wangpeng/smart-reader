@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
-    tools:ignore="RtlHardcoded">
+    tools:ignore="RtlHardcoded, MissingPrefix">
 
     <RelativeLayout
         android:id="@+id/rl_head_normal"
@@ -23,10 +23,10 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/module_name"
-            android:paddingBottom="11dp"
             android:paddingLeft="16dp"
-            android:paddingRight="10dp"
             android:paddingTop="11dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="11dp"
             android:src="@drawable/bookshelf_head_personal_icon"
             app:onPressChangeAlpha="true"/>
 
@@ -47,12 +47,22 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/module_name"
-            android:paddingBottom="11dp"
             android:paddingLeft="10dp"
-            android:paddingRight="16dp"
             android:paddingTop="11dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="11dp"
             android:src="@drawable/bookshelf_head_more_icon"
             app:onPressChangeAlpha="true"/>
+
+        <View
+            android:id="@+id/view_head_menu"
+            android:layout_width="9dp"
+            android:layout_height="9dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:layout_alignRight="@+id/img_head_menu"
+            android:background="@drawable/prompt_red_bg"/>
 
         <ImageView
             android:id="@+id/img_head_search"
@@ -120,10 +130,10 @@
             android:id="@+id/fl_ad_float"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="30dp"/>
 
         <LinearLayout
             android:id="@+id/ll_empty"

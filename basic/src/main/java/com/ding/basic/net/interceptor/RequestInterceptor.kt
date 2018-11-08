@@ -12,45 +12,37 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
-import kotlin.collections.HashMap
 
 class RequestInterceptor : Interceptor {
 
     private val requestParameters = mutableMapOf<String, String>()
 
     private fun buildRequestParameters(): Map<String, String> {
-
-        if (requestParameters["packageName"].isNullOrEmpty()) {
+        if (!requestParameters.containsKey("packageName") || requestParameters["packageName"].isNullOrEmpty()) {
             requestParameters["packageName"] = Config.loadRequestParameter("packageName")
         }
 
-        if (requestParameters["os"].isNullOrEmpty()) {
+        if (!requestParameters.containsKey("os") || requestParameters["os"].isNullOrEmpty()) {
             requestParameters["os"] = Config.loadRequestParameter("os")
         }
 
-        if (requestParameters["udid"].isNullOrEmpty()) {
+        if (!requestParameters.containsKey("udid") || requestParameters["udid"].isNullOrEmpty()) {
             requestParameters["udid"] = Config.loadRequestParameter("udid")
         }
 
-        if (requestParameters["version"].isNullOrEmpty()) {
+        if (!requestParameters.containsKey("version") || requestParameters["version"].isNullOrEmpty()) {
             requestParameters["version"] = Config.loadRequestParameter("version")
         }
 
-        if (requestParameters["channelId"].isNullOrEmpty()) {
+        if (!requestParameters.containsKey("channelId") || requestParameters["channelId"].isNullOrEmpty()) {
             requestParameters["channelId"] = Config.loadRequestParameter("channelId")
         }
 
-        if (requestParameters["latitude"].isNullOrEmpty()) {
-            requestParameters["latitude"] = Config.loadRequestParameter("latitude")
-        }
+        requestParameters["latitude"] = Config.loadRequestParameter("latitude")
 
-        if (requestParameters["longitude"].isNullOrEmpty()) {
-            requestParameters["longitude"] = Config.loadRequestParameter("longitude")
-        }
+        requestParameters["longitude"] = Config.loadRequestParameter("longitude")
 
-        if (requestParameters["cityCode"].isNullOrEmpty()) {
-            requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
-        }
+        requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
 
         if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
             requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")

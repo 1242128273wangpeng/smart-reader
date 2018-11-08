@@ -22,6 +22,9 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
 
     private var downloadListener: (() -> Unit)? = null
     private var sortingListener: (() -> Unit)? = null
+    private var importListener: (() -> Unit)? = null
+    private var shareListener: (() -> Unit)? = null
+    private var promptGoneListener: (() -> Unit)? = null
 
     init {
         popupWindow.isFocusable = true
@@ -37,6 +40,40 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
             sortingListener?.invoke()
         }
 
+        contentView.rl_local_import.setOnClickListener {
+            dismiss()
+            contentView.view_local_import.visibility = View.GONE
+            context.editShared {
+                putBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT, true)
+            }
+            onPromptClick()
+            importListener?.invoke()
+        }
+        contentView.rl_share.setOnClickListener {
+            dismiss()
+            contentView.view_share.visibility = View.GONE
+            context.editShared {
+                putBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT, true)
+            }
+            onPromptClick()
+            shareListener?.invoke()
+        }
+
+        val isLocalImportPromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT)
+        if (isLocalImportPromptGone) {
+            contentView.view_local_import.visibility = View.GONE
+        }
+        if (Constants.SHARE_SWITCH_ENABLE) {
+            val isSharePromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+            if (isSharePromptGone) {
+                contentView.view_share.visibility = View.GONE
+            }
+        } else {
+            contentView.rl_share.visibility = View.GONE
+            contentView.view_share.visibility = View.GONE
+        }
+
+
     }
 
     fun setOnDownloadClickListener(listener: (() -> Unit)) {
@@ -47,9 +84,33 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
         sortingListener = listener
     }
 
+    fun setOnImportClickListener(listener: (() -> Unit)) {
+        importListener = listener
+    }
+
+    fun setOnShareListener(listener: (() -> Unit)) {
+        shareListener = listener
+    }
+
+    fun setOnGoneListener(listener: () -> Unit) {
+        promptGoneListener = listener
+    }
+
+    private fun onPromptClick() {
+        var isAllPromptGone = false
+        val isSharePromptGone = contentView.view_share.visibility == View.GONE
+        val isLocalImportPromptGone = contentView.view_local_import.visibility == View.GONE
+        if (isSharePromptGone && isLocalImportPromptGone) {
+            isAllPromptGone = true
+        }
+        if (isAllPromptGone) {
+            promptGoneListener?.invoke()
+        }
+    }
+
     fun show(view: View) {
         val location = IntArray(2)
         view.getLocationOnScreen(location)
-        popupWindow.showAtLocation(view, Gravity.TOP,location[0],location[1])
+        popupWindow.showAtLocation(view, Gravity.TOP, location[0], location[1])
     }
 }

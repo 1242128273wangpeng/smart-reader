@@ -38,6 +38,7 @@ import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.ui.widget.ApplicationShareDialog
 import com.dingyue.statistics.DyStatService
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 
 import net.lzbook.kit.utils.*
@@ -265,21 +266,35 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     /**
      * 添加手动书签
      */
-    fun addOptionMark(font_count: Int, type: Int): Int {
+    private fun addOptionMark(font_count: Int, type: Int): Int {
         if (activity.get() == null) {
             return 0
         }
 
-        if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) == null && requestRepositoryFactory.insertBook(ReaderStatus.book) <= 0) {
+        // 如果是扉页，直接return
+        val sequence = if (ReaderStatus.position.group + 1 > ReaderStatus.chapterList.size) ReaderStatus.chapterList.size else ReaderStatus.position.group
+        if (sequence == -1) {
             return 0
         }
 
+        var localBook = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id)
+
+        if (localBook == null) {
+            localBook = ReaderStatus.book
+            localBook.readed = 1
+            localBook.chapter_count = ReaderStatus.chapterList.size
+
+            if (RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(localBook) <= 0) {
+                return 0
+            }
+        }
+
         if (!requestRepositoryFactory.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
-            val logMap = HashMap<String, String>()
-            logMap["type"] = "1"
-            logMap["bookid"] = ReaderStatus.book.book_id
-            logMap["chapterid"] = ReaderStatus.chapterId
-            DyStatService.onEvent(EventPoint.READPAGE_LABELEDIT, logMap)
+            var logMap = HashMap<String, String>()
+            logMap.put("type", "1")
+            logMap.put("bookid", ReaderStatus.book?.book_id)
+            logMap.put("chapterid", ReaderStatus?.chapterId)
+            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
@@ -385,7 +400,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             val activity = this.activity.get()
 
             if (activity is ReaderActivity) {
-//                activity.registerShareCallback(true)
+                activity.registerShareCallback(true)
             }
         }
     }

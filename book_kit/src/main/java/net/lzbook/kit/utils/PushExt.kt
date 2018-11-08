@@ -21,9 +21,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.toast.ToastUtil.showToastMessage
 import java.util.*
 
 /**
@@ -32,7 +36,7 @@ import java.util.*
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/8/30 17:08
  */
-fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
+fun PushAgent.updateTags(context: Context, udid: String): Flowable<BannerInfo> {
     loge("更新用户标签")
     val pushTagsFlowable = RequestRepositoryFactory.loadRequestRepositoryFactory(context)
             .requestPushTags(udid)
@@ -61,13 +65,15 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                             it.printStackTrace()
                         })
             }
-            .zipWith(bannerInfoFlowable, BiFunction<PushInfo, BannerInfo, String> { pushInfo, bannerInfo ->
+            .zipWith(bannerInfoFlowable, BiFunction<PushInfo, BannerInfo, BannerInfo> { pushInfo, bannerInfo ->
+                var result = BannerInfo()
                 if (bannerInfo.hasShowed) {
                     loge("此次活动弹窗已经展示过")
-                    ""
+                    result.url = ""
+                    result
                 } else {
-                    loge("zip")
-                    var result = ""
+                    loge("zip -- push info: $pushInfo" +
+                            "\n banner info: $bannerInfo")
                     val pushTags = pushInfo.tags
                     val bannerTags = bannerInfo.tags
                     val bannerImgUrl = bannerInfo.url
@@ -75,7 +81,7 @@ fun PushAgent.updateTags(context: Context, udid: String): Flowable<String> {
                             && bannerImgUrl?.isNotEmpty() == true) {
                         bannerTags.retainAll(pushTags) // 求交集
                         if (bannerTags.isNotEmpty()) {
-                            result = bannerImgUrl
+                            result = bannerInfo
                         }
                     }
                     loge("zip result: $result")
@@ -167,7 +173,14 @@ fun Activity.openPushSetting() {
         DyStatService.onEvent(EventPoint.MAIN_PUSHSET)
     } catch (e: Exception) {
         //打开设置界面
-        startActivity(Intent(Settings.ACTION_SETTINGS))
+        try {
+            startActivity(Intent(Settings.ACTION_SETTINGS))
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            if (!isFinishing) {
+                ToastUtil.showToastMessage("未找到权限设置界面，请在应用列表打开通知权限！")
+            }
+        }
     }
 }
 
@@ -238,3 +251,20 @@ val IS_FROM_PUSH = "is_from_push"
 
 @JvmField
 val EVENT_UPDATE_TAG = "event_update_tag"
+
+fun UMessage?.parsePushReceiveLog(): HashMap<String, String> {
+    val data = HashMap<String, String>()
+    data["pushid"] = this?.msg_id ?: return data
+    data["lateraction"] = this.after_open
+    data["name"] = this.title
+    data["content"] = this.text
+    return data
+}
+
+fun UMessage?.parsePushClickLog(): HashMap<String, String> {
+    val data = parsePushReceiveLog()
+    val hasHome = ActivityLifecycleHelper.hasHome()
+    data["condition"] = if (hasHome) "2" else "1"
+    data["type"] = "1"
+    return data
+}

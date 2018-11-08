@@ -24,6 +24,7 @@ import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.download.CacheManager
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
@@ -126,6 +127,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
                 }
                 return 0
             } else {
+                System.setProperty("java.util.Arrays.useLegacyMergeSort", "true")
                 Collections.sort(books, CommonContract.MultiComparator(Constants.book_list_sort_type))
                 iBookList.addAll(books)
 
@@ -177,8 +179,10 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
             }
 
         }
-        view?.onAdRefresh()
 
+        runOnMain {
+            view?.onAdRefresh()
+        }
     }
 
 

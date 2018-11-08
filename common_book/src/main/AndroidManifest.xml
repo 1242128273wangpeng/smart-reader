@@ -46,6 +46,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions"/>
 
     <!--qq-->
     <supports-screens
@@ -276,9 +277,8 @@
             android:name="net.lzbook.kit.ui.activity.GoToCoverOrReadActivity"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:taskAffinity=".gotocoverorreadactivity">
+            android:taskAffinity=".gotocoverorreadactivity"/>
 
-        </activity>
         <!-- 腾讯SSO授权的Activity注册 -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -302,6 +302,7 @@
         <activity
             android:name="net.lzbook.kit.ui.activity.SwitchADActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!-- 微信回调activity -->
 

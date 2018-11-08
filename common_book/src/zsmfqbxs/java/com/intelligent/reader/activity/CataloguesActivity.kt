@@ -48,6 +48,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import java.util.concurrent.Callable
 
@@ -301,6 +302,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         }
     }
 
+    @Subscribe
     fun onEvent(eventBookmark: EventBookmark) {
         if (eventBookmark.type == EventBookmark.type_delete) {
             AppLog.e(TAG, "eventBookmark:" + eventBookmark.bookmark.id + " name:" + eventBookmark.bookmark.chapter_name)
@@ -388,7 +390,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun notifyChangeDownLoad(event: OfflineDownloadEvent) {
         if (mCatalogAdapter != null) {
-            mCatalogAdapter!!.notifyDataSetChanged()
+            mCatalogAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -462,8 +464,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.rb_catalog_click_book_mark)
                 isPositive = !isPositive
                 Collections.reverse(chapterList!!)
-                mCatalogAdapter!!.list = chapterList
-                mCatalogAdapter!!.notifyDataSetChanged()
+                mCatalogAdapter?.list = chapterList
+                mCatalogAdapter?.notifyDataSetChanged()
                 changeSortState(isPositive)
             }
             R.id.iv_fixbook -> if (mCataloguesPresenter != null) {
@@ -577,8 +579,8 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
                 isPositive = false
                 Collections.reverse(chapterList)
             }
-            mCatalogAdapter!!.list = chapterList
-            mCatalogAdapter!!.notifyDataSetChanged()
+            mCatalogAdapter?.list = chapterList
+            mCatalogAdapter?.notifyDataSetChanged()
         }
 
         //设置选中的条目
@@ -622,10 +624,10 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         if (mBookmarkAdapter == null)
             mBookmarkAdapter = BookmarkAdapter(this, bookmarkList)
         if (bookmark_main != null)
-            bookmark_main!!.adapter = mBookmarkAdapter
+            bookmark_main?.adapter = mBookmarkAdapter
 
         if (mBookmarkAdapter != null) {
-            mBookmarkAdapter!!.notifyDataSetChanged()
+            mBookmarkAdapter?.notifyDataSetChanged()
         }
         if (isCatalog) {
             showNullBookMarkNoteLayout()

@@ -252,7 +252,7 @@ object CacheManager {
         val pendingIntent = PendingIntent.getActivity(app, Constants.DOWNLOAD, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(app)
-        val build = builder.setSmallIcon(R.drawable.icon)
+        val build = builder.setSmallIcon(BaseBookApplication.getGlobalContext().applicationContext.applicationInfo.icon)
                 .setAutoCancel(true)
                 .setContentTitle(book.name)
                 .setContentText("缓存已经完成，点击查看")

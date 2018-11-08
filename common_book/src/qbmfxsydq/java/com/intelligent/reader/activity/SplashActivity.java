@@ -164,7 +164,7 @@ public class SplashActivity extends FrameActivity {
                 false);
         Constants.book_list_sort_type = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("booklist_sort_type", 0);
-        gotoActivity(versionCode, firstGuide);
+        gotoActivity(versionCode, false);
     }
 
     private void gotoActivity(int versionCode, boolean firstGuide) {
@@ -415,6 +415,12 @@ public class SplashActivity extends FrameActivity {
         initializeDataFusion();
         checkBookChapterCount();
 
+        if(!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.DEL_WEBVIEW_CACHE,false)){
+            deleteFile(getCacheDir());
+            deleteFile(new File(getCacheDir().getParentFile(), "app_webview"));
+            SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.DEL_WEBVIEW_CACHE,true);
+        }
+
         // 安装快捷方式
         new InstallShotCutTask().execute();
 
@@ -424,6 +430,20 @@ public class SplashActivity extends FrameActivity {
         }
     }
 
+
+    private void deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                deleteFile(f);
+            }
+            file.delete();//如要保留文件夹，只删除文件，请注释这行
+            Log.d("SplashActivity", "files " + file.getAbsolutePath());
+        } else if (file.exists()) {
+            file.delete();
+            Log.d("SplashActivity", "files " + file.getAbsolutePath());
+        }
+    }
 
     /**
      * 检查章节数是否为0
@@ -806,7 +826,11 @@ public class SplashActivity extends FrameActivity {
             }
 
             //开启缓存服务
-            CacheManager.INSTANCE.checkService();
+            try {
+                CacheManager.INSTANCE.checkService();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
 
             return null;
         }

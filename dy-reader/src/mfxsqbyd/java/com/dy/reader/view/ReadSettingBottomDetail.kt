@@ -45,7 +45,7 @@ import java.text.NumberFormat
 class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     val readerSettings = ReaderSettings.instance
-    
+
     var presenter: ReadSettingPresenter? = null
 
     internal var isCustomReadingSpace: Boolean = false
@@ -55,7 +55,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private var lastIndex: Int? = null
     var currentThemeMode: String? = null
 
-    var readPresenter:ReadPresenter? = null
+    var readPresenter: ReadPresenter? = null
 
     private var time: Long = 0
 
@@ -87,7 +87,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         skbar_reader_brightness_change?.max = 235
 
-        if(!readerSettings.isAutoBrightness) {
+        if (!readerSettings.isAutoBrightness) {
             setScreenBrightProgress()
         }
         setBrightnessBackground(readerSettings.isAutoBrightness)
@@ -110,7 +110,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             fl_reader_change_chapter_shadowView.layoutParams.height = fl_reader_change_chapter.height
             fl_reader_change_chapter.requestLayout()
         }
-        
+
 //        skbar_reader_font_size.configBuilder
 //                .min(10f)
 //                .max(30f)
@@ -119,6 +119,17 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 //                .setUnit("字号: ")
 //                .build()
         setFontSize()
+
+        fl_reader_change_chapter.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_bottom_option.setOnTouchListener { _, _ ->
+            true
+        }
+        ll_reader_setting_detail.setOnTouchListener { _, _ ->
+            true
+        }
+
     }
 
     private fun resetBtn(isSlideUp: Boolean) {
@@ -177,7 +188,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
     }
 
-    //设置屏蔽亮度
+    //设置屏幕亮度
     private fun setScreenBright() {
         val screenBrightness = readerSettings.screenBrightness
         if (screenBrightness >= 0) {
@@ -212,14 +223,12 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         readerSettings.isAutoBrightness = true
         readPresenter?.startAutoBrightness()
 
-        val screenBrightness =  readerSettings.screenBrightness
+        val screenBrightness = readerSettings.screenBrightness
         if (screenBrightness > 0) {
             skbar_reader_brightness_change?.progress = screenBrightness
         }
         skbar_reader_brightness_change?.progress = 0
     }
-
-
 
 
     private fun initPageMode() {
@@ -229,7 +238,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_translation)
         } else if (readerSettings.animation_mode == 3) {
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_up_down)
-        }else{
+        } else {
             rg_reader_animation_group?.check(R.id.rbtn_reader_animation_slide)
         }
     }
@@ -239,7 +248,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         val screenBrightness = readerSettings.screenBrightness
 
         if (screenBrightness >= 0) {
-            skbar_reader_brightness_change?.progress = screenBrightness
+            skbar_reader_brightness_change?.progress = if (screenBrightness <= 20) 0 else screenBrightness
         } else {
             skbar_reader_brightness_change?.progress = 5
         }
@@ -288,6 +297,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         }
 
     }
+
     private fun resetOptionLayout() {
 
         fl_reader_change_chapter_shadowView.layoutParams.height = 0
@@ -309,7 +319,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
         img_reader_night?.preventClickShake(this)
 
-        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
+//        read_setting_backdrop_group?.setOnCheckedChangeListener(this)
 
         rg_reader_spacing_group?.setOnCheckedChangeListener { id ->
             when (id) {
@@ -404,7 +414,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
 
     override fun onClick(v: View) {
-        if(!ReaderStatus.isMenuShow) {
+        if (!ReaderStatus.isMenuShow) {
             return
         }
         when (v.id) {
@@ -439,7 +449,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 checkOptionLayout(R.id.rl_reader_background)
             }
 
-            R.id.rl_reader_font , R.id.ibtn_reader_font-> {
+            R.id.rl_reader_font, R.id.ibtn_reader_font -> {
                 checkOptionLayout(R.id.rl_reader_font)
             }
 
@@ -453,6 +463,8 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
+
+                changeBrightnessByModeChange()
             }
             R.id.txt_reader_font_reduce// 减小字号
             -> {
@@ -470,7 +482,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_font_size_bigger)
                 increaseFont()
             }
-            
+
             R.id.ll_reader_brightness_system, R.id.read_setting_auto_power// 跟随系统 更改按钮背景
             -> {
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_with_system)
@@ -491,7 +503,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.AUTOREAD, data)
 
                 readerSettings.isAutoReading = true
-                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE,false))
+                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
             }
             R.id.ckb_reader_full_screen -> {
 
@@ -509,6 +521,28 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
             else -> {
             }
+        }
+    }
+
+    private fun changeBrightnessByModeChange() {
+        if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+            setBrightnessBackground(false)
+            readerSettings.isAutoBrightness = false
+            ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+        }
+
+        if (readerSettings.isAutoBrightness) {
+            read_setting_auto_power?.isChecked = true
+            readPresenter?.startAutoBrightness()
+            val screenBrightness = readerSettings.screenBrightness
+            if (screenBrightness > 0) {
+                skbar_reader_brightness_change?.progress = screenBrightness
+            }
+            skbar_reader_brightness_change?.progress = 0
+        } else {
+            read_setting_auto_power?.isChecked = false
+            setScreenBright()
+            setScreenBrightProgress()
         }
     }
 
@@ -582,8 +616,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
 
-
-
     /**
      * 减小字体
      */
@@ -622,7 +654,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         val data = java.util.HashMap<String, String>()
         data.put("type", "1")
         data.put("FONT", readerSettings.fontSize.toString())
-        data.put("sizevalue",readerSettings.fontSize.toString())
+        data.put("sizevalue", readerSettings.fontSize.toString())
         StartLogClickUtil.upLoadEventLog(context, StartLogClickUtil.READPAGESET_PAGE, StartLogClickUtil.WORDSIZE, data)
     }
 
@@ -660,6 +692,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     fun changePageBackgroundWrapper(index: Int) {
         if (readerSettings.readThemeMode == 61) {
             presenter?.chageNightMode(index, false)
+            changeBrightnessByModeChange()
         } else {
             setNovelMode(index)
         }

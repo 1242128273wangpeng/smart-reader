@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
 import android.view.View;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
@@ -20,6 +21,10 @@ import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.toast.ToastUtil;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+
 
 /**
  * net.lzbook.kit.utils.web.CustomWebClient
@@ -251,6 +256,24 @@ public class CustomWebClient extends WebViewClient {
             webSetting.setLoadsImagesAutomatically(true);
             webSetting.setLayoutAlgorithm(LayoutAlgorithm.NORMAL);
             webSetting.setRenderPriority(RenderPriority.HIGH);// 提高渲染的优先级
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                webSetting.setAllowUniversalAccessFromFileURLs(true);
+            } else {
+                try {
+                    Class<?> clazz = webview.getSettings().getClass();
+                    Method method = clazz.getMethod("setAllowUniversalAccessFromFileURLs", boolean.class);
+                    if (method != null) {
+                        method.invoke(webview.getSettings(), true);
+                    }
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
 
             webSetting.setBlockNetworkImage(true); // 图片下载阻塞
             webSetting.setUseWideViewPort(true);//FIXME

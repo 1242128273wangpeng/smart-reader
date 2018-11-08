@@ -63,6 +63,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             bookShelfSortingPopup.show(rl_content)
             BookShelfLogger.uploadBookShelfBookSort()
         }
+        popup.setOnShareListener {
+            applicationShareDialog.show()
+            bookShelfInterface?.registerShareCallback(true)
+            BookShelfLogger.uploadBookShelfShare()
+        }
+        popup.setOnGoneListener {
+            view_head_menu.visibility = View.GONE
+        }
+
         popup
     }
 
@@ -73,6 +82,12 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
         popup
     }
+
+    private val applicationShareDialog: ApplicationShareDialog by lazy {
+        val dialog = ApplicationShareDialog(requireActivity())
+        dialog
+    }
+
 
     private val bookShelfSortingPopup: BookShelfSortingPopup by lazy {
         val popup = BookShelfSortingPopup(requireActivity())
@@ -214,6 +229,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_remove_head_cancel.setOnClickListener {
             dismissRemoveMenu()
         }
+
+        val isSharePromptGone = !Constants.SHARE_SWITCH_ENABLE || activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+                ?: false
+        if (isSharePromptGone) {
+            view_head_menu.visibility = View.GONE
+        } else {
+            view_head_menu.visibility = View.VISIBLE
+        }
+
     }
 
     override fun onResume() {

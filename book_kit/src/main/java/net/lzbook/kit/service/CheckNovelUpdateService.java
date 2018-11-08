@@ -133,7 +133,7 @@ public class CheckNovelUpdateService extends Service {
         }
 
         if (isFirst) {
-            timerHandler.sendEmptyMessage(1);
+            timerHandler.sendEmptyMessageDelayed(1, Constants.authAccessRefreshTime);
             timerHandler.sendEmptyMessageDelayed(0, Constants.refreshTime);
             isFirst = false;
         }

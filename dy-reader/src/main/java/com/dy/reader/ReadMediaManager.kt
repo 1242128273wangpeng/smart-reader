@@ -254,7 +254,7 @@ object ReadMediaManager {
                         }
                     }
                 }
-            }catch (t:Throwable){
+            } catch (t: Throwable) {
                 t.printStackTrace()
             }
         }
@@ -316,7 +316,13 @@ object ReadMediaManager {
         val map: TreeMap<String, AdBean> = TreeMap()
         fun put(key: String, ad: AdBean) {
             synchronized(map) {
-                map.put(key, ad)
+                if (map.containsKey(key)) {
+                    var value = map[key]
+                    value?.view?.clearFocus()
+                    value?.view = null
+                    value = null
+                }
+                map[key] = ad
             }
         }
         fun get(key: String): AdBean? = map[key]

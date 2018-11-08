@@ -8,6 +8,7 @@ import com.ding.basic.util.ReplaceConstants;
 import com.intelligent.reader.BuildConfig;
 
 import org.jetbrains.annotations.NotNull;
+
 @Route(path = ReplaceConstants.BUILD_CONFIG_PROVIDER)
 public class BuildConfigProvider implements IBuildConfigProvider {
     @Override

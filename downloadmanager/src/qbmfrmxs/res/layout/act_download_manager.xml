@@ -78,7 +78,7 @@
             app:onPressChangeAlpha="true"/>
     </RelativeLayout>
 
-    <com.dingyue.downloadmanager.NavigationBarStrip
+    <net.lzbook.kit.utils.NavigationBarStrip
         android:id="@+id/nbs_navigation"
         android:layout_width="300dp"
         android:layout_height="43dp"

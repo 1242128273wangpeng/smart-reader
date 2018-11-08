@@ -346,7 +346,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener {
                     if (customWebClient != null) {
                         customWebClient.doClear();
                     }
-                    contentView.reload();
+                    contentView.loadUrl(url);
                 }
             });
         }
