@@ -19,10 +19,10 @@ import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
 import com.dy.reader.data.DataProvider
+import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.event.EventLoading
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.event.EventSetting
-import com.dy.reader.dialog.AutoReadOptionDialog
 import com.dy.reader.fragment.CatalogMarkFragment
 import com.dy.reader.fragment.LoadingDialogFragment
 import com.dy.reader.fragment.ReadSettingFragment
@@ -574,7 +574,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                         pac_reader_ad?.visibility = View.VISIBLE
                     }
 
-                    if (!PageManager.currentPage.filledAD) {
+                    if (!PageManager.destroy && !PageManager.currentPage.filledAD) {
                         EventBus.getDefault()
                                 .post(EventReaderConfig(ReaderSettings.ConfigType.PAGE_REFRESH))
                     }
