@@ -166,6 +166,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
             it.remove = true
             it.notifyDataSetChanged()
             in_bottom_menu.visibility = View.VISIBLE
+            refreshDeleteButtonState()
         }
     }
 
@@ -179,6 +180,8 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
             txt_right_handle.setTextColor(Color.parseColor("#5D646E"))
             img_back.visibility = View.VISIBLE
             it.remove = false
+            // 重置所有选中项
+            favoriteList?.map { item -> item.selected = false }
             it.notifyDataSetChanged()
             in_bottom_menu.visibility = View.GONE
         }
