@@ -106,9 +106,7 @@
         <attr name="indicatorFactor" format="float"/>
         <attr name="indicatorHeight" format="dimension"/>
         <attr name="indicatorPadding" format="dimension"/>
-        <attr name="indicatorActivityTextSize" format="dimension"/>
-        <attr name="indicatorInActivityTextSize" format="dimension"/>
-
+        <attr name="indicatorTextSize" format="dimension"/>
 
         <attr name="indicatorType" format="enum">
             <enum name="line" value="0"/>

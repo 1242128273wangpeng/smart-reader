@@ -6,12 +6,10 @@ import static net.lzbook.kit.statistic.StatisticUtilKt.buildSearch;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
@@ -20,24 +18,17 @@ import com.ding.basic.bean.SearchCommonBeanYouHua;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestService;
 import com.ding.basic.request.RequestSubscriber;
-import com.dingyue.contract.router.RouterConfig;
-import com.dingyue.contract.router.RouterUtil;
 import com.intelligent.reader.R;
-import com.intelligent.reader.activity.CoverPageActivity;
-import com.intelligent.reader.activity.FindBookDetail;
 import com.intelligent.reader.activity.SearchBookActivity;
+import com.intelligent.reader.activity.TabulationActivity;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.book.download.CacheManager;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.request.UrlUtils;
 import net.lzbook.kit.statistic.model.Search;
 import net.lzbook.kit.utils.AppLog;
 import net.lzbook.kit.utils.AppUtils;
-import net.lzbook.kit.utils.FootprintUtils;
-import net.lzbook.kit.utils.JSInterfaceHelper;
 import net.lzbook.kit.utils.oneclick.AntiShake;
 
 import org.jetbrains.annotations.NotNull;
@@ -169,230 +160,7 @@ public class SearchHelper {
 
     private AntiShake shake = new AntiShake();
 
-    public void initJSHelp(JSInterfaceHelper jsInterfaceHelper) {
 
-        if (jsInterfaceHelper == null) {
-            return;
-        }
-
-        jsInterfaceHelper.setOnSearchClick(new JSInterfaceHelper.onSearchClick() {
-
-            @Override
-            public void doSearch(String keyWord, String search_type, String filter_type,
-                    String filter_word, String sort_type) {
-
-                AppLog.e("aaa", "aaaa");
-                word = keyWord;
-                searchType = search_type;
-                filterType = filter_type;
-                filterWord = filter_word;
-                sortType = sort_type;
-
-                startLoadData(0);
-
-                if (mJsCallSearchCall != null) {
-                    mJsCallSearchCall.onJsSearch();
-                }
-            }
-        });
-
-        jsInterfaceHelper.setOnEnterCover(new JSInterfaceHelper.onEnterCover() {
-
-            @Override
-            public void doCover(String host, String book_id, String book_source_id, String name,
-                    String author, String parameter,
-                    String extra_parameter) {
-
-                AppLog.e(TAG, "doCover");
-                Map<String, String> data = new HashMap<>();
-                data.put("BOOKID", book_id);
-                data.put("source", "WEBVIEW");
-                StartLogClickUtil.upLoadEventLog(mContext, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                        StartLogClickUtil.ENTER, data);
-
-                Book book = new Book();
-                book.setBook_id(book_id);
-                book.setBook_source_id(book_source_id);
-                book.setHost(host);
-                book.setName(name);
-                book.setAuthor(author);
-
-                WordInfo wordInfo = wordInfoMap.get(word);
-                if (wordInfo != null) {
-                    wordInfo.actioned = true;
-                    alilog(buildSearch(book, word, Search.OP.COVER,
-                            wordInfo.computeUseTime()));
-                }
-                Intent intent = new Intent();
-                intent.setClass(mContext, CoverPageActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("book_id", book_id);
-                bundle.putString("book_source_id", book_source_id);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
-            }
-        });
-
-        jsInterfaceHelper.setOnAnotherWebClick(new JSInterfaceHelper.onAnotherWebClick() {
-
-            @Override
-            public void doAnotherWeb(String url, String name) {
-                if (shake.check()) {
-                    return;
-                }
-                AppLog.e(TAG, "doAnotherWeb");
-                try {
-                    if (url.contains(RequestService.AUTHOR_V4)) {
-                        sharedPreferences.edit().putString(Constants.FINDBOOK_SEARCH,
-                                "authorType").apply();//FindBookDetail 返回键时标识
-                    }
-                    Intent intent = new Intent();
-                    intent.setClass(mContext, FindBookDetail.class);
-                    intent.putExtra("url", url);
-                    intent.putExtra("title", name);
-                    mContext.startActivity(intent);
-                    AppLog.e(TAG, "EnterAnotherWeb");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        jsInterfaceHelper.setSearchWordClick(new JSInterfaceHelper.onSearchWordClick() {
-            @Override
-            public void sendSearchWord(String searchWord, String search_type) {
-                word = searchWord;
-                searchType = search_type;
-
-                startLoadData(0);
-
-                if (jsNoneResultSearchCall != null) {
-                    jsNoneResultSearchCall.onNoneResultSearch(searchWord);
-                }
-
-            }
-        });
-
-        jsInterfaceHelper.setOnTurnRead(new JSInterfaceHelper.onTurnRead() {
-            @Override
-            public void turnRead(String book_id, String book_source_id, String host, String name,
-                    String author, String parameter, String extra_parameter, String update_type,
-                    String last_chapter_name, int serial_number, String img_url, long update_time,
-                    String desc, String label, String status, String bookType) {
-
-
-                Book book = new Book();
-                book.setBook_id(book_id);
-                book.setBook_source_id(book_source_id);
-                book.setHost(host);
-                book.setAuthor(author);
-                book.setName(name);
-                Chapter chapter = new Chapter();
-                chapter.setName(last_chapter_name);
-                book.setLast_chapter(chapter);
-                book.setChapter_count(serial_number);
-                book.setImg_url(img_url);
-                book.setLast_update_success_time(update_time);
-                book.setSequence(-1);
-                book.setDesc(desc);
-                book.setLabel(label);
-                book.setStatus(status);
-
-//                book.mBookType = Integer.parseInt(bookType);
-                //bookType为是否付费书籍标签 除快读外不加
-
-                FootprintUtils.saveHistoryShelf(book);
-
-                Bundle bundle = new Bundle();
-
-                bundle.putInt("sequence", 0);
-                bundle.putInt("offset", 0);
-                bundle.putSerializable("book", book);
-                int flags = Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                RouterUtil.INSTANCE.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle,
-                        flags);
-            }
-        });
-
-        jsInterfaceHelper.setOnEnterRead(new JSInterfaceHelper.onEnterRead() {
-            @Override
-            public void doRead(final String host, final String book_id, final String book_source_id,
-                    final String name, final String author, final
-            String status, final String category, final String imgUrl, final String last_chapter,
-                    final String chapter_count, final long
-                    updateTime, final String parameter, final String extra_parameter,
-                    final int dex) {
-                AppLog.e(TAG, "doRead");
-                Book coverBook = genCoverBook(host, book_id, book_source_id, name, author, status,
-                        category, imgUrl, last_chapter, chapter_count,
-                        updateTime, parameter, extra_parameter, dex);
-                AppLog.e(TAG, "DoRead : " + coverBook.getSequence());
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("sequence", coverBook.getSequence());
-                bundle.putInt("offset", coverBook.getOffset());
-                bundle.putSerializable("book", coverBook);
-                int flags = Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP;
-                RouterUtil.INSTANCE.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle,
-                        flags);
-
-            }
-        });
-
-        List<Book> booksOnLine = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).loadBooks();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
-        for (int i = 0; i < booksOnLine.size(); i++) {
-            stringBuilder.append("{'id':'").append(booksOnLine.get(i).getBook_id()).append("'}");
-            if (i != booksOnLine.size() - 1) {
-                stringBuilder.append(",");
-            }
-        }
-        stringBuilder.append("]");
-        AppLog.e(TAG, "StringBuilder : " + stringBuilder.toString());
-        jsInterfaceHelper.setBookString(stringBuilder.toString());
-
-        jsInterfaceHelper.setOnInsertBook(new JSInterfaceHelper.OnInsertBook() {
-            @Override
-            public void doInsertBook(final String host, final String book_id,
-                    final String book_source_id, final String name, final String author,
-                    final String status, final String category, final String imgUrl,
-                    final String last_chapter, final String
-                    chapter_count, final long updateTime, final String parameter,
-                    final String extra_parameter, final int
-                    dex) {
-                AppLog.e(TAG, "doInsertBook");
-                Book book = genCoverBook(host, book_id, book_source_id, name, author, status,
-                        category, imgUrl, last_chapter, chapter_count,
-                        updateTime, parameter, extra_parameter, dex);
-                WordInfo wordInfo = wordInfoMap.get(word);
-                if (wordInfo != null) {
-                    wordInfo.actioned = true;
-                    alilog(buildSearch(book, word, Search.OP.BOOKSHELF, wordInfo.computeUseTime()));
-                }
-                long succeed = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).insertBook(book);
-                if (succeed > 0) {
-                    Toast.makeText(mContext.getApplicationContext(),
-                            R.string.bookshelf_insert_success, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        jsInterfaceHelper.setOnDeleteBook(new JSInterfaceHelper.OnDeleteBook() {
-            @Override
-            public void doDeleteBook(String book_id) {
-                AppLog.e(TAG, "doDeleteBook");
-                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                        BaseBookApplication.getGlobalContext()).deleteBook(book_id);
-                CacheManager.INSTANCE.stop(book_id);
-                CacheManager.INSTANCE.resetTask(book_id);
-                Toast.makeText(mContext.getApplicationContext(), R.string.bookshelf_delete_success,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     protected Book genCoverBook(String host, String book_id, String book_source_id, String name,
             String author, String status, String category,
@@ -443,7 +211,7 @@ public class SearchHelper {
                             "authorType").apply();
                     SearchBookActivity.isSatyHistory = true;
                     Intent intent = new Intent();
-                    intent.setClass(mContext, FindBookDetail.class);
+                    intent.setClass(mContext, TabulationActivity.class);
                     intent.putExtra("url", mUrl);
                     intent.putExtra("title", "作者主页");
                     fromClass = "findBookDetail";

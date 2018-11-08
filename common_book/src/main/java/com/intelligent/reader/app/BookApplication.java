@@ -1,6 +1,5 @@
 package com.intelligent.reader.app;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
@@ -8,8 +7,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.alibaba.sdk.android.feedback.util.ErrorCode;
-import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
 import com.dingyue.contract.util.CommonUtil;
 import com.dy.media.MediaConfig;
@@ -33,8 +30,6 @@ import net.lzbook.kit.utils.OpenUDID;
 
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
-
-import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -69,7 +64,8 @@ public class BookApplication extends BaseBookApplication {
             MediaLifecycle.INSTANCE.onAppCreate(this);
 
 //            //防止定位不回掉导致缺失id
-//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication
+// .getGlobalContext()));
 //            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
@@ -95,19 +91,13 @@ public class BookApplication extends BaseBookApplication {
             if (msg.what == 1) {
                 if (AppUtils.isMainProcess(BookApplication.this)) {
                     // 自定义ErrorCallback
-                    FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
-                        @Override
-                        public void onError(Context context, String errorMessage, ErrorCode code) {
-                            CommonUtil.showToastMessage("ErrorMessage is: " + errorMessage);
-                        }
-                    });
+                    FeedbackAPI.addErrorCallback(
+                            (context, errorMessage, code) -> CommonUtil.showToastMessage(
+                                    "ErrorMessage is: " + errorMessage));
                     // Feedback activity的回调
-                    FeedbackAPI.addLeaveCallback(new Callable() {
-                        @Override
-                        public Object call() throws Exception {
-                            Log.d("DemoApplication", "custom leave callback");
-                            return null;
-                        }
+                    FeedbackAPI.addLeaveCallback(() -> {
+                        Log.d("DemoApplication", "custom leave callback");
+                        return null;
                     });
 
                     FeedbackAPI.init(BookApplication.this,
@@ -119,12 +109,12 @@ public class BookApplication extends BaseBookApplication {
                     ApplicationInfo appInfo = getPackageManager()
                             .getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
 
-//                    if (!AppUtils.hasReYun()) {
+
                     String reyunAppKey = appInfo.metaData.getString("REYUN_APPKEY");
                     AppLog.e("reyun", reyunAppKey);
                     Tracking.initWithKeyAndChannelId(BaseBookApplication.getGlobalContext(),
-                            reyunAppKey, "_default_");
-//                    }
+                            reyunAppKey, AppUtils.getChannelId());
+
 
                     // 友盟推送初始化
                     if (!AppUtils.hasUPush()) return;

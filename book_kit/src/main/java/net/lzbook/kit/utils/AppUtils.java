@@ -735,10 +735,6 @@ public class AppUtils {
                 || packageName.equals("cn.txtqbmfyd.reader"); //新壳1
     }
 
-    public static boolean hasReYun() {
-        String packageName = getPackageName();
-        return packageName.equals("cn.qbmfkkydq.reader");
-    }
 
     /**
      * 获取渠道号

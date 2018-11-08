@@ -2,7 +2,6 @@ package com.intelligent.reader.presenter.search
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import android.text.TextUtils
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
@@ -12,23 +11,15 @@ import com.ding.basic.repository.RequestRepositoryFactory
 import com.ding.basic.request.RequestService
 import com.ding.basic.request.RequestSubscriber
 import com.dingyue.contract.IPresenter
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.showToastMessage
-import com.intelligent.reader.R
-import com.intelligent.reader.activity.CoverPageActivity
 import com.orhanobut.logger.Logger
 import io.reactivex.disposables.Disposable
 import net.lzbook.kit.app.BaseBookApplication
-import net.lzbook.kit.book.download.CacheManager
 import net.lzbook.kit.request.UrlUtils
 import net.lzbook.kit.statistic.alilog
 import net.lzbook.kit.statistic.buildSearch
 import net.lzbook.kit.statistic.model.Search
 import net.lzbook.kit.utils.AppLog
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.FootprintUtils
-import net.lzbook.kit.utils.JSInterfaceHelper
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
@@ -144,144 +135,6 @@ class SearchPresenter(private val mContext: Activity, override var view: SearchV
         filterWord = intent.getStringExtra("filter_word")
         sortType = intent.getStringExtra("sort_type")
 
-    }
-
-    fun initJSHelp(jsInterfaceHelper: JSInterfaceHelper?) {
-
-        if (jsInterfaceHelper == null) {
-            return
-        }
-
-        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            AppLog.e("aaa", "aaaa")
-            word = keyWord
-            searchType = search_type
-            filterType = filter_type
-            filterWord = filter_word
-            sortType = sort_type
-
-            startLoadData()
-
-            view?.onJsSearch()
-        }
-
-        jsInterfaceHelper.setOnEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            AppLog.e(TAG, "doCover")
-
-            val book = Book()
-            book.book_id = book_id
-            book.book_source_id = book_source_id
-            book.host = host
-            book.name = name
-            book.author = author
-
-            val wordInfo = wordInfoMap[word]
-            if (wordInfo != null && word != null) {
-                wordInfo.actioned = true
-                alilog(buildSearch(book, word!!, Search.OP.COVER, wordInfo.computeUseTime()))
-            }
-            val intent = Intent()
-            intent.setClass(mContext, CoverPageActivity::class.java)
-            val bundle = Bundle()
-            bundle.putString("author", author)
-            bundle.putString("book_id", book_id)
-            bundle.putString("book_source_id", book_source_id)
-            intent.putExtras(bundle)
-            mContext.startActivity(intent)
-        }
-
-        jsInterfaceHelper.setSearchWordClick(JSInterfaceHelper.onSearchWordClick { searchWord, search_type ->
-            word = searchWord
-            searchType = search_type
-
-            startLoadData()
-
-            view?.onNoneResultSearch(searchWord)
-        })
-
-        jsInterfaceHelper.setOnTurnRead(JSInterfaceHelper.onTurnRead { book_id, book_source_id, host, name, author, parameter, extra_parameter, update_type, last_chapter_name, serial_number, img_url, update_time, desc, label, status, bookType ->
-
-
-            val book = Book()
-            book.book_id = book_id
-            book.book_source_id = book_source_id
-            book.host = host
-            book.author = author
-            book.name = name
-            book.last_chapter?.name = last_chapter_name
-            book.chapter_count = serial_number
-            book.img_url = img_url
-            book.last_chapter?.update_time = update_time
-            book.sequence = -1
-            book.desc = desc
-            book.label = label
-
-            book.status = status
-
-            //bookType为是否付费书籍标签 除快读外不加
-
-            FootprintUtils.saveHistoryShelf(book)
-            val bundle = Bundle()
-
-            bundle.putInt("sequence", 0)
-            bundle.putInt("offset", 0)
-            bundle.putSerializable("book", book)
-            RouterUtil.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle)
-        })
-
-        jsInterfaceHelper.setOnEnterRead { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
-            AppLog.e(TAG, "doRead")
-            val coverBook = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
-                    updateTime, parameter, extra_parameter, dex)
-            AppLog.e(TAG, "DoRead : " + coverBook.sequence)
-
-            val bundle = Bundle()
-            bundle.putInt("sequence", 0)
-            bundle.putInt("offset", 0)
-            bundle.putSerializable("book", coverBook)
-
-            RouterUtil.navigation(mContext, RouterConfig.READER_ACTIVITY, bundle)
-        }
-
-        val booksOnLine = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
-        val stringBuilder = StringBuilder()
-
-        if (booksOnLine != null && booksOnLine.isNotEmpty()) {
-            stringBuilder.append("[")
-            for (i in booksOnLine.indices) {
-                stringBuilder.append("{'id':'").append(booksOnLine[i].book_id).append("'}")
-                if (i != booksOnLine.size - 1) {
-                    stringBuilder.append(",")
-                }
-            }
-            stringBuilder.append("]")
-        }
-
-        AppLog.e(TAG, "StringBuilder : " + stringBuilder.toString())
-        jsInterfaceHelper.setBookString(stringBuilder.toString())
-
-        jsInterfaceHelper.setOnInsertBook { host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count, updateTime, parameter, extra_parameter, dex ->
-            AppLog.e(TAG, "doInsertBook")
-            val book = genCoverBook(host, book_id, book_source_id, name, author, status, category, imgUrl, last_chapter, chapter_count,
-                    updateTime, parameter, extra_parameter, dex)
-            val wordInfo = wordInfoMap[word]
-            if (wordInfo != null && word != null) {
-                wordInfo.actioned = true
-                alilog(buildSearch(book, word!!, Search.OP.BOOKSHELF, wordInfo.computeUseTime()))
-            }
-            val succeed = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).insertBook(book)
-            if (succeed > 0) {
-                mContext.showToastMessage(R.string.bookshelf_insert_success)
-            }
-        }
-
-        jsInterfaceHelper.setOnDeleteBook { book_id ->
-            AppLog.e(TAG, "doDeleteBook")
-            RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).deleteBook(book_id)
-            CacheManager.stop(book_id)
-            CacheManager.resetTask(book_id)
-            mContext.showToastMessage(R.string.bookshelf_delete_success)
-        }
     }
 
     protected fun genCoverBook(host: String, book_id: String, book_source_id: String, name: String, author: String, status: String, category: String,
