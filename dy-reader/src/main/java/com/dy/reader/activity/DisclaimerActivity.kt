@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.widget.Button
 import android.widget.EditText
@@ -206,5 +207,34 @@ class DisclaimerActivity : FrameActivity() {
     override fun onPause() {
         super.onPause()
         StatService.onPause(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        web_disclaimer?.clearCache(false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            if (web_disclaimer?.parent != null) {
+                (web_disclaimer?.parent as ViewGroup).removeView(web_disclaimer)
+            }
+
+            web_disclaimer?.stopLoading()
+            web_disclaimer?.settings?.javaScriptEnabled = false
+            web_disclaimer?.clearHistory()
+            web_disclaimer?.removeAllViews()
+            web_disclaimer?.destroy()
+        } else {
+            web_disclaimer?.stopLoading()
+            web_disclaimer?.settings?.javaScriptEnabled = false
+            web_disclaimer?.clearHistory()
+            web_disclaimer?.removeAllViews()
+            web_disclaimer?.destroy()
+
+            if (web_disclaimer?.parent != null) {
+                (web_disclaimer?.parent as ViewGroup).removeView(web_disclaimer)
+            }
+        }
     }
 }

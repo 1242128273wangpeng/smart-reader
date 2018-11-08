@@ -2,7 +2,6 @@ package com.ding.basic.net.interceptor
 
 import com.ding.basic.bean.Access
 import com.ding.basic.bean.BasicResult
-import com.ding.basic.net.Config
 import com.ding.basic.net.ResultCode
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.service.ContentService.Companion.AUTH_ACCESS
@@ -257,6 +256,9 @@ class ContentInterceptor : Interceptor {
         val url = initContentRequestUrl(interimRequest, parameters) ?: return request
 
         val builder = interimRequest.newBuilder().url(url)
+
+        builder.removeHeader("publicKey")
+        builder.removeHeader("accessKey")
 
         if (url.contains(AUTH_ACCESS)) {
             builder.addHeader("accessKey", ContentAPI.accessKey)

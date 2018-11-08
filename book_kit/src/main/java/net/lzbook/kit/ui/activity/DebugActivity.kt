@@ -170,6 +170,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             Config.insertWebViewHost(SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
+
             MicroAPI.microHost = (SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
             ContentAPI.contentHost = (SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
 
@@ -254,10 +255,10 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 跳转不同的界面
      */
     private fun intentHostList(type: String) {
-        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-            ToastUtil.showToastMessage("请先关闭动态参数")
-            return
-        }
+//        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+//            ToastUtil.showToastMessage("请先关闭动态参数")
+//            return
+//        }
         val intent = Intent(this, DebugHostActivity::class.java)
         intent.putExtra("type", type)
         startActivity(intent)

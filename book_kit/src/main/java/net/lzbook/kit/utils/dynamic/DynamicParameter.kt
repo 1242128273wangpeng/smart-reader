@@ -334,8 +334,8 @@ class DynamicParameter(private val context: Context) {
 
     private fun initApi() {
         MicroAPI.initMicroService()
-//        ContentAPI.initContentService()
-//        RequestAPI.initializeDataRequestService()
+        ContentAPI.initContentService()
+        RequestAPI.initializeDataRequestService()
     }
 
     private fun setBaidu() {

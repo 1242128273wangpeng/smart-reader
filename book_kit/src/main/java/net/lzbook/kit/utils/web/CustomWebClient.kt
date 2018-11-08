@@ -93,7 +93,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         }
 
         if (webView != null && loadingStartCount == 1) {
-            webView?.visibility = View.GONE
+//            webView?.visibility = View.GONE
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
             if (webView != null) {
                 webView?.stopLoading()

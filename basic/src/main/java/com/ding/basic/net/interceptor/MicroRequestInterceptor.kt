@@ -2,7 +2,6 @@ package com.ding.basic.net.interceptor
 
 import com.ding.basic.bean.Access
 import com.ding.basic.bean.BasicResult
-import com.ding.basic.net.Config
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.service.MicroService.Companion.AUTH_ACCESS
 import com.ding.basic.net.token.Token
@@ -198,7 +197,7 @@ class MicroRequestInterceptor : Interceptor {
      * 处理鉴权请求结果
      * **/
     private fun handleAuthResult(result: BasicResult<String>) {
-        val message = AESUtil.decrypt(result.data, Config.loadAccessKey())
+        val message = AESUtil.decrypt(result.data, MicroAPI.accessKey)
 
         if (message != null && message.isNotEmpty()) {
             val access = gson.fromJson(message, Access::class.java)
@@ -254,6 +253,9 @@ class MicroRequestInterceptor : Interceptor {
         val url = initMicroRequestUrl(interimRequest, parameters) ?: return request
 
         val builder = interimRequest.newBuilder().url(url)
+
+        builder.removeHeader("publicKey")
+        builder.removeHeader("accessKey")
 
         if (url.contains(AUTH_ACCESS)) {
             builder.addHeader("accessKey", MicroAPI.accessKey)

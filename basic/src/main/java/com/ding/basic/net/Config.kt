@@ -9,6 +9,8 @@ import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.URLBuilder
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -69,12 +71,20 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+            webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+            requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
 
-        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-        ContentAPI.contentHost = "http://20.20.200.206:8080"
-//        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+            MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+            ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+        } else {
+            webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+            requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+
+            MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+            ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+        }
+
 
         MicroAPI.initMicroService()
         ContentAPI.initContentService()
@@ -155,8 +165,8 @@ object Config {
         parameters["packageName"] = loadRequestParameter("packageName")
 
         parameters["cityCode"] = ParameterConfig.cityCode
-        parameters["latitude"] = ParameterConfig.latitude.toString()
-        parameters["longitude"] = ParameterConfig.longitude.toString()
+        parameters["latitude"] = ParameterConfig.latitude
+        parameters["longitude"] = ParameterConfig.longitude
 
         return URLBuilder.buildUrl(requestAPIHost, url, parameters)
     }
