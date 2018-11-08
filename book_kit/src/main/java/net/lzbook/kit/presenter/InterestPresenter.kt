@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter.interest
+package net.lzbook.kit.presenter
 
 import android.content.Context
 import com.ding.basic.RequestRepositoryFactory
@@ -7,6 +7,7 @@ import com.ding.basic.bean.Interest
 import com.ding.basic.net.RequestSubscriber
 
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.view.InterestView
 
 /**
  * Desc 选择兴趣相关

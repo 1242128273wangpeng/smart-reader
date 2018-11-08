@@ -1,4 +1,4 @@
-package com.intelligent.reader.presenter.interest
+package net.lzbook.kit.view
 
 import com.ding.basic.bean.Interest
 

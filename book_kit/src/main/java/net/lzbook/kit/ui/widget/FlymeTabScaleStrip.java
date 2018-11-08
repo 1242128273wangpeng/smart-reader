@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget;
+package net.lzbook.kit.ui.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -25,8 +25,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.intelligent.reader.R;
-
+import net.lzbook.kit.R;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.logger.AppLog;
 
