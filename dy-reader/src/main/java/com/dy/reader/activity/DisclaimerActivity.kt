@@ -1,8 +1,10 @@
 package com.dy.reader.activity
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +52,8 @@ class DisclaimerActivity : FrameActivity() {
         if (isFromReadingPage) {
             txt_title.text = resources.getString(R.string.translate_code)
             txt_content.text = resources.getString(R.string.translate_code_description)
+            sl_disclaimer.visibility = View.VISIBLE
+            web_disclaimer.visibility = View.GONE
         }
 
 
@@ -58,7 +62,8 @@ class DisclaimerActivity : FrameActivity() {
         if (isServicePolicy) {
             txt_title.text = resources.getString(R.string.login_service_policy)
             txt_content.text = resources.getString(R.string.service_policy_description)
-
+            sl_disclaimer.visibility = View.VISIBLE
+            web_disclaimer.visibility = View.GONE
         }
 
         // 登录页隐私条款
@@ -66,7 +71,8 @@ class DisclaimerActivity : FrameActivity() {
         if (isPrivacyPolicy) {
             txt_title.text = resources.getString(R.string.login_privacy_policy)
             txt_content.text = resources.getString(R.string.privacy_policy_description)
-
+            sl_disclaimer.visibility = View.VISIBLE
+            web_disclaimer.visibility = View.GONE
         }
 
         // 使用协议页面
@@ -74,6 +80,11 @@ class DisclaimerActivity : FrameActivity() {
         if (isFormDisclaimerPage) {
             txt_title.text = resources.getString(R.string.disclaimer_statement)
             web_disclaimer.visibility = View.VISIBLE
+            sl_disclaimer.visibility = View.GONE
+
+            web_disclaimer?.setLayerType(View.LAYER_TYPE_NONE, null)
+
+            web_disclaimer.setBackgroundColor(Color.TRANSPARENT)
 
             loadingPage = LoadingPage(this, rl_disclaimer_main, LoadingPage.setting_result)
 
@@ -114,8 +125,15 @@ class DisclaimerActivity : FrameActivity() {
             }
 
             if (NetWorkUtils.isNetworkAvailable(this)) {
+
+                if (customWebClient != null) {
+                    customWebClient?.initParameter()
+                }
+
                 // 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
-                web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+//                web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+                web_disclaimer.loadUrl("https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/protocol/protocol.html")
+
             } else {
                 loadingPage?.onErrorVisable()
             }

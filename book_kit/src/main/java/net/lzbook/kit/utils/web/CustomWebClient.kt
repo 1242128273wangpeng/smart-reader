@@ -93,7 +93,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         }
 
         if (webView != null && loadingStartCount == 1) {
-//            webView?.visibility = View.GONE
+            webView?.visibility = View.GONE
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
             if (webView != null) {
                 webView?.stopLoading()
@@ -245,13 +245,13 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             webSettings?.databasePath = databasePath
         }
 
-        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
-            //如果有本地缓存则直接使用本地缓存，而不管缓存数据是否过期失效，否则加载网络数据
-            webSettings?.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-        } else {
+//        if (NetWorkUtils.NETWORK_TYPE == NetWorkUtils.NETWORK_NONE) {
+//            如果有本地缓存则直接使用本地缓存，而不管缓存数据是否过期失效，否则加载网络数据
+//            webSettings?.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+//        } else {
             //如果有本地缓存，且缓存有效未过期，则直接使用本地缓存，否则加载网络数据
             webSettings?.cacheMode = WebSettings.LOAD_DEFAULT
-        }
+//        }
 
         webSettings?.setAppCacheEnabled(true)
 

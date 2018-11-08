@@ -53,6 +53,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/sl_disclaimer"
         android:layout_below="@id/rl_disclaimer"
         android:scrollbars="none">
 
@@ -72,6 +73,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_disclaimer"
-        android:background="#0094d5"
         android:visibility="gone"/>
 </RelativeLayout>

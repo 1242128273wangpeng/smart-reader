@@ -50,6 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_disclaimer"
+        android:id="@+id/sl_disclaimer"
         android:scrollbars="none">
 
         <TextView
@@ -67,6 +68,7 @@
         android:id="@+id/web_disclaimer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rl_disclaimer"
+        android:layout_below="@id/rl_disclaimer"
+        android:layerType="software"
         android:visibility="gone"/>
 </RelativeLayout>

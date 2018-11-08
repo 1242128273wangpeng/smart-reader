@@ -2,7 +2,6 @@ package com.ding.basic.net.interceptor
 
 import com.ding.basic.bean.Access
 import com.ding.basic.bean.BasicResult
-import com.ding.basic.net.ResultCode
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.service.ContentService.Companion.AUTH_ACCESS
 import com.ding.basic.net.token.Token
@@ -90,7 +89,6 @@ class ContentInterceptor : Interceptor {
 
             return try {
                 val basicResult = gson.fromJson(responseResult, BasicResult::class.java)
-                basicResult.code = ResultCode.PRIVATE_KEY_EXPIRE
                 if (basicResult.checkPrivateKeyExpire()) {
                     Logger.e("网络请求鉴权异常: ${basicResult.code} : ${basicResult.msg}")
                     requestAuthentication(chain, request)
