@@ -35,6 +35,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.database.helper.BookDataProviderHelper;
 import com.ding.basic.repository.RequestRepositoryFactory;
 import com.ding.basic.request.RequestSubscriber;
@@ -450,8 +451,9 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
 
     private void initializeDataFusion() {
 
-        RequestRepositoryFactory loadRequest = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext());
+        RequestRepositoryFactory loadRequest =
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
 
         books = loadRequest.loadBooks();
 
@@ -467,7 +469,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = loadRequest.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2
+                        && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     loadRequest.updateBook(book);
                     loadRequest.deleteBookFix(book.getBook_id());
@@ -524,12 +527,13 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
      * 检查章节数是否为0
      * 解决阅读进度不更新的问题
      */
-    private void checkBookChapterCount(){
+    private void checkBookChapterCount() {
         if (sharedPreUtil == null) {
             sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         }
 
-        boolean isCheckChapterCount = sharedPreUtil.getBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, false);
+        boolean isCheckChapterCount = sharedPreUtil.getBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT,
+                false);
 
         if (!isCheckChapterCount) {
 
@@ -913,16 +917,18 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
                 final TextView txt_gender_skip = view.findViewById(R.id.txt_gender_skip);
                 txt_gender_skip.setOnClickListener(v -> {
 
-                    Map<String,String> data = new HashMap<>();
-                    data.put("type","0");
-                    StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "0");
+                    StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
 
                     txt_gender_skip.setText("努力加载中...");
                     txt_gender_skip.setClickable(false);
                     genderHelper.jumpAnimation();
                     sharedPreUtil.putInt(SharedPreUtil.GENDER_TAG, Constants.SDEFAULT);
                     mStepInFlag = true;
-                    Constants.SGENDER = Constants.SDEFAULT;
+                    ParameterConfig.INSTANCE.setGENDER_TYPE(
+                            ParameterConfig.INSTANCE.getGENDER_DEFAULT());
                     doOnCreate();
                 });
             } else {
@@ -936,11 +942,13 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
 
     private boolean initChooseGender() {
         AppUtils.initDensity(getApplicationContext());
-        if( sharedPreUtil == null){
+        if (sharedPreUtil == null) {
             sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
         }
-        Constants.SGENDER = sharedPreUtil.getInt(SharedPreUtil.GENDER_TAG, Constants.NONE);
-        return Constants.SGENDER == Constants.NONE;
+        ParameterConfig.INSTANCE.setGENDER_TYPE(sharedPreUtil.getInt(SharedPreUtil.GENDER_TAG,
+                ParameterConfig.INSTANCE.getGENDER_NONE()));
+        return ParameterConfig.INSTANCE.getGENDER_TYPE()
+                == ParameterConfig.INSTANCE.getGENDER_NONE();
     }
 
     @Override
