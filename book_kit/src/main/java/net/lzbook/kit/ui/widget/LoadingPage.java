@@ -494,6 +494,27 @@ public class LoadingPage extends FrameLayout {
         });
     }
 
+    public void onErrorVisible(String errorMessage) {
+        this.setVisibility(View.VISIBLE);
+        errorView.setVisibility(View.VISIBLE);
+
+        if (Constants.is_reading_network_limit) {
+            tv_network_error.setText(errorMessage);
+            setting_btn.setVisibility(VISIBLE);
+        } else {
+            tv_network_error.setText(errorMessage);
+            setting_btn.setVisibility(GONE);
+        }
+        loadView.setVisibility(View.GONE);
+
+        setSettingAction(new Runnable() {
+            @Override
+            public void run() {
+                startNetSetting(settingCode);
+            }
+        });
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return true;

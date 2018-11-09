@@ -277,6 +277,7 @@ public class EventPoint {
     public static final String WEBSEARCHRESULT_BACK = "WEBSEARCHRESULT_BACK"; // 返回
     public static final String WEBSEARCHRESULT_BARCLEAR = "WEBSEARCHRESULT_BARCLEAR"; // 清空搜索词
     public static final String WEBSEARCHRESULT_WEBCOLLECT = "WEBSEARCHRESULT_WEBCOLLECT"; // 网页收藏功能
+    public static final String WEBSEARCHRESULT_CLOSE = "WEBSEARCHRESULT_CLOSE"; // 网页一键关闭
 
 
 

@@ -18,8 +18,8 @@ import net.lzbook.kit.bean.WebFavoriteUpdateBean
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.web.CustomWebClient
@@ -58,16 +58,20 @@ class WebViewActivity : FrameActivity() {
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_web_view)
-        requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this);
+        requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
         img_back.setOnClickListener { onBackPressed() }
-        img_close.setOnClickListener { finish() }
-        btn_page_favorite.antiShakeClick { clickFavorite() }
+        img_close.setOnClickListener {
+            DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_CLOSE)
+            finish()
+        }
+        btn_page_favorite.setOnClickListener { clickFavorite() }
         initWebView()
         initWebViewCallback()
         if (intent.hasExtra("url")) web_view.loadUrl(intent.getStringExtra("url"))
     }
 
     private fun clickFavorite() {
+        if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) return
         if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
             loge("title:[${web_view.title}],url:[${web_view.url}]")
             list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
@@ -76,7 +80,7 @@ class WebViewActivity : FrameActivity() {
                 return
             }
             DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_WEBCOLLECT, mapOf("title" to web_view.title, "link" to web_view.url))
-            btn_page_favorite.isEnabled = false
+//            btn_page_favorite.isEnabled = false
             val favorite = WebPageFavorite()
             favorite.webTitle = web_view.title
             favorite.webLink = web_view.url
@@ -88,7 +92,7 @@ class WebViewActivity : FrameActivity() {
             } else {
                 ToastUtil.showToastMessage("收藏成功")
             }
-            btn_page_favorite.isEnabled = true
+//            btn_page_favorite.isEnabled = true
             SPUtils.putDefaultSharedBoolean(SPKey.WEB_FAVORITE_FIRST_USE, false)
             EventBus.getDefault().post(WebFavoriteUpdateBean())
         } else {
@@ -122,7 +126,7 @@ class WebViewActivity : FrameActivity() {
             }
             customWebClient?.setLoadingWebViewError {
                 isLoadFinish = true
-                loadingPage?.onErrorVisable()
+                loadingPage?.onErrorVisible("页面加载失败，请稍后再试~")
             }
 
             customWebClient?.setLoadingWebViewFinish {
