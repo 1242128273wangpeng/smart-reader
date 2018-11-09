@@ -12,12 +12,15 @@ object ParameterConfig {
     /***
      * 用户开屏选择男女频的数据
      * **/
+    //没有选男女的壳默认不传sex字段
+    var GENDER_NONE = -1
     //男频标识
-    var GENDER_BOY = 0x81
+    var GENDER_BOY = 1
     //女频标识
-    var GENDER_GIRL = 0x82
+    var GENDER_GIRL = 2
     //默认标识（跳过选项）
-    var GENDER_DEFAULT = 0x80
+    var GENDER_DEFAULT = 0
     //男女频数据
-    var GENDER_TYPE = GENDER_DEFAULT
+    var GENDER_TYPE = GENDER_NONE
+
 }
