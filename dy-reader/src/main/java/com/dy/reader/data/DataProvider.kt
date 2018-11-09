@@ -81,7 +81,6 @@ object DataProvider {
                             EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
                         }
                         loadPre(position.group + 2, position.group + 6)
-                        checkReadChapter(position.group - 6, position.group - 2)
                     }
 
 
@@ -378,6 +377,7 @@ object DataProvider {
 
         if (position.index == 0 && position.group >= 0) {
             loadPre(position.group + 2, position.group + 6)
+            checkReadChapter(position.group - 6, position.group - 1)
         }
 
         //在加载下一页
