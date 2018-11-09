@@ -71,19 +71,18 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-            webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-            requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+//            webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+//            requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+//
+//            MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+//            ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
 
-            MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-            ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
-        } else {
-            webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-            requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        requestAPIHost = SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "http://119.254.159.100:8081")
+        webViewHost = SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "http://119.254.159.100:8081")
 
-            MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-            ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
-        }
+        MicroAPI.microHost = SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST, "https://uniontest.bookapi.cn")
+        ContentAPI.contentHost = SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST, "https://uniontest.bookapi.cn")
+
 
 
         MicroAPI.initMicroService()

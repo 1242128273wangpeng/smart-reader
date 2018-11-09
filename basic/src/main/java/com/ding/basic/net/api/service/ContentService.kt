@@ -10,7 +10,7 @@ interface ContentService {
     companion object {
 
         //鉴权
-        const val AUTH_ACCESS = "/AUTH1/access/getKeys"
+        const val AUTH_ACCESS = "/auth/access/getKeys"
 
         //内容
         const val CHAPTER_CONTENT = "/content/book/content"
