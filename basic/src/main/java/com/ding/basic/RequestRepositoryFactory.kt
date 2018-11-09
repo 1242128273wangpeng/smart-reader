@@ -494,6 +494,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                             it.data?.content = it.data?.content?.replace("\\", "")
                         }
                         chapter.content = it.data?.content
+                        chapter.defaultCode = it.data?.defaultCode ?: 0
 
                         chapter
                     }
