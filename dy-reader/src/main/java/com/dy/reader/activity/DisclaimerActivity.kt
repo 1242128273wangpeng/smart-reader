@@ -1,6 +1,5 @@
 package com.dy.reader.activity
 
-import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Bundle
 import android.os.SystemClock
@@ -100,8 +99,12 @@ class DisclaimerActivity : FrameActivity() {
             }
 
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                web_disclaimer.loadUrl("about:blank")
-                web_disclaimer?.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+                if (NetWorkUtils.isNetworkAvailable(this)) {
+                    web_disclaimer.loadUrl("about:blank")
+                    web_disclaimer?.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+                } else {
+                    loadingPage?.onErrorVisable()
+                }
             })
 
             // 修改字体大小
