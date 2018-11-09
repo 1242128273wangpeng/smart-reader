@@ -391,10 +391,10 @@ android {
             buildConfigField "String", "push_key", "\"wxjKNUKiif2bBS95aBo7E8Gj4Iivtp6c\""
             buildConfigField "String", "alifeedback_key", "\"23731853\""
             buildConfigField "String", "alifeedback_secret", "\"7be24d1f8f5196a4aa6d6d6788004d4b\""
-            buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmf.bookapi.cn:443\""
-            buildConfigField "String", "book_webview_host", "\"https://uwqbmf.bookapi.cn:443\""
-            buildConfigField "String", "micro_api_host", "\"https://aqbmfxsydqunionapi.jingytech.com:443\""
-            buildConfigField "String", "content_api_host", "\"https://aqbmfxsydqunioncontent.jingytech.com:443\""
+            buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmf.bookapi.cn\""
+            buildConfigField "String", "book_webview_host", "\"https://uwqbmf.bookapi.cn\""
+            buildConfigField "String", "micro_api_host", "\"https://aqbmfxsydqunionapi.jingytech.com\""
+            buildConfigField "String", "content_api_host", "\"https://aqbmfxsydqunioncontent.jingytech.com\""
             buildConfigField "String", "cdn_host", "\"https://sta-ccquanbennovel.bookapi.cn\""
         }
 

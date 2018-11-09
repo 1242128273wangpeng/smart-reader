@@ -41,7 +41,6 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
             android:text="@string/hot_read"
             android:textColor="@color/color_212832"
             android:textSize="16sp"/>
@@ -52,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:textSize="14sp"
             android:text="@string/change"/>
     </RelativeLayout>
 

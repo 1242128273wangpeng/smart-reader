@@ -6,9 +6,7 @@ import android.os.SystemClock
 import android.view.GestureDetector
 import android.view.Gravity
 import android.view.View
-import android.webkit.SslErrorHandler
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -22,8 +20,10 @@ import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
@@ -39,6 +39,8 @@ import net.lzbook.kit.utils.web.CustomWebClient
 class DisclaimerActivity : FrameActivity() {
     private var gestureDetector: GestureDetector? = null
     private var customWebClient: CustomWebClient? = null
+
+    var loadingPage: LoadingPage? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
@@ -74,15 +76,38 @@ class DisclaimerActivity : FrameActivity() {
         if (isFormDisclaimerPage) {
             txt_title.text = resources.getString(R.string.disclaimer_statement)
             web_disclaimer.visibility = View.VISIBLE
+
+            loadingPage = LoadingPage(this, rl_disclaimer_main, LoadingPage.setting_result)
+
             web_disclaimer.webViewClient = object : WebViewClient() {
                 override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,
                                                 error: SslError?) {
                     handler?.proceed()
                 }
+
+                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                    super.onReceivedError(view, request, error)
+                    loadingPage?.onErrorVisable()
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    loadingPage?.onSuccess()
+
+                }
             }
 
-            // 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
-            web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+            if (NetWorkUtils.isNetworkAvailable(this)) {
+                // 使用协议转H5时，根据包名拼接地址时，将包名中.替换为-，新壳2特殊处理，直接使用包名
+                web_disclaimer.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+            } else {
+                loadingPage?.onErrorVisable()
+            }
+
+            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+                web_disclaimer.loadUrl("about:blank")
+                web_disclaimer?.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+            })
 
             // 修改字体大小
             val fontSize = resources.getDimension(R.dimen.text_size_small)
