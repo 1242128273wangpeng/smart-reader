@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -61,7 +60,7 @@ import java.io.File
 import java.util.*
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
-class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
+class HomeActivity : BaseCacheableActivity(),
         CheckNovelUpdateService.OnBookUpdateListener, HomeView, BookShelfInterface {
 
     private val homePresenter by lazy { HomePresenter(this, this.packageManager) }
@@ -402,106 +401,6 @@ class HomeActivity : BaseCacheableActivity(), WebViewFragment.FragmentCallback,
         val message = handler.obtainMessage(0)
         message.what = BACK
         handler.sendMessageDelayed(message, 2000)
-    }
-
-    override fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper) {
-        jsInterfaceHelper.setOnEnterAppClick { AppLog.e(TAG, "doEnterApp") }
-        jsInterfaceHelper.setOnSearchClick { keyWord, search_type, filter_type, filter_word, sort_type ->
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@setOnSearchClick
-                }
-                val data = HashMap<String, String>()
-                data["keyword"] = keyWord
-                data["type"] = "0"//0 代表从分类过来
-                StartLogClickUtil.upLoadEventLog(this@HomeActivity, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.SYSTEM_SEARCHRESULT, data)
-
-                this.enterSearch(
-                        keyWord, search_type, filter_type, filter_word, sort_type,
-                        "fromClass")
-
-                AppLog.e("kkk", "$search_type===")
-
-            } catch (e: Exception) {
-                AppLog.e(TAG, "Search failed")
-                e.printStackTrace()
-            }
-        }
-        jsInterfaceHelper.setOnAnotherWebClick(JSInterfaceHelper.onAnotherWebClick { url, name ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onAnotherWebClick
-            }
-            AppLog.e(TAG, "doAnotherWeb")
-            try {
-                val intent = Intent()
-                intent.setClass(this@HomeActivity, FindBookDetail::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("title", name)
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnOpenAd { AppLog.e(TAG, "doOpenAd") }
-
-        jsInterfaceHelper.setOnEnterCover(JSInterfaceHelper.onEnterCover { host, book_id, book_source_id, name, author, parameter, extra_parameter ->
-            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                return@onEnterCover
-            }
-
-            if (!isFinishing) {
-                val intent = Intent()
-                intent.putExtra("book_id", book_id)
-                intent.putExtra("book_source_id", book_source_id)
-                intent.setClass(applicationContext, CoverPageActivity::class.java)
-                startActivity(intent)
-            }
-        })
-
-        //为webview 加载广告提供回调
-        jsInterfaceHelper.setOnWebGameClick(JSInterfaceHelper.onWebGameClick { url, name ->
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@onWebGameClick
-                }
-                var title = ""
-                if (TextUtils.isEmpty(name)) {
-                    title = AppUtils.getPackageName()
-                } else {
-                    title = name
-                }
-                val welfareIntent = Intent()
-                welfareIntent.putExtra("url", url)
-                welfareIntent.putExtra("title", title)
-                welfareIntent.setClass(applicationContext, WelfareCenterActivity::class.java)
-                startActivity(welfareIntent)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnGameAppClick(JSInterfaceHelper.onGameAppClick { url, name ->
-            AppLog.e("福利中心", "下载游戏: $name : $url")
-
-            try {
-                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                    return@onGameAppClick
-                }
-                val intent = Intent(BookApplication.getGlobalContext(), DownloadAPKService::class.java)
-                intent.putExtra("url", url)
-                intent.putExtra("name", name)
-                startService(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        })
-
-        jsInterfaceHelper.setOnEnterCategory { _, _, _, _ -> AppLog.e(TAG, "doCategory") }
-    }
-
-    override fun startLoad(webView: WebView, url: String): String {
-        return url
     }
 
     override fun supportSlideBack(): Boolean {

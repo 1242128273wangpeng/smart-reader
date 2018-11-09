@@ -35,8 +35,6 @@ import net.lzbook.kit.utils.upush.PushRegisterCallback;
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
 
-import java.util.concurrent.Callable;
-
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 
@@ -95,19 +93,13 @@ public class BookApplication extends BaseBookApplication {
             if (msg.what == 1) {
                 if (AppUtils.isMainProcess(BookApplication.this)) {
                     // 自定义ErrorCallback
-                    FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
-                        @Override
-                        public void onError(Context context, String errorMessage, ErrorCode code) {
-                            ToastUtil.INSTANCE.showToastMessage("ErrorMessage is: " + errorMessage);
-                        }
-                    });
+                    FeedbackAPI.addErrorCallback(
+                            (context, errorMessage, code) -> ToastUtil.INSTANCE.showToastMessage(
+                                    "ErrorMessage is: " + errorMessage));
                     // Feedback activity的回调
-                    FeedbackAPI.addLeaveCallback(new Callable() {
-                        @Override
-                        public Object call() throws Exception {
-                            Log.d("DemoApplication", "custom leave callback");
-                            return null;
-                        }
+                    FeedbackAPI.addLeaveCallback(() -> {
+                        Log.d("DemoApplication", "custom leave callback");
+                        return null;
                     });
 
                     FeedbackAPI.init(BookApplication.this,

@@ -166,7 +166,7 @@ public class FlymeTabStrip extends HorizontalScrollView {
                 textColor = typedArray.getColor(attr, Color.BLACK);
 
                 // 文字大小，默认15
-            } else if (attr == R.styleable.FlymeTabStrip_indicatorTextSize) {
+            } else if (attr == R.styleable.FlymeTabStrip_indicatorFlymeTextSize) {
 //                textSize = typedArray.getDimensionPixelSize(attr, (int) TypedValue.applyDimension(
 //                        TypedValue.COMPLEX_UNIT_SP, 15, dm)) / 3;
                 textSize = (int) typedArray.getDimension(attr, AppUtils.sp2px(context.getResources(), textSize));

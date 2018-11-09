@@ -6,7 +6,10 @@ import android.app.FragmentManager
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.WindowManager
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.event.EventLoading

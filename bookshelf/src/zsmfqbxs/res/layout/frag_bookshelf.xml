@@ -17,11 +17,12 @@
 
         <ImageView
             android:id="@+id/img_head_setting"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="14dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
             android:contentDescription="@string/module_name"
             android:scaleType="fitXY"
             android:src="@drawable/bookshelf_head_setting_icon"/>
@@ -47,21 +48,21 @@
 
         <ImageView
             android:id="@+id/img_head_download"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="14dp"
+            android:paddingRight="14dp"
             android:contentDescription="@string/module_name"
             android:scaleType="fitXY"
             android:src="@drawable/bookshelf_head_download_icon"/>
 
         <ImageView
             android:id="@+id/img_head_search"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="21dp"
+            android:paddingRight="21dp"
             android:layout_toLeftOf="@id/img_head_download"
             android:contentDescription="@string/module_name"
             android:scaleType="fitXY"

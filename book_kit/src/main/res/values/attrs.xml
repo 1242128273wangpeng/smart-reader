@@ -112,7 +112,7 @@
         <!-- 指示器文字颜色 -->
         <attr name="indicatorTextColor" format="color" />
         <!-- 指示器文字大小 -->
-        <attr name="indicatorTextSize" format="dimension" />
+        <attr name="indicatorFlymeTextSize" format="dimension" />
         <!-- 指示器文字被选中后的大小 -->
         <attr name="selectedIndicatorTextSize" format="dimension" />
     </declare-styleable>

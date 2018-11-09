@@ -9,12 +9,12 @@
     tools:ignore="RtlHardcoded">
 
 
-    <com.intelligent.reader.widget.FlymeTabScaleStrip
+    <net.lzbook.kit.ui.widget.FlymeTabScaleStrip
         android:id="@+id/tabstrip"
-        app:indicatorHeight="3dp"
-        app:indicatorColor="#00C298"
+        app:indicatorFlymeHeight="3dp"
+        app:indicatorFlymeColor="#00C298"
         app:indicatorMargin="13dp"
-        app:indicatorTextSize="17sp"
+        app:indicatorFlymeTextSize="17sp"
         app:selectedIndicatorTextSize="24sp"
         app:indicatorTextColor="@color/text_color_dark"
         android:layout_width="match_parent"

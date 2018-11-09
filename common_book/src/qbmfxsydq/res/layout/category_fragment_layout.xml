@@ -20,7 +20,7 @@
                 app:indicatorFlymeHeight="3dp"
                 app:indicatorFlymeColor="@color/theme_primary"
                 app:indicatorMargin="24dp"
-                app:indicatorTextSize="18sp"
+                app:indicatorFlymeTextSize="18sp"
                 app:selectedIndicatorTextSize="18sp"
                 app:indicatorTextColor="#282828"
                 android:layout_width="wrap_content"

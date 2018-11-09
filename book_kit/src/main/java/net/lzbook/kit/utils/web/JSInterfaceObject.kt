@@ -77,11 +77,11 @@ abstract class JSInterfaceObject(var activity: Activity) {
             try {
                 val cover = Gson().fromJson(data, JSCover::class.java)
 
-                if (cover?.book_id != null && cover.book_source_id != null && cover.book_chapter_id != null) {
+                if (cover?.book_id != null) {
                     val bundle = Bundle()
                     bundle.putString("book_id", cover.book_id)
-                    bundle.putString("book_source_id", cover.book_source_id)
-                    bundle.putString("book_chapter_id", cover.book_chapter_id)
+                    bundle.putString("book_source_id", cover.book_source_id ?: "")
+                    bundle.putString("book_chapter_id", cover.book_chapter_id ?: "")
 
                     RouterUtil.navigation(activity, RouterConfig.COVER_PAGE_ACTIVITY, bundle)
                 }
@@ -108,9 +108,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
                 bundle.putInt("offset", book.offset)
                 bundle.putSerializable("book", book)
                 val flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-
                 RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
-
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
@@ -272,7 +270,6 @@ abstract class JSInterfaceObject(var activity: Activity) {
         book.book_id = recommend.bookId
         book.book_source_id = recommend.id
         book.book_chapter_id = recommend.bookChapterId
-
         book.uv = recommend.uv
         book.name = recommend.bookName
         book.desc = recommend.description
@@ -290,6 +287,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
         val chapter = Chapter()
         chapter.name = recommend.lastChapterName
         chapter.update_time = recommend.updateTime
+        chapter.serial_number = recommend.lastSerialNumber.toInt()
 
         book.last_chapter = chapter
 

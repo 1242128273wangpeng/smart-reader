@@ -292,8 +292,8 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (!requestRepositoryFactory.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
             var logMap = HashMap<String, String>()
             logMap.put("type", "1")
-            logMap.put("bookid", ReaderStatus.book?.book_id)
-            logMap.put("chapterid", ReaderStatus?.chapterId)
+            logMap.put("bookid",ReaderStatus.book?.book_id)
+            logMap.put("chapterid",ReaderStatus?.chapterId)
             StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
@@ -400,7 +400,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             val activity = this.activity.get()
 
             if (activity is ReaderActivity) {
-                activity.registerShareCallback(true)
+//                activity.registerShareCallback(true)
             }
         }
     }

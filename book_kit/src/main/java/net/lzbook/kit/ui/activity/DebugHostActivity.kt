@@ -6,6 +6,7 @@ import com.ding.basic.net.Config
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_debug_host.*
+import net.lzbook.kit.R.id.lv_host
 import net.lzbook.kit.R
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import com.ding.basic.util.sp.SPKey
@@ -63,29 +64,24 @@ class DebugHostActivity : BaseCacheableActivity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                val type = when (intent.getStringExtra("type")) {
+                val type =intent.getStringExtra("type")
+                when (type) {
                     SPKey.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
-                        SPKey.NOVEL_HOST
                     }
                     SPKey.WEBVIEW_HOST -> {
                         Config.insertWebViewHost(et_input_host.text.toString())
-                        SPKey.WEBVIEW_HOST
                     }
                     SPKey.UNION_HOST -> {
                         Config.insertMicroAPIHost(et_input_host.text.toString())
-                        SPKey.UNION_HOST
                     }
                     SPKey.CONTENT_HOST -> {
                         Config.insertContentAPIHost(et_input_host.text.toString())
-                        SPKey.CONTENT_HOST
                     }
                     SPKey.USER_TAG_HOST -> {
                         Config.insertUserTagHost(et_input_host.text.toString())
-                        SPKey.USER_TAG_HOST
                     }
                     else -> {
-                        ""
                     }
                 }
 

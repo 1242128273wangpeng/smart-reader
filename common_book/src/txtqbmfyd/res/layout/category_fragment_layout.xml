@@ -23,7 +23,7 @@
             app:indicatorFlymeHeight="3dp"
             app:indicatorMargin="20dp"
             app:indicatorTextColor="@color/text_color_dark"
-            app:indicatorTextSize="17sp"
+            app:indicatorFlymeTextSize="17sp"
             app:selectedIndicatorTextSize="17sp"/>
 
         <ImageView
