@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
-import com.ding.basic.config.ParameterConfig
 import com.dingyue.bookshelf.BookShelfAdapter.BookShelfItemListener
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
@@ -186,9 +185,6 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         txt_head_title.text = getString(R.string.bookshelf)
 
         img_head_personal.setOnClickListener {
-            //TODO 上线关闭
-            ParameterConfig.cityCode = ParameterConfig.cityCode + ".1"
-
             bookShelfInterface?.changeDrawerLayoutState()
             BookShelfLogger.uploadBookShelfPersonal()
         }

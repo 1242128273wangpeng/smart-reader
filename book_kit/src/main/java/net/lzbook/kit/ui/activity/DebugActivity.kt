@@ -255,10 +255,10 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 跳转不同的界面
      */
     private fun intentHostList(type: String) {
-//        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-//            ToastUtil.showToastMessage("请先关闭动态参数")
-//            return
-//        }
+        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+            ToastUtil.showToastMessage("请先关闭动态参数")
+            return
+        }
         val intent = Intent(this, DebugHostActivity::class.java)
         intent.putExtra("type", type)
         startActivity(intent)

@@ -96,28 +96,6 @@ public class CheckNovelUpdateService extends Service {
                     checkAuthAccess();
                     timerHandler.sendEmptyMessageDelayed(1, Constants.authAccessRefreshTime);
                     break;
-//                case 2:
-//                    Logger.e("更换域名了！！！！");
-//                    if (MicroAPI.INSTANCE.getMicroHost().equals("https://unionapi.bookapi.cn")) {
-//                        MicroAPI.INSTANCE.setMicroHost("https://uniontest.bookapi.cn");
-//                    } else if (MicroAPI.INSTANCE.getMicroHost().equals("https://uniontest.bookapi.cn")) {
-//                        MicroAPI.INSTANCE.setMicroHost("https://aqbmfrmxsunionapi.jingytech.com:443");
-//                    } else {
-//                        MicroAPI.INSTANCE.setMicroHost("https://unionapi.bookapi.cn");
-//                    }
-//
-//                    if (ContentAPI.INSTANCE.getContentHost().equals("https://unioncontent.bookapi.cn")) {
-//                        ContentAPI.INSTANCE.setContentHost("https://uniontest.bookapi.cn");
-//                    } else if (ContentAPI.INSTANCE.getContentHost().equals("https://uniontest.bookapi.cn")) {
-//                        ContentAPI.INSTANCE.setContentHost("https://aqbmfrmxsunioncontent.jingytech.com:443");
-//                    } else {
-//                        ContentAPI.INSTANCE.setContentHost("https://unioncontent.bookapi.cn");
-//                    }
-//
-//                    initApi();
-//
-//                    timerHandler.sendEmptyMessageDelayed(2, 1 * 60 * 1000);
-//                    break;
             }
         }
     };
@@ -161,7 +139,6 @@ public class CheckNovelUpdateService extends Service {
         if (isFirst) {
             timerHandler.sendEmptyMessage(1);
             timerHandler.sendEmptyMessageDelayed(0, Constants.refreshTime);
-            timerHandler.sendEmptyMessageDelayed(2, 1 * 60 * 1000);
             isFirst = false;
         }
         return START_STICKY;
@@ -713,10 +690,4 @@ public class CheckNovelUpdateService extends Service {
 
         return null;
     }
-//
-//    private void initApi() {
-//        MicroAPI.INSTANCE.initMicroService();
-//        ContentAPI.INSTANCE.initContentService();
-//        RequestAPI.INSTANCE.initializeDataRequestService();
-//    }
 }

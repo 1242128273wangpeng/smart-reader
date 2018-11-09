@@ -97,7 +97,6 @@ object ContentAPI {
         set(value) {
             if (value?.isNotEmpty() == true) {
                 field = value
-                Logger.e("PrivateKey Set: Host: $contentHost : privateKey: $value")
                 SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost, value)
             }
         }

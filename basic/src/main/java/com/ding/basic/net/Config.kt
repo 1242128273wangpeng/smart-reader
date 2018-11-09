@@ -9,8 +9,6 @@ import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.URLBuilder
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -71,19 +69,11 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-//            webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-//            requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-//
-//            MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-//            ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
 
-        requestAPIHost = SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "http://119.254.159.100:8081")
-        webViewHost = SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "http://119.254.159.100:8081")
-
-        MicroAPI.microHost = SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST, "https://uniontest.bookapi.cn")
-        ContentAPI.contentHost = SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST, "https://uniontest.bookapi.cn")
-
-
+        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
 
         MicroAPI.initMicroService()
         ContentAPI.initContentService()

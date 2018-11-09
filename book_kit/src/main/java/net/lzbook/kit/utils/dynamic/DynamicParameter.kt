@@ -245,12 +245,12 @@ class DynamicParameter(private val context: Context) {
 
         SPUtils.putOnlineConfigSharedString(SPKey.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
-//        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
             SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, map.novel_host)
             SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, map.httpsWebView_host)
             SPUtils.putOnlineConfigSharedString(SPKey.UNION_HOST, map.union_host)
             SPUtils.putOnlineConfigSharedString(SPKey.CONTENT_HOST, map.content_host)
-//        }
+        }
 
         SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, map.user_tag_host)
 
