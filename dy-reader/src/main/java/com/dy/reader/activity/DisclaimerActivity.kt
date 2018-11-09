@@ -88,13 +88,12 @@ class DisclaimerActivity : FrameActivity() {
             val fontSize = resources.getDimension(R.dimen.text_size_small)
             web_disclaimer.settings.defaultFontSize = fontSize.toInt()
 
-            //可以打开调试模式
-            rl_disclaimer.setOnClickListener {
-                displayEggs()
-            }
         }
 
-
+        //可以打开调试模式
+        rl_disclaimer.setOnClickListener {
+            displayEggs()
+        }
         img_back.setOnClickListener {
             DyStatService.onEvent(EventPoint.PROCTCOL_BACK, mapOf("type" to "1"))
             finish()

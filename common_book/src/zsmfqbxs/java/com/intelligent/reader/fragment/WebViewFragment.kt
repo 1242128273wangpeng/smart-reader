@@ -13,24 +13,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.web.CustomWebClient
-import com.dingyue.contract.web.JSInterfaceObject
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
-import com.intelligent.reader.activity.SearchBookActivity
 import com.intelligent.reader.activity.SettingActivity
 import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.zsmfqbxs.view_home_header.*
 import kotlinx.android.synthetic.zsmfqbxs.webview_layout.*
-import net.lzbook.kit.app.BaseBookApplication
+
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
+
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.oneclick.OneClickUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.web.CustomWebClient
+import net.lzbook.kit.utils.web.JSInterfaceObject
 import java.util.*
 
 open class WebViewFragment : Fragment(), View.OnClickListener {
@@ -159,7 +162,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
 

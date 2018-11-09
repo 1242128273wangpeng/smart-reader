@@ -6,9 +6,12 @@ import android.support.v4.widget.PopupWindowCompat.showAsDropDown
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.R
 
 import kotlinx.android.synthetic.qbmfkdxs.popup_head_menu.view.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
@@ -44,8 +47,8 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
         contentView.ll_share.setOnClickListener {
             popupWindow.dismiss()
             contentView.view_share.visibility = View.GONE
-            context.editShared {
-                putBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT, true)
+            SPUtils.editDefaultShared {
+                putBoolean(SPKey.BOOKSHELF_SHARE_PROMPT, true)
             }
             onPromptClick()
             shareListener?.invoke()
@@ -55,7 +58,7 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
         } else {
             contentView.ll_share.visibility = View.VISIBLE
         }
-        val isSharePromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+        val isSharePromptGone = SPUtils.getDefaultSharedBoolean(SPKey.BOOKSHELF_SHARE_PROMPT)
         if (isSharePromptGone) {
             contentView.view_share.visibility = View.GONE
         }

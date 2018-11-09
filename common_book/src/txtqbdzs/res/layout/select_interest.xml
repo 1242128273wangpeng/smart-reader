@@ -3,17 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white"
+    android:background="#ffffffff"
     android:fitsSystemWindows="true">
 
-    <TextView
-        android:id="@+id/txt_step_in"
+    <Button
+        android:id="@+id/btn_step_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginTop="25dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/selector_step_in_bg"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
         android:paddingLeft="11dp"
         android:paddingTop="3dp"
         android:paddingRight="11dp"
@@ -27,9 +29,9 @@
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_step_in"
+        android:layout_below="@+id/btn_step_in"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
         android:text="选择喜欢的类型"
         android:textColor="#282828"
         android:textSize="28sp"
@@ -40,15 +42,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_title"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="28dp"
         android:overScrollMode="never"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:scrollbars="none"
         />
 
-    <TextView
-        android:id="@+id/txt_confirm"
+    <Button
+        android:id="@+id/btn_confirm"
         android:layout_width="135dp"
         android:layout_height="40dp"
         android:layout_below="@id/rv_interest"

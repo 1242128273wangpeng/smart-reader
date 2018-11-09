@@ -157,6 +157,8 @@
 
         <attr name="indicatorInactiveColor" format="color"/>
         <attr name="indicatorActiveColor" format="color"/>
+        <attr name="indicatorActivityTextSize" format="dimension"/>
+        <attr name="indicatorInActivityTextSize" format="dimension"/>
     </declare-styleable>
 
 

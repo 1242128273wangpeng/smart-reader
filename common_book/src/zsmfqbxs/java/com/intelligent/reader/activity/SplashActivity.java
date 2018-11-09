@@ -41,6 +41,7 @@ import com.dy.media.MediaLifecycle;
 import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
+import com.intelligent.reader.util.GenderHelper;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -245,8 +246,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
 
         ad_view = findViewById(R.id.ad_view);
 
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAuthAccess(null);
+        requestFactory.requestAuthAccess(null);
 
         String bookDBName = ReplaceConstants.getReplaceConstants().DATABASE_NAME;
         File bookDBFile = getDatabasePath(bookDBName);
@@ -514,32 +514,25 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
      * 解决阅读进度不更新的问题
      */
     private void checkBookChapterCount(){
-        if (sharedPreUtil == null) {
-            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-        }
 
-        boolean isCheckChapterCount = sharedPreUtil.getBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, false);
+        boolean isCheckChapterCount = SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.CHECK_CHAPTER_COUNT, false);
 
         if (!isCheckChapterCount) {
 
-            List<Book> bookList = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).loadBooks();
+            List<Book> bookList = requestFactory.loadBooks();
 
             if (bookList != null && bookList.size() > 0) {
                 for (Book book : bookList) {
 
                     if (book.getChapter_count() <= 0 && !TextUtils.isEmpty(book.getBook_id())) {
-                        int chapterCount = ChapterDaoHelper.Companion.loadChapterDataProviderHelper(
-                                context,
-                                book.getBook_id()).getCount();
+                        int chapterCount = requestFactory.getCount(book.getBook_id());
                         book.setChapter_count(chapterCount);
 
-                        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                                BaseBookApplication.getGlobalContext()).updateBook(book);
+                        requestFactory.updateBook(book);
                     }
                 }
             }
-            sharedPreUtil.putBoolean(SharedPreUtil.CHECK_CHAPTER_COUNT, true);
+            SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.CHECK_CHAPTER_COUNT, true);
         }
 
     }
@@ -889,7 +882,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
                     txt_gender_skip.setText("努力加载中...");
                     txt_gender_skip.setClickable(false);
                     genderHelper.jumpAnimation();
-                    sharedPreUtil.putInt(SharedPreUtil.GENDER_TAG, Constants.SDEFAULT);
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SDEFAULT);
                     mStepInFlag = true;
                     Constants.SGENDER = Constants.SDEFAULT;
                     doOnCreate();
@@ -905,10 +898,7 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
 
     private boolean initChooseGender() {
         AppUtils.initDensity(getApplicationContext());
-        if( sharedPreUtil == null){
-            sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-        }
-        Constants.SGENDER = sharedPreUtil.getInt(SharedPreUtil.GENDER_TAG, Constants.NONE);
+        Constants.SGENDER = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.GENDER_TAG, Constants.NONE);
         return Constants.SGENDER == Constants.NONE;
     }
 

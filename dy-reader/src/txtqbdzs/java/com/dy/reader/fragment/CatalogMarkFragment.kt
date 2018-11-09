@@ -22,19 +22,20 @@ import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.CatalogMark
 import com.dy.reader.presenter.CatalogMarkPresenter
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.view.ReaderDeleteBookmarkPopup
+
 import kotlinx.android.synthetic.txtqbdzs.frag_catalog_mark.*
 import kotlinx.android.synthetic.txtqbdzs.item_reader_bookmark.view.*
 import kotlinx.android.synthetic.txtqbdzs.item_reader_catalog.view.*
 
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.theme.ThemeHelper
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -65,7 +66,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rl_container.setBackgroundColor(Color.WHITE)
-        top_line.setBackgroundColor(Color.parseColor("#f4f4f4"))
+        view_line.setBackgroundColor(Color.parseColor("#f4f4f4"))
         catalogAdapter = ListRecyclerAdapter(chapterList, R.layout.item_reader_catalog, ChapterHolder::class.java)
         catalogAdapter.itemClick = View.OnClickListener { v ->
             presenter.gotoChapter(requireActivity(), v.tag as Chapter)
@@ -93,7 +94,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         bookmarkAdapter = ListRecyclerAdapter(bookmarkList, R.layout.item_reader_bookmark, BookMarkHolder::class.java)
         bookmarkAdapter.itemClick = View.OnClickListener { v ->
+            presenter.gotoBookMark(requireActivity(), v.tag as Bookmark)
+        }
+
+        bookmarkAdapter.itemLongClick = View.OnLongClickListener { v ->
             presenter.deleteBookMark(requireActivity(), v.tag as Bookmark)
+            true
         }
 
         checkHead(true)
@@ -190,15 +196,22 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
             // 替换背景
             if (ThemeHelper.getInstance(context).isNight) {
                 rl_container.setBackgroundColor(Color.parseColor("#181818"))
-                top_line.setBackgroundColor(Color.parseColor("#282828"))
-
+                view_line.setBackgroundColor(Color.parseColor("#282828"))
+                img_empty_book_mark.setImageResource(R.drawable.reader_catalog_mark_empty_icon_night)
+                txt_empty_book_mark_tip.setTextColor(Color.parseColor("#989898"))
+                rfs_catalog_scroller.setHandleImage(R.drawable.recycler_view_scroller_icon_night)
+                rfs_mark_scroller.setHandleImage(R.drawable.recycler_view_scroller_icon_night)
                 catalogAdapter.isEditMode = true
                 bookmarkAdapter.isEditMode = true
                 catalogAdapter.notifyDataSetChanged()
                 bookmarkAdapter.notifyDataSetChanged()
             } else {
                 rl_container.setBackgroundColor(Color.WHITE)
-                top_line.setBackgroundColor(Color.parseColor("#f4f4f4"))
+                view_line.setBackgroundColor(Color.parseColor("#f4f4f4"))
+                img_empty_book_mark.setImageResource(R.drawable.reader_catalog_mark_empty_icon)
+                txt_empty_book_mark_tip.setTextColor(Color.parseColor("#B9B9B9"))
+                rfs_catalog_scroller.setHandleImage(R.drawable.recycler_view_scroller_icon)
+                rfs_mark_scroller.setHandleImage(R.drawable.recycler_view_scroller_icon)
                 catalogAdapter.isEditMode = false
                 bookmarkAdapter.isEditMode = false
                 catalogAdapter.notifyDataSetChanged()
@@ -327,13 +340,18 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
         override fun onBindData(position: Int, data: Bookmark, editMode: Boolean) {
             if (itemView != null) {
+                itemView.tag = data
                 itemView.txt_delete_mark.tag = data
 
                 itemView.isClickable = true
+                itemView.setOnClickListener {
+                    onItemClick?.onClick(it)
+                }
                 itemView.txt_delete_mark.setOnClickListener { v ->
-                    onItemClick?.onClick(v)
+                    onItemLongClick?.onLongClick(v)
                 }
                 itemView.book_mark_divider_line.setBackgroundColor(if (editMode) Color.parseColor("#282828") else Color.parseColor("#f4f4f4"))
+
 
                 (itemView.txt_bookmark_title as TextView).text = "${data.chapter_name}"
                 (itemView.txt_bookmark_content as TextView).text = "${data.chapter_content}"

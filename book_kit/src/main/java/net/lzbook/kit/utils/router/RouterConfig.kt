@@ -52,6 +52,7 @@ object RouterConfig {
      */
 
     const val DOWNLOAD_MANAGER_ACTIVITY = "/downloadmanager/DownloadManagerActivity"
+    const val LOCAL_IMPORT_ACTIVITY = "/bookshelf/LocalImportActivity"
 
     /**
      * search_book

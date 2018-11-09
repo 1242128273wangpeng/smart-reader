@@ -13,6 +13,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.txtqbdzs.item_interest.view.*
+import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
+import net.lzbook.kit.utils.AppUtils
 import java.util.concurrent.TimeUnit
 
 /**
@@ -25,8 +27,13 @@ class InterestAdapter(context: Context) : RecyclerBaseAdapter<Interest>(context,
 
     private var itemLayoutParams: FrameLayout.LayoutParams? = null
     private var containerPadding = 0
-    private val animationTime = 300L
+    private val animationTime = 150L
     private var turn = false
+    private val paddingLeft_dp by lazy { AppUtils.dip2px(context, 14f) }
+
+    companion object {
+        val animatingPosition = ArrayList<String>()
+    }
 
     init {
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -53,12 +60,14 @@ class InterestAdapter(context: Context) : RecyclerBaseAdapter<Interest>(context,
             try {
                 txt_interest_name.setBackgroundResource(resources.getIdentifier(imgName, "drawable", context.packageName))
                 txt_interest_name_selected.setBackgroundResource(resources.getIdentifier(imgNameSelected, "drawable", context.packageName))
+                txt_interest_name.setPadding(paddingLeft_dp,0,0,0)
+                txt_interest_name_selected.setPadding(paddingLeft_dp,0,0,0)
             } catch (e: Resources.NotFoundException) {
                 e.printStackTrace()
             }
 
             // 默认将选中项翻转
-            if (turn) AnimationUtil.flipAnimatorYViewShow(txt_interest_name_selected, txt_interest_name, 500)
+            if (turn) AnimationUtil.flipAnimatorYViewShow(txt_interest_name_selected, txt_interest_name, 130L, position)
         }
     }
 
@@ -66,7 +75,7 @@ class InterestAdapter(context: Context) : RecyclerBaseAdapter<Interest>(context,
      * 翻转全部
      */
     fun turnAll() {
-        Observable.timer(800, TimeUnit.MILLISECONDS)
+        Observable.timer(450, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy {
                     turn = true
@@ -78,14 +87,20 @@ class InterestAdapter(context: Context) : RecyclerBaseAdapter<Interest>(context,
      * 通知选中项（改变动画和属性）
      */
     fun notifySelected(view: View, position: Int) {
+        if (animatingPosition.contains(position.toString())) return
+        animatingPosition.add(position.toString())
         if (list[position].selected) {
             // 变为未选中
             list[position].selected = false
-            AnimationUtil.flipAnimatorYViewShow(view.txt_interest_name_selected, view.txt_interest_name, animationTime)
+            AnimationUtil.flipAnimatorYViewShow(view.txt_interest_name_selected, view.txt_interest_name, animationTime, position) {
+                animatingPosition.remove(it.toString())
+            }
         } else {
             // 变为选中
             list[position].selected = true
-            AnimationUtil.flipAnimatorYViewShow(view.txt_interest_name, view.txt_interest_name_selected, animationTime)
+            AnimationUtil.flipAnimatorYViewShow(view.txt_interest_name, view.txt_interest_name_selected, animationTime, position) {
+                animatingPosition.remove(it.toString())
+            }
         }
     }
 

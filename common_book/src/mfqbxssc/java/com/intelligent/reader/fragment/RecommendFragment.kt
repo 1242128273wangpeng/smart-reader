@@ -10,17 +10,19 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.request.RequestService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.SharedPreUtil
+import com.ding.basic.net.api.service.RequestService
+
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.mfqbxssc.frag_recommend.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
+
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NavigationBarStrip
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * @desc 书城-分类
@@ -31,7 +33,7 @@ import net.lzbook.kit.utils.NavigationBarStrip
 class RecommendFragment : Fragment() {
 
     private lateinit var bookStoreAdapter: BookStoreAdapter
-    private lateinit var sharedPreUtil: SharedPreUtil
+
 
     private val titles = object : ArrayList<String>() {
         init {
@@ -65,8 +67,6 @@ class RecommendFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         bookStoreAdapter = BookStoreAdapter(childFragmentManager, nbs_navigation, vp_recommend_content)
 
@@ -118,7 +118,7 @@ class RecommendFragment : Fragment() {
 
         init {
             this.viewPager.adapter = this
-            navigationBarStrip.setViewPager(viewPager)
+            navigationBarStrip.insertViewPager(viewPager)
         }
 
         @JvmOverloads
@@ -170,7 +170,7 @@ class RecommendFragment : Fragment() {
                 return
             }
 
-            navigationBarStrip.addTitle(title)
+            navigationBarStrip.insertTitle(title)
 
             notifyDataSetChanged()
         }

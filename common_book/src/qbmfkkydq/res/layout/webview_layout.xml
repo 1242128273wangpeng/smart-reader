@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <net.lzbook.kit.utils.web.CustomWebView
+    <net.lzbook.kit.utils.CustomWebView
         android:id="@+id/web_view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

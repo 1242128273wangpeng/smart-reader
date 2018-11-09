@@ -18,7 +18,7 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.dingyue.bookshelf.ShelfGridLayoutManager
-import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter

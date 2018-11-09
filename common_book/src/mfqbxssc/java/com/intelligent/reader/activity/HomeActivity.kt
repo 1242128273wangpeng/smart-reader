@@ -18,18 +18,15 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
+
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
 import com.ding.basic.net.Config
-import com.ding.basic.Config
-import com.ding.basic.request.RequestService
+import com.ding.basic.net.api.service.RequestService
+
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
-import com.dingyue.contract.logger.HomeLogger
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
+
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.RecommendFragment
@@ -130,7 +127,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     }
 
     private val bannerDialog: BannerDialog by lazy {
-         BannerDialog(this,Intent(activity, FindBookDetail::class.java))
+         BannerDialog(this,Intent(this, FindBookDetail::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -15,28 +15,39 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
-import com.ding.basic.Config
+
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Chapter
-import com.ding.basic.request.RequestService
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.web.CustomWebClient
-import com.dingyue.contract.web.JSInterfaceObject
+import com.ding.basic.net.Config
+import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
+
+
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
-import com.intelligent.reader.util.PagerDesc
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.zsmfqbxs.act_find_detail.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.request.UrlUtils
-import net.lzbook.kit.utils.AppLog
+import net.lzbook.kit.bean.PagerDesc
+
+import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.LoadingPage
+
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.IS_FROM_PUSH
-import swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.logger.AppLog
+import net.lzbook.kit.utils.oneclick.OneClickUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.web.CustomWebClient
+import net.lzbook.kit.utils.web.JSInterfaceObject
+import net.lzbook.kit.utils.webview.UrlUtils
+
 import java.util.*
 
 /**
@@ -54,7 +65,6 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
     private var loadingpage: LoadingPage? = null
     private var customWebClient: CustomWebClient? = null
     private var handler: Handler? = null
-    private var sharedPreUtil: SharedPreUtil? = null
     private var fromType = ""
     private var mPagerDesc: PagerDesc? = null
     private var h5Margin: Int = 0
@@ -93,8 +103,8 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
             onBackPressed()
             return
         }
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
-        fromType = sharedPreUtil!!.getString(SharedPreUtil.HOME_FINDBOOK_SEARCH,
+
+        fromType = SPUtils.getDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH,
                 "other")
         AppUtils.disableAccessibility(this)
         initView()
@@ -141,7 +151,7 @@ class TabulationActivity : FrameActivity(), View.OnClickListener {
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
 

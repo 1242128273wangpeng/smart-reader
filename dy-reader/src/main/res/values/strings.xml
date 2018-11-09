@@ -147,5 +147,5 @@
     <string name="not_receive_prompt">不再接收此提示</string>
 
     <string name="add_shelf_prompt">喜欢就加入书架吧～</string>
-
+    <string name="add_shelf">加入书架</string>
 </resources>

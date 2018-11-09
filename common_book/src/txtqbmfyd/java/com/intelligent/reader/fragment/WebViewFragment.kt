@@ -16,7 +16,7 @@ import com.dingyue.searchbook.activity.SearchBookActivity
 import com.dingyue.statistics.DyStatService
 import com.google.gson.Gson
 import com.intelligent.reader.R
-import kotlinx.android.synthetic.main.view_refresh_header.view.*
+import kotlinx.android.synthetic.txtqbmfyd.view_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfyd.webview_layout.*
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.LoadingPage

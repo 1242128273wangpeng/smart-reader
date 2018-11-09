@@ -22,9 +22,12 @@ import net.lzbook.kit.ui.adapter.LoadMoreAdapterWrapper;
 import net.lzbook.kit.ui.adapter.base.BaseAdapter;
 import net.lzbook.kit.ui.widget.EmptyRecyclerView;
 import net.lzbook.kit.ui.widget.MyDialog;
+import net.lzbook.kit.utils.ATManager;
 import net.lzbook.kit.utils.AbsRecyclerViewHolder;
 import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.logger.AppLog;
+import net.lzbook.kit.utils.router.RouterConfig;
+import net.lzbook.kit.utils.router.RouterUtil;
 import net.lzbook.kit.utils.user.UserManager;
 
 import java.util.HashMap;

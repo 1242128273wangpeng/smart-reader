@@ -10,6 +10,8 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -17,12 +19,14 @@ import com.dy.reader.presenter.ReadSettingPresenter
 import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.mfxsqbyd.reader_option_header.view.*
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
 import net.lzbook.kit.utils.onEnd
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.toast.ToastUtil.showToastMessage
 import org.greenrobot.eventbus.EventBus
 
 class ReadSettingHeader : FrameLayout {
@@ -66,7 +70,7 @@ class ReadSettingHeader : FrameLayout {
             presenter?.back()
         }
 
-        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
+        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || SPUtils.getDefaultSharedBoolean(SPKey.READER_SHARE_PROMPT)
 
         if (hasPromptShowed) {
             view_reader_share.visibility = View.INVISIBLE
@@ -76,8 +80,8 @@ class ReadSettingHeader : FrameLayout {
 
         if (Constants.SHARE_SWITCH_ENABLE) {
             ibtn_reader_share?.setOnClickListener {
-                context.editShared {
-                    putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+                SPUtils.editDefaultShared {
+                    putBoolean(SPKey.READER_SHARE_PROMPT, true)
                 }
                 view_reader_share.visibility = View.INVISIBLE
                 presenter?.showShareDialog()
@@ -113,7 +117,7 @@ class ReadSettingHeader : FrameLayout {
         }
 
         txt_add_bookshelf?.setOnClickListener {
-            presenter?.addBookShelf()
+//            presenter?.addBookShelf()
         }
 
         ibtn_reader_more?.setOnClickListener {
@@ -145,15 +149,15 @@ class ReadSettingHeader : FrameLayout {
                 val data = HashMap<String, String>()
                 when (result) {
                     1 -> {
-                        context.applicationContext.showToastMessage("书签添加成功")
+                       ToastUtil.showToastMessage("书签添加成功")
                         data["type"] = "1"
                     }
                     2 -> {
-                        context.applicationContext.showToastMessage("书签已删除")
+                        ToastUtil.showToastMessage("书签已删除")
                         data["type"] = "0"
                     }
                     else -> {
-                        context.applicationContext.showToastMessage("书签添加失败")
+                        ToastUtil.showToastMessage("书签添加失败")
                     }
                 }
             }

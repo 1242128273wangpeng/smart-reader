@@ -24,6 +24,7 @@ import net.lzbook.kit.ui.widget.ConsumeEvent
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.BookRouter
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -160,7 +161,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             BookShelfLogger.uploadBookShelfToBookCity()
         }
         img_head_setting?.setOnClickListener({
-            if (!CommonContract.isDoubleClick()) {
+            if (!OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                 BookShelfLogger.uploadBookShelfPersonal()
                 RouterUtil.navigation(requireActivity(), RouterConfig.SETTING_ACTIVITY)
                 EventBus.getDefault().post(ConsumeEvent(R.id.fup_head_setting))

@@ -10,6 +10,8 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 
 import com.dy.reader.R
 import com.dy.reader.event.EventSetting
@@ -18,6 +20,7 @@ import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfkdxs.reader_option_header.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
@@ -69,7 +72,7 @@ class ReaderSettingHeader : FrameLayout {
         img_reader_back.setOnClickListener {
             presenter?.back()
         }
-        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || context.getSharedBoolean(SharedPreUtil.READER_SHARE_PROMPT)
+        val hasPromptShowed = !Constants.SHARE_SWITCH_ENABLE || SPUtils.getDefaultSharedBoolean(SPKey.READER_SHARE_PROMPT)
 
         if (hasPromptShowed) {
             view_reader_share.visibility = View.INVISIBLE
@@ -79,8 +82,8 @@ class ReaderSettingHeader : FrameLayout {
 
         if (Constants.SHARE_SWITCH_ENABLE) {
             ibtn_reader_share?.setOnClickListener {
-                context.editShared {
-                    putBoolean(SharedPreUtil.READER_SHARE_PROMPT, true)
+                SPUtils.editDefaultShared {
+                    putBoolean(SPKey.READER_SHARE_PROMPT, true)
                 }
                 view_reader_share.visibility = View.INVISIBLE
                 presenter?.showShareDialog()

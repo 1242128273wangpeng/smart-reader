@@ -11,19 +11,23 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.request.RequestService
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.SharedPreUtil
+import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
+
 import com.intelligent.reader.R
 import com.intelligent.reader.activity.SettingActivity
 import kotlinx.android.synthetic.zsmfqbxs.frag_bookstore.*
 import kotlinx.android.synthetic.zsmfqbxs.view_home_header.*
-import net.lzbook.kit.app.BaseBookApplication
+import net.lzbook.kit.app.base.BaseBookApplication
+
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NavigationBarStrip
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * @desc 书城-分类
@@ -34,7 +38,6 @@ import net.lzbook.kit.utils.NavigationBarStrip
 class BookStoreFragment : Fragment() {
 
     private lateinit var bookStoreAdapter: BookStoreAdapter
-    private lateinit var sharedPreUtil: SharedPreUtil
 
     private val titles = object : ArrayList<String>() {
         init {
@@ -91,8 +94,6 @@ class BookStoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         txt_header_title.text = "书城"
 
@@ -157,7 +158,7 @@ class BookStoreFragment : Fragment() {
                 when(position) {
                     0 -> {
                         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.PAGE_BOOKSTORE, StartLogClickUtil.ACTION_RECOMMEND)
-                        sharedPreUtil.putString(SharedPreUtil.HOME_FINDBOOK_SEARCH, "recommend")
+                        SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "recommend")
                     }
                     1 -> {
                         StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.PAGE_BOOKSTORE, StartLogClickUtil.ACTION_MALE)

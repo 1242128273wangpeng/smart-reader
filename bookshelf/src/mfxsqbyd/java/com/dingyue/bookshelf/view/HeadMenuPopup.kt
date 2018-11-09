@@ -4,9 +4,12 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.R
 
 import kotlinx.android.synthetic.mfxsqbyd.popup_head_menu.view.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.widget.base.BasePopup
 
 /**
@@ -43,8 +46,8 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
         contentView.rl_local_import.setOnClickListener {
             dismiss()
             contentView.view_local_import.visibility = View.GONE
-            context.editShared {
-                putBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT, true)
+            SPUtils.editDefaultShared {
+                putBoolean(SPKey.BOOKSHELF_IMPORT_PROMPT, true)
             }
             onPromptClick()
             importListener?.invoke()
@@ -52,19 +55,19 @@ class HeadMenuPopup(context: Context, layout: Int = R.layout.popup_head_menu,
         contentView.rl_share.setOnClickListener {
             dismiss()
             contentView.view_share.visibility = View.GONE
-            context.editShared {
-                putBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT, true)
+            SPUtils.editDefaultShared  {
+                putBoolean(SPKey.BOOKSHELF_SHARE_PROMPT, true)
             }
             onPromptClick()
             shareListener?.invoke()
         }
 
-        val isLocalImportPromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_IMPORT_PROMPT)
+        val isLocalImportPromptGone = SPUtils.getDefaultSharedBoolean(SPKey.BOOKSHELF_IMPORT_PROMPT)
         if (isLocalImportPromptGone) {
             contentView.view_local_import.visibility = View.GONE
         }
         if (Constants.SHARE_SWITCH_ENABLE) {
-            val isSharePromptGone = context.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+            val isSharePromptGone = SPUtils.getDefaultSharedBoolean(SPKey.BOOKSHELF_SHARE_PROMPT)
             if (isSharePromptGone) {
                 contentView.view_share.visibility = View.GONE
             }

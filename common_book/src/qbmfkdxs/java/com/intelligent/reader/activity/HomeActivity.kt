@@ -30,6 +30,7 @@ import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
+import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.view.PushSettingDialog
 import com.umeng.message.PushAgent
@@ -56,6 +57,7 @@ import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.user.UserManager
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.view.HomeView

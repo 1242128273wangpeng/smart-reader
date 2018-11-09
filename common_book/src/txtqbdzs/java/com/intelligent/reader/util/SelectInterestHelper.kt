@@ -7,15 +7,15 @@ import android.os.Handler
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.ding.basic.bean.Interest
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.InterestAdapter
-import com.intelligent.reader.adapter.RecyclerBaseAdapter
-import com.intelligent.reader.presenter.interest.InterestPresenter
-import com.intelligent.reader.presenter.interest.InterestView
+import com.reyun.tracking.common.CommonUtil
 import kotlinx.android.synthetic.txtqbdzs.select_interest.view.*
+import net.lzbook.kit.ui.adapter.base.RecyclerBaseAdapter
 import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.toast.ToastUtil
 
 /**
  * Desc 选择兴趣辅助类
@@ -23,32 +23,32 @@ import net.lzbook.kit.utils.antiShakeClick
  * Mail jiaxing_sun@dingyuegroup.cn
  * Date 2018/10/13 11:57
  */
-class SelectInterestHelper(val view: View, val context: Context) : InterestView, View.OnClickListener, RecyclerBaseAdapter.OnItemClickListener {
+class SelectInterestHelper(val view: View, val context: Context) : View.OnClickListener, RecyclerBaseAdapter.OnItemClickListener {
 
     var overListener: (() -> Unit)? = null
+    var animationOverListener: (() -> Unit)? = null
 
-    private val interestPresenter by lazy { InterestPresenter(context, this) }
-    private val sharedPreUtil by lazy { SharedPreUtil(SharedPreUtil.SHARE_DEFAULT) }
     private var interestAdapter: InterestAdapter? = null
+    private var isLoading = false
 
     init {
         initView()
         initListener()
-        initInterestData()
     }
 
     override fun onItemClick(view: View, position: Int) {
+        if (isLoading) return
         interestAdapter?.notifySelected(view, position)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.txt_step_in -> stepIn()
-            R.id.txt_confirm -> selectConfirm()
+            R.id.btn_step_in -> stepIn()
+            R.id.btn_confirm -> selectConfirm()
         }
     }
 
-    override fun showInterestList(list: List<Interest>) {
+    fun showInterestList(list: List<Interest>) {
         if (list.isNotEmpty()) {
             if (interestAdapter == null) {
                 interestAdapter = InterestAdapter(context)
@@ -63,10 +63,6 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
         }
     }
 
-    override fun showError(message: String) {
-        context.showToastMessage(message)
-    }
-
     private fun initView() {
         view.rv_interest.layoutManager = GridLayoutManager(context, 2)
     }
@@ -75,23 +71,18 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
      * 初始化监听
      */
     private fun initListener() {
-        view.txt_step_in.antiShakeClick(this)
-        view.txt_confirm.antiShakeClick(this)
-    }
-
-    /**
-     * 初始化兴趣数据
-     */
-    private fun initInterestData() {
-        interestPresenter.getInterestList()
+        view.btn_step_in.antiShakeClick(this)
+        view.btn_confirm.antiShakeClick(this)
     }
 
     /**
      * 跳过
      */
     private fun stepIn() {
-        sharedPreUtil.putInt(SharedPreUtil.HAS_SELECT_INTEREST, -1)
+        if (isLoading) return
+        SPUtils.putDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, -1)
         overListener?.invoke()
+        animationOverListener?.invoke()
     }
 
     /**
@@ -101,17 +92,21 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
         // 判断选中项
         interestAdapter?.let {
             val list = it.getAllSelectedList()
-            if (list.isEmpty()) context.showToastMessage("请选择喜欢的类型")
+            if (list.isEmpty()) ToastUtil.showToastMessage("请选择喜欢的类型")
             else {
+                view.btn_confirm.isEnabled = false
+                view.btn_step_in.isEnabled = false
+                isLoading = true
                 // 加载动画
                 loading(1)
                 // 保存数据
-                sharedPreUtil.putInt(SharedPreUtil.HAS_SELECT_INTEREST, 1)
-                sharedPreUtil.putObject(SharedPreUtil.SELECTED_INTEREST_DATA, list)
+                SPUtils.putDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, 1)
+                SPUtils.putDefaultSharedObject(SPKey.SELECTED_INTEREST_DATA, list)
                 // 延时关闭页面
-                val loadingAnimation = ObjectAnimator.ofFloat(view, "alpha", 1f, 0.8f)
+                val loadingAnimation = ObjectAnimator.ofFloat(view, "alpha", 1f, 0.95f)
                 loadingAnimation.duration = 1500
                 loadingAnimation.start()
+                overListener?.invoke()
                 loadingAnimation.addListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) {
 
@@ -121,7 +116,7 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
                         handler.removeMessages(1)
                         handler.removeMessages(2)
                         handler.removeMessages(3)
-                        overListener?.invoke()
+                        animationOverListener?.invoke()
                     }
 
                     override fun onAnimationCancel(animation: Animator?) {
@@ -140,15 +135,15 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
     private val handler = Handler(Handler.Callback {
         when (it.what) {
             1 -> {
-                view.txt_confirm.text = "正在进入."
+                view.btn_confirm.text = "正在进入."
                 loading(2)
             }
             2 -> {
-                view.txt_confirm.text = "正在进入.."
+                view.btn_confirm.text = "正在进入.."
                 loading(3)
             }
             3 -> {
-                view.txt_confirm.text = "正在进入..."
+                view.btn_confirm.text = "正在进入..."
                 loading(1)
             }
         }

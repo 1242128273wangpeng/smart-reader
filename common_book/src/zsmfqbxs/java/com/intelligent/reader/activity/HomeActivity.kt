@@ -53,9 +53,16 @@ import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
+import net.lzbook.kit.ui.widget.BannerDialog
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.utils.webview.UrlUtils
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import java.util.*
 
@@ -120,7 +127,7 @@ class HomeActivity : BaseCacheableActivity(),
     }
 
     private val bannerDialog: BannerDialog by lazy {
-        BannerDialog(this)
+        BannerDialog(this,Intent(this, FindBookDetail::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

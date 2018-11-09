@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
@@ -13,30 +14,38 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 
 import com.baidu.mobstat.StatService
-import com.ding.basic.request.RequestService
-import com.dingyue.contract.CommonContract
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.web.CustomWebClient
-import com.dingyue.contract.web.JSInterfaceObject
+import com.ding.basic.net.api.service.RequestService
+
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
-import com.intelligent.reader.util.PagerDesc
+import com.intelligent.reader.R.id.*
+
 import com.orhanobut.logger.Logger
 
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.book.view.LoadingPage
-import net.lzbook.kit.request.UrlUtils
+
 
 import java.util.ArrayList
 import java.util.HashMap
 
-import iyouqu.theme.FrameActivity
+
 import kotlinx.android.synthetic.mfqbxssc.act_tabulation.*
-import kotlinx.android.synthetic.mfqbxssc.activity_search_book.*
+
+import net.lzbook.kit.bean.PagerDesc
+import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.*
-import swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.oneclick.OneClickUtil
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.web.CustomWebClient
+import net.lzbook.kit.utils.web.JSInterfaceObject
+import net.lzbook.kit.utils.webview.UrlUtils
+
 
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
 class TabulationActivity : FrameActivity() {
@@ -243,7 +252,7 @@ class TabulationActivity : FrameActivity() {
             @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-                    if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
                     }
 

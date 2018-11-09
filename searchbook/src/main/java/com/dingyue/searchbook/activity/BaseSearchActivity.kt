@@ -344,7 +344,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
     /**
      * 处理软键盘事件
      */
-    private fun showSoftKeyboard(view: View?) {
+    public fun showSoftKeyboard(view: View?) {
         val handler = Handler()
         handler.postDelayed({
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

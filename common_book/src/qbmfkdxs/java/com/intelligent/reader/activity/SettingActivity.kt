@@ -35,6 +35,7 @@ import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.ui.widget.SwitchButton
+import net.lzbook.kit.utils.oneclick.OneClickUtil
 import java.util.*
 
 
@@ -163,7 +164,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 goBackToHome()
             }
             R.id.tv_qrcode -> {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return
                 }
                 val welfareIntent = Intent()
@@ -174,7 +175,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 startActivity(welfareIntent)
             }
             R.id.rl_welfare -> {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.ADPAGE)
@@ -185,7 +186,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
                 startActivity(welfareIntent)
             }
             R.id.tv_setting_more -> {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.MORESET)
@@ -217,7 +218,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
 
             }
             R.id.tv_disclaimer -> {
-                if (CommonContract.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,

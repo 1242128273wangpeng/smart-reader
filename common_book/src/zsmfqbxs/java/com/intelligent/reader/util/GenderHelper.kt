@@ -9,8 +9,10 @@ import android.widget.TextView
 import com.intelligent.reader.R
 import android.animation.AnimatorSet
 import android.view.animation.DecelerateInterpolator
-import com.dingyue.contract.util.SharedPreUtil
-import net.lzbook.kit.app.BaseBookApplication
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
+
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.antiShakeClick
@@ -37,7 +39,6 @@ class GenderHelper(view: View) {
 
     lateinit var genderSelectedListener :GenderSelectedListener
 
-    private var shareUtil : SharedPreUtil ?= null
 
     val mImgTranDuration = 700L
     val mImgAlphaDuration = 300L
@@ -45,7 +46,6 @@ class GenderHelper(view: View) {
     val mTxtAlphaDuration = 1000L
 
     init {
-        shareUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
         initListener()
     }
 
@@ -126,7 +126,7 @@ class GenderHelper(view: View) {
      * 文字的动画
      */
     private fun setTxtAnimation(){
-        shareUtil?.putInt(SharedPreUtil.GENDER_TAG, Constants.SGENDER)
+        SPUtils.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SGENDER)
         txt_gender_skip.visibility = View.INVISIBLE
         txt_gender_description.visibility = View.INVISIBLE
         val txtAniSet = AnimatorSet()

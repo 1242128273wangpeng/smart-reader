@@ -31,6 +31,7 @@
     <string name="sort_for_reading_time">按最后阅读排序</string>
 
     <string name="download_manager">缓存管理</string>
+    <string name="local_import">本地导入</string>
 
     <string name="book_sort">书架排序</string>
 

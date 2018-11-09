@@ -15,16 +15,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
-import com.dingyue.searchbook.SearchBookActivity
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.mfxsqbyd.act_book_cover.*
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.presenter.CoverPagePresenter
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.ApplicationShareDialog
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.ui.widget.RecommendItemView
@@ -601,14 +605,14 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     private fun checkShowCoverPrompt() {
         if (!Constants.SHARE_SWITCH_ENABLE) return
-        val hasShareDialogShowed = getSharedBoolean(SharedPreUtil.COVER_SHARE_PROMPT)
+        val hasShareDialogShowed = SPUtils.getDefaultSharedBoolean(SPKey.COVER_SHARE_PROMPT)
         if (!hasShareDialogShowed) {
             fl_cover_share_prompt.visibility = View.VISIBLE
 
             fl_cover_share_prompt.setOnClickListener {
                 fl_cover_share_prompt.visibility = View.GONE
-                editShared {
-                    putBoolean(SharedPreUtil.COVER_SHARE_PROMPT, true)
+                SPUtils.editDefaultShared {
+                    putBoolean(SPKey.COVER_SHARE_PROMPT, true)
                 }
             }
         }

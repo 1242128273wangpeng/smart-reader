@@ -117,7 +117,7 @@ class ReaderSettingHeader : FrameLayout {
             }
 
             popup.dismiss()
-            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARKEDIT, data)
+            DyStatService.onEvent(EventPoint.READPAGE_LABELEDIT, data)
         }
 
         popup.startBookDetailListener = {

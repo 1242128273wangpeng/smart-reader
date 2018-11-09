@@ -2,6 +2,7 @@ package com.dingyue.searchbook.activity
 
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.searchbook.R
 import com.dingyue.searchbook.activity.BaseSearchActivity
 import com.dingyue.searchbook.fragment.HotAndHisFragment
 import com.dingyue.searchbook.interfaces.OnResultListener

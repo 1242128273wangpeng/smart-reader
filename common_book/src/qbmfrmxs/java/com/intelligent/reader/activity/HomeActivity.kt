@@ -356,7 +356,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         ll_tab_search.setOnClickListener {
             this.changeHomePagerIndex(fragmentTypeSearchBook)
             SPUtils.putDefaultSharedString(SPKey.HOME_FINDBOOK_SEARCH, "search")
-            HomeLogger.uploadHomeSearch()
+            HomeLogger.uploadHomeSearch(1)
         }
 
         // 分类

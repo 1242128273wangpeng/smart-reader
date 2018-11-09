@@ -248,6 +248,15 @@ public class NavigationBarStrip extends View implements ViewPager.OnPageChangeLi
         });
     }
 
+    public void insertClickAble(boolean clickAble) {
+        this.clickAble = clickAble;
+    }
+
+    public boolean checkScrollState() {
+        return scrollState == ViewPager.SCROLL_STATE_DRAGGING;
+    }
+
+
 
     public void insertTitle(String title) {
         if (!TextUtils.isEmpty(title)) {

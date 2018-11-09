@@ -39,6 +39,7 @@ import com.dy.media.MediaLifecycle;
 import com.google.gson.Gson;
 import com.intelligent.reader.BuildConfig;
 import com.intelligent.reader.R;
+import com.intelligent.reader.util.SelectInterestHelper;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
@@ -77,6 +78,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -267,8 +270,7 @@ public class SplashActivity extends FrameActivity {
      * 选择兴趣
      */
     private void selectInterest() {
-        if (sharedPreUtil == null) sharedPreUtil = new SharedPreUtil(SharedPreUtil.SHARE_DEFAULT);
-        if (sharedPreUtil.getInt(SharedPreUtil.HAS_SELECT_INTEREST, 1) == 1) {
+        if (SPUtils.INSTANCE.getDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, 1) == 1) {
             doOnCreate();
         } else {
             // 选择兴趣

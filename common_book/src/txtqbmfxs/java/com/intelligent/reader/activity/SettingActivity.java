@@ -34,9 +34,11 @@ import net.lzbook.kit.ui.widget.SwitchButton;
 import net.lzbook.kit.utils.ApkUpdateUtils;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
+import net.lzbook.kit.utils.book.CommonContract;
 import net.lzbook.kit.utils.cache.DataCleanManager;
 import net.lzbook.kit.utils.cache.UIHelper;
 import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.oneclick.OneClickUtil;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
 import com.ding.basic.util.sp.SPKey;
@@ -414,7 +416,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
         switch (paramView.getId()) {
             case R.id.rl_setting_more:
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
@@ -443,7 +445,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 checkUpdate();
                 break;
             case R.id.rl_feedback:
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
@@ -466,7 +468,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 }
                 break;
             case R.id.disclaimer_statement_rl:
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
@@ -476,7 +478,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
                 break;
             case R.id.rl_history_setting:
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
@@ -485,7 +487,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 startActivity(new Intent(SettingActivity.this, FootprintActivity.class));
                 break;
             case R.id.rl_welfare:
-                if (CommonContract.INSTANCE.isDoubleClick(System.currentTimeMillis())) {
+                if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,

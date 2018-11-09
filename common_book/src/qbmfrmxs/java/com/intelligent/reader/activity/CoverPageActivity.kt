@@ -17,7 +17,8 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
-import com.dingyue.searchbook.SearchBookActivity
+
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog

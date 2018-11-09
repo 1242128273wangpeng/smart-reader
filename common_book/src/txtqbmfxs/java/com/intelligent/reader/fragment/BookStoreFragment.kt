@@ -11,16 +11,19 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ding.basic.net.api.service.RequestService
 
-import com.ding.basic.request.RequestService
+
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfxs.frag_bookstore.*
 
-import net.lzbook.kit.app.BaseBookApplication
+
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.webview.UrlUtils
 
 import java.util.HashMap
 

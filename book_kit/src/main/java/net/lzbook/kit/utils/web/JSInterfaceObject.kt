@@ -243,7 +243,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
      * H5调用,搜索无结果回调
      */
     @JavascriptInterface
-    abstract fun onSearchNoResult(keyword: String?)
+     open fun onSearchNoResult(keyword: String?){
+
+    }
 
     /**
      * 搜索无结果页推荐词点击事件

@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.BookUpdate
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.view.BookShelfDeleteDialog
 import com.dingyue.bookshelf.view.BookShelfSortingPopup
 import com.dingyue.bookshelf.view.HeadMenuPopup
@@ -21,6 +23,7 @@ import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.service.CheckNovelUpdateService
+import net.lzbook.kit.ui.widget.ApplicationShareDialog
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.oneclick.OneClickUtil
@@ -31,6 +34,7 @@ import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.ui.widget.ConsumeEvent
 import net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
+import net.lzbook.kit.utils.AppUtils
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -230,7 +234,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             dismissRemoveMenu()
         }
 
-        val isSharePromptGone = !Constants.SHARE_SWITCH_ENABLE || activity?.getSharedBoolean(SharedPreUtil.BOOKSHELF_SHARE_PROMPT)
+        val isSharePromptGone = !Constants.SHARE_SWITCH_ENABLE || SPUtils.getDefaultSharedBoolean(SPKey.BOOKSHELF_SHARE_PROMPT)
                 ?: false
         if (isSharePromptGone) {
             view_head_menu.visibility = View.GONE

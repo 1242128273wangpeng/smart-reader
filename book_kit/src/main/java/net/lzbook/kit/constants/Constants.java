@@ -429,6 +429,7 @@ public class Constants {
     public static String ad_control_welfare_shelf = "5";//广告分渠道控制广告位     5福利中心和书架页1-2
     public static String ad_control_other = "6";//广告分渠道控制广告位    4其他广告
 
+    public static String BOOK_LOCAL = "local";//本地导入 书籍类型
 
     public static Boolean SHARE_SWITCH_ENABLE = false; //是否开启分享功能
 

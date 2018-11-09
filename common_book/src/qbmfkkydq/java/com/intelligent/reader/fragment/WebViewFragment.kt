@@ -1,15 +1,18 @@
 package com.intelligent.reader.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
+import android.webkit.WebView
 import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
@@ -22,32 +25,36 @@ import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.CustomWebClient
-import net.lzbook.kit.utils.web.CustomWebView
 import net.lzbook.kit.utils.web.JSInterfaceObject
+import net.lzbook.kit.utils.webview.JSInterfaceHelper
 
-/**
- * 推荐、榜单、分类
- */
 class WebViewFragment : Fragment(), View.OnClickListener {
 
 
     private var url: String? = ""
-
+    private var handler: Handler? = null
     private var loadingPage: LoadingPage? = null
     private var customWebClient: CustomWebClient? = null
-    private var customChangeListener: CustomWebView.ScrollChangeListener? = null
 
+    private var jsInterfaceHelper: JSInterfaceHelper? = null
+    private var fragmentCallback: FragmentCallback? = null
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        this.fragmentCallback = activity as FragmentCallback?
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        handler = Handler()
         val bundle = this.arguments
         if (bundle != null) {
             this.url = bundle.getString("url")
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.webview_layout, container, false)
     }
 
@@ -58,42 +65,49 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         AppUtils.disableAccessibility(requireContext())
 
         initView()
+//        initJsInterfaceObject()
 
         requestWebViewData(url)
     }
 
 
-    @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
+    @SuppressLint("JavascriptInterface")
     private fun initView() {
 
         web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
         loadingPage = LoadingPage(requireActivity(), rl_web_content)
 
-        customWebClient = CustomWebClient(requireContext(), web_view_content)
-
+        customWebClient = CustomWebClient(context, web_view_content)
         customWebClient?.initWebViewSetting()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             web_view_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-
         web_view_content?.webViewClient = customWebClient
 
+        jsInterfaceHelper = JSInterfaceHelper(context, web_view_content)
 
-        if (customChangeListener != null) {
-            web_view_content.insertScrollChangeListener(customChangeListener)
+        web_view_content!!.addJavascriptInterface(jsInterfaceHelper, "J_search")
+
+        if (jsInterfaceHelper != null) {
+            fragmentCallback?.webJsCallback(jsInterfaceHelper!!)
         }
+
+    }
+
+    @SuppressLint("AddJavascriptInterface")
+    private fun initJsInterfaceObject() {
+
 
         web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
 
-            @JavascriptInterface
             override fun startSearchActivity(data: String?) {
-
+                RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY)
             }
 
-            @JavascriptInterface
             override fun startTabulationActivity(data: String?) {
+
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
                     if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                         return
@@ -110,12 +124,12 @@ class WebViewFragment : Fragment(), View.OnClickListener {
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
                                 when {
                                     redirect.from == "recommend" -> bundle.putString("from", "recommend")
-                                    redirect.from == "rank" -> bundle.putString("from", "rank")
+                                    redirect.from == "ranking" -> bundle.putString("from", "ranking")
                                     redirect.from == "category" -> bundle.putString("from", "category")
                                     else -> bundle.putString("from", "other")
                                 }
                             } else {
-                                bundle.putString("from", "other")
+                                bundle.putString("from", "authorType")
                             }
 
                             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
@@ -132,34 +146,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
 
-
-    }
-
-    private fun requestWebViewData(url: String?) {
-        startLoadingWebViewData(url)
-        initWebViewCallback()
-    }
-
-    private fun startLoadingWebViewData(url: String?) {
-        if (web_view_content == null) {
-            return
-        }
-        web_view_content?.post {
-            handleLoadingWebViewData(url)
-        }
-    }
-
-    private fun handleLoadingWebViewData(url: String?) {
-        customWebClient?.initParameter()
-
-        if (url != null && url.isNotEmpty()) {
-            try {
-                web_view_content?.loadUrl(url)
-            } catch (exception: NullPointerException) {
-                exception.printStackTrace()
-                requireActivity().finish()
-            }
-        }
     }
 
     private fun initWebViewCallback() {
@@ -190,6 +176,37 @@ class WebViewFragment : Fragment(), View.OnClickListener {
     }
 
 
+    private fun requestWebViewData(url: String?) {
+//        if (fragmentCallback != null) {
+//            url = fragmentCallback!!.startLoad(web_view_content, url)
+//        }
+        startLoadingWebViewData(url)
+        initWebViewCallback()
+    }
+
+    private fun startLoadingWebViewData(url: String?) {
+        if (web_view_content == null) {
+            return
+        }
+        web_view_content?.post {
+            handleLoadingWebViewData(url)
+        }
+    }
+
+
+    private fun handleLoadingWebViewData(url: String?) {
+        customWebClient?.initParameter()
+
+        if (url != null && url.isNotEmpty()) {
+            try {
+                web_view_content?.loadUrl(url)
+            } catch (exception: NullPointerException) {
+                exception.printStackTrace()
+                requireActivity().finish()
+            }
+        }
+    }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.content_head_search -> RouterUtil.navigation(requireActivity(),
@@ -207,7 +224,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
 
-        web_view_content?.clearCache(true) //清空缓存
+        web_view_content!!.clearCache(true) //清空缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             rl_web_content?.removeView(web_view_content)
             web_view_content?.stopLoading()
@@ -227,6 +244,12 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
     }
 
+    interface FragmentCallback {
+        fun webJsCallback(jsInterfaceHelper: JSInterfaceHelper)
+
+        fun startLoad(webView: WebView?, url: String): String
+
+    }
 
     /**
      * 获取web中banner的位置js回调

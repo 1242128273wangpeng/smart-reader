@@ -9,20 +9,22 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.RecommendCateListBean
-import com.ding.basic.repository.RequestRepositoryFactory
-import com.ding.basic.request.RequestService
-import com.ding.basic.request.RequestSubscriber
-import com.dingyue.contract.router.RouterConfig
-import com.dingyue.contract.router.RouterUtil
-import com.dingyue.contract.util.SharedPreUtil
+import com.ding.basic.net.RequestSubscriber
+import com.ding.basic.net.api.service.RequestService
+
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkdxs.frag_recommend.*
-import net.lzbook.kit.app.BaseBookApplication
+
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.request.UrlUtils
+
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * @desc 书城-分类
@@ -32,7 +34,6 @@ import net.lzbook.kit.utils.AppUtils
  */
 class RecommendFragment : Fragment() {
 
-    private lateinit var sharedPreUtil: SharedPreUtil
     private var currentPosition = 0
     var isLoadDataSuccess = false
     private lateinit var mCategoryPageAdapter: CategoryPageAdapter
@@ -137,7 +138,6 @@ class RecommendFragment : Fragment() {
         mCategoryPageAdapter = CategoryPageAdapter(childFragmentManager)
         vp_recommend_content.adapter = mCategoryPageAdapter
 
-        sharedPreUtil = SharedPreUtil(SharedPreUtil.SHARE_DEFAULT)
 
         tabstrip.setViewPager(vp_recommend_content)
         vp_recommend_content.offscreenPageLimit = 6

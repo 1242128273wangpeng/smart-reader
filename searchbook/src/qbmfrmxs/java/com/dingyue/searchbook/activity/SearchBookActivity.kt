@@ -1,6 +1,7 @@
 package com.dingyue.searchbook.activity
 
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.dingyue.searchbook.R
 import com.dingyue.searchbook.activity.BaseSearchActivity
 import kotlinx.android.synthetic.qbmfrmxs.activity_search_book.*
 import net.lzbook.kit.utils.router.RouterConfig

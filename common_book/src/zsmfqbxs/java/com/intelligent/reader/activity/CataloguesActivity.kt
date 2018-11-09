@@ -48,7 +48,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.greenrobot.eventbus.Subscribe
+
 import java.util.*
 import java.util.concurrent.Callable
 

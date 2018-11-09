@@ -25,7 +25,7 @@ import net.lzbook.kit.utils.user.UserManager
  * Mail tao_qian@dingyuegroup.cn
  * Date 2018/9/5 15:29
  */
-class BannerDialog(val activity: Activity,var intent: Intent) {
+class BannerDialog(val activity: Activity,var intent: Intent?) {
 
     private val dialog = MyDialog(activity, R.layout.dialog_banner, Gravity.CENTER)
 

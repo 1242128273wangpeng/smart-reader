@@ -177,5 +177,12 @@ object BookShelfLogger {
         }
     }
 
+    /**
+     * 本地导入点位
+     */
+    fun uploadBookShelfLocalImport() {
+        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                StartLogClickUtil.PAGE_SHELF, StartLogClickUtil.SHELF_INSERT)
+    }
 
 }

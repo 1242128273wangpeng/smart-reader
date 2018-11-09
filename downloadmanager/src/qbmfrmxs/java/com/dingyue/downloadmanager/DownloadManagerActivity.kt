@@ -15,6 +15,7 @@ import com.dingyue.downloadmanager.contract.CacheManagerContract
 import kotlinx.android.synthetic.qbmfrmxs.act_download_manager.*
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.NavigationBarStrip
 import net.lzbook.kit.utils.download.CallBackDownload
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig

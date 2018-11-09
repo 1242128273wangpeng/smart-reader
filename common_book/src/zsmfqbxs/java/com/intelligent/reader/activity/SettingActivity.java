@@ -39,6 +39,7 @@ import net.lzbook.kit.utils.StatServiceUtils;
 import net.lzbook.kit.utils.cache.DataCleanManager;
 import net.lzbook.kit.utils.cache.UIHelper;
 import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.oneclick.OneClickUtil;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
 import com.ding.basic.util.sp.SPKey;
@@ -440,7 +441,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
 
     @Override
     public void onClick(View paramView) {
-        if (CommonContract.INSTANCE.isDoubleClick()) {
+        if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
             return;
         }
 

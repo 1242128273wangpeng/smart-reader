@@ -7,13 +7,16 @@ import android.os.Handler
 import android.view.View
 import android.widget.CompoundButton
 import com.ding.basic.bean.Interest
-import com.dingyue.contract.util.SharedPreUtil
-import com.dingyue.contract.util.showToastMessage
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
-import com.intelligent.reader.presenter.interest.InterestPresenter
-import com.intelligent.reader.presenter.interest.InterestView
+
 import kotlinx.android.synthetic.qbmfkdxs.select_interest.view.*
+import net.lzbook.kit.presenter.InterestPresenter
 import net.lzbook.kit.utils.antiShakeClick
+import net.lzbook.kit.utils.toast.ToastUtil
+import net.lzbook.kit.utils.toast.ToastUtil.showToastMessage
+import net.lzbook.kit.view.InterestView
 
 /**
  * Desc 选择兴趣辅助类
@@ -27,7 +30,6 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
     var overListener: (() -> Unit)? = null
 
     private val interestPresenter by lazy { InterestPresenter(context, this) }
-    private val sharedPreUtil by lazy { SharedPreUtil(SharedPreUtil.SHARE_DEFAULT) }
 
     var selectList: MutableList<Interest> = ArrayList()
     var listData: MutableList<Interest> = ArrayList()
@@ -70,7 +72,7 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
     }
 
     override fun showError(message: String) {
-        context.showToastMessage(message)
+        ToastUtil.showToastMessage(message)
         view.img_guide.visibility = View.VISIBLE
         view.rl_container.visibility = View.GONE
     }
@@ -144,7 +146,7 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
      * 跳过
      */
     private fun stepIn() {
-        sharedPreUtil.putInt(SharedPreUtil.HAS_SELECT_INTEREST, -1)
+        SPUtils.putDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, -1)
         overListener?.invoke()
     }
 
@@ -153,13 +155,13 @@ class SelectInterestHelper(val view: View, val context: Context) : InterestView,
      * 提交选中项
      */
     private fun selectConfirm() {
-        if (listData.isNotEmpty() && selectList.isEmpty()) context.showToastMessage("请选择喜欢的类型")
+        if (listData.isNotEmpty() && selectList.isEmpty()) ToastUtil.showToastMessage("请选择喜欢的类型")
         else {
             // 加载动画
             loading(1)
             // 保存数据
-            sharedPreUtil.putInt(SharedPreUtil.HAS_SELECT_INTEREST, 1)
-            sharedPreUtil.putObject(SharedPreUtil.SELECTED_INTEREST_DATA, selectList)
+            SPUtils.putDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, 1)
+            SPUtils.putDefaultSharedObject(SPKey.SELECTED_INTEREST_DATA, selectList)
             // 延时关闭页面
             val loadingAnimation = ObjectAnimator.ofFloat(view, "alpha", 1f, 1f)
             loadingAnimation.duration = 900

@@ -24,11 +24,13 @@ import com.ding.basic.bean.Book;
 import com.ding.basic.bean.Chapter;
 import com.ding.basic.net.Config;
 import com.ding.basic.net.api.service.RequestService;
+import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.PagerDesc;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.ui.widget.LoadingPage;
 import net.lzbook.kit.utils.AppUtils;

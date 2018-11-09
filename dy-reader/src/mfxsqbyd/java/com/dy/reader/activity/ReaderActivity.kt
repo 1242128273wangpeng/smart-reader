@@ -31,6 +31,8 @@ import com.dy.reader.page.Position
 import com.dy.reader.presenter.ReadPresenter
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderStatus
+import com.dycm_adsdk.view.NativeView
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.mfxsqbyd.act_reader.*
 import kotlinx.android.synthetic.mfxsqbyd.reader_content.*
 import net.lzbook.kit.constants.Constants
@@ -281,7 +283,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     fun addBookToShelf() {
-        mReadPresenter?.addBookShelf(true, false)
+        mReadPresenter?.addBookShelf(true)
     }
 
     override fun onBackPressed() {
@@ -502,7 +504,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReaderStatus.isMenuShow = !ReaderStatus.isMenuShow
                 mReadPresenter.changeScreenMode()
             }
-            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
+//            EventSetting.Type.FULL_WINDOW_CHANGE -> full(event.obj as Boolean)
             EventSetting.Type.HIDE_AD -> hideAd()
             EventSetting.Type.SHOW_AD -> showAd()
 
