@@ -32,6 +32,7 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
@@ -875,16 +876,18 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
                 final TextView txt_gender_skip = view.findViewById(R.id.txt_gender_skip);
                 txt_gender_skip.setOnClickListener(v -> {
 
-                    Map<String,String> data = new HashMap<>();
-                    data.put("type","0");
-                    StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
+                    Map<String, String> data = new HashMap<>();
+                    data.put("type", "0");
+                    StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
+                            StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data);
 
                     txt_gender_skip.setText("努力加载中...");
                     txt_gender_skip.setClickable(false);
                     genderHelper.jumpAnimation();
                     SPUtils.INSTANCE.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SDEFAULT);
                     mStepInFlag = true;
-                    Constants.SGENDER = Constants.SDEFAULT;
+                    ParameterConfig.INSTANCE.setGENDER_TYPE(
+                            ParameterConfig.INSTANCE.getGENDER_DEFAULT());
                     doOnCreate();
                 });
             } else {
@@ -898,8 +901,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.Gender
 
     private boolean initChooseGender() {
         AppUtils.initDensity(getApplicationContext());
-        Constants.SGENDER = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.GENDER_TAG, Constants.NONE);
-        return Constants.SGENDER == Constants.NONE;
+        ParameterConfig.INSTANCE.setGENDER_TYPE(SPUtils.INSTANCE.getDefaultSharedInt(SPKey.GENDER_TAG,
+                ParameterConfig.INSTANCE.getGENDER_NONE()));
+        return ParameterConfig.INSTANCE.getGENDER_TYPE()
+                == ParameterConfig.INSTANCE.getGENDER_NONE();
     }
 
     @Override

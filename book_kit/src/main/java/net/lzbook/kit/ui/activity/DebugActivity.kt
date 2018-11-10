@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
@@ -216,7 +217,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         if (isChecked) {
             val loadDataManager = LoadDataManager(this)
             // 首次安装新用户添加默认书籍
-            loadDataManager.addDefaultBooks(Constants.SGENDER)
+            loadDataManager.addDefaultBooks(ParameterConfig.GENDER_TYPE)
         }
 
     }

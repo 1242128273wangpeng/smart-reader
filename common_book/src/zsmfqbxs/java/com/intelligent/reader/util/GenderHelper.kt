@@ -1,14 +1,16 @@
 package com.intelligent.reader.util
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.intelligent.reader.R
-import android.animation.AnimatorSet
-import android.view.animation.DecelerateInterpolator
+
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 
@@ -37,7 +39,7 @@ class GenderHelper(view: View) {
     private val txt_gender_description: TextView = view.findViewById(R.id.txt_gender_description)
     private val txt_gender_skip: TextView = view.findViewById(R.id.txt_gender_skip)
 
-    lateinit var genderSelectedListener :GenderSelectedListener
+    lateinit var genderSelectedListener: GenderSelectedListener
 
 
     val mImgTranDuration = 700L
@@ -50,7 +52,7 @@ class GenderHelper(view: View) {
     }
 
     private fun initListener() {
-        rl_gender_boy.antiShakeClick( View.OnClickListener {
+        rl_gender_boy.antiShakeClick(View.OnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
             StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.PREFERENCE, data)
@@ -67,7 +69,7 @@ class GenderHelper(view: View) {
 
 
     private fun selectBoy() {
-        Constants.SGENDER = Constants.SBOY
+        ParameterConfig.GENDER_TYPE = ParameterConfig.GENDER_BOY
 
         img_gender_boy_check.isSelected = true
         img_gender_boy.isSelected = true
@@ -79,7 +81,7 @@ class GenderHelper(view: View) {
     }
 
     private fun selectGirl() {
-        Constants.SGENDER = Constants.SGIRL
+        ParameterConfig.GENDER_TYPE = ParameterConfig.GENDER_GIRL
 
         img_gender_girl_check.isSelected = true
         img_gender_girl.isSelected = true
@@ -93,22 +95,22 @@ class GenderHelper(view: View) {
     /**
      * 选择跳过的交互动画
      */
-    fun jumpAnimation(){
-        vanishIconAnimation(rl_gender_boy,rl_gender_girl)
+    fun jumpAnimation() {
+        vanishIconAnimation(rl_gender_boy, rl_gender_girl)
     }
 
     private fun showSelectBoyAni() {
-        setIconAnimation(rl_gender_boy,rl_gender_girl)
+        setIconAnimation(rl_gender_boy, rl_gender_girl)
     }
 
     private fun showSelectGirlAni() {
-        setIconAnimation(rl_gender_girl,rl_gender_boy)
+        setIconAnimation(rl_gender_girl, rl_gender_boy)
     }
 
     /**
      * 图片的动画（上下移动）
      */
-    private fun setIconAnimation(tran: View , alpha:View){
+    private fun setIconAnimation(tran: View, alpha: View) {
         tran.isClickable = false
         alpha.isClickable = false
         alpha.alpha = 0.4f
@@ -118,7 +120,7 @@ class GenderHelper(view: View) {
     /**
      * 图片的消失
      */
-    private fun vanishIconAnimation(alpha1: View , alpha2:View){
+    private fun vanishIconAnimation(alpha1: View, alpha2: View) {
         setTxtAnimation()
     }
 
@@ -126,7 +128,7 @@ class GenderHelper(view: View) {
      * 文字的动画
      */
     private fun setTxtAnimation(){
-        SPUtils.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SGENDER)
+        SPUtils.putDefaultSharedInt(SPKey.GENDER_TAG, ParameterConfig.GENDER_TYPE)
         txt_gender_skip.visibility = View.INVISIBLE
         txt_gender_description.visibility = View.INVISIBLE
         val txtAniSet = AnimatorSet()
@@ -135,9 +137,9 @@ class GenderHelper(view: View) {
         val descAlphaAnimator = ObjectAnimator.ofFloat(txt_gender_description, "alpha", 1f, 0f)
         descAlphaAnimator.duration = mTxtTranDuration
         txtAniSet.playTogether(titleAlphaAnimator, descAlphaAnimator)
-        txtAniSet.interpolator= DecelerateInterpolator()
+        txtAniSet.interpolator = DecelerateInterpolator()
         txtAniSet.start()
-        txt_gender_loading.visibility=View.VISIBLE
+        txt_gender_loading.visibility = View.VISIBLE
         val loadingAnimation = ObjectAnimator.ofFloat(txt_gender_loading, "alpha", 0f, 1f)
         loadingAnimation.duration = mTxtAlphaDuration
         loadingAnimation.start()
@@ -164,11 +166,11 @@ class GenderHelper(view: View) {
     /**
      * 男女频点击后的回调
      */
-    fun insertGenderSelectedListener(listen: GenderSelectedListener){
+    fun insertGenderSelectedListener(listen: GenderSelectedListener) {
         genderSelectedListener = listen
     }
 
-    interface GenderSelectedListener{
+    interface GenderSelectedListener {
         fun genderSelected()
     }
 }

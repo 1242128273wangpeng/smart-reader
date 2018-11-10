@@ -3,10 +3,8 @@ package net.lzbook.kit.constants;
 import android.content.Context;
 import android.os.Environment;
 
-import net.lzbook.kit.R;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.NetWorkUtils;
-import net.lzbook.kit.utils.ResourceUtil;
 
 import org.apache.http.protocol.HTTP;
 
@@ -394,11 +392,17 @@ public class Constants {
      * 开屏选男女
      * -1不传sex字段
      * 0全部； 1男； 2女；
+     * ParameterConfig类
      */
+    @Deprecated
     public static int SBOY = 1;
+    @Deprecated
     public static int SGIRL = 2;
+    @Deprecated
     public static int SDEFAULT = 0;
+    @Deprecated
     public static int NONE = -1;
+    @Deprecated
     public static int SGENDER = NONE;
 
 

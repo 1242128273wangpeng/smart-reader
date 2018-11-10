@@ -9,6 +9,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.ding.basic.bean.Interest;
+import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.net.Config;
 import com.dingyue.statistics.DyStatService;
 import com.dy.media.MediaConfig;
@@ -113,7 +114,7 @@ public class ShieldManager {
             int hasSelectInterest = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, 0);
             if (hasSelectInterest == 0) {
                 // 无选兴趣功能，执行原有逻辑
-                loadDataManager.addDefaultBooks(Constants.SGENDER);
+                loadDataManager.addDefaultBooks(ParameterConfig.INSTANCE.getGENDER_TYPE());
             } else if (hasSelectInterest == -1) {
                 // 选择兴趣时，选择跳过
                 loadDataManager.addDefaultBooksWithInterest("", "");
