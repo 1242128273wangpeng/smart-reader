@@ -108,21 +108,19 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         }
 
         customWebClient?.setLoadingWebViewStart {
-
             searchResultPresenter.setStartedAction()
         }
 
         customWebClient?.setLoadingWebViewError {
-            if (loadingPage != null) {
-                loadingPage?.onErrorVisable()
-            }
+            loadingPage?.onErrorVisable()
         }
 
         customWebClient?.setLoadingWebViewFinish {
             searchResultPresenter.onLoadFinished()
-            if (loadingPage != null) {
+            loadingPage?.postDelayed({
                 hideLoading()
-            }
+            },300)
+
         }
 
         loadingPage?.setReloadAction(LoadingPage.reloadCallback {
