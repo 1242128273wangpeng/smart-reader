@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.txtqbmfyd.in_bottom_edit.*
 import net.lzbook.kit.bean.WebFavoriteUpdateBean
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import org.greenrobot.eventbus.EventBus
@@ -119,6 +120,7 @@ class WebFavoriteActivity : BaseCacheableActivity(), WebFavoriteView {
                 DyStatService.onEvent(EventPoint.WEBCOLLECT_LINKCLICK, data)
                 val bundle = Bundle()
                 bundle.putString("url", favoriteList!![position].webLink)
+                loge("打开url:" + favoriteList!![position].webLink)
                 RouterUtil.navigation(this, RouterConfig.WEB_VIEW_ACTIVITY, bundle)
             }
             // 页面跳转
