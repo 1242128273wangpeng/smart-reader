@@ -12,7 +12,7 @@ import com.ding.basic.db.dao.*
  * Created by crazylei.
  * 如果你想升级数据库请按规则书写migration, 并添加调用, 最后不要忘记升级数据库版本
  */
-@Database(entities = [Book::class, BookFix::class, Bookmark::class, HistoryInfo::class, SearchRecommendBook.DataBean::class, LoginRespV4::class], version = 4)
+@Database(entities = [Book::class, BookFix::class, Bookmark::class, HistoryInfo::class, SearchRecommendBook.DataBean::class, LoginRespV4::class], version = 5)
 abstract class BookDatabase : RoomDatabase() {
 
     abstract fun bookDao(): BookDao
