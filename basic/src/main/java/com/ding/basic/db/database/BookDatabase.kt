@@ -35,7 +35,8 @@ abstract class BookDatabase : RoomDatabase() {
                             .addMigrations(
                                     migration1_2,
                                     migration2_3,
-                                    migration3_4
+                                    migration3_4,
+                                    migration4_5
                             )
                             .build()
                 }
