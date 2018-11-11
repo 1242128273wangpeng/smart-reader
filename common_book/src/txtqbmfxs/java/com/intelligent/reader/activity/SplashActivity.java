@@ -895,10 +895,14 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        MediaLifecycle.INSTANCE.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
-
         MediaLifecycle.INSTANCE.onDestroy();
-
         super.onDestroy();
     }
 }
