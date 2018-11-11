@@ -265,7 +265,8 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 showChapterProgress()
             }
-
+            // 设置夜间模式按钮状态
+            refreshNightImage()
             setFontSize()
         } else {
             resetOptionLayout()
@@ -276,6 +277,14 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 rl_reader_option_bottom?.visibility = View.GONE
             }
             ll_reader_setting_detail?.visibility = View.GONE
+        }
+    }
+
+    private fun refreshNightImage(){
+        if (ThemeHelper.getInstance(context).isNight) {
+            img_reader_night.setImageResource(R.drawable.reader_option_night_icon)
+        } else {
+            img_reader_night.setImageResource(R.drawable.reader_option_day_icon)
         }
     }
 
@@ -371,13 +380,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             override fun onProgressChanged(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
 //                ReadConfig.FONT_SIZE = progressFloat.toInt()
 //                readSettingHelper?.saveFontSize()
-                setFontValue(progressFloat.toInt())
+//                setFontValue(progressFloat.toInt())
             }
 
             override fun getProgressOnActionUp(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float) {
 //                ReadConfig.FONT_SIZE = progressFloat.toInt()
 //                readSettingHelper?.saveFontSize()
-                setFontValue(progressFloat.toInt())
+//                setFontValue(progressFloat.toInt())
             }
 
             override fun getProgressOnFinally(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
@@ -441,15 +450,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
             R.id.img_reader_night//夜间模式
             -> {
-                if (ThemeHelper.getInstance(context).isNight) {
-                    img_reader_night.setImageResource(R.drawable.reader_option_day_icon)
-                } else {
-                    img_reader_night.setImageResource(R.drawable.reader_option_night_icon)
-
-                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
                 changeBrightnessByModeChange()
+                refreshNightImage()
             }
             R.id.img_reader_font_reduce// 减小字号
             -> {
@@ -668,6 +672,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         if (readerSettings.readThemeMode == 61) {
             presenter?.chageNightMode(index, false)
             changeBrightnessByModeChange()
+            refreshNightImage()
         } else {
             setNovelMode(index)
         }
