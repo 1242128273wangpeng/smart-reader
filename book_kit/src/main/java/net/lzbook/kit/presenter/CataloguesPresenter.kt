@@ -140,7 +140,6 @@ class CataloguesPresenter(private val activity: Activity, private val book: Book
         }
     }
 
-    @Deprecated("no use ?")
     fun showReadDialog() {
         cataloguesContract.showReadDialog()
     }

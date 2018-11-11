@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:focusable="true"
+    android:id="@+id/rootLayout"
+    android:scrollbars="vertical"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:id="@+id/ll_transform_read_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_transform_read_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="转码"
+            android:textColor="#323232"
+            android:textSize="18sp"/>
+
+
+        <TextView
+            android:id="@+id/txt_transform_read_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:gravity="left|center"
+            android:lineSpacingMultiplier="1.5"
+            android:maxLines="4"
+            android:padding="@dimen/padding_4"
+            android:text="@string/translate_code_read"
+            android:textColor="#323232"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_not_show_next_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/ckb_not_show_next_time"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/read_source_dialog_ckb_sel"
+                android:button="@null"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="@string/not_show_next_time"
+                android:textColor="#8D939D"
+                android:textSize="@dimen/text_size_small"
+                tools:ignore="RtlHardcoded"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="13dp"
+            android:background="#E8E8E8"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <View
+                android:id="@+id/view_transform_read_divider"
+                android:layout_width="0.5dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="#FFE8E8E8"/>
+
+            <TextView
+                android:id="@+id/txt_transform_read_cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/view_transform_read_divider"
+                android:background="@drawable/dialog_btn_left_selector"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="@drawable/dialog_cancel_selector"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/txt_transform_read_continue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/view_transform_read_divider"
+                android:background="@drawable/dialog_btn_right_selector"
+                android:gravity="center"
+                android:text="@string/reading_continue"
+                android:textColor="@color/primary"
+                android:textSize="16sp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <net.lzbook.kit.ui.widget.NightShadowView
+        android:layout_width="wrap_content"
+        android:id="@+id/nightShadowView"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_transform_read_content"
+        android:layout_alignLeft="@id/ll_transform_read_content"
+        android:layout_alignRight="@id/ll_transform_read_content"
+        android:layout_alignTop="@id/ll_transform_read_content"
+        android:visibility="gone"
+        app:cornerRadius="4dp"/>
+</RelativeLayout>

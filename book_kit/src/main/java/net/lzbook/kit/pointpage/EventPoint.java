@@ -248,6 +248,7 @@ public class EventPoint {
 
     /** -----------------------书籍目录页 对应的点位编码------------**/
     public static final String BOOKCATALOG_CATALOGCHAPTER = "BOOKCATALOG_CATALOGCHAPTER"; // 目录中点击某章节
+    public static final String BOOKCATALOG_TRANSCODEREAD = "BOOKCATALOG_TRANSCODEREAD"; // 点击转码阅读
     public static final String BOOKCATALOG_BACK = "BOOKCATALOG_BACK"; // 书籍目录返回
 
 
