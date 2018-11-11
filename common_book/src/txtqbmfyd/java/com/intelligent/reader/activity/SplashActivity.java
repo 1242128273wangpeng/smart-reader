@@ -553,6 +553,12 @@ public class SplashActivity extends FrameActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        MediaLifecycle.INSTANCE.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
 
         try {

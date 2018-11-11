@@ -242,7 +242,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         val screenBrightness = readerSettings.screenBrightness
 
         if (screenBrightness >= 0) {
-            skbar_reader_brightness_change?.progress = screenBrightness
+            skbar_reader_brightness_change?.progress = if (screenBrightness <= 20) 0 else screenBrightness
         } else {
             skbar_reader_brightness_change?.progress = 5
         }
@@ -449,6 +449,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
+                changeBrightnessByModeChange()
             }
             R.id.img_reader_font_reduce// 减小字号
             -> {
@@ -495,6 +496,29 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             }
         }
     }
+
+    private fun changeBrightnessByModeChange() {
+        if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+            setBrightnessBackground(false)
+            readerSettings.isAutoBrightness = false
+            ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+        }
+
+        if (readerSettings.isAutoBrightness) {
+            read_setting_auto_power?.isChecked = true
+            readPresenter?.startAutoBrightness()
+            val screenBrightness = readerSettings.screenBrightness
+            if (screenBrightness > 0) {
+                skbar_reader_brightness_change?.progress = screenBrightness
+            }
+            skbar_reader_brightness_change?.progress = 0
+        } else {
+            read_setting_auto_power?.isChecked = false
+            setScreenBright()
+            setScreenBrightProgress()
+        }
+    }
+
 
     private fun checkOptionLayout(id: Int) {
         when (id) {
@@ -643,6 +667,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     fun changePageBackgroundWrapper(index: Int) {
         if (readerSettings.readThemeMode == 61) {
             presenter?.chageNightMode(index, false)
+            changeBrightnessByModeChange()
         } else {
             setNovelMode(index)
         }

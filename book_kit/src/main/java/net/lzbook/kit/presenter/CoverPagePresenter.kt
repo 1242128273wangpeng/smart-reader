@@ -227,7 +227,7 @@ class CoverPagePresenter(private val book_id: String?,
      * 处理跳转阅读页请求
      * **/
     fun handleReadingAction() {
-       coverPageContract.handleReadingAction(coverDetail)
+        coverPageContract.handleReadingAction(coverDetail)
     }
 
     /***

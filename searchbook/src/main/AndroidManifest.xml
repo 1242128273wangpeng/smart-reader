@@ -16,9 +16,11 @@
 
         <activity
             android:name=".activity.WebViewActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeTranslucent"/>
+            android:theme="@style/AppThemeTranslucent"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
     </application>
 
 </manifest>
