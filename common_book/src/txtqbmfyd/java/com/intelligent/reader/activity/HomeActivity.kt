@@ -422,7 +422,7 @@ class HomeActivity : BaseCacheableActivity(),
             }
         }
 
-        txt_qq_add.setOnClickListener {
+        rl_add_qq.setOnClickListener {
             if (!AppUtils.joinQQGroup(this, "7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F")) {
                 ToastUtil.showToastMessage(R.string.setting_qq_add_fail)
             }
