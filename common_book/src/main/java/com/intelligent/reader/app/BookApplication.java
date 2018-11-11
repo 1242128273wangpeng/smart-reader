@@ -62,10 +62,10 @@ public class BookApplication extends BaseBookApplication {
 
         if (AppUtils.isMainProcess(this)) {
 
+            //防止定位不回掉导致缺失id
             MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
             MediaLifecycle.INSTANCE.onAppCreate(this);
-
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
             StatService.setAppChannel(this, AppUtils.getChannelId(), true);

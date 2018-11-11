@@ -197,7 +197,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         }
 
         customWebClient?.setLoadingWebViewStart {
-
             searchResultPresenter.setStartedAction()
         }
         customWebClient?.setLoadingEveryWebViewStart {
@@ -205,16 +204,16 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         }
 
         customWebClient?.setLoadingWebViewError {
-            if (loadingPage != null) {
-                loadingPage?.onErrorVisable()
-            }
+            loadingPage?.onErrorVisable()
         }
 
         customWebClient?.setLoadingWebViewFinish {
             isLoading = false
             searchResultPresenter.onLoadFinished()
             if (loadingPage != null && !searchNoResult) {
-                hideLoading()
+                loadingPage?.postDelayed({
+                    hideLoading()
+                },300)
             }
         }
 
