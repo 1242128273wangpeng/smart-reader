@@ -570,3 +570,11 @@ public *;
 # skip AVID classes
 -keep class com.integralads.avid.library.* {*;}
 
+#腾讯TBS
+-dontwarn com.tencent.smtt.**
+-keep class MTT.ThirdAppInfoNew {
+	*;
+}
+-keep class com.tencent.smtt.* {*;}
+-keep class com.tencent.tbs.video.interfaces.* {*;}
+

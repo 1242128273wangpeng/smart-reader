@@ -1,11 +1,9 @@
 package com.dingyue.searchbook.activity
 
+import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.WebPageFavorite
@@ -13,6 +11,8 @@ import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.R
 import com.dingyue.statistics.DyStatService
+import com.tencent.smtt.sdk.WebChromeClient
+import com.tencent.smtt.sdk.WebView
 import kotlinx.android.synthetic.txtqbmfyd.act_web_view.*
 import net.lzbook.kit.bean.WebFavoriteUpdateBean
 import net.lzbook.kit.pointpage.EventPoint
@@ -47,7 +47,6 @@ class WebViewActivity : FrameActivity() {
                         isLoadFinish = true
                         hideLoading()
                         btn_page_favorite.visibility = View.VISIBLE
-
                     }
                 }
             }
@@ -58,6 +57,7 @@ class WebViewActivity : FrameActivity() {
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_web_view)
+        window.setFormat(PixelFormat.TRANSLUCENT)
         requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(this)
         img_back.setOnClickListener { onBackPressed() }
         img_close.setOnClickListener {
@@ -99,14 +99,11 @@ class WebViewActivity : FrameActivity() {
     }
 
     private fun initWebView() {
-        web_view?.topShadow = img_head_shadow
+//        web_view?.topShadow = img_head_shadow
         if (Build.VERSION.SDK_INT >= 14) web_view.setLayerType(View.LAYER_TYPE_NONE, null)
 
         customWebClient = SimpleWebClient(this, web_view)
         customWebClient?.initWebViewSetting()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            web_view.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        }
         web_view.webViewClient = customWebClient
         web_view.webChromeClient = chromeClient
     }

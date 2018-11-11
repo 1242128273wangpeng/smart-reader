@@ -18,6 +18,7 @@ import com.intelligent.reader.BuildConfig;
 import com.reyun.tracking.sdk.Tracking;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.PushAgent;
 
@@ -63,13 +64,11 @@ public class BookApplication extends BaseBookApplication {
 
         if (AppUtils.isMainProcess(this)) {
 
-            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
-            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
             MediaLifecycle.INSTANCE.onAppCreate(this);
 
 //            //防止定位不回掉导致缺失id
-//            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
-//            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
+            MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
+            MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
             StatService.setAppChannel(this, AppUtils.getChannelId(), true);
@@ -146,6 +145,8 @@ public class BookApplication extends BaseBookApplication {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                // 初始化x5 webview内核
+                QbSdk.initX5Environment(BookApplication.this, null);
             }
         }
     };
