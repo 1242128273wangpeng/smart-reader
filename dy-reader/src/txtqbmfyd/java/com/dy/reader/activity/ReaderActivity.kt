@@ -112,13 +112,15 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             mReadPresenter.loadData()
         }
 
-        RepairHelp.showFixMsg(this, ReaderStatus.book, {
+        RepairHelp.showFixMsg(this, ReaderStatus.book) {
             if (!this.isFinishing) {
                 RouterUtil.navigation(this, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             }
-        })
+        }
 
         mCatalogMarkFragment?.fixBook()
+
+        PageManager.init()
 
         initGuide()
     }
@@ -313,6 +315,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     override fun onDestroy() {
         super.onDestroy()
         try {
+            PageManager.destroy()
+            recyclerView.removeAllViews()
             dl_reader_content.removeDrawerListener(mDrawerListener)
             EventBus.getDefault().unregister(this)
             ReaderStatus.clear()
@@ -555,7 +559,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
         val adView = ReadMediaManager.adCache.get(adType)
         if (adView != null) {
             if (adView.loaded) {//加载成功
-                if (adView.view != null) {
+                if (adView.view != null && adView.view?.parent == null) {
 
                     if (adView.view is NativeView) {
                         (adView.view as NativeView).setHideAdListener {
@@ -579,7 +583,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.loadAdComplete = null
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
-                        val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
                         pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
@@ -664,7 +667,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 if (pac_reader_ad?.visibility == View.GONE && !ReaderStatus.isMenuShow) {
                     mReadSettingFragment.show(true)
                     ReaderStatus.isMenuShow = true
-                }else{
+                } else {
                     mReadSettingFragment.show(false)
                     ReaderStatus.isMenuShow = false
 
