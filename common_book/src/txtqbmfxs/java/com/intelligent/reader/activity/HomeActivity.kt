@@ -18,50 +18,39 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.BookStoreFragment
-import com.intelligent.reader.fragment.WebViewFragment
 import com.intelligent.reader.view.PushSettingDialog
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.txtqbmfxs.act_home.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.appender_loghub.appender.AndroidLogStorage
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
-import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
-import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.BannerDialog
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
-import net.lzbook.kit.utils.book.CommonContract
-import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.encrypt.MD5Utils
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
-import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
 import net.lzbook.kit.view.HomeView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.File
-import java.util.*
 
 /**
  * Function：书架、书城界面
@@ -93,15 +82,14 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
         val dialog = PushSettingDialog(this)
         dialog.openPushListener = {
             openPushSetting()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPNOWOPEN)
+            DyStatService.onEvent(EventPoint.MAIN_POPUPNOWOPEN)
         }
         lifecycle.addObserver(dialog)
         dialog
     }
 
     private val bannerDialog: BannerDialog by lazy {
-        BannerDialog(this,null)
+        BannerDialog(this, null)
     }
 
     override fun getCurrent(position: Int) {
@@ -134,14 +122,13 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             e.printStackTrace()
         }
 
-        AndroidLogStorage.getInstance().clear()
+        DyStatService.clearInvalidData()
+
         homePresenter!!.initDownloadService()
         HomeLogger.uploadHomeBookListInformation()
 
         if (isShouldShowPushSettingDialog()) {
             pushSettingDialog.show()
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PAGE_SHELF,
-                    StartLogClickUtil.POPUPMESSAGE)
         }
 
         EventBus.getDefault().register(this)
@@ -177,7 +164,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             ll_home_bookshelf.id -> {
                 view_pager.currentItem = 0
                 bottomType = 1
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.BOOKSHELF)
+                DyStatService.onEvent(EventPoint.MAIN_BOOKSHELF)
 
             }
             ll_home_bookstore.id -> {
@@ -311,7 +298,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     override fun onDestroy() {
         super.onDestroy()
-        AndroidLogStorage.getInstance().clear()
+        DyStatService.clearInvalidData()
         this.unregisterReceiver(homeBroadcastReceiver)
         MediaLifecycle.onDestroy()
         try {
@@ -390,12 +377,12 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     private fun intentSearch() {
         RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY)
-        when (bottomType) {
-            2 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
-            3 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
-            4 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
-            else -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.SEARCH)
-        }
+        /* when (bottomType) {
+             2 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
+             3 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
+             4 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
+             else -> DyStatService.onEvent(EventPoint.MAIN_SEARCH)
+         }*/
 
     }
 

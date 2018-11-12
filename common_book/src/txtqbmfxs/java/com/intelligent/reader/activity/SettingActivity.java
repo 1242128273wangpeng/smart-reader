@@ -1,5 +1,7 @@
 package com.intelligent.reader.activity;
 
+import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
+
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,11 +23,14 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.bumptech.glide.Glide;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
+import com.dingyue.statistics.DyStatService;
 import com.dy.reader.setting.ReaderSettings;
 import com.intelligent.reader.R;
 
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.bean.EventBookStore;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.ui.activity.WelfareCenterActivity;
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity;
 import net.lzbook.kit.ui.widget.ConsumeEvent;
@@ -34,15 +39,12 @@ import net.lzbook.kit.ui.widget.SwitchButton;
 import net.lzbook.kit.utils.ApkUpdateUtils;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.StatServiceUtils;
-import net.lzbook.kit.utils.book.CommonContract;
 import net.lzbook.kit.utils.cache.DataCleanManager;
 import net.lzbook.kit.utils.cache.UIHelper;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.oneclick.OneClickUtil;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.router.RouterUtil;
-import com.ding.basic.util.sp.SPKey;
-import com.ding.basic.util.sp.SPUtils;
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper;
 import net.lzbook.kit.utils.theme.ThemeMode;
 import net.lzbook.kit.utils.toast.ToastUtil;
@@ -55,8 +57,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static net.lzbook.kit.utils.PushExtKt.IS_FROM_PUSH;
 
 @Route(path = RouterConfig.SETTING_ACTIVITY)
 public class SettingActivity extends BaseCacheableActivity implements View.OnClickListener,
@@ -419,16 +419,10 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.MORESET);
+                DyStatService.onEvent(EventPoint.PERSONAL_MORESET);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more);
                 startActivity(new Intent(SettingActivity.this, SettingMoreActivity.class));
                 break;
-//            case R.id.rl_style_change:
-//                StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_theme_change);
-//                startActivity(new Intent(SettingActivity.this, StyleChangeActivity.class));
-////                finish();
-//                break;
             case R.id.tv_login_info:
                 Toast.makeText(getApplicationContext(), R.string.enter_community,
                         Toast.LENGTH_SHORT).show();
@@ -439,8 +433,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.check_update_rl:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.VERSION);
+                DyStatService.onEvent(EventPoint.PERSONAL_VERSION);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_ver);
                 checkUpdate();
                 break;
@@ -448,15 +441,13 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.HELP);
+                DyStatService.onEvent(EventPoint.PERSONAL_HELP);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 handler.removeCallbacks(feedbackRunnable);
                 handler.postDelayed(feedbackRunnable, 500);
                 break;
             case R.id.rl_mark:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.COMMENT);
+                DyStatService.onEvent(EventPoint.PERSONAL_COMMENT);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_help);
                 try {
                     Uri uri = Uri.parse("market://details?id=" + getPackageName());
@@ -471,8 +462,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.PROCTCOL);
+                DyStatService.onEvent(EventPoint.PERSONAL_PROCTCOL);
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(RouterUtil.FROM_DISCLAIMER_PAGE, true);
                 RouterUtil.navigation(this, RouterConfig.DISCLAIMER_ACTIVITY, bundle);
@@ -481,8 +471,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.PERSON_HISTORY);
+                DyStatService.onEvent(EventPoint.PERSONAL_HISTORYLOGIN);
                 EventBus.getDefault().post(new ConsumeEvent(R.id.redpoint_setting_history));
                 startActivity(new Intent(SettingActivity.this, FootprintActivity.class));
                 break;
@@ -490,8 +479,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                 if (OneClickUtil.Companion.isDoubleClick(System.currentTimeMillis())) {
                     return;
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.ADPAGE);
+                DyStatService.onEvent(EventPoint.PERSONAL_ADPAGE);
                 Intent welfareIntent = new Intent();
                 welfareIntent.putExtra("url",
                         "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html");
@@ -509,8 +497,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.clear_cache_rl://清除缓存的处理
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.CACHECLEAR);
+                DyStatService.onEvent(EventPoint.PERSONAL_CACHECLEAR);
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache);
                 clearCacheDialog();
                 break;
@@ -519,14 +506,12 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.setting_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.BACK, data);
+                DyStatService.onEvent(EventPoint.PERSONAL_BACK);
                 goBackToHome();
                 break;
             case R.id.img_head:
             case R.id.btn_login:
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.LOGIN);
+                DyStatService.onEvent(EventPoint.PERSONAL_LOGIN);
                 btn_login.setClickable(false);
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, CODE_REQ_LOGIN);
@@ -534,8 +519,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             case R.id.btn_logout:
             case R.id.rl_logout:
                 logoutDialog();
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                        StartLogClickUtil.LOGOUT);
+                DyStatService.onEvent(EventPoint.PERSONAL_LOGOUT);
                 break;
             default:
                 break;
@@ -692,8 +676,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
     @Override
     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
         if (view.getId() == R.id.bt_night_shift) {
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                    StartLogClickUtil.NIGHTMODE);
+            DyStatService.onEvent(EventPoint.PERSONAL_NIGHTMODE);
             ReaderSettings.Companion.getInstance().initValues();
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day);
@@ -713,8 +696,7 @@ public class SettingActivity extends BaseCacheableActivity implements View.OnCli
             SPUtils.INSTANCE.putDefaultSharedBoolean(SPKey.AUTO_UPDATE_CAHCE, isChecked);
             Map<String, String> data = new HashMap<>();
             data.put("type", isChecked ? "1" : "0");
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE,
-                    StartLogClickUtil.WIFI_AUTOCACHE, data);
+            DyStatService.onEvent(EventPoint.PERSONAL_WIFI_AUTOCACHE, data);
         }
     }
 

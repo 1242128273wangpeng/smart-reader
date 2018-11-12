@@ -7,13 +7,7 @@ import com.ding.basic.bean.CoverCheckItem
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
-import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.ReadConfig
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.presenter.base.IPresenter
@@ -134,20 +128,6 @@ class HomePresenter(override var view: HomeView?, var packageManager: PackageMan
      * **/
     fun initDownloadService() {
         CacheManager.checkService()
-    }
-
-    /***
-     * 上传用户应用列表
-     * **/
-    private fun updateApplicationList() {
-        Observable.create(ObservableOnSubscribe<List<String>> { emitter ->
-            emitter.onNext(mutableListOf(AppUtils.scanLocalInstallAppList(packageManager), AppUtils.loadUserApplicationList(BaseBookApplication.getGlobalContext(), packageManager)))
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(onNext = {
-                    StartLogClickUtil.upLoadApps(it[0], it[1])
-                })
     }
 
 }

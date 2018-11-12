@@ -1,5 +1,6 @@
 package com.intelligent.reader.fragment
 
+
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -12,20 +13,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.net.api.service.RequestService
-
-
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfxs.frag_bookstore.*
-
-
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
-
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.webview.UrlUtils
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * Function：书城
@@ -145,8 +141,7 @@ open class BookStoreFragment : Fragment() {
             sharedPreferences?.edit()?.putString(Constants.FINDBOOK_SEARCH,
                     "recommend")?.apply()
 
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE,
-                    StartLogClickUtil.RECOMMEND)
+            DyStatService.onEvent(EventPoint.MAIN_RECOMMEND)
 
             if (searchClickListener != null) {
                 searchClickListener?.getCurrent(2)
@@ -158,7 +153,7 @@ open class BookStoreFragment : Fragment() {
 
             sharedPreferences?.edit()?.putString(Constants.FINDBOOK_SEARCH, "top")?.apply()
 
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.TOP)
+            DyStatService.onEvent(EventPoint.MAIN_TOP)
 
             if (searchClickListener != null) {
                 searchClickListener?.getCurrent(3)
@@ -170,7 +165,7 @@ open class BookStoreFragment : Fragment() {
 
             sharedPreferences?.edit()?.putString(Constants.FINDBOOK_SEARCH, "class")?.apply()
 
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.MAIN_PAGE, StartLogClickUtil.CLASS)
+            DyStatService.onEvent(EventPoint.MAIN_CLASS)
 
             if (searchClickListener != null) {
                 searchClickListener?.getCurrent(4)

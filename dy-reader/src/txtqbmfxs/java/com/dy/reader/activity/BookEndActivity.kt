@@ -7,6 +7,7 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.ding.basic.bean.RecommendBooksEndResp
 import com.ding.basic.bean.Source
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaControl
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
@@ -19,14 +20,14 @@ import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.txtqbmfxs.act_book_end.*
 import kotlinx.android.synthetic.txtqbmfxs.layout_book_end_new_books.*
 import kotlinx.android.synthetic.txtqbmfxs.layout_book_end_recommend_books.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.BookRecommender
-import net.lzbook.kit.ui.widget.LoadingPage
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
@@ -67,7 +68,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         initListener()
         initIntent()
         initData()
-        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
+        DyStatService.onEvent(EventPoint.READFINISH_ENTER, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -76,9 +77,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
     private fun initListener() {
 
         iv_back.setOnClickListener {
-            val map = HashMap<String, String>()
-            map["type"] = "1"
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, map)
+            DyStatService.onEvent(EventPoint.READFINISH_BACK, mapOf("type" to "1"))
             finish()
         }
 
@@ -92,40 +91,39 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
             val map = HashMap<String, String>()
             bookId?.let { map.put("bookid", it) }
             bookChapterId?.let { map.put("chapterid", it) }
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.SOURCECHANGE, map)
+            DyStatService.onEvent(EventPoint.READFINISH_SOURCECHANGE, map)
 
         }
 
-
-//        txt_prompt.text = Html.fromHtml(resources.getString(R.string.book_end_prompt))
         // 我的书架
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
+            DyStatService.onEvent(EventPoint.READFINISH_TOSHELF, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
             finish()
         }
 
         //去书城看一看
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
+            DyStatService.onEvent(EventPoint.READFINISH_TOBOOKSTORE, mapOf("bookid" to book?.book_id.orEmpty(), "chapterid" to book?.book_chapter_id.orEmpty()))
             finish()
         }
 
         //喜欢这本书的人还喜欢（换一换）
         txt_more_refresh.setOnClickListener {
             refreshBooks1()
-            val refresh = java.util.HashMap<String, String>()
-            refresh.put("module", "1")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.REPLACE, refresh)
+            val data = java.util.HashMap<String, String>()
+            data.put("module", "1")
+            DyStatService.onEvent(EventPoint.READFINISH_REPLACE, data)
         }
 
         //新锐好书抢先看（换一换）
         txt_new_refresh.setOnClickListener {
             refreshBooks2()
-            val refresh = java.util.HashMap<String, String>()
-            refresh.put("module", "2")
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.REPLACE, refresh)
+            val data = java.util.HashMap<String, String>()
+            data.put("module", "2")
+            DyStatService.onEvent(EventPoint.READFINISH_REPLACE, data)
+
         }
 
 

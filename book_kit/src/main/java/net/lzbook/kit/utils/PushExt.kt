@@ -21,13 +21,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.toast.ToastUtil.showToastMessage
 import java.util.*
 
 /**

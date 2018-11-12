@@ -25,7 +25,6 @@ import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.activity_base_search.*
 import kotlinx.android.synthetic.main.fragment_search_result.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
@@ -344,7 +343,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
     /**
      * 处理软键盘事件
      */
-    public fun showSoftKeyboard(view: View?) {
+    fun showSoftKeyboard(view: View?) {
         val handler = Handler()
         handler.postDelayed({
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

@@ -19,15 +19,16 @@ import com.ding.basic.bean.Book
 import com.ding.basic.bean.RecommendBean
 import com.dingyue.bookshelf.ShelfGridLayoutManager
 import com.dingyue.searchbook.activity.SearchBookActivity
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CoverRecommendAdapter
 import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.txtqbmfxs.act_book_cover.*
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.presenter.CoverPagePresenter
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
@@ -69,8 +70,7 @@ class CoverPageActivity : BaseCacheableActivity(),
         val data = HashMap<String, String>()
         data.put("bookid", recommendBooks.bookId)
         data.put("TbookID", recommendBooks.bookId)
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE,
-                StartLogClickUtil.RECOMMENDEDBOOK, data)
+        DyStatService.onEvent(EventPoint.BOOOKDETAIL_RECOMMENDEDBOOK, data)
 
         val book = Book()
         book.book_id = recommendBooks.bookId
@@ -114,7 +114,7 @@ class CoverPageActivity : BaseCacheableActivity(),
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
-    private var transformReadDialog: TransformReadDialog?=null
+    private var transformReadDialog: TransformReadDialog? = null
     private var coverDetail: Book? = null
 
     private var isFromPush = false
@@ -170,13 +170,11 @@ class CoverPageActivity : BaseCacheableActivity(),
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
-            transformReadDialog= TransformReadDialog(this)
+            transformReadDialog = TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
 
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "1"))
 
                 intoReadingActivity()
 
@@ -186,10 +184,8 @@ class CoverPageActivity : BaseCacheableActivity(),
             }
 
             transformReadDialog?.insertCancelListener {
-                val data = HashMap<String, String>()
-                data["type"] = "2"
 
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, mapOf("type" to "2"))
 
                 if (!this.isFinishing) {
                     transformReadDialog?.dismiss()
@@ -241,7 +237,7 @@ class CoverPageActivity : BaseCacheableActivity(),
      * 处理跳转阅读页请求
      * **/
     override fun handleReadingAction(coverDetail: Book?) {
-        this.coverDetail=coverDetail
+        this.coverDetail = coverDetail
         if (this.isFinishing) {
             return
         }
@@ -258,7 +254,7 @@ class CoverPageActivity : BaseCacheableActivity(),
     /***
      * 处理跳转目录操作
      * **/
-    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean,coverDetail: Book?) {
+    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean, coverDetail: Book?) {
         if (coverDetail != null) {
 
             val bundle = Bundle()
@@ -273,6 +269,7 @@ class CoverPageActivity : BaseCacheableActivity(),
             this.startActivity(intent)
         }
     }
+
     override fun showCleanDialog(): Dialog {
         val cleanDialog = MyDialog(this, R.layout.dialog_download_clean)
         cleanDialog.setCanceledOnTouchOutside(false)
@@ -285,7 +282,7 @@ class CoverPageActivity : BaseCacheableActivity(),
     /***
      * 判断是否跳转到搜索页
      * **/
-    override  fun checkStartSearchActivity(view: View) {
+    override fun checkStartSearchActivity(view: View) {
         val intent = Intent()
         if (view is RecommendItemView) {
             intent.putExtra("word", view.title)
@@ -481,9 +478,7 @@ class CoverPageActivity : BaseCacheableActivity(),
         }*/
         when (view.id) {
             R.id.book_cover_back -> {
-                val data = HashMap<String, String>()
-                data["type"] = "1"
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
+                DyStatService.onEvent(EventPoint.SYSTEM_BACK, mapOf("type" to "1"))
                 finish()
             }
 
@@ -493,7 +488,7 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             R.id.book_cover_reading -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_trans_read)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEREAD)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEREAD)
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.handleReadingAction()
@@ -502,10 +497,8 @@ class CoverPageActivity : BaseCacheableActivity(),
 
             R.id.book_cover_download -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_all_load)
-                val dataDownload = HashMap<String, String>()
-                dataDownload["bookId"] = bookId!!
 
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CASHEALL, dataDownload)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_CASHEALL, mapOf("bookId" to bookId!!))
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.handleDownloadAction()
@@ -513,7 +506,7 @@ class CoverPageActivity : BaseCacheableActivity(),
             }
             R.id.tv_catalog_book_cover -> {
                 StatServiceUtils.statAppBtnClick(this, StatServiceUtils.b_details_click_to_catalogue)
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.CATALOG)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_CATALOG)
 
                 if (coverPagePresenter != null) {
                     coverPagePresenter?.startCatalogActivity(true)
@@ -523,7 +516,7 @@ class CoverPageActivity : BaseCacheableActivity(),
                 if (coverPagePresenter != null) {
                     coverPagePresenter!!.startCatalogActivity(false)
                 }
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.LATESTCHAPTER)
+                DyStatService.onEvent(EventPoint.BOOOKDETAIL_LATESTCHAPTER)
             }
         }
     }

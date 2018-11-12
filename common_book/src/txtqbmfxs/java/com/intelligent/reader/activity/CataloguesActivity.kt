@@ -21,6 +21,7 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
 import com.intelligent.reader.adapter.CatalogAdapter
@@ -28,10 +29,9 @@ import com.intelligent.reader.view.TransformReadDialog
 import kotlinx.android.synthetic.main.layout_empty_catalog.*
 import kotlinx.android.synthetic.txtqbmfxs.act_catalog.*
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.EventBookmark
 import net.lzbook.kit.bean.OfflineDownloadEvent
-import net.lzbook.kit.view.CataloguesContract
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.presenter.CataloguesPresenter
 import net.lzbook.kit.receiver.OffLineDownLoadReceiver
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
@@ -43,6 +43,7 @@ import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.view.CataloguesContract
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -101,7 +102,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     private var scrollState: Int = 0
     private var downLoadReceiver: OffLineDownLoadReceiver? = null
     private var mCataloguesPresenter: CataloguesPresenter? = null
-    private var transformReadDialog: TransformReadDialog?=null
+    private var transformReadDialog: TransformReadDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,13 +187,12 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
 
         mCataloguesPresenter = CataloguesPresenter(this, book!!, this, this, fromCover)
-        transformReadDialog=TransformReadDialog(this)
+        transformReadDialog = TransformReadDialog(this)
 
         transformReadDialog?.insertContinueListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
-
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+            DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, data)
 
             intoReadingActivity()
 
@@ -204,8 +204,7 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         transformReadDialog?.insertCancelListener {
             val data = HashMap<String, String>()
             data["type"] = "2"
-
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOOKDETAIL_PAGE, StartLogClickUtil.TRANSCODEPOPUP, data)
+            DyStatService.onEvent(EventPoint.BOOOKDETAIL_TRANSCODEPOPUP, data)
 
             if (!this.isFinishing) {
                 transformReadDialog?.dismiss()
@@ -249,12 +248,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
         RouterUtil.navigation(this, RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
-    override fun showReadDialog(){
+    override fun showReadDialog() {
         if (!this.isFinishing) {
             if (!transformReadDialog!!.isShow()) {
                 transformReadDialog!!.show()
             }
-            StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }
     }
 
@@ -401,15 +399,13 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
     override fun onClick(v: View) {
         when (v.id) {
             R.id.img_back -> {
-                val data = HashMap<String, String>()
-                data.put("type", "1")
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)
                 if (!fromCover) {
                     if (mCataloguesPresenter != null) {
                         sequence = Math.min(sequence, (chapterList?.size ?: 1) - 1)
                         mCataloguesPresenter!!.activityResult(sequence)
                     }
                 }
+                DyStatService.onEvent(EventPoint.BOOKCATALOG_BACK, mapOf("type" to "1"))
                 finish()
             }
             R.id.iv_back_reading -> finish()

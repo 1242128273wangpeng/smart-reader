@@ -27,6 +27,7 @@ public class EventPoint {
     public static final String MAIN_RECOMMEND = "MAIN_RECOMMEND"; // 点击推荐
     public static final String MAIN_TOP = "MAIN_TOP"; // 点击榜单
     public static final String MAIN_CLASS = "MAIN_CLASS"; // 点击分类
+    public static final String MAIN_BOOK_LIST = "MAIN_BOOK_LIST"; // 点击书单
     public static final String MAIN_PERSONAL = "MAIN_PERSONAL"; // 点击个人中心
     public static final String MAIN_SEARCH = "MAIN_SEARCH"; // 点击搜索框
     public static final String MAIN_CACHEMANAGE = "MAIN_CACHEMANAGE"; // 缓存管理
@@ -35,6 +36,7 @@ public class EventPoint {
     public static final String MAIN_PUSHCLOSE = "MAIN_PUSHCLOSE";// 通知权限弹窗关闭
     public static final String MAIN_POPUPNOWOPEN = "MAIN_POPUPNOWOPEN";// 通知权限弹窗点击现在开启
     public static final String MAIN_PUSHSET = "MAIN_PUSHSET";// 通知权限弹窗前往系统设置页
+    public static final String MAIN_PREFERENCE = "MAIN_PREFERENCE";// 开屏选男女
 
 
     /** ------------------SEARCH搜索页 对应的点位编码-------------------**/
@@ -118,6 +120,8 @@ public class EventPoint {
     public static final String PERSONAL_ADPAGE = "PERSONAL_ADPAGE"; // 福利中心
     public static final String PERSONAL_WIFI_AUTOCACHE = "PERSONAL_WIFI_AUTOCACHE"; // 点击WIFI自动缓存
     public static final String PERSONAL_WEBCOLLECT = "PERSONAL_WEBCOLLECT"; // 点击网页收藏
+    public static final String PERSONAL_LOGIN = "PERSONAL_LOGIN"; // 登录
+    public static final String PERSONAL_LOGOUT = "PERSONAL_LOGOUT"; // 退出登录
 
 
     /** ------------------个人中心中更多设置页面 对应的点位编码---------**/

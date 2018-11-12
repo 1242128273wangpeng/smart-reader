@@ -7,8 +7,9 @@ import com.ding.basic.bean.SearchRecommendBook
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.adapter.HotWordAdapter
 import com.dingyue.searchbook.adapter.RecommendAdapter
+import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.txtqbmfxs.fragment_hotword.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.enterCover
 import java.util.*
@@ -49,7 +50,7 @@ class HotWordFragment : BaseHotWordFragment(), RecommendAdapter.RecommendItemCli
             data.put("topicword", bean.keyword ?: "")
             data.put("rank", bean.sort.toString())
             data.put("type", bean.superscript ?: "")
-            StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.TOPIC, data)
+            DyStatService.onEvent(EventPoint.SEARCH_TOPIC, data)
             hotWordPresenter.onKeyWord(bean.keyword)
             onResultListener?.onSuccess(bean.keyword ?: "")
         }
@@ -61,7 +62,7 @@ class HotWordFragment : BaseHotWordFragment(), RecommendAdapter.RecommendItemCli
         data.put("rank", (position + 1).toString() + "")
         data.put("type", "1")
         data.put("bookid", dataBean.bookId!!)
-        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.SEARCH_PAGE, StartLogClickUtil.HOTREADCLICK, data)
+        DyStatService.onEvent(EventPoint.SEARCH_HOTREADCLICK, data)
 
         requireActivity().enterCover(
                 book_id = dataBean.bookId,

@@ -9,12 +9,10 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ding.basic.bean.Book
-
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.view.RecommendBookImageView
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.router.BookRouter
 
 class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
@@ -82,7 +80,7 @@ class BookEndAdapter(private val mContext: Activity) : BaseAdapter() {
         if (iv.getBook() != null) {
             val goCoverInfo = HashMap<String, String>()
             goCoverInfo.put("bookid", iv.getBook()!!.book_id)
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(), StartLogClickUtil.READFINISH, StartLogClickUtil.RECOMMENDEDBOOK, goCoverInfo)
+            DyStatService.onEvent(EventPoint.READFINISH_RECOMMENDEDBOOK, goCoverInfo)
             BookRouter.navigateCoverOrRead(mContext, iv.getBook()!!, BookRouter.NAVIGATE_TYPE_BOOKEND)
         }
     }

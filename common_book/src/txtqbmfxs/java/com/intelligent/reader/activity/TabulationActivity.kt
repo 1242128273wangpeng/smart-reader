@@ -1,7 +1,7 @@
 package com.intelligent.reader.activity
 
-import android.annotation.SuppressLint
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -13,37 +13,30 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
-
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.api.service.RequestService
-
 import com.dingyue.searchbook.activity.SearchBookActivity
+import com.dingyue.statistics.DyStatService
 import com.google.gson.Gson
 import com.intelligent.reader.R
-
 import com.orhanobut.logger.Logger
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-
-
-import java.util.ArrayList
-import java.util.HashMap
-
-
 import kotlinx.android.synthetic.txtqbmfxs.act_tabulation.*
 import net.lzbook.kit.bean.PagerDesc
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.book.CommonContract
+import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.IS_FROM_PUSH
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
+import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.webview.UrlUtils
+import java.util.*
 
 
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
@@ -287,27 +280,27 @@ class TabulationActivity : FrameActivity() {
      * 统计列表返回点击事件
      * **/
     private fun statisticsTabulationBack() {
-        val data = HashMap<String, String?>()
+        val data = HashMap<String, String>()
         data["type"] = "1"
 
         when (fromType) {
             "category" -> {
-                data["firstclass"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.BACK, data)
+                data["firstclass"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTCLASS_BACK, data)
             }
 
             "ranking" -> {
-                data["firsttop"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.BACK, data)
+                data["firsttop"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTTOP_BACK, data)
             }
 
             "recommend" -> {
-                data["firstrecommend"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.BACK, data)
+                data["firstrecommend"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_BACK, data)
             }
 
             "authorType" -> {
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE, StartLogClickUtil.BACK, data)
+                DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data)
             }
         }
     }
@@ -316,29 +309,29 @@ class TabulationActivity : FrameActivity() {
      * 统计列表搜索点击事件
      * **/
     private fun statisticsTabulationSearch() {
-        val data = HashMap<String, String?>()
+        val data = HashMap<String, String>()
 
         when (fromType) {
             "category" -> {
-                data["firstclass"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE, StartLogClickUtil.SEARCH, data)
+                data["firstclass"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTCLASS_SEARCH, data)
             }
 
             "ranking" -> {
-                data["firsttop"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE, StartLogClickUtil.SEARCH, data)
+                data["firsttop"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTTOP_SEARCH, data)
             }
 
             "recommend" -> {
-                data["firstrecommend"] = title
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTRECOMMEND_PAGE, StartLogClickUtil.SEARCH, data)
+                data["firstrecommend"] = title.orEmpty()
+                DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, data)
             }
         }
     }
 
     private fun insertTouchListener() {
         if (needInterceptSlide && web_tabulation_content != null) {
-            web_tabulation_content?.setOnTouchListener { v, event ->
+            web_tabulation_content?.setOnTouchListener { _, event ->
                 val y = event.rawY
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {

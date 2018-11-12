@@ -34,9 +34,11 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
+import com.dingyue.statistics.DyStatService;
 import com.dy.media.MediaCode;
 import com.dy.media.MediaControl;
 import com.dy.media.MediaLifecycle;
@@ -47,9 +49,9 @@ import com.intelligent.reader.util.GenderHelper;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
 import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.constants.ReplaceConstants;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.service.CheckNovelUpdateService;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.utils.AppUtils;
@@ -74,8 +76,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -245,40 +245,26 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
         requestRepositoryFactory.upgradeBookDBFromOld(bookDBName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) throws Exception {
-                        onUpgradeProgress((int) (integer * weight));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                        if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
-                            Toast.makeText(SplashActivity.this, "upgradeBookDB error \r\n"
-                                    + Log.getStackTraceString(throwable), Toast.LENGTH_LONG).show();
-                            for (int i = 0; i < 1000; i++) {
-                                Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                            //拷贝旧的数据到sdcard, 给开发小伙伴
-                            copyOldDB2SD();
+                .subscribe(integer -> onUpgradeProgress((int) (integer * weight)), throwable -> {
+                    throwable.printStackTrace();
+                    if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
+                        Toast.makeText(SplashActivity.this, "upgradeBookDB error \r\n"
+                                + Log.getStackTraceString(throwable), Toast.LENGTH_LONG).show();
+                        for (int i = 0; i < 1000; i++) {
+                            Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
+                                    Toast.LENGTH_LONG).show();
                         }
-
-                        Map<String, String> data = new HashMap<>();
-                        data.put("status", "2");
-                        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
-
-                        deleteOldDB();
-                        initGenderOrData();
+                        //拷贝旧的数据到sdcard, 给开发小伙伴
+                        copyOldDB2SD();
                     }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        upgradeChapterDB(chapterDBList, 1 - weight);
-                    }
-                });
+
+                    Map<String, String> data = new HashMap<>();
+                    data.put("status", "2");
+                    DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
+
+                    deleteOldDB();
+                    initGenderOrData();
+                }, () -> upgradeChapterDB(chapterDBList, 1 - weight));
     }
 
     private void upgradeChapterDB(List<String> chapterDBList, final Float weight) {
@@ -286,53 +272,42 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             requestRepositoryFactory.upgradeChapterDBFromOld(chapterDBList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) throws Exception {
-                            onUpgradeProgress((int) (100 * (1 - weight) + integer * weight));
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            throwable.printStackTrace();
-                            if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
-                                Toast.makeText(SplashActivity.this, "upgradeChapterDB error \r\n"
-                                                + Log.getStackTraceString(throwable),
-                                        Toast.LENGTH_LONG).show();
-                                for (int i = 0; i < 1000; i++) {
-                                    Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
+                    .subscribe(
+                            integer -> onUpgradeProgress(
+                                    (int) (100 * (1 - weight) + integer * weight)),
+
+                            throwable -> {
+                                throwable.printStackTrace();
+                                if (BuildConfig.CHANNEL_NAME.equals("DEBUG")) {
+                                    Toast.makeText(SplashActivity.this,
+                                            "upgradeChapterDB error \r\n"
+                                                    + Log.getStackTraceString(throwable),
                                             Toast.LENGTH_LONG).show();
+                                    for (int i = 0; i < 1000; i++) {
+                                        Toast.makeText(SplashActivity.this, "升级数据库失败, 请把手机给开发同学!!!",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                    //拷贝旧的数据到sdcard, 给开发小伙伴
+                                    copyOldDB2SD();
                                 }
-                                //拷贝旧的数据到sdcard, 给开发小伙伴
-                                copyOldDB2SD();
-                            }
-                            Map<String, String> data = new HashMap<>();
-                            data.put("status", "2");
-                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
-                                    data);
-                            //删除之前的数据库
-                            deleteOldDB();
-                            initGenderOrData();
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            Map<String, String> data = new HashMap<>();
-                            data.put("status", "1");
-                            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE,
-                                    data);
-                            //删除之前的数据库
-                            deleteOldDB();
-                            initGenderOrData();
-                        }
-                    });
+                                Map<String, String> data = new HashMap<>();
+                                data.put("status", "2");
+                                DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
+                                //删除之前的数据库
+                                deleteOldDB();
+                                initGenderOrData();
+                            }, () -> {
+                                Map<String, String> data = new HashMap<>();
+                                data.put("status", "1");
+                                DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
+                                //删除之前的数据库
+                                deleteOldDB();
+                                initGenderOrData();
+                            });
         } else {
             Map<String, String> data = new HashMap<>();
             data.put("status", "1");
-            StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext()
-                    , StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.UPDATE, data);
+            DyStatService.onEvent(EventPoint.SYSTEM_UPDATE, data);
             //删除之前的数据库
             deleteOldDB();
             initGenderOrData();
@@ -396,7 +371,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
 
                 // 旧版本BookFix表等待目录修复的书迁移到book表
                 BookFix bookFix = requestRepositoryFactory.loadBookFix(book.getBook_id());
-                if (bookFix != null && bookFix.getFix_type() == 2 && bookFix.getList_version() > book.getList_version()) {
+                if (bookFix != null && bookFix.getFix_type() == 2
+                        && bookFix.getList_version() > book.getList_version()) {
                     book.setList_version_fix(bookFix.getList_version());
                     requestRepositoryFactory.updateBook(book);
                     requestRepositoryFactory.deleteBookFix(book.getBook_id());
@@ -418,7 +394,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                     MediaType.parse("application/json; charset=utf-8")
                     , gson.toJson(upBooks));
 
-            requestRepositoryFactory.requestBookShelfUpdate(checkBody, new RequestSubscriber<Boolean>() {
+            requestRepositoryFactory.requestBookShelfUpdate(checkBody,
+                    new RequestSubscriber<Boolean>() {
                         @Override
                         public void requestResult(Boolean result) {
                             if (result) {
@@ -461,7 +438,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             if (bookList != null && bookList.size() > 0) {
 
                 for (Book book : bookList) {
-                    Chapter lastChapter = requestRepositoryFactory.queryLastChapter(book.getBook_id());
+                    Chapter lastChapter = requestRepositoryFactory.queryLastChapter(
+                            book.getBook_id());
 
                     if (lastChapter != null && !TextUtils.isEmpty(lastChapter.getChapter_id())) {
                         book.setLast_chapter(lastChapter);
@@ -716,9 +694,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
             //开屏选男女
             if (mStepInFlag) {
                 Map<String, String> gender = new HashMap<>();
-                gender.put("type", String.valueOf(Constants.SGENDER));
-                StartLogClickUtil.upLoadEventLog(SplashActivity.this, StartLogClickUtil.SYSTEM_PAGE,
-                        StartLogClickUtil.PREFERENCE, gender);
+                gender.put("type", String.valueOf(ParameterConfig.GENDER_TYPE));
+                DyStatService.onEvent(EventPoint.MAIN_PREFERENCE, gender);
             }
 
             //开启缓存服务

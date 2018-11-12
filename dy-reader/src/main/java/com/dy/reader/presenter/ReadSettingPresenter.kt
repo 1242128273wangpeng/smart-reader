@@ -7,9 +7,10 @@ import android.os.Bundle
 import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.widget.Toast
-import com.ding.basic.bean.*
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.bean.*
 import com.ding.basic.net.RequestSubscriber
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.activity.ReaderActivity
 import com.dy.reader.data.DataProvider
@@ -25,10 +26,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.bean.ChapterErrorBean
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.ui.widget.ApplicationShareDialog
+import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.book.BaseBookHelper
 import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.router.RouterConfig
@@ -36,12 +36,6 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.theme.ThemeMode
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
-import net.lzbook.kit.ui.widget.ApplicationShareDialog
-import com.dingyue.statistics.DyStatService
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.pointpage.EventPoint
-
-import net.lzbook.kit.utils.*
 import org.greenrobot.eventbus.EventBus
 import java.io.UnsupportedEncodingException
 import java.lang.Exception
@@ -50,7 +44,7 @@ import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
 /**
- * Created by xian on 2017/8/8.
+ * Created by xian on 2017/8/8
  */
 class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
@@ -70,7 +64,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     override fun showCatalogActivity(source: Source?) {
-        if (source != null && !TextUtils.isEmpty(source.book_source_id) && ReaderStatus.book != null) {
+        if (source != null && !TextUtils.isEmpty(source.book_source_id)) {
             if ((requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) != null)) {
                 val iBook = requestRepositoryFactory.loadBook(ReaderStatus.book.book_id)
                 if (iBook != null && source.book_source_id != iBook.book_source_id) {
@@ -132,7 +126,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         val data = java.util.HashMap<String, String>()
         data["bookid"] = ReaderStatus.book.book_id
         data["chapterid"] = ReaderStatus.chapterId
-        DyStatService.onEvent(EventPoint.READPAGE_MORE,data)
+        DyStatService.onEvent(EventPoint.READPAGE_MORE, data)
     }
 
     /**
@@ -233,7 +227,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
 
             EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
 
-            if (ReaderStatus.book != null && !TextUtils.isEmpty(ReaderStatus.book.book_id)) {
+            if (!TextUtils.isEmpty(ReaderStatus.book.book_id)) {
                 requestRepositoryFactory.requestBookSources(ReaderStatus.book.book_id, ReaderStatus.book.book_source_id, ReaderStatus.book.book_chapter_id, object : RequestSubscriber<BookSource>() {
                     override fun requestResult(result: BookSource?) {
                         if (result != null) {
@@ -290,33 +284,29 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         }
 
         if (!requestRepositoryFactory.isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)) {
-            var logMap = HashMap<String, String>()
-            logMap.put("type", "1")
-            logMap.put("bookid",ReaderStatus.book?.book_id)
-            logMap.put("chapterid",ReaderStatus?.chapterId)
-            StartLogClickUtil.upLoadEventLog(activity.get(), StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.LABELEDIT, logMap)
+
+            val logMap = HashMap<String, String>()
+            logMap["type"] = "1"
+            logMap["bookid"] = ReaderStatus.book.book_id
+            logMap["chapterid"] = ReaderStatus.chapterId
+            DyStatService.onEvent(EventPoint.READPAGE_LABELEDIT, logMap)
 
             val chapter = ReaderStatus.currentChapter ?: return 0
 
             val bookMark = Bookmark()
-//            val requestItem = ReaderStatus.getRequestItem()
 
-            bookMark.book_id = ReaderStatus.book!!.book_id
-            bookMark.book_source_id = ReaderStatus.book!!.book_source_id
+            bookMark.book_id = ReaderStatus.book.book_id
+            bookMark.book_source_id = ReaderStatus.book.book_source_id
             bookMark.sequence = if (ReaderStatus.position.group + 1 > ReaderStatus.chapterList.size) ReaderStatus.chapterList.size else ReaderStatus.position.group
             bookMark.offset = ReaderStatus.position.offset
             bookMark.insert_time = System.currentTimeMillis()
-            //if (ReaderStatus.book.dex == 1) {
-            /*} else if (ReaderStatus.book.dex == 0) {
-                bookMark.book_url = dataFactory.currentChapter.curl1;
-            }*/
             bookMark.chapter_name = chapter.name
             //获取本页内容
             val content = DataProvider.findCurrentPageNovelLineBean() ?: return 0
 
             val sb = StringBuilder()
             if (ReaderStatus.position.group == -1) {
-                bookMark.chapter_name = "《" + ReaderStatus.book!!.name + "》书籍封面页"
+                bookMark.chapter_name = "《" + ReaderStatus.book.name + "》书籍封面页"
             } else if (ReaderStatus.position.index == 0 && content.size - 3 >= 0) {
                 for (i in 3 until content.size) {
                     sb.append(content[i].lineContent)
@@ -472,7 +462,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     private fun submitFeedback(type: Int) {
-        if (NetWorkUtils.getNetWorkType(activity?.get()) == NetWorkUtils.NETWORK_NONE) {
+        if (NetWorkUtils.getNetWorkType(activity.get()) == NetWorkUtils.NETWORK_NONE) {
             ToastUtil.showToastMessage("网络异常")
             return
         }
@@ -483,7 +473,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         chapterErrorBean.channelCode = if (book.fromQingoo()) "1" else "2"
         var currChapter: Chapter? = null
         if (requestRepositoryFactory.checkBookSubscribe(ReaderStatus.book.book_id) != null) {
-            currChapter = requestRepositoryFactory.queryChapterBySequence(ReaderStatus.book.book_id , ReaderStatus.position.group)
+            currChapter = requestRepositoryFactory.queryChapterBySequence(ReaderStatus.book.book_id, ReaderStatus.position.group)
         }
         if (currChapter == null) {
             val time = Observable.timer(1000, TimeUnit.MILLISECONDS)
@@ -516,7 +506,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
         if (TextUtils.isEmpty(chapterErrorBean.host)) {
             chapterErrorBean.host = ""
         }
-        val loadDataManager = LoadDataManager(activity?.get())
+        val loadDataManager = LoadDataManager(activity.get())
         loadDataManager.submitBookError(chapterErrorBean)
         DyStatService.onChapterError(chapterErrorBean.toMap())
         val time = Observable.timer(1000, TimeUnit.MILLISECONDS)

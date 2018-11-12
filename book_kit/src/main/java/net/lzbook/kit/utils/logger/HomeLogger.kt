@@ -1,13 +1,12 @@
 package net.lzbook.kit.utils.logger
 
 import com.ding.basic.RequestRepositoryFactory
-import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.utils.AppUtils
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.statistics.DyStatService
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.utils.AppUtils
 
 /**
  * Desc HomeActivity相关打点
@@ -42,14 +41,6 @@ object HomeLogger {
                 DyStatService.onEvent(EventPoint.MAIN_BOOKLIST, mapOf("bookid" to bookIdList.toString()))
             }
         }
-    }
-
-    /***
-     * HomeActivity点击书城
-     * **/
-    fun uploadHomeStoreSelected() {
-        StartLogClickUtil.upLoadEventLog(BaseBookApplication.getGlobalContext(),
-                StartLogClickUtil.PAGE_HOME, StartLogClickUtil.ACTION_HOME_BOOKSTORE)
     }
 
 

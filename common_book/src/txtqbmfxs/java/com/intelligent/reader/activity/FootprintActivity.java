@@ -1,6 +1,5 @@
 package com.intelligent.reader.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,11 +10,11 @@ import android.widget.TextView;
 
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.HistoryInfo;
+import com.dingyue.statistics.DyStatService;
 import com.intelligent.reader.R;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.appender_loghub.StartLogClickUtil;
-import net.lzbook.kit.bean.EventBookStore;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.ui.activity.base.FrameActivity;
 import net.lzbook.kit.ui.adapter.HisAdapter;
 import net.lzbook.kit.ui.adapter.LoadMoreAdapterWrapper;
@@ -35,7 +34,10 @@ import java.util.List;
 import java.util.Map;
 
 
-public class FootprintActivity extends FrameActivity implements AbsRecyclerViewHolder.ShelfItemClickListener, AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad, View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
+public class FootprintActivity extends FrameActivity implements
+        AbsRecyclerViewHolder.ShelfItemClickListener,
+        AbsRecyclerViewHolder.ShelfItemLongClickListener, LoadMoreAdapterWrapper.OnLoad,
+        View.OnClickListener, EmptyRecyclerView.OnItemChangeListener {
 
     private static final String TAG = FootprintActivity.class.getSimpleName();
     private EmptyRecyclerView mRecyclerView;
@@ -160,7 +162,8 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
         }
 
         try {
-            mDataSet = requestRepositoryFactory.queryHistoryPaging(0L, LoadMoreAdapterWrapper.PAGE_SIZE);
+            mDataSet = requestRepositoryFactory.queryHistoryPaging(0L,
+                    LoadMoreAdapterWrapper.PAGE_SIZE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,7 +181,8 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
         mLoadMoreAdapter = new LoadMoreAdapterWrapper(mHisAdapter, this);
         mRecyclerView.setEmptyView(mEmptyView);
         mRecyclerView.setAdapter(mLoadMoreAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     private void initListener() {
@@ -222,7 +226,8 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
             bundle.putString("book_source_id", info.getBook_source_id());
             intent.putExtras(bundle);
             startActivity(intent);
-            StatServiceUtils.statAppBtnClick(this.getApplicationContext(), StatServiceUtils.cover_into_his);
+            StatServiceUtils.statAppBtnClick(this.getApplicationContext(),
+                    StatServiceUtils.cover_into_his);
         }
     }
 
@@ -232,7 +237,8 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
     }
 
     @Override
-    public void load(final int pagePosition, final int pageSize, final LoadMoreAdapterWrapper.ILoadCallback callback) {
+    public void load(final int pagePosition, final int pageSize,
+            final LoadMoreAdapterWrapper.ILoadCallback callback) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -240,14 +246,15 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
                 AppLog.d(TAG, "pagePosition = " + pagePosition);
                 List<HistoryInfo> dataSet = null;
                 try {
-                    dataSet = requestRepositoryFactory.queryHistoryPaging((long)pagePosition, (long) pageSize);
-                }catch (Exception e){
+                    dataSet = requestRepositoryFactory.queryHistoryPaging((long) pagePosition,
+                            (long) pageSize);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 if (dataSet == null || dataSet.isEmpty() || dataSet.size() < pageSize) {
                     callback.onFailure();
-                }else{
+                } else {
                     mHisAdapter.appendData(dataSet);
                     callback.onSuccess();
                 }
@@ -265,7 +272,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
             case R.id.book_history_back:
                 Map<String, String> data = new HashMap<>();
                 data.put("type", "1");
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PERHISTORY_PAGE, StartLogClickUtil.BACK, data);
+                DyStatService.onEvent(EventPoint.PERHISTORY_BACK, data);
                 finish();
                 break;
             case R.id.book_history_clear:
@@ -275,7 +282,7 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
                 mLoginTV.setClickable(false);
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, 1);
-                StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.HISTORYLOGIN);
+                DyStatService.onEvent(EventPoint.PERSONAL_HISTORYLOGIN);
                 break;
             case R.id.footprint_empty_find:
                 Bundle bundle = new Bundle();
@@ -327,37 +334,24 @@ public class FootprintActivity extends FrameActivity implements AbsRecyclerViewH
         if (!this.isFinishing()) {
             final MyDialog myDialog = new MyDialog(this, R.layout.publish_hint_dialog);
             myDialog.setCanceledOnTouchOutside(true);
-            TextView dialog_title = (TextView) myDialog.findViewById(R.id.dialog_title);
+            TextView dialog_title = myDialog.findViewById(R.id.dialog_title);
             dialog_title.setText(R.string.prompt);
-            TextView dialog_content = (TextView) myDialog.findViewById(R.id.publish_content);
+            TextView dialog_content = myDialog.findViewById(R.id.publish_content);
             dialog_content.setText(R.string.determine_clear_footprint_history);
-            TextView dialog_comfire = (TextView) myDialog.findViewById(R.id.publish_leave);
+            TextView dialog_comfire = myDialog.findViewById(R.id.publish_leave);
 
-            dialog_comfire.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mHisAdapter != null && mLoadMoreAdapter != null && requestRepositoryFactory
-                            != null) {
-                        mHisAdapter.updateData(null);
-                        mLoadMoreAdapter.notifyDataSetChanged();
-                        requestRepositoryFactory.deleteAllHistory();
-                    }
-                    myDialog.dismiss();
+            dialog_comfire.setOnClickListener(v -> {
+                if (mHisAdapter != null && mLoadMoreAdapter != null && requestRepositoryFactory
+                        != null) {
+                    mHisAdapter.updateData(null);
+                    mLoadMoreAdapter.notifyDataSetChanged();
+                    requestRepositoryFactory.deleteAllHistory();
                 }
+                myDialog.dismiss();
             });
-            TextView dialog_cancle = (TextView) myDialog.findViewById(R.id.publish_stay);
-            dialog_cancle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myDialog.dismiss();
-                }
-            });
-            myDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    myDialog.dismiss();
-                }
-            });
+            TextView dialog_cancle = myDialog.findViewById(R.id.publish_stay);
+            dialog_cancle.setOnClickListener(v -> myDialog.dismiss());
+            myDialog.setOnCancelListener(dialog -> myDialog.dismiss());
             if (!myDialog.isShowing()) {
                 try {
                     myDialog.show();
