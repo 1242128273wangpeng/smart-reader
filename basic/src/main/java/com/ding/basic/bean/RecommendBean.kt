@@ -8,8 +8,12 @@ import java.io.Serializable
  */
 class RecommendBean : Serializable {
 
-    //book_source_id
-    var id: String = ""
+    /**
+     * book_source_id兼容书单
+     */
+    var id: String = "" //api
+    var bookSourceId: String = "" //内容组
+
 
     var bookId: String = ""
 

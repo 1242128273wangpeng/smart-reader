@@ -1,21 +1,19 @@
 package com.intelligent.reader.util
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.ding.basic.config.ParameterConfig
 import com.intelligent.reader.R
 import net.lzbook.kit.utils.AppUtils
-import android.animation.AnimatorSet
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.DecelerateInterpolator
-import net.lzbook.kit.constants.Constants
-
 import net.lzbook.kit.utils.antiShakeClick
 import net.lzbook.kit.utils.logger.AppLog
 
@@ -64,34 +62,13 @@ class GenderHelper(view: View) {
         }
 
     }
-//
-//    /**
-//     * 根据节日展示对应的UI装扮
-//     */
-//    private fun switchDecorate() {
-//        if (FestivalUtils.isFestivalToday()) {
-//            val festival = FestivalUtils.getFestivalToday()
-//            when (festival) {
-//                //圣诞节
-//                FestivalUtils.CHRISTMAS -> {
-//                    mBoySelector.setImageResource(R.drawable.activity_splash_icon_boy_christmas_sel)
-//                    mGirlSelector.setImageResource(R.drawable.activity_splash_icon_girl_christmas_sel)
-//                }
-//                //元旦节
-//                FestivalUtils.NEW_YEAR -> {
-//                    mBoySelector.setImageResource(R.drawable.activity_splash_icon_boy_newyear_sel)
-//                    mGirlSelector.setImageResource(R.drawable.activity_splash_icon_girl_newyear_sel)
-//                }
-//            }
-//        }
-//    }
 
     private fun selectBoy() {
         mBoyTxtSelector.isSelected = true
         mBoySelector.isSelected = true
         mGirlSelector.isSelected = false
         mGirlTxtSelector.isSelected = false
-        Constants.SGENDER = Constants.SBOY
+        ParameterConfig.GENDER_TYPE = ParameterConfig.GENDER_BOY
         showSelectBoyAni()
 
     }
@@ -101,7 +78,7 @@ class GenderHelper(view: View) {
         mBoySelector.isSelected = false
         mGirlSelector.isSelected = true
         mGirlTxtSelector.isSelected = true
-        Constants.SGENDER = Constants.SGIRL
+        ParameterConfig.GENDER_TYPE = ParameterConfig.GENDER_GIRL
         showSelectGirlAni()
     }
 
@@ -158,7 +135,7 @@ class GenderHelper(view: View) {
      * 文字的动画
      */
     private fun setTxtAnimation() {
-        defaultSharedPreferences.edit().putInt("gender", Constants.SGENDER).apply()
+        defaultSharedPreferences.edit().putInt("gender", ParameterConfig.GENDER_TYPE).apply()
         mTxtStepIn.visibility = View.INVISIBLE
         val txtAniSet = AnimatorSet()
         val titleAlphaAnimator = ObjectAnimator.ofFloat(mTxtTitle, "alpha", 1f, 0f)

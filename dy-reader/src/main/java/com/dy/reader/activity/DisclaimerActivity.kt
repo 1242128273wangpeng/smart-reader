@@ -70,7 +70,7 @@ class DisclaimerActivity : FrameActivity() {
             txt_title.text = resources.getString(R.string.disclaimer_statement)
             web_disclaimer.visibility = View.VISIBLE
 
-            loadingPage = LoadingPage(this, rl_disclaimer_main, LoadingPage.setting_result)
+            loadingPage = LoadingPage(this, web_disclaimer, LoadingPage.setting_result)
 
             web_disclaimer.webViewClient = object : WebViewClient() {
                 override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?,

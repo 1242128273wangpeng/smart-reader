@@ -5,14 +5,13 @@ import android.widget.ArrayAdapter
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_debug_host.*
-import net.lzbook.kit.R.id.lv_host
 import net.lzbook.kit.R
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.utils.toast.ToastUtil
 
 
@@ -66,35 +65,35 @@ class DebugHostActivity : BaseCacheableActivity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                when (intent.getStringExtra("type")) {
+                val type = intent.getStringExtra("type")
+                when (type) {
                     SPKey.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
-                        SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, et_input_host.text.toString())
                     }
                     SPKey.WEBVIEW_HOST -> {
                         Config.insertWebViewHost(et_input_host.text.toString())
-                        SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, et_input_host.text.toString())
                     }
                     SPKey.MICRO_AUTH_HOST -> {
                         MicroAPI.microHost = (et_input_host.text.toString())
-                        SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, et_input_host.text.toString())
                     }
                     SPKey.CONTENT_AUTH_HOST -> {
                         ContentAPI.contentHost = (et_input_host.text.toString())
-                        SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, et_input_host.text.toString())
                     }
                     SPKey.USER_TAG_HOST -> {
                         Config.insertUserTagHost(et_input_host.text.toString())
-                        SPUtils.insertSharedString(SPKey.USER_TAG_HOST, et_input_host.text.toString())
                     }
                     else -> {
                         ""
                     }
                 }
 
+                SPUtils.putOnlineConfigSharedString(type, et_input_host.text.toString())
+
                 finish()
             }
+
         }
+
     }
 
 
@@ -109,8 +108,8 @@ class DebugHostActivity : BaseCacheableActivity() {
         } else {
 
             list.add("http://119.254.159.100:8081")
-            list.add("http://8054.uzn.bookapi.cn")
             list.add("http://8086.zn.bookapi.cn")
+            list.add("https://uniontest.bookapi.cn")
             list.add("https://unionapi.bookapi.cn")
             list.add("https://unioncontent.bookapi.cn")
 

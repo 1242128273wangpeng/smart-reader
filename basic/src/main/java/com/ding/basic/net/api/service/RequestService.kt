@@ -4,7 +4,6 @@ import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
-import com.ding.basic.bean.UserMarkBook
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
@@ -278,6 +277,11 @@ interface RequestService {
          * 分类
          * **/
         const val WEB_CATEGORY = "/h5/{packageName}/category"
+        /**
+         * 书单
+         */
+        const val WEB_BOOKLIST = "/h5/{packageName}/bookSelection"
+
         /***
          * 搜索
          * **/

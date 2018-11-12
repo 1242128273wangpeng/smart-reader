@@ -1,5 +1,6 @@
 package com.intelligent.reader.fragment
 
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.RectF
@@ -13,17 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-
 import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
-
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.txtqbmfxs.frag_web_view.*
-
-
 import net.lzbook.kit.ui.widget.LoadingPage
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -31,7 +27,7 @@ import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
 
 open class WebViewFragment : Fragment(), View.OnClickListener {
-    
+
     private var url: String? = ""
     private var type: String? = null
 
@@ -67,20 +63,16 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         viewPrepared = true
 
         if (!TextUtils.isEmpty(url)) {
-            when (type) {
-                "recommend" -> {
+
+            /**
+             * 预加载精选页
+             */
+            if (type == "recommend") {
+                requestWebViewData(url)
+            } else {
+                handle.postDelayed({
                     requestWebViewData(url)
-                }
-                "rank" -> {
-                    handle.postDelayed({
-                        requestWebViewData(url)
-                    }, 2000)
-                }
-                "category" -> {
-                    handle.postDelayed({
-                        requestWebViewData(url)
-                    }, 2000)
-                }
+                }, 2000)
             }
         }
     }
@@ -139,7 +131,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
         web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
-        loadingPage = LoadingPage(requireActivity(), rl_web_view_root)
+        loadingPage = LoadingPage(requireActivity(), web_view_content)
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
 
@@ -198,15 +190,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
     private fun contentViewVisible() {
         if (type != null) {
-            if (type == "rank") {
-                notifyWebLog()
-            }
-            if (type == "recommend") {
-                notifyWebLog()
-            }
-            if (type == "category") {
-                notifyWebLog()
-            }
+            notifyWebLog()
         }
     }
 
@@ -232,7 +216,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
     private fun handleLoadingWebViewData(url: String?) {
         customWebClient?.initParameter()
-        
+
         if (url != null && url.isNotEmpty()) {
             try {
                 web_view_content?.loadUrl(url)

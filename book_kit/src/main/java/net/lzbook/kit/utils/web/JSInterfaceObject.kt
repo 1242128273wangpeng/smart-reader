@@ -171,17 +171,13 @@ abstract class JSInterfaceObject(var activity: Activity) {
         if (books != null && books.isNotEmpty()) {
             for (i in books.indices) {
                 val book = books[i]
-
                 if (i > 0) {
                     stringBuilder.append(",")
                 }
-
                 stringBuilder.append(book.book_id)
             }
         }
-
         Logger.e("获取书架列表: " + stringBuilder.toString())
-
         return stringBuilder.toString()
     }
 
@@ -192,10 +188,10 @@ abstract class JSInterfaceObject(var activity: Activity) {
     fun statisticsWebInformation(data: String?) {
         if (data != null && !data.isNullOrEmpty()) {
             val parameters = loadMassageParameters(data)
-
+            //截取页面编码
             val pageCode = parameters["page_code"]
             parameters.remove("page_code")
-
+            //截取功能编码
             val functionCode = parameters["func_code"]
             parameters.remove("func_code")
 
@@ -232,7 +228,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
      * H5调用,搜索无结果回调
      */
     @JavascriptInterface
-     open fun onSearchNoResult(keyword: String?){
+    open fun onSearchNoResult(keyword: String?) {
 
     }
 
@@ -259,7 +255,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
         val book = Book()
 
         book.book_id = recommend.bookId
-        book.book_source_id = recommend.id
+        book.book_source_id = if (recommend.id.isEmpty()) recommend.bookSourceId else recommend.id
         book.book_chapter_id = recommend.bookChapterId
         book.uv = recommend.uv
         book.name = recommend.bookName
