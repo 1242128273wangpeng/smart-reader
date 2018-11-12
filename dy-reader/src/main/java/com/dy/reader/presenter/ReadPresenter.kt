@@ -149,12 +149,12 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             ReaderStatus.book.sequence = ReaderStatus.position.group
             ReaderStatus.book.offset = ReaderStatus.position.offset
         }
-        ReaderStatus.prepare(ReaderStatus.book, { flag ->
+        ReaderStatus.prepare(ReaderStatus.book) { flag ->
             if (flag) {
                 ReaderStatus.position = DataProvider.queryPosition(ReaderStatus.book.book_id, ReaderStatus.book.sequence, ReaderStatus.book.offset)
                 act.showReader()
             }
-        })
+        }
     }
 
     fun onNewIntent(intent: Intent) {

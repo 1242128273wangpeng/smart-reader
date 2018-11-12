@@ -331,6 +331,7 @@ class HomeActivity : BaseCacheableActivity(),
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
             PersonalLogger.uploadPersonalNightModeChange()
+            if (mThemeHelper.isNight == isChecked) return@setOnCheckedChangeListener
             ReaderSettings.instance.initValues()
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)

@@ -31,11 +31,8 @@ import kotlinx.android.synthetic.txtqbmfyd.reader_option_font.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.pointpage.EventPoint
-import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.preventClickShake
 import net.lzbook.kit.utils.theme.ThemeHelper
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
@@ -208,17 +205,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun openSystemLight() {
         setBrightnessBackground(true)
 
-//        val edit = sharedPreferences?.edit()
-//        edit.putBoolean("auto_brightness", true)
-//        edit.apply()
-
         readerSettings.isAutoBrightness = true
         readPresenter?.startAutoBrightness()
 
-        val screenBrightness =  readerSettings.screenBrightness
-        if (screenBrightness > 0) {
-            skbar_reader_brightness_change?.progress = screenBrightness
-        }
         skbar_reader_brightness_change?.progress = 0
     }
 
@@ -502,21 +491,15 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     private fun changeBrightnessByModeChange() {
-        if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
-            setBrightnessBackground(false)
-            readerSettings.isAutoBrightness = false
-            ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
-        }
-
         if (readerSettings.isAutoBrightness) {
             read_setting_auto_power?.isChecked = true
             readPresenter?.startAutoBrightness()
-            val screenBrightness = readerSettings.screenBrightness
-            if (screenBrightness > 0) {
-                skbar_reader_brightness_change?.progress = screenBrightness
-            }
             skbar_reader_brightness_change?.progress = 0
         } else {
+            if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+                setBrightnessBackground(false)
+                ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+            }
             read_setting_auto_power?.isChecked = false
             setScreenBright()
             setScreenBrightProgress()
@@ -947,7 +930,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
 
             readerSettings.screenBrightness = Math.max(20, seekBar.progress)
-
             DyStatService.onEvent(EventPoint.READPAGESET_LIGHTEDIT, mapOf("lightvalue" to seekBar.progress.toString()))
 
         }

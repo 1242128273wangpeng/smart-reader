@@ -192,10 +192,7 @@ class ReaderSettings {
         Constants.isSlideUp = animation_mode == 3
         Constants.isVolumeTurnover = isVolumeTurnover
 
-        val editor = preferences.edit()
-        editor.putString(READER_CONFIG, gson.toJson(instance))
-        editor.apply()
-
+        save()
     }
 
 

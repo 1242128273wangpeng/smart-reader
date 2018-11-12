@@ -391,8 +391,6 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
     }
 
     fun chageNightMode(mode: Int = 0, useLightMode: Boolean = true) {
-        val data = java.util.HashMap<String, String>()
-
         if (activity.get()?.mThemeHelper!!.isNight) {
             if (useLightMode) {
                 ReaderSettings.instance.readThemeMode = ReaderSettings.instance.readLightThemeMode
