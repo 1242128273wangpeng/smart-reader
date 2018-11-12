@@ -21,6 +21,8 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.BookmarkAdapter
@@ -250,8 +252,11 @@ class CataloguesActivity : BaseCacheableActivity(), OnClickListener, OnScrollLis
 
     override fun showReadDialog() {
         if (!this.isFinishing) {
-            if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+            val isChecked = SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)
+            if (isChecked) {
+                intoReadingActivity()
+            } else {
+                transformReadDialog?.show()
             }
         }
     }

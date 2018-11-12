@@ -3,6 +3,8 @@ package com.intelligent.reader.view
 import android.app.Activity
 import android.view.Gravity
 import android.widget.FrameLayout
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.main.dialog_read_source.*
 import net.lzbook.kit.ui.widget.MyDialog
@@ -34,11 +36,17 @@ class TransformReadDialog(val activity: Activity) {
         dialog.setCancelable(true)
 
         dialog.txt_transform_read_continue.setOnClickListener {
+            val isChecked = dialog.ckb_not_show_next_time.isChecked
+            SPUtils.putDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, isChecked)
             continueListener?.invoke()
         }
         dialog.txt_transform_read_cancel.setOnClickListener {
             dialog.dismiss()
             cancelListener?.invoke()
+        }
+        dialog.ll_not_show_next_time.setOnClickListener {
+            val oldChecked = dialog.ckb_not_show_next_time.isChecked
+            dialog.ckb_not_show_next_time.isChecked = !oldChecked
         }
     }
 
@@ -51,13 +59,15 @@ class TransformReadDialog(val activity: Activity) {
     }
 
     fun show() {
+        dialog.ckb_not_show_next_time.isChecked = true
         dialog.show()
     }
 
     fun dismiss() {
         dialog.dismiss()
     }
-    fun isShow(): Boolean{
+
+    fun isShow(): Boolean {
         return dialog.isShowing
     }
 }
