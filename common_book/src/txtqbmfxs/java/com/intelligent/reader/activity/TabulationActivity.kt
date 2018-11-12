@@ -109,6 +109,16 @@ class TabulationActivity : FrameActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (web_tabulation_content != null) {
+            web_tabulation_content?.post {
+                try {
+                    web_tabulation_content?.loadUrl("javascript:refreshNew()")
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    finish()
+                }
+            }
+        }
         StatService.onResume(this)
     }
 
