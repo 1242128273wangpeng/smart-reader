@@ -34,10 +34,10 @@ open class BookStoreFragment : Fragment() {
 
     private var currentPosition: Int = 0
 
-    private val recommendPage = 0
-    private val rankingPage = 1
-    private val bookListPage = 2
-    private val categoryPage = 3
+    private val mRecommendPageCode = 0
+    private val mRankingPageCode = 1
+    private val mBookListPageCode = 2
+    private var mCategoryPageCode = 3
 
 
     private var searchClickListener: SearchClickListener? = null
@@ -103,13 +103,27 @@ open class BookStoreFragment : Fragment() {
         vp_book_store_content?.adapter = bookStoreAdapter
         vp_book_store_content?.offscreenPageLimit = 2
 
-        //屏蔽北京、上海的用户
+
         loge("CityCode:${Constants.cityCode}")
-        tv_book_store_list.visibility = if ("010" == Constants.cityCode || "021" == Constants.cityCode)
-            View.GONE else View.VISIBLE
+
+        // 是否屏蔽书单
+        tv_book_store_list.visibility = if (isHideBookList()) View.GONE else View.VISIBLE
+
+        //若书单被屏蔽，将分类页的编码设置成书单页编码
+        mCategoryPageCode = if (isHideBookList()) mBookListPageCode else mCategoryPageCode
 
         initListener()
 
+    }
+
+
+    /**
+     * 是否隐藏书单:屏蔽北京、上海的用户
+     */
+    private fun isHideBookList(): Boolean {
+        if ("010" == Constants.cityCode || "021" == Constants.cityCode)
+            return true
+        return false
     }
 
     private fun initListener() {
@@ -120,20 +134,26 @@ open class BookStoreFragment : Fragment() {
 
             override fun onPageSelected(position: Int) {
                 currentPosition = position
-                when (position) {
-                    recommendPage -> {
+
+                when (currentPosition) {
+                    0 -> {
                         searchClickListener?.getCurrent(2)
                         sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "recommend")?.apply()
                     }
-                    rankingPage -> {
+                    1 -> {
                         searchClickListener?.getCurrent(3)
                         sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "top")?.apply()
                     }
-                    bookListPage -> {
-                        searchClickListener?.getCurrent(5)
-                        sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "booklist")?.apply()
+                    2 -> {
+                        if (isHideBookList()) {
+                            searchClickListener?.getCurrent(4)
+                            sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "class")?.apply()
+                        } else {
+                            searchClickListener?.getCurrent(5)
+                            sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "booklist")?.apply()
+                        }
                     }
-                    categoryPage -> {
+                    3 -> {
                         searchClickListener?.getCurrent(4)
                         sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "class")?.apply()
                     }
@@ -147,7 +167,7 @@ open class BookStoreFragment : Fragment() {
         })
 
         tv_book_store_recommend?.setOnClickListener {
-            refreshNavigationState(recommendPage)
+            refreshNavigationState(mRecommendPageCode)
 
             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "recommend")?.apply()
 
@@ -157,7 +177,7 @@ open class BookStoreFragment : Fragment() {
         }
 
         tv_book_store_ranking?.setOnClickListener {
-            refreshNavigationState(rankingPage)
+            refreshNavigationState(mRankingPageCode)
 
             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "top")?.apply()
 
@@ -167,7 +187,7 @@ open class BookStoreFragment : Fragment() {
         }
 
         tv_book_store_list?.setOnClickListener {
-            refreshNavigationState(bookListPage)
+            refreshNavigationState(mBookListPageCode)
 
             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "booklist")?.apply()
 
@@ -177,7 +197,7 @@ open class BookStoreFragment : Fragment() {
         }
 
         tv_book_store_category?.setOnClickListener {
-            refreshNavigationState(categoryPage)
+            refreshNavigationState(mCategoryPageCode)
 
             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "class")?.apply()
 
@@ -188,10 +208,10 @@ open class BookStoreFragment : Fragment() {
     }
 
     private fun changeNavigationState(type: Int) {
-        tv_book_store_recommend?.isSelected = type == recommendPage
-        tv_book_store_ranking?.isSelected = type == rankingPage
-        tv_book_store_list?.isSelected = type == bookListPage
-        tv_book_store_category?.isSelected = type == categoryPage
+        tv_book_store_recommend?.isSelected = type == mRecommendPageCode
+        tv_book_store_ranking?.isSelected = type == mRankingPageCode
+        tv_book_store_list?.isSelected = type == mBookListPageCode
+        tv_book_store_category?.isSelected = type == mCategoryPageCode
     }
 
     private fun refreshNavigationState(position: Int) {
@@ -225,15 +245,15 @@ open class BookStoreFragment : Fragment() {
     protected inner class BookStoreAdapter internal constructor(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
         override fun getCount(): Int {
-            return 4
+            return if (isHideBookList()) 3 else 4
         }
 
         override fun getItem(position: Int): Fragment? {
             return when (position) {
-                recommendPage -> recommendFragment
-                rankingPage -> rankingFragment
-                bookListPage -> bookListFragment
-                categoryPage -> categoryFragment
+                0 -> recommendFragment
+                1 -> rankingFragment
+                2 -> if (isHideBookList()) categoryFragment else bookListFragment
+                3 -> categoryFragment
                 else -> null
             }
         }
