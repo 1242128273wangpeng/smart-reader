@@ -31,11 +31,8 @@ import kotlinx.android.synthetic.txtqbmfyd.reader_option_font.view.*
 import kotlinx.android.synthetic.txtqbmfyd.reader_option_mode.view.*
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.pointpage.EventPoint
-import net.lzbook.kit.utils.ResourceUtil
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.logger.AppLog
-import net.lzbook.kit.utils.onEnd
-import net.lzbook.kit.utils.preventClickShake
 import net.lzbook.kit.utils.theme.ThemeHelper
 import org.greenrobot.eventbus.EventBus
 import java.text.NumberFormat
@@ -208,17 +205,9 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     private fun openSystemLight() {
         setBrightnessBackground(true)
 
-//        val edit = sharedPreferences?.edit()
-//        edit.putBoolean("auto_brightness", true)
-//        edit.apply()
-
         readerSettings.isAutoBrightness = true
         readPresenter?.startAutoBrightness()
 
-        val screenBrightness =  readerSettings.screenBrightness
-        if (screenBrightness > 0) {
-            skbar_reader_brightness_change?.progress = screenBrightness
-        }
         skbar_reader_brightness_change?.progress = 0
     }
 
@@ -265,7 +254,8 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 }
                 showChapterProgress()
             }
-
+            // 设置夜间模式按钮状态
+            refreshNightImage()
             setFontSize()
         } else {
             resetOptionLayout()
@@ -276,6 +266,14 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
                 rl_reader_option_bottom?.visibility = View.GONE
             }
             ll_reader_setting_detail?.visibility = View.GONE
+        }
+    }
+
+    private fun refreshNightImage(){
+        if (ThemeHelper.getInstance(context).isNight) {
+            img_reader_night.setImageResource(R.drawable.reader_option_night_icon)
+        } else {
+            img_reader_night.setImageResource(R.drawable.reader_option_day_icon)
         }
     }
 
@@ -371,13 +369,13 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             override fun onProgressChanged(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
 //                ReadConfig.FONT_SIZE = progressFloat.toInt()
 //                readSettingHelper?.saveFontSize()
-                setFontValue(progressFloat.toInt())
+//                setFontValue(progressFloat.toInt())
             }
 
             override fun getProgressOnActionUp(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float) {
 //                ReadConfig.FONT_SIZE = progressFloat.toInt()
 //                readSettingHelper?.saveFontSize()
-                setFontValue(progressFloat.toInt())
+//                setFontValue(progressFloat.toInt())
             }
 
             override fun getProgressOnFinally(signSeekBar: SignSeekBar?, progress: Int, progressFloat: Float, fromUser: Boolean) {
@@ -441,15 +439,10 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
 
             R.id.img_reader_night//夜间模式
             -> {
-                if (ThemeHelper.getInstance(context).isNight) {
-                    img_reader_night.setImageResource(R.drawable.reader_option_day_icon)
-                } else {
-                    img_reader_night.setImageResource(R.drawable.reader_option_night_icon)
-
-                }
                 StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_night_mode)
                 presenter?.chageNightMode()
                 changeBrightnessByModeChange()
+                refreshNightImage()
             }
             R.id.img_reader_font_reduce// 减小字号
             -> {
@@ -498,21 +491,15 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
     }
 
     private fun changeBrightnessByModeChange() {
-        if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
-            setBrightnessBackground(false)
-            readerSettings.isAutoBrightness = false
-            ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
-        }
-
         if (readerSettings.isAutoBrightness) {
             read_setting_auto_power?.isChecked = true
             readPresenter?.startAutoBrightness()
-            val screenBrightness = readerSettings.screenBrightness
-            if (screenBrightness > 0) {
-                skbar_reader_brightness_change?.progress = screenBrightness
-            }
             skbar_reader_brightness_change?.progress = 0
         } else {
+            if (ReaderSettings.instance.screenBrightness == ReaderSettings.NOT_SET_BRIGHTNESS) {
+                setBrightnessBackground(false)
+                ReaderSettings.instance.screenBrightness = ReaderSettings.DEFAULT_BRIGHTNESS
+            }
             read_setting_auto_power?.isChecked = false
             setScreenBright()
             setScreenBrightProgress()
@@ -668,6 +655,7 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
         if (readerSettings.readThemeMode == 61) {
             presenter?.chageNightMode(index, false)
             changeBrightnessByModeChange()
+            refreshNightImage()
         } else {
             setNovelMode(index)
         }
@@ -942,7 +930,6 @@ class ReadSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.On
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_ld_progress)
 
             readerSettings.screenBrightness = Math.max(20, seekBar.progress)
-
             DyStatService.onEvent(EventPoint.READPAGESET_LIGHTEDIT, mapOf("lightvalue" to seekBar.progress.toString()))
 
         }

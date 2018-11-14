@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_head">
+
         <com.tencent.smtt.sdk.WebView
             android:id="@+id/web_view"
             android:layout_width="match_parent"
@@ -45,13 +46,7 @@
             android:background="@color/base_bg"
             android:focusable="true"
             android:focusableInTouchMode="true"/>
-        <ImageView
-            android:id="@+id/img_head_shadow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@drawable/top_shadow"
-            android:visibility="gone"/>
+
         <Button
             android:id="@+id/btn_page_favorite"
             android:layout_width="64dp"
@@ -69,7 +64,5 @@
             android:textSize="14sp"
             android:visibility="gone"/>
     </RelativeLayout>
-
-
 
 </RelativeLayout>

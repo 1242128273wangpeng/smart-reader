@@ -331,6 +331,7 @@ class HomeActivity : BaseCacheableActivity(),
 
         bt_night_shift.setOnCheckedChangeListener { _, isChecked ->
             PersonalLogger.uploadPersonalNightModeChange()
+            if (mThemeHelper.isNight == isChecked) return@setOnCheckedChangeListener
             ReaderSettings.instance.initValues()
             if (isChecked) {
                 tv_night_shift.setText(R.string.mode_day)
@@ -422,7 +423,7 @@ class HomeActivity : BaseCacheableActivity(),
             }
         }
 
-        txt_qq_add.setOnClickListener {
+        rl_add_qq.setOnClickListener {
             if (!AppUtils.joinQQGroup(this, "7AVm43OHr7XNKeNSN9bkUW0cnyWpeq5F")) {
                 ToastUtil.showToastMessage(R.string.setting_qq_add_fail)
             }

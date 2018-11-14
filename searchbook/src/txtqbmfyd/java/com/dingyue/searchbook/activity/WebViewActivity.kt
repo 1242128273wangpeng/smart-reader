@@ -39,6 +39,7 @@ class WebViewActivity : FrameActivity() {
     private var requestRepositoryFactory: RequestRepositoryFactory? = null
     private var list: List<WebPageFavorite>? = null
     private var isLoadFinish = true
+    private val DEFAULT_TITLE = "小主的收藏"
     private val chromeClient: WebChromeClient by lazy {
         object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
@@ -72,16 +73,16 @@ class WebViewActivity : FrameActivity() {
 
     private fun clickFavorite() {
         if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) return
-        if (!web_view.title.isNullOrBlank() && !web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
-            loge("title:[${web_view.title}],url:[${web_view.url}]")
-            list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title, web_view.url)
+        loge("title:[${web_view.title}],url:[${web_view.url}]")
+        if (!web_view.url.isNullOrBlank() && web_view.url.startsWith("http")) {
+            list = requestRepositoryFactory?.getWebFavoriteByTitleAndLink(web_view.title.orEmpty(), web_view.url)
             if (list != null && list!!.isNotEmpty()) {
                 ToastUtil.showToastMessage("已收藏过")
                 return
             }
             DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_WEBCOLLECT, mapOf("title" to web_view.title, "link" to web_view.url))
             val favorite = WebPageFavorite()
-            favorite.webTitle = web_view.title
+            favorite.webTitle = if (web_view.title.isNullOrBlank()) DEFAULT_TITLE else web_view.title
             favorite.webLink = web_view.url
             favorite.createTime = System.currentTimeMillis()
             requestRepositoryFactory?.addWebFavorite(favorite)
@@ -99,9 +100,6 @@ class WebViewActivity : FrameActivity() {
     }
 
     private fun initWebView() {
-//        web_view?.topShadow = img_head_shadow
-        if (Build.VERSION.SDK_INT >= 14) web_view.setLayerType(View.LAYER_TYPE_NONE, null)
-
         customWebClient = SimpleWebClient(this, web_view)
         customWebClient?.initWebViewSetting()
         web_view.webViewClient = customWebClient

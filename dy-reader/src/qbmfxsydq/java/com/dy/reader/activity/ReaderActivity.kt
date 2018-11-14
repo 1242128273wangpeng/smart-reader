@@ -148,6 +148,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private val orientationRunnable = {
+        showLoadingDialog(LoadingDialogFragment.DialogType.LOADING)
+
         glSurfaceView.visibility = View.GONE
 
         window.decorView.systemUiVisibility = FrameActivity.UI_OPTIONS_IMMERSIVE_STICKY
