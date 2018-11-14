@@ -68,7 +68,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         view?.setChangeAble(false)
         if (type == 1) {
-            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARK, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter!!.chapter_id))
+            DyStatService.onEvent(EventPoint.READPAGE_BOOKMARK, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter?.chapter_id.orEmpty()))
         }
 
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->

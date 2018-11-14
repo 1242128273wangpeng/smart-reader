@@ -160,14 +160,16 @@ class SearchResultFragment : Fragment(), ISearchResultView {
                     webSearchResultList = res
                     webSearchResultAdapter = WebSearchResultAdapter(requireContext())
                     webSearchResultAdapter!!.onItemClick = {
-                        val item = webSearchResultList!![it]
-                        val data = HashMap<String, String>()
-                        data["enterword"] = keyWord
-                        data["link"] = item.url.orEmpty()
-                        data["host"] = item.source.orEmpty()
-                        data["rank"] = (it + 1).toString()
-                        DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_LINKCLICK, data)
-                        toWebActivity(item.url.orEmpty())
+                        if (it in 0 until webSearchResultList!!.size) {
+                            val item = webSearchResultList!![it]
+                            val data = HashMap<String, String>()
+                            data["enterword"] = keyWord
+                            data["link"] = item.url.orEmpty()
+                            data["host"] = item.source.orEmpty()
+                            data["rank"] = (it + 1).toString()
+                            DyStatService.onEvent(EventPoint.WEBSEARCHRESULT_LINKCLICK, data)
+                            toWebActivity(item.url.orEmpty())
+                        }
                     }
                     webSearchResultAdapter!!.onLatestChapterClick = {
                         loge("url: $it")
