@@ -34,6 +34,7 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.bean.LoginResp;
 import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.net.RequestSubscriber;
 import com.ding.basic.util.sp.SPKey;
@@ -500,6 +501,10 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
         StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.app_start);
         if (UserManager.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
+            LoginResp lr = UserManager.INSTANCE.getMUserInfo();
+            if (lr != null) {
+                DyStatService.setLoginUserId(lr.getUid());
+            }
         }
     }
 

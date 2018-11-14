@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_reader_setting_detail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F2191919"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <net.lzbook.kit.ui.widget.NightShadowView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/recyclerView"
+        android:layout_alignTop="@id/recyclerView"
+        android:layout_alignRight="@id/recyclerView"
+        android:layout_alignBottom="@id/recyclerView"
+        android:visibility="gone"/>
+
+</RelativeLayout>

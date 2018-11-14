@@ -30,7 +30,7 @@
         android:background="@drawable/reader_cache_item_sel"
         android:gravity="center"
         android:text="@string/cache_all_chapter"
-        android:textColor="@color/reader_cache_item_txt_sel"
+        android:textColor="@color/reader_option_button_txt_sel"
         android:textSize="16sp"/>
 
     <TextView
@@ -45,7 +45,7 @@
         android:background="@drawable/reader_cache_item_sel"
         android:gravity="center"
         android:text="@string/cache_start_current"
-        android:textColor="@color/reader_cache_item_txt_sel"
+        android:textColor="@color/reader_option_button_txt_sel"
         android:textSize="16sp"/>
 
     <TextView
@@ -60,6 +60,6 @@
         android:background="@drawable/reader_cache_item_sel"
         android:gravity="center"
         android:text="@string/cancel"
-        android:textColor="@color/reader_cache_item_txt_sel"
+        android:textColor="@color/reader_option_button_txt_sel"
         android:textSize="16sp"/>
 </LinearLayout>

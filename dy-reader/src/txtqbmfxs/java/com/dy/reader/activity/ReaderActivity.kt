@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.text.TextUtils
@@ -12,6 +11,8 @@ import android.view.*
 import cn.dycm.ad.nativ.NativeMediaView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ding.basic.bean.Book
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dy.media.MediaLifecycle
 import com.dy.reader.R
 import com.dy.reader.ReadMediaManager
@@ -35,9 +36,9 @@ import com.dycm_adsdk.view.NativeView
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.txtqbmfxs.act_reader.*
 import kotlinx.android.synthetic.txtqbmfxs.reader_content.*
+import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.activity.base.FrameActivity
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -120,14 +121,15 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
     }
 
     private fun initGuide() {
-        val sp = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        if (!sp.getBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, false)) {
-            rl_reader_guide!!.visibility = View.VISIBLE
+
+        if (!SPUtils.getDefaultSharedBoolean(mReadPresenter.versionCode.toString() + SPKey.READING_GUIDE_TAG, false)) {
+            rl_reader_guide?.visibility = View.VISIBLE
             img_reader_guide_action.visibility = View.VISIBLE
-            rl_reader_guide!!.setOnClickListener {
-                sp.edit().putBoolean(mReadPresenter.versionCode.toString() + Constants.READING_GUIDE_TAG, true).apply()
+
+            rl_reader_guide?.setOnClickListener {
+                SPUtils.putDefaultSharedBoolean(mReadPresenter.versionCode.toString() + SPKey.READING_GUIDE_TAG, true)
                 img_reader_guide_action.visibility = View.GONE
-                rl_reader_guide!!.visibility = View.GONE
+                rl_reader_guide?.visibility = View.GONE
             }
         }
     }
@@ -565,7 +567,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 } else {
                     ReadMediaManager.loadAdComplete = { type: String ->
                         if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group,
-                                        ReaderStatus.position.index)) {
+                                ReaderStatus.position.index)) {
                             showAd() //本页的广告请求回来，重走方法
                         }
                     }
@@ -575,7 +577,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 ReadMediaManager.requestAd(adType, adMark, AppHelper.screenHeight, AppHelper.screenWidth, ReadMediaManager.tonken)
                 ReadMediaManager.loadAdComplete = { type: String ->
                     if (type == ReadMediaManager.generateAdType(ReaderStatus.position.group,
-                                    ReaderStatus.position.index)) {
+                            ReaderStatus.position.index)) {
                         showAd() //本页的广告请求回来，重走方法
                     }
                 }

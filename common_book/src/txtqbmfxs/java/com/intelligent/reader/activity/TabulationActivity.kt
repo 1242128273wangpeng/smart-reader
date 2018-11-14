@@ -69,9 +69,7 @@ class TabulationActivity : FrameActivity() {
 
     private val needInterceptSlide: Boolean
         get() {
-            val packageName = AppUtils.getPackageName()
-            return (("cc.quanbennovel" == packageName || "cn.txtkdxsdq.reader" == packageName)
-                    && !TextUtils.isEmpty(this.title) && ((title?.contains("男频")
+            return (!TextUtils.isEmpty(this.title) && ((title?.contains("男频")
                     ?: false) || (title?.contains("女频") ?: false)))
         }
 

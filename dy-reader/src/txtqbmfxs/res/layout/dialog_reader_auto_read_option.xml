@@ -1,90 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F2212020"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     tools:ignore="RtlHardcoded, RtlSymmetry">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#333130"
-        android:visibility="invisible"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="18dp">
-
-        <TextView
-            android:id="@+id/txt_auto_read_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:paddingRight="8dp"
-            android:text="@string/auto_read_speed"
-            android:textColor="#707070"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/txt_auto_read_speed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/primary"
-            android:textSize="16sp"
-            tools:text="8"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/txt_speed_decelerate"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/reader_option_auto_read_button_bg"
-            android:gravity="center"
-            android:text="@string/decelerate"
-            android:textColor="@color/reader_option_auto_read_txt_sel"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/txt_speed_accelerate"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/reader_option_auto_read_button_bg"
-            android:gravity="center"
-            android:text="@string/accelerate"
-            android:textColor="@color/reader_option_auto_read_txt_sel"
-            android:textSize="14sp"/>
-    </LinearLayout>
-
     <TextView
-        android:id="@+id/txt_auto_read_stop"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="14dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="14dp"
-        android:background="@drawable/reader_option_auto_read_button_bg"
-        android:gravity="center"
-        android:text="@string/cancel"
-        android:textColor="@color/reader_option_auto_read_txt_sel"
-        android:textSize="14sp"/>
-</LinearLayout>
+        android:id="@+id/txt_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/reader_option_read_speed_bg"
+        android:gravity="center_horizontal"
+        android:paddingTop="4dp"
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        tools:text="12"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="105dp"
+        android:layout_below="@+id/txt_speed"
+        android:layout_marginTop="3dp"
+        android:background="#F2191919">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="34dp"
+            android:layout_marginRight="34dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txt_slow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/read_speed_slow"
+                android:textColor="#989898"
+                android:textSize="14sp"/>
+
+            <SeekBar
+                android:id="@+id/skbar_speed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/txt_fast"
+                android:layout_toRightOf="@+id/txt_slow"
+                android:background="@drawable/reader_option_seek_bar_bg"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:max="10"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:progressDrawable="@drawable/reader_option_seek_bar_drawable_bg"
+                android:splitTrack="false"
+                android:thumb="@drawable/reader_option_seek_bar_thumb"/>
+
+            <TextView
+                android:id="@+id/txt_fast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/read_speed_fast"
+                android:textColor="#989898"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:id="@+id/ll_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_slow"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="27dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/reader_option_auto_read_exit_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/read_auto_exit"
+                    android:textColor="#989898"
+                    android:textSize="14sp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -17,7 +17,6 @@ import android.widget.TextView
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.util.DataCache
-
 import com.dy.reader.R
 import com.dy.reader.adapter.BaseRecyclerHolder
 import com.dy.reader.adapter.ListRecyclerAdapter
@@ -28,12 +27,11 @@ import com.dy.reader.view.ReaderDeleteBookmarkPopup
 import kotlinx.android.synthetic.txtqbmfxs.frag_catalog_mark.*
 import kotlinx.android.synthetic.txtqbmfxs.frag_catalog_mark.view.*
 import kotlinx.android.synthetic.txtqbmfxs.item_reader_bookmark.view.*
-
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.ui.widget.LoadingPage
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -287,7 +285,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 }
 
                 if (data.name?.equals(ReaderStatus.chapterName) == true) {
-                    color = Color.parseColor("#CCC2B282")
+                    color = Color.parseColor("#87af4c")//主题色
                 }
 
                 textView.setTextColor(color)

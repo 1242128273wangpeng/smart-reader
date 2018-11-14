@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.SeekBar
 import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import com.dy.reader.event.EventReaderConfig
@@ -16,7 +17,6 @@ import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.StatServiceUtils
 import org.greenrobot.eventbus.EventBus
-import java.util.*
 
 class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
 
@@ -45,9 +45,21 @@ class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
         dialog.setOnShowListener {
             activity?.window?.decorView?.systemUiVisibility = FrameActivity.UI_OPTIONS_NORMAL
 
-            dialog.txt_speed_decelerate.setOnClickListener(this)
-            dialog.txt_speed_accelerate.setOnClickListener(this)
-            dialog.txt_auto_read_stop.setOnClickListener(this)
+            dialog.ll_exit.setOnClickListener(this)
+
+            dialog.skbar_speed.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    dialog?.txt_speed?.text = (progress + 10).toString()
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    readerSettings.autoReadSpeed = seekBar?.progress ?: 0 + 10
+                }
+            })
+
+            dialog.skbar_speed.progress = readerSettings.autoReadSpeed
 
             EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.AUTO_PAUSE))
         }
@@ -63,6 +75,7 @@ class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
                 false
             }
         }
+
         return dialog
     }
 
@@ -76,35 +89,18 @@ class AutoReadOptionDialog : DialogFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        dialog?.txt_auto_read_speed?.text = readerSettings.autoReadSpeed.toString()
+        dialog?.txt_speed?.text = readerSettings.autoReadSpeed.toString()
     }
 
     override fun onClick(view: View) {
         val i = view.id
         when (i) {
-            R.id.txt_speed_decelerate -> {
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_down)
-                readerSettings.autoReadSpeed = Math.max(10, readerSettings.autoReadSpeed - 1)
-                setRateValue()
-            }
-            R.id.txt_speed_accelerate -> {
-                StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_speed_up)
-                readerSettings.autoReadSpeed = Math.min(20, readerSettings.autoReadSpeed + 1)
-                setRateValue()
-
-            }
-            R.id.txt_auto_read_stop -> {
-                val data = HashMap<String, String>()
-                data["type"] = "2"
-                DyStatService.onEvent(EventPoint.READPAGESET_AUTOREAD, data)
+            R.id.ll_exit -> {
+                DyStatService.onEvent(EventPoint.READPAGESET_AUTOREAD, mapOf("type" to "2"))
                 StatServiceUtils.statAppBtnClick(activity, StatServiceUtils.rb_click_auto_read_cancel)
                 readerSettings.isAutoReading = false
                 dismiss()
             }
         }
-    }
-
-    private fun setRateValue() {
-        dialog?.txt_auto_read_speed?.text = readerSettings.autoReadSpeed.toString()
     }
 }

@@ -72,6 +72,10 @@ class ReaderSettingHeader : FrameLayout {
             presenter?.openWeb()
         }
 
+        rl_reader_feedback.setOnClickListener {
+            presenter?.readFeedBack()
+        }
+
         ibtn_reader_download.setOnClickListener {
             StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_download_btn)
 

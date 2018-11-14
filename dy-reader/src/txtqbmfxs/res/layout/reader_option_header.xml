@@ -24,6 +24,25 @@
             android:paddingTop="5dp"
             android:src="@drawable/reader_option_back_sel"/>
 
+        <RelativeLayout
+            android:id="@+id/rl_reader_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/ibtn_reader_download"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="42dp"
+                android:layout_height="22dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/reader_option_feedback_bg"
+                android:gravity="center"
+                android:text="@string/report_errors"
+                android:textColor="#D4C29A"
+                android:textSize="13sp"/>
+        </RelativeLayout>
+
         <ImageButton
             android:id="@+id/ibtn_reader_download"
             android:layout_width="44dp"

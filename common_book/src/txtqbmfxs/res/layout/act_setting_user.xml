@@ -31,8 +31,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dimen_padding_12"
-                android:paddingRight="@dimen/dimen_padding_12"
+                android:paddingLeft="@dimen/dimen_margin_12"
+                android:paddingRight="@dimen/dimen_margin_12"
                 android:src="@drawable/icon_back_left"/>
 
             <TextView
@@ -296,8 +296,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/bookshelf_community"
                     android:textColor="@color/color_text_most"/>
 
@@ -336,8 +336,8 @@
                     android:layout_centerVertical="true"
                     android:drawableLeft="@mipmap/read_bookmark"
                     android:drawablePadding="14dp"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/style_change"
                     android:textColor="@color/color_text_most"/>
 
@@ -347,7 +347,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_margin_12"
                     android:text="暖心红"
                     android:textColor="@color/my_item_small_text_color"
                     android:textSize="@dimen/dimen_text_11"/>
@@ -386,8 +386,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/night_shift"
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14"/>
@@ -441,8 +441,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="足迹"
                     android:textColor="@color/color_text_most"/>
 
@@ -482,8 +482,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/setting_wifi_auto"
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14"/>
@@ -527,8 +527,8 @@
                     android:id="@+id/tv_welfare"
                     style="@style/text_setting_style"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/welfare_center"
                     android:textColor="@color/color_text_most"/>
 
@@ -569,8 +569,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/setting_reading_page"
                     android:textColor="@color/color_text_most"
                     android:visibility="gone"/>
@@ -597,8 +597,8 @@
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/setting_more"
                     android:textColor="@color/color_text_most"/>
 
@@ -637,8 +637,8 @@
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/menu_feedback"
                     android:textColor="@color/color_text_most"/>
 
@@ -661,8 +661,8 @@
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/market_go"
                     android:textColor="@color/color_text_most"/>
 
@@ -687,8 +687,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/check_update"
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14"/>
@@ -699,7 +699,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_margin_12"
                     android:textColor="@color/my_item_small_text_color"
                     android:textSize="@dimen/dimen_text_11"/>
 
@@ -725,8 +725,8 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="14dp"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/clear_cache"
                     android:textColor="@color/color_text_most"
                     android:textSize="@dimen/text_size_14"/>
@@ -737,7 +737,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="@dimen/dimen_padding_12"
+                    android:paddingRight="@dimen/dimen_margin_12"
                     android:textColor="@color/my_item_small_text_color"
                     android:textSize="@dimen/dimen_text_11"/>
 
@@ -761,8 +761,8 @@
                     android:drawablePadding="14dp"
                     android:drawableRight="@mipmap/my_more"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/padding_12"
-                    android:paddingRight="@dimen/padding_12"
+                    android:paddingLeft="@dimen/margin_12"
+                    android:paddingRight="@dimen/margin_12"
                     android:text="@string/disclaimer_statement"
                     android:textColor="@color/color_text_most"/>
 

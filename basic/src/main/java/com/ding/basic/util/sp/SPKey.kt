@@ -12,7 +12,7 @@ class SPKey {
         @JvmField
         val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
 
-        fun getSHAREDPREFERENCES_KEY():String{
+        fun getSHAREDPREFERENCES_KEY(): String {
             val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
             return "onlineconfig_agent_online_setting_" + buidCofig.getPackageName()
         }
@@ -36,12 +36,12 @@ class SPKey {
         const val HOME_CATEGORY_FEMALE_URL = "home_category_female_url"
 
 
-
         // 当前阅读的书籍
         const val CURRENT_READ_BOOK = "current_read_book"
 
         // 删除WebView缓存
         const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
+
 
         /**
          * DebugActivity
@@ -63,8 +63,6 @@ class SPKey {
          */
         const val NOVEL_HOST = "novel_host"           //智能API接口
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
-//        const val UNION_HOST = "union_host"           //微服务API接口
-//        const val CONTENT_HOST = "content_host"       //微服务内容接口
         const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
         /**
@@ -134,7 +132,6 @@ class SPKey {
         const val BOOK_SHELF_STATE = "book_shelf_state"//九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
 
 
-
         /**
          * 广告分版本，分渠道，分广告位开关控制
          */
@@ -199,11 +196,12 @@ class SPKey {
         /**
          * Bookshelf
          */
-       //书架引导  和versionCode拼接
-        fun getBOOKSHELF_GUIDE_TAG():String{
+        //书架引导和versionCode拼接
+        fun getBOOKSHELF_GUIDE_TAG(): String {
             val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
             return buidCofig.getVersionCode().toString() + "bookshelf_guide_tag"
         }
+
         const val BOOKSHELF_ISSHOW_CHANGE_GUIDE = "isShowChangAnGuide" //判断是否显示长按删除书籍引导  快读替 新版引导页
         const val BOOKSHELF_BOOK_RACKUP_DATETIME = "bookRackUpdateTime"
         const val BOOKSHELF_PERSON_RED = "bookshelf_preson_red" //用于书架页上的红点显示隐藏
@@ -218,6 +216,7 @@ class SPKey {
         /**
          * ReadingActivity
          */
+        const val READING_SKIN_FONT_GUIDE = "reading_skin_font_guide" //阅读页新增皮肤、字体引导页
         const val READING_GUIDE_TAG = "reading_guide_tag"       //阅读页引导页
         const val READING_SETING_GUIDE_TAG = "reading_setting_guide_tag" //阅读页设置引导
         const val READ_PAGE_MODE = "page_mode"              //阅读页翻页模式
@@ -257,17 +256,11 @@ class SPKey {
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
 
 
-
         const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
 
         const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
         const val WEB_FAVORITE_FIRST_USE = "web_favorite_first_use" // 首次使用网页收藏功能标识
         const val WEB_FAVORITE_FIRST_USE_CLICK = "web_favorite_first_use_click" // 首次点击 网页收藏 按钮标识
-
-
-
-
-
 
 
         /***
@@ -279,7 +272,6 @@ class SPKey {
         const val LOCATION_LATITUDE = "location_latitude"
         //用于存储用户的经度
         const val LOCATION_LONGITUDE = "location_longitude"
-
 
 
         /***

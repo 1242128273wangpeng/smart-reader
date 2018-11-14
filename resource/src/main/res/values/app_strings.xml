@@ -21,6 +21,7 @@
     <string name="bookshelf_insert_success">成功添加到书架！</string>
     <string name="bookshelf_delete_success">成功从书架中移除！</string>
 
+    <string name="report_errors">报错</string>
 
     <string name="my_bookshelf">我的书架</string>
     <string name="goto_bookstore">去书城</string>
