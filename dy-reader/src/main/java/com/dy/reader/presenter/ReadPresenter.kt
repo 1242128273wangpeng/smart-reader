@@ -37,7 +37,6 @@ import com.google.gson.Gson
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.pointpage.EventPoint
-import net.lzbook.kit.service.DownloadService
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.logger.AppLog
@@ -486,7 +485,8 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
     }
 
     fun goToBookEnd() {
-        if (readReference == null || readReference!!.get() == null || readReference!!.get()!!.isFinishing) {
+        // goToBookEndCount 滑动翻页触发 跳转bookEndActivity会执行多次，只需要执行一次即可
+        if (readReference == null || readReference!!.get() == null || readReference!!.get()!!.isFinishing || goToBookEndCount != 0) {
             return
         }
 
@@ -494,17 +494,19 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
             return
         }
 
-        // goToBookEndCount 上下阅读会发送多个event，需要传一次pv即可
-        if (goToBookEndCount == 0) {
-            //发送章节消费
-            DyStatService.sendPVData(ReaderStatus.startTime, ReaderStatus.book.book_id, ReaderStatus.currentChapter?.chapter_id.orEmpty(), ReaderStatus.book.book_source_id,
-                    if (("zn") == ReaderStatus.book.book_type) {
-                        "2"
-                    } else {
-                        "1"
-                    }, ReaderStatus.position.groupChildCount)
-            goToBookEndCount++
-        }
+        //发送章节消费
+        DyStatService.sendPVData(
+                ReaderStatus.startTime,
+                ReaderStatus.book.book_id,
+                ReaderStatus.currentChapter?.chapter_id.orEmpty(),
+                ReaderStatus.book.book_source_id,
+                if (("zn") == ReaderStatus.book.book_type) {
+                    "2"
+                } else {
+                    "1"
+                },
+                ReaderStatus.position.groupChildCount
+        )
 
         val bundle = Bundle()
         bundle.putSerializable("book", ReaderStatus.book)
@@ -512,6 +514,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         bundle.putString("book_name", ReaderStatus.book.name)
         bundle.putString("chapter_id", ReaderStatus.chapterId)
         RouterUtil.navigation(act, RouterConfig.BOOK_END_ACTIVITY, bundle)
+        goToBookEndCount++
     }
 
 
