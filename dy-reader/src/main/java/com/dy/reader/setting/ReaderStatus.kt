@@ -82,6 +82,6 @@ object ReaderStatus {
 
     var isMenuShow: Boolean = false
 
-    var startTime = System.currentTimeMillis() / 1000L
+    var startTime = System.currentTimeMillis()
 
 }
