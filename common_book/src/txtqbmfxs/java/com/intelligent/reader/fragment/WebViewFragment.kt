@@ -77,32 +77,6 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (web_view_content != null) {
-            web_view_content?.clearCache(true)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                if (rl_web_view_root != null) {
-                    rl_web_view_root?.removeView(web_view_content)
-                }
-                web_view_content?.stopLoading()
-                web_view_content?.settings?.javaScriptEnabled = false
-                web_view_content?.clearHistory()
-                web_view_content?.removeAllViews()
-                web_view_content?.destroy()
-            } else {
-                web_view_content?.stopLoading()
-                web_view_content?.settings?.javaScriptEnabled = false
-                web_view_content?.clearHistory()
-                web_view_content?.removeAllViews()
-                web_view_content?.destroy()
-                if (rl_web_view_root != null) {
-                    rl_web_view_root?.removeView(web_view_content)
-                }
-            }
-        }
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (userVisibleHint) {
@@ -131,7 +105,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
         web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
-        loadingPage = LoadingPage(requireActivity(), web_view_content)
+        loadingPage = LoadingPage(requireActivity(), rl_web_view_root)
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
 
@@ -238,27 +212,43 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
             }
 
             customWebClient?.setLoadingWebViewFinish {
-                if (loadingPage != null) {
-                    loadingPage?.onSuccessGone()
-                }
+                loadingPage?.onSuccessGone()
             }
 
             customWebClient?.setLoadingWebViewError {
-                if (loadingPage != null) {
-                    loadingPage?.onErrorVisable()
-                }
+                loadingPage?.onErrorVisable()
             }
         }
 
-        if (loadingPage != null) {
-            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebClient != null) {
-                    customWebClient?.initParameter()
-                }
-                web_view_content?.loadUrl(url)
-            })
+        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+            customWebClient?.initParameter()
+            web_view_content?.reload()
+        })
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (web_view_content != null) {
+            web_view_content?.clearCache(true)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                rl_web_view_root?.removeView(web_view_content)
+                web_view_content?.stopLoading()
+                web_view_content?.settings?.javaScriptEnabled = false
+                web_view_content?.clearHistory()
+                web_view_content?.removeAllViews()
+                web_view_content?.destroy()
+            } else {
+                web_view_content?.stopLoading()
+                web_view_content?.settings?.javaScriptEnabled = false
+                web_view_content?.clearHistory()
+                web_view_content?.removeAllViews()
+                web_view_content?.destroy()
+                rl_web_view_root?.removeView(web_view_content)
+            }
         }
     }
+
 
     /**
      * 获取web中banner的位置js回调
