@@ -25,7 +25,7 @@
                 android:contentDescription="@string/icon"
                 android:gravity="center_vertical"
                 android:paddingLeft="15dp"
-                android:paddingRight="@dimen/dimen_padding_12" />
+                android:paddingRight="@dimen/dimen_padding_12"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -146,6 +146,26 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp">
+
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:text="@string/debug_shield_book"/>
+
+                <net.lzbook.kit.ui.widget.SwitchButton
+                    android:id="@+id/btn_debug_shield_book"
+                    style="@style/Debug_Widget_View"
+                    app:sb_checked="true"
+                    app:sb_checked_color="@color/debug_switch_bg_checked_color"
+                    app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
+                    app:sb_show_indicator="false"
+                    app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
+                    app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
+
+            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/tv_api"
@@ -206,7 +226,6 @@
                 android:id="@+id/txt_device"
                 style="@style/Debug_Widget_Text_Wrap"/>
 
-
             <Button
                 android:id="@+id/btn_debug_device_copy"
                 android:layout_width="120dp"
@@ -217,6 +236,10 @@
                 android:gravity="center"
                 android:text="@string/debug_copy_device"
                 android:textColor="@color/color_323232"/>
+
+            <TextView
+                android:id="@+id/txt_cityCode"
+                style="@style/Debug_Widget_Text_Wrap"/>
 
         </LinearLayout>
     </ScrollView>

@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.dingyue.statistics.DyStatService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.txtqbmfxs.frag_bookstore.*
@@ -79,6 +81,8 @@ open class BookStoreFragment : Fragment() {
         fragment
     }
 
+    private val fragmentList = ArrayList<Fragment>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,17 +96,8 @@ open class BookStoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bookStoreAdapter = BookStoreAdapter(childFragmentManager)
 
-        vp_book_store_content?.adapter = bookStoreAdapter
-        vp_book_store_content?.offscreenPageLimit = 2
-
-
-        loge("CityCode:${Constants.cityCode}")
-
-        // 是否屏蔽书单
-        tv_book_store_list.visibility = if (isHideBookList()) View.GONE else View.VISIBLE
-
+        isShieldBook()
         initListener()
 
     }
@@ -111,10 +106,26 @@ open class BookStoreFragment : Fragment() {
     /**
      * 是否隐藏书单:屏蔽北京、上海的用户
      */
-    private fun isHideBookList(): Boolean {
-        if ("010" == Constants.cityCode || "021" == Constants.cityCode || "" == Constants.cityCode)
-            return true
-        return false
+    private fun isShieldBook() {
+        val isShieldBook = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, true)
+        loge("CityCode:${Constants.cityCode} \"isShieldBook: $isShieldBook")
+
+        fragmentList.clear()
+        fragmentList.add(recommendFragment)
+        fragmentList.add(rankingFragment)
+
+        if (isShieldBook && ("010" == Constants.cityCode || "021" == Constants.cityCode || "" == Constants.cityCode)) {
+            tv_book_store_list.visibility = View.GONE
+        } else {
+            tv_book_store_list.visibility = View.VISIBLE
+            fragmentList.add(bookListFragment)
+        }
+        fragmentList.add(categoryFragment)
+
+        val bookStoreAdapter = BookStoreAdapter(childFragmentManager)
+
+        vp_book_store_content?.adapter = bookStoreAdapter
+        vp_book_store_content?.offscreenPageLimit = fragmentList.size
     }
 
     private fun initListener() {
@@ -126,7 +137,7 @@ open class BookStoreFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 currentPosition = position
 
-                if (isHideBookList()) {
+                if (fragmentList.size == 3) {
                     when (currentPosition) {
                         0 -> {
                             searchClickListener?.getCurrent(2)
@@ -216,7 +227,7 @@ open class BookStoreFragment : Fragment() {
         tv_book_store_recommend?.isSelected = type == 0
         tv_book_store_ranking?.isSelected = type == 1
         tv_book_store_list?.isSelected = type == 2
-        tv_book_store_category?.isSelected = type == if (isHideBookList()) 2 else 3
+        tv_book_store_category?.isSelected = type == if (fragmentList.size == 3) 2 else 3
     }
 
     private fun refreshNavigationState(position: Int) {
@@ -250,28 +261,11 @@ open class BookStoreFragment : Fragment() {
     protected inner class BookStoreAdapter internal constructor(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
         override fun getCount(): Int {
-            return if (isHideBookList()) 3 else 4
+            return fragmentList.size
         }
 
         override fun getItem(position: Int): Fragment? {
-
-            if (isHideBookList()) {
-                return when (position) {
-                    0 -> recommendFragment
-                    1 -> rankingFragment
-                    2 -> categoryFragment
-                    else -> null
-                }
-            } else {
-                return when (position) {
-                    0 -> recommendFragment
-                    1 -> rankingFragment
-                    2 -> bookListFragment
-                    3 -> categoryFragment
-                    else -> null
-                }
-            }
-
+            return fragmentList[position]
         }
 
         override fun getItemPosition(`object`: Any): Int {

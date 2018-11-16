@@ -57,6 +57,7 @@ class SPKey {
         const val SHOW_TOAST_LOG = "show_toast_log"       //打点Toast显示，方便h5查看打点
 
         const val HOST_LIST = "host_list"//host列表
+        const val SHIELD_BOOK = "shield_book"//北京上海屏蔽书单
 
         /**
          * HOST分类
