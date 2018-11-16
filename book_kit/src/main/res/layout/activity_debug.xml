@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/white"
@@ -167,43 +168,53 @@
             </RelativeLayout>
 
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_padding_1"
+                android:layout_margin="@dimen/dimen_margin_20"
+                android:background="@color/divider_line"/>
+
             <TextView
                 android:id="@+id/tv_api"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_api_host"/>
+                android:layout_height="45dp"
+                android:text="@string/debug_api_host"
+                android:textStyle="bold"/>
 
 
             <TextView
                 android:id="@+id/tv_web"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_web_host"/>
+                android:layout_height="45dp"
+                android:text="@string/debug_web_host"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_micro"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_micro_host"/>
+                android:layout_height="45dp"
+                android:text="@string/debug_micro_host"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_micro_content"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_micro_content_host"/>
+                android:layout_height="45dp"
+                android:text="@string/debug_micro_content_host"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_user_tag_host"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
+                android:layout_height="45dp"
                 android:text="@string/debug_user_tag_host"/>
 
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="@dimen/dimen_padding_1"
                 android:layout_margin="@dimen/dimen_margin_20"
-                android:background="@color/divider_bg"/>
+                android:background="@color/divider_line"/>
 
             <TextView
                 android:id="@+id/txt_udid"
@@ -213,13 +224,14 @@
             <Button
                 android:id="@+id/btn_debug_udid_copy"
                 android:layout_width="120dp"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:layout_gravity="right"
                 android:layout_margin="20dp"
                 android:background="@color/primary"
                 android:gravity="center"
                 android:text="@string/debug_copy_udid"
-                android:textColor="@color/color_323232"/>
+                android:textColor="@color/color_323232"
+                tools:ignore="RtlHardcoded"/>
 
 
             <TextView
@@ -229,13 +241,14 @@
             <Button
                 android:id="@+id/btn_debug_device_copy"
                 android:layout_width="120dp"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:layout_gravity="right"
                 android:layout_margin="20dp"
                 android:background="@color/primary"
                 android:gravity="center"
                 android:text="@string/debug_copy_device"
-                android:textColor="@color/color_323232"/>
+                android:textColor="@color/color_323232"
+                tools:ignore="RtlHardcoded"/>
 
             <TextView
                 android:id="@+id/txt_cityCode"
