@@ -22,8 +22,8 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.router.RouterConfig
+import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.subscribekt
 import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
@@ -115,7 +115,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
             RouterUtil.navigation(activity, RouterConfig.READER_ACTIVITY, bundle, flags)
         }
 
-        DyStatService.onEvent(EventPoint.READPAGE_BOOKMARK, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter!!.chapter_id))
+        DyStatService.onEvent(EventPoint.READPAGE_BOOKMARK, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter?.chapter_id.orEmpty()))
 
     }
 
