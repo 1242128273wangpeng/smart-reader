@@ -12,7 +12,10 @@ import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.orhanobut.logger.Logger
 import com.umeng.message.MessageSharedPrefs
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -62,7 +65,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.iv_back -> finish()
+            R.id.img_debug_header_back -> finish()
+
             R.id.tv_api -> {
                 intentHostList(SPKey.NOVEL_HOST)
             }
@@ -119,6 +123,15 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
     private fun initView() {
 
+        rgroup_web_state.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbtn_web_debug -> Config.webDeploy = "bug"
+                R.id.rbtn_web_regress -> Config.webDeploy = "uat"
+                R.id.rbtn_web_official -> Config.webDeploy = "off"
+            }
+            requestWebViewParameter()
+        }
+
         //启用动态参数
         btn_debug_start_params.setOnCheckedChangeListener(this)
         btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
@@ -138,12 +151,12 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         var backId=AppUtils.getDrawableByName(this,"icon_back_left")
         if(backId!=-1) {
             try{
-               iv_back.setImageResource(backId)
+               img_debug_header_back.setImageResource(backId)
             }catch (e:Throwable){
                 e.printStackTrace()
             }
         }
-        iv_back.setOnClickListener(this)
+        img_debug_header_back.setOnClickListener(this)
 
         tv_api.setOnClickListener(this)
         tv_web.setOnClickListener(this)
@@ -151,8 +164,6 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         tv_micro_content.setOnClickListener(this)
         btn_debug_device_copy.setOnClickListener(this)
         btn_debug_udid_copy.setOnClickListener(this)
-
-
     }
 
 
@@ -170,11 +181,11 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             Config.insertWebViewHost(SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
-            Config.insertMicroAPIHost(SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
-            Config.insertContentAPIHost(SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
+            MicroAPI.microHost = (SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
+            ContentAPI.contentHost = (SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
 
-            ContentAPI.initMicroService()
             MicroAPI.initMicroService()
+            ContentAPI.initContentService()
             RequestAPI.initializeDataRequestService()
 
         } else { //禁用动态参数
@@ -264,4 +275,17 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     }
 
 
+    private fun requestWebViewParameter() {
+        insertDisposable(RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ it ->
+                    if (it != null && it.checkResultAvailable()) {
+                        Config.webBaseUrl = it.data ?: ""
+                    }
+                }, {
+                    Logger.e("Error: " + it.toString())
+                })
+        )
+    }
 }

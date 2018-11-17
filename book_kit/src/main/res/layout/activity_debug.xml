@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical">
-
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
 
     <RelativeLayout
-        android:id="@+id/top_navigation_bg"
+        android:id="@+id/rl_debug_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
-        android:fitsSystemWindows="true"
-        android:focusableInTouchMode="true">
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_bar_height">
+            android:layout_height="48dp">
 
             <ImageView
-                android:id="@+id/iv_back"
+                android:id="@+id/img_debug_header_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/icon"
+                android:contentDescription="@string/app_name"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="@dimen/dimen_padding_12" />
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,21 +35,61 @@
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
                 android:text="@string/debug_mode"
-                android:textColor="@color/white"
-                android:textSize="@dimen/dimen_text_17"/>
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"/>
         </RelativeLayout>
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="50dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp">
+
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/debug_web_state"/>
+
+                <RadioGroup
+                    android:id="@+id/rgroup_web_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <RadioButton
+                        android:id="@+id/rbtn_web_debug"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/debug"
+                        android:textSize="15sp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbtn_web_regress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/regress"
+                        android:textSize="15sp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbtn_web_official"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/official"
+                        android:textSize="15sp"/>
+                </RadioGroup>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/rl_debug_start_params"

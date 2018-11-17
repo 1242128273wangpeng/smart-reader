@@ -2,8 +2,8 @@ package com.ding.basic.net.interceptor
 
 import com.ding.basic.bean.Access
 import com.ding.basic.bean.BasicResult
-import com.ding.basic.net.api.MicroAPI
-import com.ding.basic.net.api.service.MicroService.Companion.AUTH_ACCESS
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.service.ContentService.Companion.AUTH_ACCESS
 import com.ding.basic.net.token.Token
 import com.ding.basic.util.*
 import com.google.gson.Gson
@@ -13,7 +13,7 @@ import okhttp3.*
 import java.net.URLDecoder
 import java.nio.charset.Charset
 
-class MicroRequestInterceptor : Interceptor {
+class ContentInterceptor : Interceptor {
 
     private val gson = Gson()
 
@@ -24,18 +24,19 @@ class MicroRequestInterceptor : Interceptor {
     /***
      * 处理数据流请求拦截
      * **/
+    @Synchronized
     private fun handleMicroInterceptAction(chain: Interceptor.Chain): Response {
         try {
             var request = chain.request()
 
-            request = buildMicroRequest(request)
+            request = buildContentRequest(request)
 
             val response = chain.proceed(request)
 
             return if (request.url().toString().contains(AUTH_ACCESS)) {
                 response
             } else {
-                handleMicroResponse(chain, request, response)
+                handleContentResponse(chain, request, response)
             }
         } catch (exception: Exception) {
             Logger.e("HandleMicroInterceptAction: $exception")
@@ -46,12 +47,12 @@ class MicroRequestInterceptor : Interceptor {
     /***
      * 处理数据流请求的Response，判断返回结果是否鉴权失败
      * **/
-    private fun handleMicroResponse(chain: Interceptor.Chain, request: Request, response: Response): Response {
+    private fun handleContentResponse(chain: Interceptor.Chain, request: Request, response: Response): Response {
         return if (response.isSuccessful && response.code() == 200) {
             val responseBody = response.body()
 
             if (responseBody != null) {
-                handleMicroResponseBody(chain, request, response, responseBody)
+                handleContentResponseBody(chain, request, response, responseBody)
             } else {
                 response
             }
@@ -64,7 +65,7 @@ class MicroRequestInterceptor : Interceptor {
      * 处理数据流请求返回结果
      * **/
     @Throws(Exception::class)
-    private fun handleMicroResponseBody(chain: Interceptor.Chain, request: Request, response: Response, responseBody: ResponseBody): Response {
+    private fun handleContentResponseBody(chain: Interceptor.Chain, request: Request, response: Response, responseBody: ResponseBody): Response {
         try {
             val bytes = responseBody.bytes()
 
@@ -88,14 +89,12 @@ class MicroRequestInterceptor : Interceptor {
 
             return try {
                 val basicResult = gson.fromJson(responseResult, BasicResult::class.java)
-
                 if (basicResult.checkPrivateKeyExpire()) {
                     Logger.e("网络请求鉴权异常: ${basicResult.code} : ${basicResult.msg}")
                     requestAuthentication(chain, request)
                 } else {
                     Logger.e("网络请求结果正常: ${request.url()}")
                     response.newBuilder().body(ResponseBody.create(mediaType, bytes)).build()
-
                 }
             } catch (exception: Exception) {
                 Logger.e("HandleMicroResponseBody Gson: $exception")
@@ -139,12 +138,12 @@ class MicroRequestInterceptor : Interceptor {
      * 重构鉴权的请求体
      * **/
     private fun reconfigurationRequest(request: Request): Request {
-        val authenticationUrl = buildMicroRequest(AUTH_ACCESS, false)
+        val authenticationUrl = buildContentRequest(AUTH_ACCESS)
 
         val authenticationRequest = Request.Builder().headers(request.headers())
                 .removeHeader("publicKey").url(authenticationUrl).build()
 
-        return buildMicroRequest(authenticationRequest)
+        return buildContentRequest(authenticationRequest)
     }
 
     /***
@@ -197,24 +196,26 @@ class MicroRequestInterceptor : Interceptor {
      * 处理鉴权请求结果
      * **/
     private fun handleAuthResult(result: BasicResult<String>) {
-        val message = AESUtil.decrypt(result.data, MicroAPI.accessKey)
+        Logger.e("鉴权结果: ${result.data}")
+        val message = AESUtil.decrypt(result.data, ContentAPI.accessKey)
 
         if (message != null && message.isNotEmpty()) {
             val access = gson.fromJson(message, Access::class.java)
             if (access != null) {
+                Logger.e("鉴权结果: $access")
                 if (access.publicKey != null) {
-                    MicroAPI.publicKey = access.publicKey
+                    ContentAPI.publicKey = access.publicKey
                 }
 
                 if (access.privateKey != null) {
-                    MicroAPI.privateKey = access.privateKey
+                    ContentAPI.privateKey = access.privateKey
                 }
 
                 if (access.expire > 0) {
-                    MicroAPI.expire = access.expire.toLong()
+                    ContentAPI.expire = access.expire.toLong()
                 }
 
-                Logger.e("接口拦截器中处理鉴权请求: ${access.publicKey} : ${access.privateKey}")
+                Logger.e("内容拦截器中处理鉴权请求: ${access.publicKey} : ${access.privateKey}")
             }
         }
     }
@@ -223,14 +224,14 @@ class MicroRequestInterceptor : Interceptor {
      * 重新请求原有请求
      * **/
     private fun handleOriginalRequest(chain: Interceptor.Chain, request: Request): Response {
-        val originalRequest = buildMicroRequest(request)
+        val originalRequest = buildContentRequest(request)
         return chain.proceed(originalRequest)
     }
 
     /***
      * 重构数据流请求，添加公共参数，请求头等数据信息
      * **/
-    private fun buildMicroRequest(request: Request): Request {
+    private fun buildContentRequest(request: Request): Request {
         var interimRequest = request
 
         val parameters = mutableMapOf<String, String>()
@@ -245,12 +246,12 @@ class MicroRequestInterceptor : Interceptor {
 
         buildRequestParameters(parameters)
 
-        val sign = loadMicroRequestSign(parameters)
+        val sign = loadContentRequestSign(parameters)
         parameters["sign"] = sign
 
         Logger.v("Sign: $sign")
 
-        val url = initMicroRequestUrl(interimRequest, parameters) ?: return request
+        val url = initContentRequestUrl(interimRequest, parameters) ?: return request
 
         val builder = interimRequest.newBuilder().url(url)
 
@@ -258,14 +259,14 @@ class MicroRequestInterceptor : Interceptor {
         builder.removeHeader("accessKey")
 
         if (url.contains(AUTH_ACCESS)) {
-            builder.addHeader("accessKey", MicroAPI.accessKey)
+            builder.addHeader("accessKey", ContentAPI.accessKey)
         } else {
-            builder.addHeader("publicKey", MicroAPI.publicKey ?: "")
+            builder.addHeader("publicKey", ContentAPI.publicKey ?: "")
         }
 
         interimRequest = builder.build()
 
-        Logger.v("Request: " + interimRequest.url().toString() + " : " + MicroAPI.publicKey + " : " + MicroAPI.privateKey)
+        Logger.v("Request: " + interimRequest.url().toString() + " : " + ContentAPI.publicKey + " : " + ContentAPI.privateKey)
 
         return interimRequest
     }
@@ -273,7 +274,7 @@ class MicroRequestInterceptor : Interceptor {
     /***
      * 重新初始化请求链接
      * **/
-    private fun initMicroRequestUrl(request: Request, params: Map<String, String>): String? {
+    private fun initContentRequestUrl(request: Request, params: Map<String, String>): String? {
         val requestTag = Token.encodeRequestTag(URLDecoder.decode(request.url().encodedPath(), "UTF-8"))
         val parametersMap = Token.encodeParameters(params)
 

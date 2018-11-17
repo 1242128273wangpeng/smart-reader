@@ -10,6 +10,7 @@ import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
 import com.ding.basic.bean.UserMarkBook
+import io.reactivex.Observable
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
@@ -20,6 +21,7 @@ import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -43,6 +45,7 @@ object RequestAPI {
     fun initializeDataRequestService() {
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .baseUrl(Config.loadRequestAPIHost()).build()
@@ -277,4 +280,11 @@ object RequestAPI {
         return requestService.downloadFont(url)
     }
 
+    fun requestWebViewResult(url: String): Observable<String> {
+        return requestService.requestWebViewResult(url)
+    }
+
+    fun requestWebViewResult(url: String, requestBody: RequestBody): Observable<String> {
+        return requestService.requestWebViewResult(url, requestBody)
+    }
 }

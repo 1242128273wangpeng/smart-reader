@@ -11,6 +11,7 @@ import com.ding.basic.net.api.service.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import com.ding.basic.bean.UserMarkBook
+import io.reactivex.Observable
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
@@ -229,18 +230,6 @@ class InternetRequestRepository private constructor() {
         return RequestAPI.requestSubBook(bookName, bookAuthor)
     }
 
-    /***************** 微服务 *****************/
-
-    fun requestAuthAccess(): Flowable<BasicResult<String>>? {
-        return MicroAPI.requestAuthAccess()
-    }
-
-    /***************** 微服务同步鉴权 *****************/
-
-    fun requestAuthAccessSync(): Call<BasicResult<String>> {
-        return MicroAPI.requestAuthAccessSync()
-    }
-
     fun requestBookDetail(book_id: String, book_source_id: String, book_chapter_id: String): Flowable<BasicResult<Book>>? {
         return MicroAPI.requestBookDetail(book_id, book_source_id, book_chapter_id)
     }
@@ -258,7 +247,7 @@ class InternetRequestRepository private constructor() {
     }
 
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
-                                       , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
+                              , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
         return MicroAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 
@@ -272,5 +261,17 @@ class InternetRequestRepository private constructor() {
 
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
         return RequestAPI.downloadFont(fontName)
+    }
+
+    fun requestWebViewResult(url: String): Observable<String> {
+        return RequestAPI.requestWebViewResult(url)
+    }
+
+    fun requestWebViewResult(url: String, requestBody: RequestBody): Observable<String> {
+        return RequestAPI.requestWebViewResult(url, requestBody)
+    }
+
+    fun requestWebViewConfig(): Observable<BasicResult<String>> {
+        return MicroAPI.requestWebViewConfig()
     }
 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
+import android.webkit.WebView
 import com.dingyue.searchbook.R
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.presenter.SearchResultPresenter
@@ -73,7 +74,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun getCurrentActivity(): Activity = requireActivity()
 
-    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
+    @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
     override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
@@ -93,6 +94,9 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         search_result_content?.addJavascriptInterface(jsInterface, "J_search")
     }
 
+    override fun loadContentWebView(): WebView {
+        return search_result_content
+    }
 
     override fun onSearchResult(url: String) {
         showLoading()

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
 
 import com.intelligent.reader.R
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.web.WebViewIndex
 import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
@@ -49,8 +51,6 @@ class RecommendFragment : Fragment() {
 
 
     private fun initView() {
-
-
         ll_search_layout.post {
             if (statusBarHeight == 0) {
                 statusBarHeight = AppUtils.dip2px(context, 20f)
@@ -68,20 +68,16 @@ class RecommendFragment : Fragment() {
         view_pager.adapter = adapter
 
         val fragmentSelection = ScrollWebFragment()
-        fragmentSelection.arguments = getBundle(//精选
-                RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentSelection.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend)
 
         val fragmentMale = ScrollWebFragment()
-        fragmentMale.arguments = getBundle(//男频
-                RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentMale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_male)
 
         val fragmentFemale = ScrollWebFragment()
-        fragmentFemale.arguments = getBundle(//女频
-                RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFemale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_female)
 
         val fragmentFinish = ScrollWebFragment()
-        fragmentFinish.arguments = getBundle(//完本
-                RequestService.WEB_RECOMMEND_H5_Finish.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFinish.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_finish)
 
         fragments.clear()
         fragments.add(fragmentSelection)
@@ -117,8 +113,7 @@ class RecommendFragment : Fragment() {
 
     private fun getBundle(url: String): Bundle {
         val bundle = Bundle()
-        val map = HashMap<String, String>()
-        bundle.putString("url", UrlUtils.buildWebUrl(url, map))
+        bundle.putString("url", url)
         return bundle
     }
 

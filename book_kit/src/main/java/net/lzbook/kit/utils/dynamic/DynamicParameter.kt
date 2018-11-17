@@ -325,16 +325,17 @@ class DynamicParameter(private val context: Context) {
 
 
     private fun insertRequestParams() {
+        MicroAPI.microHost = SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST)
+        ContentAPI.contentHost = SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST)
+
         Config.insertRequestAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST))
         Config.insertWebViewHost(SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST))
-        Config.insertMicroAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST))
-        Config.insertContentAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST))
         Config.insertUserTagHost(SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST))
     }
 
     private fun initApi() {
-        ContentAPI.initMicroService()
         MicroAPI.initMicroService()
+        ContentAPI.initContentService()
         RequestAPI.initializeDataRequestService()
     }
 

@@ -59,9 +59,9 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     String rankType;
     private RelativeLayout find_book_detail_main;
-    private ImageView find_book_detail_back;
-    private TextView find_book_detail_title;
-    private ImageView find_book_detail_search;
+//    private ImageView find_book_detail_back;
+//    private TextView find_book_detail_title;
+//    private ImageView find_book_detail_search;
     private WebView find_detail_content;
     private String currentUrl;
     private String currentTitle;
@@ -117,18 +117,18 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
 
     private void initView() {
         find_book_detail_main = findViewById(R.id.find_book_detail_main);
-        find_book_detail_back = findViewById(R.id.find_book_detail_back);
-        find_book_detail_title = findViewById(R.id.find_book_detail_title);
-        find_book_detail_search = findViewById(R.id.find_book_detail_search);
+//        find_book_detail_back = findViewById(R.id.find_book_detail_back);
+//        find_book_detail_title = findViewById(R.id.find_book_detail_title);
+//        find_book_detail_search = findViewById(R.id.find_book_detail_search);
         find_detail_content = findViewById(R.id.rank_content);
         initListener();
         //判断是否是作者主页
-        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
-                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
-            find_book_detail_search.setVisibility(View.GONE);
-        } else {
-            find_book_detail_search.setVisibility(View.VISIBLE);
-        }
+//        if (currentUrl.contains(RequestService.AUTHOR_V4) || currentUrl.contains(
+//                RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName()))) {
+//            find_book_detail_search.setVisibility(View.GONE);
+//        } else {
+//            find_book_detail_search.setVisibility(View.VISIBLE);
+//        }
 
         find_book_detail_main.setLayerType(View.LAYER_TYPE_NONE, null);
 
@@ -158,14 +158,14 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     }
 
     private void initListener() {
-        if (find_book_detail_title != null && !TextUtils.isEmpty(currentTitle)) {
-            find_book_detail_title.setText(currentTitle);
-        }
-        find_book_detail_title.setOnClickListener(this);
-        if (find_book_detail_back != null) {
-            find_book_detail_back.setOnClickListener(this);
-        }
-        find_book_detail_search.setOnClickListener(this);
+//        if (find_book_detail_title != null && !TextUtils.isEmpty(currentTitle)) {
+//            find_book_detail_title.setText(currentTitle);
+//        }
+//        find_book_detail_title.setOnClickListener(this);
+//        if (find_book_detail_back != null) {
+//            find_book_detail_back.setOnClickListener(this);
+//        }
+//        find_book_detail_search.setOnClickListener(this);
         addTouchListener();
     }
 
@@ -178,58 +178,58 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.find_book_detail_back:
-                Map<String, String> data = new HashMap<>();
-                data.put("type", "1");
-                switch (fromType) {
-                    case "class":
-                        data.put("firstclass", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                                StartLogClickUtil.BACK, data);
-                        break;
-                    case "top":
-                        data.put("firsttop", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                                StartLogClickUtil.BACK, data);
-                        break;
-                    case "recommend":
-                        data.put("firstrecommend", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this,
-                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                                StartLogClickUtil.BACK, data);
-                        break;
-                    case "authorType":
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
-                                StartLogClickUtil.BACK, data);
-                        break;
-                }
-                clickBackBtn();
-                break;
-            case R.id.find_book_detail_search:
-                Map<String, String> postData = new HashMap<>();
-
-                switch (fromType) {
-                    case "class":
-                        postData.put("firstclass", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
-                                StartLogClickUtil.SEARCH, postData);
-                        break;
-                    case "top":
-                        postData.put("firsttop", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
-                                StartLogClickUtil.SEARCH, postData);
-                        break;
-                    case "recommend":
-                        postData.put("firstrecommend", currentTitle);
-                        StartLogClickUtil.upLoadEventLog(this,
-                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
-                                StartLogClickUtil.SEARCH, postData);
-                        break;
-                }
-
-                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
-
-                break;
+//            case R.id.find_book_detail_back:
+//                Map<String, String> data = new HashMap<>();
+//                data.put("type", "1");
+//                switch (fromType) {
+//                    case "class":
+//                        data.put("firstclass", currentTitle);
+//                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
+//                                StartLogClickUtil.BACK, data);
+//                        break;
+//                    case "top":
+//                        data.put("firsttop", currentTitle);
+//                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
+//                                StartLogClickUtil.BACK, data);
+//                        break;
+//                    case "recommend":
+//                        data.put("firstrecommend", currentTitle);
+//                        StartLogClickUtil.upLoadEventLog(this,
+//                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
+//                                StartLogClickUtil.BACK, data);
+//                        break;
+//                    case "authorType":
+//                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.AUTHORPAGE_PAGE,
+//                                StartLogClickUtil.BACK, data);
+//                        break;
+//                }
+//                clickBackBtn();
+//                break;
+//            case R.id.find_book_detail_search:
+//                Map<String, String> postData = new HashMap<>();
+//
+//                switch (fromType) {
+//                    case "class":
+//                        postData.put("firstclass", currentTitle);
+//                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTCLASS_PAGE,
+//                                StartLogClickUtil.SEARCH, postData);
+//                        break;
+//                    case "top":
+//                        postData.put("firsttop", currentTitle);
+//                        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.FIRSTTOP_PAGE,
+//                                StartLogClickUtil.SEARCH, postData);
+//                        break;
+//                    case "recommend":
+//                        postData.put("firstrecommend", currentTitle);
+//                        StartLogClickUtil.upLoadEventLog(this,
+//                                StartLogClickUtil.FIRSTRECOMMEND_PAGE,
+//                                StartLogClickUtil.SEARCH, postData);
+//                        break;
+//                }
+//
+//                RouterUtil.INSTANCE.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY);
+//
+//                break;
 
         }
     }
@@ -508,7 +508,7 @@ public class FindBookDetail extends FrameActivity implements View.OnClickListene
     }
 
     private void setTitle(final String name) {
-        runOnUiThread(() -> find_book_detail_title.setText(name));
+//        runOnUiThread(() -> find_book_detail_title.setText(name));
     }
 
     private void setPullImageVisible(boolean visible) {

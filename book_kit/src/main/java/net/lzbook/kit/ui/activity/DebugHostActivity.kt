@@ -3,6 +3,8 @@ package net.lzbook.kit.ui.activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.ding.basic.net.Config
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_debug_host.*
@@ -73,11 +75,11 @@ class DebugHostActivity : BaseCacheableActivity() {
                         SPKey.WEBVIEW_HOST
                     }
                     SPKey.UNION_HOST -> {
-                        Config.insertMicroAPIHost(et_input_host.text.toString())
+                        MicroAPI.microHost = (et_input_host.text.toString())
                         SPKey.UNION_HOST
                     }
                     SPKey.CONTENT_HOST -> {
-                        Config.insertContentAPIHost(et_input_host.text.toString())
+                        ContentAPI.contentHost = (et_input_host.text.toString())
                         SPKey.CONTENT_HOST
                     }
                     else -> {

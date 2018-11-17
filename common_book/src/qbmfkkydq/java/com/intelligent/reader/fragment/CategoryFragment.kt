@@ -7,14 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.net.Config
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.frag_category_layout.*
 
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebViewIndex
 
 /**
  * Date: 2018/7/19 11:52
@@ -44,13 +43,11 @@ class CategoryFragment : Fragment() {
         val fragments: ArrayList<Fragment> = ArrayList()
 
         val fragmentMale = WebViewFragment()
-        fragmentMale.arguments = getBundle(//男频
-                RequestService.WEB_CATEGORY_MAN_H5.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentMale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.category_male)
 
 
         val fragmentFemale = WebViewFragment()
-        fragmentFemale.arguments = getBundle(//女频
-                RequestService.WEB_CATEGORY_WOMAN_H5.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFemale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.category_female)
 
 
         fragments.add(fragmentMale)
@@ -69,9 +66,8 @@ class CategoryFragment : Fragment() {
 
 
     private fun getBundle(url: String): Bundle {
-        val bundle = Bundle();
-        val map = HashMap<String, String>()
-        bundle.putString("url", UrlUtils.buildWebUrl(url, map))
+        val bundle = Bundle()
+        bundle.putString("url", url)
         return bundle
     }
 

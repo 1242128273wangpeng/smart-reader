@@ -13,11 +13,14 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.api.service.RequestService
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.qbmfkkydq.act_tabulation.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.PagerDesc
@@ -32,7 +35,8 @@ import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import net.lzbook.kit.utils.webview.UrlUtils
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import java.util.*
 
 
@@ -139,43 +143,23 @@ class TabulationActivity : FrameActivity() {
     @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
     private fun initParameter() {
 
-        if (find_book_detail_title != null) {
-            find_book_detail_title?.text = title ?: "列表"
-        }
-
-        find_book_detail_back.setOnClickListener {
-            statisticsTabulationBack()
-
-            if (urls.size - backClickCount <= 1) {
-                this@TabulationActivity.finish()
-            } else {
-                backClickCount++
-                val index = urls.size - 1 - backClickCount
-
-                url = urls[index]
-                title = titles[index]
-
-                requestWebViewData(url, title)
-            }
-        }
-
-        find_book_detail_search?.setOnClickListener {
-            statisticsTabulationSearch()
-
-            val intent = Intent()
-            intent.setClass(this, SearchBookActivity::class.java)
-            startActivity(intent)
-        }
+//        find_book_detail_back.setOnClickListener {
+//            statisticsTabulationBack()
+//
+//            if (urls.size - backClickCount <= 1) {
+//                this@TabulationActivity.finish()
+//            } else {
+//                backClickCount++
+//                val index = urls.size - 1 - backClickCount
+//
+//                url = urls[index]
+//                title = titles[index]
+//
+//                requestWebViewData(url, title)
+//            }
+//        }
 
         insertTouchListener()
-
-
-        //判断是否是作者主页
-        if (url != null && url?.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName())) == true) {
-            find_book_detail_search?.visibility = View.GONE
-        } else {
-            find_book_detail_search?.visibility = View.VISIBLE
-        }
 
         find_book_detail_main?.setLayerType(View.LAYER_TYPE_NONE, null)
 
@@ -198,7 +182,11 @@ class TabulationActivity : FrameActivity() {
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
+                statisticsTabulationSearch()
 
+                val intent = Intent()
+                intent.setClass(this@TabulationActivity, SearchBookActivity::class.java)
+                startActivity(intent)
             }
 
             @JavascriptInterface
@@ -224,6 +212,61 @@ class TabulationActivity : FrameActivity() {
                 }
             }
 
+            @SuppressLint("CheckResult")
+            @JavascriptInterface
+            override fun requestWebViewResult(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    try {
+                        val config = Gson().fromJson(data, JSConfig()::class.java)
+
+                        val url = config.url
+                        val method = config.method
+
+                        if (url != null && url.isNotEmpty() && method != null && method.isNotEmpty()) {
+                            if ("get" == method) {
+                                RequestRepositoryFactory.loadRequestRepositoryFactory(this@TabulationActivity).requestWebViewResult(url)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe({ it ->
+                                            if (null != rank_content) {
+                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                                    rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                                                } else {
+                                                    rank_content.loadUrl(call)
+                                                }
+                                            }
+                                        }, {
+                                            Logger.e("Error: " + it.toString())
+                                        })
+                            } else if ("post" == method) {
+
+                                val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
+
+                                RequestRepositoryFactory.loadRequestRepositoryFactory(this@TabulationActivity).requestWebViewResult(url, requestBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe({ it ->
+                                            if (null != rank_content) {
+                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                                    rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                                                } else {
+                                                    rank_content.loadUrl(call)
+                                                }
+                                            }
+                                        }, {
+                                            Logger.e("Error: " + it.toString())
+                                        })
+                            }
+                        }
+
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+
+            }
         }, "J_search")
     }
 
@@ -333,32 +376,23 @@ class TabulationActivity : FrameActivity() {
     }
 
     private fun requestWebViewData(url: String?, name: String?) {
-        var request = url
-        var parameters: Map<String, String>? = null
-        if (request != null) {
-            val array = request.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            request = array[0]
-            if (array.size == 2) {
-                parameters = UrlUtils.getUrlParams(array[1])
-            } else if (array.size == 1) {
-                parameters = HashMap()
-            }
+//        var request = url
+//        var parameters: Map<String, String>? = null
+//        if (request != null) {
+//            val array = request.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+//            request = array[0]
+//            if (array.size == 2) {
+//                parameters = UrlUtils.getUrlParams(array[1])
+//            } else if (array.size == 1) {
+//                parameters = HashMap()
+//            }
+//
+//            request = UrlUtils.buildWebUrl(request, parameters)
+//        }
 
-            request = UrlUtils.buildWebUrl(request, parameters)
-        }
-
-        insertTabulationTitle(name)
-
-        startLoadingWebViewData(request)
+        startLoadingWebViewData(url)
 
         initWebViewCallback()
-    }
-
-
-    private fun insertTabulationTitle(name: String?) {
-        uiThread {
-            find_book_detail_title?.text = name ?: "列表"
-        }
     }
 
     private fun startLoadingWebViewData(url: String?) {

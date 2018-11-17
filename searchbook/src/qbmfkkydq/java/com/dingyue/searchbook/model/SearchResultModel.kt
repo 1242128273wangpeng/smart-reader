@@ -2,14 +2,21 @@ package com.dingyue.searchbook.model
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.oneclick.AntiShake
@@ -20,9 +27,10 @@ import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebViewIndex
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import java.util.*
-
 
 /**
  * Desc：搜索结果集逻辑处理
@@ -104,7 +112,7 @@ class SearchResultModel {
 
     private val shake = AntiShake()
 
-    fun initJSModel(listener: OnSearchResult?, activity: Activity): JSInterfaceObject {
+    fun initJSModel(listener: OnSearchResult?, activity: Activity, webView: WebView?): JSInterfaceObject {
         return (object : JSInterfaceObject(activity) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
@@ -141,6 +149,60 @@ class SearchResultModel {
 
                             RouterUtil.navigation(activity, RouterConfig.TABULATION_ACTIVITY, bundle)
                         }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+            }
+
+            @JavascriptInterface
+            override fun requestWebViewResult(data: String?) {
+                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+                    try {
+                        val config = Gson().fromJson(data, JSConfig()::class.java)
+
+                        val url = config.url
+                        val method = config.method
+
+                        if (url != null && url.isNotEmpty() && method != null && method.isNotEmpty()) {
+                            if ("get" == method) {
+                                RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe({ it ->
+                                            if (null != webView) {
+                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                                    webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                                                } else {
+                                                    webView.loadUrl(call)
+                                                }
+                                            }
+                                        }, {
+                                            Logger.e("Error: " + it.toString())
+                                        })
+                            } else if ("post" == method) {
+
+                                val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
+
+                                RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, requestBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe({ it ->
+                                            if (null != webView) {
+                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                                    webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                                                } else {
+                                                    webView.loadUrl(call)
+                                                }
+                                            }
+                                        }, {
+                                            Logger.e("Error: " + it.toString())
+                                        })
+                            }
+                        }
+
                     } catch (exception: Exception) {
                         exception.printStackTrace()
                     }
@@ -237,8 +299,8 @@ class SearchResultModel {
                 params.put("sort_type", sortType)
                 params.put("wordType", searchType)
                 params.put("searchEmpty", "1")
-                val uri = RequestService.SEARCH_VUE.replace("{packageName}", AppUtils.getPackageName())
-                mUrl = UrlUtils.buildWebUrl(uri, params)
+
+                mUrl = Config.webBaseUrl + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
             }
         }
 

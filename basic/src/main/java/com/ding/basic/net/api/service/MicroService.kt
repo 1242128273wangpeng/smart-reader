@@ -2,6 +2,7 @@ package com.ding.basic.net.api.service
 
 import com.ding.basic.bean.*
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -27,10 +28,12 @@ interface MicroService {
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/union/book/down"
 
+
+        const val WEB_VIEW_CONFIG = "/RECOMMEND/h5version/versionInfo"
     }
 
     @GET(AUTH_ACCESS)
-    fun requestAuthAccess(): Flowable<BasicResult<String>>?
+    fun requestAuthAccess(): Flowable<BasicResult<String>>
 
     @GET(AUTH_ACCESS)
     fun requestAuthAccessSync(): Call<BasicResult<String>>
@@ -57,6 +60,12 @@ interface MicroService {
     @POST(COVER_BATCH)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<List<Book>>>
+
+
+
+
+    @GET(WEB_VIEW_CONFIG)
+    fun requestWebViewConfig(): Observable<BasicResult<String>>
 
     /************************************* 缓存相关 *************************************/
     @GET(DOWN_TASK_CONFIG)

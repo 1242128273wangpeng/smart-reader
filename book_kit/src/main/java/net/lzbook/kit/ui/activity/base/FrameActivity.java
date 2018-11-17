@@ -67,6 +67,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
@@ -111,6 +113,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public boolean isFlymeSupport = false;
 
     private LifecycleRegistry lifecycleRegistry;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle paramBundle) {
@@ -658,6 +662,8 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
         super.onDestroy();
 
+        deleteDisposable();
+
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
 
         ATManager.removeActivity(this);
@@ -722,4 +728,13 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         im.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+    public void insertDisposable(Disposable disposable) {
+        if (compositeDisposable != null) {
+                compositeDisposable.add(disposable);
+        }
+    }
+
+    public void deleteDisposable() {
+        compositeDisposable.dispose();
+    }
 }

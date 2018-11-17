@@ -22,6 +22,8 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.net.api.ContentAPI;
+import com.ding.basic.net.api.MicroAPI;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -221,8 +223,8 @@ public class CheckNovelUpdateService extends Service {
     }
 
     private void checkAuthAccess() {
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAuthAccess(null);
+        MicroAPI.INSTANCE.requestAuthAccess();
+        ContentAPI.INSTANCE.requestAuthAccess();
     }
 
     private void checkInterval() {

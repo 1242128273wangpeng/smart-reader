@@ -23,9 +23,11 @@ import android.view.WindowManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
+import com.ding.basic.bean.BasicResult;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
+import com.ding.basic.net.Config;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
 import com.intelligent.reader.R;
@@ -45,6 +47,12 @@ import net.lzbook.kit.utils.user.UserManager;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
 public class SplashActivity extends FrameActivity {
@@ -193,6 +201,8 @@ public class SplashActivity extends FrameActivity {
 
         initializeDataFusion();
 
+        requestWebViewConfig();
+
         startInitTask();
         // 安装快捷方式
         new InstallShotCutTask().execute();
@@ -201,6 +211,17 @@ public class SplashActivity extends FrameActivity {
         if (UserManager.INSTANCE.isUserLogin()) {
             StatServiceUtils.statAppBtnClick(getApplication(), StatServiceUtils.user_login_succeed);
         }
+    }
+
+    private void requestWebViewConfig() {
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (result != null && result.checkResultAvailable()) {
+                        Config.INSTANCE.setWebBaseUrl(result.getData());
+                    }
+                });
     }
 
     private void initializeDataFusion() {

@@ -5,6 +5,7 @@ import com.ding.basic.bean.push.BannerInfo
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import com.ding.basic.bean.UserMarkBook
+import io.reactivex.Observable
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
@@ -430,4 +431,13 @@ interface RequestService {
     @GET
     fun downloadFont(@Url url: String): Flowable<ResponseBody>
 
+    @GET()
+    fun requestWebViewResult(@Url url: String): Observable<String>
+
+    @POST
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    fun requestWebViewResult(@Url url: String, @Body requestBody: RequestBody): Observable<String>
+
+    @GET(PATH_BOOKMAEK_GET)
+    fun requestWebViewConfig(): Observable<String>
 }

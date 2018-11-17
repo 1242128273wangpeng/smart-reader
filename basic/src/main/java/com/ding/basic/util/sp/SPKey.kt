@@ -248,5 +248,40 @@ class SPKey {
         const val COVER_SHARE_PROMPT = "cover_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
+
+
+
+
+
+
+
+        /***
+         * 地理位置信息存储
+         * **/
+        //用于存储用户的城市编码
+        const val LOCATION_CITY_CODE = "location_city_code"
+        //用于存储用户的纬度
+        const val LOCATION_LATITUDE = "location_latitude"
+        //用于存储用户的经度
+        const val LOCATION_LONGITUDE = "location_longitude"
+
+
+
+        /***
+         * 多域名鉴权相关信息存储
+         * **/
+        //用于存储多域名鉴权的域名
+        const val MICRO_AUTH_HOST = "micro_auth_host"
+        //用于存储多域名鉴权的公钥
+        const val MICRO_AUTH_PUBLIC_KEY = "micro_auth_public_key_"
+        //用于存储多域名鉴权的私钥
+        const val MICRO_AUTH_PRIVATE_KEY = "micro_auth_private_key_"
+
+        //用于存储多域名鉴权的域名
+        const val CONTENT_AUTH_HOST = "content_auth_host"
+        //用于存储多域名鉴权的公钥
+        const val CONTENT_AUTH_PUBLIC_KEY = "content_auth_public_key_"
+        //用于存储多域名鉴权的私钥
+        const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"
     }
 }
