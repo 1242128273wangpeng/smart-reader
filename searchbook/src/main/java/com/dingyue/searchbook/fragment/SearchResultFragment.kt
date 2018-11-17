@@ -201,6 +201,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         customWebClient?.setLoadingWebViewStart {
             searchResultPresenter.setStartedAction()
         }
+
         customWebClient?.setLoadingEveryWebViewStart {
             isLoading = true
         }
@@ -212,11 +213,13 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         customWebClient?.setLoadingWebViewFinish {
             isLoading = false
             searchResultPresenter.onLoadFinished()
-            if (loadingPage != null && !searchNoResult) {
-                loadingPage?.postDelayed({
+
+            // 【修复】搜索结果页点击搜索按钮loading闪烁两次
+            loadingPage?.postDelayed({
+                if (!searchNoResult) {
                     hideLoading()
-                },300)
-            }
+                }
+            }, 300)
         }
 
         loadingPage?.setReloadAction(LoadingPage.reloadCallback {
