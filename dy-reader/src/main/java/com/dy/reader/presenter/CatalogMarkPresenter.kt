@@ -35,7 +35,7 @@ import java.util.*
 class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter {
 
     override fun onClickFixBook(activity: Activity) {
-        DyStatService.onEvent(EventPoint.READPAGE_DIRECTORYREPAIR, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter!!.chapter_id))
+        DyStatService.onEvent(EventPoint.READPAGE_DIRECTORYREPAIR, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to ReaderStatus.currentChapter?.chapter_id.orEmpty()))
     }
 
     private var requestRepositoryFactory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
@@ -73,7 +73,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
 
-            val list = requestRepositoryFactory.getBookMarks(ReaderStatus.book.book_id!!)
+            val list = requestRepositoryFactory.getBookMarks(ReaderStatus.book.book_id)
 
             emitter?.onNext(list)
             emitter?.onComplete()
@@ -96,7 +96,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
         }
 
 //        (activity as ReaderActivity).onJumpChapter(chapter.sequence, 0)
-        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, Position(ReaderStatus.book.book_id, chapter.sequence, 0 )))
+        EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_REFRESH, Position(ReaderStatus.book.book_id, chapter.sequence, 0)))
         DyStatService.onEvent(EventPoint.BOOKCATALOG_CATALOGCHAPTER, mapOf("bookid" to ReaderStatus.book.book_id, "chapterid" to chapter.chapter_id))
     }
 
@@ -124,7 +124,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
-            requestRepositoryFactory.deleteBookMark(mark.book_id!!, mark.sequence, mark.offset)
+            requestRepositoryFactory.deleteBookMark(mark.book_id, mark.sequence, mark.offset)
 
             e?.onNext(true)
             e?.onComplete()
