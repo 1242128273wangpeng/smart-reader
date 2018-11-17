@@ -127,20 +127,18 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
      * 初始化字体和皮肤引导
      */
     private fun initGuide() {
-        if (!SPUtils.getDefaultSharedBoolean(AppUtils.getVersionName() + SPKey.READING_SKIN_FONT_GUIDE, false)) {
-            img_add_font?.visibility = View.VISIBLE
-            img_add_skin?.visibility = View.VISIBLE
 
-            img_add_font?.setOnClickListener {
-                SPUtils.putDefaultSharedBoolean(AppUtils.getVersionName() + SPKey.READING_SKIN_FONT_GUIDE, true)
-                img_add_font?.visibility = View.GONE
-                img_add_skin?.visibility = View.GONE
-            }
+        if (!SPUtils.getDefaultSharedBoolean(AppUtils.getVersionName() + SPKey.READING_SKIN_FONT_GUIDE, false)) {
+            img_add_skin?.visibility = View.VISIBLE
 
             img_add_skin?.setOnClickListener {
                 SPUtils.putDefaultSharedBoolean(AppUtils.getVersionName() + SPKey.READING_SKIN_FONT_GUIDE, true)
-                img_add_font?.visibility = View.GONE
+                img_add_font?.visibility = View.VISIBLE
                 img_add_skin?.visibility = View.GONE
+            }
+
+            img_add_font?.setOnClickListener {
+                img_add_font?.visibility = View.GONE
             }
         }
     }
@@ -186,12 +184,10 @@ class ReaderSettingBottomDetail : FrameLayout, View.OnClickListener, RadioGroup.
 
                 resetBtn(Constants.isSlideUp)
 
-//                if (readerSettings.readThemeMode == 61) {
-//                    rg_reader_backdrop_group.clearCheck()
-//                } else {
                 setNovelMode(readerSettings.readThemeMode)
-//                }
+
                 rg_reader_backdrop_group.setOnCheckedChangeListener(this)
+
             }
 
             else -> {

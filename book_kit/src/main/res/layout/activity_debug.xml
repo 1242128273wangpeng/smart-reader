@@ -177,7 +177,7 @@
             <TextView
                 android:id="@+id/tv_api"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:text="@string/debug_api_host"
                 android:textStyle="bold"/>
 
@@ -185,28 +185,28 @@
             <TextView
                 android:id="@+id/tv_web"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:text="@string/debug_web_host"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_micro"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:text="@string/debug_micro_host"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_micro_content"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:text="@string/debug_micro_content_host"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_user_tag_host"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="45dp"
+                android:layout_height="55dp"
                 android:text="@string/debug_user_tag_host"/>
 
 

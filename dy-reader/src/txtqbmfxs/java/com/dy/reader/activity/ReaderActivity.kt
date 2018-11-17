@@ -109,11 +109,11 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
             mReadPresenter.loadData()
         }
 
-        RepairHelp.showFixMsg(this, ReaderStatus.book, {
+        RepairHelp.showFixMsg(this, ReaderStatus.book) {
             if (!this.isFinishing) {
                 RouterUtil.navigation(this, RouterConfig.DOWNLOAD_MANAGER_ACTIVITY)
             }
-        })
+        }
 
         mCatalogMarkFragment?.fixBook()
 
@@ -377,8 +377,8 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                 if (ReaderStatus.position.group > -1) {
                     rl_reader_bottom.visibility = View.VISIBLE
                     rl_reader_header.visibility = View.VISIBLE
-                    txt_reader_page.text = "本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}"
-                    txt_reader_progress.text = "${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章"
+                    txt_reader_page.text = ("本章第${ReaderStatus.position.index + 1}/${ReaderStatus.position.groupChildCount}")
+                    txt_reader_progress.text = ("${ReaderStatus.position.group + 1}/${ReaderStatus.chapterCount}章")
                     if (ReaderStatus.position.group < ReaderStatus.chapterList.size) {
                         txt_reader_chapter_name.text = "${ReaderStatus.chapterList[ReaderStatus.position.group].name}"
                         EventBus.getDefault().post(EventReaderConfig(ReaderSettings.ConfigType.CHAPTER_SUCCESS, null))
@@ -387,7 +387,7 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     rl_reader_bottom.visibility = View.GONE
                     rl_reader_header.visibility = View.GONE
                 }
-                mReadPresenter?.checkManualDialogShow()
+                mReadPresenter.checkManualDialogShow()
             }
             event.type == EventLoading.Type.RETRY -> showLoadingDialog(LoadingDialogFragment.DialogType.ERROR, event.retry)
             event.type == EventLoading.Type.SUCCESS -> {
@@ -551,7 +551,6 @@ class ReaderActivity : BaseCacheableActivity(), SurfaceHolder.Callback {
                     ReadMediaManager.loadAdComplete = null
 
                     if (ReaderStatus.position.index == count - 2) {//8-1
-                        val space = (AppHelper.screenDensity * ReaderSettings.instance.mLineSpace).toInt()
                         pac_reader_ad?.addView(adView.view, ReadMediaManager.getLayoutParams(AppHelper.screenHeight - adView.height - AppHelper.dp2px(26)))
                         pac_reader_ad?.visibility = View.VISIBLE
                     } else {//5-1 5-2 6-1 6-2
