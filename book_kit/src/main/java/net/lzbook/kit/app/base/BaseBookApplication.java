@@ -12,21 +12,28 @@ import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.ding.basic.net.Config;
 import com.ding.basic.bean.LoginResp;
 import com.ding.basic.bean.LoginRespV4;
+import com.ding.basic.bean.ToastEvent;
+import com.ding.basic.net.Config;
 import com.dingyue.statistics.DyStatService;
-import net.lzbook.kit.pointpage.EventPoint;
-import net.lzbook.kit.utils.download.CacheManager;
+
 import net.lzbook.kit.constants.Constants;
-import net.lzbook.kit.utils.encrypt.URLBuilderIntterface;
-import net.lzbook.kit.utils.encrypt.v17.URLBuilder;
-import net.lzbook.kit.utils.user.UserManager;
-import net.lzbook.kit.utils.user.UserManagerV4;
+import net.lzbook.kit.pointpage.EventPoint;
 import net.lzbook.kit.utils.AppUtils;
 import net.lzbook.kit.utils.ExtensionsKt;
-import net.lzbook.kit.utils.logger.LogcatHelper;
 import net.lzbook.kit.utils.OpenUDID;
+import net.lzbook.kit.utils.download.CacheManager;
+import net.lzbook.kit.utils.encrypt.URLBuilderIntterface;
+import net.lzbook.kit.utils.encrypt.v17.URLBuilder;
+import net.lzbook.kit.utils.logger.LogcatHelper;
+import net.lzbook.kit.utils.toast.ToastUtil;
+import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.utils.user.UserManagerV4;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 
@@ -71,6 +78,15 @@ public abstract class BaseBookApplication extends Application {
 
             Config.INSTANCE.beginInit(this);
         }
+
+        EventBus.getDefault().register(this);
+
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void obtainToast(ToastEvent event) {
+        ToastUtil.INSTANCE.showToastMessage(event.getToast());
     }
 
     @Override

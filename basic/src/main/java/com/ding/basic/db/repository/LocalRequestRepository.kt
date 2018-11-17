@@ -3,7 +3,6 @@ package com.ding.basic.db.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
-import android.widget.Toast
 import com.ding.basic.bean.*
 import com.ding.basic.bean.push.BannerInfo
 import com.ding.basic.bean.push.PushInfo
@@ -19,6 +18,7 @@ import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.Logger
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -204,17 +204,17 @@ class LocalRequestRepository private constructor(private var context: Context,
     fun insertBook(book: Book?): Long {
         val MAX_COUNT = 49
         if (book == null || TextUtils.isEmpty(book.book_id) || TextUtils.isEmpty(book.book_source_id)) {
-            Toast.makeText(context, "订阅失败，资源有误", Toast.LENGTH_SHORT).show()
+            EventBus.getDefault().post(ToastEvent("订阅失败，资源有误"))
             return 0
         }
         if (loadBookCount() > MAX_COUNT) {
-            Toast.makeText(context, "书架已满，请整理书架", Toast.LENGTH_SHORT).show()
+            EventBus.getDefault().post(ToastEvent("书架已满，请整理书架"))
             return 0
         } else if (checkBookSubscribe(book.book_id) != null) {
-            Toast.makeText(context, "已在书架中", Toast.LENGTH_SHORT).show()
+            EventBus.getDefault().post(ToastEvent("已在书架中"))
             return 0
         } else if (TextUtils.isEmpty(book.book_id) || book.name == null || book.name == "") {
-            Toast.makeText(context, "订阅失败，资源有误", Toast.LENGTH_SHORT).show()
+            EventBus.getDefault().post(ToastEvent("订阅失败，资源有误"))
             return 0
         } else {
             book.insert_time = System.currentTimeMillis()
