@@ -431,6 +431,7 @@ public class Constants {
 
 
 
+    public static String web_vendor_url = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/vendor.js";
 
 
     /*

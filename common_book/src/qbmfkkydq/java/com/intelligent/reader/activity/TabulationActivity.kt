@@ -40,7 +40,6 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.util.*
 
-
 /**
  * Desc：WebView二级页面
  * Author：JoannChen
@@ -197,6 +196,7 @@ class TabulationActivity : FrameActivity() {
                 }
             }
 
+            @JavascriptInterface
             override fun handleBackAction() {
                 statisticsTabulationBack()
 

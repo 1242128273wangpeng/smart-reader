@@ -260,6 +260,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
                                     handleWebRequestResult(it, config.requestIndex)
                                 }, {
                                     Logger.e("Error: " + it.toString())
+                                    handleWebRequestResult("", config.requestIndex)
                                 })
                         )
                     } else if ("post" == config.method) {
@@ -273,6 +274,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
                                     handleWebRequestResult(it, config.requestIndex)
                                 }, {
                                     Logger.e("Error: " + it.toString())
+                                    handleWebRequestResult("", config.requestIndex)
                                 })
                         )
                     }

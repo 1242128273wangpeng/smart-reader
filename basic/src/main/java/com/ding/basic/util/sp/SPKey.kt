@@ -282,7 +282,12 @@ class SPKey {
         //用于存储多域名鉴权的私钥
         const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"
 
+
+
+
+
         const val WEB_VIEW_HOST = "web_view_host"
 
+        const val WEB_VENDOR_COPY_FLAG = "web_vendor_copy_flag"
     }
 }

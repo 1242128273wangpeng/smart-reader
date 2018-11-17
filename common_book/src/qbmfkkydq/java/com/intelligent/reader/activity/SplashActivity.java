@@ -43,6 +43,7 @@ import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.utils.web.WebResourceCache;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -434,6 +435,13 @@ public class SplashActivity extends FrameActivity {
         @Override
         protected Void doInBackground(Void... params) {
 
+            boolean cache = SPUtils.INSTANCE.loadSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG, false);
+            if (!cache) {
+                WebResourceCache webResourceCache = new WebResourceCache();
+                webResourceCache.copyVendorFromAssets(BaseBookApplication.getGlobalContext());
+
+                SPUtils.INSTANCE.insertSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG, true);
+            }
 
             // 2 动态参数
             try {
@@ -466,8 +474,6 @@ public class SplashActivity extends FrameActivity {
                         getApplicationContext()).edit().putBoolean(
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
-
-//            UserManager.INSTANCE.initPlatform(SplashActivity.this, null);
 
             //请求广告
             initAdSwitch();

@@ -1,6 +1,7 @@
 package net.lzbook.kit.utils.web
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.Base64
@@ -14,7 +15,10 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.constants.Constants
 import java.io.File
+import java.io.FileOutputStream
+import java.io.Serializable
 import java.math.BigInteger
 import java.net.URL
 import java.security.MessageDigest
@@ -35,6 +39,9 @@ class WebResourceCache {
 
         @Volatile
         private var cachingResource = ArrayList<String>()
+
+        @Volatile
+        private var resourceResponseHashMap = HashMap<String, CachedWebResource>()
 
         fun loadCustomWebViewCache(): WebResourceCache {
             if (webResourceCache == null) {
@@ -87,12 +94,21 @@ class WebResourceCache {
             val file = File(filePath)
 
             synchronized(this) {
-                if (file.exists()) {
+                return if (file.exists()) {
                     Logger.e("文件缓存命中成功: $url")
+
+                    val cachedWebResource = CachedWebResource()
+
+                    cachedWebResource.file = file
+                    cachedWebResource.encoded = "UTF-8"
+                    cachedWebResource.mimeType = mimeType
+
+                    resourceResponseHashMap[url] = cachedWebResource
+
                     WebResourceResponse(mimeType, "UTF-8", file.inputStream())
                 } else {
                     Logger.e("文件缓存命中失败: $url  $cachingResource")
-                    return null
+                    null
                 }
             }
         }
@@ -113,39 +129,6 @@ class WebResourceCache {
     }
 
     /***
-     * 检查资源是否正在缓存
-     * **/
-    @Synchronized
-    fun checkWebViewResourceCached(url: String): Boolean {
-        if (cachingResource.contains(url)) {
-            return true
-        } else {
-            val fileName = loadCacheFileName(url, "MD5")
-            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
-
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
-
-            val file = File(filePath)
-
-            return if (!file.exists()) {
-                file.delete()
-
-                cachingResource.add(url)
-
-                Observable.create<String> {
-                    it.onNext(url)
-                    it.onComplete()
-                }.observeOn(Schedulers.io()).subscribeBy { cacheWebViewSource(url, filePath, fileExtension) }
-
-                true
-            } else {
-                false
-            }
-        }
-    }
-
-
-    /***
      * 缓存获取到的文件流
      * **/
     private fun cacheWebViewSource(url: String, filePath: String, fileExtension: String) {
@@ -162,6 +145,7 @@ class WebResourceCache {
                     }
                 }
             }
+
             val file = File(filePath)
 
             if (!file.exists()) {
@@ -169,11 +153,91 @@ class WebResourceCache {
             }
         } catch (exception: Exception) {
             exception.printStackTrace()
+
             interimFile.delete()
         }
 
         cachingResource.remove(url)
 
         Logger.e("缓存网络请求地址: $url  缓存文件格式: $fileExtension  $cachingResource")
+    }
+
+    /***
+     * 从Assets文件夹下拷贝文件到SD卡
+     * **/
+    fun copyVendorFromAssets(context: Context) {
+        try {
+            val inputStream = context.assets.open("vendor.js")
+
+            val fileName = loadCacheFileName(Constants.web_vendor_url, "MD5")
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + "js"
+
+            val file = File(filePath)
+
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+
+            var read: Int = -1
+
+            inputStream?.use { input ->
+                file.outputStream().use {
+                    while (input.read().also { read = it } != -1) {
+                        it.write(read)
+                    }
+                }
+            }
+
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
+    /***
+     * 检查资源是否正在缓存
+     * **/
+    @Synchronized
+    fun checkWebViewResourceCached(url: String): Boolean {
+        if (cachingResource.contains(url)) {
+            return true
+        } else {
+            cachingResource.add(url)
+
+            val fileName = loadCacheFileName(url, "MD5")
+            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
+
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileExtension
+
+            val file = File(filePath)
+
+            return if (!file.exists()) {
+                cachingResource.add(url)
+
+                Observable.create<String> {
+                    it.onNext(url)
+                    it.onComplete()
+                }.observeOn(Schedulers.io()).subscribeBy { cacheWebViewSource(url, filePath, fileExtension) }
+
+                true
+            } else {
+                cachingResource.remove(url)
+
+                false
+            }
+        }
+    }
+
+    fun checkWebResourceResponse(url: String): CachedWebResource? {
+        return if (resourceResponseHashMap.containsKey(url)) {
+            resourceResponseHashMap[url]
+        } else {
+            null
+        }
+    }
+
+    inner class CachedWebResource : Serializable {
+        var file: File? = null
+        var encoded: String? = null
+        var mimeType: String? = null
     }
 }

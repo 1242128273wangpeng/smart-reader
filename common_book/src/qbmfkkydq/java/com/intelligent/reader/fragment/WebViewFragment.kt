@@ -135,6 +135,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
                 }
             }
 
+            @JavascriptInterface
             override fun handleBackAction() {
 
             }

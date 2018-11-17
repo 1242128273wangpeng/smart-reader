@@ -265,4 +265,12 @@ object SPUtils {
     fun insertSharedString(key: String, value: String?) {
         defaultPreferences?.edit()?.putString(key, value)?.apply()
     }
+
+    fun loadSharedBoolean(key: String, value: Boolean = false): Boolean {
+        return defaultPreferences?.getBoolean(key, value) ?: value
+    }
+
+    fun insertSharedBoolean(key: String, value: Boolean) {
+        defaultPreferences?.edit()?.putBoolean(key, value)?.apply()
+    }
 }

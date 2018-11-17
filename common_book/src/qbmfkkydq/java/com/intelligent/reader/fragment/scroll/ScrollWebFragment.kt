@@ -142,6 +142,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
                 }
             }
 
+            @JavascriptInterface
             override fun handleBackAction() {
 
             }

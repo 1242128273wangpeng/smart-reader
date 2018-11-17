@@ -30,7 +30,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
     private var webSettings: WebSettings? = null
 
-    private var customWebViewCache = WebResourceCache.loadCustomWebViewCache()
+    private var customWebViewCache = WebResourceCache()
 
     /***
      * WebView加载开始监听
@@ -175,6 +175,13 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             val url = request.url.toString()
             val schema = request.url.scheme
 
+            val cacheWebResource = customWebViewCache.checkWebResourceResponse(url)
+
+            if (cacheWebResource?.file != null) {
+                Logger.e("缓存的WebResourceResponse: $url")
+                return WebResourceResponse(cacheWebResource.mimeType, cacheWebResource.encoded, cacheWebResource.file?.inputStream())
+            }
+
             return if (!TextUtils.isEmpty(url) && schema != null && schema == "http" || schema == "https") {
                 val host = request.url.host
                 if (interceptHostList.contains(host)) {
@@ -195,11 +202,12 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
      * **/
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun handleInterceptRequest(view: WebView?, request: WebResourceRequest?, url: String): WebResourceResponse? {
+
+
         val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
         return if (fileExtension.isNotEmpty()) {
-            Logger.e("mimeType: " + mimeType)
             if ((mimeType == "image/jpeg" || mimeType == "image/png")) {
                 customWebViewCache.handleImageRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)
