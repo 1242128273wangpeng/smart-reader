@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.ding.basic.net.Config
-import com.ding.basic.net.api.service.RequestService
 
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment
@@ -20,7 +19,6 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.WebViewIndex
-import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * Date: 2018/7/19 11:52
@@ -68,28 +66,31 @@ class RecommendFragment : Fragment() {
         view_pager.adapter = adapter
 
         val fragmentSelection = ScrollWebFragment()
-        fragmentSelection.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend)
+        fragmentSelection.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend, "recommend")
 
         val fragmentMale = ScrollWebFragment()
-        fragmentMale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_male)
+        fragmentMale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_male, "recommendMale")
 
         val fragmentFemale = ScrollWebFragment()
-        fragmentFemale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_female)
+        fragmentFemale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_female, "recommendFemale")
 
         val fragmentFinish = ScrollWebFragment()
-        fragmentFinish.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_finish)
+        fragmentFinish.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_finish, "recommendFinish")
 
         fragments.clear()
         fragments.add(fragmentSelection)
         fragments.add(fragmentMale)
         fragments.add(fragmentFemale)
         fragments.add(fragmentFinish)
+
         val titles: ArrayList<String> = ArrayList()
         titles.add("精选")
         titles.add("男频")
         titles.add("女频")
         titles.add("完本")
+
         adapter.setData(fragments, titles)
+
         tab_layout.setupWithViewPager(view_pager)
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
@@ -111,9 +112,10 @@ class RecommendFragment : Fragment() {
     }
 
 
-    private fun getBundle(url: String): Bundle {
+    private fun getBundle(url: String, type: String): Bundle {
         val bundle = Bundle()
         bundle.putString("url", url)
+        bundle.putString("type", type)
         return bundle
     }
 

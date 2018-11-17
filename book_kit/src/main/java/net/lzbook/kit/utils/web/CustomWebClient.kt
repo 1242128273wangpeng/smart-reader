@@ -16,6 +16,7 @@ import android.webkit.WebSettings.LayoutAlgorithm
 import android.webkit.WebSettings.RenderPriority
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.toast.ToastUtil
@@ -49,8 +50,6 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
     companion object {
         private val staticResourceRule = SPUtils.getOnlineConfigSharedString(SPKey.DY_STATIC_RESOURCE_RULE)
-//        private val staticResourceRule = "img.qingoo.cn,st.bookapi.cn"
-
         val interceptHostList = staticResourceRule.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     }
 
@@ -200,6 +199,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
         return if (fileExtension.isNotEmpty()) {
+            Logger.e("mimeType: " + mimeType)
             if ((mimeType == "image/jpeg" || mimeType == "image/png")) {
                 customWebViewCache.handleImageRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)

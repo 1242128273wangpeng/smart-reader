@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.subscribers.ResourceSubscriber
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import org.antlr.v4.runtime.BailErrorStrategy
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -234,6 +235,14 @@ object MicroAPI {
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
                               , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
         return microService.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
+    }
+
+    fun requestWebViewResult(url: String): Observable<String> {
+        return microService.requestWebViewResult(url)
+    }
+
+    fun requestWebViewResult(url: String, requestBody: RequestBody): Observable<String> {
+        return microService.requestWebViewResult(url, requestBody)
     }
 
 

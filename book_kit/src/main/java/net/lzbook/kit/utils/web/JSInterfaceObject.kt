@@ -12,6 +12,9 @@ import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.*
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.download.CacheManager
@@ -20,7 +23,10 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.webview.UrlUtils
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import java.io.Serializable
+import java.util.*
 
 /**
  * Desc 请描述这个文件
@@ -29,6 +35,8 @@ import java.io.Serializable
  * Date 2018/9/18 17:45
  */
 abstract class JSInterfaceObject(var activity: Activity) {
+
+    val compositeDisposable = CompositeDisposable()
 
     /***
      * H5调用原生方法：拼接请求链接
@@ -230,11 +238,51 @@ abstract class JSInterfaceObject(var activity: Activity) {
         return result
     }
 
+    /**
+     * 请求WebView结果
+     */
     @JavascriptInterface
-    fun finishCurrentActivity() {
-        activity.finish()
-    }
+    fun requestWebViewResult(data: String?) {
+        if (data != null && data.isNotEmpty() && !activity.isFinishing) {
+            try {
+                val config = Gson().fromJson(data, JSConfig()::class.java)
 
+                val url = config.url
+                val method = config.method
+                val microFlag = config.microFlag
+
+                if (url != null && url.isNotEmpty() && method != null && method.isNotEmpty()) {
+                    if ("get" == config.method) {
+                        compositeDisposable.add(RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, microFlag)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({ it ->
+                                    handleWebRequestResult(it, config.requestIndex)
+                                }, {
+                                    Logger.e("Error: " + it.toString())
+                                })
+                        )
+                    } else if ("post" == config.method) {
+
+                        val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
+
+                        compositeDisposable.add(RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, requestBody, microFlag)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({ it ->
+                                    handleWebRequestResult(it, config.requestIndex)
+                                }, {
+                                    Logger.e("Error: " + it.toString())
+                                })
+                        )
+                    }
+                }
+
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        }
+    }
 
     /**
      * 搜索无结果页推荐词点击事件
@@ -249,11 +297,14 @@ abstract class JSInterfaceObject(var activity: Activity) {
     @JavascriptInterface
     abstract fun startTabulationActivity(data: String?)
 
-    /**
-     * 请求WebView结果
-     */
     @JavascriptInterface
-    abstract fun requestWebViewResult(data: String?)
+    abstract fun handleBackAction()
+
+    /***
+     * 获取WebView请求结果
+     * **/
+    abstract fun handleWebRequestResult(result: String?, requestIndex: String?)
+
 
     /**
      * 获取书籍对象
@@ -317,14 +368,14 @@ abstract class JSInterfaceObject(var activity: Activity) {
         var url: String? = null
         var body: String? = null
         var method: String? = null
+        var microFlag: Boolean = false
         var requestIndex: String? = null
     }
 
     interface JsNativeObject {
         companion object {
-            //js调用native锚点对象
             val jsCallNativeObject = "J_search"
-            //native调用js锚点对象
+
             val nativeCallJsObject = "javascript:window.bridge.Android"
         }
     }

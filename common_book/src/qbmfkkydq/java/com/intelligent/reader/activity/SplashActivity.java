@@ -23,7 +23,6 @@ import android.view.WindowManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ding.basic.RequestRepositoryFactory;
-import com.ding.basic.bean.BasicResult;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
@@ -48,10 +47,7 @@ import net.lzbook.kit.utils.user.UserManager;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
@@ -195,13 +191,13 @@ public class SplashActivity extends FrameActivity {
             e.printStackTrace();
         }
 
+        requestWebViewConfig();
+
         ad_view = findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
 
         initializeDataFusion();
-
-        requestWebViewConfig();
 
         startInitTask();
         // 安装快捷方式

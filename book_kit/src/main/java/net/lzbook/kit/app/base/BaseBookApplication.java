@@ -30,7 +30,6 @@ import net.lzbook.kit.utils.OpenUDID;
 
 import java.util.HashMap;
 
-
 public abstract class BaseBookApplication extends Application {
     private static BaseBookApplication g_context;
     private static DisplayMetrics dm;
@@ -65,8 +64,6 @@ public abstract class BaseBookApplication extends Application {
 
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE,
                     StartLogClickUtil.APPINIT);
-
-            Config.INSTANCE.beginInit(this);
         }
     }
 
@@ -82,6 +79,8 @@ public abstract class BaseBookApplication extends Application {
         g_context = this;
         initARouter();
         initData();
+
+        Config.INSTANCE.beginInit(this);
     }
 
     private void initData() {

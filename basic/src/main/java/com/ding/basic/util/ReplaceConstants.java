@@ -31,27 +31,6 @@ public class ReplaceConstants {
     public final static String BUILD_CONFIG_PROVIDER = "/common_book/BuildConfigProvider";
 
     private ReplaceConstants() {
-//        APP_PATH = Config.INSTANCE.getSDCARD_PATH() + ResourceUtil.getStringById(R.string.app_path);
-//        APP_PATH_BOOK = APP_PATH + ResourceUtil.getStringById(R.string.app_path_book);
-//        APP_PATH_CACHE = APP_PATH + ResourceUtil.getStringById(R.string.app_path_cache);
-//        APP_PATH_DOWNLOAD = APP_PATH + ResourceUtil.getStringById(R.string.app_path_download);
-//        APP_PATH_IMAGE = APP_PATH + ResourceUtil.getStringById(R.string.app_path_image);
-//        APP_PATH_LOG = APP_PATH + ResourceUtil.getStringById(R.string.app_path_log);
-//        DEFAULT_IMAGE_URL = ResourceUtil.getStringById(R.string.default_image_url);
-//
-//        DATABASE_NAME = ResourceUtil.getStringById(R.string.database_name);
-//
-//        BAIDU_STAT_ID = ResourceUtil.getStringById(R.string.baidu_stat_id);
-//        PUSH_KEY = ResourceUtil.getStringById(R.string.push_key);
-//        ALIFEEDBACK_KEY = ResourceUtil.getStringById(R.string.alifeedback_key);
-//        ALIFEEDBACK_SECRET = ResourceUtil.getStringById(R.string.alifeedback_secret);
-//
-//
-//        BOOK_NOVEL_DEPLOY_HOST = ResourceUtil.getStringById(R.string.book_novel_deploy_host);
-//        BOOK_WEBVIEW_HOST = ResourceUtil.getStringById(R.string.book_webview_host);
-//
-//        MICRO_API_HOST = ResourceUtil.getStringById(R.string.micro_api_host);
-//        CONTENT_API_HOST = ResourceUtil.getStringById(R.string.content_api_host);
 
         IBuildConfigProvider buildConfigProvider =
                 (IBuildConfigProvider) ARouter.getInstance().build(
@@ -75,10 +54,10 @@ public class ReplaceConstants {
 
         BOOK_WEBVIEW_HOST = buildConfigProvider.getBookWebviewHost();
         BOOK_NOVEL_DEPLOY_HOST = buildConfigProvider.getBookNovelDeployHost();
+        CDN_HOST = buildConfigProvider.getCDNHost();
 
         MICRO_API_HOST = buildConfigProvider.getMicroApiHost();
         CONTENT_API_HOST = buildConfigProvider.getContentApiHost();
-        CDN_HOST = buildConfigProvider.getCDNHost();
     }
 
     public static ReplaceConstants getReplaceConstants() {

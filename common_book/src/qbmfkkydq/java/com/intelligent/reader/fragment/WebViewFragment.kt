@@ -5,21 +5,20 @@ import android.content.Intent
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.Config
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
 import com.intelligent.reader.app.BookApplication
 import com.orhanobut.logger.Logger
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.qbmfkkydq.webview_layout.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
@@ -29,8 +28,6 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.CustomWebView
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import java.util.*
 
 /**
@@ -40,6 +37,8 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
 
     private var url: String? = ""
+
+    var handler = Handler()
 
     private var loadingPage: LoadingPage? = null
     private var customWebClient: CustomWebClient? = null
@@ -59,7 +58,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.webview_layout, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -67,7 +65,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         initView()
 
-        requestWebViewData(url)
+        handler.postDelayed({
+            requestWebViewData(url)
+        }, 2000)
     }
 
 
@@ -94,7 +94,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         }
 
         web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
-
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
                 val intent = Intent()
@@ -114,7 +113,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
-                            bundle.putString("url", redirect.url)
+                            bundle.putString("url", Config.webBaseUrl + redirect.url)
                             bundle.putString("title", redirect.title)
 
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
@@ -134,65 +133,22 @@ class WebViewFragment : Fragment(), View.OnClickListener {
                         exception.printStackTrace()
                     }
                 }
+            }
+
+            override fun handleBackAction() {
 
             }
 
-            @SuppressLint("CheckResult")
-            @JavascriptInterface
-            override fun requestWebViewResult(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-                    try {
-                        val config = Gson().fromJson(data, JSConfig()::class.java)
-
-                        val url = config.url
-                        val method = config.method
-
-                        if (url != null && url.isNotEmpty() && method != null && method.isNotEmpty()) {
-                            if ("get" == method) {
-                                RequestRepositoryFactory.loadRequestRepositoryFactory(requireContext()).requestWebViewResult(url)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe({ it ->
-                                            if (null != web_view_content) {
-                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    web_view_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
-                                                } else {
-                                                    web_view_content.loadUrl(call)
-                                                }
-                                            }
-                                        }, {
-                                            Logger.e("Error: " + it.toString())
-                                        })
-                            } else if ("post" == method) {
-
-                                val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
-
-                                RequestRepositoryFactory.loadRequestRepositoryFactory(requireContext()).requestWebViewResult(url, requestBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe({ it ->
-                                            if (null != web_view_content) {
-                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    web_view_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
-                                                } else {
-                                                    web_view_content.loadUrl(call)
-                                                }
-                                            }
-                                        }, {
-                                            Logger.e("Error: " + it.toString())
-                                        })
-                            }
-                        }
-
-                    } catch (exception: Exception) {
-                        exception.printStackTrace()
+            override fun handleWebRequestResult(result: String?, requestIndex: String?) {
+                if (null != web_view_content) {
+                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','$requestIndex')")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        web_view_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        web_view_content.loadUrl(call)
                     }
                 }
-
             }
-
         }, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
@@ -283,11 +239,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             rl_web_content?.removeView(web_view_content)
         }
 
-
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }
-
     }
 
 

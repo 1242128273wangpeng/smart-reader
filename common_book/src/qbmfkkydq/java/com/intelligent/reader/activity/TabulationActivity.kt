@@ -14,6 +14,7 @@ import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.RequestRepositoryFactory
+import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
@@ -143,22 +144,6 @@ class TabulationActivity : FrameActivity() {
     @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
     private fun initParameter() {
 
-//        find_book_detail_back.setOnClickListener {
-//            statisticsTabulationBack()
-//
-//            if (urls.size - backClickCount <= 1) {
-//                this@TabulationActivity.finish()
-//            } else {
-//                backClickCount++
-//                val index = urls.size - 1 - backClickCount
-//
-//                url = urls[index]
-//                title = titles[index]
-//
-//                requestWebViewData(url, title)
-//            }
-//        }
-
         insertTouchListener()
 
         find_book_detail_main?.setLayerType(View.LAYER_TYPE_NONE, null)
@@ -201,7 +186,7 @@ class TabulationActivity : FrameActivity() {
 
                         if (redirect?.url != null && redirect.title != null) {
                             try {
-                                refreshTabulationContent(redirect.url, redirect.title)
+                                refreshTabulationContent(Config.webBaseUrl + redirect.url, redirect.title)
                             } catch (exception: Exception) {
                                 exception.printStackTrace()
                             }
@@ -212,60 +197,31 @@ class TabulationActivity : FrameActivity() {
                 }
             }
 
-            @SuppressLint("CheckResult")
-            @JavascriptInterface
-            override fun requestWebViewResult(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-                    try {
-                        val config = Gson().fromJson(data, JSConfig()::class.java)
+            override fun handleBackAction() {
+                statisticsTabulationBack()
 
-                        val url = config.url
-                        val method = config.method
+                if (urls.size - backClickCount <= 1) {
+                    this@TabulationActivity.finish()
+                } else {
+                    backClickCount++
+                    val index = urls.size - 1 - backClickCount
 
-                        if (url != null && url.isNotEmpty() && method != null && method.isNotEmpty()) {
-                            if ("get" == method) {
-                                RequestRepositoryFactory.loadRequestRepositoryFactory(this@TabulationActivity).requestWebViewResult(url)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe({ it ->
-                                            if (null != rank_content) {
-                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
-                                                } else {
-                                                    rank_content.loadUrl(call)
-                                                }
-                                            }
-                                        }, {
-                                            Logger.e("Error: " + it.toString())
-                                        })
-                            } else if ("post" == method) {
+                    url = urls[index]
+                    title = titles[index]
 
-                                val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
+                    requestWebViewData(url, title)
+                }
+            }
 
-                                RequestRepositoryFactory.loadRequestRepositoryFactory(this@TabulationActivity).requestWebViewResult(url, requestBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe({ it ->
-                                            if (null != rank_content) {
-                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
-                                                } else {
-                                                    rank_content.loadUrl(call)
-                                                }
-                                            }
-                                        }, {
-                                            Logger.e("Error: " + it.toString())
-                                        })
-                            }
-                        }
-
-                    } catch (exception: Exception) {
-                        exception.printStackTrace()
+            override fun handleWebRequestResult(result: String?, requestIndex: String?) {
+                if (null != rank_content) {
+                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','$requestIndex')")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        rank_content.loadUrl(call)
                     }
                 }
-
             }
         }, "J_search")
     }
@@ -376,20 +332,6 @@ class TabulationActivity : FrameActivity() {
     }
 
     private fun requestWebViewData(url: String?, name: String?) {
-//        var request = url
-//        var parameters: Map<String, String>? = null
-//        if (request != null) {
-//            val array = request.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-//            request = array[0]
-//            if (array.size == 2) {
-//                parameters = UrlUtils.getUrlParams(array[1])
-//            } else if (array.size == 1) {
-//                parameters = HashMap()
-//            }
-//
-//            request = UrlUtils.buildWebUrl(request, parameters)
-//        }
-
         startLoadingWebViewData(url)
 
         initWebViewCallback()

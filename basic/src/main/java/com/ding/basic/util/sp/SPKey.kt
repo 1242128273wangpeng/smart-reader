@@ -69,8 +69,6 @@ class SPKey {
          */
         const val NOVEL_HOST = "novel_host"           //智能API接口
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
-        const val UNION_HOST = "union_host"           //微服务API接口
-        const val CONTENT_HOST = "content_host"       //微服务内容接口
         const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
         /**
@@ -283,5 +281,8 @@ class SPKey {
         const val CONTENT_AUTH_PUBLIC_KEY = "content_auth_public_key_"
         //用于存储多域名鉴权的私钥
         const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"
+
+        const val WEB_VIEW_HOST = "web_view_host"
+
     }
 }

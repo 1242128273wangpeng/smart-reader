@@ -1867,12 +1867,12 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         return localRepository.upgradeChapterDBFromOld(book_ids)
     }
 
-    fun requestWebViewResult(url: String): Observable<String> {
-        return internetRepository.requestWebViewResult(url)
+    fun requestWebViewResult(url: String, flag: Boolean): Observable<String> {
+        return internetRepository.requestWebViewResult(url, flag)
     }
 
-    fun requestWebViewResult(url: String, requestBody: RequestBody): Observable<String> {
-        return internetRepository.requestWebViewResult(url,requestBody)
+    fun requestWebViewResult(url: String, requestBody: RequestBody, flag: Boolean): Observable<String> {
+        return internetRepository.requestWebViewResult(url,requestBody, flag)
     }
 
     fun requestWebViewConfig(): Observable<BasicResult<String>> {

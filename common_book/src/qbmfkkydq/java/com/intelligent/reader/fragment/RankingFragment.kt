@@ -49,6 +49,4 @@ class RankingFragment : Fragment() {
         childFragmentManager.beginTransaction().replace(R.id.fl_content, webFragment).commit()
 
     }
-
-
 }

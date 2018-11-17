@@ -1,10 +1,8 @@
 package com.ding.basic.net.api
 
-import com.ding.basic.net.Config
 import com.ding.basic.bean.*
 import com.ding.basic.net.api.service.ContentService
 import com.ding.basic.net.interceptor.ContentInterceptor
-import com.ding.basic.net.interceptor.MicroRequestInterceptor
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
 import com.ding.basic.util.sp.SPKey

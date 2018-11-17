@@ -263,12 +263,20 @@ class InternetRequestRepository private constructor() {
         return RequestAPI.downloadFont(fontName)
     }
 
-    fun requestWebViewResult(url: String): Observable<String> {
-        return RequestAPI.requestWebViewResult(url)
+    fun requestWebViewResult(url: String, flag: Boolean): Observable<String> {
+        if (flag) {
+            return MicroAPI.requestWebViewResult(url)
+        } else {
+            return RequestAPI.requestWebViewResult(url)
+        }
     }
 
-    fun requestWebViewResult(url: String, requestBody: RequestBody): Observable<String> {
-        return RequestAPI.requestWebViewResult(url, requestBody)
+    fun requestWebViewResult(url: String, requestBody: RequestBody, flag: Boolean): Observable<String> {
+        return if (flag) {
+            MicroAPI.requestWebViewResult(url, requestBody)
+        } else {
+            RequestAPI.requestWebViewResult(url, requestBody)
+        }
     }
 
     fun requestWebViewConfig(): Observable<BasicResult<String>> {

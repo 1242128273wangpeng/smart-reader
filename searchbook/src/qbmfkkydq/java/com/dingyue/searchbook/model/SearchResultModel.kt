@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
@@ -15,8 +14,6 @@ import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.oneclick.AntiShake
@@ -28,8 +25,6 @@ import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.web.WebViewIndex
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import java.util.*
 
 /**
@@ -143,7 +138,7 @@ class SearchResultModel {
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
-                            bundle.putString("url", redirect.url)
+                            bundle.putString("url", Config.webBaseUrl + redirect.url)
                             bundle.putString("title", redirect.title)
                             bundle.putString("from", "other")
 
@@ -155,56 +150,17 @@ class SearchResultModel {
                 }
             }
 
-            @JavascriptInterface
-            override fun requestWebViewResult(data: String?) {
-                if (data != null && data.isNotEmpty() && !activity.isFinishing) {
-                    try {
-                        val config = Gson().fromJson(data, JSConfig()::class.java)
+            override fun handleBackAction() {
 
-                        val url = config.url
-                        val method = config.method
+            }
 
-                        if (url != null && url.isNotEmpty() && method != null && method.isNotEmpty()) {
-                            if ("get" == method) {
-                                RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe({ it ->
-                                            if (null != webView) {
-                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
-                                                } else {
-                                                    webView.loadUrl(call)
-                                                }
-                                            }
-                                        }, {
-                                            Logger.e("Error: " + it.toString())
-                                        })
-                            } else if ("post" == method) {
-
-                                val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
-
-                                RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, requestBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe({ it ->
-                                            if (null != webView) {
-                                                val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$it','${config.requestIndex}')")
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                    webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
-                                                } else {
-                                                    webView.loadUrl(call)
-                                                }
-                                            }
-                                        }, {
-                                            Logger.e("Error: " + it.toString())
-                                        })
-                            }
-                        }
-
-                    } catch (exception: Exception) {
-                        exception.printStackTrace()
+            override fun handleWebRequestResult(result: String?, requestIndex: String?) {
+                if (null != webView) {
+                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','$requestIndex')")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        webView.loadUrl(call)
                     }
                 }
             }

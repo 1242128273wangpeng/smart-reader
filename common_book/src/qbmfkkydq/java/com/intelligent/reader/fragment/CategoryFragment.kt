@@ -61,7 +61,6 @@ class CategoryFragment : Fragment() {
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
-
     }
 
 

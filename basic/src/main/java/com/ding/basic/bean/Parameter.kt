@@ -76,6 +76,12 @@ data class Map(
         var DY_page_middle_ad_switch: String?,
         var DY_ad_old_request_switch: String?,
         var user_tag_host: String?,
+
+        //WebView静态资源拦截动态参数，分别为预加载资源和拦截资源域名规则
         var DY_static_resource_rule: String?,
-        var DY_web_static_resources: String?
+        var DY_web_static_resources: String?,
+
+        //新添加数据流和内容接口域名的动态参数，保证切换不影响老用户
+        var DY_union_host: String?,
+        var DY_content_host: String?
 ) : Serializable

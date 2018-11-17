@@ -64,6 +64,13 @@ interface MicroService {
 
 
 
+    @GET()
+    fun requestWebViewResult(@Url url: String): Observable<String>
+
+    @POST
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    fun requestWebViewResult(@Url url: String, @Body requestBody: RequestBody): Observable<String>
+
     @GET(WEB_VIEW_CONFIG)
     fun requestWebViewConfig(): Observable<BasicResult<String>>
 

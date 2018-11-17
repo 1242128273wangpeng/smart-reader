@@ -8,6 +8,8 @@ import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.URLBuilder
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -54,15 +56,34 @@ object Config {
     private var requestParameters: HashMap<String, String> = HashMap()
 
 
-    /***
-     * 鉴权过期时间
-     * **/
-    private var authExpire = 0L
-
-
     var webDeploy = ""
 
     var webBaseUrl = ""
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                val value = SPUtils.loadSharedString(SPKey.WEB_VIEW_HOST)
+                field = if (value.isNotEmpty()) {
+                    value
+                } else {
+                    ""
+                }
+                field
+            }
+        }
+        set(value) {
+            if (value.isNotEmpty()) {
+                field = value
+
+                SPUtils.insertSharedString(SPKey.WEB_VIEW_HOST, value)
+            }
+        }
+
+
+
+
+
 
 
 
@@ -74,13 +95,15 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-
+//        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+//        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+//
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
 
 //        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
 //        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+
+        requestAPIHost = "http://119.254.159.100:8081"
 
         MicroAPI.microHost = "https://uniontest.bookapi.cn"
         ContentAPI.contentHost = "https://uniontest.bookapi.cn"
@@ -104,9 +127,9 @@ object Config {
     }
 
     fun insertRequestAPIHost(requestAPIHost: String) {
-        if (!TextUtils.isEmpty(requestAPIHost)) {
-            Config.requestAPIHost = requestAPIHost
-        }
+//        if (!TextUtils.isEmpty(requestAPIHost)) {
+//            Config.requestAPIHost = requestAPIHost
+//        }
     }
 
     fun loadRequestAPIHost(): String {
