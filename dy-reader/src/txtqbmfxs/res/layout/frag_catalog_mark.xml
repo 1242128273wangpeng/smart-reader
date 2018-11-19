@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFFFF"
@@ -27,12 +28,12 @@
             android:id="@+id/rl_book_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="20dp">
+            android:paddingTop="20dp"
+            android:paddingRight="16dp">
 
             <TextView
                 android:id="@+id/txt_book_name"
@@ -49,10 +50,10 @@
                 android:id="@+id/txt_chapter_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_below="@+id/txt_book_name"
-                android:layout_marginBottom="15dp"
+                android:layout_alignParentLeft="true"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
                 android:maxLines="1"
                 android:textColor="#858C96"
                 android:textSize="13sp"
@@ -62,8 +63,8 @@
                 android:id="@+id/ckb_catalog_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/txt_chapter_count"
+                android:layout_alignParentRight="true"
                 android:background="@drawable/catalog_mark_order_bg_sel"
                 android:button="@null"
                 android:paddingLeft="5dp"
@@ -169,8 +170,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/rg_catalog_mark"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="27dp"
             android:layout_marginRight="15dp"
+            android:layout_marginBottom="27dp"
             android:contentDescription="@string/module_name"
             android:src="@drawable/catalog_mark_fix_book_icon"
             android:visibility="gone"/>

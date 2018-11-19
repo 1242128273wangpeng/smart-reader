@@ -18,8 +18,10 @@ import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
 import com.ding.basic.util.DataCache
 import com.dy.reader.R
+import com.dy.reader.Reader
 import com.dy.reader.adapter.BaseRecyclerHolder
 import com.dy.reader.adapter.ListRecyclerAdapter
+import com.dy.reader.event.EventSetting
 import com.dy.reader.presenter.CatalogMark
 import com.dy.reader.presenter.CatalogMarkPresenter
 import com.dy.reader.setting.ReaderStatus
@@ -32,6 +34,10 @@ import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.book.RepairHelp
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.theme.ThemeHelper
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
@@ -48,16 +54,27 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
     private var reverse = false
 
+    var dividerCatalog: ShapeItemDecoration? = null
+    var dividerBookmark: ShapeItemDecoration? = null
+    var isNight = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.frag_catalog_mark, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dividerCatalog = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
-        val dividerBookmark = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
 
-        dividerCatalog.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
-        dividerBookmark.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
+        rl_container.setBackgroundColor(Color.WHITE)
+
+        dividerCatalog = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
+        dividerBookmark = ShapeItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL)
+        dividerCatalog?.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
+        dividerBookmark?.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
 
         recl_catalog_content.addItemDecoration(dividerCatalog)
         recl_mark_content.addItemDecoration(dividerBookmark)
@@ -74,7 +91,7 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                 if (firstVisibleItemPosition != 0) {
                     if (firstVisibleItemPosition == -1) {
                         ckb_catalog_order.visibility = View.VISIBLE
-                    }else{
+                    } else {
                         ckb_catalog_order.visibility = View.VISIBLE
                     }
                     return
@@ -179,6 +196,35 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
     }
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onReceiveEvent(event: EventSetting) {
+        if (event.type == EventSetting.Type.OPEN_CATALOG) {
+            changeBgColorWithNightModel()
+        }
+    }
+
+    private fun changeBgColorWithNightModel() {
+        try {
+            if (ThemeHelper.getInstance(context).isNight) {
+                rl_container.setBackgroundColor(Color.parseColor("#191C1F"))
+                dividerCatalog?.setDrawable(ColorDrawable(Color.parseColor("#282828")))
+                dividerBookmark?.setDrawable(ColorDrawable(Color.parseColor("#282828")))
+            } else {
+                dividerCatalog?.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
+                dividerBookmark?.setDrawable(ColorDrawable(Color.parseColor("#0C000000")))
+                rl_container.setBackgroundColor(Color.WHITE)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        EventBus.getDefault().unregister(this)
+    }
+
     fun loadData() {
         if (recl_catalog_content.visibility == View.VISIBLE) {
             presenter.loadCatalog(reverse)
@@ -279,9 +325,12 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
 
                 var color: Int
 
+                val isNight = ThemeHelper.getInstance(Reader.context).isNight
                 color = when {
-                    chapterExist -> Color.parseColor("#E5000000")
-                    else -> Color.parseColor("#4C000000")
+                    chapterExist ->
+                        if (isNight) Color.parseColor("#989898") else Color.parseColor("#E5000000")
+                    else ->
+                        if (isNight) Color.parseColor("#616161") else Color.parseColor("#4C000000")
                 }
 
                 if (data.name?.equals(ReaderStatus.chapterName) == true) {
@@ -312,9 +361,22 @@ class CatalogMarkFragment : Fragment(), CatalogMark.View {
                     onItemLongClick?.onLongClick(v) ?: false
                 }
 
-                (itemView.txt_bookmark_title as TextView).text = "${data.chapter_name}"
-                (itemView.txt_bookmark_content as TextView).text = "${data.chapter_content}"
-                (itemView.txt_bookmark_time as TextView).text = dateFormat.format(data.insert_time)
+                val txt_bookmark_title = itemView.txt_bookmark_title as TextView
+                val txt_bookmark_content = itemView.txt_bookmark_content as TextView
+                val txt_bookmark_time = itemView.txt_bookmark_time as TextView
+
+                txt_bookmark_title.text = "${data.chapter_name}"
+                txt_bookmark_content.text = "${data.chapter_content}"
+                txt_bookmark_time.text = dateFormat.format(data.insert_time)
+
+                val isNight = ThemeHelper.getInstance(Reader.context).isNight
+                val colorTitle = if (isNight) Color.parseColor("#989898") else Color.parseColor("#E5000000")
+                val colorcontent = if (isNight) Color.parseColor("#616161") else Color.parseColor("#7F000000")
+                val colortime = if (isNight) Color.parseColor("#616161") else Color.parseColor("#7F000000")
+
+                txt_bookmark_title.setTextColor(colorTitle)
+                txt_bookmark_content.setTextColor(colorcontent)
+                txt_bookmark_time.setTextColor(colortime)
             }
         }
     }
