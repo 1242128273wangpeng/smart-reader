@@ -205,13 +205,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
         MediaControl.insertBookShelfMediaType(true)
 
         initRecyclerView()
-        if (fl_bg_layout != null) {
-            fl_bg_layout.post {
-                iconBgViewHeight = fl_bg_layout.height
-            }
-        } else {
-            iconBgViewHeight = AppUtils.dip2px(context, 220f)
-        }
+
+        iconBgViewHeight = fl_bg_layout?.height ?: AppUtils.dip2px(context, 220f)
 
         ll_container?.let {
             it.post {
@@ -229,7 +224,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
             override fun onPullDistance(distance: Int) {
                 if (distance >= 0) {
-                    fl_bg_layout.layoutParams.height = iconBgViewHeight + distance
+                    fl_bg_layout?.layoutParams?.height = iconBgViewHeight + distance
                 }
 
             }

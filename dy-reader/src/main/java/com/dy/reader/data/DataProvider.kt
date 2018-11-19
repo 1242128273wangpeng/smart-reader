@@ -266,7 +266,7 @@ object DataProvider {
                         arrayListOf(NovelPageBean(arrayListOf(NovelLineBean().apply { lineContent = "txtzsydsq_homepage\n";this.sequence = -1; }), 1, arrayListOf())))
             }
 //            return lruCache.get(ReaderStatus.chapterList[group].sequence.toLong())
-            if(ReaderStatus.chapterList[group] != null){
+            if(group < ReaderStatus.chapterList.size && ReaderStatus.chapterList[group] != null){
                 return chapterCache.get(ReaderStatus.chapterList[group].sequence)
             }else{
                 return null

@@ -49,7 +49,7 @@ class RecommendFragment : Fragment() {
 
 
     private fun initView() {
-        ll_search_layout.post {
+        ll_search_layout?.post {
             if (statusBarHeight == 0) {
                 statusBarHeight = AppUtils.dip2px(context, 20f)
             }
@@ -59,7 +59,7 @@ class RecommendFragment : Fragment() {
 
         view_pager.offscreenPageLimit = 4
 
-        ll_search_layout.setOnClickListener {
+        ll_search_layout?.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
         val adapter = VPAdapter(childFragmentManager)
