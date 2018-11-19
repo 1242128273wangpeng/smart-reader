@@ -293,6 +293,7 @@ object DataProvider {
 
                 position.index = findPageIndexByOffset(offset, list)
 
+                position.offset = offset
             }
         }
 
@@ -300,12 +301,8 @@ object DataProvider {
     }
 
     fun findPageIndexByOffset(offset: Int, separateList: ArrayList<NovelPageBean>): Int {
-        for (index in 0 until separateList.size) {
-            if (isOffsetInPage(offset, index, separateList)) {
-                return index
-            }
-        }
-        return 0
+        return (0 until separateList.size).firstOrNull { isOffsetInPage(offset, it, separateList) }
+                ?: 0
     }
 
     private fun isOffsetInPage(offset: Int, index: Int, separateList: ArrayList<NovelPageBean>): Boolean {
@@ -313,10 +310,10 @@ object DataProvider {
             return true
         }
         if (separateList.size > index + 1) {
-            if (separateList[index].offset == separateList[index + 1].offset) {
-                return separateList[index].offset == offset
+            return if (separateList[index].offset == separateList[index + 1].offset) {
+                separateList[index].offset == offset
             } else {
-                return (separateList[index].offset <= offset) && (separateList[index + 1].offset > offset)
+                (separateList[index].offset <= offset) && (separateList[index + 1].offset > offset)
             }
         } else if (separateList.size > index) {
             return separateList[index].offset <= offset

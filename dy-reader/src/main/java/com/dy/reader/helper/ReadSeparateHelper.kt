@@ -154,9 +154,8 @@ object ReadSeparateHelper {
 
                     mNovelPageBean = NovelPageBean(pageLines, contentOffset, ArrayList<NovelLineBean>())
 
-                    lists.add(mNovelPageBean)//
+                    lists.add(mNovelPageBean)
                 }
-                // }
             }
         }
         if (ReaderStatus.position.group == chapter.sequence) {
@@ -506,7 +505,7 @@ object ReadSeparateHelper {
         val filter = currentChapter.filter {
             it.offset <= offest
         }
-        return if(filter.size - 1 > 0) return filter.size - 1 else 1
+        return filter.size
     }
 
     fun getChapterNameList(chapterName: String): ArrayList<NovelLineBean> {
