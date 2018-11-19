@@ -1,6 +1,7 @@
 package com.ding.basic.net.interceptor
 
 import android.text.TextUtils
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
 import com.ding.basic.net.token.Token
 import com.orhanobut.logger.Logger
@@ -40,17 +41,10 @@ class RequestInterceptor : Interceptor {
             requestParameters["channelId"] = Config.loadRequestParameter("channelId")
         }
 
-        if (requestParameters["latitude"].isNullOrEmpty()) {
-            requestParameters["latitude"] = Config.loadRequestParameter("latitude")
-        }
+        requestParameters["cityCode"] = ParameterConfig.cityCode
+        requestParameters["latitude"] = ParameterConfig.latitude
+        requestParameters["longitude"] = ParameterConfig.longitude
 
-        if (requestParameters["longitude"].isNullOrEmpty()) {
-            requestParameters["longitude"] = Config.loadRequestParameter("longitude")
-        }
-
-        if (requestParameters["cityCode"].isNullOrEmpty()) {
-            requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
-        }
 
         if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
             requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")

@@ -7,6 +7,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.net.Config;
 import com.dy.media.MediaConfig;
 
@@ -54,6 +55,36 @@ public class ShieldManager {
 
                     String cityCode = aMapLocation.getCityCode();
                     Config.INSTANCE.insertRequestParameter("cityCode", cityCode);
+
+
+
+                    Constants.latitude = aMapLocation.getLatitude();
+                    ParameterConfig.INSTANCE.setLatitude(String.valueOf(aMapLocation.getLatitude()));
+
+                    Constants.longitude = aMapLocation.getLongitude();
+                    ParameterConfig.INSTANCE.setLongitude(String.valueOf(aMapLocation.getLongitude()));
+
+                    Constants.adCode = aMapLocation.getAdCode();
+                    ParameterConfig.INSTANCE.setAreaCode(aMapLocation.getAdCode());
+
+                    Constants.adCityInfo = aMapLocation.getCity();
+                    ParameterConfig.INSTANCE.setCity(aMapLocation.getCity());
+
+                    Constants.cityCode = aMapLocation.getCityCode();
+                    ParameterConfig.INSTANCE.setCityCode(aMapLocation.getCityCode());
+
+                    Constants.adLocationDetail = (aMapLocation.getDistrict() + " "
+                            + aMapLocation.getStreet() + " "
+                            + aMapLocation.getStreetNum() + " "
+                            + "(" + Constants.longitude + ", " + Constants.latitude + ")");
+
+                    ParameterConfig.INSTANCE.setLocationDetail(aMapLocation.getDistrict() + " "
+                            + aMapLocation.getStreet() + " "
+                            + aMapLocation.getStreetNum() + " "
+                            + "(" + Constants.longitude + ", " + Constants.latitude + ")");
+
+
+
 
                     if (!Constants.isHideAD && MediaConfig.INSTANCE.getConfig() != null) {
                         if (!TextUtils.isEmpty(cityCode)) {
