@@ -125,7 +125,8 @@ public class EventPoint {
 
 
     /** ------------------个人中心中更多设置页面 对应的点位编码---------**/
-    public static final String MORESET_PUSHSET = "MORESET_PUSHSET"; // 消息推送开启与关闭
+    public static final String MORESET_PUSHSET = "MORESET_PUSHSET"; // 书籍更新推送开启与关闭
+    public static final String MORESET_UMENGPUSHSET = "MORESET_UMENGPUSHSET"; // 友盟消息推送开启与关闭
     public static final String MORESET_PUSHAUDIO = "MORESET_PUSHAUDIO"; // 推送声音
     public static final String MORESET_BACK = "MORESET_BACK"; // 屏幕左上方点击返回按钮
 

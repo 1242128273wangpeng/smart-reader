@@ -82,6 +82,10 @@ class SettingMoreActivity : BaseCacheableActivity() {
         }
 
         btn_umeng_push.setOnCheckedChangeListener { _, isChecked ->
+            val params1 = HashMap<String, String>()
+            params1["type"] = if (isChecked) "1" else "2"
+            DyStatService.onEvent(EventPoint.MORESET_UMENGPUSHSET, params1)
+
             settingItemsHelper.putBoolean(settingItemsHelper.openUmengPush, isChecked)
             changeUmengStatus(isChecked)
             changePushStatus()
@@ -89,7 +93,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
 
         btn_push_sound.setOnCheckedChangeListener { _, isChecked ->
             val params = HashMap<String, String>()
-            params.put("type", if (isChecked) "1" else "2")
+            params["type"] = if (isChecked) "1" else "2"
             DyStatService.onEvent(EventPoint.MORESET_PUSHAUDIO, params)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_more_push_voi)
 
