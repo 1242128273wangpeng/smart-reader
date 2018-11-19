@@ -38,13 +38,12 @@ class RecommendAdapter(val books: List<SearchRecommendBook.DataBean>,
         holder.tv_book_name.text = book.bookName
         holder.tv_book_author.text = book.authorName
         if (!TextUtils.isEmpty(book.sourceImageUrl)) {
-            Glide.with(context).load(book.sourceImageUrl).placeholder(
-                    net.lzbook.kit.R.drawable.icon_book_cover_default)
-                    .error(R.drawable.icon_book_cover_default)
+            Glide.with(context).load(book.sourceImageUrl).placeholder(R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
                     .into(holder.iv_url)
         } else {
             Glide.with(context).load(
-                    R.drawable.icon_book_cover_default).into(holder.iv_url)
+                    R.drawable.common_book_cover_default_icon).into(holder.iv_url)
         }
     }
 

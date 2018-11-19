@@ -15,7 +15,7 @@
         android:layout_width="70dp"
         android:layout_height="104dp"
         android:scaleType="fitXY"
-        android:src="@drawable/icon_book_cover_default" />
+        android:src="@drawable/common_book_cover_default_icon" />
 
     <View
         android:layout_width="70dp"
