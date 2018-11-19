@@ -14,9 +14,9 @@
         android:layout_height="48dp"
         android:layout_above="@+id/rl_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="6dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
+        android:layout_marginBottom="6dp"
         android:background="@drawable/reader_option_jump_back_content_bg"
         android:visibility="gone">
 
@@ -74,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_above="@+id/ll_reader_bottom_option"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:background="#F2191919"
             android:gravity="center_vertical">
 
@@ -96,7 +96,7 @@
             <SeekBar
                 android:id="@+id/skbar_reader_chapter_change"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/txt_reader_chapter_next"
                 android:layout_toRightOf="@+id/txt_reader_chapter_previous"
@@ -162,12 +162,12 @@
     <net.lzbook.kit.ui.widget.NightShadowView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/rl_content"
-        android:layout_alignEnd="@+id/rl_content"
-        android:layout_alignLeft="@+id/rl_content"
-        android:layout_alignRight="@+id/rl_content"
         android:layout_alignStart="@+id/rl_content"
+        android:layout_alignLeft="@+id/rl_content"
         android:layout_alignTop="@+id/rl_content"
+        android:layout_alignEnd="@+id/rl_content"
+        android:layout_alignRight="@+id/rl_content"
+        android:layout_alignBottom="@+id/rl_content"
         android:visibility="gone"/>
 
 </RelativeLayout>
