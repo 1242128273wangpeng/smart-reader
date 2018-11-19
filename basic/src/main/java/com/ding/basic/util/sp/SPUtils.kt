@@ -263,7 +263,7 @@ object SPUtils {
         return defaultPreferences?.getString(key, value) ?: value
     }
 
-    fun insertSharedString(key: String, value: String) {
+    fun insertSharedString(key: String, value: String?) {
         defaultPreferences?.edit()?.putString(key, value)?.apply()
     }
 }

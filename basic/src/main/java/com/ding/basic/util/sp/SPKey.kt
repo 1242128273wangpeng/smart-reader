@@ -69,8 +69,8 @@ class SPKey {
          */
         const val NOVEL_HOST = "novel_host"           //智能API接口
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
-        const val UNION_HOST = "union_host"           //微服务API接口
-        const val CONTENT_HOST = "content_host"       //微服务内容接口
+//        const val UNION_HOST = "union_host"           //微服务API接口
+//        const val CONTENT_HOST = "content_host"       //微服务内容接口
         const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
         /**

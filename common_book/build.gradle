@@ -595,7 +595,7 @@ android {
             ]
             buildConfigField "String", "app_path", "\"/qbmfrmxs_book\""
             buildConfigField "String", "database_name", "\"qbmfrmxsBook.db\""
-            buildConfigField "String", "baidu_stat_id", "\"0b1405d1df\""
+            buildConfigField "String", "baidu_stat_id", "\"230393ca91\""
             buildConfigField "String", "push_key", "\"DOGRj3vpV9F6KamswYShmdHM\""
             buildConfigField "String", "alifeedback_key", "\"24812888\""
             buildConfigField "String", "alifeedback_secret", "\"2baf3d5d4f949e5189afbe37a8e1302e\""

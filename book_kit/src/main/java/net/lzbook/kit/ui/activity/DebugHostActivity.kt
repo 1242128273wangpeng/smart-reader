@@ -65,35 +65,31 @@ class DebugHostActivity : BaseCacheableActivity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                val type = when (intent.getStringExtra("type")) {
+                when (intent.getStringExtra("type")) {
                     SPKey.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
-                        SPKey.NOVEL_HOST
+                        SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, et_input_host.text.toString())
                     }
                     SPKey.WEBVIEW_HOST -> {
                         Config.insertWebViewHost(et_input_host.text.toString())
-                        SPKey.WEBVIEW_HOST
+                        SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, et_input_host.text.toString())
                     }
-                    SPKey.UNION_HOST -> {
+                    SPKey.MICRO_AUTH_HOST -> {
                         MicroAPI.microHost = (et_input_host.text.toString())
-                        SPKey.UNION_HOST
+                        SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, et_input_host.text.toString())
                     }
-                    SPKey.CONTENT_HOST -> {
+                    SPKey.CONTENT_AUTH_HOST -> {
                         ContentAPI.contentHost = (et_input_host.text.toString())
-                        SPKey.CONTENT_HOST
+                        SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, et_input_host.text.toString())
                     }
                     else -> {
                         ""
                     }
                 }
 
-                SPUtils.putOnlineConfigSharedString(type, et_input_host.text.toString())
-
                 finish()
             }
-
         }
-
     }
 
 

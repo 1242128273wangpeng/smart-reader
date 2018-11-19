@@ -248,8 +248,9 @@ class DynamicParameter(private val context: Context) {
         if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
             SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, map.novel_host)
             SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, map.httpsWebView_host)
-            SPUtils.putOnlineConfigSharedString(SPKey.UNION_HOST, map.union_host)
-            SPUtils.putOnlineConfigSharedString(SPKey.CONTENT_HOST, map.content_host)
+
+            SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, map.union_host)
+            SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, map.content_host)
         }
 
         SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, map.user_tag_host)
@@ -324,8 +325,8 @@ class DynamicParameter(private val context: Context) {
 
 
     private fun insertRequestParams() {
-        MicroAPI.microHost = SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST)
-        ContentAPI.contentHost = SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST)
+        MicroAPI.microHost = SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST)
+        ContentAPI.contentHost = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST)
 
         Config.insertRequestAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST))
         Config.insertWebViewHost(SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST))
