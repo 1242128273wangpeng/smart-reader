@@ -30,7 +30,7 @@ object ParameterConfig {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.LOCATION_CITY_CODE)
+                val value = SPUtils.loadPrivateSharedString(SPKey.LOCATION_CITY_CODE)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -42,7 +42,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
-                SPUtils.insertSharedString(SPKey.LOCATION_CITY_CODE, value)
+                SPUtils.insertPrivateSharedString(SPKey.LOCATION_CITY_CODE, value)
             }
         }
 
@@ -53,7 +53,7 @@ object ParameterConfig {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.LOCATION_LATITUDE)
+                val value = SPUtils.loadPrivateSharedString(SPKey.LOCATION_LATITUDE)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -65,7 +65,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
-                SPUtils.insertSharedString(SPKey.LOCATION_LATITUDE, value)
+                SPUtils.insertPrivateSharedString(SPKey.LOCATION_LATITUDE, value)
             }
         }
 
@@ -76,7 +76,7 @@ object ParameterConfig {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.LOCATION_LONGITUDE)
+                val value = SPUtils.loadPrivateSharedString(SPKey.LOCATION_LONGITUDE)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -88,7 +88,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
-                SPUtils.insertSharedString(SPKey.LOCATION_LONGITUDE, value)
+                SPUtils.insertPrivateSharedString(SPKey.LOCATION_LONGITUDE, value)
             }
         }
 

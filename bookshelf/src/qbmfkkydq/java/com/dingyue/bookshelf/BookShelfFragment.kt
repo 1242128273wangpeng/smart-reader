@@ -206,7 +206,15 @@ class BookShelfFragment : Fragment(), UpdateCallBack, ChildBookShelfView, MenuMa
 
         initRecyclerView()
 
-        iconBgViewHeight = fl_bg_layout?.height ?: AppUtils.dip2px(context, 220f)
+        if (fl_bg_layout != null) {
+            fl_bg_layout.post {
+                iconBgViewHeight = fl_bg_layout.height
+            }
+        } else {
+            iconBgViewHeight = AppUtils.dip2px(context, 220f)
+        }
+
+//        iconBgViewHeight = fl_bg_layout?.height ?: AppUtils.dip2px(context, 220f)
 
         ll_container?.let {
             it.post {

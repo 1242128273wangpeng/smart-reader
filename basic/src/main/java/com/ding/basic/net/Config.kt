@@ -63,7 +63,7 @@ object Config {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.WEB_VIEW_HOST)
+                val value = SPUtils.loadPrivateSharedString(SPKey.WEB_VIEW_HOST)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -76,7 +76,7 @@ object Config {
             if (value.isNotEmpty()) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.WEB_VIEW_HOST, value)
+                SPUtils.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, value)
             }
         }
 

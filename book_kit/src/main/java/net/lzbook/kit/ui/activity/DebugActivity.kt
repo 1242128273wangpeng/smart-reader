@@ -51,8 +51,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
         tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "")}】")
         tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "")}】")
-        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST)}】")
-        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST)}】")
+        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)}】")
+        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)}】")
 
         btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
         txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
@@ -179,15 +179,15 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 //            SPUtils.putOnlineConfigSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
 //            SPUtils.putOnlineConfigSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
 
-            SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.loadSharedString(SPKey.UNION_PRE_HOST))
-            SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.loadSharedString(SPKey.CONTENT_PRE_HOST))
+            SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.UNION_PRE_HOST))
+            SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_PRE_HOST))
 
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             Config.insertWebViewHost(SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
 
-            MicroAPI.microHost = SPUtils.loadSharedString(SPKey.UNION_PRE_HOST)
-            ContentAPI.contentHost = SPUtils.loadSharedString(SPKey.CONTENT_PRE_HOST)
+            MicroAPI.microHost = SPUtils.loadPrivateSharedString(SPKey.UNION_PRE_HOST)
+            ContentAPI.contentHost = SPUtils.loadPrivateSharedString(SPKey.CONTENT_PRE_HOST)
 
             MicroAPI.initMicroService()
             ContentAPI.initContentService()
@@ -198,8 +198,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             SPUtils.putDefaultSharedString(SPKey.NOVEL_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.WEBVIEW_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, ""))
 
-            SPUtils.insertSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST))
-            SPUtils.insertSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST))
+            SPUtils.insertPrivateSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST))
+            SPUtils.insertPrivateSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST))
         }
     }
 

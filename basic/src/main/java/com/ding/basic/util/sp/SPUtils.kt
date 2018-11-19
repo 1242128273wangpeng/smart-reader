@@ -18,6 +18,10 @@ object SPUtils {
         get() {
             return field ?: PreferenceManager.getDefaultSharedPreferences(Config.getContext())
         }
+    private val privatePreferences = Config.getContext()?.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        get() {
+            return field ?: Config.getContext()?.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        }
 
     /**
      * 系统默认Shared 批量操作
@@ -258,6 +262,21 @@ object SPUtils {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun loadSharedString(key: String, value: String = ""): String {
         return defaultPreferences?.getString(key, value) ?: value
     }
@@ -272,5 +291,29 @@ object SPUtils {
 
     fun insertSharedBoolean(key: String, value: Boolean) {
         defaultPreferences?.edit()?.putBoolean(key, value)?.apply()
+    }
+
+
+
+
+
+
+
+
+
+    fun loadPrivateSharedString(key: String, value: String = ""): String {
+        return privatePreferences?.getString(key, value) ?: value
+    }
+
+    fun insertPrivateSharedString(key: String, value: String?) {
+        privatePreferences?.edit()?.putString(key, value)?.apply()
+    }
+
+    fun loadPrivateSharedBoolean(key: String, value: Boolean = false): Boolean {
+        return privatePreferences?.getBoolean(key, value) ?: value
+    }
+
+    fun insertPrivateSharedBoolean(key: String, value: Boolean) {
+        privatePreferences?.edit()?.putBoolean(key, value)?.apply()
     }
 }

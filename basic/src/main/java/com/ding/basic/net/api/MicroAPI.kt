@@ -34,7 +34,7 @@ object MicroAPI {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST)
+                val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -47,7 +47,7 @@ object MicroAPI {
             if (value.isNotEmpty()) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, value)
+                SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, value)
             }
         }
 
@@ -59,7 +59,7 @@ object MicroAPI {
             return if (field?.isNotEmpty() == false) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, "")
+                val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, "")
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -73,7 +73,7 @@ object MicroAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, value)
             }
         }
 
@@ -85,7 +85,7 @@ object MicroAPI {
             return if (field?.isNotEmpty() == true) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
+                val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -99,7 +99,7 @@ object MicroAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost, value)
             }
         }
 
@@ -124,9 +124,9 @@ object MicroAPI {
 
     fun initMicroService() {
 
-        publicKey = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
+        publicKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
 
-        privateKey = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
+        privateKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
 
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

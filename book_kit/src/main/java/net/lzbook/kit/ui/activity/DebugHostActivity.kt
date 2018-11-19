@@ -76,11 +76,11 @@ class DebugHostActivity : BaseCacheableActivity() {
                     }
                     SPKey.MICRO_AUTH_HOST -> {
                         MicroAPI.microHost = (et_input_host.text.toString())
-                        SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, et_input_host.text.toString())
+                        SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, et_input_host.text.toString())
                     }
                     SPKey.CONTENT_AUTH_HOST -> {
                         ContentAPI.contentHost = (et_input_host.text.toString())
-                        SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, et_input_host.text.toString())
+                        SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, et_input_host.text.toString())
                     }
                     else -> {
                         ""

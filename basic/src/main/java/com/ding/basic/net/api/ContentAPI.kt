@@ -32,7 +32,7 @@ object ContentAPI {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST)
+                val value = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -45,7 +45,7 @@ object ContentAPI {
             if (value.isNotEmpty()) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, value)
+                SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, value)
             }
         }
 
@@ -57,7 +57,7 @@ object ContentAPI {
             return if (field?.isNotEmpty() == false) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, "")
+                val value = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, "")
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -71,7 +71,7 @@ object ContentAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, value)
             }
         }
 
@@ -83,7 +83,7 @@ object ContentAPI {
             return if (field?.isNotEmpty() == true) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
+                val value = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -96,7 +96,7 @@ object ContentAPI {
         set(value) {
             if (value?.isNotEmpty() == true) {
                 field = value
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost, value)
             }
         }
 
@@ -121,9 +121,9 @@ object ContentAPI {
 
     fun initContentService() {
 
-        publicKey = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost)
+        publicKey = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost)
 
-        privateKey = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
+        privateKey = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
 
         val retrofit = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
