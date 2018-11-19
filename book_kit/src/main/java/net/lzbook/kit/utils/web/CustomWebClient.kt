@@ -296,6 +296,8 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         webSettings?.blockNetworkImage = true
 
         webSettings?.useWideViewPort = true
+
+        webSettings?.textZoom = 100
     }
 
     /***

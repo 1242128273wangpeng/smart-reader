@@ -110,6 +110,7 @@ class DisclaimerActivity : FrameActivity() {
             // 修改字体大小
             val fontSize = resources.getDimension(R.dimen.text_size_small)
             web_disclaimer.settings.defaultFontSize = fontSize.toInt()
+            web_disclaimer.settings.textZoom = 100
 
         }
 
