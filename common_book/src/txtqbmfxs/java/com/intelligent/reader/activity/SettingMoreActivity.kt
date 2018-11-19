@@ -74,7 +74,7 @@ class SettingMoreActivity : BaseCacheableActivity() {
         btn_book_update_push.setOnCheckedChangeListener { _, isChecked ->
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_click_more_push)
             val params1 = HashMap<String, String>()
-            params1.put("type", if (isChecked) "1" else "2")
+            params1["type"] = if (isChecked) "1" else "2"
             DyStatService.onEvent(EventPoint.MORESET_PUSHSET, params1)
 
             settingItemsHelper.putBoolean(settingItemsHelper.openBookPush, isChecked)

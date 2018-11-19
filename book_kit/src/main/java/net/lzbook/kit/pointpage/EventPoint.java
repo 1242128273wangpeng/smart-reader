@@ -43,10 +43,10 @@ public class EventPoint {
     public static final String SEARCH_BAR = "SEARCH_BAR"; // 点击搜索框
     public static final String SEARCH_BARCLEAR = "SEARCH_BARCLEAR"; // 搜索词清空
     public static final String SEARCH_BARLIST = "SEARCH_BARLIST"; // 搜索框下拉历史词点击
+    public static final String SEARCH_HISTORY = "SEARCH_HISTORY"; // 搜索历史-点击某一条搜索历史（废弃）
     public static final String SEARCH_TOPIC = "SEARCH_TOPIC"; // 大家都在搜-点击搜索热词
     public static final String SEARCH_HOTREADCLICK = "SEARCH_HOTREADCLICK"; // 推荐书籍点击(热门阅读)
     public static final String SEARCH_HOTREADCHANGE = "SEARCH_HOTREADCHANGE"; // 热门阅读-换一换
-    public static final String SEARCH_HISTORY = "SEARCH_HISTORY"; // 搜索历史-点击某一条搜索历史
     public static final String SEARCH_HISTORYCLEAR = "SEARCH_HISTORYCLEAR"; // 搜索历史-历史记录清空
     public static final String SEARCH_TIPLISTCLICK = "SEARCH_TIPLISTCLICK"; // 自动补全结果点击
     public static final String SEARCH_SEARCHBUTTON = "SEARCH_SEARCHBUTTON"; // 自动补全点击“搜索”按钮

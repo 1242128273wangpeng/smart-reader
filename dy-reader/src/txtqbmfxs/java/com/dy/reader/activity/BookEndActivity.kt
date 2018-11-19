@@ -112,17 +112,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract, SourceClickLis
         //喜欢这本书的人还喜欢（换一换）
         txt_more_refresh.setOnClickListener {
             refreshBooks1()
-            val data = java.util.HashMap<String, String>()
-            data.put("module", "1")
-            DyStatService.onEvent(EventPoint.READFINISH_REPLACE, data)
+            DyStatService.onEvent(EventPoint.READFINISH_REPLACE, mapOf("module" to "1"))
         }
 
         //新锐好书抢先看（换一换）
         txt_new_refresh.setOnClickListener {
             refreshBooks2()
-            val data = java.util.HashMap<String, String>()
-            data.put("module", "2")
-            DyStatService.onEvent(EventPoint.READFINISH_REPLACE, data)
+            DyStatService.onEvent(EventPoint.READFINISH_REPLACE, mapOf("module" to "2"))
 
         }
 

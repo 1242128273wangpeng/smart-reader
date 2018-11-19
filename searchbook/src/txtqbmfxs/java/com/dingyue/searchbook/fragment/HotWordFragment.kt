@@ -59,9 +59,10 @@ class HotWordFragment : BaseHotWordFragment(), RecommendAdapter.RecommendItemCli
     override fun onRecommendItemClick(view: View, position: Int, dataBean: SearchRecommendBook.DataBean) {
 
         val data = HashMap<String, String>()
-        data.put("rank", (position + 1).toString() + "")
-        data.put("type", "1")
-        data.put("bookid", dataBean.bookId!!)
+        data["module"] = "热门阅读"
+        data["rank"] = (position + 1).toString() + ""
+        data["name"] = dataBean.bookName
+        data["bookid"] = dataBean.bookId
         DyStatService.onEvent(EventPoint.SEARCH_HOTREADCLICK, data)
 
         requireActivity().enterCover(

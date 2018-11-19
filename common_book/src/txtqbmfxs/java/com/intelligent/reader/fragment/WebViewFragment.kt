@@ -2,7 +2,6 @@ package com.intelligent.reader.fragment
 
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
@@ -26,7 +24,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
 
-open class WebViewFragment : Fragment(), View.OnClickListener {
+open class WebViewFragment : Fragment() {
 
     private var url: String? = ""
     private var type: String? = null
@@ -87,18 +85,6 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.content_head_search -> {
-                val intent = Intent(activity, SearchBookActivity::class.java)
-                try {
-                    startActivity(intent)
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                }
-            }
-        }
-    }
 
     @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
     private fun initParameter() {

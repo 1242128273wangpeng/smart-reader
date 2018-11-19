@@ -377,13 +377,7 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     private fun intentSearch() {
         RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY)
-        /* when (bottomType) {
-             2 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.RECOMMEND_PAGE, StartLogClickUtil.QG_TJY_SEARCH)
-             3 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.TOP_PAGE, StartLogClickUtil.QG_BDY_SEARCH)
-             4 -> StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.CLASS_PAGE, StartLogClickUtil.QG_FL_SEARCH)
-             else -> DyStatService.onEvent(EventPoint.MAIN_SEARCH)
-         }*/
-
+        HomeLogger.uploadHomeSearch(bottomType)
     }
 
 
