@@ -14,6 +14,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -722,6 +724,20 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
     public void hideKeyboard() {
         InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         im.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    /**
+     * 设置 app 字体不跟随系统字体设置改变
+     */
+    @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        Configuration configuration = res.getConfiguration();
+        if (configuration.fontScale != 1.0f) {
+            configuration.fontScale = 1.0f;
+            res.updateConfiguration(configuration, res.getDisplayMetrics());
+        }
+        return res;
     }
 
 }

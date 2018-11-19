@@ -3,6 +3,8 @@ package com.intelligent.reader.app;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -193,5 +195,19 @@ public class BookApplication extends BaseBookApplication {
         if (AppUtils.isMainProcess(this)) {
             MediaLifecycle.INSTANCE.onTerminate();
         }
+    }
+
+    /**
+     * 设置 app 字体不跟随系统字体设置改变
+     */
+    @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        Configuration configuration = res.getConfiguration();
+        if (configuration.fontScale != 1.0f) {
+            configuration.fontScale = 1.0f;
+            res.updateConfiguration(configuration, res.getDisplayMetrics());
+        }
+        return res;
     }
 }
