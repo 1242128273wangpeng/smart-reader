@@ -62,7 +62,7 @@ class TabulationActivity : FrameActivity() {
 
     private var url: String? = null
     private var title: String? = null
-
+    private var bookListName: String? = null//书单名
     private var fromPush = false
 
     private var handler: Handler? = Handler()
@@ -88,6 +88,8 @@ class TabulationActivity : FrameActivity() {
             titles.add(this.title)
 
             fromType = intent.getStringExtra("from")
+
+            bookListName = intent.getStringExtra("bookListName")
 
             fromPush = intent.getBooleanExtra(IS_FROM_PUSH, false)
         }
@@ -310,6 +312,11 @@ class TabulationActivity : FrameActivity() {
             "authorType" -> {
                 DyStatService.onEvent(EventPoint.AUTHORPAGE_BACK, data)
             }
+
+            "booklist" -> {
+                data["title"] = bookListName.orEmpty()
+                DyStatService.onEvent(EventPoint.BOOKLISTDETAIL_BACK, data)
+            }
         }
     }
 
@@ -333,6 +340,10 @@ class TabulationActivity : FrameActivity() {
             "recommend" -> {
                 data["firstrecommend"] = title.orEmpty()
                 DyStatService.onEvent(EventPoint.FIRSTRECOMMEND_SEARCH, data)
+            }
+
+            "booklist" -> {
+                DyStatService.onEvent(EventPoint.BOOKLISTDETAIL_SEARCH, data)
             }
         }
     }

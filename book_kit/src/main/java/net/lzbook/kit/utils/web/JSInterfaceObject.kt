@@ -295,6 +295,8 @@ abstract class JSInterfaceObject(var activity: Activity) {
         var title: String? = null
 
         var from: String? = null
+
+        var bookListName: String? = null //书单名
     }
 
     inner class JSSearch : Serializable {

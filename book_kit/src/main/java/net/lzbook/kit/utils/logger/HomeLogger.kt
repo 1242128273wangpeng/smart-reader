@@ -17,6 +17,12 @@ import net.lzbook.kit.utils.AppUtils
 
 object HomeLogger {
 
+    const val SEARCH_TYPE_RECOMMEND = 2
+    const val SEARCH_TYPE_RANK = 3
+    const val SEARCH_TYPE_CLASS = 4
+    const val SEARCH_TYPE_BOOKLIST = 5
+
+
     /***
      * 上传书架信息
      * **/
@@ -81,9 +87,10 @@ object HomeLogger {
 
     fun uploadHomeSearch(currPageType: Int) {
         when (currPageType) {
-            2 -> DyStatService.onEvent(EventPoint.RECOMMEND_SEARCH)
-            3 -> DyStatService.onEvent(EventPoint.TOP_SEARCH)
-            4 -> DyStatService.onEvent(EventPoint.CLASS_SEARCH)
+            SEARCH_TYPE_RECOMMEND -> DyStatService.onEvent(EventPoint.RECOMMEND_SEARCH)
+            SEARCH_TYPE_RANK -> DyStatService.onEvent(EventPoint.TOP_SEARCH)
+            SEARCH_TYPE_CLASS -> DyStatService.onEvent(EventPoint.CLASS_SEARCH)
+            SEARCH_TYPE_BOOKLIST -> DyStatService.onEvent(EventPoint.BOOKLISTRECOMMEND_SEARCH)
             else -> DyStatService.onEvent(EventPoint.MAIN_SEARCH)
         }
     }

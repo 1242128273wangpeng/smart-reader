@@ -162,7 +162,8 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
                 if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
                     return
                 }
-                intentSearch()
+                HomeLogger.uploadHomeSearch(bottomType)
+                RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY)
             }
             bookshelf_setting.id -> {
                 if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
@@ -173,7 +174,6 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
             }
             ll_home_bookshelf.id -> {
                 view_pager.currentItem = 0
-                bottomType = 1
                 DyStatService.onEvent(EventPoint.MAIN_BOOKSHELF)
 
             }
@@ -385,19 +385,12 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
     }
 
 
-    private fun intentSearch() {
-        RouterUtil.navigation(this, RouterConfig.SEARCH_BOOK_ACTIVITY)
-        HomeLogger.uploadHomeSearch(bottomType)
-    }
-
-
     //头部2TAB的方式
     private fun switchState(isBookShelf: Boolean) {
         ll_home_bookshelf?.isSelected = isBookShelf
         ll_home_bookstore?.isSelected = !isBookShelf
         if (ll_home_bookstore?.isSelected == true) {
             bookShelfFragment?.dismissRemoveMenu()
-            bottomType = 2
         }
     }
 

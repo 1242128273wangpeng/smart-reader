@@ -127,9 +127,13 @@ open class WebViewFragment : Fragment() {
 
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
                                 when {
-                                    redirect.from == "recommend" -> bundle.putString("from", "recommend")
-                                    redirect.from == "ranking" -> bundle.putString("from", "ranking")
-                                    redirect.from == "category" -> bundle.putString("from", "category")
+                                    redirect.from == "recommend" -> bundle.putString("from", redirect.from)
+                                    redirect.from == "ranking" -> bundle.putString("from", redirect.from)
+                                    redirect.from == "category" -> bundle.putString("from", redirect.from)
+                                    redirect.from == "booklist" -> {
+                                        bundle.putString("from", redirect.from)
+                                        bundle.putString("bookListName", redirect.bookListName)
+                                    }
                                     else -> bundle.putString("from", "other")
                                 }
                             } else {

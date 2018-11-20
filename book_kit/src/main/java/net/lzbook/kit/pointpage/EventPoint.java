@@ -8,7 +8,7 @@ package net.lzbook.kit.pointpage;
  */
 public class EventPoint {
 
-    /** ------------------SYSTEM页面 对应的点位编码----------------------**/
+    /** ------------------SYSTEM页面 对应的点位编码---------------------- **/
     public static final String SYSTEM_APPINIT = "SYSTEM_APPINIT"; // 客户端启动
     public static final String SYSTEM_HOME = "SYSTEM_HOME"; // 切换至后台
     public static final String SYSTEM_ACTIVATE = "SYSTEM_ACTIVATE";// 切换至前台
@@ -22,12 +22,12 @@ public class EventPoint {
     public static final String SYSTEM_RESOLVEPACKE = "SYSTEM_RESOLVEPACKE"; // 解包
 
 
-    /** ------------------MAIN主页 对应的点位编码-----------------------**/
+    /** ------------------MAIN主页 对应的点位编码----------------------- **/
     public static final String MAIN_BOOKSHELF = "MAIN_BOOKSHELF"; // 点击书架
     public static final String MAIN_RECOMMEND = "MAIN_RECOMMEND"; // 点击推荐
     public static final String MAIN_TOP = "MAIN_TOP"; // 点击榜单
     public static final String MAIN_CLASS = "MAIN_CLASS"; // 点击分类
-    public static final String MAIN_BOOK_LIST = "MAIN_BOOK_LIST"; // 点击书单
+    public static final String MAIN_BOOKIST = "MAIN_BOOKIST"; // 点击书单
     public static final String MAIN_PERSONAL = "MAIN_PERSONAL"; // 点击个人中心
     public static final String MAIN_SEARCH = "MAIN_SEARCH"; // 点击搜索框
     public static final String MAIN_CACHEMANAGE = "MAIN_CACHEMANAGE"; // 缓存管理
@@ -39,7 +39,7 @@ public class EventPoint {
     public static final String MAIN_PREFERENCE = "MAIN_PREFERENCE";// 开屏选男女
 
 
-    /** ------------------SEARCH搜索页 对应的点位编码-------------------**/
+    /** ------------------SEARCH搜索页 对应的点位编码------------------- **/
     public static final String SEARCH_BAR = "SEARCH_BAR"; // 点击搜索框
     public static final String SEARCH_BARCLEAR = "SEARCH_BARCLEAR"; // 搜索词清空
     public static final String SEARCH_BARLIST = "SEARCH_BARLIST"; // 搜索框下拉历史词点击
@@ -53,20 +53,20 @@ public class EventPoint {
     public static final String SEARCH_BACK = "SEARCH_BACK"; // 屏幕左上方点击返回按钮
 
 
-    /** ------------------NORESULT搜索 无 结果页 对应的点位编码----------**/
+    /** ------------------NORESULT搜索 无 结果页 对应的点位编码---------- **/
     public static final String NORESULT_FEEDBACK = "NORESULT_FEEDBACK"; // 点击找书反馈
     public static final String NORESULT_BACK = "NORESULT_BACK"; // 返回
 
 
-    /** ------------------找书反馈页（对话框） 对应的点位编码-------------**/
+    /** ------------------找书反馈页（对话框） 对应的点位编码------------- **/
     public static final String FEEDBACK_SUBMIT = "FEEDBACK_SUBMIT"; // 点击提交按钮
 
 
-    /** ------------------上架通知 对应的点位编码       ----------------**/
+    /** ------------------上架通知 对应的点位编码       ---------------- **/
     public static final String SHELFNOTICE_READCLICK = "SHELFNOTICE_READCLICK"; // 点击阅读
 
 
-    /** ------------------书架页面 对应的点位编码       ----------------**/
+    /** ------------------书架页面 对应的点位编码       ---------------- **/
     public static final String SHELF_BOOKCLICK = "SHELF_BOOKCLICK"; // 书籍点击
     public static final String SHELF_TOBOOKCITY = "SHELF_TOBOOKCITY"; // 书架无书籍时，点击跳转书城
     public static final String SHELF_LONGTIMEBOOKSHELFEDIT = "SHELF_LONGTIMEBOOKSHELFEDIT"; // 长按编辑书架
@@ -79,19 +79,19 @@ public class EventPoint {
     public static final String SHELF_BANNERPOPUPCLOSE = "SHELF_BANNERPOPUPCLOSE"; // 活动弹窗关闭
 
 
-    /** ------------------书架排序弹窗 对应的点位编码  ------------------**/
+    /** ------------------书架排序弹窗 对应的点位编码  ------------------ **/
     public static final String SHELFSORT_CANCLE = "SHELFSORT_CANCLE"; // 取消
     public static final String SHELFSORT_BOOKSORT = "SHELFSORT_BOOKSORT"; // 排序
 
 
-    /** ------------------书架编辑页面 对应的点位编码   ----------------**/
+    /** ------------------书架编辑页面 对应的点位编码   ---------------- **/
     public static final String SHELFEDIT_SELECTALL = "SHELFEDIT_SELECTALL"; // 全选
     public static final String SHELFEDIT_DELETE = "SHELFEDIT_DELETE"; // 删除
     public static final String SHELFEDIT_CANCLE = "SHELFEDIT_CANCLE"; // 右上角取消
     public static final String SHELFEDIT_BACK = "SHELFEDIT_BACK"; // 屏幕左上方点击返回按钮
 
 
-    /** ------------------书籍详情页面 对应的点位编码   ----------------**/
+    /** ------------------书籍详情页面 对应的点位编码   ---------------- **/
     public static final String BOOOKDETAIL_ENTER = "BOOOKDETAIL_ENTER"; // 进入书籍详情页
     public static final String BOOOKDETAIL_INTRODUCTION = "BOOOKDETAIL_INTRODUCTION"; // 简介点击展开/收起
     public static final String BOOOKDETAIL_LATESTCHAPTER = "BOOOKDETAIL_LATESTCHAPTER"; // 点击最新章节（目录）
@@ -106,7 +106,7 @@ public class EventPoint {
     public static final String BOOOKDETAIL_CATALOG = "BOOOKDETAIL_CATALOG"; //书籍详情页查看目录点击
 
 
-    /** ------------------个人中心页面 对应的点位编码  ----------------**/
+    /** ------------------个人中心页面 对应的点位编码  ---------------- **/
     public static final String PERSONAL_NIGHTMODE = "PERSONAL_NIGHTMODE"; // 点击夜间模式
     public static final String PERSONAL_MORESET = "PERSONAL_MORESET"; // 点击更多设置
     public static final String PERSONAL_HELP = "PERSONAL_HELP"; // 点击帮助与反馈
@@ -124,14 +124,14 @@ public class EventPoint {
     public static final String PERSONAL_LOGOUT = "PERSONAL_LOGOUT"; // 退出登录
 
 
-    /** ------------------个人中心中更多设置页面 对应的点位编码---------**/
+    /** ------------------个人中心中更多设置页面 对应的点位编码--------- **/
     public static final String MORESET_PUSHSET = "MORESET_PUSHSET"; // 书籍更新推送开启与关闭
     public static final String MORESET_UMENGPUSHSET = "MORESET_UMENGPUSHSET"; // 友盟消息推送开启与关闭
     public static final String MORESET_PUSHAUDIO = "MORESET_PUSHAUDIO"; // 推送声音
     public static final String MORESET_BACK = "MORESET_BACK"; // 屏幕左上方点击返回按钮
 
 
-    /** -----------------------阅读 页面 对应的点位编码  -------------**/
+    /** -----------------------阅读 页面 对应的点位编码  ------------- **/
     public static final String READPAGE_LABELEDIT = "READPAGE_LABELEDIT"; // 添加书签(其他壳均在使用)
     public static final String READPAGE_ORIGINALLINK = "READPAGE_ORIGINALLINK"; // 点击源网页链接
     public static final String READPAGE_CACHE = "READPAGE_CACHE"; // 点击阅读页内缓存
@@ -151,7 +151,7 @@ public class EventPoint {
     public static final String READPAGE_SHARE = "READPAGE_SHARE"; // 分享
 
 
-    /** -----------------------阅读页设置页面 对应的点位编码-----------**/
+    /** -----------------------阅读页设置页面 对应的点位编码----------- **/
     public static final String READPAGESET_LIGHTEDIT = "READPAGESET_LIGHTEDIT"; // 点击亮度调整
     public static final String READPAGESET_SYSFOLLOW = "READPAGESET_SYSFOLLOW"; // 点击跟随系统
     public static final String READPAGESET_WORDSIZE = "READPAGESET_WORDSIZE"; // 点击字号增/减
@@ -170,14 +170,14 @@ public class EventPoint {
     public static final String READPAGESET_TTS = "READPAGESET_TTS"; // 点击听书按钮
 
 
-    /** -----------------------阅读页更多菜单中 对应的点位编码---------**/
+    /** -----------------------阅读页更多菜单中 对应的点位编码--------- **/
     public static final String READPAGEMORE_SOURCECHANGE = "READPAGEMORE_SOURCECHANGE"; // 换源
     public static final String READPAGEMORE_SOURCECHANGECONFIRM = "READPAGEMORE_SOURCECHANGECONFIRM"; // 换源确认
     public static final String READPAGEMORE_BOOKDETAIL = "READPAGEMORE_BOOKDETAIL"; // 书籍详情
     public static final String READPAGEMORE_FEEDBACK = "READPAGEMORE_FEEDBACK"; // 反馈
 
 
-    /** -----------------------缓存管理页面 对应的点位编码-------------**/
+    /** -----------------------缓存管理页面 对应的点位编码------------- **/
     public static final String CACHEMANAGE_BOOKCLICK = "CACHEMANAGE_BOOKCLICK"; // 书籍点击
     public static final String CACHEMANAGE_CACHEBUTTON = "CACHEMANAGE_CACHEBUTTON"; // 缓存按钮点击
     public static final String CACHEMANAGE_CACHEEDIT = "CACHEMANAGE_CACHEEDIT"; // 右上角编辑按钮点击
@@ -187,47 +187,47 @@ public class EventPoint {
     public static final String CACHEMANAGE_BACK = "CACHEMANAGE_BACK";
 
 
-    /** ------------------缓存编辑页面 对应的点位编码   ----------------**/
+    /** ------------------缓存编辑页面 对应的点位编码   ---------------- **/
     public static final String CHCHEEDIT_SELECTALL = "CHCHEEDIT_SELECTALL"; // 全选
     public static final String CHCHEEDIT_DELETE = "CHCHEEDIT_DELETE"; // 删除
     public static final String CHCHEEDIT_CANCLE = "CHCHEEDIT_DELETE"; // 右上角取消
     public static final String CHCHEEDIT_BACK = "CHCHEEDIT_BACK"; // 屏幕左上方点击返回按钮
 
 
-    /** -----------------------分类页面 对应的点位编码----------------**/
+    /** -----------------------分类页面 对应的点位编码---------------- **/
     public static final String CLASS_SEARCH = "CLASS_SEARCH"; // 点击搜索
     public static final String CLASS_SWITCHTAB = "CLASS_SWITCHTAB"; // 切换男女标签
 
 
-    /** -----------------------点击分类之后的一级页面 对应的点位编码----**/
+    /** -----------------------点击分类之后的一级页面 对应的点位编码---- **/
     public static final String FIRSTCLASS_SEARCH = "FIRSTCLASS_SEARCH"; // 点击搜索
     public static final String FIRSTCLASS_BACK = "FIRSTCLASS_BACK"; // 返回
 
 
-    /** -----------------------榜单页面 对应的点位编码----------------**/
+    /** -----------------------榜单页面 对应的点位编码---------------- **/
     public static final String TOP_SEARCH = "TOP_SEARCH"; // 点击搜索
 
 
-    /** -----------------------点击各排行榜之后的一级页面 对应的点位编码**/
+    /** -----------------------点击各排行榜之后的一级页面 对应的点位编码 **/
     public static final String FIRSTTOP_SEARCH = "FIRSTTOP_SEARCH"; // 点击搜索
     public static final String FIRSTTOP_BACK = "FIRSTTOP_BACK"; // 屏幕左上方点击返回按钮
 
 
-    /** -----------------------推荐/精选页面 对应的点位编码-----------**/
+    /** -----------------------推荐/精选页面 对应的点位编码----------- **/
     public static final String RECOMMEND_SEARCH = "RECOMMEND_SEARCH"; // 点击搜索
     public static final String RECOMMEND_DROPDOWN = "RECOMMEND_DROPDOWN"; // 下拉刷新
 
 
-    /** -----------------------一级推荐页面 对应的点位编码-----------**/
+    /** -----------------------一级推荐页面 对应的点位编码----------- **/
     public static final String FIRSTRECOMMEND_SEARCH = "FIRSTRECOMMEND_SEARCH"; // 搜索
     public static final String FIRSTRECOMMEND_BACK = "FIRSTRECOMMEND_BACK"; // 返回
 
 
-    /** -----------------------使用协议页面 对应的点位编码-----------**/
+    /** -----------------------使用协议页面 对应的点位编码----------- **/
     public static final String PROCTCOL_BACK = "PROCTCOL_BACK"; // 返回
 
 
-    /** -----------------------阅读完结页面 对应的点位编码-----------**/
+    /** -----------------------阅读完结页面 对应的点位编码----------- **/
     public static final String READFINISH_REPLACE = "READFINISH_REPLACE"; // 换一换
     public static final String READFINISH_RECOMMENDEDBOOK = "READFINISH_RECOMMENDEDBOOK"; // 点击推荐书籍
     public static final String READFINISH_BACK = "READFINISH_BACK"; // 返回
@@ -237,47 +237,47 @@ public class EventPoint {
     public static final String READFINISH_SOURCECHANGE = "READFINISH_SOURCECHANGE"; // 点击换源
 
 
-    /** -----------------------登录页面统计 对应的点位编码-----------**/
+    /** -----------------------登录页面统计 对应的点位编码----------- **/
     public static final String LOGIN_BACK = "LOGIN_BACK"; // 返回
     public static final String LOGIN_UIDDIFFUSER = "LOGIN_UIDDIFFUSER"; // 不同用户在同设备登录
 
 
-    /** -----------------------作者主页 对应的点位编码--------------**/
+    /** -----------------------作者主页 对应的点位编码-------------- **/
     public static final String AUTHORPAGE_BACK = "AUTHORPAGE_BACK"; // 返回
     public static final String AUTHORPAGE_SEARCH = "AUTHORPAGE_SEARCH"; //
 
 
-    /** -----------------------个人中心浏览历史 对应的点位编码-------**/
+    /** -----------------------个人中心浏览历史 对应的点位编码------- **/
     public static final String PERHISTORY_BACK = "PERHISTORY_BACK"; // 返回
 
 
-    /** -----------------------书籍目录页 对应的点位编码------------**/
+    /** -----------------------书籍目录页 对应的点位编码------------ **/
     public static final String BOOKCATALOG_CATALOGCHAPTER = "BOOKCATALOG_CATALOGCHAPTER"; // 目录中点击某章节
     public static final String BOOKCATALOG_TRANSCODEREAD = "BOOKCATALOG_TRANSCODEREAD"; // 点击转码阅读
     public static final String BOOKCATALOG_BACK = "BOOKCATALOG_BACK"; // 书籍目录返回
 
 
-    /** -----------------------书籍列表 对应的点位编码------------**/
+    /** -----------------------书籍列表 对应的点位编码------------ **/
     public static final String BOOKLIST_ENTER = "BOOKLIST_ENTER"; // 消息推送点击进入书籍列表
 
     public static final String SHAREPAGE_SHARE = "SHAREPAGE_SHARE"; // 分享弹窗  分享
     public static final String SHAREPAGE_CANCEL = "SHAREPAGE_CANCEL"; // 分享弹窗  取消
 
 
-    /** -----------------------网页收藏列表 对应的点位编码------------**/
+    /** -----------------------网页收藏列表 对应的点位编码------------ **/
     public static final String WEBCOLLECT_BACK = "WEBCOLLECT_BACK"; // 返回
     public static final String WEBCOLLECT_CACHEEDIT = "WEBCOLLECT_CACHEEDIT"; // 删除
     public static final String WEBCOLLECT_LINKCLICK = "WEBCOLLECT_LINKCLICK"; // 列表点击
     public static final String WEBCOLLECT_LINKLIST = "WEBCOLLECT_LINKLIST"; // 页面打开上传用户收藏数据
 
 
-    /** -----------------------网页收藏编辑功能 对应的点位编码------------**/
+    /** -----------------------网页收藏编辑功能 对应的点位编码------------ **/
     public static final String WEBCHCHEEDIT_SELECTALL = "WEBCHCHEEDIT_SELECTALL"; // 全选
     public static final String WEBCHCHEEDIT_DELETE = "WEBCHCHEEDIT_DELETE"; // 删除
     public static final String WEBCHCHEEDIT_CANCLE = "WEBCHCHEEDIT_CANCLE"; // 取消
 
 
-    /** -----------------------全网搜结果页面 对应的点位编码------------**/
+    /** -----------------------全网搜结果页面 对应的点位编码------------ **/
     public static final String WEBSEARCHRESULT_ENTER = "WEBSEARCHRESULT_ENTER"; // 进入页面
     public static final String WEBSEARCHRESULT_LINKCLICK = "WEBSEARCHRESULT_LINKCLICK"; // 列表点击
     public static final String WEBSEARCHRESULT_BACK = "WEBSEARCHRESULT_BACK"; // 返回
@@ -285,6 +285,13 @@ public class EventPoint {
     public static final String WEBSEARCHRESULT_WEBCOLLECT = "WEBSEARCHRESULT_WEBCOLLECT"; // 网页收藏功能
     public static final String WEBSEARCHRESULT_CLOSE = "WEBSEARCHRESULT_CLOSE"; // 网页一键关闭
 
+
+    /** -----------------------书单页面 对应的点位编码------------ **/
+    public static final String BOOKLISTRECOMMEND_SEARCH = "BOOKLISTRECOMMEND_SEARCH"; // 书单页点击搜索框
+
+    /** -----------------------书单详情页面 对应的点位编码------------ **/
+    public static final String BOOKLISTDETAIL_SEARCH = "BOOKLISTDETAIL_SEARCH"; // 书单详情页点击搜索框
+    public static final String BOOKLISTDETAIL_BACK = "BOOKLISTDETAIL_BACK"; // 书单详情页点击返回
 
 
 }

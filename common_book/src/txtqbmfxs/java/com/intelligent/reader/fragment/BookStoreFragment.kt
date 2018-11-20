@@ -23,6 +23,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.loge
+import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
 
@@ -140,34 +141,34 @@ open class BookStoreFragment : Fragment() {
                 if (fragmentList.size == 3) {
                     when (currentPosition) {
                         0 -> {
-                            searchClickListener?.getCurrent(2)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_RECOMMEND)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "recommend")?.apply()
                         }
                         1 -> {
-                            searchClickListener?.getCurrent(3)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_RANK)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "top")?.apply()
                         }
                         2 -> {
-                            searchClickListener?.getCurrent(4)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_CLASS)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "class")?.apply()
                         }
                     }
                 } else {
                     when (currentPosition) {
                         0 -> {
-                            searchClickListener?.getCurrent(2)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_RECOMMEND)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "recommend")?.apply()
                         }
                         1 -> {
-                            searchClickListener?.getCurrent(3)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_RANK)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "top")?.apply()
                         }
                         2 -> {
-                            searchClickListener?.getCurrent(5)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_BOOKLIST)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "booklist")?.apply()
                         }
                         3 -> {
-                            searchClickListener?.getCurrent(4)
+                            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_CLASS)
                             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "class")?.apply()
                         }
                     }
@@ -189,7 +190,7 @@ open class BookStoreFragment : Fragment() {
 
             DyStatService.onEvent(EventPoint.MAIN_RECOMMEND)
 
-            searchClickListener?.getCurrent(2)
+            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_RECOMMEND)
         }
 
         tv_book_store_ranking?.setOnClickListener {
@@ -199,7 +200,7 @@ open class BookStoreFragment : Fragment() {
 
             DyStatService.onEvent(EventPoint.MAIN_TOP)
 
-            searchClickListener?.getCurrent(3)
+            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_RANK)
         }
 
         tv_book_store_list?.setOnClickListener {
@@ -207,9 +208,9 @@ open class BookStoreFragment : Fragment() {
 
             sp?.edit()?.putString(Constants.FINDBOOK_SEARCH, "booklist")?.apply()
 
-            DyStatService.onEvent(EventPoint.MAIN_BOOK_LIST)
+            DyStatService.onEvent(EventPoint.MAIN_BOOKIST)
 
-            searchClickListener?.getCurrent(2)
+            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_BOOKLIST)
         }
 
         tv_book_store_category?.setOnClickListener {
@@ -219,7 +220,7 @@ open class BookStoreFragment : Fragment() {
 
             DyStatService.onEvent(EventPoint.MAIN_CLASS)
 
-            searchClickListener?.getCurrent(4)
+            searchClickListener?.getCurrent(HomeLogger.SEARCH_TYPE_CLASS)
         }
     }
 
