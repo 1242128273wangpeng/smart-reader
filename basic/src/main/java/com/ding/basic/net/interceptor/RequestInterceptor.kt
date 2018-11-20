@@ -41,8 +41,8 @@ class RequestInterceptor : Interceptor {
         }
 
         requestParameters["cityCode"] = ParameterConfig.cityCode
-        requestParameters["latitude"] = ParameterConfig.latitude.toString()
-        requestParameters["longitude"] = ParameterConfig.longitude.toString()
+        requestParameters["latitude"] = ParameterConfig.latitude
+        requestParameters["longitude"] = ParameterConfig.longitude
 
         if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
             requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")

@@ -17,6 +17,17 @@ class SPKey {
             return "onlineconfig_agent_online_setting_" + buidCofig.getPackageName()
         }
 
+        /***
+         * 地理位置信息存储
+         * **/
+        //用于存储用户的城市编码
+        const val LOCATION_CITY_CODE = "location_city_code"
+        //用于存储用户的纬度
+        const val LOCATION_LATITUDE = "location_latitude"
+        //用于存储用户的经度
+        const val LOCATION_LONGITUDE = "location_longitude"
+
+
 
         /***
          * WebView静态资源拦截规则

@@ -2,39 +2,46 @@ package net.lzbook.kit.utils
 
 import android.content.Context
 import android.text.TextUtils
-
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
+import com.ding.basic.bean.Interest
 import com.ding.basic.config.ParameterConfig
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import com.dy.media.MediaConfig
-
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.utils.book.LoadDataManager
 import net.lzbook.kit.utils.logger.AppLog
-import com.ding.basic.util.sp.SPKey
-import com.ding.basic.util.sp.SPUtils
 
 /**
- * 屏蔽管理类
+ * Desc 屏蔽管理类
+ * Author JoannChen
+ * Mail yongzuo_chen@dingyuegroup.cn
+ * Date 2018/11/20 0019 15:53
  */
-class ShieldManager(//声明定位回调监听器
-        private val context: Context) {
+class ShieldManager(private val context: Context) {
+
     //声明mLocationOption对象
     var mLocationOption: AMapLocationClientOption? = null
+
     //声明AMapLocationClient类对象
     var mLocationClient: AMapLocationClient? = null
-    var mLocationListener: AMapLocationListener = AMapLocationListener { aMapLocation ->
+
+    private var mLocationListener: AMapLocationListener = AMapLocationListener { aMapLocation ->
         if (aMapLocation != null) {
             if (aMapLocation.errorCode == 0) {
                 //定位成功回调信息，设置相关消息
                 Constants.latitude = aMapLocation.latitude
                 ParameterConfig.latitude = aMapLocation.altitude.toString()
-                
+
                 Constants.longitude = aMapLocation.longitude
                 ParameterConfig.longitude = aMapLocation.longitude.toString()
-                
+
                 Constants.adCode = aMapLocation.adCode
                 ParameterConfig.areaCode = aMapLocation.adCode
 
@@ -55,13 +62,12 @@ class ShieldManager(//声明定位回调监听器
                         + "(" + Constants.longitude + ", " + Constants.latitude + ")")
 
 
-                val cityCode = aMapLocation.cityCode
-                val latitude = aMapLocation.latitude.toString()
-                val longitude = aMapLocation.longitude.toString()
+                val latitude = Constants.latitude.toString()
+                val longitude = Constants.longitude.toString()
 
                 if (!Constants.isHideAD && MediaConfig.getConfig() != null) {
-                    if (!TextUtils.isEmpty(cityCode)) {
-                        MediaConfig.setCityCode(cityCode)
+                    if (!TextUtils.isEmpty(Constants.cityCode)) {
+                        MediaConfig.setCityCode(Constants.cityCode)
                     }
 
                     MediaConfig.setCityName(Constants.adCityInfo)
@@ -78,6 +84,8 @@ class ShieldManager(//声明定位回调监听器
                 }
 
                 stopAchieveUserLocation()
+                // 统计SDK初始化位置信息
+                DyStatService.setLocationInfo(Constants.longitude, Constants.latitude, Constants.adCityInfo, Constants.cityCode, Constants.adLocationDetail)
             } else {
                 AppLog.e("AmapError", "location Error, ErrCode:" + aMapLocation.errorCode + ", errInfo:" + aMapLocation.errorInfo)
             }
@@ -95,10 +103,42 @@ class ShieldManager(//声明定位回调监听器
         val loadDataManager = LoadDataManager(context)
         if (!SPUtils.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS, false)) {
             // 首次安装新用户添加默认书籍
-            loadDataManager.addDefaultBooks(Constants.SGENDER)
+            val hasSelectInterest = SPUtils.getDefaultSharedInt(SPKey.HAS_SELECT_INTEREST, 0)
+            when (hasSelectInterest) {
+                -1 -> // 选择兴趣时，选择跳过
+                    loadDataManager.addDefaultBooksWithInterest("", "")
+                0 -> // 无选兴趣功能，执行原有逻辑
+                    loadDataManager.addDefaultBooks(ParameterConfig.GENDER_TYPE)
+                1 -> {
+                    // 获取用户选择的兴趣
+                    val list = Gson().fromJson<List<Interest>>(
+                            SPUtils.getDefaultSharedString(SPKey.SELECTED_INTEREST_DATA, ""),
+                            object : TypeToken<List<Interest>>() {
+
+                            }.type)
+                    val labelOne = StringBuilder()
+                    val labelTwo = StringBuilder()
+                    for (item in list) {
+                        if (item.type == 1) {
+                            labelOne.append(item.name).append(",")
+                        } else {
+                            labelTwo.append(item.name).append(",")
+                        }
+                    }
+                    // 移除最后 逗号
+                    if (labelOne.isNotEmpty() && labelOne.lastIndexOf(",") == labelOne.length - 1) {
+                        labelOne.deleteCharAt(labelOne.length - 1)
+                    }
+                    if (labelTwo.isNotEmpty() && labelTwo.lastIndexOf(",") == labelTwo.length - 1) {
+                        labelTwo.deleteCharAt(labelTwo.length - 1)
+                    }
+
+                    loadDataManager.addDefaultBooksWithInterest(labelOne.toString(),
+                            labelTwo.toString())
+                }
+            }
         }
     }
-
 
     fun startAchieveUserLocation() {
         //初始化定位
@@ -126,13 +166,8 @@ class ShieldManager(//声明定位回调监听器
         mLocationClient?.startLocation()
     }
 
-    fun stopAchieveUserLocation() {
+    private fun stopAchieveUserLocation() {
         mLocationClient?.onDestroy()
-    }
-
-    companion object {
-
-        private val TAG = ShieldManager::class.java.simpleName
     }
 
 }

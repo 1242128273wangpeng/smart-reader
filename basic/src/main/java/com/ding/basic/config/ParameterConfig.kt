@@ -9,7 +9,6 @@ import com.ding.basic.util.sp.SPUtils
  * Mail crazylei911228@gmail.com
  * Date 2018/10/19 15:23
  */
-
 object ParameterConfig {
 
     /***
@@ -18,10 +17,8 @@ object ParameterConfig {
     //城市信息
     var city = ""
 
-
     //地区编号
     var areaCode = ""
-
 
     //城市编号
     var cityCode = ""
@@ -29,19 +26,13 @@ object ParameterConfig {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.LOCATION_CITY_CODE)
-                field = if (value.isNotEmpty()) {
-                    value
-                } else {
-                    ""
-                }
-                field
+                SPUtils.getDefaultSharedString(SPKey.LOCATION_CITY_CODE)
             }
         }
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
-                SPUtils.insertSharedString(SPKey.LOCATION_CITY_CODE, value)
+                SPUtils.putDefaultSharedString(SPKey.LOCATION_CITY_CODE, value)
             }
         }
 
@@ -52,7 +43,7 @@ object ParameterConfig {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.LOCATION_LATITUDE)
+                val value = SPUtils.getDefaultSharedString(SPKey.LOCATION_LATITUDE)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -64,7 +55,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
-                SPUtils.insertSharedString(SPKey.LOCATION_LATITUDE, value)
+                SPUtils.putDefaultSharedString(SPKey.LOCATION_LATITUDE, value)
             }
         }
 
@@ -75,7 +66,7 @@ object ParameterConfig {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.LOCATION_LONGITUDE)
+                val value = SPUtils.getDefaultSharedString(SPKey.LOCATION_LONGITUDE)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -87,7 +78,7 @@ object ParameterConfig {
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
-                SPUtils.insertSharedString(SPKey.LOCATION_LONGITUDE, value)
+                SPUtils.putDefaultSharedString(SPKey.LOCATION_LONGITUDE, value)
             }
         }
 
@@ -97,27 +88,28 @@ object ParameterConfig {
 
 
 
-
-
-
-
-
-
     /***
      * 用户开屏选择男女频的数据
      * **/
-    //男频标识
-    var GENDER_BOY = 0x81
-
-    //女频标识
-    var GENDER_GIRL = 0x82
 
     //没有选男女的壳默认不传sex字段
-    var GENDER_NONE = 0x83
+    @JvmField
+    var GENDER_NONE = -1
+
+    //男频标识
+    @JvmField
+    var GENDER_BOY = 1
+
+    //女频标识
+    @JvmField
+    var GENDER_GIRL = 2
 
     //默认标识（跳过选项）
-    var GENDER_DEFAULT = 0x80
+    @JvmField
+    var GENDER_DEFAULT = 0
 
     //男女频数据
+    @JvmField
     var GENDER_TYPE = GENDER_NONE
+
 }
