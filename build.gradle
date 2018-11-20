@@ -3,7 +3,7 @@ apply from: "config.gradle"
 buildscript {
     repositories {
         maven {
-            url 'http://20.20.56.135:8081/repository/maven-public/'
+            url 'http://nexus.dingyueads.com/content/groups/public/'
         }
 
         jcenter()
@@ -30,7 +30,7 @@ allprojects {
         }
 
         maven {
-            url 'http://20.20.56.135:8081/repository/maven-public/'
+            url 'http://nexus.dingyueads.com/content/groups/public/'
         }
 
         google()

@@ -35,9 +35,9 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
     override fun onClickFixBook(activity: Activity) {
         val data = java.util.HashMap<String, String>()
-        data.put("bookid", ReaderStatus.book.book_id!!)
+        data.put("bookid", ReaderStatus.book.book_id)
         if (ReaderStatus.currentChapter != null) {
-            data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
+            data.put("chapterid", ReaderStatus.currentChapter?.chapter_id ?: "")
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.DIRECTORYREPAIR, data)
     }
@@ -74,7 +74,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
         if (type == 1) {
             val data = java.util.HashMap<String, String>()
             ReaderStatus.book?.let {
-                data.put("bookid", it.book_id!!)
+                data.put("bookid", it.book_id)
             }
             ReaderStatus.chapterId?.let {
                 data.put("chapterid", it)
@@ -86,7 +86,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         Observable.create<List<Bookmark>> { emitter: ObservableEmitter<List<Bookmark>>? ->
 
-            val list = requestRepositoryFactory.getBookMarks(ReaderStatus.book.book_id!!)
+            val list = requestRepositoryFactory.getBookMarks(ReaderStatus.book.book_id)
 
             emitter?.onNext(list)
             emitter?.onComplete()
@@ -116,7 +116,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         val data = java.util.HashMap<String, String>()
         data.put("bookid", ReaderStatus.book.book_id)
-        data.put("chapterid", chapter.chapter_id!!)
+        data.put("chapterid", chapter.chapter_id)
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.CATALOG1, data)
 
     }
@@ -139,7 +139,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
         val data = java.util.HashMap<String, String>()
         data.put("bookid", ReaderStatus.book.book_id)
         if (ReaderStatus.currentChapter != null) {
-            data.put("chapterid", ReaderStatus.currentChapter!!.chapter_id!!)
+            data.put("chapterid", ReaderStatus.currentChapter?.chapter_id ?: "")
         }
         StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READPAGE_PAGE, StartLogClickUtil.BOOKMARK, data)
 
@@ -150,7 +150,7 @@ class CatalogMarkPresenter(var view: CatalogMark.View?) : CatalogMark.Presenter 
 
         Observable.create<Boolean> { e: ObservableEmitter<Boolean>? ->
 
-            requestRepositoryFactory.deleteBookMark(mark.book_id!!, mark.sequence, mark.offset)
+            requestRepositoryFactory.deleteBookMark(mark.book_id, mark.sequence, mark.offset)
 
             e?.onNext(true)
             e?.onComplete()

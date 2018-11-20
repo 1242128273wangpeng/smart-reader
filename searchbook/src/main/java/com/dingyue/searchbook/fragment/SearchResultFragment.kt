@@ -105,7 +105,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     private fun initWebClient() {
-
         if (customWebClient != null) {
             customWebClient = null
         }

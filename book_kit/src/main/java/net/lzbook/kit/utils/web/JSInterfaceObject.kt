@@ -334,7 +334,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
         book.score = recommend.score
         book.author = recommend.authorName
         book.status = recommend.serialStatus
-        book.img_url = recommend.sourceImageUrl
+        book.img_url = recommend.bookImgUrl
         book.sub_genre = recommend.subGenre
         book.book_type = recommend.bookType
         book.word_count = recommend.wordCountDescp
