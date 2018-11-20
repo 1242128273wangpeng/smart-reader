@@ -15,6 +15,7 @@ import com.dingyue.bookshelf.view.RemoveMenuPopup
 import com.dy.media.MediaControl
 import kotlinx.android.synthetic.txtqbmfxs.bookshelf_refresh_header.view.*
 import kotlinx.android.synthetic.txtqbmfxs.frag_bookshelf.*
+import kotlinx.android.synthetic.txtqbmfxs.view_bookshelf_header_remove.*
 import net.lzbook.kit.bean.BookUpdateResult
 import net.lzbook.kit.bean.UpdateCallBack
 import net.lzbook.kit.constants.Constants
@@ -46,6 +47,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     private var latestLoadDataTime: Long = 0
 
     private var bookShelfInterface: BookShelfInterface? = null
+    private var onIsShowHomePageTitle: OnIsShowHomePageTitle? = null
 
     private val refreshHeader by lazy {
         LayoutInflater.from(requireActivity()).inflate(R.layout.bookshelf_refresh_header, null)
@@ -108,6 +110,7 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         super.onAttach(context)
         try {
             bookShelfInterface = context as BookShelfInterface
+            onIsShowHomePageTitle = context as OnIsShowHomePageTitle
         } catch (classCastException: ClassCastException) {
             throw ClassCastException(context.toString() + " must implement BookShelfInterface")
         }
@@ -159,6 +162,16 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
             // 点击去书城
             bookShelfInterface?.changeHomePagerIndex(1)
             BookShelfLogger.uploadBookShelfToBookCity()
+        }
+
+        img_remove_back.setOnClickListener {
+            dismissRemoveMenu()
+            BookShelfLogger.uploadBookShelfEditBack()
+        }
+
+        txt_remove_cancel.setOnClickListener {
+            dismissRemoveMenu()
+            BookShelfLogger.uploadBookShelfEditCancel()
         }
 
     }
@@ -227,10 +240,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     fun updateUI() {
         if (activity != null && !requireActivity().isFinishing) {
             val isShowAD = !bookShelfAdapter.isRemove && isResumed && !Constants.isHideAD
-                bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
-                uiThread {
-                    bookShelfAdapter.notifyDataSetChanged()
-                }
+            bookShelfPresenter.queryBookListAndAd(requireActivity(), isShowAD, true)
+            uiThread {
+                bookShelfAdapter.notifyDataSetChanged()
+            }
         }
     }
 
@@ -373,6 +386,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         removeMenuPopup.show(rl_content)
 
         img_download_float.visibility = View.GONE
+        bookshelf_header_remove.visibility = View.VISIBLE
+        onIsShowHomePageTitle?.hideTitle()
     }
 
     override fun dismissRemoveMenu() {
@@ -393,6 +408,8 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
         }
 
         img_download_float.visibility = View.VISIBLE
+        bookshelf_header_remove.visibility = View.GONE
+        onIsShowHomePageTitle?.showTitle()
     }
 
     override fun isRemoveMenuShow(): Boolean = bookShelfAdapter.isRemove
@@ -416,4 +433,10 @@ class BookShelfFragment : Fragment(), UpdateCallBack, BookShelfView, MenuManager
     companion object {
         private const val PULL_REFRESH_DELAY = 30 * 1000
     }
+
+    interface OnIsShowHomePageTitle {
+        fun showTitle()
+        fun hideTitle()
+    }
+
 }

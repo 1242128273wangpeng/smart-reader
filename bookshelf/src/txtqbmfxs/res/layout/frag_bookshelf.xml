@@ -5,12 +5,19 @@
     android:id="@+id/rl_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFAFAFA"
+    android:background="@color/base_bg"
     tools:ignore="RtlHardcoded">
+
+    <include
+        android:id="@+id/bookshelf_header_remove"
+        layout="@layout/view_bookshelf_header_remove"
+        android:visibility="gone"/>
+
 
     <net.lzbook.kit.ui.widget.pulllist.SuperSwipeRefreshLayout
         android:id="@+id/srl_refresh"
         android:layout_width="match_parent"
+        android:layout_below="@id/bookshelf_header_remove"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView

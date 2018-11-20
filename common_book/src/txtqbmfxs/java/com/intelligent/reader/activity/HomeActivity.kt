@@ -60,7 +60,17 @@ import java.io.File
  */
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener,
-        HomeView, BookShelfInterface, View.OnClickListener, BookStoreFragment.SearchClickListener {
+        HomeView, BookShelfInterface, View.OnClickListener, BookStoreFragment.SearchClickListener,
+        BookShelfFragment.OnIsShowHomePageTitle {
+
+    override fun showTitle() {
+        home_fragment_head.visibility = View.VISIBLE
+    }
+
+    override fun hideTitle() {
+        home_fragment_head.visibility = View.GONE
+    }
+
 
     private var homePresenter: HomePresenter? = null
     private var isClosed = false
