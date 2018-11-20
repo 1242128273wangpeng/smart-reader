@@ -1,6 +1,7 @@
 package com.dy.reader.setting
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.*
 import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
@@ -11,6 +12,7 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.helper.AppHelper
+import com.dy.reader.page.GLPage
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.util.ThemeUtil
@@ -199,7 +201,8 @@ class ReaderSettings {
     fun clear() {
         save()
         needNotify = false
-        kraftBitmap = null
+        kraftBitmapLandscape = null
+        kraftBitmapPortrait = null
     }
 
     @SerializedName(value = "animation")
@@ -347,13 +350,28 @@ class ReaderSettings {
     @Transient
     var backgroundColorBlue = Color.blue(Color.GRAY) / 255F
         private set
-
     @Transient
-    var kraftBitmap: Bitmap? = null
+    var kraftBitmapLandscape: Bitmap? = null
         private set
         get() {
             if (field == null) {
-                field = readBitmap(R.raw.read_page_bg_default)
+                val origin = readBitmap(R.raw.read_page_bg_default)
+                val matrix = Matrix()
+                matrix.postScale(AppHelper.screenWidth * 1.0f / origin!!.width, AppHelper.screenHeight * 1.0f / origin!!.height)
+                matrix.postRotate(180f)
+                field = Bitmap.createBitmap(origin, 0, 0, origin.width, origin.height, matrix, false)
+            }
+            return field
+        }
+    @Transient
+    var kraftBitmapPortrait: Bitmap? = null
+        private set
+        get() {
+            if (field == null) {
+                val origin = readBitmap(R.raw.read_page_bg_default)
+                val matrix = Matrix()
+                matrix.postScale(AppHelper.screenWidth * 1.0f / origin!!.width, AppHelper.screenHeight * 1.0f / origin!!.height)
+                field = Bitmap.createBitmap(origin, 0, 0, origin.width, origin.height, matrix, false)
             }
             return field
         }
@@ -491,7 +509,8 @@ class ReaderSettings {
         }
 
     private fun refreshModeParams() {
-        kraftBitmap = null
+        kraftBitmapLandscape = null
+        kraftBitmapPortrait = null
         blueBitmapLandscape = null
         blueBitmapPortrait = null
         pinkBitmapLandscape = null
@@ -528,8 +547,11 @@ class ReaderSettings {
     }
 
     private fun createBaseBitmap(): Bitmap {
-        return Bitmap.createBitmap(AppHelper.screenWidth, AppHelper.screenHeight,
-                Bitmap.Config.RGB_565)
+        return if (GLPage.mOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            Bitmap.createBitmap(AppHelper.screenWidth, AppHelper.screenHeight, Bitmap.Config.RGB_565)
+        } else {
+            Bitmap.createBitmap(AppHelper.screenHeight, AppHelper.screenWidth, Bitmap.Config.RGB_565)
+        }
     }
 
     private fun createBlueBitmap(): Bitmap? {

@@ -97,7 +97,11 @@ object ThemeUtil {
     fun getModePrimaryBackground(resources: Resources, view: View?) {
         when (readerSettings.readThemeMode) {// 牛皮纸
             51 -> {
-                view?.setBackgroundDrawable(BitmapDrawable(ReaderSettings.instance.kraftBitmap))
+                view?.setBackgroundDrawable(BitmapDrawable(if (ReaderSettings.instance.isLandscape) {
+                    ReaderSettings.instance.kraftBitmapLandscape
+                } else {
+                    ReaderSettings.instance.kraftBitmapPortrait
+                }))
             }
             511 -> {
                 val bitmap = if (ReaderSettings.instance.isLandscape) {

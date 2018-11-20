@@ -36,7 +36,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
         val lock = GLPage::class.java
         var semaphore = Semaphore(1, true)
 
-        private var mOrientation = Configuration.ORIENTATION_UNDEFINED
+        var mOrientation = Configuration.ORIENTATION_UNDEFINED
 
         private var bitmap: Bitmap? = null
         private var canvas: Canvas? = null
@@ -274,25 +274,52 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
 
             when (ReaderSettings.instance.readThemeMode) {
                 51 -> {
-                    ReaderSettings.instance.kraftBitmap?.let {
-                        canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
-                                Rect(0, 0, canvas?.width ?: 0, canvas?.height ?: 0), null)
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.kraftBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.kraftBitmapPortrait
                     }
+                    setBitmap(bitmap)
                 }
                 511 -> {
-                    setBitmap(ReaderSettings.instance.blueBitmapLandscape, ReaderSettings.instance.blueBitmapPortrait)
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.blueBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.blueBitmapPortrait
+                    }
+                    setBitmap(bitmap)
                 }
                 512 -> {
-                    setBitmap(ReaderSettings.instance.pinkBitmapLandscape, ReaderSettings.instance.pinkBitmapPortrait)
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.pinkBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.pinkBitmapPortrait
+                    }
+                    setBitmap(bitmap)
                 }
                 513 -> {
-                    setBitmap(ReaderSettings.instance.greenBitmapLandscape, ReaderSettings.instance.greenBitmapPortrait)
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.greenBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.greenBitmapPortrait
+                    }
+                    setBitmap(bitmap)
                 }
                 514 -> {
-                    setBitmap(ReaderSettings.instance.darkBitmapLandscape, ReaderSettings.instance.darkBitmapPortrait)
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.darkBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.darkBitmapPortrait
+                    }
+                    setBitmap(bitmap)
                 }
                 515 -> {
-                    setBitmap(ReaderSettings.instance.dimBitmapLandscape, ReaderSettings.instance.dimBitmapPortrait)
+                    val bitmap = if (ReaderSettings.instance.isLandscape) {
+                        ReaderSettings.instance.dimBitmapLandscape
+                    } else {
+                        ReaderSettings.instance.dimBitmapPortrait
+                    }
+                    setBitmap(bitmap)
                 }
                 else -> {
                     canvas?.drawColor(ReaderSettings.instance.backgroundColor)
@@ -311,12 +338,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
     /**
      * 设置横竖屏Bitmap
      */
-    private fun setBitmap(landscapeBitmap: Bitmap?, portraitBitmap: Bitmap?) {
-        val bitmap = if (ReaderSettings.instance.isLandscape) {
-            landscapeBitmap
-        } else {
-            portraitBitmap
-        }
+    private fun setBitmap(bitmap: Bitmap?) {
         bitmap?.let {
             canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
                     Rect(0, 0, canvas?.width ?: 0, canvas?.height ?: 0), null)
