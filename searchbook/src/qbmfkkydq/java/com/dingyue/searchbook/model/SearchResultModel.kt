@@ -241,19 +241,14 @@ class SearchResultModel {
                 }
 
             } else {
-                val params = HashMap<String, String>()
-                params.put("keyword", searchWord)
-                params.put("searchType", searchType)
-                params.put("filter_type", filterType)
-                params.put("filter_word", filterWord)
-                params.put("sort_type", sortType)
-                params.put("wordType", searchType)
-                params.put("searchEmpty", "1")
-
-                mUrl = try {
-                    Config.webBaseUrl + WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
-                } catch (exception: Exception) {
-                    Config.webBaseUrl + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                mUrl = if (mUrl.isNullOrEmpty()) {
+                    try {
+                        Config.webBaseUrl + WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                    } catch (exception: Exception) {
+                        Config.webBaseUrl + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                    }
+                } else {
+                    String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
                 }
             }
         }

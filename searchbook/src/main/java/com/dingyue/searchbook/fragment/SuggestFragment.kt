@@ -72,10 +72,13 @@ class SuggestFragment : Fragment(), ISuggestView {
         if (key.isNotEmpty() && key != mKeyWord) {
 
             try {
-                val adapter = listView.adapter as SuggestAdapter
+                if (listView.adapter != null) {
+                    val adapter = listView.adapter as SuggestAdapter
 
-                adapter.clear()
-                adapter.notifyDataSetChanged()
+                    adapter.clear()
+                    adapter.notifyDataSetChanged()
+                }
+
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
