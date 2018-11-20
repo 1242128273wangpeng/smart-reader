@@ -238,7 +238,7 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                             }
                             return@runOnMain
                         }
-                    }catch (e:Throwable){
+                    } catch (e: Throwable) {
                         e.printStackTrace()
                     }
                 }
@@ -276,59 +276,23 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
                 51 -> {
                     ReaderSettings.instance.kraftBitmap?.let {
                         canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
-                                Rect(0, 0, canvas!!.width, canvas!!.height),
-                                null)
+                                Rect(0, 0, canvas?.width ?: 0, canvas?.height ?: 0), null)
                     }
                 }
                 511 -> {
-                    val bitmap = if (ReaderSettings.instance.isLandscape) {
-                        ReaderSettings.instance.blueBitmapLandscape
-                    } else {
-                        ReaderSettings.instance.blueBitmapPortrait
-                    }
-                    bitmap?.let {
-                        canvas?.drawBitmap(it, 0F, 0F, null)
-                    }
+                    setBitmap(ReaderSettings.instance.blueBitmapLandscape, ReaderSettings.instance.blueBitmapPortrait)
                 }
                 512 -> {
-                    val bitmap = if (ReaderSettings.instance.isLandscape) {
-                        ReaderSettings.instance.pinkBitmapLandscape
-                    } else {
-                        ReaderSettings.instance.pinkBitmapPortrait
-                    }
-                    bitmap?.let {
-                        canvas?.drawBitmap(it, 0F, 0F, null)
-                    }
+                    setBitmap(ReaderSettings.instance.pinkBitmapLandscape, ReaderSettings.instance.pinkBitmapPortrait)
                 }
                 513 -> {
-                    val bitmap = if (ReaderSettings.instance.isLandscape) {
-                        ReaderSettings.instance.greenBitmapLandscape
-                    } else {
-                        ReaderSettings.instance.greenBitmapPortrait
-                    }
-                    bitmap?.let {
-                        canvas?.drawBitmap(it, 0F, 0F, null)
-                    }
+                    setBitmap(ReaderSettings.instance.greenBitmapLandscape, ReaderSettings.instance.greenBitmapPortrait)
                 }
                 514 -> {
-                    val bitmap = if (ReaderSettings.instance.isLandscape) {
-                        ReaderSettings.instance.darkBitmapLandscape
-                    } else {
-                        ReaderSettings.instance.darkBitmapPortrait
-                    }
-                    bitmap?.let {
-                        canvas?.drawBitmap(it, 0F, 0F, null)
-                    }
+                    setBitmap(ReaderSettings.instance.darkBitmapLandscape, ReaderSettings.instance.darkBitmapPortrait)
                 }
                 515 -> {
-                    val bitmap = if (ReaderSettings.instance.isLandscape) {
-                        ReaderSettings.instance.dimBitmapLandscape
-                    } else {
-                        ReaderSettings.instance.dimBitmapPortrait
-                    }
-                    bitmap?.let {
-                        canvas?.drawBitmap(it, 0F, 0F, null)
-                    }
+                    setBitmap(ReaderSettings.instance.dimBitmapLandscape, ReaderSettings.instance.dimBitmapPortrait)
                 }
                 else -> {
                     canvas?.drawColor(ReaderSettings.instance.backgroundColor)
@@ -343,6 +307,22 @@ class GLPage(var position: Position, var refreshListener: RefreshListener?) {
             println("loadBitmap ${posi.group}:${posi.index} use time ${System.currentTimeMillis() - startTime}")
         }
     }
+
+    /**
+     * 设置横竖屏Bitmap
+     */
+    private fun setBitmap(landscapeBitmap: Bitmap?, portraitBitmap: Bitmap?) {
+        val bitmap = if (ReaderSettings.instance.isLandscape) {
+            landscapeBitmap
+        } else {
+            portraitBitmap
+        }
+        bitmap?.let {
+            canvas?.drawBitmap(it, Rect(0, 0, it.width, it.height),
+                    Rect(0, 0, canvas?.width ?: 0, canvas?.height ?: 0), null)
+        }
+    }
+
 
     /**
      * 从view中获取bitmap
