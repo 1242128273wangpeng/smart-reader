@@ -256,8 +256,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
                         compositeDisposable.add(RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, microFlag)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({ it ->
-                                    handleWebRequestResult(it, config.requestIndex)
+                                .subscribe({
+                                    val result = it.replace("\'", " ").replace("\\\\n".toRegex(), "").replace("\\\"", "")
+                                    handleWebRequestResult(result, config.requestIndex)
                                 }, {
                                     Logger.e("Error: " + it.toString())
                                     handleWebRequestResult("", config.requestIndex)
@@ -270,6 +271,9 @@ abstract class JSInterfaceObject(var activity: Activity) {
                         compositeDisposable.add(RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, requestBody, microFlag)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext {
+                                    it.replace("(", "'('").replace(")", "')'")
+                                }
                                 .subscribe({ it ->
                                     handleWebRequestResult(it, config.requestIndex)
                                 }, {

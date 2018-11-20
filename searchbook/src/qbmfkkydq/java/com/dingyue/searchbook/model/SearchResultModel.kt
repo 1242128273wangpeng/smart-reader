@@ -25,6 +25,7 @@ import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.web.WebViewIndex
+import java.net.URLEncoder
 import java.util.*
 
 /**
@@ -157,7 +158,7 @@ class SearchResultModel {
 
             override fun handleWebRequestResult(result: String?, requestIndex: String?) {
                 if (null != webView) {
-                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','$requestIndex')")
+                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('" + result?.replace("\\\\n".toRegex(), "") + "','" + requestIndex + "')")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
                     } else {
@@ -221,14 +222,6 @@ class SearchResultModel {
         var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word
-            val channelID = AppUtils.getChannelId()
-            if (channelID == "blp1298_10882_001"
-                    || channelID == "blp1298_10883_001"
-                    || channelID == "blp1298_10699_001") {
-                if (Constants.isBaiduExamine && Constants.versionCode == AppUtils.getVersionCode()) {
-                    searchWord = getReplaceWord()
-                }
-            }
 
             if (searchType == "2" && isAuthor == 1) {
                 val params = HashMap<String, String>()
@@ -257,18 +250,14 @@ class SearchResultModel {
                 params.put("wordType", searchType)
                 params.put("searchEmpty", "1")
 
-                mUrl = Config.webBaseUrl + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                mUrl = try {
+                    Config.webBaseUrl + WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                } catch (exception: Exception) {
+                    Config.webBaseUrl + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                }
             }
         }
 
         return mUrl
     }
-
-    private fun getReplaceWord(): String {
-        val words = arrayOf("品质随时购", "春节不打烊", "轻松过大年", "便携无屏电视", "游戏笔记本电脑", "全自动洗衣机", "家团圆礼盒")
-        val random = Random()
-        val index = random.nextInt(7)
-        return words[index]
-    }
-
 }

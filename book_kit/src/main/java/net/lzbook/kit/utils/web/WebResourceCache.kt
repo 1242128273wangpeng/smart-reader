@@ -139,9 +139,9 @@ class WebResourceCache {
 
             var read: Int = -1
             connection.inputStream?.use { input ->
-                interimFile.outputStream().use {
+                interimFile.outputStream().use { fileOutputStream ->
                     while (input.read().also { read = it } != -1) {
-                        it.write(read)
+                        fileOutputStream.write(read)
                     }
                 }
             }
@@ -160,37 +160,6 @@ class WebResourceCache {
         cachingResource.remove(url)
 
         Logger.e("缓存网络请求地址: $url  缓存文件格式: $fileExtension  $cachingResource")
-    }
-
-    /***
-     * 从Assets文件夹下拷贝文件到SD卡
-     * **/
-    fun copyVendorFromAssets(context: Context) {
-        try {
-            val inputStream = context.assets.open("vendor.js")
-
-            val fileName = loadCacheFileName(Constants.web_vendor_url, "MD5")
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + "js"
-
-            val file = File(filePath)
-
-            if (!file.exists()) {
-                file.createNewFile()
-            }
-
-            var read: Int = -1
-
-            inputStream?.use { input ->
-                file.outputStream().use {
-                    while (input.read().also { read = it } != -1) {
-                        it.write(read)
-                    }
-                }
-            }
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
     }
 
     /***
@@ -227,12 +196,61 @@ class WebResourceCache {
         }
     }
 
+    /***
+     * 检查资源是否已经加载
+     * **/
     fun checkWebResourceResponse(url: String): CachedWebResource? {
         return if (resourceResponseHashMap.containsKey(url)) {
             resourceResponseHashMap[url]
         } else {
             null
         }
+    }
+
+    /***
+     * 从Assets文件夹下拷贝文件到SD卡
+     * TODO 上线修改为线上配置的地址
+     * **/
+    fun copyVendorFromAssets(context: Context) {
+        val sourceHashMap = HashMap<String, String>()
+
+        sourceHashMap["vendor.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
+        sourceHashMap["app.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811191515/js/app.js"
+        sourceHashMap["app.css"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811191515/css/app.css"
+        sourceHashMap["manifest.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811191515/js/manifest.js"
+
+        sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
+                .forEach { entry ->
+                    try {
+                        val inputStream = context.assets.open(entry.key)
+
+                        val fileName = loadCacheFileName(entry.value, "MD5")
+
+                        val fileSuffix = if (entry.key == "app.css") "css" else "js"
+
+                        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
+
+                        val file = File(filePath)
+
+                        if (!file.exists()) {
+                            file.createNewFile()
+
+                            Logger.e("解压Assets文件: ${entry.key}")
+
+                            var read: Int = -1
+
+                            inputStream?.use { input ->
+                                file.outputStream().use { fileOutputStream ->
+                                    while (input.read().also { read = it } != -1) {
+                                        fileOutputStream.write(read)
+                                    }
+                                }
+                            }
+                        }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
     }
 
     inner class CachedWebResource : Serializable {

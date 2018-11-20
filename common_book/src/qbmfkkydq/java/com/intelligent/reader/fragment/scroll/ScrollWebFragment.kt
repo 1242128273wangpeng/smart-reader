@@ -149,7 +149,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
             override fun handleWebRequestResult(result: String?, requestIndex: String?) {
                 if (null != web_view_content) {
-                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','$requestIndex')")
+                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('" + result?.replace("\\\\n".toRegex(), "") + "','" + requestIndex + "')")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         web_view_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
                     } else {

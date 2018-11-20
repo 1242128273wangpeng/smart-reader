@@ -215,7 +215,7 @@ class TabulationActivity : FrameActivity() {
 
             override fun handleWebRequestResult(result: String?, requestIndex: String?) {
                 if (null != rank_content) {
-                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','$requestIndex')")
+                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('" + result?.replace("(", "")?.replace(")", "") + "','" + requestIndex + "')")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
                     } else {

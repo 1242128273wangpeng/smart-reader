@@ -81,16 +81,10 @@ class SearchResultFragment : Fragment(), ISearchResultView {
             search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-        if (search_result_content != null) {
-            customWebClient = CustomWebClient(activity, search_result_content)
-        }
-
-        customWebClient?.initWebViewSetting()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        search_result_content?.webViewClient = customWebClient
         search_result_content?.addJavascriptInterface(jsInterface, "J_search")
     }
 
@@ -100,10 +94,36 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun onSearchResult(url: String) {
         showLoading()
+
+        search_result_content.loadUrl("about:blank")
+
+        initWebClient()
+
         webViewCallback()
+
         search_result_content?.loadUrl(url)
     }
 
+    private fun initWebClient() {
+
+        if (customWebClient != null) {
+            customWebClient = null
+        }
+
+        if (search_result_content != null) {
+            customWebClient = CustomWebClient(activity, search_result_content)
+        }
+
+        customWebClient?.initWebViewSetting()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            search_result_content?.settings?.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+
+        customWebClient?.initParameter()
+
+        search_result_content?.webViewClient = customWebClient
+    }
 
     private fun webViewCallback() {
 
@@ -159,7 +179,6 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         RouterUtil.navigation(requireActivity(), RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
-
     override fun onResume() {
         super.onResume()
         if (search_result_content != null) {
@@ -187,6 +206,4 @@ class SearchResultFragment : Fragment(), ISearchResultView {
             search_result_content?.removeAllViews()
         }
     }
-
-
 }

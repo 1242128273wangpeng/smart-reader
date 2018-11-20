@@ -175,6 +175,10 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             val url = request.url.toString()
             val schema = request.url.scheme
 
+            if (url.contains("search")) {
+                return super.shouldInterceptRequest(view, request)
+            }
+
             val cacheWebResource = customWebViewCache.checkWebResourceResponse(url)
 
             if (cacheWebResource?.file != null) {
