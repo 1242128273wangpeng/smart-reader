@@ -215,9 +215,9 @@ class WebResourceCache {
         val sourceHashMap = HashMap<String, String>()
 
         sourceHashMap["vendor.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
-        sourceHashMap["app.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811191515/js/app.js"
-        sourceHashMap["app.css"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811191515/css/app.css"
-        sourceHashMap["manifest.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811191515/js/manifest.js"
+        sourceHashMap["app.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811201124/js/app.js"
+        sourceHashMap["app.css"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811201124/css/app.css"
+        sourceHashMap["manifest.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811201124/js/manifest.js"
 
         sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
                 .forEach { entry ->
