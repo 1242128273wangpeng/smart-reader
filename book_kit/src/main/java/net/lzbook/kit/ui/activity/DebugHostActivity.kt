@@ -108,7 +108,7 @@ class DebugHostActivity : BaseCacheableActivity() {
         } else {
 
             list.add("http://119.254.159.100:8081")
-            list.add("http://8086.zn.bookapi.cn")
+            list.add("http://8011.uzn.bookapi.cn")
             list.add("https://uniontest.bookapi.cn")
             list.add("https://unionapi.bookapi.cn")
             list.add("https://unioncontent.bookapi.cn")
