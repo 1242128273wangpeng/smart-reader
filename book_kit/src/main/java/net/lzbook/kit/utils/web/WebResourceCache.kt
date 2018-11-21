@@ -15,9 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
-import net.lzbook.kit.constants.Constants
 import java.io.File
-import java.io.FileOutputStream
 import java.io.Serializable
 import java.math.BigInteger
 import java.net.URL
@@ -214,10 +212,10 @@ class WebResourceCache {
     fun copyVendorFromAssets(context: Context) {
         val sourceHashMap = HashMap<String, String>()
 
-        sourceHashMap["vendor.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
-        sourceHashMap["app.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811201124/js/app.js"
-        sourceHashMap["app.css"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811201124/css/app.css"
-        sourceHashMap["manifest.js"] = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader/201811201124/js/manifest.js"
+        sourceHashMap["config/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
+        sourceHashMap["config/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
+        sourceHashMap["config/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
+        sourceHashMap["config/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
 
         sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
                 .forEach { entry ->
