@@ -81,6 +81,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         AppLog.e("getAdsStatus", "novel_onCreate")
         versionCode = AppUtils.getVersionCode()
         AppLog.e(TAG, "versionCode: " + versionCode)
+        AppLog.e(TAG, "versionCode: " + versionCode)
         myNovelHelper = NovelHelper(readReference?.get())
         myNovelHelper?.setOnHelperCallBack(this)
 
