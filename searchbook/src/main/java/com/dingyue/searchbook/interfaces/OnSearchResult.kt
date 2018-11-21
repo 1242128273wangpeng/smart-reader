@@ -27,6 +27,8 @@ interface OnSearchResult {
 
     fun onEnterReadResult(bundle: Bundle)
 
+    fun hideWebViewLoading()
+
     fun onLoadKeyWord(keyWord: String?, searchType: String?) {}
 
 }

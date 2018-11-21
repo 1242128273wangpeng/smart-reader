@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.web.CustomWebClient
 
 
@@ -99,10 +100,8 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun onSearchResult(url: String) {
-        if (!url.startsWith("javascript")) {
-            showLoading()
-            webViewCallback()
-        }
+        showLoading()
+        webViewCallback()
         search_result_content?.loadUrl(url)
     }
 
@@ -161,6 +160,13 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         RouterUtil.navigation(requireActivity(), RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
+    override fun hideWebViewLoading() {
+        runOnMain {
+            loadingPage?.postDelayed({
+                hideLoading()
+            },300)
+        }
+    }
 
     override fun onResume() {
         super.onResume()

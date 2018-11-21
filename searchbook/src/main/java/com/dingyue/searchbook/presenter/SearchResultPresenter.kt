@@ -86,6 +86,10 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
         searchResultView.onTurnReadResult(bundle)
     }
 
+    override fun hideWebViewLoading() {
+        searchResultView.hideWebViewLoading()
+    }
+
 
     override fun onLoadKeyWord(keyWord: String?, searchType: String?) {
         loadKeyWord(keyWord!!, searchType!!)

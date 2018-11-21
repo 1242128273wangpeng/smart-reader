@@ -26,6 +26,7 @@ import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import java.util.*
@@ -147,13 +148,18 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
             }
 
-            override fun handleWebRequestResult(result: String?, requestIndex: String?) {
+            override fun hideWebViewLoading() {
+                runOnMain {
+                    loadingPage?.onSuccessGone()
+                }
+            }
+
+            override fun handleWebRequestResult(method: String?) {
                 if (null != web_view_content) {
-                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('" + result?.replace("\\\\n".toRegex(), "") + "','" + requestIndex + "')")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        web_view_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                        web_view_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
                     } else {
-                        web_view_content.loadUrl(call)
+                        web_view_content.loadUrl(method)
                     }
                 }
             }

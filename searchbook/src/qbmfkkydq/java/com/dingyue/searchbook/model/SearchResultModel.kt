@@ -156,13 +156,17 @@ class SearchResultModel {
 
             }
 
-            override fun handleWebRequestResult(result: String?, requestIndex: String?) {
+            @JavascriptInterface
+            override fun hideWebViewLoading() {
+                listener?.hideWebViewLoading()
+            }
+
+            override fun handleWebRequestResult(method: String?) {
                 if (null != webView) {
-                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('" + result?.replace("\\\\n".toRegex(), "") + "','" + requestIndex + "')")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        webView.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                        webView.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
                     } else {
-                        webView.loadUrl(call)
+                        webView.loadUrl(method)
                     }
                 }
             }

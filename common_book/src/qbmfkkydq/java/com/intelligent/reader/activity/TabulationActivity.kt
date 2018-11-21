@@ -13,15 +13,11 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.net.Config
-import com.ding.basic.net.api.service.RequestService
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.qbmfkkydq.act_tabulation.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.PagerDesc
@@ -33,11 +29,8 @@ import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
-import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import java.util.*
 
 /**
@@ -213,13 +206,19 @@ class TabulationActivity : FrameActivity() {
                 }
             }
 
-            override fun handleWebRequestResult(result: String?, requestIndex: String?) {
+            @JavascriptInterface
+            override fun hideWebViewLoading() {
+                runOnMain {
+                    loadingPage?.onSuccessGone()
+                }
+            }
+
+            override fun handleWebRequestResult(method: String?) {
                 if (null != rank_content) {
-                    val call = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('" + result?.replace("(", "")?.replace(")", "") + "','" + requestIndex + "')")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        rank_content.evaluateJavascript(call) { value -> Logger.e("ReceivedValue: $value") }
+                        rank_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
                     } else {
-                        rank_content.loadUrl(call)
+                        rank_content.loadUrl(method)
                     }
                 }
             }

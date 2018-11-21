@@ -258,10 +258,12 @@ abstract class JSInterfaceObject(var activity: Activity) {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
                                     val result = it.replace("\'", " ").replace("\\\\n".toRegex(), "").replace("\\\"", "")
-                                    handleWebRequestResult(result, config.requestIndex)
+                                    val webMethod = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','${config.requestIndex}')")
+                                    handleWebRequestResult(webMethod)
                                 }, {
                                     Logger.e("Error: " + it.toString())
-                                    handleWebRequestResult("", config.requestIndex)
+                                    val webMethod = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('','${config.requestIndex}')")
+                                    handleWebRequestResult(webMethod)
                                 })
                         )
                     } else if ("post" == config.method) {
@@ -271,14 +273,14 @@ abstract class JSInterfaceObject(var activity: Activity) {
                         compositeDisposable.add(RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, requestBody, microFlag)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .doOnNext {
-                                    it.replace("(", "'('").replace(")", "')'")
-                                }
-                                .subscribe({ it ->
-                                    handleWebRequestResult(it, config.requestIndex)
+                                .subscribe({
+                                    val result = it.replace("\'", " ").replace("\\\\n".toRegex(), "").replace("\\\"", "")
+                                    val webMethod = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('$result','${config.requestIndex}')")
+                                    handleWebRequestResult(webMethod)
                                 }, {
                                     Logger.e("Error: " + it.toString())
-                                    handleWebRequestResult("", config.requestIndex)
+                                    val webMethod = String.format(Locale.getDefault(), "%s.%s", JsNativeObject.nativeCallJsObject, "handleWebViewResponse('','${config.requestIndex}')")
+                                    handleWebRequestResult(webMethod)
                                 })
                         )
                     }
@@ -303,14 +305,19 @@ abstract class JSInterfaceObject(var activity: Activity) {
     @JavascriptInterface
     abstract fun startTabulationActivity(data: String?)
 
+    /***
+     * 处理返回方法
+     * **/
     @JavascriptInterface
     abstract fun handleBackAction()
+
+    @JavascriptInterface
+    abstract fun hideWebViewLoading()
 
     /***
      * 获取WebView请求结果
      * **/
-    abstract fun handleWebRequestResult(result: String?, requestIndex: String?)
-
+    abstract fun handleWebRequestResult(method: String?)
 
     /**
      * 获取书籍对象
