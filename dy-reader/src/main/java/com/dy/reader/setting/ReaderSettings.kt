@@ -1,7 +1,6 @@
 package com.dy.reader.setting
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.*
 import android.preference.PreferenceManager
 import android.support.annotation.ColorInt
@@ -12,7 +11,6 @@ import com.dy.reader.R
 import com.dy.reader.Reader
 import com.dy.reader.event.EventReaderConfig
 import com.dy.reader.helper.AppHelper
-import com.dy.reader.page.GLPage
 import com.dy.reader.page.GLReaderView
 import com.dy.reader.service.FontDownLoadService
 import com.dy.reader.util.ThemeUtil
@@ -21,6 +19,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.InstanceCreator
 import com.google.gson.annotations.SerializedName
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.utils.AppUtils
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.io.InputStream
@@ -547,10 +546,10 @@ class ReaderSettings {
     }
 
     private fun createBaseBitmap(): Bitmap {
-        return if (GLPage.mOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            Bitmap.createBitmap(AppHelper.screenWidth, AppHelper.screenHeight, Bitmap.Config.RGB_565)
+        return if (ReaderSettings.instance.isLandscape) {
+            Bitmap.createBitmap(AppUtils.normalScreenHeight, AppUtils.normalScreenWidth, Bitmap.Config.RGB_565)
         } else {
-            Bitmap.createBitmap(AppHelper.screenHeight, AppHelper.screenWidth, Bitmap.Config.RGB_565)
+            Bitmap.createBitmap(AppUtils.normalScreenWidth, AppUtils.normalScreenHeight, Bitmap.Config.RGB_565)
         }
     }
 

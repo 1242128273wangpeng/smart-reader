@@ -214,4 +214,7 @@
     <dimen name="margin_7">7dp</dimen>
     <dimen name="margin_3">3dp</dimen>
     <dimen name="padding_18">18dp</dimen>
+
+    <dimen name="rounded_vivo">24dp</dimen>
+    <dimen name="notch_vivo">32dp</dimen>
 </resources>

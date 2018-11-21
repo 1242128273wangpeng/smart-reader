@@ -1,8 +1,5 @@
 package net.lzbook.kit.utils;
 
-import static android.content.Context.BATTERY_SERVICE;
-import static android.content.Context.TELEPHONY_SERVICE;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -83,6 +80,11 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.TELEPHONY_SERVICE;
+import static net.lzbook.kit.utils.NotchHelperKt.getVivoRoundedSize;
+import static net.lzbook.kit.utils.NotchHelperKt.vivoNotch;
+
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
     public static final int LOG_TYPE_ESCARD_PAY = LOG_TYPE_BAIDUPUSH + 1;
@@ -105,6 +107,8 @@ public class AppUtils {
     private static String VERSION_NAME = null;
     private static int VERSION_CODE = 0;
     private static String CHANNEL_NAME = null;
+    public static int normalScreenWidth = 0;
+    public static int normalScreenHeight = 0;
 
     public static void initDensity(Context ctt) {
         DisplayMetrics dis = ctt.getResources().getDisplayMetrics();
@@ -216,7 +220,7 @@ public class AppUtils {
     }
 
     public static void setLongPreferences(Context context, String preName,
-            Long value) {
+                                          Long value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context)
                 .edit();
         editor.putLong(preName, value);
@@ -224,7 +228,7 @@ public class AppUtils {
     }
 
     public static void setBooleanPreferences(Context context, String preName,
-            boolean value) {
+                                             boolean value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context)
                 .edit();
         editor.putBoolean(preName, value);
@@ -232,14 +236,14 @@ public class AppUtils {
     }
 
     public static boolean getBooleanPreferences(Context context,
-            String preName, boolean defaultValue) {
+                                                String preName, boolean defaultValue) {
         SharedPreferences defaultPf = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return defaultPf.getBoolean(preName, defaultValue);
     }
 
     public static long getLongPreferences(Context context, String preName,
-            long defaultValue) {
+                                          long defaultValue) {
         SharedPreferences defaultPf = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return defaultPf.getLong(preName, defaultValue);
@@ -1246,9 +1250,9 @@ public class AppUtils {
 
     /**
      * 关闭辅助功能，针对4.2.1和4.2.2 崩溃问题  百度移动统计平台上的bug  webview
-     *
+     * <p>
      * https://blog.csdn.net/qq_22393017/article/details/72782801
-     *
+     * <p>
      * java.lang.NullPointerException
      * at android.webkit.AccessibilityInjector$TextToSpeechWrapper$1.onInit(AccessibilityInjector
      * .java:753)
@@ -1469,6 +1473,38 @@ public class AppUtils {
                     paramContext.getPackageName());
         } catch (Exception e) {
             return -1;
+        }
+    }
+
+    /**
+     * 获取今天日期字符串
+     *
+     * @return
+     */
+    public static String getTodayDateStr() {
+        return formatter.format(new Date());
+    }
+
+    /**
+     * 获取屏幕宽高
+     * @param activity
+     */
+    public static void initNormalWindow(Activity activity) {
+        if (normalScreenWidth == 0) {
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point realSize = new Point();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                display.getRealSize(realSize);
+            } else {
+                display.getSize(realSize);
+            }
+            normalScreenWidth = realSize.x;
+            normalScreenHeight = realSize.y;
+            if (vivoNotch(activity)) {
+                int uselessSize = getVivoRoundedSize(activity) * 2;
+                normalScreenHeight -= uselessSize;
+            }
         }
     }
 }

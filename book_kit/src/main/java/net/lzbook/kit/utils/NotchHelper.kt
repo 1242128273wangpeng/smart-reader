@@ -1,8 +1,8 @@
-package com.dy.reader.util
+package net.lzbook.kit.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.dy.reader.R
+import net.lzbook.kit.R
 import net.lzbook.kit.utils.logger.AppLog
 
 fun isNotchScreen(context: Context): Boolean {

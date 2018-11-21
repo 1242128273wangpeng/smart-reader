@@ -159,6 +159,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
         initTheme();
         //设置屏幕适配属性
         AppUtils.setCustomDensity(this,BaseBookApplication.getGlobalContext());
+        AppUtils.initNormalWindow(this);
         //友盟推送
         if (AppUtils.hasUPush()) {
             final WeakReference<FrameActivity> weakReference=new WeakReference(FrameActivity.this);

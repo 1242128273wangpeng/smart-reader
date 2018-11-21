@@ -32,13 +32,12 @@ import com.dy.reader.page.Position
 import com.dy.reader.setting.ReaderSettings
 import com.dy.reader.setting.ReaderSettings.Companion.READER_CONFIG
 import com.dy.reader.setting.ReaderStatus
-import com.dy.reader.util.*
+import com.dy.reader.util.TypefaceUtil
 import com.google.gson.Gson
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.pointpage.EventPoint
-import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.StatServiceUtils
+import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -113,7 +112,7 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
         params["lightvalue"] = settings.screenBrightness.toString()
         params["font"] = settings.fontSize.toString()
         params["fontsetting"] = TypefaceUtil.loadTypefaceTag(settings.fontTypeface)
-        params["background"] = settings.readThemeMode.toString()
+        params["backgroundcolor"] = settings.readThemeMode.toString()
         params["readgap"] = formatSpaceGapType(settings.readInterlineaSpace).toString()
         params["pageturn"] = settings.animation_mode.toString()
 
@@ -242,13 +241,13 @@ open class ReadPresenter(val act: ReaderActivity) : NovelHelper.OnHelperCallBack
                 ReaderSettings.instance.isLandscape = false
                 readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             } else if (sp?.getInt("screen_mode", 3) == Configuration.ORIENTATION_LANDSCAPE && readReference?.get()?.getResources()!!
-                    .getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                            .configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
                 }
 
                 ReaderSettings.instance.isLandscape = true
-                readReference?.get()?.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+                readReference?.get()?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             } else {
                 if (!is_dot_orientation) {
                     is_dot_orientation = true
