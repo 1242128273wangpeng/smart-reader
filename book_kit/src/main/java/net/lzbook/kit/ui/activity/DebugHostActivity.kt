@@ -3,6 +3,8 @@ package net.lzbook.kit.ui.activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.ding.basic.net.Config
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_debug_host.*
@@ -64,34 +66,35 @@ class DebugHostActivity : BaseCacheableActivity() {
                     setHost(et_input_host.text.toString())
                 }
 
-                val type =intent.getStringExtra("type")
-                when (type) {
+                when (intent.getStringExtra("type")) {
                     SPKey.NOVEL_HOST -> {
                         Config.insertRequestAPIHost(et_input_host.text.toString())
+                        SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, et_input_host.text.toString())
                     }
                     SPKey.WEBVIEW_HOST -> {
                         Config.insertWebViewHost(et_input_host.text.toString())
+                        SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, et_input_host.text.toString())
                     }
-                    SPKey.UNION_HOST -> {
-                        Config.insertMicroAPIHost(et_input_host.text.toString())
+                    SPKey.MICRO_AUTH_HOST -> {
+                        MicroAPI.microHost = (et_input_host.text.toString())
+                        SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, et_input_host.text.toString())
                     }
-                    SPKey.CONTENT_HOST -> {
-                        Config.insertContentAPIHost(et_input_host.text.toString())
+                    SPKey.CONTENT_AUTH_HOST -> {
+                        ContentAPI.contentHost = (et_input_host.text.toString())
+                        SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, et_input_host.text.toString())
                     }
                     SPKey.USER_TAG_HOST -> {
                         Config.insertUserTagHost(et_input_host.text.toString())
+                        SPUtils.insertSharedString(SPKey.USER_TAG_HOST, et_input_host.text.toString())
                     }
                     else -> {
+                        ""
                     }
                 }
 
-                SPUtils.putOnlineConfigSharedString(type, et_input_host.text.toString())
-
                 finish()
             }
-
         }
-
     }
 
 

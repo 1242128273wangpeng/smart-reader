@@ -32,7 +32,7 @@ public class DataCache {
 
     public static boolean saveChapter(String content, Chapter chapter) {
         String filePath = getCacheFilePath(chapter);
-//        if (isChapterContentAvailable(content)) {
+
         if (isNewCacheExists(chapter)) {
             return true;
         }

@@ -77,5 +77,10 @@ abstract class BookDatabase : RoomDatabase() {
             }
         }
 
+//        private val migration4_5: Migration = object : Migration(4, 5) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                database.execSQL("ALTER TABLE `book` ADD COLUMN `chapter_defaultCode` INTEGER DEFAULT 0")
+//            }
+//        }
     }
 }

@@ -394,6 +394,7 @@ public class Constants {
      * 0全部； 1男； 2女；
      * ParameterConfig类
      */
+    //逐步规范全局参数使用，请使用ParameterConfig中的参数
     @Deprecated
     public static int SBOY = 1;
     @Deprecated

@@ -22,6 +22,9 @@ import com.ding.basic.bean.Chapter;
 import com.ding.basic.bean.CheckItem;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.net.RequestSubscriber;
+import com.ding.basic.net.api.ContentAPI;
+import com.ding.basic.net.api.MicroAPI;
+import com.ding.basic.net.api.RequestAPI;
 import com.ding.basic.util.DataCache;
 import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
@@ -96,6 +99,7 @@ public class CheckNovelUpdateService extends Service {
             }
         }
     };
+
     private WeakReference<OnBookUpdateListener> onBookUpdateListenerWef;
     private boolean isFirst = false;
     private SelfCallBack selfCallBack;
@@ -137,7 +141,6 @@ public class CheckNovelUpdateService extends Service {
             timerHandler.sendEmptyMessageDelayed(0, Constants.refreshTime);
             isFirst = false;
         }
-
         return START_STICKY;
     }
 
@@ -221,8 +224,8 @@ public class CheckNovelUpdateService extends Service {
     }
 
     private void checkAuthAccess() {
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                BaseBookApplication.getGlobalContext()).requestAuthAccess(null);
+        MicroAPI.INSTANCE.requestAuthAccess();
+        ContentAPI.INSTANCE.requestAuthAccess();
     }
 
     private void checkInterval() {
@@ -305,7 +308,8 @@ public class CheckNovelUpdateService extends Service {
                 checkOnCancel(bookUpdateTaskData, updateResult);
                 return;
             }
-            //部分4.2 手机报 retrofit 动态代理问题 java.lang.reflect.UndeclaredThrowableException at $Proxy2.a(Native Method)
+            //部分4.2 手机报 retrofit 动态代理问题 java.lang.reflect.UndeclaredThrowableException at
+            // $Proxy2.a(Native Method)
             try {
                 handleCheckBookUpdate(checkUpdateBooks, bookUpdateTaskData, updateResult);
             } catch (Exception e) {
@@ -473,7 +477,8 @@ public class CheckNovelUpdateService extends Service {
              * bug异常：
              * android.app.RemoteServiceException:
              *      Bad notification posted from package cc.lianzainovel:
-             *          Couldn't create icon: StatusBarIcon(pkg=cc.lianzainoveluser=0 id=0x7f020176 level=0 visible=true num=0 )
+             *          Couldn't create icon: StatusBarIcon(pkg=cc.lianzainoveluser=0
+             *          id=0x7f020176 level=0 visible=true num=0 )
              *
              * 这个问题多数集中在setSmallIcon(R.drawable.icon)这句代码上，
              * 在某些情况下，比如开启重启动系统就要发送通知，R.drawable.icon这个资源尚未准备好，导致了App异常
@@ -576,7 +581,7 @@ public class CheckNovelUpdateService extends Service {
 
     private HashMap<String, Book> getBookItems(ArrayList<Book> books) {
         HashMap<String, Book> map = new HashMap<>();
-        for (Book book: books) {
+        for (Book book : books) {
             map.put(book.getBook_id(), book);
         }
         return map;
@@ -621,17 +626,22 @@ public class CheckNovelUpdateService extends Service {
     }
 
     public BookUpdate changeChapters(BookUpdate bookUpdate) {
-        RequestRepositoryFactory repositoryFactory = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext());
+        RequestRepositoryFactory repositoryFactory =
+                RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                        BaseBookApplication.getGlobalContext());
         if (bookUpdate != null && !TextUtils.isEmpty(bookUpdate.getBook_id())) {
             Book book = repositoryFactory.loadBook(bookUpdate.getBook_id());
 
             BookUpdate resUpdate = null;
 
-            if (book != null && bookUpdate.getChapterList() != null && bookUpdate.getChapterList().size() > 0) {
+            if (book != null && bookUpdate.getChapterList() != null
+                    && bookUpdate.getChapterList().size() > 0) {
                 // 增加更新章节
-                repositoryFactory.insertOrUpdateChapter(book.getBook_id(), bookUpdate.getChapterList());
+                repositoryFactory.insertOrUpdateChapter(book.getBook_id(),
+                        bookUpdate.getChapterList());
                 // 更新书架信息
-                Chapter lastChapter = bookUpdate.getChapterList().get(bookUpdate.getChapterList().size() - 1);
+                Chapter lastChapter = bookUpdate.getChapterList().get(
+                        bookUpdate.getChapterList().size() - 1);
 
                 book.setChapter_count(repositoryFactory.getChapterCount(book.getBook_id()));
                 book.setLast_chapter(lastChapter);

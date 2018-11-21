@@ -1,7 +1,5 @@
 package com.ding.basic.util.sp
 
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.alibaba.android.arouter.launcher.ARouter
 import com.ding.basic.util.IBuildConfigProvider
 import com.ding.basic.util.ReplaceConstants.BUILD_CONFIG_PROVIDER
@@ -20,6 +18,14 @@ class SPKey {
         }
 
 
+        /***
+         * WebView静态资源拦截规则
+         * **/
+        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
+        /**
+         * 无网下展示的WebView的Css和JS地址
+         */
+        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
 
         /**
          * 保存WebView上一次加载的url
@@ -37,6 +43,10 @@ class SPKey {
         // 删除WebView缓存
         const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
 
+        /**
+         * CoverPageActivity
+         */
+        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
 
 
         /**
@@ -59,8 +69,8 @@ class SPKey {
          */
         const val NOVEL_HOST = "novel_host"           //智能API接口
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
-        const val UNION_HOST = "union_host"           //微服务API接口
-        const val CONTENT_HOST = "content_host"       //微服务内容接口
+//        const val UNION_HOST = "union_host"           //微服务API接口
+//        const val CONTENT_HOST = "content_host"       //微服务内容接口
         const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
         /**
@@ -254,20 +264,45 @@ class SPKey {
 
 
 
-        /***
-         * WebView静态资源拦截规则
-         * **/
-        const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
-        const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
-
         const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
 
         const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
         const val WEB_FAVORITE_FIRST_USE = "web_favorite_first_use" // 首次使用网页收藏功能标识
         const val WEB_FAVORITE_FIRST_USE_CLICK = "web_favorite_first_use_click" // 首次点击 网页收藏 按钮标识
+
+
+
+
+
+
+
+        /***
+         * 地理位置信息存储
+         * **/
+        //用于存储用户的城市编码
+        const val LOCATION_CITY_CODE = "location_city_code"
+        //用于存储用户的纬度
+        const val LOCATION_LATITUDE = "location_latitude"
+        //用于存储用户的经度
+        const val LOCATION_LONGITUDE = "location_longitude"
+
+
+
+        /***
+         * 多域名鉴权相关信息存储
+         * **/
+        //用于存储多域名鉴权的域名
+        const val MICRO_AUTH_HOST = "micro_auth_host"
+        //用于存储多域名鉴权的公钥
+        const val MICRO_AUTH_PUBLIC_KEY = "micro_auth_public_key_"
+        //用于存储多域名鉴权的私钥
+        const val MICRO_AUTH_PRIVATE_KEY = "micro_auth_private_key_"
+
+        //用于存储多域名鉴权的域名
+        const val CONTENT_AUTH_HOST = "content_auth_host"
+        //用于存储多域名鉴权的公钥
+        const val CONTENT_AUTH_PUBLIC_KEY = "content_auth_public_key_"
+        //用于存储多域名鉴权的私钥
+        const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"
     }
-
-
-
-
 }

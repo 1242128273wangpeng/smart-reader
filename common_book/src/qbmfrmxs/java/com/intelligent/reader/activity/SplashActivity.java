@@ -216,8 +216,6 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void initializeDataFusion() {
-
-
         books = requestRepositoryFactory.loadBooks();
 
         if (books != null) {

@@ -3,31 +3,26 @@ package com.dy.reader.activity
 import android.net.http.SslError
 import android.os.Bundle
 import android.os.SystemClock
-import android.view.GestureDetector
 import android.view.Gravity
 import android.view.View
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
-import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
-import com.dy.reader.R.id.txt_content
-import com.dy.reader.R.id.txt_title
 import kotlinx.android.synthetic.main.act_disclaimer.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
-import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
-import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.web.CustomWebClient
+import java.util.*
 
 /**
  * Function：使用协议 / 转码声明
@@ -37,14 +32,13 @@ import net.lzbook.kit.utils.web.CustomWebClient
  */
 @Route(path = RouterConfig.DISCLAIMER_ACTIVITY)
 class DisclaimerActivity : FrameActivity() {
-    private var gestureDetector: GestureDetector? = null
-    private var customWebClient: CustomWebClient? = null
 
     var loadingPage: LoadingPage? = null
 
     override fun onCreate(paramBundle: Bundle?) {
         super.onCreate(paramBundle)
         setContentView(R.layout.act_disclaimer)
+
 
         // 阅读页转码声明
         val isFromReadingPage = intent.getBooleanExtra(RouterUtil.FROM_READING_PAGE, false)
@@ -70,7 +64,6 @@ class DisclaimerActivity : FrameActivity() {
 
         }
 
-
         // 使用协议页面
         val isFormDisclaimerPage = intent.getBooleanExtra(RouterUtil.FROM_DISCLAIMER_PAGE, false)
         if (isFormDisclaimerPage) {
@@ -84,6 +77,7 @@ class DisclaimerActivity : FrameActivity() {
                                                 error: SslError?) {
                     handler?.proceed()
                 }
+
 
                 override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                     super.onReceivedError(view, request, error)
@@ -105,8 +99,12 @@ class DisclaimerActivity : FrameActivity() {
             }
 
             loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                web_disclaimer.loadUrl("about:blank")
-                web_disclaimer?.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+                if (NetWorkUtils.isNetworkAvailable(this)) {
+                    web_disclaimer.loadUrl("about:blank")
+                    web_disclaimer?.loadUrl("${Config.cdnHost}/${AppUtils.getPackageNameFor_()}/protocol/protocol.html")
+                } else {
+                    loadingPage?.onErrorVisable()
+                }
             })
 
             // 修改字体大小

@@ -1,6 +1,7 @@
 package com.ding.basic.net.interceptor
 
 import android.text.TextUtils
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.Config
 import com.ding.basic.net.token.Token
 import com.orhanobut.logger.Logger
@@ -18,31 +19,30 @@ class RequestInterceptor : Interceptor {
     private val requestParameters = mutableMapOf<String, String>()
 
     private fun buildRequestParameters(): Map<String, String> {
-        if (!requestParameters.containsKey("packageName") || requestParameters["packageName"].isNullOrEmpty()) {
+
+        if (requestParameters["packageName"].isNullOrEmpty()) {
             requestParameters["packageName"] = Config.loadRequestParameter("packageName")
         }
 
-        if (!requestParameters.containsKey("os") || requestParameters["os"].isNullOrEmpty()) {
+        if (requestParameters["os"].isNullOrEmpty()) {
             requestParameters["os"] = Config.loadRequestParameter("os")
         }
 
-        if (!requestParameters.containsKey("udid") || requestParameters["udid"].isNullOrEmpty()) {
+        if (requestParameters["udid"].isNullOrEmpty()) {
             requestParameters["udid"] = Config.loadRequestParameter("udid")
         }
 
-        if (!requestParameters.containsKey("version") || requestParameters["version"].isNullOrEmpty()) {
+        if (requestParameters["version"].isNullOrEmpty()) {
             requestParameters["version"] = Config.loadRequestParameter("version")
         }
 
-        if (!requestParameters.containsKey("channelId") || requestParameters["channelId"].isNullOrEmpty()) {
+        if (requestParameters["channelId"].isNullOrEmpty()) {
             requestParameters["channelId"] = Config.loadRequestParameter("channelId")
         }
 
-        requestParameters["latitude"] = Config.loadRequestParameter("latitude")
-
-        requestParameters["longitude"] = Config.loadRequestParameter("longitude")
-
-        requestParameters["cityCode"] = Config.loadRequestParameter("cityCode")
+        requestParameters["cityCode"] = ParameterConfig.cityCode
+        requestParameters["latitude"] = ParameterConfig.latitude.toString()
+        requestParameters["longitude"] = ParameterConfig.longitude.toString()
 
         if (!TextUtils.isEmpty(Config.loadRequestParameter("loginToken"))) {
             requestParameters["loginToken"] = Config.loadRequestParameter("loginToken")

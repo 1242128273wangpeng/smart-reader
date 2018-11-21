@@ -29,6 +29,7 @@ import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.runOnMain
+import net.lzbook.kit.utils.toast.ToastUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -79,7 +80,6 @@ object DataProvider {
                         if (forceReload || Math.abs(position.group - ReaderStatus.position.group) > 1 || chapterCache.get(position.group) == null) {
                             EventBus.getDefault().post(EventLoading(EventLoading.Type.START))
                         }
-
                         loadPre(position.group + 2, position.group + 6)
                     }
 
@@ -377,6 +377,7 @@ object DataProvider {
 
         if (position.index == 0 && position.group >= 0) {
             loadPre(position.group + 2, position.group + 6)
+            checkReadChapter(position.group - 6, position.group - 1)
         }
 
         //在加载下一页
@@ -400,6 +401,28 @@ object DataProvider {
         return novelPageBean
     }
 
+    fun checkReadChapter(start: Int, end: Int) {
+        val book = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id)
+        if (book != null && !ReaderStatus.chapterList.isEmpty()) {
+            val startIndex = Math.max(start, 0)
+            val endIndex = Math.min(end, ReaderStatus.chapterCount)
+            for (i in startIndex until endIndex) {
+                if (i < ReaderStatus.chapterCount) {
+                    val requestChapter: Chapter? = ReaderStatus.chapterList[i]
+                    if (requestChapter != null && requestChapter.defaultCode == 1) {
+                        Logger.e("向前检查章节异常: ${requestChapter.name} : ${requestChapter.defaultCode}")
+                        mDisposable.add(readerRepository.requestSingleChapter(requestChapter)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe({
+                                    if (it.defaultCode == 0) {
+                                        ToastUtil.showToastMessage(it.name + "内容已修复！")
+                                    }
+                                }))
+                    }
+                }
+            }
+        }
+    }
 
     fun loadPre(start: Int, end: Int) {
         if ((RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).checkBookSubscribe(ReaderStatus.book.book_id) != null) && !ReaderStatus.chapterList.isEmpty()) {

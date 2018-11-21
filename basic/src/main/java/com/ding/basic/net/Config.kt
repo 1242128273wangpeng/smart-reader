@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
+import com.ding.basic.config.ParameterConfig
+import com.ding.basic.net.api.ContentAPI
+import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.URLBuilder
 import com.orhanobut.logger.AndroidLogAdapter
@@ -31,16 +34,6 @@ object Config {
     private var requestAPIHost: String = ""
 
     /***
-     * 微服务API接口
-     * **/
-    private var microAPIHost: String = ""
-
-    /***
-     * 微服务内容接口
-     * **/
-    private var contentAPIHost: String = ""
-
-    /***
      * CDN
      * **/
     var cdnHost: String = ""
@@ -61,26 +54,9 @@ object Config {
     private var accessKey: String = "wangpeng12345678"
 
     /***
-     * 请求公钥
-     * **/
-    private var publicKey: String = ""
-
-    /***
-     * 请求私钥
-     * **/
-    private var privateKey: String = ""
-
-
-    /***
      * 请求公共参数
      * **/
     private var requestParameters: HashMap<String, String> = HashMap()
-
-
-    /***
-     * 鉴权过期时间
-     * **/
-    private var authExpire = 0L
 
 
     var SDCARD_PATH = Environment.getExternalStorageDirectory().absolutePath
@@ -95,8 +71,12 @@ object Config {
         webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
 
-        microAPIHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-        contentAPIHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+
+        MicroAPI.initMicroService()
+        ContentAPI.initContentService()
+
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
     }
 
@@ -112,10 +92,6 @@ object Config {
 
     fun loadWebViewHost(): String {
         return webViewHost
-    }
-
-    fun loadMicroWebViewHost(): String {
-        return microAPIHost
     }
 
     fun insertRequestAPIHost(requestAPIHost: String) {
@@ -147,7 +123,7 @@ object Config {
     fun initializeLogger() {
 
         val formatStrategy = PrettyFormatStrategy.newBuilder()
-                .tag("DingYue").methodCount(0).showThreadInfo(true).build()
+                .tag("DingYue").methodCount(0).showThreadInfo(false).build()
 
         Logger.addLogAdapter(object : AndroidLogAdapter(formatStrategy) {
             override fun isLoggable(priority: Int, tag: String?): Boolean {
@@ -176,32 +152,11 @@ object Config {
         parameters["channelId"] = loadRequestParameter("channelId")
         parameters["packageName"] = loadRequestParameter("packageName")
 
-        parameters["cityCode"] = loadRequestParameter("cityCode")
-        parameters["latitude"] = loadRequestParameter("latitude")
-        parameters["longitude"] = loadRequestParameter("longitude")
+        parameters["cityCode"] = ParameterConfig.cityCode
+        parameters["latitude"] = ParameterConfig.latitude
+        parameters["longitude"] = ParameterConfig.longitude
 
         return URLBuilder.buildUrl(requestAPIHost, url, parameters)
-    }
-
-
-    fun insertMicroAPIHost(microAPIHost: String) {
-        if (!TextUtils.isEmpty(microAPIHost)) {
-            Config.microAPIHost = microAPIHost
-        }
-    }
-
-    fun loadMicroAPIHost(): String {
-        return microAPIHost
-    }
-
-    fun insertContentAPIHost(contentAPIHost: String) {
-        if (!TextUtils.isEmpty(contentAPIHost)) {
-            Config.contentAPIHost = contentAPIHost
-        }
-    }
-
-    fun loadContentAPIHost(): String {
-        return contentAPIHost
     }
 
     fun insertUserTagHost(userTagHost: String) {
@@ -216,49 +171,5 @@ object Config {
 
     fun loadAccessKey(): String {
         return accessKey
-    }
-
-    fun insertPublicKey(publicKey: String) {
-        Config.publicKey = publicKey
-
-        val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString("Access_Public_Key", publicKey)?.apply()
-    }
-
-    fun loadPublicKey(): String {
-        if (publicKey.isEmpty()) {
-            val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
-            if (sharedPreferences != null) {
-                publicKey = sharedPreferences.getString("Access_Public_Key", "")
-            }
-        }
-
-        return publicKey
-    }
-
-    fun insertPrivateKey(privateKey: String) {
-        Config.privateKey = privateKey
-
-        val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString("Access_Private_Key", privateKey)?.apply()
-    }
-
-    fun loadPrivateKey(): String {
-        if (privateKey.isEmpty()) {
-            val sharedPreferences = context?.getSharedPreferences("Basic_Preference", Context.MODE_PRIVATE)
-            if (sharedPreferences != null) {
-                privateKey = sharedPreferences.getString("Access_Private_Key", "")
-            }
-        }
-
-        return privateKey
-    }
-
-    fun insertAuthExpire(authExpire: Long) {
-        this.authExpire = System.currentTimeMillis() + (authExpire * 1000)
-    }
-
-    fun loadAuthExpire(): Long {
-        return authExpire
     }
 }
