@@ -220,16 +220,18 @@ class WebResourceCache {
 
             sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
                     .forEach { entry ->
+                        cachingResource.add(entry.value)
+
+                        val fileName = loadCacheFileName(entry.value, "MD5")
+
+                        val fileSuffix = if (entry.key == "app.css") "css" else "js"
+
+                        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
+
+                        val file = File(filePath)
+
                         try {
                             val inputStream = context.assets.open(entry.key)
-
-                            val fileName = loadCacheFileName(entry.value, "MD5")
-
-                            val fileSuffix = if (entry.key == "app.css") "css" else "js"
-
-                            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
-
-                            val file = File(filePath)
 
                             if (!file.exists()) {
                                 file.createNewFile()
@@ -248,7 +250,9 @@ class WebResourceCache {
                             }
                         } catch (exception: Exception) {
                             exception.printStackTrace()
+                            file.delete()
                         }
+                        cachingResource.remove(entry.value)
                     }
         }
     }
