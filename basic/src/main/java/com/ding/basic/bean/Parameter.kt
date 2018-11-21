@@ -83,5 +83,5 @@ data class Map(
 
         //新添加数据流和内容接口域名的动态参数，保证切换不影响老用户
         var DY_micro_host: String?,
-        var DY_micro_content_host: String?
+        var DY_micro_chapter_host: String?
 ) : Serializable

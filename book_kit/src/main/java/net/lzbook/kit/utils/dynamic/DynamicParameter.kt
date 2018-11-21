@@ -252,7 +252,7 @@ class DynamicParameter(private val context: Context) {
             SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, map.httpsWebView_host)
 
             SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, map.DY_micro_host)
-            SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, map.DY_micro_content_host)
+            SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, map.DY_micro_chapter_host)
         }
 
         SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, map.user_tag_host)
