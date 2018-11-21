@@ -81,8 +81,6 @@ object Config {
             }
         }
 
-
-
     var SDCARD_PATH = Environment.getExternalStorageDirectory().absolutePath
 
 
@@ -91,19 +89,13 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-//        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-//        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-//
+        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+
+        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
 
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
-
-//        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
-//        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
-
-        requestAPIHost = "http://119.254.159.100:8081"
-
-        MicroAPI.microHost = "https://uniontest.bookapi.cn"
-        ContentAPI.contentHost = "https://uniontest.bookapi.cn"
 
         MicroAPI.initMicroService()
         ContentAPI.initContentService()
@@ -124,9 +116,9 @@ object Config {
     }
 
     fun insertRequestAPIHost(requestAPIHost: String) {
-//        if (!TextUtils.isEmpty(requestAPIHost)) {
-//            Config.requestAPIHost = requestAPIHost
-//        }
+        if (!TextUtils.isEmpty(requestAPIHost)) {
+            Config.requestAPIHost = requestAPIHost
+        }
     }
 
     fun loadRequestAPIHost(): String {
