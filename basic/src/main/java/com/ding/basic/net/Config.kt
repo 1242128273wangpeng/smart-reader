@@ -58,7 +58,7 @@ object Config {
 
     var webDeploy = ""
 
-    var webBaseUrl = ""
+    var webViewBaseHost = ""
         get() {
             return if (field.isNotEmpty()) {
                 field
@@ -72,6 +72,7 @@ object Config {
                 field
             }
         }
+
         set(value) {
             if (value.isNotEmpty()) {
                 field = value
@@ -79,11 +80,6 @@ object Config {
                 SPUtils.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, value)
             }
         }
-
-
-
-
-
 
 
 
