@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.net.Config;
+import com.ding.basic.net.api.MicroAPI;
 import com.ding.basic.net.token.Token;
 import com.dingyue.statistics.DyStatService;
 import com.orhanobut.logger.Logger;
@@ -27,6 +28,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Deprecated
+/***
+ * 和H5交互的方法已经修改，慎用老版本的方法，不在维护
+ * **/
 public class JSInterfaceHelper implements WebViewJsInterface {
 
     Context context;
@@ -656,11 +660,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
     @Override
     @JavascriptInterface
     public String authAccessMicroRequest(final String url) {
-        if (Config.INSTANCE.loadAuthExpire() - System.currentTimeMillis() <= 5000) {
-            Boolean result = RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
-                    BaseBookApplication.getGlobalContext()).requestAuthAccessSync();
+        if (MicroAPI.INSTANCE.getExpire() - System.currentTimeMillis() <= 5000) {
+            Boolean result = MicroAPI.INSTANCE.requestAuthAccessSync();
 
-            Logger.e("WebView请求鉴权接口结果: " + result + " : " + Config.INSTANCE.loadPublicKey() + " : " + Config.INSTANCE.loadPrivateKey());
+            Logger.e("WebView请求鉴权接口结果: " + result + " : " + MicroAPI.INSTANCE.getPublicKey() + " : " + MicroAPI.INSTANCE.getPrivateKey());
 
         }
         String result = buildRequest(url);
@@ -685,9 +688,9 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         String sign = loadRequestSign(parameters);
 
         parameters.put("sign", sign);
-        parameters.put("p", Config.INSTANCE.loadPublicKey());
+        parameters.put("p", MicroAPI.INSTANCE.getPublicKey());
 
-        Logger.e("签名完成后，携带的公钥为: " + Config.INSTANCE.loadPublicKey() + " : " + sign);
+        Logger.e("签名完成后，携带的公钥为: " + MicroAPI.INSTANCE.getPublicKey() + " : " + sign);
 
         return initRequestUrl(url, parameters);
     }
@@ -706,10 +709,10 @@ public class JSInterfaceHelper implements WebViewJsInterface {
             }
         }
 
-        if (!TextUtils.isEmpty(Config.INSTANCE.loadPrivateKey())) {
+        if (!TextUtils.isEmpty(MicroAPI.INSTANCE.getPrivateKey())) {
             stringBuilder.append("privateKey=");
-            stringBuilder.append(Config.INSTANCE.loadPrivateKey());
-            Logger.e("生成签名，签名携带的私钥为: " + Config.INSTANCE.loadPrivateKey() + " : " + stringBuilder.toString());
+            stringBuilder.append(MicroAPI.INSTANCE.getPrivateKey());
+            Logger.e("生成签名，签名携带的私钥为: " + MicroAPI.INSTANCE.getPrivateKey() + " : " + stringBuilder.toString());
         }
 
         if (!TextUtils.isEmpty(stringBuilder)) {
@@ -791,7 +794,7 @@ public class JSInterfaceHelper implements WebViewJsInterface {
             joiner = "?";
         }
 
-        return Config.INSTANCE.loadMicroWebViewHost() + requestTag + joiner
+        return MicroAPI.INSTANCE.getMicroHost() + requestTag + joiner
                 + Token.Companion.escapeParameters(parametersMap);
     }
 }

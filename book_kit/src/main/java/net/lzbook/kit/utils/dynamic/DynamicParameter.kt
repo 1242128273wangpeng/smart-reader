@@ -27,6 +27,7 @@ import net.lzbook.kit.utils.isNumeric
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.web.WebResourceCache
+import okhttp3.HttpUrl
 import java.util.*
 
 class DynamicParameter(private val context: Context) {
@@ -248,8 +249,8 @@ class DynamicParameter(private val context: Context) {
         if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
             putDynamicString(SPKey.NOVEL_HOST, map.novel_host?.parseUrl())
             putDynamicString(SPKey.WEBVIEW_HOST, map.httpsWebView_host?.parseUrl())
-            putDynamicString(SPKey.UNION_HOST, map.union_host?.parseUrl())
-            putDynamicString(SPKey.CONTENT_HOST, map.content_host?.parseUrl())
+            putDynamicString(SPKey.MICRO_AUTH_HOST, map.union_host?.parseUrl())
+            putDynamicString(SPKey.CONTENT_AUTH_HOST, map.content_host?.parseUrl())
         }
 
         putDynamicString(SPKey.USER_TAG_HOST, map.user_tag_host?.parseUrl())

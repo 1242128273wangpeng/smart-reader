@@ -183,7 +183,6 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             Config.insertWebViewHost(SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
-            Config.insertContentAPIHost(SPUtils.getDefaultSharedString(SPKey.USER_TAG_PRE_HOST))
 
             MicroAPI.microHost = (SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
             ContentAPI.contentHost = (SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
@@ -196,8 +195,8 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             // 保留动态参数
             SPUtils.putDefaultSharedString(SPKey.NOVEL_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.WEBVIEW_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, ""))
-            SPUtils.putDefaultSharedString(SPKey.UNION_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.UNION_HOST, ""))
-            SPUtils.putDefaultSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_HOST, ""))
+            SPUtils.putDefaultSharedString(SPKey.UNION_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.MICRO_AUTH_HOST, ""))
+            SPUtils.putDefaultSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_AUTH_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.USER_TAG_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST))
             SPUtils.putDefaultSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST))

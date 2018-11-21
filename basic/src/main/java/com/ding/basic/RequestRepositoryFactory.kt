@@ -101,13 +101,7 @@ class RequestRepositoryFactory private constructor(private val context: Context)
         InternetRequestRepository.loadInternetRequestRepository().requestDefaultBooks(firstType, secondType)!!
                 .compose(SchedulerHelper.schedulerIOHelper<BasicResult<CoverList>>())
                 .doOnNext {
-                    if (it != null && it.checkPrivateKeyExpire()) {
-                        requestAuthAccess {
-                            if (it) {
-                                requestDefaultBooks(firstType, secondType, requestSubscriber)
-                            }
-                        }
-                    } else if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
+                    if (it != null && it.checkResultAvailable() && it.data?.coverList != null && it.data?.coverList!!.isNotEmpty()) {
                         for (book in it.data?.coverList!!) {
                             if (!TextUtils.isEmpty(book.book_id)) {
 
@@ -1834,6 +1828,39 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         it
                     }
         }
+    }
+
+    /**
+     * 下载语音插件
+     */
+    fun downloadVoicePlugin(): Flowable<ResponseBody> {
+        return InternetRequestRepository.loadInternetRequestRepository().downloadVoicePlugin()
+    }
+
+    /**
+     * 获取兴趣列表
+     */
+    fun getInterestList(requestSubscriber: RequestSubscriber<BasicResult<List<Interest>>>) {
+        InternetRequestRepository.loadInternetRequestRepository().getInterest()!!
+                .compose(SchedulerHelper.schedulerHelper<BasicResult<List<Interest>>>())
+                .subscribe({
+                    if (it != null) {
+                        when {
+                            it.checkResultAvailable() -> {
+                                requestSubscriber.requestResult(it)
+                            }
+                        }
+                    } else {
+                        Logger.e(" 获取兴趣列表结果异常！")
+                        requestSubscriber.requestError("获取兴趣列表结果异常")
+                    }
+                }, { throwable ->
+                    throwable.printStackTrace()
+                    requestSubscriber.requestError(throwable.toString())
+                    Logger.e(" 获取兴趣列表异常: " + throwable.toString())
+                }, {
+                    Logger.e(" 获取兴趣列表完成！")
+                })
     }
 
     fun downloadFont(fontName: String): Flowable<ResponseBody> {

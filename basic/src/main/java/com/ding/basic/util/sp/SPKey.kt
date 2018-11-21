@@ -44,12 +44,6 @@ class SPKey {
         const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
 
         /**
-         * CoverPageActivity
-         */
-        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
-
-
-        /**
          * DebugActivity
          */
         @Deprecated("")

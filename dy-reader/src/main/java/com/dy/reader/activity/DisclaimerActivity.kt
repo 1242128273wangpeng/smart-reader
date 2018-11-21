@@ -5,24 +5,24 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.Gravity
 import android.view.View
-import android.webkit.SslErrorHandler
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Button
 import android.widget.EditText
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
+import com.dingyue.statistics.DyStatService
 import com.dy.reader.R
 import kotlinx.android.synthetic.main.act_disclaimer.*
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
+import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.activity.base.FrameActivity
+import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.ui.widget.MyDialog
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.toast.ToastUtil
-import java.util.*
 
 /**
  * Function：使用协议 / 转码声明

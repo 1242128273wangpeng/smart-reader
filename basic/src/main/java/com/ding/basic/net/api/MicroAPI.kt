@@ -136,8 +136,6 @@ object MicroAPI {
                 .baseUrl(microHost)
                 .build()
 
-        Logger.e("InitMicroService: " + Config.loadMicroAPIHost())
-
         microService = retrofit.create(MicroService::class.java)
 
         if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
