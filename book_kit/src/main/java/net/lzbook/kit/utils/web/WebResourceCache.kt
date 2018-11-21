@@ -15,6 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.utils.doAsync
 import java.io.File
 import java.io.Serializable
 import java.math.BigInteger
@@ -210,45 +211,46 @@ class WebResourceCache {
      * TODO 上线修改为线上配置的地址
      * **/
     fun copyVendorFromAssets(context: Context) {
-        val sourceHashMap = HashMap<String, String>()
+        doAsync {
+            val sourceHashMap = HashMap<String, String>()
+            sourceHashMap["config/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
+            sourceHashMap["config/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
+            sourceHashMap["config/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
+            sourceHashMap["config/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
 
-        sourceHashMap["config/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
-        sourceHashMap["config/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
-        sourceHashMap["config/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
-        sourceHashMap["config/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
+            sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
+                    .forEach { entry ->
+                        try {
+                            val inputStream = context.assets.open(entry.key)
 
-        sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
-                .forEach { entry ->
-                    try {
-                        val inputStream = context.assets.open(entry.key)
+                            val fileName = loadCacheFileName(entry.value, "MD5")
 
-                        val fileName = loadCacheFileName(entry.value, "MD5")
+                            val fileSuffix = if (entry.key == "app.css") "css" else "js"
 
-                        val fileSuffix = if (entry.key == "app.css") "css" else "js"
+                            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
 
-                        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
+                            val file = File(filePath)
 
-                        val file = File(filePath)
+                            if (!file.exists()) {
+                                file.createNewFile()
 
-                        if (!file.exists()) {
-                            file.createNewFile()
+                                Logger.e("解压Assets文件: ${entry.key}")
 
-                            Logger.e("解压Assets文件: ${entry.key}")
+                                var read: Int = -1
 
-                            var read: Int = -1
-
-                            inputStream?.use { input ->
-                                file.outputStream().use { fileOutputStream ->
-                                    while (input.read().also { read = it } != -1) {
-                                        fileOutputStream.write(read)
+                                inputStream?.use { input ->
+                                    file.outputStream().use { fileOutputStream ->
+                                        while (input.read().also { read = it } != -1) {
+                                            fileOutputStream.write(read)
+                                        }
                                     }
                                 }
                             }
+                        } catch (exception: Exception) {
+                            exception.printStackTrace()
                         }
-                    } catch (exception: Exception) {
-                        exception.printStackTrace()
                     }
-                }
+        }
     }
 
     inner class CachedWebResource : Serializable {

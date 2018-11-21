@@ -13,6 +13,8 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaConfig;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
@@ -33,6 +35,7 @@ import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.upush.PushMessageHandler;
 import net.lzbook.kit.utils.upush.PushNotificationHandler;
 import net.lzbook.kit.utils.upush.PushRegisterCallback;
+import net.lzbook.kit.utils.web.WebResourceCache;
 
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
@@ -84,6 +87,15 @@ public class BookApplication extends BaseBookApplication {
             setRxJavaErrorHandler();
         }
         registerPushAgent();
+
+        boolean cache = SPUtils.INSTANCE.loadSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG, false);
+        if (!cache) {
+            WebResourceCache webResourceCache = new WebResourceCache();
+            webResourceCache.copyVendorFromAssets(BaseBookApplication.getGlobalContext());
+
+            SPUtils.INSTANCE.insertSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG, true);
+        }
+
         initHandler.sendEmptyMessageDelayed(1, 1500);
     }
 
