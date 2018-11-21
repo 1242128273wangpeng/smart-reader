@@ -213,10 +213,10 @@ class WebResourceCache {
     fun copyVendorFromAssets(context: Context) {
         doAsync {
             val sourceHashMap = HashMap<String, String>()
-            sourceHashMap["config/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
-            sourceHashMap["config/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
-            sourceHashMap["config/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
-            sourceHashMap["config/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
+            sourceHashMap["qbmfkkydq/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
+            sourceHashMap["qbmfkkydq/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
+            sourceHashMap["qbmfkkydq/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
+            sourceHashMap["qbmfkkydq/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
 
             sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
                     .forEach { entry ->
