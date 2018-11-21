@@ -285,7 +285,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ it ->
                     if (it != null && it.checkResultAvailable()) {
-                        Config.webBaseUrl = it.data ?: ""
+                        Config.webViewBaseHost = it.data ?: ""
                     }
                 }, {
                     Logger.e("Error: " + it.toString())

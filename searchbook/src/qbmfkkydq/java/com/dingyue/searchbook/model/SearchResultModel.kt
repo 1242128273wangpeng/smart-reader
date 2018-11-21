@@ -139,7 +139,7 @@ class SearchResultModel {
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
-                            bundle.putString("url", Config.webBaseUrl + redirect.url)
+                            bundle.putString("url", Config.webViewBaseHost + redirect.url)
                             bundle.putString("title", redirect.title)
                             bundle.putString("from", "other")
 
@@ -247,9 +247,9 @@ class SearchResultModel {
             } else {
                 mUrl = if (mUrl.isNullOrEmpty()) {
                     try {
-                        Config.webBaseUrl + WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                        Config.webViewBaseHost + WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
                     } catch (exception: Exception) {
-                        Config.webBaseUrl + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                        Config.webViewBaseHost + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
                     }
                 } else {
                     String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")

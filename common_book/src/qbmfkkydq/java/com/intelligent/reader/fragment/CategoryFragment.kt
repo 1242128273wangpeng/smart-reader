@@ -43,11 +43,11 @@ class CategoryFragment : Fragment() {
         val fragments: ArrayList<Fragment> = ArrayList()
 
         val fragmentMale = WebViewFragment()
-        fragmentMale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.category_male)
+        fragmentMale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.category_male)
 
 
         val fragmentFemale = WebViewFragment()
-        fragmentFemale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.category_female)
+        fragmentFemale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.category_female)
 
 
         fragments.add(fragmentMale)

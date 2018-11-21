@@ -178,7 +178,7 @@ class TabulationActivity : FrameActivity() {
 
                         if (redirect?.url != null && redirect.title != null) {
                             try {
-                                refreshTabulationContent(Config.webBaseUrl + redirect.url, redirect.title)
+                                refreshTabulationContent(Config.webViewBaseHost + redirect.url, redirect.title)
                             } catch (exception: Exception) {
                                 exception.printStackTrace()
                             }

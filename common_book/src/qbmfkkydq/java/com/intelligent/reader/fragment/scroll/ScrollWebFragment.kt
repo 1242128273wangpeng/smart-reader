@@ -29,7 +29,6 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import java.util.*
 
 /**
  * Desc：推荐Fragment子页面：精选、男频、女频、完本
@@ -121,7 +120,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
-                            bundle.putString("url", Config.webBaseUrl + redirect.url)
+                            bundle.putString("url", Config.webViewBaseHost + redirect.url)
                             bundle.putString("title", redirect.title)
 
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {

@@ -216,7 +216,7 @@ public class SplashActivity extends FrameActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result != null && result.checkResultAvailable()) {
-                        Config.INSTANCE.setWebBaseUrl(result.getData());
+                        Config.INSTANCE.setWebViewBaseHost(result.getData());
                     }
                 });
     }

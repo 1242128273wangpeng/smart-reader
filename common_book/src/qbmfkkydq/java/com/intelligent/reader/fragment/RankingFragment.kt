@@ -7,15 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.net.Config
 
-import com.ding.basic.net.api.service.RequestService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.frag_ranking_layout.*
 
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.WebViewIndex
-import net.lzbook.kit.utils.webview.UrlUtils
 
 /**
  * Date: 2018/7/19 11:52
@@ -43,7 +40,7 @@ class RankingFragment : Fragment() {
 
         val webFragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("url", Config.webBaseUrl + WebViewIndex.rank)
+        bundle.putString("url", Config.webViewBaseHost + WebViewIndex.rank)
         webFragment.arguments = bundle
 
         childFragmentManager.beginTransaction().replace(R.id.fl_content, webFragment).commit()

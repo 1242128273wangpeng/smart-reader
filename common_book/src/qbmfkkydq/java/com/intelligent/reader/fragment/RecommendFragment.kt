@@ -66,16 +66,16 @@ class RecommendFragment : Fragment() {
         view_pager.adapter = adapter
 
         val fragmentSelection = ScrollWebFragment()
-        fragmentSelection.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend, "recommend")
+        fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommend")
 
         val fragmentMale = ScrollWebFragment()
-        fragmentMale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_male, "recommendMale")
+        fragmentMale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_male, "recommendMale")
 
         val fragmentFemale = ScrollWebFragment()
-        fragmentFemale.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_female, "recommendFemale")
+        fragmentFemale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_female, "recommendFemale")
 
         val fragmentFinish = ScrollWebFragment()
-        fragmentFinish.arguments = getBundle(Config.webBaseUrl + WebViewIndex.recommend_finish, "recommendFinish")
+        fragmentFinish.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_finish, "recommendFinish")
 
         fragments.clear()
         fragments.add(fragmentSelection)
