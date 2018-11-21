@@ -26,6 +26,8 @@ import kotlin.properties.Delegates
  */
 object MicroAPI {
 
+    var initializeHost = ""
+
     /***
      * 微服务API接口
      * **/
@@ -123,22 +125,26 @@ object MicroAPI {
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(MicroRequestInterceptor()).build()
 
     fun initMicroService() {
+        if (initializeHost != microHost) {
 
-        publicKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
+            initializeHost = microHost
 
-        privateKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
+            publicKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
 
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .baseUrl(microHost)
-                .build()
+            privateKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
 
-        microService = retrofit.create(MicroService::class.java)
+            val retrofit = Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
+                    .baseUrl(microHost)
+                    .build()
 
-        if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
-            requestAuthAccess()
+            microService = retrofit.create(MicroService::class.java)
+
+            if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
+                requestAuthAccess()
+            }
         }
     }
 
