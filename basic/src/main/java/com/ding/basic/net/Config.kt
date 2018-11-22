@@ -67,7 +67,7 @@ object Config {
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    ""
+                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137"
                 }
                 field
             }
