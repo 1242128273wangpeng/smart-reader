@@ -218,42 +218,42 @@ class WebResourceCache {
             sourceHashMap["qbmfkkydq/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
             sourceHashMap["qbmfkkydq/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
 
-            sourceHashMap.filter { it.key.isNotEmpty() && it.value.isNotEmpty() }
-                    .forEach { entry ->
-                        cachingResource.add(entry.value)
+            cachingResource.addAll(sourceHashMap.values)
 
-                        val fileName = loadCacheFileName(entry.value, "MD5")
+            sourceHashMap.forEach { entry ->
 
-                        val fileSuffix = if (entry.key == "app.css") "css" else "js"
+                val fileName = loadCacheFileName(entry.value, "MD5")
 
-                        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
+                val fileSuffix = if (entry.key == "app.css") "css" else "js"
 
-                        val file = File(filePath)
+                val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
 
-                        try {
-                            val inputStream = context.assets.open(entry.key)
+                val file = File(filePath)
 
-                            if (!file.exists()) {
-                                file.createNewFile()
+                try {
+                    val inputStream = context.assets.open(entry.key)
 
-                                Logger.e("解压Assets文件: ${entry.key}")
+                    if (!file.exists()) {
+                        file.createNewFile()
 
-                                var read: Int = -1
+                        Logger.e("解压Assets文件: ${entry.key}")
 
-                                inputStream?.use { input ->
-                                    file.outputStream().use { fileOutputStream ->
-                                        while (input.read().also { read = it } != -1) {
-                                            fileOutputStream.write(read)
-                                        }
-                                    }
+                        var read: Int = -1
+
+                        inputStream?.use { input ->
+                            file.outputStream().use { fileOutputStream ->
+                                while (input.read().also { read = it } != -1) {
+                                    fileOutputStream.write(read)
                                 }
                             }
-                        } catch (exception: Exception) {
-                            exception.printStackTrace()
-                            file.delete()
                         }
-                        cachingResource.remove(entry.value)
                     }
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    file.delete()
+                }
+                cachingResource.remove(entry.value)
+            }
         }
     }
 

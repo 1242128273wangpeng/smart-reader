@@ -68,6 +68,8 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
         AppUtils.disableAccessibility(requireContext())
         initView()
 
+        Logger.e("WebView Url: $url")
+
         if (type == "recommend") {
             requestWebViewData(url)
         } else {
@@ -154,6 +156,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
             }
 
             override fun handleWebRequestResult(method: String?) {
+                Logger.e("WebViewMethod: $method")
                 if (null != web_view_content) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         web_view_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
@@ -162,7 +165,6 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-
         }, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")

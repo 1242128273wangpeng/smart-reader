@@ -65,6 +65,8 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         initView()
 
+        Logger.e("WebView Url: $url")
+
         handler.postDelayed({
             requestWebViewData(url)
         }, 2000)
@@ -148,6 +150,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
             override fun handleWebRequestResult(method: String?) {
                 if (null != web_view_content) {
+                    Logger.e("WebViewMethod: $method")
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         web_view_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
                     } else {
