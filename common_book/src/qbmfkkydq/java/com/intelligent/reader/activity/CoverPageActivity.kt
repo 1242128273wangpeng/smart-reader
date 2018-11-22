@@ -476,7 +476,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             } else if (status == DownloadState.DOWNLOADING) {
                 book_cover_download.setText(R.string.download_status_underway)
             } else if (status == DownloadState.PAUSEED) {
-                book_cover_download.setText("继续缓存")
+                book_cover_download.setText(R.string.download_status_total)
             } else {
                 book_cover_download.setText(R.string.download_status_total)
             }
