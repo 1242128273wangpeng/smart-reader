@@ -19,9 +19,9 @@ object SPUtils {
             return field ?: PreferenceManager.getDefaultSharedPreferences(Config.getContext())
         }
 
-    private val privatePreferences = Config.getContext()?.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+    private val privatePreferences = Config.getContext()?.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         get() {
-            return field ?: Config.getContext()?.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+            return field ?: Config.getContext()?.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         }
 
 
@@ -39,7 +39,7 @@ object SPUtils {
      * 在线配置Shared 批量操作
      */
     fun editOnlineConfigShared(job: SharedPreferences.Editor.() -> Unit) {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         val editor = shared.edit()
         editor.job()
         editor.apply()
@@ -98,7 +98,7 @@ object SPUtils {
      * 获取在线配置Shared Boolean
      */
     fun getOnlineConfigSharedBoolean(key: String, defValue: Boolean = false): Boolean {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         return shared.getBoolean(key, defValue)
     }
 
@@ -106,7 +106,7 @@ object SPUtils {
      * 获取在线配置Shared Int
      */
     fun getOnlineConfigSharedInt(key: String, defValue: Int = 0): Int {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         return shared.getInt(key, defValue)
     }
 
@@ -114,7 +114,7 @@ object SPUtils {
      * 获取在线配置Shared String
      */
     fun getOnlineConfigSharedString(key: String, defValue: String = ""): String {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         return shared.getString(key, defValue)
     }
 
@@ -122,7 +122,7 @@ object SPUtils {
      * 获取在线配置Shared Long
      */
     fun getOnlineConfigSharedLong(key: String, defValue: Long = 0L): Long {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         return shared.getLong(key, defValue)
     }
 
@@ -188,7 +188,7 @@ object SPUtils {
      * 保存在线配置Shared Boolean
      */
     fun putOnlineConfigSharedBoolean(key: String, value: Boolean = false) {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         shared.edit().putBoolean(key, value).apply()
     }
 
@@ -196,7 +196,7 @@ object SPUtils {
      * 保存在线配置Shared Int
      */
     fun putOnlineConfigSharedInt(key: String, value: Int = 0) {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         shared.edit().putInt(key, value).apply()
     }
 
@@ -204,7 +204,7 @@ object SPUtils {
      * 保存在线配置Shared String
      */
     fun putOnlineConfigSharedString(key: String, value: String?) {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         shared.edit().putString(key, value).apply()
     }
 
@@ -212,7 +212,7 @@ object SPUtils {
      * 保存在线配置Shared Long
      */
     fun putOnlineConfigSharedLong(key: String, value: Long = 0L) {
-        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSHAREDPREFERENCES_KEY(), 0)
+        val shared = Config.getContext()!!.getSharedPreferences(SPKey.getSharedPreferencesKey(), 0)
         shared.edit().putLong(key, value).apply()
     }
 
