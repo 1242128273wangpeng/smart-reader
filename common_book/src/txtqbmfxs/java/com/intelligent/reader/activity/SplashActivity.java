@@ -134,8 +134,8 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
         AppUtils.initDensity(getApplicationContext());
         int isChooseGender = PreferenceManager.getDefaultSharedPreferences(
                 getApplicationContext()).getInt("gender",
-                Constants.NONE);
-        return isChooseGender == Constants.NONE;
+                ParameterConfig.GENDER_NONE);
+        return isChooseGender == ParameterConfig.GENDER_NONE;
     }
 
     private void initGuide() {
@@ -468,8 +468,9 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
                     tvStepIn.setClickable(false);
                     genderHelper.jumpAnimation();
                     mStepInFlag = true;
-                    Constants.SGENDER = Constants.SDEFAULT;
-                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.GENDER_TAG, Constants.SGENDER);
+                    ParameterConfig.GENDER_TYPE = ParameterConfig.GENDER_DEFAULT;
+                    SPUtils.INSTANCE.putDefaultSharedInt(SPKey.GENDER_TAG,
+                            ParameterConfig.GENDER_TYPE);
                     initData();
                 });
             } else {
@@ -758,12 +759,12 @@ public class SplashActivity extends FrameActivity implements GenderHelper.onGend
         int user_index = SPUtils.INSTANCE.getDefaultSharedInt(SPKey.USER_NEW_INDEX, 0);
         boolean init_ad = false;
 
-            /*
-             * FIXME  user_index
-             * 0: 新用户：无广告
-             * 1：新用户：两天内无广告
-             * 2：老用户：显示广告
-             */
+        /*
+         * FIXME  user_index
+         * 0: 新用户：无广告
+         * 1：新用户：两天内无广告
+         * 2：老用户：显示广告
+         */
         switch (user_index) {
             case 0:
                 if (!SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,

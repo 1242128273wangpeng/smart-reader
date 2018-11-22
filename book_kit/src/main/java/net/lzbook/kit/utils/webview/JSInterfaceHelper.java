@@ -8,6 +8,7 @@ import android.webkit.WebView;
 
 import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
+import com.ding.basic.config.ParameterConfig;
 import com.ding.basic.net.Config;
 import com.ding.basic.net.api.MicroAPI;
 import com.ding.basic.net.token.Token;
@@ -15,7 +16,6 @@ import com.dingyue.statistics.DyStatService;
 import com.orhanobut.logger.Logger;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
-import net.lzbook.kit.constants.Constants;
 import net.lzbook.kit.utils.logger.AppLog;
 
 import org.apache.commons.codec.binary.Hex;
@@ -761,9 +761,9 @@ public class JSInterfaceHelper implements WebViewJsInterface {
         }
 
         if (parameters.get("gender") == null) {
-            if (Constants.SGENDER == Constants.SBOY) {
+            if (ParameterConfig.GENDER_TYPE == ParameterConfig.GENDER_BOY) {
                 parameters.put("gender", "male");
-            } else if (Constants.SGENDER == Constants.SGIRL) {
+            } else if (ParameterConfig.GENDER_TYPE == ParameterConfig.GENDER_GIRL) {
                 parameters.put("gender", "female");
             }
         }
