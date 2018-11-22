@@ -413,7 +413,7 @@ class ReadSettingPresenter : NovelHelper.OnSourceCallBack {
             activity.get()?.mThemeHelper?.setMode(ThemeMode.NIGHT)
             DyStatService.onEvent(EventPoint.READPAGE_NIGHTMODE, mapOf("type" to "1")) // 1代表夜间
         }
-//        ReaderSettings.instance.save()
+        ReaderSettings.instance.save()
 
         changeNight()
     }
