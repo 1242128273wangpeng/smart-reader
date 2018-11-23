@@ -49,13 +49,12 @@ class RecommendFragment : Fragment() {
 
 
     private fun initView() {
-        ll_search_layout?.post {
-            if (statusBarHeight == 0) {
-                statusBarHeight = AppUtils.dip2px(context, 20f)
-            }
-            val params: LinearLayout.LayoutParams = ll_search_layout.layoutParams as LinearLayout.LayoutParams
-            params.topMargin = params.topMargin + statusBarHeight
+        if (statusBarHeight == 0) {
+            statusBarHeight = AppUtils.dip2px(requireContext(), 20f)
         }
+
+        val params = ll_search_layout?.layoutParams as LinearLayout.LayoutParams?
+        params?.topMargin = (params?.topMargin ?: AppUtils.dip2px(requireContext(), 4f)) + statusBarHeight
 
         view_pager.offscreenPageLimit = 4
 

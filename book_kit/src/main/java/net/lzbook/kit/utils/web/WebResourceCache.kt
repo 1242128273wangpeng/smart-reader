@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.ding.basic.util.ReplaceConstants
 import com.orhanobut.logger.Logger
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -211,49 +212,54 @@ class WebResourceCache {
      * TODO 上线修改为线上配置的地址
      * **/
     fun copyVendorFromAssets(context: Context) {
+        val sourceHashMap = HashMap<String, String>()
+        sourceHashMap["qbmfkkydq/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
+        sourceHashMap["qbmfkkydq/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
+        sourceHashMap["qbmfkkydq/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
+        sourceHashMap["qbmfkkydq/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
+
+        cachingResource.addAll(sourceHashMap.values)
+
+        val iterator = sourceHashMap.entries.iterator()
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            copyFileFromAssets(context, entry.key, entry.value)
+        }
+    }
+
+    private fun copyFileFromAssets(context: Context, key: String, value: String) {
         doAsync {
-            val sourceHashMap = HashMap<String, String>()
-            sourceHashMap["qbmfkkydq/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
-            sourceHashMap["qbmfkkydq/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
-            sourceHashMap["qbmfkkydq/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
-            sourceHashMap["qbmfkkydq/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
+            val fileName = loadCacheFileName(value, "MD5")
 
-            cachingResource.addAll(sourceHashMap.values)
+            val fileSuffix = if (key == "app.css") "css" else "js"
 
-            sourceHashMap.forEach { entry ->
+            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
 
-                val fileName = loadCacheFileName(entry.value, "MD5")
+            val file = File(filePath)
 
-                val fileSuffix = if (entry.key == "app.css") "css" else "js"
+            try {
+                val inputStream = context.assets.open(key)
 
-                val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + fileName + "." + fileSuffix
+                if (!file.exists()) {
+                    file.createNewFile()
 
-                val file = File(filePath)
+                    Logger.e("解压Assets文件: ${key}")
 
-                try {
-                    val inputStream = context.assets.open(entry.key)
+                    var read: Int = -1
 
-                    if (!file.exists()) {
-                        file.createNewFile()
-
-                        Logger.e("解压Assets文件: ${entry.key}")
-
-                        var read: Int = -1
-
-                        inputStream?.use { input ->
-                            file.outputStream().use { fileOutputStream ->
-                                while (input.read().also { read = it } != -1) {
-                                    fileOutputStream.write(read)
-                                }
+                    inputStream?.use { input ->
+                        file.outputStream().use { fileOutputStream ->
+                            while (input.read().also { read = it } != -1) {
+                                fileOutputStream.write(read)
                             }
                         }
                     }
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                    file.delete()
                 }
-                cachingResource.remove(entry.value)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+                file.delete()
             }
+            cachingResource.remove(value)
         }
     }
 
