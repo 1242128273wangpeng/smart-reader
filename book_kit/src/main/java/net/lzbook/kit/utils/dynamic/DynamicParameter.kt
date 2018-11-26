@@ -18,7 +18,6 @@ import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.Logger
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_debug_host.*
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
@@ -319,9 +318,12 @@ class DynamicParameter(private val context: Context) {
 
             val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            resourceList
-                    .filter { it.isNotEmpty() }
-                    .forEach { customWebViewCache.checkWebViewResourceCached(it) }
+            resourceList.forEach {
+                if (it.isNotEmpty()) {
+                    customWebViewCache.checkWebViewResourceCached(it)
+                }
+            }
+
         }
     }
 
@@ -371,14 +373,14 @@ class DynamicParameter(private val context: Context) {
                 if (message.isNotEmpty() && message[0].isNotEmpty()) {
                     val value = Integer.parseInt(message[0])
                     Constants.isBaiduExamine = value != 0
-                    AppLog.e(TAG, "baiduExamine: " + message[0])
-                    AppLog.e(TAG, "baiduExamine: " + Constants.isBaiduExamine)
+                    loge("baiduExamine: " + message[0])
+                    loge("baiduExamine: " + Constants.isBaiduExamine)
                 }
 
                 if (message.size > 1 && message[1].isNotEmpty()) {
                     Constants.versionCode = Integer.valueOf(message[1])
-                    AppLog.e(TAG, "baiduExamine: " + message[1])
-                    AppLog.e(TAG, "baiduExamine: " + Constants.versionCode)
+                    loge("baiduExamine: " + message[1])
+                    loge("baiduExamine: " + Constants.versionCode)
                 }
 
                 if (message.size > 2 && message[2].isNotEmpty()) {
@@ -437,20 +439,20 @@ class DynamicParameter(private val context: Context) {
         var adLimitTimeDay = SPUtils.getOnlineConfigSharedString(SPKey.AD_LIMIT_TIME_DAY)
         if (adLimitTimeDay.isNotEmpty()) {
             val channelID = AppUtils.getChannelId()
-            AppLog.e(TAG, "channelLimitList: " + channelLimit)
-            AppLog.e(TAG, "dayLimitList: " + dayLimit)
+            loge("channelLimitList: $channelLimit")
+            loge("dayLimitList: $dayLimit")
 
             val allChannelIndex = channelLimitList.indexOf("AllChannel")
             if (allChannelIndex != -1) {
                 val allChannelLimit = dayLimitList[allChannelIndex]
                 if (allChannelLimit != 0) {
-                    AppLog.e(TAG, "all_channel_limit: " + allChannelLimit)
+                    loge("all_channel_limit: $allChannelLimit")
                     Constants.ad_limit_time_day = allChannelLimit
                 } else {
                     if (channelLimitList.contains(channelID)) {
-                        AppLog.e(TAG, "channelLimitList.contains: " + channelID)
+                        loge("channelLimitList.contains: $channelID")
                         val index = channelLimitList.indexOf(channelID)
-                        AppLog.e(TAG, "dayLimitList: " + dayLimitList[index])
+                        loge("dayLimitList: ${dayLimitList[index]}")
                         Constants.ad_limit_time_day = dayLimitList[index]
                     } else {
                         if (adLimitTimeDay.isEmpty()) {
@@ -463,7 +465,7 @@ class DynamicParameter(private val context: Context) {
                 }
             }
             if (Constants.DEVELOPER_MODE) {
-                AppLog.e(TAG, " ad_limit_time_day:" + Constants.ad_limit_time_day)
+                loge(" ad_limit_time_day:${Constants.ad_limit_time_day}")
             }
         }
     }
