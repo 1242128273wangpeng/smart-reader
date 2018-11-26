@@ -23,6 +23,7 @@ import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.webview_scroll_layout.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -84,7 +85,9 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
         web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
-        loadingPage = LoadingPage(requireActivity(), fl_content_layout)
+        if (NetWorkUtils.isNetworkAvailable(context)) {
+            loadingPage = LoadingPage(requireActivity(), fl_content_layout)
+        }
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
 
