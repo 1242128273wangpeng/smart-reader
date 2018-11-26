@@ -11,12 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.ding.basic.util.ReplaceConstants
 import com.orhanobut.logger.Logger
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.doAsync
+import net.lzbook.kit.utils.file.FileUtils
+import net.lzbook.kit.utils.file.ZIPUtils
 import java.io.File
 import java.io.Serializable
 import java.math.BigInteger
@@ -32,6 +33,10 @@ import java.security.MessageDigest
 class WebResourceCache {
 
     companion object {
+
+        //        val publishHost = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader"
+        const val publishHost = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader"
+        const val publishTime = "201811241823"
 
         @Volatile
         @SuppressLint("StaticFieldLeak")
@@ -53,7 +58,23 @@ class WebResourceCache {
             }
             return webResourceCache!!
         }
+
+
+        /***
+         * 获取缓存文件名
+         * **/
+        fun loadCacheFileName(url: String, method: String): String? {
+            return try {
+                val messageDigest = MessageDigest.getInstance(method)
+                messageDigest?.update(url.toByteArray())
+                BigInteger(1, messageDigest.digest()).toString(16)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+                Base64.encodeToString(url.toByteArray(), Base64.DEFAULT)
+            }
+        }
     }
+
 
     /***
      * 处理图片拦截请求
@@ -114,19 +135,6 @@ class WebResourceCache {
         }
     }
 
-    /***
-     * 获取缓存文件名
-     * **/
-    private fun loadCacheFileName(url: String, method: String): String? {
-        return try {
-            val messageDigest = MessageDigest.getInstance(method)
-            messageDigest?.update(url.toByteArray())
-            BigInteger(1, messageDigest.digest()).toString(16)
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            Base64.encodeToString(url.toByteArray(), Base64.DEFAULT)
-        }
-    }
 
     /***
      * 缓存获取到的文件流
@@ -212,21 +220,57 @@ class WebResourceCache {
      * TODO 上线修改为线上配置的地址
      * **/
     fun copyVendorFromAssets(context: Context) {
-        val sourceHashMap = HashMap<String, String>()
-        sourceHashMap["qbmfkkydq/vendor.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/vendor.js"
-        sourceHashMap["qbmfkkydq/app.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/app.js"
-        sourceHashMap["qbmfkkydq/app.css"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/css/app.css"
-        sourceHashMap["qbmfkkydq/manifest.js"] = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137/js/manifest.js"
 
-        cachingResource.addAll(sourceHashMap.values)
+        /*  val sourceHashMap = HashMap<String, String>()
+          sourceHashMap["qbmfkkydq/vendor.js"] = "$publishHost/vendor.js"
+          sourceHashMap["qbmfkkydq/app.js"] = "$publishHost/$publishTime/js/app.js"
+          sourceHashMap["qbmfkkydq/app.css"] = "$publishHost/$publishTime/css/app.css"
+          sourceHashMap["qbmfkkydq/manifest.js"] = "$publishHost/$publishTime/js/manifest.js"
+          cachingResource.addAll(sourceHashMap.values)
 
-        val iterator = sourceHashMap.entries.iterator()
-        while (iterator.hasNext()) {
-            val entry = iterator.next()
-            copyFileFromAssets(context, entry.key, entry.value)
+          val iterator = sourceHashMap.entries.iterator()
+          while (iterator.hasNext()) {
+              val entry = iterator.next()
+              copyFileFromAssets(context, entry.key, entry.value)
+          }*/
+
+        cachingResource.add("$publishHost/vendor.js")
+        cachingResource.add("$publishHost/$publishTime/js/app.js")
+        cachingResource.add("$publishHost/$publishTime/css/app.css")
+        cachingResource.add("$publishHost/$publishTime/js/manifest.js")
+
+        copyFileFromAssets(context)
+    }
+
+    /**
+     * copyzip包解压到本地
+     */
+    private fun copyFileFromAssets(context: Context) {
+        doAsync {
+            //解压耗时100ms左右
+            Logger.e("JoannChen开始:" + System.currentTimeMillis())
+            val start = System.currentTimeMillis()
+            try {
+                //该版本首次打开
+                val file = File(ReplaceConstants.getReplaceConstants().APP_PATH_CACHE)
+                if (file.exists()) {
+                    //删除文件夹下所有文件
+                    FileUtils.deleteFolderFile(file.absolutePath, false)
+                }
+                file.mkdirs()
+
+                //第一次启动，从assets目录解压
+                ZIPUtils.unZipAssets(context, "qbmfkkydq.zip", ReplaceConstants.getReplaceConstants().APP_PATH_CACHE, true)
+                Logger.e("JoannChen结束: ${System.currentTimeMillis() - start}")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
+    /**
+     * 直接copy文件
+     */
     private fun copyFileFromAssets(context: Context, key: String, value: String) {
         doAsync {
             val fileName = loadCacheFileName(value, "MD5")
