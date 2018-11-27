@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.qbmfkkydq.webview_scroll_layout.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
+import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -48,6 +49,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
     private var customWebClient: CustomWebClient? = null
     private var customChangeListener: ScrollWebView.ScrollChangeListener? = null
 
+    private var jSInterfaceObject: JSInterfaceObject? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,15 +71,16 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
         AppUtils.disableAccessibility(requireContext())
         initView()
 
-        Logger.e("WebView Url: $url")
+        loge("WebView Url: $url")
 
-        if (type == "recommend") {
-            requestWebViewData(url)
-        } else {
-            handler.postDelayed({
-                requestWebViewData(url)
-            }, 2000)
-        }
+//        if (type == "recommend") {
+        jSInterfaceObject?.requestWebViewResult(Config.webViewData)
+        requestWebViewData(url)
+//        } else {
+//            handler.postDelayed({
+//                requestWebViewData(url)
+//            }, 2000)
+//        }
     }
 
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
@@ -104,7 +107,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
             web_view_content.insertScrollChangeListener(customChangeListener)
         }
 
-        web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
+        jSInterfaceObject = object : JSInterfaceObject(requireActivity()) {
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
@@ -121,7 +124,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
                     }
 
                     try {
-                        val redirect = Gson().fromJson(data, JSRedirect::class.java)
+                        val redirect = Gson().fromJson(data, JSInterfaceObject.JSRedirect::class.java)
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
@@ -168,7 +171,9 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-        }, "J_search")
+        }
+
+        web_view_content?.addJavascriptInterface(jSInterfaceObject, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
 

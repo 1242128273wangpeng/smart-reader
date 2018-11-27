@@ -55,6 +55,7 @@ object Config {
      * **/
     private var requestParameters: HashMap<String, String> = HashMap()
 
+    const val webViewData = "{\"url\":\"/api/cn.qbmfkkydq.reader/recommend/list\",\"method\":\"get\",\"data\":\"{}\",\"requestIndex\":\"zn2\",\"microFlag\":false}"
 
     var webDeploy = ""
 
@@ -89,11 +90,15 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
+//        MicroAPI.microHost = "https://uniontest.bookapi.cn"
+//        ContentAPI.contentHost = "https://uniontest.bookapi.cn"
         MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
         ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
 
-        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+//        requestAPIHost = "http://10.80.122.214:8081"
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+
 
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
 

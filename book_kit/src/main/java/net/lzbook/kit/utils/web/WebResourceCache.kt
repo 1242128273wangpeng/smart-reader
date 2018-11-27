@@ -34,9 +34,9 @@ class WebResourceCache {
 
     companion object {
 
-        //        val publishHost = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader"
-        const val publishHost = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader"
-        const val publishTime = "201811241823"
+        //        const val publishHost = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader"
+        const val publishHost = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader"
+        const val publishTime = "201811271510"
 
         @Volatile
         @SuppressLint("StaticFieldLeak")
