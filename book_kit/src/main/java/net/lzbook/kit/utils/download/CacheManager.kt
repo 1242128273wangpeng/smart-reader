@@ -241,7 +241,7 @@ object CacheManager {
 
         val notifyIntent: Intent?
         try {
-            notifyIntent = Intent(app, Class.forName("com.intelligent.reader.activity.GoToCoverOrReadActivity"))
+            notifyIntent = Intent(app, Class.forName("net.lzbook.kit.ui.activity.GoToCoverOrReadActivity"))
         } catch (e: Exception) {
             e.printStackTrace()
             return
