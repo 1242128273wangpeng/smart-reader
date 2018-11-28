@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull
 @SuppressLint("StaticFieldLeak")
 object Config {
 
-    const val Develop: Boolean = false
+    const val Develop: Boolean = true
 
     /***
      * WebView地址
@@ -59,6 +59,10 @@ object Config {
 
     var webDeploy = ""
 
+    @JvmStatic
+    var webViewTimeTemp = "201811271619"
+
+    @JvmStatic
     var webViewBaseHost = ""
         get() {
             return if (field.isNotEmpty()) {
@@ -70,15 +74,10 @@ object Config {
                 } else {
                     "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811211137"
                 }
+
+                webViewTimeTemp = field.substring(field.lastIndexOf("/") + 1, field.length)
+
                 field
-            }
-        }
-
-        set(value) {
-            if (value.isNotEmpty()) {
-                field = value
-
-                SPUtils.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, value)
             }
         }
 

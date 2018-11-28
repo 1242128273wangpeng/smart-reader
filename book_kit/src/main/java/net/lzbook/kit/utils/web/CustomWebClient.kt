@@ -209,15 +209,23 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
 
         val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
+        var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
 
         return if (fileExtension.isNotEmpty()) {
             if ((mimeType == "image/jpeg" || mimeType == "image/png")) {
                 customWebViewCache.handleImageRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)
-            } else {
-                customWebViewCache.handleOtherRequest(url, mimeType, fileExtension)
+            } else if (fileExtension == "js" || fileExtension == "css" || fileExtension == "html") {
+                mimeType = when (fileExtension) {
+                    "js" -> "text/javascript"
+                    "css" -> "text/css"
+                    else ->
+                        "text/html"
+                }
+                customWebViewCache.handleOtherRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)
+            } else {
+                super.shouldInterceptRequest(view, request)
             }
 
         } else {

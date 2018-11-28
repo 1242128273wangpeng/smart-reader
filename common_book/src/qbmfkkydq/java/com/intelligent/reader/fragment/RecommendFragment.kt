@@ -10,11 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.ding.basic.net.Config
-
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment
 import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
-
+import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -54,7 +53,8 @@ class RecommendFragment : Fragment() {
         }
 
         val params = ll_search_layout?.layoutParams as LinearLayout.LayoutParams?
-        params?.topMargin = (params?.topMargin ?: AppUtils.dip2px(requireContext(), 4f)) + statusBarHeight
+        params?.topMargin = (params?.topMargin
+                ?: AppUtils.dip2px(requireContext(), 4f)) + statusBarHeight
 
         view_pager.offscreenPageLimit = 4
 
@@ -65,7 +65,11 @@ class RecommendFragment : Fragment() {
         view_pager.adapter = adapter
 
         val fragmentSelection = ScrollWebFragment()
-        fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommend")
+//        fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommend")
+//        fragmentSelection.arguments = getBundle("file:///storage/emulated/0/qbmfkkydq_book/cache/201811271619/index.html#/recommend", "recommend")
+//        fragmentSelection.arguments = getBundle("file:///storage/emulated/0/qbmfkkydq_book/cache/index.html#/recommend", "recommend")
+//        fragmentSelection.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/index.html#/recommend", "recommend")
+        fragmentSelection.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}${Config.webViewTimeTemp}/index.html#/recommend", "recommend")
 
         val fragmentMale = ScrollWebFragment()
         fragmentMale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_male, "recommendMale")

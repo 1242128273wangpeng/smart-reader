@@ -64,8 +64,6 @@ object ZIPUtils {
         var zipEntry: ZipEntry? = zipInputStream.nextEntry
         // 使用1M buffer
         val buffer = ByteArray(1024 * 1024)
-        // 解压时字节计数
-        var count: Int
         // 如果进入点为空说明已经遍历完所有压缩包中文件和目录
         while (zipEntry != null) {
             if (zipEntry.isDirectory) {// 如果是一个目录
@@ -76,35 +74,7 @@ object ZIPUtils {
                 }
             } else {// 如果是文件
 
-                var filePath = ""
-                var fileSuffix = ""
-                when (zipEntry.name) {
-                    "qbmfkkydq/vendor.js" -> {
-                        filePath = "${WebResourceCache.publishHost}/vendor.js"
-                        fileSuffix = "js"
-                    }
-                    "qbmfkkydq/app.js" -> {
-                        filePath = "${WebResourceCache.publishHost}/${WebResourceCache.publishTime}/js/app.js"
-                        fileSuffix = "js"
-                    }
-                    "qbmfkkydq/manifest.js" -> {
-                        filePath = "${WebResourceCache.publishHost}/${WebResourceCache.publishTime}/js/manifest.js"
-                        fileSuffix = "js"
-                    }
-                    "qbmfkkydq/app.css" -> {
-                        filePath = "${WebResourceCache.publishHost}/${WebResourceCache.publishTime}/css/app.css"
-                        fileSuffix = "css"
-                    }
-                    "qbmfkkydq/index.html" -> {
-                        filePath = "${WebResourceCache.publishHost}/${WebResourceCache.publishTime}/index.html"
-                        fileSuffix = "html"
-                    }
-                }
-
-                val fileName = WebResourceCache.loadCacheFileName(filePath, "MD5")
-                val filePathNew = "$outputDirectory$fileName.$fileSuffix"
-
-                file = File(filePathNew)
+                file = File(outputDirectory + zipEntry.name)
 
                 // 文件需要覆盖或者文件不存在，则解压文件
                 if (isReWrite || !file.exists()) {

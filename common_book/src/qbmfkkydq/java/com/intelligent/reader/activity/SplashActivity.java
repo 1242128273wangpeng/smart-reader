@@ -43,7 +43,6 @@ import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.user.UserManager;
-import net.lzbook.kit.utils.web.WebResourceCache;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -211,12 +210,15 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void requestWebViewConfig() {
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestWebViewConfig()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result != null && result.checkResultAvailable()) {
-                        Config.INSTANCE.setWebViewBaseHost(result.getData());
+                        String url = result.getData();
+                        SPUtils.INSTANCE.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, url);
+                        Config.getWebViewBaseHost();
                     }
                 });
     }

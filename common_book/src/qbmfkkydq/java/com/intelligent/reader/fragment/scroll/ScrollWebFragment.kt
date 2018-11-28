@@ -73,23 +73,26 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
         loge("WebView Url: $url")
 
-//        if (type == "recommend") {
-        jSInterfaceObject?.requestWebViewResult(Config.webViewData)
-        requestWebViewData(url)
-//        } else {
-//            handler.postDelayed({
-//                requestWebViewData(url)
-//            }, 2000)
-//        }
+        if (type == "recommend") {
+            jSInterfaceObject?.requestWebViewResult(Config.webViewData)
+            requestWebViewData(url)
+        } else {
+            handler.postDelayed({
+                requestWebViewData(url)
+            }, 2000)
+        }
     }
 
+    var time = 0L
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
     private fun initView() {
 
         web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
         if (NetWorkUtils.isNetworkAvailable(context)) {
-            loadingPage = LoadingPage(requireActivity(), fl_content_layout)
+            time = System.currentTimeMillis()
+            loge("JoannChen---------------")
+//            loadingPage = LoadingPage(requireActivity(), fl_content_layout)
         }
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
@@ -157,7 +160,8 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
             override fun hideWebViewLoading() {
                 runOnMain {
-                    loadingPage?.onSuccessGone()
+                    //                    loadingPage?.onSuccessGone()
+                    loge("JoannChen结束: ${System.currentTimeMillis() - time}")
                 }
             }
 
@@ -220,19 +224,20 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
             }
 
             customWebClient?.setLoadingWebViewError {
-                loadingPage?.onErrorVisable()
+                //                loadingPage?.onErrorVisable()
             }
 
             customWebClient?.setLoadingWebViewFinish {
-                loadingPage?.onSuccessGone()
+                //                loadingPage?.onSuccessGone()
+                loge("JoannChen回调: ${System.currentTimeMillis() - time}")
             }
         }
 
 
-        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-            customWebClient?.initParameter()
-            web_view_content?.reload()
-        })
+//        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+//            customWebClient?.initParameter()
+//            web_view_content?.reload()
+//        })
 
 
     }
