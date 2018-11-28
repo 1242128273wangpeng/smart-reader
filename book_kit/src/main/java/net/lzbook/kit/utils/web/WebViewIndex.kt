@@ -16,7 +16,7 @@ object WebViewIndex {
 
     const val recommend_finish = "#/finish"
 
-    const val rank = "/index.html#/rank"
+    const val rank = "#/rank"
 
     const val category_male = "#/category?gender=male"
 
