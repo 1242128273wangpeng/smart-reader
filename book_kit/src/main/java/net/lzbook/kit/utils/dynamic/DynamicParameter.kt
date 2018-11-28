@@ -291,8 +291,6 @@ class DynamicParameter(private val context: Context) {
 
         initApi()
 
-        initWebResource()
-
         setBaidu()
 
         setAdControl()
@@ -307,26 +305,6 @@ class DynamicParameter(private val context: Context) {
 
         AppLog.d("um_param", " real param ==> " + this.toString())
     }
-
-    private fun initWebResource() {
-
-        val webStaticResources = SPUtils.getOnlineConfigSharedString(SPKey.DY_WEB_STATIC_RESOURCES)
-
-        if (webStaticResources.isNotEmpty()) {
-
-            val customWebViewCache = WebResourceCache.loadCustomWebViewCache()
-
-            val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-
-            resourceList.forEach {
-                if (it.isNotEmpty()) {
-                    customWebViewCache.checkWebViewResourceCached(it)
-                }
-            }
-
-        }
-    }
-
 
     private fun insertRequestParams() {
         MicroAPI.microHost = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)

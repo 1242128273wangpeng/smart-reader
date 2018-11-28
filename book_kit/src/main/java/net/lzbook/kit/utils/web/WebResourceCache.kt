@@ -1,6 +1,5 @@
 package net.lzbook.kit.utils.web
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -14,6 +13,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.ReplaceConstants
+import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.file.FileUtils
 import net.lzbook.kit.utils.file.ZIPUtils
@@ -31,12 +31,10 @@ class WebResourceCache {
 
     companion object {
 
-        //        const val publishHost = "https://zn-h5-dev.bookapi.cn/cn-qbmfkkydq-reader"
-        const val publishHost = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader"
-        const val publishTime = "201811271619"
+        //TODO 各壳存储位置不一致，需要上线修改
+        const val embeddedFile = "qbmfkkydq/web.zip"
 
         @Volatile
-        @SuppressLint("StaticFieldLeak")
         private var webResourceCache: WebResourceCache? = null
 
         @Volatile
@@ -45,7 +43,9 @@ class WebResourceCache {
         @Volatile
         private var resourceResponseHashMap = HashMap<String, CachedWebResource>()
 
-        fun loadCustomWebViewCache(): WebResourceCache {
+        private var packageName = ""
+
+        fun loadWebResourceCache(): WebResourceCache {
             if (webResourceCache == null) {
                 synchronized(WebResourceCache::class.java) {
                     if (webResourceCache == null) {
@@ -86,25 +86,14 @@ class WebResourceCache {
      * **/
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun handleOtherRequest(url: String, mimeType: String?): WebResourceResponse? {
-        val caching = checkWebViewResourceCached(url)
+
+        val caching = checkWebViewResourceCaching(url)
+
         return if (caching) {
             Logger.e("文件正在缓存中: $url")
             null
         } else {
-
-            val fileSubPath = when {
-                url.contains("app.css") -> "/css/app.css"
-                url.contains("app.js") -> "/js/app.js"
-                url.contains("vendor.js") -> "/js/vendor.js"
-                url.contains("manifest.js") -> "/js/manifest.js"
-                url.contains("index.html") -> "/index.html"
-                else -> {
-                    ""
-                }
-            }
-
-
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + Config.webViewTimeTemp + fileSubPath
+            val filePath = requestUrlFilePath(url)
 
             val file = File(filePath)
 
@@ -125,8 +114,7 @@ class WebResourceCache {
                     Logger.e("文件缓存命中失败: $url  $cachingResource")
                     null
                 }
-                }
-
+            }
         }
     }
 
@@ -138,9 +126,20 @@ class WebResourceCache {
         val interimFile = File("$filePath.tmp")
 
         try {
+            val parentFile = interimFile.parentFile
+
+            if (!parentFile.exists()) {
+                parentFile.mkdirs()
+            }
+
+            if (!interimFile.exists()) {
+                interimFile.createNewFile()
+            }
+
             val connection = URL(url).openConnection()
 
             var read: Int = -1
+
             connection.inputStream?.use { input ->
                 interimFile.outputStream().use { fileOutputStream ->
                     while (input.read().also { read = it } != -1) {
@@ -169,42 +168,31 @@ class WebResourceCache {
      * 检查资源是否正在缓存
      * **/
     @Synchronized
-    fun checkWebViewResourceCached(url: String): Boolean {
+    fun checkWebViewResourceCaching(url: String): Boolean {
         if (cachingResource.contains(url)) {
             return true
         } else {
-            cachingResource.add(url)
+            val filePath = requestUrlFilePath(url)
 
-            val fileSubPath = when {
-                url.contains("app.css") -> "/css/app.css"
-                url.contains("app.js") -> "/js/app.js"
-                url.contains("vendor.js") -> "/js/vendor.js"
-                url.contains("manifest.js") -> "/js/manifest.js"
-                url.contains("index.html") -> "/index.html"
-                else -> {
-                    ""
+            if (filePath.isNotEmpty()) {
+
+                val file = File(filePath)
+
+                return if (!file.exists()) {
+                    cachingResource.add(url)
+
+                    Observable.create<String> {
+                        it.onNext(url)
+                        it.onComplete()
+                    }.observeOn(Schedulers.io()).subscribeBy { cacheWebViewSource(url, filePath) }
+
+                    true
+                } else {
+                    cachingResource.remove(url)
+                    false
                 }
-            }
-
-
-            val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + Config.webViewTimeTemp + fileSubPath
-
-
-            val file = File(filePath)
-
-            return if (!file.exists()) {
-                cachingResource.add(url)
-
-                Observable.create<String> {
-                    it.onNext(url)
-                    it.onComplete()
-                }.observeOn(Schedulers.io()).subscribeBy { cacheWebViewSource(url, filePath) }
-
-                true
             } else {
-                cachingResource.remove(url)
-
-                false
+                return false
             }
         }
     }
@@ -221,43 +209,119 @@ class WebResourceCache {
     }
 
     /***
-     * 从Assets文件夹下拷贝文件到SD卡
+     * 获取Url对应的文件地址路径
      * **/
-    fun copyVendorFromAssets(context: Context) {
+    private fun requestUrlFilePath(url: String): String {
 
-        cachingResource.add("$publishHost/vendor.js")
-        cachingResource.add("$publishHost/$publishTime/js/app.js")
-        cachingResource.add("$publishHost/$publishTime/css/app.css")
-        cachingResource.add("$publishHost/$publishTime/js/manifest.js")
+        if (url.contains("vendor.js")) {
+            return ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "/web/vendor.js"
+        }
 
-        copyFileFromAssets(context)
+        val fileSubPath = when {
+            url.contains("app.js") -> "/js/app.js"
+            url.contains("app.css") -> "/css/app.css"
+            url.contains("manifest.js") -> "/js/manifest.js"
+            url.endsWith("index.html") -> "index.html"
+            else -> ""
+        }
+
+        return if (fileSubPath.isNotEmpty()) {
+            val time = requestUrlTimeStamp(url)
+
+            if (time.isNotEmpty()) {
+                ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "/web" + "/" + time + fileSubPath
+            } else {
+                ""
+            }
+        } else {
+            ""
+        }
     }
 
-    /**
-     * copyzip包解压到本地
-     */
-    private fun copyFileFromAssets(context: Context) {
+    /***
+     * 获取Url的时间戳
+     * **/
+    private fun requestUrlTimeStamp(url: String): String {
+        if (packageName.isEmpty()) {
+            packageName = AppUtils.getPackageName().replace(".", "-")
+        }
+
+        val start = url.lastIndexOf(packageName) + packageName.length + 1
+
+        val stop = when {
+            url.contains("/js/app.js") -> url.lastIndexOf("/js/app.js")
+            url.contains("/css/app.css") -> url.lastIndexOf("/css/app.css")
+            url.contains("/js/manifest.js") -> url.lastIndexOf("/js/manifest.js")
+            else -> -1
+        }
+
+        val length = url.length
+
+        return if (start > -1 && start < length && stop > -1 && stop <= length) {
+            val time = url.substring(start, stop)
+            time
+        } else {
+            ""
+        }
+    }
+
+
+    /***
+     * 解压预埋的H5文件
+     * **/
+    fun copyFileFromAssets(context: Context) {
         doAsync {
-            //解压耗时100ms左右
-            val start = System.currentTimeMillis()
             try {
-                //该版本首次打开
-                val file = File(ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "201811271619")
+                val file = File(ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "/web")
+
                 if (file.exists()) {
-                    //删除文件夹下所有文件
                     FileUtils.deleteFolderFile(file.absolutePath, false)
                 }
+
                 file.mkdirs()
 
-                //第一次启动，从assets目录解压
-                ZIPUtils.unZipAssets(context, "201811271619.zip", ReplaceConstants.getReplaceConstants().APP_PATH_CACHE, true)
-                Logger.e("JoannChen结束: ${System.currentTimeMillis() - start}")
-            } catch (e: Exception) {
-                e.printStackTrace()
+                ZIPUtils.unZipAssets(context, embeddedFile, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE, true)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
         }
     }
 
+    /***
+     * 检查本地最新文件是否存在
+     * **/
+    fun checkLocalResourceFile(url: String) {
+        doAsync {
+            val index = url.lastIndexOf("/")
+
+            if (index > -1 && index < url.length) {
+                val timeStamp = url.substring(url.lastIndexOf("/"), url.length)
+
+                if (!timeStamp.isEmpty()) {
+
+                    val filePath = (ReplaceConstants.getReplaceConstants().APP_PATH_CACHE
+                            + "/web/" + timeStamp)
+
+                    val file = File(filePath)
+
+                    if (!file.exists()) {
+
+                        val resourceList = java.util.ArrayList<String>()
+                        resourceList.add("$url/index.html")
+                        resourceList.add("$url/js/app.js")
+                        resourceList.add("$url/css/app.css")
+                        resourceList.add("$url/js/manifest.js")
+
+                        for (resource in resourceList) {
+                            if (!resource.isEmpty()) {
+                                checkWebViewResourceCaching(resource)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     inner class CachedWebResource : Serializable {
         var file: File? = null

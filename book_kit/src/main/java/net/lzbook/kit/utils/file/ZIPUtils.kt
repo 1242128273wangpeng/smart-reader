@@ -1,8 +1,6 @@
 package net.lzbook.kit.utils.file
 
 import android.content.Context
-import com.ding.basic.util.ReplaceConstants
-import net.lzbook.kit.utils.web.WebResourceCache
 
 import java.io.File
 import java.io.FileInputStream
@@ -44,22 +42,22 @@ object ZIPUtils {
      * @param isReWrite       是否覆盖
      * @throws IOException
      */
-    @Throws(IOException::class)
+    @Throws(Exception::class)
     fun unZipAssets(context: Context, assetName: String, outputDirectory: String, isReWrite: Boolean) {
-
         // 从assets打开压缩文件
         val inputStream = context.assets.open(assetName)
         stream2File(inputStream, outputDirectory, isReWrite)
     }
 
 
-    @Throws(IOException::class)
+    @Throws(Exception::class)
     private fun stream2File(inputStream: InputStream, outputDirectory: String, isReWrite: Boolean) {
         // 创建解压目标目录
         var file: File
 
         // 打开压缩文件
         val zipInputStream = ZipInputStream(inputStream)
+
         // 读取一个进入点
         var zipEntry: ZipEntry? = zipInputStream.nextEntry
         // 使用1M buffer

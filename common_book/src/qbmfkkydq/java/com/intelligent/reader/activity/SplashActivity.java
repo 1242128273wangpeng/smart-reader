@@ -26,7 +26,7 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.net.Config;
+import com.ding.basic.util.ReplaceConstants;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
 import com.intelligent.reader.R;
@@ -43,11 +43,13 @@ import net.lzbook.kit.utils.dynamic.DynamicParameter;
 import net.lzbook.kit.utils.logger.AppLog;
 import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.user.UserManager;
+import net.lzbook.kit.utils.web.WebResourceCache;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 @Route(path = RouterConfig.SPLASH_ACTIVITY)
@@ -191,8 +193,6 @@ public class SplashActivity extends FrameActivity {
             e.printStackTrace();
         }
 
-        requestWebViewConfig();
-
         ad_view = findViewById(R.id.ad_view);
         complete_count = 0;
         initialization_count = 0;
@@ -210,17 +210,24 @@ public class SplashActivity extends FrameActivity {
     }
 
     private void requestWebViewConfig() {
-        RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+        insertDisposable(RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
                 BaseBookApplication.getGlobalContext()).requestWebViewConfig()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribe(result -> {
                     if (result != null && result.checkResultAvailable()) {
                         String url = result.getData();
-                        SPUtils.INSTANCE.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, url);
-                        Config.getWebViewBaseHost();
+                        if (url != null && !url.isEmpty()) {
+
+                            SPUtils.INSTANCE.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, url);
+
+                            WebResourceCache webResourceCache = new WebResourceCache();
+                            webResourceCache.checkLocalResourceFile(url);
+
+                        }
                     }
-                });
+                })
+        );
     }
 
     private void initializeDataFusion() {
@@ -254,36 +261,7 @@ public class SplashActivity extends FrameActivity {
     private boolean isGo = true;
 
     private void initSplashAd() {
-//        if (ad_view == null) return;
-//        if (Constants.isHideAD) {
-//            AppLog.e(TAG, "Limited AD display!");
-        handler.sendEmptyMessage(0);
-//            return;
-//        }
-//        if (isGo) {
-//            handler.sendEmptyMessageDelayed(1, 3000);
-//        }
-//        MediaControl.INSTANCE.loadSplashMedia(this, ad_view, new Function1<Integer, Unit>() {
-//            @Override
-//            public Unit invoke(Integer resultCode) {
-//                switch (resultCode) {
-//                    case MediaCode.MEDIA_SUCCESS: //广告请求成功
-//                        isGo = false;
-//                        AppLog.e(TAG, "time");
-//                        break;
-//                    case MediaCode.MEDIA_FAILED: //广告请求失败
-//                        handler.sendEmptyMessage(0);
-//                        break;
-//                    case MediaCode.MEDIA_DISMISS: //开屏页面关闭
-//                        handler.sendEmptyMessage(0);
-//                        break;
-//                    case MediaCode.MEDIA_DISABLE: //无开屏广告
-//                        handler.sendEmptyMessage(0);
-//                        break;
-//                }
-//                return null;
-//            }
-//        });
+        handler.sendEmptyMessageDelayed(0, 1000);
     }
 
     //初始化广告开关
@@ -365,35 +343,20 @@ public class SplashActivity extends FrameActivity {
                 }
             }
         }
-//        } else {
-//            //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-//            if (Constants.new_app_ad_switch) {
-//                Constants.isHideAD = false;
-//            } else {
-//                Constants.isHideAD = true;
-//            }
-//        }
-        //强制关闭广告
-//        Constants.isHideAD = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        MediaLifecycle.INSTANCE.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        MediaLifecycle.INSTANCE.onPause();
     }
 
     @Override
     protected void onDestroy() {
-
-//        MediaLifecycle.INSTANCE.onDestroy();
-
         super.onDestroy();
     }
 
@@ -468,6 +431,8 @@ public class SplashActivity extends FrameActivity {
                         getApplicationContext()).edit().putBoolean(
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
+
+            requestWebViewConfig();
 
             //请求广告
             initAdSwitch();

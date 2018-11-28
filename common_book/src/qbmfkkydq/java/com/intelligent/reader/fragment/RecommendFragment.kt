@@ -12,12 +12,14 @@ import android.widget.LinearLayout
 import com.ding.basic.net.Config
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.WebViewIndex
+import java.io.File
 
 /**
  * Date: 2018/7/19 11:52
@@ -64,21 +66,39 @@ class RecommendFragment : Fragment() {
         val adapter = VPAdapter(childFragmentManager)
         view_pager.adapter = adapter
 
+        val webViewHost = Config.webViewBaseHost
+        Logger.e("WebView地址: $webViewHost")
+
+        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "/web/" + Config.webViewTimeTemp + "/index.html"
+        val localFileExist = File(filePath).exists()
+
         val fragmentSelection = ScrollWebFragment()
-//        fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommend")
-//        fragmentSelection.arguments = getBundle("file:///storage/emulated/0/qbmfkkydq_book/cache/201811271619/index.html#/recommend", "recommend")
-//        fragmentSelection.arguments = getBundle("file:///storage/emulated/0/qbmfkkydq_book/cache/index.html#/recommend", "recommend")
-//        fragmentSelection.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/index.html#/recommend", "recommend")
-        fragmentSelection.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}${Config.webViewTimeTemp}/index.html#/recommend", "recommend")
+        if (localFileExist) {
+            fragmentSelection.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/web/${Config.webViewTimeTemp}${WebViewIndex.recommend}", "recommend")
+        } else {
+            fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommendMale")
+        }
 
         val fragmentMale = ScrollWebFragment()
-        fragmentMale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_male, "recommendMale")
+        if (localFileExist) {
+            fragmentMale.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/web/${Config.webViewTimeTemp}${WebViewIndex.recommend_male}", "recommendMale")
+        } else {
+            fragmentMale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_male, "recommendMale")
+        }
 
         val fragmentFemale = ScrollWebFragment()
-        fragmentFemale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_female, "recommendFemale")
+        if (localFileExist) {
+            fragmentFemale.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/web/${Config.webViewTimeTemp}${WebViewIndex.recommend_female}", "recommendFemale")
+        } else {
+            fragmentFemale.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_female, "recommendFemale")
+        }
 
         val fragmentFinish = ScrollWebFragment()
-        fragmentFinish.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_finish, "recommendFinish")
+        if (localFileExist) {
+            fragmentFinish.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/web/${Config.webViewTimeTemp}${WebViewIndex.recommend_finish}", "recommendFinish")
+        } else {
+            fragmentFinish.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend_finish, "recommendFinish")
+        }
 
         fragments.clear()
         fragments.add(fragmentSelection)
@@ -105,13 +125,12 @@ class RecommendFragment : Fragment() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
             }
-
         })
-
     }
 
 
@@ -147,6 +166,5 @@ class RecommendFragment : Fragment() {
         override fun getPageTitle(position: Int): CharSequence? {
             return mTitles[position]
         }
-
     }
 }

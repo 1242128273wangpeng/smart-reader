@@ -288,6 +288,6 @@ class SPKey {
 
         const val WEB_VIEW_HOST = "web_view_host"
 
-        const val WEB_VENDOR_COPY_FLAG = "web_vendor_copy_flag"
+        const val WEB_VENDOR_COPY_FLAG = "web_vendor_copy_flag_"
     }
 }

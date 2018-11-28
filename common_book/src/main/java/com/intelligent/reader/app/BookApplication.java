@@ -13,6 +13,7 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
+import com.ding.basic.net.Config;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaConfig;
@@ -40,11 +41,13 @@ import net.lzbook.kit.utils.web.WebResourceCache;
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
-
 
 public class BookApplication extends BaseBookApplication {
 
@@ -62,9 +65,7 @@ public class BookApplication extends BaseBookApplication {
 
         Reader.INSTANCE.init(this);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
+        checkWebViewResourceUnzip();
 
         if (AppUtils.isMainProcess(this)) {
 
@@ -88,15 +89,21 @@ public class BookApplication extends BaseBookApplication {
         }
         registerPushAgent();
 
-        boolean cache = SPUtils.INSTANCE.loadSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG, false);
-        if (!cache) {
-            WebResourceCache webResourceCache = new WebResourceCache();
-            webResourceCache.copyVendorFromAssets(BaseBookApplication.getGlobalContext());
-
-            SPUtils.INSTANCE.insertSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG, true);
-        }
-
         initHandler.sendEmptyMessageDelayed(1, 1500);
+    }
+
+    private void checkWebViewResourceUnzip() {
+        boolean cache = SPUtils.INSTANCE.loadSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG + this.getPackageName(), false);
+
+        WebResourceCache webResourceCache = new WebResourceCache();
+
+        if (!cache) {
+            webResourceCache.copyFileFromAssets(BaseBookApplication.getGlobalContext());
+
+            SPUtils.INSTANCE.insertSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG + this.getPackageName(), true);
+        } else {
+            webResourceCache.checkLocalResourceFile(Config.getWebViewBaseHost());
+        }
     }
 
     private Handler initHandler = new Handler() {
