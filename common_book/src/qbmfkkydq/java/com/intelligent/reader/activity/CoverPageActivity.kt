@@ -113,7 +113,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     }
 
     private fun initListener() {
-        book_cover_back?.antiShakeClick(this)
+        img_back?.antiShakeClick(this)
         book_cover_author!!.antiShakeClick(this)
         book_cover_chapter_view!!.antiShakeClick(this)
         book_cover_last_chapter!!.antiShakeClick(this)
@@ -564,7 +564,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.book_cover_back -> {
+            R.id.img_back -> {
                 val data = HashMap<String, String>()
                 data["type"] = "1"
                 StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.SYSTEM_PAGE, StartLogClickUtil.BACK, data)

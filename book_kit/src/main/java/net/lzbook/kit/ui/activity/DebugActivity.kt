@@ -65,7 +65,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.img_debug_header_back -> finish()
+            R.id.img_back -> finish()
 
             R.id.tv_api -> {
                 intentHostList(SPKey.NOVEL_HOST)
@@ -151,12 +151,12 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         var backId=AppUtils.getDrawableByName(this,"icon_back_left")
         if(backId!=-1) {
             try{
-               img_debug_header_back.setImageResource(backId)
+                img_back.setImageResource(backId)
             }catch (e:Throwable){
                 e.printStackTrace()
             }
         }
-        img_debug_header_back.setOnClickListener(this)
+        img_back.setOnClickListener(this)
 
         tv_api.setOnClickListener(this)
         tv_web.setOnClickListener(this)

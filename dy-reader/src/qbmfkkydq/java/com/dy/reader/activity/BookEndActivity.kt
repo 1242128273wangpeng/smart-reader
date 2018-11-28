@@ -108,7 +108,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
     }
 
     private fun initListener() {
-        iv_back.setOnClickListener {
+        img_back.setOnClickListener {
             val data = HashMap<String, String>()
             data["type"] = "1"
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE, StartLogClickUtil.BACK, data)
