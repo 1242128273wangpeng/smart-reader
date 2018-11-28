@@ -13,5 +13,4 @@
         android:focusableInTouchMode="true"
         android:scrollbars="none" />
 
-
 </FrameLayout>

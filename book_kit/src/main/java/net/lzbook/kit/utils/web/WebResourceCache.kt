@@ -87,35 +87,39 @@ class WebResourceCache {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun handleOtherRequest(url: String, mimeType: String?): WebResourceResponse? {
 
-        val caching = checkWebViewResourceCaching(url)
+        val localFile = url.replace("https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader", "file://" + ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "web")
 
-        return if (caching) {
-            Logger.e("文件正在缓存中: $url")
-            null
-        } else {
-            val filePath = requestUrlFilePath(url)
-
-            val file = File(filePath)
-
-            synchronized(this) {
-                return if (file.exists()) {
-                    Logger.e("文件缓存命中成功: $url")
-
-                    val cachedWebResource = CachedWebResource()
-
-                    cachedWebResource.file = file
-                    cachedWebResource.encoded = "UTF-8"
-                    cachedWebResource.mimeType = mimeType
-
-                    resourceResponseHashMap[url] = cachedWebResource
-
-                    WebResourceResponse(mimeType, "UTF-8", file.inputStream())
-                } else {
-                    Logger.e("文件缓存命中失败: $url  $cachingResource")
-                    null
-                }
-            }
-        }
+        return WebResourceResponse(mimeType, "UTF-8", URL(localFile).openConnection().getInputStream())
+//
+//        val caching = checkWebViewResourceCaching(url)
+//
+//        return if (caching) {
+//            Logger.e("文件正在缓存中: $url")
+//            null
+//        } else {
+//            val filePath = requestUrlFilePath(url)
+//
+//            val file = File(filePath)
+//
+//            synchronized(this) {
+//                return if (file.exists()) {
+//                    Logger.e("文件缓存命中成功: $url")
+//
+//                    val cachedWebResource = CachedWebResource()
+//
+//                    cachedWebResource.file = file
+//                    cachedWebResource.encoded = "UTF-8"
+//                    cachedWebResource.mimeType = mimeType
+//
+//                    resourceResponseHashMap[url] = cachedWebResource
+//
+//                    WebResourceResponse(mimeType, "UTF-8", file.inputStream())
+//                } else {
+//                    Logger.e("文件缓存命中失败: $url  $cachingResource")
+//                    null
+//                }
+//            }
+//        }
     }
 
 
@@ -300,7 +304,7 @@ class WebResourceCache {
                 if (!timeStamp.isEmpty()) {
 
                     val filePath = (ReplaceConstants.getReplaceConstants().APP_PATH_CACHE
-                            + "/web/" + timeStamp)
+                            + "web/" + timeStamp + "/index.html")
 
                     val file = File(filePath)
 

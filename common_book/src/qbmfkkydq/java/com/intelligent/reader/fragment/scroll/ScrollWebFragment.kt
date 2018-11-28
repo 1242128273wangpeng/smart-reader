@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
+import android.webkit.WebView
 import com.ding.basic.net.Config
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
@@ -71,15 +72,13 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
         AppUtils.disableAccessibility(requireContext())
         initView()
 
-        loge("WebView Url: $url")
-
         if (type == "recommend") {
-            jSInterfaceObject?.requestWebViewResult(Config.webViewData)
             requestWebViewData(url)
+            jSInterfaceObject?.requestWebViewResult(Config.webViewData)
         } else {
             handler.postDelayed({
                 requestWebViewData(url)
-            }, 2000)
+            }, 1000)
         }
     }
 

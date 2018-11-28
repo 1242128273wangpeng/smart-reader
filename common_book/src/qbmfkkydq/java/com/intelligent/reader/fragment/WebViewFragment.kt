@@ -66,11 +66,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         initView()
 
-        Logger.e("WebView Url: $url")
-
         handler.postDelayed({
             requestWebViewData(url)
-        }, 2000)
+        }, 1000)
     }
 
 
@@ -164,8 +162,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         }, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
-
-
     }
 
     private fun requestWebViewData(url: String?) {

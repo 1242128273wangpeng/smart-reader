@@ -182,7 +182,6 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             val cacheWebResource = customWebViewCache.checkWebResourceResponse(url)
 
             if (cacheWebResource?.file != null) {
-                Logger.e("缓存的WebResourceResponse: $url")
                 return WebResourceResponse(cacheWebResource.mimeType, cacheWebResource.encoded, cacheWebResource.file?.inputStream())
             }
 

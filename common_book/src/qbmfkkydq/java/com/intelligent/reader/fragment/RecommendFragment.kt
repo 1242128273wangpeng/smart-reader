@@ -69,14 +69,14 @@ class RecommendFragment : Fragment() {
         val webViewHost = Config.webViewBaseHost
         Logger.e("WebView地址: $webViewHost")
 
-        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "/web/" + Config.webViewTimeTemp + "/index.html"
+        val filePath = ReplaceConstants.getReplaceConstants().APP_PATH_CACHE + "web/" + Config.webViewTimeTemp + "/index.html"
         val localFileExist = File(filePath).exists()
 
         val fragmentSelection = ScrollWebFragment()
         if (localFileExist) {
             fragmentSelection.arguments = getBundle("file://${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}/web/${Config.webViewTimeTemp}${WebViewIndex.recommend}", "recommend")
         } else {
-            fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommendMale")
+            fragmentSelection.arguments = getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommend")
         }
 
         val fragmentMale = ScrollWebFragment()
