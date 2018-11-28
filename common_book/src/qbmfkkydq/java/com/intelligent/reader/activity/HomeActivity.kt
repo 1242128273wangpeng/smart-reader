@@ -64,31 +64,16 @@ class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpda
 
     private val recommendFragment: RecommendFragment by lazy {
         val fragment = RecommendFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "recommend")
-        val uri = RequestService.WEB_RECOMMEND_V3.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
         fragment
     }
 
     private val rankingFragment: RankingFragment by lazy {
         val fragment = RankingFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "rank")
-        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
         fragment
     }
 
     private val classifyFragment: CategoryFragment by lazy {
         val fragment = CategoryFragment()
-        val bundle = Bundle()
-        bundle.putString("type", "rank")
-        val uri = RequestService.WEB_RANK_V3.replace("{packageName}", AppUtils.getPackageName())
-        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-        fragment.arguments = bundle
         fragment
     }
 

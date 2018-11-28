@@ -13,8 +13,11 @@ import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.orhanobut.logger.Logger
 import com.dingyue.statistics.DyStatService
 import com.umeng.message.MessageSharedPrefs
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -43,6 +46,22 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "")}】")
+        tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "")}】")
+        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)}】")
+        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)}】")
+
+        btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
+        txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+        if (AppUtils.hasUPush()) {
+            txt_device.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).deviceToken
+        } else {
+            txt_device.visibility = View.GONE
+        }
+    }
 
     override fun onClick(v: View) {
         when (v.id) {
@@ -108,6 +127,16 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     private fun initView() {
 
         //启用动态参数，默认开启
+        rgroup_web_state.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbtn_web_debug -> Config.webDeploy = "bug"
+                R.id.rbtn_web_regress -> Config.webDeploy = "uat"
+                R.id.rbtn_web_official -> Config.webDeploy = "off"
+            }
+            requestWebViewParameter()
+        }
+
+        //启用动态参数
         btn_debug_start_params.setOnCheckedChangeListener(this)
         btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
 
@@ -189,16 +218,18 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             //还原动态参数
             SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
+
+            SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.UNION_PRE_HOST))
+            SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_PRE_HOST))
+
             SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, SPUtils.getDefaultSharedString(SPKey.USER_TAG_PRE_HOST))
 
-            SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
-            SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             Config.insertWebViewHost(SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
 
-            MicroAPI.microHost = (SPUtils.getDefaultSharedString(SPKey.UNION_PRE_HOST))
-            ContentAPI.contentHost = (SPUtils.getDefaultSharedString(SPKey.CONTENT_PRE_HOST))
+            MicroAPI.microHost = SPUtils.loadPrivateSharedString(SPKey.UNION_PRE_HOST)
+            ContentAPI.contentHost = SPUtils.loadPrivateSharedString(SPKey.CONTENT_PRE_HOST)
 
             MicroAPI.initMicroService()
             ContentAPI.initContentService()
@@ -208,14 +239,12 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             // 保留动态参数
             SPUtils.putDefaultSharedString(SPKey.NOVEL_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.WEBVIEW_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, ""))
-            SPUtils.putDefaultSharedString(SPKey.UNION_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.MICRO_AUTH_HOST, ""))
-            SPUtils.putDefaultSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_AUTH_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.USER_TAG_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, ""))
-            SPUtils.putDefaultSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST))
-            SPUtils.putDefaultSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST))
         }
 
-
+            SPUtils.insertPrivateSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST))
+            SPUtils.insertPrivateSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST))
+        }
     }
 
     /**
@@ -293,4 +322,18 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         startActivity(intent)
     }
 
+
+    private fun requestWebViewParameter() {
+        insertDisposable(RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ it ->
+                    if (it != null && it.checkResultAvailable()) {
+                        Config.webViewBaseHost = it.data ?: ""
+                    }
+                }, {
+                    Logger.e("Error: " + it.toString())
+                })
+        )
+    }
 }

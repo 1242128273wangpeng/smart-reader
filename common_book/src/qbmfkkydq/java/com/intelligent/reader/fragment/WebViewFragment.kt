@@ -1,15 +1,19 @@
 package com.intelligent.reader.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
+import com.ding.basic.net.Config
+import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
@@ -18,12 +22,13 @@ import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.webview_layout.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
-import net.lzbook.kit.utils.CustomWebView
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.web.CustomWebClient
-
+import net.lzbook.kit.utils.web.CustomWebView
 import net.lzbook.kit.utils.web.JSInterfaceObject
 
 /**
@@ -33,6 +38,8 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
 
     private var url: String? = ""
+
+    var handler = Handler()
 
     private var loadingPage: LoadingPage? = null
     private var customWebClient: CustomWebClient? = null
@@ -52,7 +59,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.webview_layout, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -60,7 +66,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         initView()
 
-        requestWebViewData(url)
+        handler.postDelayed({
+            requestWebViewData(url)
+        }, 1000)
     }
 
 
@@ -69,7 +77,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
-        loadingPage = LoadingPage(requireActivity(), rl_web_content)
+        if (NetWorkUtils.isNetworkAvailable(context)) {
+            loadingPage = LoadingPage(requireActivity(), rl_web_content)
+        }
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
 
@@ -87,10 +97,11 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         }
 
         web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
-
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
-
+                val intent = Intent()
+                intent.setClass(requireContext(), SearchBookActivity::class.java)
+                startActivity(intent)
             }
 
             @JavascriptInterface
@@ -105,7 +116,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
-                            bundle.putString("url", redirect.url)
+                            bundle.putString("url", Config.webViewBaseHost + redirect.url)
                             bundle.putString("title", redirect.title)
 
                             if (redirect.from != null && (redirect.from?.isNotEmpty() == true)) {
@@ -125,15 +136,32 @@ class WebViewFragment : Fragment(), View.OnClickListener {
                         exception.printStackTrace()
                     }
                 }
+            }
+
+            @JavascriptInterface
+            override fun handleBackAction() {
 
             }
 
+            override fun hideWebViewLoading() {
+                runOnMain {
+                    loadingPage?.onSuccessGone()
+                }
+            }
 
+            override fun handleWebRequestResult(method: String?) {
+                if (null != web_view_content) {
+                    Logger.e("WebViewMethod: $method")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        web_view_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        web_view_content.loadUrl(method)
+                    }
+                }
+            }
         }, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
-
-
     }
 
     private fun requestWebViewData(url: String?) {
@@ -186,8 +214,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             customWebClient?.initParameter()
             web_view_content?.reload()
         })
-
-
     }
 
 
@@ -221,11 +247,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             rl_web_content?.removeView(web_view_content)
         }
 
-
         if (BuildConfig.DEBUG) {
             BookApplication.getRefWatcher().watch(this)
         }
-
     }
 
 

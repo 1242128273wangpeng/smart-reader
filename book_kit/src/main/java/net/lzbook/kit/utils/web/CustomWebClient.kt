@@ -29,7 +29,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
     private var webSettings: WebSettings? = null
 
-    private var customWebViewCache = WebResourceCache.loadCustomWebViewCache()
+    private var customWebViewCache = WebResourceCache.loadWebResourceCache()
 
     /***
      * WebView加载开始监听
@@ -215,9 +215,11 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
             if ((mimeType == "image/jpeg" || mimeType == "image/png")) {
                 customWebViewCache.handleImageRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)
-            } else {
-                customWebViewCache.handleOtherRequest(url, mimeType, fileExtension)
+            } else if (fileExtension == "js" || fileExtension == "css") {
+                customWebViewCache.handleOtherRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)
+            } else {
+                super.shouldInterceptRequest(view, request)
             }
 
         } else {

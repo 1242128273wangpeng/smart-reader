@@ -2,15 +2,20 @@ package com.dingyue.searchbook.model
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
+import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.oneclick.OneClickUtil
@@ -20,9 +25,11 @@ import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebResourceCache
+import net.lzbook.kit.utils.web.WebViewIndex
+import java.io.File
+import java.net.URLEncoder
 import java.util.*
-
 
 /**
  * Desc：搜索结果集逻辑处理
@@ -104,7 +111,7 @@ class SearchResultModel {
 
     private val shake = AntiShake()
 
-    fun initJSModel(listener: OnSearchResult?, activity: Activity): JSInterfaceObject {
+    fun initJSModel(listener: OnSearchResult?, activity: Activity, webView: WebView?): JSInterfaceObject {
         return (object : JSInterfaceObject(activity) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
@@ -135,7 +142,7 @@ class SearchResultModel {
 
                         if (redirect?.url != null && redirect.title != null) {
                             val bundle = Bundle()
-                            bundle.putString("url", redirect.url)
+                            bundle.putString("url", Config.webViewBaseHost + redirect.url)
                             bundle.putString("title", redirect.title)
                             bundle.putString("from", "other")
 
@@ -143,6 +150,26 @@ class SearchResultModel {
                         }
                     } catch (exception: Exception) {
                         exception.printStackTrace()
+                    }
+                }
+            }
+
+            @JavascriptInterface
+            override fun handleBackAction() {
+
+            }
+
+            @JavascriptInterface
+            override fun hideWebViewLoading() {
+                listener?.hideWebViewLoading()
+            }
+
+            override fun handleWebRequestResult(method: String?) {
+                if (null != webView) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        webView.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        webView.loadUrl(method)
                     }
                 }
             }
@@ -202,14 +229,6 @@ class SearchResultModel {
         var searchWord: String
         if (word.isNotEmpty()) {
             searchWord = word
-            val channelID = AppUtils.getChannelId()
-            if (channelID == "blp1298_10882_001"
-                    || channelID == "blp1298_10883_001"
-                    || channelID == "blp1298_10699_001") {
-                if (Constants.isBaiduExamine && Constants.versionCode == AppUtils.getVersionCode()) {
-                    searchWord = getReplaceWord()
-                }
-            }
 
             if (searchType == "2" && isAuthor == 1) {
                 val params = HashMap<String, String>()
@@ -229,27 +248,33 @@ class SearchResultModel {
                 }
 
             } else {
-                val params = HashMap<String, String>()
-                params.put("keyword", searchWord)
-                params.put("searchType", searchType)
-                params.put("filter_type", filterType)
-                params.put("filter_word", filterWord)
-                params.put("sort_type", sortType)
-                params.put("wordType", searchType)
-                params.put("searchEmpty", "1")
-                val uri = RequestService.SEARCH_VUE.replace("{packageName}", AppUtils.getPackageName())
-                mUrl = UrlUtils.buildWebUrl(uri, params)
+                mUrl = if (mUrl.isNullOrEmpty()) {
+
+                    val webViewHost = Config.webViewBaseHost
+
+                    val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+
+                    val localFileExist = File(filePath).exists()
+
+                    if (localFileExist) {
+                        try {
+                            "file://$filePath${WebViewIndex.search}" + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                        } catch (exception: Exception) {
+                            "file://$filePath${WebViewIndex.search}" + "?keyword=$searchWord&searchType=$searchType"
+                        }
+                    } else {
+                        try {
+                            Config.webViewBaseHost + "/index.html" +  WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                        } catch (exception: Exception) {
+                            Config.webViewBaseHost + "/index.html" +  WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                        }
+                    }
+                } else {
+                    String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
+                }
             }
         }
 
         return mUrl
     }
-
-    private fun getReplaceWord(): String {
-        val words = arrayOf("品质随时购", "春节不打烊", "轻松过大年", "便携无屏电视", "游戏笔记本电脑", "全自动洗衣机", "家团圆礼盒")
-        val random = Random()
-        val index = random.nextInt(7)
-        return words[index]
-    }
-
 }

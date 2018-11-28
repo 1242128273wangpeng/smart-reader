@@ -37,7 +37,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 
-
 public abstract class BaseBookApplication extends Application {
     private static BaseBookApplication g_context;
     private static DisplayMetrics dm;

@@ -11,6 +11,92 @@ import com.ding.basic.util.sp.SPUtils
  */
 object ParameterConfig {
 
+
+    /***
+     * 高德地图获取的地理位置信息
+     * **/
+    //城市信息
+    var city = ""
+
+
+    //地区编号
+    var areaCode = ""
+
+
+    //城市编号
+    var cityCode = ""
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                val value = SPUtils.loadPrivateSharedString(SPKey.LOCATION_CITY_CODE)
+                field = if (value.isNotEmpty()) {
+                    value
+                } else {
+                    ""
+                }
+                field
+            }
+        }
+        set(value) {
+            if (value.isNotEmpty()) {
+                field = value
+                SPUtils.insertPrivateSharedString(SPKey.LOCATION_CITY_CODE, value)
+            }
+        }
+
+
+    //纬度信息
+    var latitude = ""
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                val value = SPUtils.loadPrivateSharedString(SPKey.LOCATION_LATITUDE)
+                field = if (value.isNotEmpty()) {
+                    value
+                } else {
+                    "0.0"
+                }
+                field
+            }
+        }
+        set(value) {
+            if (value.isNotEmpty()) {
+                field = value
+                SPUtils.insertPrivateSharedString(SPKey.LOCATION_LATITUDE, value)
+            }
+        }
+
+
+    //经度信息
+    var longitude = ""
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                val value = SPUtils.loadPrivateSharedString(SPKey.LOCATION_LONGITUDE)
+                field = if (value.isNotEmpty()) {
+                    value
+                } else {
+                    "0.0"
+                }
+                field
+            }
+        }
+        set(value) {
+            if (value.isNotEmpty()) {
+                field = value
+                SPUtils.insertPrivateSharedString(SPKey.LOCATION_LONGITUDE, value)
+            }
+        }
+
+
+    //详细地址
+    var locationDetail = ""
+
+
+
     /***
      * 高德地图获取的地理位置信息
      * **/

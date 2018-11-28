@@ -91,7 +91,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
 
     override fun getCurrentActivity(): Activity = requireActivity()
 
-    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface")
+    @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
     override fun obtainJSInterface(jsInterface: Any) {
 
         if (Build.VERSION.SDK_INT >= 14) {
@@ -112,6 +112,9 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         BDCrawler.setUserAgent(search_result_content?.settings?.userAgentString)
     }
 
+    override fun loadContentWebView(): WebView {
+        return search_result_content
+    }
 
     override fun onSearchResult(url: String) {
         showLoading()
@@ -254,6 +257,13 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         RouterUtil.navigation(requireActivity(), RouterConfig.READER_ACTIVITY, bundle, flags)
     }
 
+    override fun hideWebViewLoading() {
+        runOnMain {
+            loadingPage?.postDelayed({
+                hideLoading()
+            },300)
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -283,6 +293,4 @@ class SearchResultFragment : Fragment(), ISearchResultView {
             search_result_content?.removeAllViews()
         }
     }
-
-
 }

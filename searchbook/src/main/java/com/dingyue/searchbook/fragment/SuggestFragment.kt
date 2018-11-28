@@ -29,7 +29,7 @@ import java.util.*
  */
 class SuggestFragment : Fragment(), ISuggestView {
 
-    private lateinit var mKeyWord: String
+    private var mKeyWord: String = ""
 
     // 用于打点 记录自动补全的type不为 书籍，作者，标签
     private var itemGapViewCount = 0
@@ -58,7 +58,6 @@ class SuggestFragment : Fragment(), ISuggestView {
     }
 
     override fun showSuggestList(suggestList: MutableList<Any>) {
-
         listView.adapter = SuggestAdapter(suggestList, mKeyWord)
 
         onSuggestItemClick(suggestList)
@@ -67,6 +66,25 @@ class SuggestFragment : Fragment(), ISuggestView {
     }
 
     fun obtainKeyWord(key: String) {
+        if (key.isBlank()) {
+            return
+        }
+
+        if (key.isNotEmpty() && key != mKeyWord) {
+
+            try {
+                if (listView.adapter != null) {
+                    val adapter = listView.adapter as SuggestAdapter
+
+                    adapter.clear()
+                    adapter.notifyDataSetChanged()
+                }
+
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+        }
+
         mKeyWord = key
         suggestPresenter.loadSuggestData(mKeyWord)
     }

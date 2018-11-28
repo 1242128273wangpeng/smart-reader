@@ -3,6 +3,7 @@ package net.lzbook.kit.utils.file;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.StatFs;
+import android.text.TextUtils;
 
 import net.lzbook.kit.constants.ReplaceConstants;
 import net.lzbook.kit.utils.logger.AppLog;
@@ -20,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Desc   File操作工具
  * Author yangweining
@@ -80,8 +82,6 @@ public class FileUtils {
 
     /**
      * 判断文件是否存在
-     * @param filePath
-     * @return
      */
     public static boolean fileIsExist(String filePath) {
         if (filePath == null || filePath.length() < 1) {
@@ -97,8 +97,6 @@ public class FileUtils {
 
     /**
      * 创建文件
-     * @param folderPath
-     * @return
      */
     public static boolean createFolderIfNotExist(String folderPath) {
         if (!fileIsExist(folderPath)) {
@@ -111,8 +109,6 @@ public class FileUtils {
 
     /**
      * 读取文件
-     * @param filePath
-     * @return
      */
     public static InputStream readFile(String filePath) {
         InputStream is = null;
@@ -131,8 +127,6 @@ public class FileUtils {
 
     /**
      * 输入流转化为字节
-     * @param inputstream
-     * @return
      */
     public static byte[] readBytes(InputStream inputstream) {
         if (inputstream == null) {
@@ -174,8 +168,6 @@ public class FileUtils {
 
     /**
      * 读取文件为字节
-     * @param filePath
-     * @return
      */
     public static byte[] readBytes(String filePath) {
         InputStream inputstream = readFile(filePath);
@@ -217,9 +209,6 @@ public class FileUtils {
 
     /**
      * 将字节写入文件
-     * @param filePath
-     * @param bytes
-     * @return
      */
     public static boolean writeByteFile(String filePath, byte[] bytes) {
         boolean success = true;
@@ -255,8 +244,6 @@ public class FileUtils {
 
     /**
      * 将对象序列化成文件
-     * @param filePath
-     * @param obj
      */
     public static void serialize(String filePath, Object obj) {
         File distFile = new File(filePath);
@@ -294,8 +281,6 @@ public class FileUtils {
 
     /**
      * 将文件反序列化为对象
-     * @param filePath
-     * @return
      */
     public static Object deserialize(String filePath) {
 
@@ -320,8 +305,6 @@ public class FileUtils {
 
     /**
      * 删除文件
-     * @param dir
-     * @return
      */
     public static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
@@ -333,7 +316,7 @@ public class FileUtils {
                     }
                     try {
                         Thread.sleep(1);
-                    }catch (InterruptedException e){
+                    } catch (InterruptedException e) {
                     }
                 }
             }
@@ -341,29 +324,28 @@ public class FileUtils {
         return dir.delete();
     }
 
+
     /**
      * 检查书籍存储空间
-     * @return
      */
     public static boolean checkLeftSpace() {
         File file = new File(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);
 
-        if(!file.exists()) {
+        if (!file.exists()) {
             file.mkdirs();
         }
 
-        if(!file.exists()){
+        if (!file.exists()) {
             return false;
         }
         StatFs statFs = new StatFs(ReplaceConstants.getReplaceConstants().APP_PATH_BOOK);
-        return new Long((long) statFs.getAvailableBlocks()).longValue() * ((long) statFs.getBlockSize()) > 20971520;
+        return new Long((long) statFs.getAvailableBlocks()).longValue()
+                * ((long) statFs.getBlockSize()) > 20971520;
     }
 
 
     /**
      * 获取文件扩展名
-     * @param filePath
-     * @return
      */
     public static String getFileExtension(String filePath) {
         if (isBlank(filePath)) {
@@ -397,7 +379,6 @@ public class FileUtils {
 
     /**
      * 设置书籍文件删除失败回调
-     * @param callback
      */
     public static void setDeleteFailedCallback(FileDeleteFailedCallback callback) {
         deleteFailedCallback = callback;
@@ -414,7 +395,6 @@ public class FileUtils {
 
     /**
      * 执行删除书籍存储文件
-     * @param root
      */
     private static void doDeleteFile(String root) {
         File f = new File(root);// 一级目录
@@ -437,8 +417,6 @@ public class FileUtils {
 
     /**
      * 判断文件是否满足删除条件
-     * @param singlePath
-     * @return
      */
     protected static boolean isContented(String singlePath) { // 最终路径是否满足条件
         if (getFileExtension(singlePath).equals(FILE_EXTENSION_SUFFIX)) {
@@ -499,6 +477,39 @@ public class FileUtils {
 
         }
     }
+
+
+    /**
+     * 删除文件夹、文件
+     *
+     * @param filePath       文件路径
+     * @param deleteThisPath 删除这个路径下的文件
+     */
+    public static void deleteFolderFile(String filePath, boolean deleteThisPath) {
+        if (!TextUtils.isEmpty(filePath)) {
+            try {
+                File file = new File(filePath);
+                if (file.isDirectory()) { //目录
+                    File files[] = file.listFiles();
+                    for (File file1 : files) {
+                        deleteFolderFile(file1.getAbsolutePath(), true);
+                    }
+                }
+                if (deleteThisPath) {
+                    if (!file.isDirectory()) { //如果是文件，删除
+                        file.delete();
+                    } else { //目录
+                        if (file.listFiles().length == 0) { //目录下没有文件或者目录，删除
+                            file.delete();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public interface FileDeleteFailedCallback {
         public void getDeleteFailedPath(ArrayList<String> pathList);

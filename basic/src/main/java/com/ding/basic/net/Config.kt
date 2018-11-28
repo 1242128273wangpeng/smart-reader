@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
-import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.URLBuilder
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
@@ -49,35 +50,58 @@ object Config {
     const val WelfareHost: String = "https://st.quanbennovel.com/static/welfareCenter/welfareCenter.html"
 
     /***
-     * 鉴权临时秘钥
-     * **/
-    private var accessKey: String = "wangpeng12345678"
-
-    /***
      * 请求公共参数
      * **/
     private var requestParameters: HashMap<String, String> = HashMap()
 
+    const val webViewData = "{\"url\":\"/api/cn.qbmfkkydq.reader/recommend/list\",\"method\":\"get\",\"data\":\"{}\",\"requestIndex\":\"zn2\",\"microFlag\":false}"
+
+    var webDeploy = ""
+
+    @JvmStatic
+    var webViewTimeTemp = "201811282000"
+
+    @JvmStatic
+    var webViewBaseHost = ""
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                val value = SPUtils.loadPrivateSharedString(SPKey.WEB_VIEW_HOST)
+                field = if (value.isNotEmpty()) {
+                    value
+                } else {
+                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811282000"
+                }
+
+                webViewTimeTemp = field.substring(field.lastIndexOf("/") + 1, field.length)
+
+                field
+            }
+        }
 
     var SDCARD_PATH = Environment.getExternalStorageDirectory().absolutePath
 
 
     private var context: Context? = null
 
-
     fun beginInit(context: Context) {
         Config.context = context
 
-        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
-
+//        MicroAPI.microHost = "https://uniontest.bookapi.cn"
+//        ContentAPI.contentHost = "https://uniontest.bookapi.cn"
         MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
         ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
 
-        MicroAPI.initMicroService()
-        ContentAPI.initContentService()
+//        requestAPIHost = "http://10.80.122.214:8081"
+        requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
+        webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
+
 
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
+
+        MicroAPI.initMicroService()
+        ContentAPI.initContentService()
     }
 
     fun getContext(): Context? {

@@ -39,11 +39,11 @@ class CoverRecommendAdapter(private val context: Context,
         }
 
         if (!TextUtils.isEmpty(book.sourceImageUrl)) {
-            Glide.with(context).load(book.sourceImageUrl).placeholder(R.drawable.icon_book_cover_default)
-                    .error(R.drawable.icon_book_cover_default)
+            Glide.with(context).load(book.sourceImageUrl).placeholder(R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
                     .into(holder.recommendImage)
         } else {
-            Glide.with(context).load(R.drawable.icon_book_cover_default).into(holder.recommendImage)
+            Glide.with(context).load(R.drawable.common_book_cover_default_icon).into(holder.recommendImage)
         }
 
 

@@ -7,21 +7,34 @@ import com.ding.basic.util.ReplaceConstants.BUILD_CONFIG_PROVIDER
 class SPKey {
     companion object {
 
-        fun getSharedPreferencesKey(): String {
+        @JvmField
+        val SHARE_DEFAULT = 0  // 保存的是默认地址
+        @JvmField
+        val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
+
+        fun getSHAREDPREFERENCES_KEY():String{
             val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
             return "onlineconfig_agent_online_setting_" + buidCofig.getPackageName()
         }
 
 
-        /**
+        /***
          * WebView静态资源拦截规则
-         */
+         * **/
         const val DY_STATIC_RESOURCE_RULE = "DY_static_resource_rule"
-
         /**
          * 无网下展示的WebView的Css和JS地址
          */
         const val DY_WEB_STATIC_RESOURCES = "DY_web_static_resources"
+
+        /**
+         * 保存WebView上一次加载的url
+         */
+        const val HOME_RECOMMEND_URL = "home_recommend_url"
+        const val HOME_RANK_URL = "home_rank_url"
+        const val HOME_CATEGORY_MALE_URL = "home_category_male_url"
+        const val HOME_CATEGORY_FEMALE_URL = "home_category_female_url"
+
 
 
         // 当前阅读的书籍
@@ -30,14 +43,25 @@ class SPKey {
         // 删除WebView缓存
         const val DEL_WEBVIEW_CACHE = "delet_webview_cache"
 
+        /**
+         * CoverPageActivity
+         */
+        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
+
 
         /**
          * DebugActivity
          */
-        const val START_PARAMS = "start_params" //启动动态参数,默认是开启
-        const val PRE_SHOW_AD = "pre_show_ad"   //提前展示广告
-        const val SHOW_TOAST_LOG = "show_toast_log" //打点Toast显示，方便h5查看打点
-        const val SHIELD_BOOK = "shield_book"   //北京上海屏蔽书单
+        @Deprecated("")
+        val API_URL = "api_url"// api地址
+        @Deprecated("")
+        val WEB_URL = "web_url"// web地址
+        const val START_PARAMS = "start_params"           //启动动态参数,默认是开启
+        const val PRE_SHOW_AD = "pre_show_ad"             //提前展示广告
+        const val RESET_BOOK_SHELF = "reset_book_shelf"   //重置书架
+        const val UPDATE_CHAPTER = "update_chapter"       //更新章节
+        const val SHOW_TOAST_LOG = "show_toast_log"       //打点Toast显示，方便h5查看打点
+
         const val HOST_LIST = "host_list"//host列表
 
         /**
@@ -47,14 +71,13 @@ class SPKey {
         const val WEBVIEW_HOST = "httpsWebView_host"  // WebView
         const val USER_TAG_HOST = "user_tag_host"       //用户标签接口
 
-        // 禁用动态参数前保留一份动态HOST
+        /**
+         * 禁用动态参数前保留一份动态HOST
+         */
         const val NOVEL_PRE_HOST = "novel_pre_host"
         const val WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
         const val UNION_PRE_HOST = "union_pre_host"
         const val CONTENT_PRE_HOST = "content_pre_host"
-        const val USER_TAG_PRE_HOST = "user_tag_pre_host"
-
-
         /**
          * 检查章节数是否为0
          */
@@ -69,7 +92,10 @@ class SPKey {
         const val CHANNEL_LIMIT = "channel_limit"
         const val DAY_LIMIT = "day_limit"
         const val RECOMMEND_BOOKCOVER = "recommend_bookcover" //书籍封面页推荐位智能，青果书籍配比
+
         const val NO_NET_READ_NUMBER = "noNetReadNumber"
+
+        const val PUSH_KEY = "push_key"
 
         const val BAIDU_EXAMINE = "baidu_examine"
         const val BAIDU_STAT_ID = "baidu_stat_id"
@@ -107,7 +133,9 @@ class SPKey {
         const val DY_IS_NEW_READING_END = "DY_is_new_reading_end"//是否启用新版章节末UI
 
         const val NEW_APP_AD_SWITCH = "new_app_ad_switch"//新壳广告开关
+
         const val BOOK_SHELF_STATE = "book_shelf_state"//九宫格书架页广告显示类型切换开关 1表示横向header, 2 表示九宫格列表形式
+
 
 
         /**
@@ -121,17 +149,9 @@ class SPKey {
 
 
         /**
-         * 分享功能开关
-         */
-        const val SHARE_SWITCH = "SHARE_SWITCH" //分享开关
-        const val READER_SHARE_PROMPT = "reader_share_prompt" //阅读页分享提示
-        const val COVER_SHARE_PROMPT = "cover_share_prompt" // 封面页分享提示
-        const val APPLICATION_SHARE_ACTION = "application_share_action"
-
-
-        /**
          * webviewFragment
          */
+
         const val RANK_SELECT_SEX = "rank_select_sex"   // 五步替 榜单选男女
         const val RECOMMEND_SELECT_SEX = "recommend_select_sex"   // 五步替 精选页选男女
 
@@ -150,9 +170,9 @@ class SPKey {
         const val USER_NEW_INDEX = "user_new_index"       // * 0: 新用户：无广告* 1：新用户：两天内无广告 * 2：老用户：显示广告
         const val USER_NEW_AD_LIMIT_DAY = "user_new_ad_limit_day" //新用户前两天不显示广告
         const val UPDATE_CHAPTER_SOURCE_ID = "update_chapter_source_id" //更新当前章节
+
         val DATABASE_REMARK = "database_remark"
         const val GENDER_TAG = "gender" //开屏选男女
-
 
         /**
          * HomeActivity
@@ -162,13 +182,6 @@ class SPKey {
         const val HOME_IS_UPLOAD = "IS_UPLOAD"  //是否上传了用户信息  zn_user
         const val HOME_TODAY_FIRST_POST_BOOKIDS = "today_first_post_bookids" //每天上传一次书架上的书
         const val CONTENT_MODE = "content_mode"  //当前阅读页背景
-
-
-        /**
-         * CoverPageActivity
-         */
-        const val NOT_SHOW_NEXT_TIME = "NOT_SHOW_NEXT_TIME" //「转码阅读」下次不再提示
-
 
         /**
          * SettingActivity
@@ -180,14 +193,11 @@ class SPKey {
         /**
          * Bookshelf
          */
-        //书架引导和versionCode拼接
-        fun getBOOKSHELF_GUIDE_TAG(): String {
+       //书架引导  和versionCode拼接
+        fun getBOOKSHELF_GUIDE_TAG():String{
             val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
             return buidCofig.getVersionCode().toString() + "bookshelf_guide_tag"
         }
-
-        const val BOOKSHELF_IMPORT_PROMPT = "bookshelf_import_prompt"
-        const val BOOKSHELF_SHARE_PROMPT = "bookshelf_share_prompt"
         const val BOOKSHELF_ISSHOW_CHANGE_GUIDE = "isShowChangAnGuide" //判断是否显示长按删除书籍引导  快读替 新版引导页
         const val BOOKSHELF_BOOK_RACKUP_DATETIME = "bookRackUpdateTime"
         const val BOOKSHELF_PERSON_RED = "bookshelf_preson_red" //用于书架页上的红点显示隐藏
@@ -202,7 +212,6 @@ class SPKey {
         /**
          * ReadingActivity
          */
-        const val READING_SKIN_FONT_GUIDE = "reading_skin_font_guide" //阅读页新增皮肤、字体引导页
         const val READING_GUIDE_TAG = "reading_guide_tag"       //阅读页引导页
         const val READING_SETING_GUIDE_TAG = "reading_setting_guide_tag" //阅读页设置引导
         const val READ_PAGE_MODE = "page_mode"              //阅读页翻页模式
@@ -224,7 +233,6 @@ class SPKey {
         const val READ_CONTENT_PAGE_TOP_SPACE = "read_content_page_top_space"   //阅读页距顶部的间距
         const val READ_CONTENT_PAGE_LEFT_SPACE = "read_content_page_left_space" //阅读页距左右的间距
         const val READ_TODAY_FIRST_POST_SETTINGS = "read_today_first_post_settings" //每天上传一次阅读页设置
-        const val READER_TYPE_FACE = "reader_type_face"  //阅读页当前使用的字体
 
         /**
          * push
@@ -232,42 +240,54 @@ class SPKey {
         @JvmField
         val PUSH_TAG_LATEST_UPDATE_TIME = "push_tag_latest_update_time"
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
-        const val PUSH_KEY = "push_key"
 
 
-        /**
-         * 兴趣页
-         */
-        const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
-        const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
+        const val APPLICATION_SHARE_ACTION = "application_share_action"
+        const val COVER_SHARE_PROMPT = "cover_share_prompt"
+
+        const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
 
 
-        /**
-         * 全网搜
-         */
-        const val WEB_FAVORITE_FIRST_USE = "web_favorite_first_use" // 首次使用网页收藏功能标识
-        const val WEB_FAVORITE_FIRST_USE_CLICK = "web_favorite_first_use_click" // 首次点击 网页收藏 按钮标识
 
 
-        /**
+
+
+
+        /***
          * 地理位置信息存储
-         */
-        const val LOCATION_CITY_CODE = "location_city_code" //用于存储用户的城市编码
-        const val LOCATION_LATITUDE = "location_latitude"   //用于存储用户的纬度
-        const val LOCATION_LONGITUDE = "location_longitude" //用于存储用户的经度
+         * **/
+        //用于存储用户的城市编码
+        const val LOCATION_CITY_CODE = "location_city_code"
+        //用于存储用户的纬度
+        const val LOCATION_LATITUDE = "location_latitude"
+        //用于存储用户的经度
+        const val LOCATION_LONGITUDE = "location_longitude"
 
 
-        /**
+
+        /***
          * 多域名鉴权相关信息存储
-         */
-        const val MICRO_AUTH_HOST = "micro_auth_host"//用于存储多域名鉴权的域名
-        const val MICRO_AUTH_PUBLIC_KEY = "micro_auth_public_key_"//用于存储多域名鉴权的公钥
-        const val MICRO_AUTH_PRIVATE_KEY = "micro_auth_private_key_"//用于存储多域名鉴权的私钥
+         * **/
+        //用于存储多域名鉴权的域名
+        const val MICRO_AUTH_HOST = "micro_auth_host"
+        //用于存储多域名鉴权的公钥
+        const val MICRO_AUTH_PUBLIC_KEY = "micro_auth_public_key_"
+        //用于存储多域名鉴权的私钥
+        const val MICRO_AUTH_PRIVATE_KEY = "micro_auth_private_key_"
 
-        const val CONTENT_AUTH_HOST = "content_auth_host"//用于存储多域名鉴权的域名
-        const val CONTENT_AUTH_PUBLIC_KEY = "content_auth_public_key_"//用于存储多域名鉴权的公钥
-        const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"//用于存储多域名鉴权的私钥
+        //用于存储多域名鉴权的域名
+        const val CONTENT_AUTH_HOST = "content_auth_host"
+        //用于存储多域名鉴权的公钥
+        const val CONTENT_AUTH_PUBLIC_KEY = "content_auth_public_key_"
+        //用于存储多域名鉴权的私钥
+        const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"
 
 
+
+
+
+        const val WEB_VIEW_HOST = "web_view_host"
+
+        const val WEB_VENDOR_COPY_FLAG = "web_vendor_copy_flag_"
     }
 }

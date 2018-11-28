@@ -633,9 +633,12 @@ android {
             buildConfigField "String", "alifeedback_secret", "\"637ef76b85f41fbf4ef38f950d45a116\""
             buildConfigField "String", "book_novel_deploy_host", "\"https://uaqbmfkk.muxinvideo.com\""
             buildConfigField "String", "book_webview_host", "\"https://uwqbmfkk.muxinvideo.com\""
+            buildConfigField "String", "cdn_host", "\"https://sta-cnqbmfkkydqreader.bookapi.cn\""
+
             buildConfigField "String", "micro_api_host", "\"https://aqbmfkkydqunionapi.basicnos.cn\""
             buildConfigField "String", "content_api_host", "\"https://aqbmfkkydqunioncontent.basicnos.cn\""
-            buildConfigField "String", "cdn_host", "\"https://sta-cnqbmfkkydqreader.bookapi.cn\""
+
+
         }
 
         mfxsqbyd {

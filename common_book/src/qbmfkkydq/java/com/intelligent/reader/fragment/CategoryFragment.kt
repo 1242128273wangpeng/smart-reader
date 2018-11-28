@@ -7,14 +7,16 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.net.api.service.RequestService
+import com.ding.basic.net.Config
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.frag_category_layout.*
+import net.lzbook.kit.constants.ReplaceConstants
 
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebResourceCache
+import net.lzbook.kit.utils.web.WebViewIndex
+import java.io.File
 
 /**
  * Date: 2018/7/19 11:52
@@ -43,14 +45,26 @@ class CategoryFragment : Fragment() {
         view_pager.adapter = adapter
         val fragments: ArrayList<Fragment> = ArrayList()
 
+        val webViewHost = Config.webViewBaseHost
+
+        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+
+        val localFileExist = File(filePath).exists()
+
         val fragmentMale = WebViewFragment()
-        fragmentMale.arguments = getBundle(//男频
-                RequestService.WEB_CATEGORY_MAN_H5.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentMale.arguments = if (localFileExist) {
+            getBundle("file://$filePath${WebViewIndex.category_male}")
+        } else {
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.category_male)
+        }
 
 
         val fragmentFemale = WebViewFragment()
-        fragmentFemale.arguments = getBundle(//女频
-                RequestService.WEB_CATEGORY_WOMAN_H5.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFemale.arguments = if (localFileExist) {
+            getBundle("file://$filePath${WebViewIndex.category_female}")
+        } else {
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.category_female)
+        }
 
 
         fragments.add(fragmentMale)
@@ -64,14 +78,12 @@ class CategoryFragment : Fragment() {
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
-
     }
 
 
     private fun getBundle(url: String): Bundle {
-        val bundle = Bundle();
-        val map = HashMap<String, String>()
-        bundle.putString("url", UrlUtils.buildWebUrl(url, map))
+        val bundle = Bundle()
+        bundle.putString("url", url)
         return bundle
     }
 

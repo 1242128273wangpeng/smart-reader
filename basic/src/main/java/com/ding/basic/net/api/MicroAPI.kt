@@ -1,7 +1,6 @@
 package com.ding.basic.net.api
 
 import com.ding.basic.bean.*
-import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.MicroService
 import com.ding.basic.net.interceptor.MicroRequestInterceptor
 import com.ding.basic.net.rx.SchedulerHelper
@@ -11,14 +10,14 @@ import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.subscribers.ResourceSubscriber
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import retrofit2.Call
+import org.antlr.v4.runtime.BailErrorStrategy
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
 /**
@@ -26,6 +25,8 @@ import kotlin.properties.Delegates
  * Created by crazylei.
  */
 object MicroAPI {
+
+    var initializeHost = ""
 
     /***
      * 微服务API接口
@@ -35,7 +36,7 @@ object MicroAPI {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST)
+                val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -48,7 +49,7 @@ object MicroAPI {
             if (value.isNotEmpty()) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.MICRO_AUTH_HOST, value)
+                SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, value)
             }
         }
 
@@ -60,7 +61,7 @@ object MicroAPI {
             return if (field?.isNotEmpty() == false) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, "")
+                val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, "")
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -74,7 +75,7 @@ object MicroAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, value)
             }
         }
 
@@ -86,7 +87,7 @@ object MicroAPI {
             return if (field?.isNotEmpty() == true) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
+                val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -100,7 +101,7 @@ object MicroAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost, value)
             }
         }
 
@@ -124,22 +125,26 @@ object MicroAPI {
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(MicroRequestInterceptor()).build()
 
     fun initMicroService() {
+        if (initializeHost != microHost) {
 
-        publicKey = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
+            initializeHost = microHost
 
-        privateKey = SPUtils.loadSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
+            publicKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost)
 
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .baseUrl(microHost)
-                .build()
+            privateKey = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
 
-        microService = retrofit.create(MicroService::class.java)
+            val retrofit = Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
+                    .baseUrl(microHost)
+                    .build()
 
-        if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
-            requestAuthAccess()
+            microService = retrofit.create(MicroService::class.java)
+
+            if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
+                requestAuthAccess()
+            }
         }
     }
 
@@ -148,7 +153,7 @@ object MicroAPI {
             override fun onNext(result: BasicResult<String>?) {
                 if (result != null && result.checkResultAvailable()) {
                     Logger.e("接口鉴权请求结果正常！")
-                    val message = AESUtil.decrypt(result.data, Config.loadAccessKey())
+                    val message = AESUtil.decrypt(result.data, accessKey)
 
                     if (message != null && message.isNotEmpty()) {
                         val access = Gson().fromJson(message, Access::class.java)
@@ -186,7 +191,7 @@ object MicroAPI {
 
         if (result != null && result.checkResultAvailable()) {
             Logger.e("接口鉴权请求结果正常！")
-            val message = AESUtil.decrypt(result.data, Config.loadAccessKey())
+            val message = AESUtil.decrypt(result.data, accessKey)
 
             if (message != null && message.isNotEmpty()) {
                 val access = Gson().fromJson(message, Access::class.java)
@@ -225,7 +230,7 @@ object MicroAPI {
         return microService.requestBookCatalog(book_id, book_source_id, book_chapter_id)
     }
 
-    fun requestCoverBatch(requestBody: RequestBody): Flowable<BasicResult<List<Book>>>? {
+    fun requestCoverBatch(requestBody: RequestBody):Flowable<BasicResult<List<Book>>>?{
         return microService.requestCoverBatch(requestBody)
     }
 
@@ -238,19 +243,16 @@ object MicroAPI {
         return microService.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 
-    /**
-     * 选择兴趣
-     * @param firstType 一级分类
-     * @param secondType 二级分类
-     */
-    fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
-        return microService.requestDefaultBooks(firstType, secondType)
+    fun requestWebViewResult(url: String): Observable<String> {
+        return microService.requestWebViewResult(url)
     }
 
-    /**
-     * 获取兴趣列表
-     */
-    fun getInterestList(): Flowable<BasicResult<List<Interest>>>? {
-        return microService.getInterestList()
+    fun requestWebViewResult(url: String, requestBody: RequestBody): Observable<String> {
+        return microService.requestWebViewResult(url, requestBody)
+    }
+
+
+    fun requestWebViewConfig(): Observable<BasicResult<String>> {
+        return microService.requestWebViewConfig()
     }
 }

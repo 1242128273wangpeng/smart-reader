@@ -13,8 +13,8 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
-import com.ding.basic.net.api.service.RequestService
-import com.dingyue.searchbook.activity.SearchBookActivity
+import com.ding.basic.net.Config
+import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
@@ -29,12 +29,9 @@ import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
-import net.lzbook.kit.utils.uiThread
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import net.lzbook.kit.utils.webview.UrlUtils
 import java.util.*
-
 
 /**
  * Desc：WebView二级页面
@@ -139,43 +136,7 @@ class TabulationActivity : FrameActivity() {
     @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
     private fun initParameter() {
 
-        if (find_book_detail_title != null) {
-            find_book_detail_title?.text = title ?: "列表"
-        }
-
-        find_book_detail_back.setOnClickListener {
-            statisticsTabulationBack()
-
-            if (urls.size - backClickCount <= 1) {
-                this@TabulationActivity.finish()
-            } else {
-                backClickCount++
-                val index = urls.size - 1 - backClickCount
-
-                url = urls[index]
-                title = titles[index]
-
-                requestWebViewData(url, title)
-            }
-        }
-
-        find_book_detail_search?.setOnClickListener {
-            statisticsTabulationSearch()
-
-            val intent = Intent()
-            intent.setClass(this, SearchBookActivity::class.java)
-            startActivity(intent)
-        }
-
         insertTouchListener()
-
-
-        //判断是否是作者主页
-        if (url != null && url?.contains(RequestService.AUTHOR_h5.replace("{packageName}", AppUtils.getPackageName())) == true) {
-            find_book_detail_search?.visibility = View.GONE
-        } else {
-            find_book_detail_search?.visibility = View.VISIBLE
-        }
 
         find_book_detail_main?.setLayerType(View.LAYER_TYPE_NONE, null)
 
@@ -198,7 +159,11 @@ class TabulationActivity : FrameActivity() {
 
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
+                statisticsTabulationSearch()
 
+                val intent = Intent()
+                intent.setClass(this@TabulationActivity, SearchBookActivity::class.java)
+                startActivity(intent)
             }
 
             @JavascriptInterface
@@ -213,7 +178,7 @@ class TabulationActivity : FrameActivity() {
 
                         if (redirect?.url != null && redirect.title != null) {
                             try {
-                                refreshTabulationContent(redirect.url, redirect.title)
+                                refreshTabulationContent(Config.webViewBaseHost + redirect.url, redirect.title)
                             } catch (exception: Exception) {
                                 exception.printStackTrace()
                             }
@@ -224,6 +189,39 @@ class TabulationActivity : FrameActivity() {
                 }
             }
 
+            @JavascriptInterface
+            override fun handleBackAction() {
+                statisticsTabulationBack()
+
+                if (urls.size - backClickCount <= 1) {
+                    this@TabulationActivity.finish()
+                } else {
+                    backClickCount++
+                    val index = urls.size - 1 - backClickCount
+
+                    url = urls[index]
+                    title = titles[index]
+
+                    requestWebViewData(url, title)
+                }
+            }
+
+            @JavascriptInterface
+            override fun hideWebViewLoading() {
+                runOnMain {
+                    loadingPage?.onSuccessGone()
+                }
+            }
+
+            override fun handleWebRequestResult(method: String?) {
+                if (null != rank_content) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        rank_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        rank_content.loadUrl(method)
+                    }
+                }
+            }
         }, "J_search")
     }
 
@@ -333,32 +331,9 @@ class TabulationActivity : FrameActivity() {
     }
 
     private fun requestWebViewData(url: String?, name: String?) {
-        var request = url
-        var parameters: Map<String, String>? = null
-        if (request != null) {
-            val array = request.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            request = array[0]
-            if (array.size == 2) {
-                parameters = UrlUtils.getUrlParams(array[1])
-            } else if (array.size == 1) {
-                parameters = HashMap()
-            }
-
-            request = UrlUtils.buildWebUrl(request, parameters)
-        }
-
-        insertTabulationTitle(name)
-
-        startLoadingWebViewData(request)
+        startLoadingWebViewData(url)
 
         initWebViewCallback()
-    }
-
-
-    private fun insertTabulationTitle(name: String?) {
-        uiThread {
-            find_book_detail_title?.text = name ?: "列表"
-        }
     }
 
     private fun startLoadingWebViewData(url: String?) {

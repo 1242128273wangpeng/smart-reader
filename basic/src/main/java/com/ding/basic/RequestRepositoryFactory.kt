@@ -20,10 +20,7 @@ import com.ding.basic.util.ParserUtil
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.orhanobut.logger.Logger
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.FlowableEmitter
-import io.reactivex.FlowableOnSubscribe
+import io.reactivex.*
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
@@ -1789,7 +1786,6 @@ class RequestRepositoryFactory private constructor(private val context: Context)
                         onError = { t ->
                             requestSubscriber.onError(t)
                         }
-
                 )
     }
 
@@ -1960,6 +1956,18 @@ class RequestRepositoryFactory private constructor(private val context: Context)
 
     fun upgradeChapterDBFromOld(book_ids: List<String>): Flowable<Int> {
         return localRepository.upgradeChapterDBFromOld(book_ids)
+    }
+
+    fun requestWebViewResult(url: String, flag: Boolean): Observable<String> {
+        return internetRepository.requestWebViewResult(url, flag)
+    }
+
+    fun requestWebViewResult(url: String, requestBody: RequestBody, flag: Boolean): Observable<String> {
+        return internetRepository.requestWebViewResult(url,requestBody, flag)
+    }
+
+    fun requestWebViewConfig(): Observable<BasicResult<String>> {
+        return internetRepository.requestWebViewConfig()
     }
 
     fun getAllWebFavorite(): List<WebPageFavorite> = localRepository.getAllWebFavorite()

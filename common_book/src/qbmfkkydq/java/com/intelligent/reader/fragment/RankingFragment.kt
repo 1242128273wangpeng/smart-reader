@@ -5,15 +5,17 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ding.basic.net.Config
 
-import com.ding.basic.net.api.service.RequestService
 import com.intelligent.reader.R
 import kotlinx.android.synthetic.qbmfkkydq.frag_ranking_layout.*
+import net.lzbook.kit.constants.ReplaceConstants
 
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebResourceCache
+import net.lzbook.kit.utils.web.WebViewIndex
+import java.io.File
 
 /**
  * Date: 2018/7/19 11:52
@@ -41,14 +43,23 @@ class RankingFragment : Fragment() {
 
         val webFragment = WebViewFragment()
         val bundle = Bundle()
-        bundle.putString("url"
-                , UrlUtils.buildWebUrl(RequestService.WEB_RANK_H5.replace("{packageName}"
-                , AppUtils.getPackageName()), HashMap()))
+
+        val webViewHost = Config.webViewBaseHost
+
+        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+
+        val localFileExist = File(filePath).exists()
+
+        val url = if (localFileExist) {
+            "file://$filePath${WebViewIndex.rank}"
+        } else {
+            Config.webViewBaseHost + "/index.html" +  WebViewIndex.rank
+        }
+
+        bundle.putString("url", url)
         webFragment.arguments = bundle
 
         childFragmentManager.beginTransaction().replace(R.id.fl_content, webFragment).commit()
 
     }
-
-
 }

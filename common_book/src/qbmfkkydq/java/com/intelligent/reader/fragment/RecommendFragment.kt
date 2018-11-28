@@ -9,16 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.ding.basic.net.api.service.RequestService
-
+import com.ding.basic.net.Config
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
-
+import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebResourceCache
+import net.lzbook.kit.utils.web.WebViewIndex
+import java.io.File
 
 /**
  * Date: 2018/7/19 11:52
@@ -49,51 +51,71 @@ class RecommendFragment : Fragment() {
 
 
     private fun initView() {
-
-
-        ll_search_layout.post {
-            if (statusBarHeight == 0) {
-                statusBarHeight = AppUtils.dip2px(context, 20f)
-            }
-            val params: LinearLayout.LayoutParams = ll_search_layout.layoutParams as LinearLayout.LayoutParams
-            params.topMargin = params.topMargin + statusBarHeight
+        if (statusBarHeight == 0) {
+            statusBarHeight = AppUtils.dip2px(requireContext(), 20f)
         }
+
+        val params = ll_search_layout?.layoutParams as LinearLayout.LayoutParams?
+        params?.topMargin = (params?.topMargin
+                ?: AppUtils.dip2px(requireContext(), 4f)) + statusBarHeight
 
         view_pager.offscreenPageLimit = 4
 
-        ll_search_layout.setOnClickListener {
+        ll_search_layout?.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
         val adapter = VPAdapter(childFragmentManager)
         view_pager.adapter = adapter
 
+        val webViewHost = Config.webViewBaseHost
+        Logger.e("WebView地址: $webViewHost")
+
+        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+
+        val localFileExist = File(filePath).exists()
+
         val fragmentSelection = ScrollWebFragment()
-        fragmentSelection.arguments = getBundle(//精选
-                RequestService.WEB_RECOMMEND_H5.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentSelection.arguments = if (localFileExist) {
+            getBundle("file://$filePath${WebViewIndex.recommend}", "recommend")
+        } else {
+            getBundle(Config.webViewBaseHost + "/index.html" +  WebViewIndex.recommend, "recommend")
+        }
 
         val fragmentMale = ScrollWebFragment()
-        fragmentMale.arguments = getBundle(//男频
-                RequestService.WEB_RECOMMEND_H5_BOY.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentMale.arguments = if (localFileExist) {
+            getBundle("file://$filePath${WebViewIndex.recommend_male}", "recommendMale")
+        } else {
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.recommend_male, "recommendMale")
+        }
 
         val fragmentFemale = ScrollWebFragment()
-        fragmentFemale.arguments = getBundle(//女频
-                RequestService.WEB_RECOMMEND_H5_Girl.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFemale.arguments = if (localFileExist) {
+            getBundle("file://$filePath${WebViewIndex.recommend_female}", "recommendFemale")
+        } else {
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.recommend_female, "recommendFemale")
+        }
 
         val fragmentFinish = ScrollWebFragment()
-        fragmentFinish.arguments = getBundle(//完本
-                RequestService.WEB_RECOMMEND_H5_Finish.replace("{packageName}", AppUtils.getPackageName()))
+        fragmentFinish.arguments = if (localFileExist) {
+            getBundle("file://$filePath${WebViewIndex.recommend_finish}", "recommendFinish")
+        } else {
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.recommend_finish, "recommendFinish")
+        }
 
         fragments.clear()
         fragments.add(fragmentSelection)
         fragments.add(fragmentMale)
         fragments.add(fragmentFemale)
         fragments.add(fragmentFinish)
+
         val titles: ArrayList<String> = ArrayList()
         titles.add("精选")
         titles.add("男频")
         titles.add("女频")
         titles.add("完本")
+
         adapter.setData(fragments, titles)
+
         tab_layout.setupWithViewPager(view_pager)
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
@@ -105,20 +127,19 @@ class RecommendFragment : Fragment() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
             }
-
         })
-
     }
 
 
-    private fun getBundle(url: String): Bundle {
+    private fun getBundle(url: String, type: String): Bundle {
         val bundle = Bundle()
-        val map = HashMap<String, String>()
-        bundle.putString("url", UrlUtils.buildWebUrl(url, map))
+        bundle.putString("url", url)
+        bundle.putString("type", type)
         return bundle
     }
 
@@ -147,6 +168,5 @@ class RecommendFragment : Fragment() {
         override fun getPageTitle(position: Int): CharSequence? {
             return mTitles[position]
         }
-
     }
 }

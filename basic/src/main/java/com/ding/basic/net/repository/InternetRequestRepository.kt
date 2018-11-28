@@ -11,6 +11,7 @@ import com.ding.basic.net.api.service.RequestService
 import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import com.ding.basic.bean.UserMarkBook
+import io.reactivex.Observable
 import net.lzbook.kit.data.user.UserBook
 import net.lzbook.kit.utils.user.bean.UserNameState
 import net.lzbook.kit.utils.user.bean.WXAccess
@@ -254,7 +255,7 @@ class InternetRequestRepository private constructor() {
     }
 
     fun requestDownTaskConfig(bookID: String, bookSourceID: String
-                                       , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
+                              , type: Int, startChapterID: String): Flowable<BasicResult<CacheTaskConfig>>? {
         return MicroAPI.requestDownTaskConfig(bookID, bookSourceID, type, startChapterID)
     }
 
@@ -268,6 +269,26 @@ class InternetRequestRepository private constructor() {
 
     fun downloadFont(fontName: String): Flowable<ResponseBody> {
         return RequestAPI.downloadFont(fontName)
+    }
+
+    fun requestWebViewResult(url: String, flag: Boolean): Observable<String> {
+        if (flag) {
+            return MicroAPI.requestWebViewResult(url)
+        } else {
+            return RequestAPI.requestWebViewResult(url)
+        }
+    }
+
+    fun requestWebViewResult(url: String, requestBody: RequestBody, flag: Boolean): Observable<String> {
+        return if (flag) {
+            MicroAPI.requestWebViewResult(url, requestBody)
+        } else {
+            RequestAPI.requestWebViewResult(url, requestBody)
+        }
+    }
+
+    fun requestWebViewConfig(): Observable<BasicResult<String>> {
+        return MicroAPI.requestWebViewConfig()
     }
 
     fun downloadVoicePlugin(): Flowable<ResponseBody> = RequestAPI.downloadVoicePlugin()

@@ -13,6 +13,9 @@ import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.ErrorCode;
 import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
+import com.ding.basic.net.Config;
+import com.ding.basic.util.sp.SPKey;
+import com.ding.basic.util.sp.SPUtils;
 import com.dy.media.MediaConfig;
 import com.dy.media.MediaLifecycle;
 import com.dy.reader.Reader;
@@ -34,13 +37,13 @@ import net.lzbook.kit.utils.toast.ToastUtil;
 import net.lzbook.kit.utils.upush.PushMessageHandler;
 import net.lzbook.kit.utils.upush.PushNotificationHandler;
 import net.lzbook.kit.utils.upush.PushRegisterCallback;
+import net.lzbook.kit.utils.web.WebResourceCache;
 
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
-
 
 public class BookApplication extends BaseBookApplication {
 
@@ -58,16 +61,14 @@ public class BookApplication extends BaseBookApplication {
 
         Reader.INSTANCE.init(this);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
+        checkWebViewResourceUnzip();
 
         if (AppUtils.isMainProcess(this)) {
 
             // 防止定位不回掉导致缺失id
             MediaConfig.INSTANCE.setAd_userid(OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext()));
             MediaConfig.INSTANCE.setChannel_code(AppUtils.getChannelId());
-            MediaLifecycle.INSTANCE.onAppCreate(this);
+//            MediaLifecycle.INSTANCE.onAppCreate(this);
 
             StatService.setAppKey(ReplaceConstants.getReplaceConstants().BAIDU_STAT_ID);
             StatService.setAppChannel(this, AppUtils.getChannelId(), true);
@@ -83,7 +84,21 @@ public class BookApplication extends BaseBookApplication {
             setRxJavaErrorHandler();
         }
         registerPushAgent();
+
         initHandler.sendEmptyMessageDelayed(1, 1500);
+    }
+
+    private void checkWebViewResourceUnzip() {
+        boolean cache = SPUtils.INSTANCE.loadSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG + this.getPackageName(), false);
+
+        WebResourceCache webResourceCache =  WebResourceCache.Companion.loadWebResourceCache();
+
+        if (!cache) {
+            webResourceCache.copyFileFromAssets(BaseBookApplication.getGlobalContext());
+            SPUtils.INSTANCE.insertSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG + this.getPackageName(), true);
+        } else {
+            webResourceCache.checkLocalResourceFile(Config.getWebViewBaseHost());
+        }
     }
 
     private Handler initHandler = new Handler() {

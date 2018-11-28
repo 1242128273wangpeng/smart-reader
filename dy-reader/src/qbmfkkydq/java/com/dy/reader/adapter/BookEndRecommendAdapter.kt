@@ -51,12 +51,12 @@ class BookEndRecommendAdapter(private val context: Activity) : RecyclerView.Adap
         if (!TextUtils.isEmpty(rBook.sourceImageUrl)) {
 
             Glide.with(context)
-                    .load(rBook.sourceImageUrl).placeholder(R.drawable.icon_book_cover_default)
-                    .error(R.drawable.icon_book_cover_default)
+                    .load(rBook.sourceImageUrl).placeholder(R.drawable.common_book_cover_default_icon)
+                    .error(R.drawable.common_book_cover_default_icon)
                     .into(holder.recommendImage.getBackGroundImage())
 
         } else {
-            Glide.with(context).load(R.drawable.icon_book_cover_default).into(holder.recommendImage.getBackGroundImage())
+            Glide.with(context).load(R.drawable.common_book_cover_default_icon).into(holder.recommendImage.getBackGroundImage())
         }
         val b = Book();
         b.book_id = rBook.bookId

@@ -20,13 +20,6 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            url 'http://nexus.dingyueads.com/content/groups/public/'
-        }
-
-        google()
-
-        jcenter()
 
         maven {
             url "http://20.20.27.101:8081/nexus/content/groups/public/"
@@ -35,6 +28,14 @@ allprojects {
                 password 'iyouquedwin'
             }
         }
+
+        maven {
+            url 'http://nexus.dingyueads.com/content/groups/public/'
+        }
+
+        google()
+
+        jcenter()
 
         maven {
             url 'http://maven.aliyun.com/nexus/content/repositories/releases/'

@@ -24,7 +24,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
         searchResultModel = SearchResultModel()
         historyModel = HistoryModel()
 
-        searchResultModel?.initJSModel(this, searchResultView.getCurrentActivity())?.let {
+        searchResultModel?.initJSModel(this, searchResultView.getCurrentActivity(), searchResultView.loadContentWebView())?.let {
             searchResultView.obtainJSInterface(it)
         }
     }
@@ -85,6 +85,10 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
 
     override fun onEnterReadResult(bundle: Bundle) {
         searchResultView.onTurnReadResult(bundle)
+    }
+
+    override fun hideWebViewLoading() {
+        searchResultView.hideWebViewLoading()
     }
 
 

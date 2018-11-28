@@ -440,8 +440,6 @@ public class Constants {
 
     public static long INSERT_BOOKSHELF_FULL = -50L;
 
-
-
     /*
      * 初始化
      */

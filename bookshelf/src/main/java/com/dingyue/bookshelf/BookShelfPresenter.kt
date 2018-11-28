@@ -113,13 +113,7 @@ open class BookShelfPresenter(override var view: BookShelfView?) : IPresenter<Bo
         val books = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).loadBooks()
 
         if (books != null) {
-            if(isList){
-                iBookList.removeAll {
-                    it.item_type != 2
-                }
-            }else{
-                iBookList.clear()
-            }
+            iBookList.clear()
 
             if (books.isEmpty()) {
                 uiThread {

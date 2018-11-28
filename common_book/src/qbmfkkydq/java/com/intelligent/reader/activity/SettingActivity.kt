@@ -60,9 +60,9 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
         }
     }
 
-    private val feedbackRunnable = Runnable({
+    private val feedbackRunnable = Runnable {
         FeedbackAPI.openFeedbackActivity()
-    })
+    }
 
     internal var themeName = TypedValue()//分割块颜色
 
@@ -146,7 +146,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
         clear_cache_rl.setOnClickListener {
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.PEASONAL_PAGE, StartLogClickUtil.CACHECLEAR)
             StatServiceUtils.statAppBtnClick(this, StatServiceUtils.me_set_cli_clear_cache)
-            if (clear_cache_size.text.equals("0B")) {
+            if (clear_cache_size.text == "0B") {
                 ToastUtil.showToastMessage("缓存已清除")
             } else {
                 clearCacheDialog()
@@ -216,10 +216,10 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
             myDialog!!.setCancelable(false)
             myDialog!!.setCanceledOnTouchOutside(true)//设置点击dialog外面对话框消失
             myDialog!!.publish_content.text = "清除包括下载书籍在内的所有缓存"
-            myDialog!!.publish_stay.setOnClickListener({
+            myDialog!!.publish_stay.setOnClickListener {
                 dismissDialog()
-            })
-            myDialog!!.publish_leave.setOnClickListener({
+            }
+            myDialog!!.publish_leave.setOnClickListener {
                 myDialog!!.publish_content.visibility = View.GONE
                 myDialog!!.dialog_title.setText(R.string.tip_cleaning_cache)
                 myDialog!!.change_source_bottom.visibility = View.GONE
@@ -230,19 +230,20 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
                     override fun run() {
                         super.run()
 
-
                         CacheManager.removeAll()
 
                         UIHelper.clearAppCache()
-                        DataCleanManager.clearAllCache(getApplicationContext())
-                        runOnUiThread({
+
+//                        DataCleanManager.clearAllCache(applicationContext)
+
+                        runOnUiThread {
                             dismissDialog()
                             clear_cache_size!!.text = "0B"
                             ToastUtil.showToastMessage("缓存已清除")
-                        })
+                        }
                     }
                 }.start()
-            })
+            }
 
             myDialog!!.setOnCancelListener { myDialog!!.dismiss() }
             if (!myDialog!!.isShowing) {
@@ -327,7 +328,7 @@ open class SettingActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChan
         override fun doInBackground(vararg params: Void): String {
             var result = "0B"
             try {
-                result = DataCleanManager.getTotalCacheSize(getApplicationContext())
+                result = DataCleanManager.getTotalCacheSize(applicationContext)
                 SettingActivity.cacheSize = DataCleanManager.internalCacheSize
             } catch (e: Exception) {
                 e.printStackTrace()

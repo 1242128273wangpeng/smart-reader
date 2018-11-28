@@ -247,10 +247,12 @@ class DynamicParameter(private val context: Context) {
         putDynamicString(SPKey.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
         if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+
+            SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, map.DY_micro_host)
+            SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, map.DY_micro_chapter_host)
+
             putDynamicString(SPKey.NOVEL_HOST, map.novel_host?.parseUrl())
             putDynamicString(SPKey.WEBVIEW_HOST, map.httpsWebView_host?.parseUrl())
-            putDynamicString(SPKey.MICRO_AUTH_HOST, map.union_host?.parseUrl())
-            putDynamicString(SPKey.CONTENT_AUTH_HOST, map.content_host?.parseUrl())
         }
 
         putDynamicString(SPKey.USER_TAG_HOST, map.user_tag_host?.parseUrl())
@@ -297,8 +299,6 @@ class DynamicParameter(private val context: Context) {
 
         initApi()
 
-        initWebResource()
-
         setBaidu()
 
         setAdControl()
@@ -316,24 +316,10 @@ class DynamicParameter(private val context: Context) {
         AppLog.d("um_param", " real param ==> " + this.toString())
     }
 
-    private fun initWebResource() {
-
-        val webStaticResources = SPUtils.getOnlineConfigSharedString(SPKey.DY_WEB_STATIC_RESOURCES)
-
-        if (webStaticResources.isNotEmpty()) {
-
-            val customWebViewCache = WebResourceCache.loadCustomWebViewCache()
-
-            val resourceList = webStaticResources.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-
-            resourceList
-                    .filter { it.isNotEmpty() }
-                    .forEach { customWebViewCache.checkWebViewResourceCached(it) }
-        }
-    }
-
-
     private fun insertRequestParams() {
+        MicroAPI.microHost = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)
+        ContentAPI.contentHost = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)
+
         MicroAPI.microHost = SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST)
         ContentAPI.contentHost = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST)
 
@@ -377,14 +363,14 @@ class DynamicParameter(private val context: Context) {
                 if (message.isNotEmpty() && message[0].isNotEmpty()) {
                     val value = Integer.parseInt(message[0])
                     Constants.isBaiduExamine = value != 0
-                    AppLog.e(TAG, "baiduExamine: " + message[0])
-                    AppLog.e(TAG, "baiduExamine: " + Constants.isBaiduExamine)
+                    loge("baiduExamine: " + message[0])
+                    loge("baiduExamine: " + Constants.isBaiduExamine)
                 }
 
                 if (message.size > 1 && message[1].isNotEmpty()) {
                     Constants.versionCode = Integer.valueOf(message[1])
-                    AppLog.e(TAG, "baiduExamine: " + message[1])
-                    AppLog.e(TAG, "baiduExamine: " + Constants.versionCode)
+                    loge("baiduExamine: " + message[1])
+                    loge("baiduExamine: " + Constants.versionCode)
                 }
 
                 if (message.size > 2 && message[2].isNotEmpty()) {
@@ -443,20 +429,20 @@ class DynamicParameter(private val context: Context) {
         var adLimitTimeDay = SPUtils.getOnlineConfigSharedString(SPKey.AD_LIMIT_TIME_DAY)
         if (adLimitTimeDay.isNotEmpty()) {
             val channelID = AppUtils.getChannelId()
-            AppLog.e(TAG, "channelLimitList: " + channelLimit)
-            AppLog.e(TAG, "dayLimitList: " + dayLimit)
+            loge("channelLimitList: $channelLimit")
+            loge("dayLimitList: $dayLimit")
 
             val allChannelIndex = channelLimitList.indexOf("AllChannel")
             if (allChannelIndex != -1) {
                 val allChannelLimit = dayLimitList[allChannelIndex]
                 if (allChannelLimit != 0) {
-                    AppLog.e(TAG, "all_channel_limit: " + allChannelLimit)
+                    loge("all_channel_limit: $allChannelLimit")
                     Constants.ad_limit_time_day = allChannelLimit
                 } else {
                     if (channelLimitList.contains(channelID)) {
-                        AppLog.e(TAG, "channelLimitList.contains: " + channelID)
+                        loge("channelLimitList.contains: $channelID")
                         val index = channelLimitList.indexOf(channelID)
-                        AppLog.e(TAG, "dayLimitList: " + dayLimitList[index])
+                        loge("dayLimitList: ${dayLimitList[index]}")
                         Constants.ad_limit_time_day = dayLimitList[index]
                     } else {
                         if (adLimitTimeDay.isEmpty()) {
@@ -469,7 +455,7 @@ class DynamicParameter(private val context: Context) {
                 }
             }
             if (Constants.DEVELOPER_MODE) {
-                AppLog.e(TAG, " ad_limit_time_day:" + Constants.ad_limit_time_day)
+                loge(" ad_limit_time_day:${Constants.ad_limit_time_day}")
             }
         }
     }

@@ -16,7 +16,6 @@ interface ContentService {
         const val CHAPTER_CONTENT = "/content/book/content"
     }
 
-
     @GET(AUTH_ACCESS)
     fun requestAuthAccess(): Flowable<BasicResult<String>>
 

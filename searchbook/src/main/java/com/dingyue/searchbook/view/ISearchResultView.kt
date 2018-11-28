@@ -1,6 +1,7 @@
 package com.dingyue.searchbook.view
 
 import android.app.Activity
+import android.webkit.WebView
 import com.dingyue.searchbook.interfaces.OnSearchResult
 
 
@@ -16,4 +17,5 @@ interface ISearchResultView : IBaseView, OnSearchResult {
 
     fun getCurrentActivity(): Activity
 
+    fun loadContentWebView(): WebView
 }

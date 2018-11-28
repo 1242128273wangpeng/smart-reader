@@ -1,7 +1,6 @@
 package com.ding.basic.net.api
 
 import com.ding.basic.bean.*
-import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.ContentService
 import com.ding.basic.net.interceptor.ContentInterceptor
 import com.ding.basic.net.rx.SchedulerHelper
@@ -25,6 +24,8 @@ import kotlin.properties.Delegates
  */
 object ContentAPI {
 
+    var initializeHost = ""
+
     /***
      * 微服务API接口
      * **/
@@ -33,7 +34,7 @@ object ContentAPI {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST)
+                val value = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
@@ -46,7 +47,7 @@ object ContentAPI {
             if (value.isNotEmpty()) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_HOST, value)
+                SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, value)
             }
         }
 
@@ -58,7 +59,7 @@ object ContentAPI {
             return if (field?.isNotEmpty() == false) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, "")
+                val value = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, "")
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -72,7 +73,7 @@ object ContentAPI {
             if (value?.isNotEmpty() == true) {
                 field = value
 
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost, value)
             }
         }
 
@@ -84,7 +85,7 @@ object ContentAPI {
             return if (field?.isNotEmpty() == true) {
                 field
             } else {
-                val value = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
+                val value = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
 
                 field = if (value.isNotEmpty() == true) {
                     value
@@ -97,7 +98,7 @@ object ContentAPI {
         set(value) {
             if (value?.isNotEmpty() == true) {
                 field = value
-                SPUtils.insertSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost, value)
+                SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost, value)
             }
         }
 
@@ -120,24 +121,27 @@ object ContentAPI {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(ContentInterceptor()).build()
 
-
     fun initContentService() {
+        if (initializeHost != MicroAPI.microHost) {
 
-        publicKey = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost)
+            initializeHost = contentHost
 
-        privateKey = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
+            publicKey = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PUBLIC_KEY + contentHost)
 
-        val retrofit = Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .baseUrl(contentHost)
-                .build()
+            privateKey = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_PRIVATE_KEY + contentHost)
 
-        contentService = retrofit.create(ContentService::class.java)
+            val retrofit = Retrofit.Builder()
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
+                    .baseUrl(contentHost)
+                    .build()
 
-        if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
-            requestAuthAccess()
+            contentService = retrofit.create(ContentService::class.java)
+
+            if (publicKey?.isEmpty() == true || privateKey?.isEmpty() == true) {
+                requestAuthAccess()
+            }
         }
     }
 
@@ -146,7 +150,7 @@ object ContentAPI {
             override fun onNext(result: BasicResult<String>?) {
                 if (result != null && result.checkResultAvailable()) {
                     Logger.e("内容鉴权请求结果正常！")
-                    val message = AESUtil.decrypt(result.data, Config.loadAccessKey())
+                    val message = AESUtil.decrypt(result.data, accessKey)
 
                     if (message != null && message.isNotEmpty()) {
                         val access = Gson().fromJson(message, Access::class.java)

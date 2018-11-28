@@ -335,9 +335,9 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
 
             if (book_cover_image != null) {
                 if (!TextUtils.isEmpty(book.img_url) && book.img_url != ReplaceConstants.getReplaceConstants().DEFAULT_IMAGE_URL) {
-                    Glide.with(applicationContext).load(book.img_url).placeholder(R.drawable.icon_book_cover_default).error(R.drawable.icon_book_cover_default).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image!!)
+                    Glide.with(applicationContext).load(book.img_url).placeholder(R.drawable.common_book_cover_default_icon).error(R.drawable.common_book_cover_default_icon).diskCacheStrategy(DiskCacheStrategy.ALL).into(book_cover_image!!)
                 } else {
-                    Glide.with(applicationContext).load(R.drawable.icon_book_cover_default).into(book_cover_image!!)
+                    Glide.with(applicationContext).load(R.drawable.common_book_cover_default_icon).into(book_cover_image!!)
                 }
             }
 
@@ -476,7 +476,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             } else if (status == DownloadState.DOWNLOADING) {
                 book_cover_download.setText(R.string.download_status_underway)
             } else if (status == DownloadState.PAUSEED) {
-                book_cover_download.setText("继续缓存")
+                book_cover_download.setText(R.string.download_status_total)
             } else {
                 book_cover_download.setText(R.string.download_status_total)
             }
