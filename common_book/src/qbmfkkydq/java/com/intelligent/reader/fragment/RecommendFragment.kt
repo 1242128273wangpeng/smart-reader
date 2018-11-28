@@ -18,6 +18,7 @@ import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
+import net.lzbook.kit.utils.web.WebResourceCache
 import net.lzbook.kit.utils.web.WebViewIndex
 import java.io.File
 
@@ -69,37 +70,36 @@ class RecommendFragment : Fragment() {
         val webViewHost = Config.webViewBaseHost
         Logger.e("WebView地址: $webViewHost")
 
-        val fileSubPath = "${ReplaceConstants.getReplaceConstants().APP_PATH_CACHE}web/${Config.webViewTimeTemp}"
+        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
 
-        val filePath = "$fileSubPath/index.html"
         val localFileExist = File(filePath).exists()
 
         val fragmentSelection = ScrollWebFragment()
         fragmentSelection.arguments = if (localFileExist) {
-            getBundle("file://$fileSubPath${WebViewIndex.recommend}", "recommend")
+            getBundle("file://$filePath${WebViewIndex.recommend}", "recommend")
         } else {
-            getBundle(Config.webViewBaseHost + WebViewIndex.recommend, "recommendMale")
+            getBundle(Config.webViewBaseHost + "/index.html" +  WebViewIndex.recommend, "recommend")
         }
 
         val fragmentMale = ScrollWebFragment()
         fragmentMale.arguments = if (localFileExist) {
-            getBundle("file://$fileSubPath${WebViewIndex.recommend_male}", "recommendMale")
+            getBundle("file://$filePath${WebViewIndex.recommend_male}", "recommendMale")
         } else {
-            getBundle(Config.webViewBaseHost + WebViewIndex.recommend_male, "recommendMale")
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.recommend_male, "recommendMale")
         }
 
         val fragmentFemale = ScrollWebFragment()
         fragmentFemale.arguments = if (localFileExist) {
-            getBundle("file://$fileSubPath${WebViewIndex.recommend_female}", "recommendFemale")
+            getBundle("file://$filePath${WebViewIndex.recommend_female}", "recommendFemale")
         } else {
-            getBundle(Config.webViewBaseHost + WebViewIndex.recommend_female, "recommendFemale")
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.recommend_female, "recommendFemale")
         }
 
         val fragmentFinish = ScrollWebFragment()
         fragmentFinish.arguments = if (localFileExist) {
-            getBundle("file://$fileSubPath${WebViewIndex.recommend_finish}", "recommendFinish")
+            getBundle("file://$filePath${WebViewIndex.recommend_finish}", "recommendFinish")
         } else {
-            getBundle(Config.webViewBaseHost + WebViewIndex.recommend_finish, "recommendFinish")
+            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.recommend_finish, "recommendFinish")
         }
 
         fragments.clear()

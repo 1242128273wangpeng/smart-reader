@@ -8,20 +8,20 @@ package net.lzbook.kit.utils.web
  */
 object WebViewIndex {
 
-    const val recommend = "/index.html#/recommend"
+    const val recommend = "#/recommend"
 
-    const val recommend_male = "/index.html#/gender?gender=male"
+    const val recommend_male = "#/gender?gender=male"
 
-    const val recommend_female = "/index.html#/gender?gender=female"
+    const val recommend_female = "#/gender?gender=female"
 
-    const val recommend_finish = "/index.html#/finish"
+    const val recommend_finish = "#/finish"
 
     const val rank = "/index.html#/rank"
 
-    const val category_male = "/index.html#/category?gender=male"
+    const val category_male = "#/category?gender=male"
 
-    const val category_female = "/index.html#/category?gender=female"
+    const val category_female = "#/category?gender=female"
 
-    const val search = "/index.html#/search"
+    const val search = "#/search"
 
 }

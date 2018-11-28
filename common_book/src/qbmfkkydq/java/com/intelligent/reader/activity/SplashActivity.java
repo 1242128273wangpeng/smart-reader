@@ -221,7 +221,7 @@ public class SplashActivity extends FrameActivity {
 
                             SPUtils.INSTANCE.insertPrivateSharedString(SPKey.WEB_VIEW_HOST, url);
 
-                            WebResourceCache webResourceCache = new WebResourceCache();
+                            WebResourceCache webResourceCache = WebResourceCache.Companion.loadWebResourceCache();
                             webResourceCache.checkLocalResourceFile(url);
 
                         }
@@ -261,7 +261,7 @@ public class SplashActivity extends FrameActivity {
     private boolean isGo = true;
 
     private void initSplashAd() {
-        handler.sendEmptyMessageDelayed(0, 1000);
+        handler.sendEmptyMessageDelayed(0, 2000);
     }
 
     //初始化广告开关

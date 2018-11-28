@@ -15,6 +15,7 @@ import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.constants.Constants
+import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.oneclick.AntiShake
 import net.lzbook.kit.utils.oneclick.OneClickUtil
@@ -24,7 +25,9 @@ import net.lzbook.kit.utils.statistic.alilog
 import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
+import net.lzbook.kit.utils.web.WebResourceCache
 import net.lzbook.kit.utils.web.WebViewIndex
+import java.io.File
 import java.net.URLEncoder
 import java.util.*
 
@@ -246,10 +249,25 @@ class SearchResultModel {
 
             } else {
                 mUrl = if (mUrl.isNullOrEmpty()) {
-                    try {
-                        Config.webViewBaseHost + WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
-                    } catch (exception: Exception) {
-                        Config.webViewBaseHost + WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+
+                    val webViewHost = Config.webViewBaseHost
+
+                    val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+
+                    val localFileExist = File(filePath).exists()
+
+                    if (localFileExist) {
+                        try {
+                            "file://$filePath${WebViewIndex.search}" + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                        } catch (exception: Exception) {
+                            "file://$filePath${WebViewIndex.search}" + "?keyword=$searchWord&searchType=$searchType"
+                        }
+                    } else {
+                        try {
+                            Config.webViewBaseHost + "/index.html" +  WebViewIndex.search + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}&searchType=$searchType"
+                        } catch (exception: Exception) {
+                            Config.webViewBaseHost + "/index.html" +  WebViewIndex.search + "?keyword=$searchWord&searchType=$searchType"
+                        }
                     }
                 } else {
                     String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")

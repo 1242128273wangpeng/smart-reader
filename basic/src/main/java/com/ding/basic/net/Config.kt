@@ -60,7 +60,7 @@ object Config {
     var webDeploy = ""
 
     @JvmStatic
-    var webViewTimeTemp = "201811271619"
+    var webViewTimeTemp = "201811282000"
 
     @JvmStatic
     var webViewBaseHost = ""
@@ -72,7 +72,7 @@ object Config {
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811271619"
+                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811282000"
                 }
 
                 webViewTimeTemp = field.substring(field.lastIndexOf("/") + 1, field.length)

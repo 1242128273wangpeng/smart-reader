@@ -41,9 +41,6 @@ import net.lzbook.kit.utils.web.WebResourceCache;
 import org.android.agoo.huawei.HuaWeiRegister;
 import org.android.agoo.xiaomi.MiPushRegistar;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.functions.Consumer;
@@ -95,11 +92,10 @@ public class BookApplication extends BaseBookApplication {
     private void checkWebViewResourceUnzip() {
         boolean cache = SPUtils.INSTANCE.loadSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG + this.getPackageName(), false);
 
-        WebResourceCache webResourceCache = new WebResourceCache();
+        WebResourceCache webResourceCache =  WebResourceCache.Companion.loadWebResourceCache();
 
         if (!cache) {
             webResourceCache.copyFileFromAssets(BaseBookApplication.getGlobalContext());
-
             SPUtils.INSTANCE.insertSharedBoolean(SPKey.WEB_VENDOR_COPY_FLAG + this.getPackageName(), true);
         } else {
             webResourceCache.checkLocalResourceFile(Config.getWebViewBaseHost());
