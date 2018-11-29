@@ -66,6 +66,7 @@ abstract class ChaptersDatabase : RoomDatabase() {
         private val migration3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 updateDataBase3(database)
+                database.execSQL("ALTER TABLE `chapters` ADD COLUMN `comment_count` INTEGER NOT NULL DEFAULT 0")
             }
         }
 
