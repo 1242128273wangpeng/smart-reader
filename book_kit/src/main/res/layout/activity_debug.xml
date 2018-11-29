@@ -5,35 +5,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
-    android:fitsSystemWindows="true"
+    android:background="@color/white"
     android:orientation="vertical"
-    tools:ignore="RtlHardcoded">
+    tools:ignore="RtlHardcoded, HardcodedText">
 
-    <RelativeLayout
-        android:id="@+id/top_navigation_bg"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/icon_back_left"
-            android:contentDescription="@string/app_name"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_vertical"
-            android:text="@string/debug_mode"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp"/>
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/img_debug_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/app_name"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:src="@drawable/icon_back_left"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:text="@string/debug_mode"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"/>
+        </RelativeLayout>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -46,48 +51,7 @@
             android:paddingBottom="50dp">
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="55dp">
-
-                <TextView
-                    style="@style/Debug_Widget_Text"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/debug_web_state"/>
-
-                <RadioGroup
-                    android:id="@+id/rgroup_web_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/rbtn_web_debug"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/debug"
-                        android:textSize="15sp"/>
-
-                    <RadioButton
-                        android:id="@+id/rbtn_web_regress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/regress"
-                        android:textSize="15sp"/>
-
-                    <RadioButton
-                        android:id="@+id/rbtn_web_official"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/official"
-                        android:textSize="15sp"/>
-                </RadioGroup>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_debug_start_params"
+                android:id="@+id/rl_debug_dynamic_state"
                 android:layout_width="match_parent"
                 android:layout_height="55dp">
 
@@ -96,7 +60,7 @@
                     android:text="@string/debug_start_params"/>
 
                 <net.lzbook.kit.ui.widget.SwitchButton
-                    android:id="@+id/btn_debug_start_params"
+                    android:id="@+id/sbtn_debug_dynamic_check"
                     style="@style/Debug_Widget_View"
                     app:sb_checked="true"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
@@ -106,6 +70,11 @@
                     app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
 
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -116,15 +85,19 @@
                     android:text="@string/debug_pre_show_ad"/>
 
                 <net.lzbook.kit.ui.widget.SwitchButton
-                    android:id="@+id/btn_debug_pre_show_ad"
+                    android:id="@+id/sbtn_debug_show_ad"
                     style="@style/Debug_Widget_View"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
                     app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
                     app:sb_show_indicator="false"
                     app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
                     app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
-
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -134,16 +107,23 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_reset_book_shelf"/>
 
-                <net.lzbook.kit.ui.widget.SwitchButton
-                    android:id="@+id/btn_debug_reset_book_shelf"
-                    style="@style/Debug_Widget_View"
-                    app:sb_checked_color="@color/debug_switch_bg_checked_color"
-                    app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
-                    app:sb_show_indicator="false"
-                    app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
-                    app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
-
+                <Button
+                    android:id="@+id/btn_debug_reset_shelf"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/dialog_btn_right_selector"
+                    android:text="重置"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"/>
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -153,16 +133,23 @@
                     style="@style/Debug_Widget_Text"
                     android:text="@string/debug_update_chapter"/>
 
-                <net.lzbook.kit.ui.widget.SwitchButton
+                <Button
                     android:id="@+id/btn_debug_update_chapter"
-                    style="@style/Debug_Widget_View"
-                    app:sb_checked_color="@color/debug_switch_bg_checked_color"
-                    app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
-                    app:sb_show_indicator="false"
-                    app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
-                    app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
-
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/dialog_btn_right_selector"
+                    android:text="模拟更新"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"/>
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -173,26 +160,30 @@
                     android:text="@string/debug_show_toast"/>
 
                 <net.lzbook.kit.ui.widget.SwitchButton
-                    android:id="@+id/btn_debug_show_toast"
+                    android:id="@+id/sbtn_debug_show_toast"
                     style="@style/Debug_Widget_View"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
                     app:sb_checkedbtn_color="@color/debug_switch_button_checked_color"
                     app:sb_show_indicator="false"
                     app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
                     app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
-
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="55dp">
 
-                <!--<TextView-->
-                    <!--style="@style/Debug_Widget_Text"-->
-                    <!--android:text="@string/debug_shield_book"/>-->
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:text="@string/debug_shield_book"/>
 
                 <net.lzbook.kit.ui.widget.SwitchButton
-                    android:id="@+id/btn_debug_shield_book"
+                    android:id="@+id/sbtn_debug_shield_book"
                     style="@style/Debug_Widget_View"
                     app:sb_checked="true"
                     app:sb_checked_color="@color/debug_switch_bg_checked_color"
@@ -200,96 +191,240 @@
                     app:sb_show_indicator="false"
                     app:sb_uncheck_color="@color/debug_switch_bg_unchecked_color"
                     app:sb_uncheckedbtn_color="@color/debug_switch_button_unchecked_color"/>
-
             </RelativeLayout>
 
-
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_padding_1"
-                android:layout_margin="@dimen/dimen_margin_20"
+                android:layout_height="1dp"
                 android:background="@color/divider_line"/>
 
             <TextView
-                android:id="@+id/tv_api"
+                android:id="@+id/txt_debug_request_api"
                 style="@style/Debug_Widget_Text"
                 android:layout_height="55dp"
-                android:text="@string/debug_api_host"
-                android:textStyle="bold"/>
-
+                android:text="智能API接口"/>
 
             <TextView
-                android:id="@+id/tv_web"
-                style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_web_host"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tv_micro"
-                style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_micro_host"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tv_micro_content"
-                style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_micro_content_host"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tv_user_tag_host"
+                android:id="@+id/txt_debug_request_api_result"
                 style="@style/Debug_Widget_Text"
                 android:layout_height="55dp"/>
-                <!--android:text="@string/debug_user_tag_host"-->
-
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_padding_1"
-                android:layout_margin="@dimen/dimen_margin_20"
+                android:layout_height="1dp"
                 android:background="@color/divider_line"/>
 
             <TextView
-                android:id="@+id/txt_udid"
-                style="@style/Debug_Widget_Text_Wrap"/>
-
-
-            <Button
-                android:id="@+id/btn_debug_udid_copy"
-                android:layout_width="120dp"
-                android:layout_height="40dp"
-                android:layout_gravity="right"
-                android:layout_margin="20dp"
-                android:background="@color/primary"
-                android:gravity="center"
-                android:text="@string/debug_copy_udid"
-                android:textColor="@color/color_323232"
-                tools:ignore="RtlHardcoded"/>
-
+                android:id="@+id/txt_debug_micro_api"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"
+                android:text="数据流API接口"/>
 
             <TextView
-                android:id="@+id/txt_device"
-                style="@style/Debug_Widget_Text_Wrap"/>
+                android:id="@+id/txt_debug_micro_api_result"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"/>
 
-            <Button
-                android:id="@+id/btn_debug_device_copy"
-                android:layout_width="120dp"
-                android:layout_height="40dp"
-                android:layout_gravity="right"
-                android:layout_margin="20dp"
-                android:background="@color/primary"
-                android:gravity="center"
-                android:text="@string/debug_copy_device"
-                android:textColor="@color/color_323232"
-                tools:ignore="RtlHardcoded"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
 
             <TextView
-                android:id="@+id/txt_cityCode"
-                style="@style/Debug_Widget_Text_Wrap"/>
+                android:id="@+id/txt_debug_content_api"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"
+                android:text="内容API接口"/>
 
+            <TextView
+                android:id="@+id/txt_debug_content_api_result"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
+
+            <TextView
+                android:id="@+id/txt_debug_web_host"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"
+                android:text="老版本Web接口"/>
+
+            <TextView
+                android:id="@+id/txt_debug_web_host_result"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
+
+            <TextView
+                android:id="@+id/txt_debug_user_tag"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"
+                android:text="用户标签API接口"/>
+
+            <TextView
+                android:id="@+id/txt_debug_user_tag_result"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp">
+
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:layout_alignParentLeft="true"
+                    android:text="新版H5环境"/>
+
+                <RadioGroup
+                    android:id="@+id/rgroup_debug_h5_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbtn_debug_h5_debug"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/debug"
+                        android:textSize="15sp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbtn_debug_h5_regress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/regress"
+                        android:textSize="15sp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbtn_debug_h5_official"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/official"
+                        android:textSize="15sp"/>
+                </RadioGroup>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_debug_h5_host_result"
+                style="@style/Debug_Widget_Text"
+                android:layout_height="55dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp">
+
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="城市编码:"/>
+
+                <TextView
+                    android:id="@+id/txt_debug_city_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:textColor="#323232"
+                    android:textSize="14sp"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp">
+
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="UDID:"/>
+
+                <Button
+                    android:id="@+id/btn_debug_udid_copy"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/dialog_btn_right_selector"
+                    android:text="复制"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_debug_user_id"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="#323232"
+                android:textSize="14sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_line"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_debug_device_token"
+                android:layout_width="match_parent"
+                android:layout_height="55dp">
+
+                <TextView
+                    style="@style/Debug_Widget_Text"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:text="DeviceToken:"/>
+
+                <Button
+                    android:id="@+id/btn_debug_device_token_copy"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/dialog_btn_right_selector"
+                    android:text="复制"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_debug_device_token"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="#323232"
+                android:textSize="14sp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

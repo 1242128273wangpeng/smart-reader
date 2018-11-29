@@ -318,7 +318,6 @@ fun loadMicroRequestSign(parameters: Map<String, String>): String {
     }
 
     if (stringBuilder.isNotEmpty()) {
-        Logger.i("String: $stringBuilder")
         try {
             return String(Hex.encodeHex(DigestUtils.md5(stringBuilder.toString())))
         } catch (exception: Exception) {

@@ -5,6 +5,7 @@ import com.ding.basic.net.api.service.MicroService
 import com.ding.basic.net.interceptor.MicroRequestInterceptor
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
+import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
@@ -40,7 +41,7 @@ object MicroAPI {
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    ""
+                    ReplaceConstants.getReplaceConstants().MICRO_API_HOST
                 }
                 field
             }
@@ -63,7 +64,7 @@ object MicroAPI {
             } else {
                 val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PUBLIC_KEY + microHost, "")
 
-                field = if (value.isNotEmpty() == true) {
+                field = if (value.isNotEmpty()) {
                     value
                 } else {
                     ""
@@ -89,7 +90,7 @@ object MicroAPI {
             } else {
                 val value = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_PRIVATE_KEY + microHost)
 
-                field = if (value.isNotEmpty() == true) {
+                field = if (value.isNotEmpty()) {
                     value
                 } else {
                     ""

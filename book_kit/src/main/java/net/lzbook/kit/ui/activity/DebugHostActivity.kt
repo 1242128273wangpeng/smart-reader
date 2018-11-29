@@ -76,10 +76,12 @@ class DebugHostActivity : BaseCacheableActivity() {
                     }
                     SPKey.MICRO_AUTH_HOST -> {
                         MicroAPI.microHost = (et_input_host.text.toString())
+                        MicroAPI.initMicroService()
                         SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, et_input_host.text.toString())
                     }
                     SPKey.CONTENT_AUTH_HOST -> {
                         ContentAPI.contentHost = (et_input_host.text.toString())
+                        ContentAPI.initContentService()
                         SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, et_input_host.text.toString())
                     }
                     SPKey.USER_TAG_HOST -> {
@@ -146,6 +148,4 @@ class DebugHostActivity : BaseCacheableActivity() {
         SPUtils.putOnlineConfigSharedString(SPKey.HOST_LIST, Gson().toJson(spList))
 
     }
-
-
 }

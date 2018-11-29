@@ -223,7 +223,7 @@
     <string name="official">线上</string>
 
     <string name="download_app_nofify_title">缓存已开始</string>
-    <string name="debug_web_state">WebView环境配置</string>
+    <string name="debug_web_state">新版H5环境配置</string>
     <string name="debug_start_params">启用动态参数</string>
     <string name="debug_pre_show_ad">提前显示广告(无需两天后)</string>
     <string name="debug_reset_book_shelf">重置获取默认书架</string>

@@ -127,7 +127,7 @@ class DynamicParameter(private val context: Context) {
     /**
      * 请求动态参数
      */
-    private fun requestContent() {
+    fun requestContent() {
         AppLog.d("startRequestCDNDynamic", "/v3/dynamic/dynamicParameter")
 
         RequestRepositoryFactory.loadRequestRepositoryFactory(
@@ -246,7 +246,7 @@ class DynamicParameter(private val context: Context) {
 
         putDynamicString(SPKey.NEW_APP_AD_SWITCH, if (isShowAd) "true" else map.new_app_ad_switch)
 
-        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.DEBUG_DYNAMICA_STATE, true)) {
 
             SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, map.DY_micro_host)
             SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, map.DY_micro_chapter_host)
@@ -319,9 +319,6 @@ class DynamicParameter(private val context: Context) {
     private fun insertRequestParams() {
         MicroAPI.microHost = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)
         ContentAPI.contentHost = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)
-
-        MicroAPI.microHost = SPUtils.loadSharedString(SPKey.MICRO_AUTH_HOST)
-        ContentAPI.contentHost = SPUtils.loadSharedString(SPKey.CONTENT_AUTH_HOST)
 
         Config.insertRequestAPIHost(SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST))
         Config.insertWebViewHost(SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST))

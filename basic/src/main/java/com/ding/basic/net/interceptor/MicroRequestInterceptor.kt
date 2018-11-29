@@ -261,6 +261,7 @@ class MicroRequestInterceptor : Interceptor {
             builder.addHeader("accessKey", MicroAPI.accessKey)
         } else {
             builder.addHeader("publicKey", MicroAPI.publicKey ?: "")
+            Logger.e("请求携带公钥: ${MicroAPI.publicKey}")
         }
 
         interimRequest = builder.build()

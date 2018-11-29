@@ -2,7 +2,6 @@ package net.lzbook.kit.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.startActivity
 import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -12,8 +11,10 @@ import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.net.api.RequestAPI
+import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.dingyue.statistics.DyStatService
 import com.orhanobut.logger.Logger
 import com.umeng.message.MessageSharedPrefs
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,8 +23,7 @@ import kotlinx.android.synthetic.main.activity_debug.*
 import net.lzbook.kit.R
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.Constants
-import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
-import net.lzbook.kit.ui.widget.SwitchButton
+import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.OpenUDID
 import net.lzbook.kit.utils.book.LoadDataManager
@@ -37,158 +37,133 @@ import net.lzbook.kit.utils.toast.ToastUtil
  * E-mail:yongzuo_chen@dingyuegroup.cn
  */
 @Route(path = RouterConfig.DEBUG_ACTIVITY)
-class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListener, View.OnClickListener {
+class DebugActivity : FrameActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_debug)
-
-        initView()
+        initializeView()
     }
 
     override fun onResume() {
         super.onResume()
 
-        tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "")}】")
-        tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "")}】")
-        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.MICRO_AUTH_HOST, "")}】")
-        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_AUTH_HOST, "")}】")
-//        tv_user_tag_host.text = ("${resources.getString(R.string.debug_user_tag_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, Config.loadUserTagHost())}】")
+        txt_debug_request_api_result.text = SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST)
 
-        btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
-        txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+        txt_debug_micro_api_result.text = SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST, ReplaceConstants.getReplaceConstants().MICRO_API_HOST)
+
+        txt_debug_content_api_result.text = SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST, ReplaceConstants.getReplaceConstants().CONTENT_API_HOST)
+
+        txt_debug_web_host_result.text = SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST)
+
+        txt_debug_user_tag_result.text = SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, Config.loadUserTagHost())
+
+        txt_debug_h5_host_result.text = Config.webViewBaseHost
+
+        txt_debug_city_code.text = ParameterConfig.cityCode
+
+        txt_debug_user_id.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
+
+
         if (AppUtils.hasUPush()) {
-            txt_device.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).deviceToken
+            rl_debug_device_token.visibility = View.VISIBLE
+            txt_debug_device_token.visibility = View.VISIBLE
+            txt_debug_device_token.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).deviceToken
         } else {
-            txt_device.visibility = View.GONE
+            rl_debug_device_token.visibility = View.GONE
+            txt_debug_device_token.visibility = View.GONE
         }
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.iv_back -> finish()
+    private fun initializeView() {
 
-            R.id.tv_api -> {
-                intentHostList(SPKey.NOVEL_HOST)
-            }
-            R.id.tv_web -> {
-                intentHostList(SPKey.WEBVIEW_HOST)
-            }
-            R.id.tv_micro -> {
-                intentHostList(SPKey.MICRO_AUTH_HOST)
-            }
-            R.id.tv_micro_content -> {
-                intentHostList(SPKey.CONTENT_AUTH_HOST)
-            }
-            R.id.tv_user_tag_host -> {
-                intentHostList(SPKey.USER_TAG_HOST)
-            }
-            R.id.btn_debug_device_copy -> {
-                if (!TextUtils.isEmpty(txt_device.text.toString())) {
-                    AppUtils.copyText(txt_device.text.toString(), this)
-                    ToastUtil.showToastMessage(R.string.debug_copy_success)
-                }
-            }
-            R.id.btn_debug_udid_copy -> {
-                if (!TextUtils.isEmpty(txt_udid.text.toString())) {
-                    AppUtils.copyText(txt_udid.text.toString(), this)
-                    ToastUtil.showToastMessage(R.string.debug_copy_success)
-                }
-            }
-
-        }
-    }
-
-    override fun onCheckedChanged(v: SwitchButton, isChecked: Boolean) {
-        when (v.id) {
-            R.id.btn_debug_start_params -> {
-                SPUtils.putOnlineConfigSharedBoolean(SPKey.START_PARAMS, isChecked)
-                startParams()
-            }
-            R.id.btn_debug_pre_show_ad -> {
-                SPUtils.putOnlineConfigSharedBoolean(SPKey.PRE_SHOW_AD, isChecked)
-                SPUtils.putDefaultSharedInt(SPKey.USER_NEW_INDEX, if (isChecked) 2 else 1)
-                preShowAd(isChecked)
-            }
-            R.id.btn_debug_reset_book_shelf -> {
-                resetBookShelf(isChecked)
-            }
-            R.id.btn_debug_update_chapter -> {
-                updateChapter(isChecked)
-            }
-            R.id.btn_debug_show_toast -> {
-//                DyStatService.eventToastOpen = btn_debug_show_toast.isChecked
-            }
-            R.id.btn_debug_shield_book -> {
-//                SPUtils.putOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, isChecked)
-            }
-        }
-
-    }
-
-    private fun initView() {
-
-        //启用动态参数，默认开启
-        rgroup_web_state.setOnCheckedChangeListener { _, checkedId ->
+        rgroup_debug_h5_state.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.rbtn_web_debug -> Config.webDeploy = "bug"
-                R.id.rbtn_web_regress -> Config.webDeploy = "uat"
-                R.id.rbtn_web_official -> Config.webDeploy = "off"
+                R.id.rbtn_debug_h5_debug -> Config.webDeploy = "bug"
+                R.id.rbtn_debug_h5_regress -> Config.webDeploy = "uat"
+                R.id.rbtn_debug_h5_official -> Config.webDeploy = "off"
             }
+
             requestWebViewParameter()
         }
 
-        //启用动态参数
-        btn_debug_start_params.setOnCheckedChangeListener(this)
-        btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
+        sbtn_debug_dynamic_check.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.DEBUG_DYNAMICA_STATE, true)
+        
+        sbtn_debug_show_ad.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.PRE_SHOW_AD, false)
 
+        sbtn_debug_show_toast.isChecked = DyStatService.eventToastOpen
+
+        sbtn_debug_shield_book.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, true)
+
+
+        //启用动态参数
+        sbtn_debug_dynamic_check.setOnCheckedChangeListener { _, isChecked ->
+            SPUtils.putOnlineConfigSharedBoolean(SPKey.DEBUG_DYNAMICA_STATE, isChecked)
+            startParams()
+        }
 
         // 提前显示广告
-        btn_debug_pre_show_ad.setOnCheckedChangeListener(this)
-        btn_debug_pre_show_ad.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.PRE_SHOW_AD, false)
-
+        sbtn_debug_show_ad.setOnCheckedChangeListener { _, isChecked ->
+            SPUtils.putOnlineConfigSharedBoolean(SPKey.PRE_SHOW_AD, isChecked)
+            SPUtils.putDefaultSharedInt(SPKey.USER_NEW_INDEX, if (isChecked) 2 else 1)
+            preShowAd(isChecked)
+        }
 
         // 重新获取默认书架
-        btn_debug_reset_book_shelf.setOnCheckedChangeListener(this)
-
+        btn_debug_reset_shelf.setOnClickListener {
+            resetBookShelf()
+        }
 
         // 更新章节
-        btn_debug_update_chapter.setOnCheckedChangeListener(this)
+        btn_debug_update_chapter.setOnClickListener {
+            updateChapter()
+        }
 
+        sbtn_debug_show_toast.setOnCheckedChangeListener { _, isChecked ->
+            DyStatService.eventToastOpen = isChecked
+        }
 
-        // 打点Toast
-        btn_debug_show_toast.setOnCheckedChangeListener(this)
-        btn_debug_show_toast.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHOW_TOAST_LOG, false)
-//        btn_debug_show_toast.isChecked = DyStatService.eventToastOpen
+        sbtn_debug_shield_book.setOnCheckedChangeListener { _, isChecked ->
+            SPUtils.putOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, isChecked)
+        }
 
+        img_debug_back.setOnClickListener {
+            finish()
+        }
 
-        // 屏蔽书单，默认开启
-        btn_debug_shield_book.setOnCheckedChangeListener(this)
-//        btn_debug_shield_book.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, true)
+        txt_debug_request_api_result.setOnClickListener {
+            intentHostList(SPKey.NOVEL_HOST)
+        }
 
-        txt_cityCode.text = ("CityCode: " + Constants.cityCode.toString())
+        txt_debug_micro_api_result.setOnClickListener {
+            intentHostList(SPKey.MICRO_AUTH_HOST)
+        }
 
-        val backId = AppUtils.getDrawableByName(this, "icon_back_left")
-        if (backId != -1) {
-            try {
-                iv_back.setImageResource(backId)
-            } catch (e: Throwable) {
-                e.printStackTrace()
+        txt_debug_content_api_result.setOnClickListener {
+            intentHostList(SPKey.CONTENT_AUTH_HOST)
+        }
+
+        txt_debug_web_host_result.setOnClickListener {
+            intentHostList(SPKey.WEBVIEW_HOST)
+        }
+
+        txt_debug_user_tag_result.setOnClickListener {
+            intentHostList(SPKey.USER_TAG_HOST)
+        }
+
+        btn_debug_udid_copy.setOnClickListener {
+            if (!TextUtils.isEmpty(txt_debug_user_id.text.toString())) {
+                AppUtils.copyText(txt_debug_user_id.text.toString(), this)
+                ToastUtil.showToastMessage(R.string.debug_copy_success)
             }
         }
 
-
-        iv_back.setOnClickListener(this)
-
-        tv_api.setOnClickListener(this)
-        tv_web.setOnClickListener(this)
-        tv_micro.setOnClickListener(this)
-        tv_micro_content.setOnClickListener(this)
-        tv_user_tag_host.setOnClickListener(this)
-
-        btn_debug_device_copy.setOnClickListener(this)
-        btn_debug_udid_copy.setOnClickListener(this)
-
+        btn_debug_device_token_copy.setOnClickListener {
+            if (!TextUtils.isEmpty(txt_debug_device_token.text.toString())) {
+                AppUtils.copyText(txt_debug_device_token.text.toString(), this)
+                ToastUtil.showToastMessage(R.string.debug_copy_success)
+            }
+        }
     }
 
 
@@ -196,8 +171,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 启用动态参数
      */
     private fun startParams() {
-        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-
+        if (SPUtils.loadPrivateSharedBoolean(SPKey.DEBUG_DYNAMICA_STATE, true)) {
             //还原动态参数
             SPUtils.putOnlineConfigSharedString(SPKey.NOVEL_HOST, SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
             SPUtils.putOnlineConfigSharedString(SPKey.WEBVIEW_HOST, SPUtils.getDefaultSharedString(SPKey.WEBVIEW_PRE_HOST))
@@ -205,7 +179,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.UNION_PRE_HOST))
             SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_PRE_HOST))
 
-//            SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, SPUtils.getDefaultSharedString(SPKey.USER_TAG_PRE_HOST))
+            SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, SPUtils.getDefaultSharedString(SPKey.USER_TAG_PRE_HOST))
 
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
@@ -218,12 +192,10 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             ContentAPI.initContentService()
             RequestAPI.initializeDataRequestService()
 
-        } else { //禁用动态参数
-            // 保留动态参数
+        } else {
             SPUtils.putDefaultSharedString(SPKey.NOVEL_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.WEBVIEW_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, ""))
-//            SPUtils.putDefaultSharedString(SPKey.USER_TAG_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, ""))
-        }
+            SPUtils.putDefaultSharedString(SPKey.USER_TAG_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, ""))
 
             SPUtils.insertPrivateSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST))
             SPUtils.insertPrivateSharedString(SPKey.CONTENT_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST))
@@ -239,83 +211,75 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     }
 
     /**
-     * 重置获取默认书架
-     */
-    private fun resetBookShelf(isChecked: Boolean) {
-//        if (isChecked) {
-//            val loadDataManager = LoadDataManager(this)
-//            // 首次安装新用户添加默认书籍
-//            loadDataManager.addDefaultBooks(ParameterConfig.GENDER_TYPE)
-//        }
-    }
-
-    /**
-     * 更新章节
-     *
-     * 清除目录表的最后一条
-     * 目的是要模拟书籍更新
-     * 删除最后一条的时候还要对应的更新book表
-     */
-    private fun updateChapter(isChecked: Boolean) {
-
-        if (isChecked) {
-
-            val factory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
-
-            val booksList = factory.loadBooks()
-
-            booksList?.forEach {
-                it.update_status = 1
-                if (it.chapter_count > 1) {
-                    it.chapter_count -= 1
-                    if (Constants.QG_SOURCE == it.book_type) {
-                        if (it.chapters_update_index <= 0) {
-                            val lastChapter = factory.queryLastChapter(it.book_id)
-                            if (lastChapter != null) it.chapters_update_index = lastChapter.sequence + 2
-
-                        }
-                        it.chapters_update_index -= 1//青果更新标识
-                    }
-
-                    // 查询并删除最后一条章节
-                    val chapters = factory.queryAllChapters(it.book_id)
-
-                    factory.deleteChapters(it.book_id, chapters.size - 1)
-                }
-
-                //更新书的当前章节数
-                factory.updateBook(it)
-
-            }
-        }
-    }
-
-
-    /**
      * 跳转不同的界面
      */
     private fun intentHostList(type: String) {
-//        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-//            ToastUtil.showToastMessage("请先关闭动态参数")
-//            return
-//        }
-//        val intent = Intent(this, DebugHostActivity::class.java)
-//        intent.putExtra("type", type)
-//        startActivity(intent)
+        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.DEBUG_DYNAMICA_STATE, true)) {
+            ToastUtil.showToastMessage("请先关闭动态参数")
+            return
+        }
+
+        val intent = Intent(this@DebugActivity, DebugHostActivity::class.java)
+        intent.putExtra("type", type)
+        startActivity(intent)
     }
 
 
     private fun requestWebViewParameter() {
-//        insertDisposable(RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({ it ->
-//                    if (it != null && it.checkResultAvailable()) {
-//                        Config.webViewBaseHost = it.data ?: ""
-//                    }
-//                }, {
-//                    Logger.e("Error: " + it.toString())
-//                })
-//        )
-//    }
+        insertDisposable(RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ it ->
+                    if (it != null && it.checkResultAvailable()) {
+                        Config.webViewBaseHost = it.data ?: ""
+                    }
+                }, {
+                    Logger.e("Error: " + it.toString())
+                })
+        )
+    }
+
+
+    /***
+     * 重置书架书籍
+     * **/
+    private fun resetBookShelf() {
+        val loadDataManager = LoadDataManager(this)
+        // 首次安装新用户添加默认书籍
+        loadDataManager.addDefaultBooks(ParameterConfig.GENDER_TYPE)
+    }
+
+    /***
+     * 模拟书籍更新：增量更新
+     * **/
+    private fun updateChapter() {
+
+        val factory = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext())
+
+        val booksList = factory.loadBooks()
+
+        booksList?.forEach {
+            it.update_status = 1
+            if (it.chapter_count > 1) {
+                it.chapter_count -= 1
+                if (Constants.QG_SOURCE == it.book_type) {
+                    if (it.chapters_update_index <= 0) {
+                        val lastChapter = factory.queryLastChapter(it.book_id)
+                        if (lastChapter != null) it.chapters_update_index = lastChapter.sequence + 2
+
+                    }
+                    it.chapters_update_index -= 1//青果更新标识
+                }
+
+                // 查询并删除最后一条章节
+                val chapters = factory.queryAllChapters(it.book_id)
+
+                factory.deleteChapters(it.book_id, chapters.size - 1)
+            }
+
+            //更新书的当前章节数
+            factory.updateBook(it)
+
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.ding.basic.net.api.service.ContentService
 import com.ding.basic.net.interceptor.ContentInterceptor
 import com.ding.basic.net.rx.SchedulerHelper
 import com.ding.basic.util.AESUtil
+import com.ding.basic.util.ReplaceConstants
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
@@ -38,7 +39,7 @@ object ContentAPI {
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    ""
+                    ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
                 }
                 field
             }

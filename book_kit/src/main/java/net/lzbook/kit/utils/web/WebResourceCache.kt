@@ -131,7 +131,7 @@ class WebResourceCache {
 
         cachingResource.remove(url)
 
-        Logger.e("缓存网络请求地址: $url  缓存文件格式:  $cachingResource")
+        Logger.e("缓存网络请求地址: $url")
     }
 
     /***

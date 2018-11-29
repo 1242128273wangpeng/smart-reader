@@ -64,6 +64,15 @@ class SPKey {
 
         const val HOST_LIST = "host_list"//host列表
 
+        const val DEBUG_DYNAMICA_STATE = "debug_dynamic_state"
+        const val DEBUG_SHOW_AD_IMMEDIATELY = "debug_show_ad_immediately"
+        const val DEBUG_SHOW_TOAST = "debug_show_toast"
+
+
+
+
+
+
         /**
          * HOST分类
          */
@@ -78,6 +87,7 @@ class SPKey {
         const val WEBVIEW_PRE_HOST = "httpsWebView_pre_host"
         const val UNION_PRE_HOST = "union_pre_host"
         const val CONTENT_PRE_HOST = "content_pre_host"
+        const val USER_TAG_PRE_HOST = "user_tag_pre_host"
         /**
          * 检查章节数是否为0
          */
@@ -258,7 +268,7 @@ class SPKey {
         const val COVER_SHARE_PROMPT = "cover_share_prompt" // 封面页分享提示
         const val APPLICATION_SHARE_ACTION = "application_share_action"
 
-
+        const val SHIELD_BOOK = "shield_book"//北京上海屏蔽书单
 
 
 

@@ -735,7 +735,7 @@ public abstract class FrameActivity extends AppCompatActivity implements SwipeBa
 
     public void insertDisposable(Disposable disposable) {
         if (compositeDisposable != null) {
-                compositeDisposable.add(disposable);
+            compositeDisposable.add(disposable);
         }
     }
 
