@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
-import android.webkit.WebView
 import com.ding.basic.net.Config
 import com.dingyue.searchbook.SearchBookActivity
 import com.google.gson.Gson
@@ -22,6 +21,7 @@ import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.view.scroll.ScrollWebView
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.webview_scroll_layout.*
+import net.lzbook.kit.receiver.ConnectionChangeReceiver
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
@@ -39,7 +39,12 @@ import net.lzbook.kit.utils.web.JSInterfaceObject
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/10/26 0026 11:14
  */
-class ScrollWebFragment : Fragment(), View.OnClickListener {
+class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeReceiver.RefreshWebViewData {
+
+    override fun onRefreshWebViewData() {
+        customWebClient?.initParameter()
+        web_view_content?.reload()
+    }
 
     var url: String? = null
     var type: String? = null
@@ -71,6 +76,10 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
         AppUtils.disableAccessibility(requireContext())
         initView()
+
+        ConnectionChangeReceiver.bindRefreshWebViewList(this)
+
+        loge("WebView Url: $url")
 
         if (type == "recommend") {
             requestWebViewData(url)
@@ -256,6 +265,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        ConnectionChangeReceiver.unbindRefreshWebViewList(this)
         web_view_content?.clearCache(true) //清空缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fl_content_layout?.removeView(web_view_content)

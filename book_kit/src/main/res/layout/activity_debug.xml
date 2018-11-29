@@ -5,39 +5,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/primary"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:ignore="RtlHardcoded">
 
     <RelativeLayout
         android:id="@+id/top_navigation_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:fitsSystemWindows="true">
+        android:layout_height="48dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp">
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/icon_back_left"
+            android:contentDescription="@string/app_name"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"/>
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/app_name"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical"
-                android:text="@string/debug_mode"
-                android:textColor="#FFFFFF"
-                android:textSize="17sp"/>
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
+            android:text="@string/debug_mode"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"/>
     </RelativeLayout>
 
     <ScrollView
@@ -65,8 +60,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="16dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <RadioButton
                         android:id="@+id/rbtn_web_debug"

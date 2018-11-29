@@ -66,6 +66,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     override fun onClick(v: View) {
         when (v.id) {
             R.id.iv_back -> finish()
+
             R.id.tv_api -> {
                 intentHostList(SPKey.NOVEL_HOST)
             }

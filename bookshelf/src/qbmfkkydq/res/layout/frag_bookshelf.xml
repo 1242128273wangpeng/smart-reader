@@ -45,8 +45,8 @@
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/module_name"
                 android:paddingLeft="16dp"
-                android:paddingBottom="11dp"
                 android:paddingTop="31dp"
+                android:paddingBottom="11dp"
                 android:src="@drawable/bookshelf_icon_personal"
                 app:onPressChangeAlpha="true"/>
 
@@ -57,9 +57,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
-                android:paddingBottom="11dp"
-                android:paddingTop="31dp"
                 android:gravity="center_vertical"
+                android:paddingTop="31dp"
+                android:paddingBottom="11dp"
                 android:text="@string/bookshelf"/>
 
             <ImageView
@@ -69,9 +69,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/module_name"
+                android:paddingTop="31dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="11dp"
-                android:paddingTop="31dp"
                 android:src="@drawable/bookshelf_icon_more"
                 app:onPressChangeAlpha="true"/>
 
@@ -82,9 +82,9 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/img_head_menu"
                 android:contentDescription="@string/module_name"
+                android:paddingTop="31dp"
                 android:paddingRight="26dp"
                 android:paddingBottom="11dp"
-                android:paddingTop="31dp"
                 android:src="@drawable/bookshelf_icon_search"
                 app:onPressChangeAlpha="true"/>
         </RelativeLayout>
@@ -96,6 +96,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="31dp"
             android:visibility="gone">
 
             <TextView
@@ -152,10 +153,10 @@
             android:id="@+id/fl_ad_float"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="30dp"/>
 
         <LinearLayout
             android:id="@+id/ll_empty"
@@ -203,10 +204,10 @@
                 android:layout_marginTop="60dp"
                 android:background="@drawable/bookshelf_tv_bg"
                 android:gravity="center"
-                android:paddingBottom="10dp"
                 android:paddingLeft="38dp"
-                android:paddingRight="38dp"
                 android:paddingTop="10dp"
+                android:paddingRight="38dp"
+                android:paddingBottom="10dp"
                 android:text="@string/bookshelf_empty_find"
                 android:textColor="#fff"
                 android:textSize="15sp"

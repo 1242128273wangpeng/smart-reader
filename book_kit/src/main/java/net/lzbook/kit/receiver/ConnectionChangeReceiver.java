@@ -9,11 +9,15 @@ import android.telephony.TelephonyManager;
 
 import net.lzbook.kit.app.base.BaseBookApplication;
 import net.lzbook.kit.service.CheckNovelUpdateService;
+import net.lzbook.kit.service.DynamicService;
+import net.lzbook.kit.utils.NetWorkUtils;
 import net.lzbook.kit.utils.download.CacheManager;
 import net.lzbook.kit.utils.dynamic.DynamicParameter;
-import net.lzbook.kit.service.DynamicService;
 import net.lzbook.kit.utils.logger.AppLog;
-import net.lzbook.kit.utils.NetWorkUtils;
+
+import java.util.ArrayList;
+
+import kotlin.jvm.JvmStatic;
 
 
 public class ConnectionChangeReceiver extends BroadcastReceiver {
@@ -25,6 +29,21 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
     private static final int WIFI = 5;
     public static int mobileType;
     private static boolean canReload = true;
+
+    /**
+     * 刷新WebView数据
+     */
+    private static ArrayList<RefreshWebViewData> refreshWebViewList = new ArrayList<>();
+
+    @JvmStatic
+    public static void bindRefreshWebViewList(RefreshWebViewData refreshWebViewData) {
+        refreshWebViewList.add(refreshWebViewData);
+    }
+
+    @JvmStatic
+    public static void unbindRefreshWebViewList(RefreshWebViewData refreshWebViewData) {
+        refreshWebViewList.remove(refreshWebViewData);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -64,17 +83,31 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                 }
 
                 //当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
-                if (nType == ConnectivityManager.TYPE_WIFI || nType == ConnectivityManager.TYPE_MOBILE) {
+                if (nType == ConnectivityManager.TYPE_WIFI
+                        || nType == ConnectivityManager.TYPE_MOBILE) {
                     new DynamicParameter(context).requestCheck();
                     DynamicService.startDynaService(BaseBookApplication.getGlobalContext());
+
+                    for (RefreshWebViewData refreshWebViewData : refreshWebViewList) {
+                        refreshWebViewData.onRefreshWebViewData();
+                    }
+
                 }
-            } else {
-                canReload = true;
-                AppLog.e(TAG, "Network unavailable");
-                NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
-                mobileType = G0;
+
             }
+        } else {
+            canReload = true;
+            AppLog.e(TAG, "Network unavailable");
+            NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
+            mobileType = G0;
         }
+    }
+
+    /**
+     * ScrollWebFragment 断网重连刷新数据
+     */
+    public interface RefreshWebViewData {
+        void onRefreshWebViewData();
     }
 
     private int getMobileType(int subType) {

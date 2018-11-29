@@ -2,7 +2,6 @@
 <resources>
 
     <item name="btn_back" type="id"/>
-    <item name="img_back" type="id"/>
     <item name="img_clear" type="id"/>
     <item name="rl_title" type="id"/>
 
