@@ -45,6 +45,8 @@ class WebViewFragment : Fragment(), View.OnClickListener {
     private var customWebClient: CustomWebClient? = null
     private var customChangeListener: CustomWebView.ScrollChangeListener? = null
 
+    private var loadDataState = false
+    private var initializeState = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,18 +66,19 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
         AppUtils.disableAccessibility(requireContext())
 
-        initView()
+        initializeView()
 
-        handler.postDelayed({
-            requestWebViewData(url)
-        }, 1000)
+        initializeState = true
     }
 
-
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
-    private fun initView() {
+    private fun initializeView() {
 
-        web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            web_view_content?.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
+        }
 
         if (NetWorkUtils.isNetworkAvailable(context)) {
             loadingPage = LoadingPage(requireActivity(), rl_web_content)
@@ -227,7 +230,6 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -252,6 +254,16 @@ class WebViewFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    fun checkViewVisibleState() {
+        Logger.e("CheckViewVisibleState $initializeState $loadDataState")
+
+        if (initializeState && !loadDataState) {
+
+            loadDataState = true
+
+            requestWebViewData(url)
+        }
+    }
 
     /**
      * 获取web中banner的位置js回调

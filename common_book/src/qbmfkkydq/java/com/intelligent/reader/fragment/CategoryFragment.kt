@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ding.basic.net.Config
 import com.intelligent.reader.R
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.frag_category_layout.*
 import net.lzbook.kit.constants.ReplaceConstants
 
@@ -26,6 +28,31 @@ import java.io.File
  */
 class CategoryFragment : Fragment() {
 
+    private var visibleState = false
+    private var initializeState = false
+
+    private val fragmentMale: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+
+        val bundle = Bundle()
+        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.category_male))
+
+        fragment.arguments = bundle
+
+        fragment
+    }
+
+    private val fragmentFemale: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+
+        val bundle = Bundle()
+        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.category_female))
+
+        fragment.arguments = bundle
+
+        fragment
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         return inflater.inflate(R.layout.frag_category_layout, container, false)
@@ -33,11 +60,14 @@ class CategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+
+        initializeView()
+
+        initializeState = true
     }
 
 
-    private fun initView() {
+    private fun initializeView() {
         iv_search.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
@@ -45,31 +75,11 @@ class CategoryFragment : Fragment() {
         view_pager.adapter = adapter
         val fragments: ArrayList<Fragment> = ArrayList()
 
-        val webViewHost = Config.webViewBaseHost
-
-        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
-
-        val localFileExist = File(filePath).exists()
-
-        val fragmentMale = WebViewFragment()
-        fragmentMale.arguments = if (localFileExist) {
-            getBundle("file://$filePath${WebViewIndex.category_male}")
-        } else {
-            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.category_male)
-        }
-
-
-        val fragmentFemale = WebViewFragment()
-        fragmentFemale.arguments = if (localFileExist) {
-            getBundle("file://$filePath${WebViewIndex.category_female}")
-        } else {
-            getBundle(Config.webViewBaseHost + "/index.html" + WebViewIndex.category_female)
-        }
-
-
         fragments.add(fragmentMale)
         fragments.add(fragmentFemale)
+
         val titles: ArrayList<String> = ArrayList()
+
         titles.add("男频")
         titles.add("女频")
 
@@ -78,15 +88,56 @@ class CategoryFragment : Fragment() {
 
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
+
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                when(position) {
+                    0 -> fragmentMale.checkViewVisibleState()
+                    1 -> fragmentFemale.checkViewVisibleState()
+                }
+            }
+        })
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        visibleState = isVisibleToUser
 
-    private fun getBundle(url: String): Bundle {
-        val bundle = Bundle()
-        bundle.putString("url", url)
-        return bundle
+        checkViewVisibleState()
     }
 
+    private fun checkViewVisibleState() {
+        if (initializeState && visibleState) {
+            val index = view_pager.currentItem
+            when(index) {
+                0 -> fragmentMale.checkViewVisibleState()
+                1 -> fragmentFemale.checkViewVisibleState()
+            }
+        }
+    }
+
+    private fun loadChildViewBundleUrl(url: String): String {
+        val webViewHost = Config.webViewBaseHost
+        Logger.e("WebView地址: $webViewHost")
+
+        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+
+        val localFileExist = File(filePath).exists()
+
+        return if (localFileExist) {
+            "file://$filePath$url"
+        } else {
+            Config.webViewBaseHost + "/index.html" + url
+        }
+    }
 
     inner class VPAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
         private val mFragments: ArrayList<Fragment> = ArrayList()

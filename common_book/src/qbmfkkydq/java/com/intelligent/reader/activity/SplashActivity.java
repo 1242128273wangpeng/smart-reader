@@ -26,7 +26,6 @@ import com.ding.basic.RequestRepositoryFactory;
 import com.ding.basic.bean.Book;
 import com.ding.basic.bean.BookFix;
 import com.ding.basic.bean.Chapter;
-import com.ding.basic.util.ReplaceConstants;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
 import com.intelligent.reader.R;
@@ -45,9 +44,7 @@ import net.lzbook.kit.utils.router.RouterConfig;
 import net.lzbook.kit.utils.user.UserManager;
 import net.lzbook.kit.utils.web.WebResourceCache;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.schedulers.Schedulers;
@@ -299,11 +296,7 @@ public class SplashActivity extends FrameActivity {
             } else {
                 init_ad = false;
                 //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                if (Constants.new_app_ad_switch) {
-                    Constants.isHideAD = false;
-                } else {
-                    Constants.isHideAD = true;
-                }
+                Constants.isHideAD = !Constants.new_app_ad_switch;
             }
         } else if (user_index == 1) {
             if (SPUtils.INSTANCE.getDefaultSharedBoolean(SPKey.ADD_DEFAULT_BOOKS,
@@ -313,11 +306,7 @@ public class SplashActivity extends FrameActivity {
         } else {
             init_ad = false;
             //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-            if (Constants.new_app_ad_switch) {
-                Constants.isHideAD = false;
-            } else {
-                Constants.isHideAD = true;
-            }
+            Constants.isHideAD = !Constants.new_app_ad_switch;
         }
 
         if (init_ad) {
@@ -336,11 +325,7 @@ public class SplashActivity extends FrameActivity {
             } else {
                 SPUtils.INSTANCE.putDefaultSharedInt(SPKey.USER_NEW_INDEX, 2);
                 //------------新壳没有广告写死为True--------------老壳请直接赋值为false!!!!
-                if (Constants.new_app_ad_switch) {
-                    Constants.isHideAD = false;
-                } else {
-                    Constants.isHideAD = true;
-                }
+                Constants.isHideAD = !Constants.new_app_ad_switch;
             }
         }
     }

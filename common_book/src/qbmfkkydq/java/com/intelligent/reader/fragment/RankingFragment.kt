@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.ding.basic.net.Config
 
 import com.intelligent.reader.R
+import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.frag_ranking_layout.*
 import net.lzbook.kit.constants.ReplaceConstants
 
@@ -25,6 +26,20 @@ import java.io.File
  */
 class RankingFragment : Fragment() {
 
+    private var visibleState = false
+    private var initializeState = false
+
+    private val webViewFragment: WebViewFragment by lazy {
+        val fragment = WebViewFragment()
+
+        val bundle = Bundle()
+        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.rank))
+
+        fragment.arguments = bundle
+
+        fragment
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         return inflater.inflate(R.layout.frag_ranking_layout, container, false)
@@ -32,34 +47,45 @@ class RankingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+
+        initializeView()
+
+        initializeState = true
     }
 
-
-    private fun initView() {
+    private fun initializeView() {
         iv_search.setOnClickListener {
             RouterUtil.navigation(requireActivity(), RouterConfig.SEARCH_BOOK_ACTIVITY)
         }
 
-        val webFragment = WebViewFragment()
-        val bundle = Bundle()
+        childFragmentManager.beginTransaction().replace(R.id.fl_content, webViewFragment).commit()
+    }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        visibleState = isVisibleToUser
+
+        checkViewVisibleState()
+    }
+
+    private fun checkViewVisibleState() {
+        if (initializeState && visibleState) {
+            webViewFragment.checkViewVisibleState()
+        }
+    }
+
+    private fun loadChildViewBundleUrl(url: String): String {
         val webViewHost = Config.webViewBaseHost
+        Logger.e("WebView地址: $webViewHost")
 
         val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
 
         val localFileExist = File(filePath).exists()
 
-        val url = if (localFileExist) {
-            "file://$filePath${WebViewIndex.rank}"
+        return if (localFileExist) {
+            "file://$filePath$url"
         } else {
-            Config.webViewBaseHost + "/index.html" +  WebViewIndex.rank
+            Config.webViewBaseHost + "/index.html" + url
         }
-
-        bundle.putString("url", url)
-        webFragment.arguments = bundle
-
-        childFragmentManager.beginTransaction().replace(R.id.fl_content, webFragment).commit()
-
     }
 }

@@ -14,11 +14,13 @@ import android.view.View
 import android.webkit.*
 import android.webkit.WebSettings.LayoutAlgorithm
 import android.webkit.WebSettings.RenderPriority
+import com.ding.basic.net.Config
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.toast.ToastUtil
+import java.io.File
 
 class CustomWebClient(var context: Context?, internal var webView: WebView?) : WebViewClient() {
 
@@ -50,6 +52,15 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
      * WebView每次加载开始监听
      * **/
     private var loadingEveryWebViewStart: ((url: String?) -> Unit)? = null
+
+    init {
+        this.webView?.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                loadingWebViewFinish()
+            }
+        }
+    }
 
     companion object {
         private val staticResourceRule = SPUtils.getOnlineConfigSharedString(SPKey.DY_STATIC_RESOURCE_RULE)
@@ -99,12 +110,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
         if (webView != null && loadingStartCount == 1) {
             webView?.visibility = View.GONE
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
-            if (webView != null) {
-                webView?.stopLoading()
-                webView?.clearView()
-                webView?.visibility = View.GONE
-            }
-            loadingWebViewError?.invoke()
+            loadingWebViewError()
         }
         if(loadingEveryWebViewStart != null){
             loadingEveryWebViewStart?.invoke(url)
@@ -115,30 +121,16 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
     override fun onPageFinished(view: WebView?, url: String?) {
         loadingFinishCount++
         if (loadingErrorCount == 0 && loadingWebViewFinish != null) {
-            loadingWebViewFinish?.invoke()
-            if (webView != null) {
-                webView?.visibility = View.VISIBLE
-            }
-            if (webSettings != null) {
-                webSettings?.blockNetworkImage = false
-            }
+           loadingWebViewFinish()
         } else if (loadingErrorCount != 0 && loadingWebViewError != null) {
-            if (webView != null) {
-                webView?.clearView()
-                webView?.stopLoading()
-                webView?.visibility = View.GONE
-            }
-            loadingWebViewError?.invoke()
+            loadingWebViewError()
         }
         super.onPageFinished(view, url)
     }
 
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
         loadingErrorCount = errorCode
-        if (webView != null) {
-            webView?.clearView()
-            webView?.stopLoading()
-        }
+        loadingWebViewError()
         super.onReceivedError(view, errorCode, description, failingUrl)
     }
 
@@ -150,6 +142,34 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 //    override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
 //        return interceptWebViewRequest(view, request)
 //    }
+
+    /***
+     * WebView加载进度
+     * **/
+    private fun loadingWebViewFinish() {
+        if (null != webView) {
+            if (webView?.progress ?: 0 > 60) {
+                loadingWebViewFinish?.invoke()
+            }
+
+            webView?.visibility = View.VISIBLE
+        }
+
+        webSettings?.blockNetworkImage = false
+    }
+
+    /***
+     * WebView加载失败
+     * **/
+    private fun loadingWebViewError() {
+        if (webView != null) {
+            webView?.clearView()
+            webView?.stopLoading()
+            webView?.visibility = View.GONE
+        }
+        loadingWebViewError?.invoke()
+    }
+
 
     /***
      * 设置加载WebView开始监听
@@ -216,8 +236,24 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
                 customWebViewCache.handleImageRequest(url, mimeType)
                         ?: super.shouldInterceptRequest(view, request)
             } else if (fileExtension == "js" || fileExtension == "css") {
-                customWebViewCache.handleOtherRequest(url, mimeType)
-                        ?: super.shouldInterceptRequest(view, request)
+                return try {
+                    customWebViewCache.handleOtherRequest(url, mimeType)
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+
+                    if (url.startsWith("file://")) {
+                        webView?.handler?.post {
+                            loadingWebViewError?.invoke()
+
+                            File(url.replace("file://", "")).deleteOnExit()
+
+                            customWebViewCache.checkLocalResourceFile(Config.webViewBaseHost)
+                        }
+                        null
+                    } else {
+                        super.shouldInterceptRequest(view, request)
+                    }
+                }
             } else {
                 super.shouldInterceptRequest(view, request)
             }
@@ -275,6 +311,8 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
         webSettings?.domStorageEnabled = true
 
+        webSettings?.allowFileAccess = true
+
         webSettings?.setAppCacheMaxSize((1024 * 1024 * 15).toLong())
 
         webSettings?.setNeedInitialFocus(false)
@@ -295,7 +333,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
         webSettings?.setRenderPriority(RenderPriority.HIGH)
 
-        webSettings?.blockNetworkImage = true
+        webSettings?.blockNetworkImage = false
 
         webSettings?.useWideViewPort = true
 

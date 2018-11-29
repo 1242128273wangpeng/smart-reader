@@ -241,6 +241,8 @@ abstract class JSInterfaceObject(var activity: Activity) {
             try {
                 val config = Gson().fromJson(data, JSConfig()::class.java)
 
+                Logger.e("RequestWebViewResult: ${config}")
+
                 val url = config.url
                 val method = config.method
                 val microFlag = config.microFlag
@@ -387,6 +389,11 @@ abstract class JSInterfaceObject(var activity: Activity) {
         var method: String? = null
         var microFlag: Boolean = false
         var requestIndex: String? = null
+
+        override fun toString(): String {
+            return "JSConfig(url=$url, body=$body, method=$method, microFlag=$microFlag, requestIndex=$requestIndex)"
+        }
+
     }
 
     interface JsNativeObject {

@@ -77,14 +77,13 @@ class WebResourceCache {
      * 处理其他拦截请求
      * **/
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    @Throws(Exception::class)
     fun handleOtherRequest(url: String, mimeType: String?): WebResourceResponse? {
-        val localFileUrl = url.replace(internetPath, localPath)
-
-        return try {
+        return if (url.startsWith("http")) {
+            val localFileUrl = url.replace(internetPath, localPath)
             WebResourceResponse(mimeType, "UTF-8", URL(localFileUrl).openConnection().getInputStream())
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            null
+        } else {
+            WebResourceResponse(mimeType, "UTF-8", URL(url).openConnection().getInputStream())
         }
     }
 
@@ -160,30 +159,23 @@ class WebResourceCache {
      * **/
     fun checkLocalResourceFile(url: String) {
         doAsync {
-            val filePath = url.replace(internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
+            val resourceList = ArrayList<String>()
+            resourceList.add("$url/index.html")
+            resourceList.add("$url/js/vendor.js")
+            resourceList.add("$url/js/app.js")
+            resourceList.add("$url/css/app.css")
+            resourceList.add("$url/js/manifest.js")
 
-            val file = File(filePath)
+            for (resource in resourceList) {
+                if (!resource.isEmpty()) {
 
-            if (!file.exists()) {
+                    val resourceFilePath = resource.replace(internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE)
 
-                val resourceList = java.util.ArrayList<String>()
-                resourceList.add("$url/index.html")
-                resourceList.add("$url/js/vendor.js")
-                resourceList.add("$url/js/app.js")
-                resourceList.add("$url/css/app.css")
-                resourceList.add("$url/js/manifest.js")
+                    val resourceFile = File(resourceFilePath)
 
-                for (resource in resourceList) {
-                    if (!resource.isEmpty()) {
-
-                        val resourceFilePath = resource.replace(internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE)
-
-                        val resourceFile = File(resourceFilePath)
-
-                        if (!resourceFile.exists()) {
-                            doAsync {
-                                cacheWebViewSource(resource, resourceFilePath)
-                            }
+                    if (!resourceFile.exists()) {
+                        doAsync {
+                            cacheWebViewSource(resource, resourceFilePath)
                         }
                     }
                 }
