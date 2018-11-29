@@ -16,7 +16,7 @@
         android:layout_height="48dp">
 
         <ImageView
-            android:id="@+id/img_back"
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/icon_back_left"
@@ -187,9 +187,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp">
 
-                <TextView
-                    style="@style/Debug_Widget_Text"
-                    android:text="@string/debug_shield_book"/>
+                <!--<TextView-->
+                    <!--style="@style/Debug_Widget_Text"-->
+                    <!--android:text="@string/debug_shield_book"/>-->
 
                 <net.lzbook.kit.ui.widget.SwitchButton
                     android:id="@+id/btn_debug_shield_book"
@@ -242,8 +242,8 @@
             <TextView
                 android:id="@+id/tv_user_tag_host"
                 style="@style/Debug_Widget_Text"
-                android:layout_height="55dp"
-                android:text="@string/debug_user_tag_host"/>
+                android:layout_height="55dp"/>
+                <!--android:text="@string/debug_user_tag_host"-->
 
 
             <View

@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import com.ding.basic.net.Config
-import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R
@@ -22,13 +22,13 @@ import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkkydq.webview_layout.*
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.CustomWebView
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.web.CustomWebClient
-import net.lzbook.kit.utils.web.CustomWebView
 import net.lzbook.kit.utils.web.JSInterfaceObject
 
 /**

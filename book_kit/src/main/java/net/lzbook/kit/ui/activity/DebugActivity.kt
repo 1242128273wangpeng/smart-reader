@@ -2,6 +2,7 @@ package net.lzbook.kit.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.text.TextUtils
 import android.view.View
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -14,7 +15,6 @@ import com.ding.basic.net.api.RequestAPI
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.orhanobut.logger.Logger
-import com.dingyue.statistics.DyStatService
 import com.umeng.message.MessageSharedPrefs
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -51,8 +51,9 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
 
         tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "")}】")
         tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "")}】")
-        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST)}】")
-        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.loadPrivateSharedString(SPKey.CONTENT_AUTH_HOST)}】")
+        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.MICRO_AUTH_HOST, "")}】")
+        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_AUTH_HOST, "")}】")
+//        tv_user_tag_host.text = ("${resources.getString(R.string.debug_user_tag_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, Config.loadUserTagHost())}】")
 
         btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
         txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
@@ -116,10 +117,10 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
                 updateChapter(isChecked)
             }
             R.id.btn_debug_show_toast -> {
-                DyStatService.eventToastOpen = btn_debug_show_toast.isChecked
+//                DyStatService.eventToastOpen = btn_debug_show_toast.isChecked
             }
             R.id.btn_debug_shield_book -> {
-                SPUtils.putOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, isChecked)
+//                SPUtils.putOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, isChecked)
             }
         }
 
@@ -158,12 +159,12 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
         // 打点Toast
         btn_debug_show_toast.setOnCheckedChangeListener(this)
         btn_debug_show_toast.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHOW_TOAST_LOG, false)
-        btn_debug_show_toast.isChecked = DyStatService.eventToastOpen
+//        btn_debug_show_toast.isChecked = DyStatService.eventToastOpen
 
 
         // 屏蔽书单，默认开启
         btn_debug_shield_book.setOnCheckedChangeListener(this)
-        btn_debug_shield_book.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, true)
+//        btn_debug_shield_book.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.SHIELD_BOOK, true)
 
         txt_cityCode.text = ("CityCode: " + Constants.cityCode.toString())
 
@@ -191,25 +192,6 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
     }
 
 
-    override fun onResume() {
-        super.onResume()
-
-        tv_api.text = ("${resources.getString(R.string.debug_api_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, "")}】")
-        tv_web.text = ("${resources.getString(R.string.debug_web_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, "")}】")
-        tv_micro.text = ("${resources.getString(R.string.debug_micro_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.MICRO_AUTH_HOST, "")}】")
-        tv_micro_content.text = ("${resources.getString(R.string.debug_micro_content_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.CONTENT_AUTH_HOST, "")}】")
-        tv_user_tag_host.text = ("${resources.getString(R.string.debug_user_tag_host)}【${SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, Config.loadUserTagHost())}】")
-
-        btn_debug_start_params.isChecked = SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)
-        txt_udid.text = OpenUDID.getOpenUDIDInContext(BaseBookApplication.getGlobalContext())
-        if (AppUtils.hasUPush()) {
-            txt_device.text = MessageSharedPrefs.getInstance(BaseBookApplication.getGlobalContext()).deviceToken
-        } else {
-            txt_device.visibility = View.GONE
-        }
-    }
-
-
     /**
      * 启用动态参数
      */
@@ -223,7 +205,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             SPUtils.insertPrivateSharedString(SPKey.MICRO_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.UNION_PRE_HOST))
             SPUtils.insertPrivateSharedString(SPKey.CONTENT_AUTH_HOST, SPUtils.loadPrivateSharedString(SPKey.CONTENT_PRE_HOST))
 
-            SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, SPUtils.getDefaultSharedString(SPKey.USER_TAG_PRE_HOST))
+//            SPUtils.putOnlineConfigSharedString(SPKey.USER_TAG_HOST, SPUtils.getDefaultSharedString(SPKey.USER_TAG_PRE_HOST))
 
 
             Config.insertRequestAPIHost(SPUtils.getDefaultSharedString(SPKey.NOVEL_PRE_HOST))
@@ -240,7 +222,7 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
             // 保留动态参数
             SPUtils.putDefaultSharedString(SPKey.NOVEL_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.NOVEL_HOST, ""))
             SPUtils.putDefaultSharedString(SPKey.WEBVIEW_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.WEBVIEW_HOST, ""))
-            SPUtils.putDefaultSharedString(SPKey.USER_TAG_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, ""))
+//            SPUtils.putDefaultSharedString(SPKey.USER_TAG_PRE_HOST, SPUtils.getOnlineConfigSharedString(SPKey.USER_TAG_HOST, ""))
         }
 
             SPUtils.insertPrivateSharedString(SPKey.UNION_PRE_HOST, SPUtils.loadPrivateSharedString(SPKey.MICRO_AUTH_HOST))
@@ -260,12 +242,11 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 重置获取默认书架
      */
     private fun resetBookShelf(isChecked: Boolean) {
-        if (isChecked) {
-            val loadDataManager = LoadDataManager(this)
-            // 首次安装新用户添加默认书籍
-            loadDataManager.addDefaultBooks(ParameterConfig.GENDER_TYPE)
-        }
-
+//        if (isChecked) {
+//            val loadDataManager = LoadDataManager(this)
+//            // 首次安装新用户添加默认书籍
+//            loadDataManager.addDefaultBooks(ParameterConfig.GENDER_TYPE)
+//        }
     }
 
     /**
@@ -314,27 +295,27 @@ class DebugActivity : BaseCacheableActivity(), SwitchButton.OnCheckedChangeListe
      * 跳转不同的界面
      */
     private fun intentHostList(type: String) {
-        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
-            ToastUtil.showToastMessage("请先关闭动态参数")
-            return
-        }
-        val intent = Intent(this, DebugHostActivity::class.java)
-        intent.putExtra("type", type)
-        startActivity(intent)
+//        if (SPUtils.getOnlineConfigSharedBoolean(SPKey.START_PARAMS, true)) {
+//            ToastUtil.showToastMessage("请先关闭动态参数")
+//            return
+//        }
+//        val intent = Intent(this, DebugHostActivity::class.java)
+//        intent.putExtra("type", type)
+//        startActivity(intent)
     }
 
 
     private fun requestWebViewParameter() {
-        insertDisposable(RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ it ->
-                    if (it != null && it.checkResultAvailable()) {
-                        Config.webViewBaseHost = it.data ?: ""
-                    }
-                }, {
-                    Logger.e("Error: " + it.toString())
-                })
-        )
-    }
+//        insertDisposable(RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({ it ->
+//                    if (it != null && it.checkResultAvailable()) {
+//                        Config.webViewBaseHost = it.data ?: ""
+//                    }
+//                }, {
+//                    Logger.e("Error: " + it.toString())
+//                })
+//        )
+//    }
 }

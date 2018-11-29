@@ -242,10 +242,21 @@ class SPKey {
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
 
 
-        const val APPLICATION_SHARE_ACTION = "application_share_action"
-        const val COVER_SHARE_PROMPT = "cover_share_prompt"
 
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
+
+        /**
+         * 兴趣页
+         */
+        const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
+        const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
+        /**
+        * 分享功能开关
+        */
+        const val SHARE_SWITCH = "SHARE_SWITCH" //分享开关
+        const val READER_SHARE_PROMPT = "reader_share_prompt" //阅读页分享提示
+        const val COVER_SHARE_PROMPT = "cover_share_prompt" // 封面页分享提示
+        const val APPLICATION_SHARE_ACTION = "application_share_action"
 
 
 

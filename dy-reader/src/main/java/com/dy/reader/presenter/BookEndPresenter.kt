@@ -11,6 +11,7 @@ import com.ding.basic.util.sp.SPUtils
 import com.dy.reader.setting.ReaderStatus
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.utils.ATManager
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.router.RouterConfig
@@ -319,5 +320,13 @@ class BookEndPresenter(var activity: Activity, val contract: BookEndContract) {
             return stringBuilder.toString()
         }
         return ""
+    }
+
+
+    fun uploadLog(book: Book?,type:String){
+        val data = HashMap<String,String>()
+        data.put("bookid",book?.book_id.toString())
+        data.put("chapterid",book?.book_chapter_id.toString())
+        StartLogClickUtil.upLoadEventLog(activity, StartLogClickUtil.READFINISH_PAGE,type,data)
     }
 }

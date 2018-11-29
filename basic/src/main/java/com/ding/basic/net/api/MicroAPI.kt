@@ -255,4 +255,20 @@ object MicroAPI {
     fun requestWebViewConfig(): Observable<BasicResult<String>> {
         return microService.requestWebViewConfig()
     }
+
+    /**
+     * 选择兴趣
+     * @param firstType 一级分类
+     * @param secondType 二级分类
+     */
+    fun requestDefaultBooks(firstType: String, secondType: String): Flowable<BasicResult<CoverList>>? {
+        return microService.requestDefaultBooks(firstType, secondType)
+    }
+
+    /**
+     * 获取兴趣列表
+     */
+    fun getInterestList(): Flowable<BasicResult<List<Interest>>>? {
+        return microService.getInterestList()
+    }
 }

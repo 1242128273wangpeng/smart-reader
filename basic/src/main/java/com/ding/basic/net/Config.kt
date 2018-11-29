@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
+import com.ding.basic.config.ParameterConfig
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
@@ -88,15 +89,11 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
-//        MicroAPI.microHost = "https://uniontest.bookapi.cn"
-//        ContentAPI.contentHost = "https://uniontest.bookapi.cn"
         MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
         ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
 
-//        requestAPIHost = "http://10.80.122.214:8081"
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
         webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
-
 
         cdnHost = ReplaceConstants.getReplaceConstants().CDN_HOST
 
@@ -191,9 +188,5 @@ object Config {
 
     fun loadUserTagHost(): String {
         return userTagHost
-    }
-
-    fun loadAccessKey(): String {
-        return accessKey
     }
 }

@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import com.ding.basic.net.Config
-import com.dingyue.searchbook.SearchBookActivity
+import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.BuildConfig
 import com.intelligent.reader.R

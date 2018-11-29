@@ -5,8 +5,6 @@ import android.widget.ArrayAdapter
 import com.ding.basic.net.Config
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
-import com.ding.basic.net.api.ContentAPI
-import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.google.gson.Gson
