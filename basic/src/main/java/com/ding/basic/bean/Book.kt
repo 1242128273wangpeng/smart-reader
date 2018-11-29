@@ -159,9 +159,19 @@ open class Book : Serializable, Comparable<Book>, Cloneable {
     @ColumnInfo(name = "force_fix")
     var force_fix: Int = 0
 
+    // 是否是可听书籍
+    @ColumnInfo(name = "can_listen")
+    var listen: Int = 0
+
+    //本地导入用于存储文件路劲
+    @ColumnInfo(name = "file_path")
+    var file_path: String? = "null"
+
+
     //区分书籍状态，目前没有本地书籍，暂时标识书籍和广告两种状态
     @Ignore
     var item_type: Int = 0
+
     //广告布局
     @Ignore
     @Transient

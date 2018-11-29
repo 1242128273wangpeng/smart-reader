@@ -56,4 +56,8 @@ class HistoryInfo: Serializable {
     @FieldMigration(oldName = "last_brow_time")
     @ColumnInfo(name = "browse_time")
     var browse_time: Long = 0
+
+    var last_chapter_name: String? = null
+
+    var last_chapter_update_time: Long? = null
 }

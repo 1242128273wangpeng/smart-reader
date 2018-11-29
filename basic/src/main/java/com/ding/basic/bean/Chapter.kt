@@ -68,6 +68,14 @@ open class Chapter : Serializable {
     @ColumnInfo(name = "defaultCode")
     var defaultCode: Int = 0
 
+    //本地导入 记录文件分章的开始位置
+    @ColumnInfo(name = "start_position")
+    var startPosition: Int = 0
+
+    //本地导入 记录文件分章的结束位置
+    @ColumnInfo(name = "end_position")
+    var endPosition: Int = 0
+
     /************************************ 大壳字段 ************************************/
 
     //是否收费章节 0为免费 1为付费
