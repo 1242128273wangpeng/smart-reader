@@ -102,6 +102,9 @@ open class Chapter : Serializable {
     @ColumnInfo(name = "fix_state")
     var fix_state: Int = 0
 
+    // 当前章节评论数量
+    @ColumnInfo(name = "comment_count")
+    var commentCount: Int = 0
 
     constructor()
 
