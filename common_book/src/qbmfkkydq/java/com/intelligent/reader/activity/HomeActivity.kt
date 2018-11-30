@@ -20,7 +20,6 @@ import android.view.ViewGroup
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.ding.basic.net.Config
-import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
@@ -38,16 +37,13 @@ import net.lzbook.kit.service.CheckNovelUpdateService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.utils.ApkUpdateUtils
-import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.encrypt.MD5Utils
 import net.lzbook.kit.utils.logger.HomeLogger
 import net.lzbook.kit.utils.logger.PersonalLogger
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
-import net.lzbook.kit.utils.webview.UrlUtils
 import net.lzbook.kit.view.HomeView
 import java.io.File
-import java.util.*
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(), CheckNovelUpdateService.OnBookUpdateListener, BookShelfInterface, HomeView {
