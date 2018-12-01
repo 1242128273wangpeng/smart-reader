@@ -55,12 +55,10 @@ object Config {
      * **/
     private var requestParameters: HashMap<String, String> = HashMap()
 
-    const val webViewData = "{\"url\":\"/api/cn.qbmfkkydq.reader/recommend/list\",\"method\":\"get\",\"data\":\"{}\",\"requestIndex\":\"zn2\",\"microFlag\":false}"
-
     var webDeploy = ""
 
     @JvmStatic
-    var webViewTimeTemp = "201811282000"
+    var webViewTimeTemp = "201812011102"
 
     @JvmStatic
     var webViewBaseHost = ""
@@ -72,7 +70,7 @@ object Config {
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201811282000"
+                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201812011102"
                 }
 
                 webViewTimeTemp = field.substring(field.lastIndexOf("/") + 1, field.length)
