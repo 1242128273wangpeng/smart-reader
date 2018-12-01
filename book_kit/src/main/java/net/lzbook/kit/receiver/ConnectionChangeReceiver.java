@@ -90,6 +90,7 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
 
                     for (RefreshWebViewData refreshWebViewData : refreshWebViewList) {
                         refreshWebViewData.onRefreshWebViewData();
+                        AppLog.e("JoannChen:refreshWebViewData");
                     }
 
                 }
