@@ -25,6 +25,7 @@ import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.IS_FROM_PUSH
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.runOnMain
@@ -350,9 +351,7 @@ class TabulationActivity : FrameActivity() {
      * 处理WebView请求
      * **/
     private fun handleLoadingWebViewData(url: String?) {
-        if (customWebClient != null) {
-            customWebClient?.initParameter()
-        }
+        customWebClient?.initParameter()
 
         if (url != null && url.isNotEmpty()) {
             try {
@@ -369,35 +368,29 @@ class TabulationActivity : FrameActivity() {
             return
         }
 
-        if (customWebClient != null) {
-            customWebClient?.setLoadingWebViewStart {
-                Logger.e("WebView页面开始加载 $it")
-            }
+        customWebClient?.setLoadingWebViewStart {
+            Logger.e("WebView页面开始加载 $it")
+        }
 
-            customWebClient?.setLoadingWebViewFinish {
-                Logger.e("WebView页面加载结束！")
-                if (loadingPage != null) {
-                    loadingPage?.onSuccessGone()
-                }
+        customWebClient?.setLoadingWebViewFinish {
+            Logger.e("WebView页面加载结束！")
+            if (NetWorkUtils.isNetworkAvailable(this)) {
+                loadingPage?.onSuccessGone()
                 requestWebViewPager(rank_content)
-            }
-
-            customWebClient?.setLoadingWebViewError {
-                Logger.e("WebView页面加载异常！")
-                if (loadingPage != null) {
-                    loadingPage?.onErrorVisable()
-                }
+            } else {
+                loadingPage?.onErrorVisable()
             }
         }
 
-        if (loadingPage != null) {
-            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebClient != null) {
-                    customWebClient?.initParameter()
-                }
-                rank_content?.reload()
-            })
+        customWebClient?.setLoadingWebViewError {
+            Logger.e("WebView页面加载异常！")
+            loadingPage?.onErrorVisable()
         }
+
+        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+            customWebClient?.initParameter()
+            rank_content?.reload()
+        })
     }
 
     /***
