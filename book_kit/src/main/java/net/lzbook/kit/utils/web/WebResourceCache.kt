@@ -6,6 +6,7 @@ import android.support.annotation.RequiresApi
 import android.webkit.WebResourceResponse
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
+import com.ding.basic.net.Config
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.constants.ReplaceConstants
@@ -160,11 +161,11 @@ class WebResourceCache {
     fun checkLocalResourceFile(url: String) {
         doAsync {
             val resourceList = ArrayList<String>()
-            resourceList.add("$url/index.html")
             resourceList.add("$url/js/vendor.js")
             resourceList.add("$url/js/app.js")
             resourceList.add("$url/css/app.css")
             resourceList.add("$url/js/manifest.js")
+            resourceList.add("$url/index.html")
 
             for (resource in resourceList) {
                 if (!resource.isEmpty()) {
@@ -174,6 +175,8 @@ class WebResourceCache {
                     val resourceFile = File(resourceFilePath)
 
                     if (!resourceFile.exists()) {
+                        Config.webCacheAvailable = false
+
                         doAsync {
                             cacheWebViewSource(resource, resourceFilePath)
                         }

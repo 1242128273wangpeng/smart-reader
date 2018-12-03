@@ -76,13 +76,12 @@ class RankingFragment : Fragment() {
 
     private fun loadChildViewBundleUrl(url: String): String {
         val webViewHost = Config.webViewBaseHost
-        Logger.e("WebView地址: $webViewHost")
 
         val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
 
-        val localFileExist = File(filePath).exists()
+        Logger.e("WebView地址: $webViewHost ${Config.webCacheAvailable}")
 
-        return if (localFileExist) {
+        return if (Config.webCacheAvailable) {
             "file://$filePath$url"
         } else {
             Config.webViewBaseHost + "/index.html" + url

@@ -58,7 +58,7 @@ object Config {
     var webDeploy = ""
 
     @JvmStatic
-    var webViewTimeTemp = "201812011102"
+    var webCacheAvailable = true
 
     @JvmStatic
     var webViewBaseHost = ""
@@ -72,9 +72,6 @@ object Config {
                 } else {
                     "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201812011102"
                 }
-
-                webViewTimeTemp = field.substring(field.lastIndexOf("/") + 1, field.length)
-
                 field
             }
         }

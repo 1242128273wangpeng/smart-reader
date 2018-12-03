@@ -258,7 +258,7 @@ public class SplashActivity extends FrameActivity {
     private boolean isGo = true;
 
     private void initSplashAd() {
-        handler.sendEmptyMessageDelayed(0, 2000);
+        handler.sendEmptyMessageDelayed(0, 1000);
     }
 
     //初始化广告开关
@@ -417,7 +417,6 @@ public class SplashActivity extends FrameActivity {
                         Constants.UPDATE_CHAPTER_SOURCE_ID, true).apply();
             }
 
-            requestWebViewConfig();
 
             //请求广告
             initAdSwitch();
@@ -458,6 +457,8 @@ public class SplashActivity extends FrameActivity {
 
             //开启缓存服务
             CacheManager.INSTANCE.checkService();
+
+            requestWebViewConfig();
 
             return null;
         }
