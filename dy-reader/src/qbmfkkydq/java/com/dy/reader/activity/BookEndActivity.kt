@@ -25,6 +25,7 @@ import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
@@ -86,7 +87,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         initIntent()
 
         loadBookSource()
-        bookEndPresenter?.uploadLog(book,StartLogClickUtil.ENTER)
+        bookEndPresenter.uploadLog(book,StartLogClickUtil.ENTER)
         if (!Constants.isHideAD) {
             initBookEndAD()
         }
@@ -97,11 +98,11 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         recl_recommend_book.adapter = bookEndAdapter
         recl_recommend_book.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
-                val spaceLR = AppUtils.dip2px(view!!.context, 15f)
-                val spaceTB = AppUtils.dip2px(view!!.context, 16f)
-                outRect!!.top = spaceTB
-                outRect!!.left = spaceLR
-                outRect.right = spaceLR
+                val spaceLR = AppUtils.dip2px(view?.context, 15f)
+                val spaceTB = AppUtils.dip2px(view?.context, 16f)
+                outRect?.top = spaceTB
+                outRect?.left = spaceLR
+                outRect?.right = spaceLR
 
             }
         })
@@ -115,17 +116,19 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
             finish()
         }
 
-//        txt_prompt.text = Html.fromHtml(resources.getString(R.string.book_end_prompt))
-
         txt_change_source.setOnClickListener {
+            if(!NetWorkUtils.isNetworkAvailable(this)){
+                ToastUtil.showToastMessage("当前无网络")
+                return@setOnClickListener
+            }
             if (sourceList.isEmpty()) {
                 ToastUtil.showToastMessage("本书暂无其他来源")
             } else {
                 changeSourceDialog.show(sourceList)
             }
             val map = HashMap<String, String>()
-            bookId?.let { map.put("bookid", it) }
-            bookChapterId?.let { map.put("chapterid", it) }
+            bookId?.apply { map["bookid"] = this }
+            bookChapterId?.apply { map["chapterid"] = this }
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.READFINISH, StartLogClickUtil.SOURCECHANGE, map)
 
         }
@@ -135,18 +138,13 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         tv_more_refresh.setOnClickListener {
             refreshRecommendBooks()
         }
-//        /**
-//         * 新锐好书抢先看（换一换）
-//         */
-//        tv_new_refresh.setOnClickListener {
-//            refreshNewBooks()
-//        }
+
         /**
          * 我的书架
          */
         txt_bookshelf.setOnClickListener {
             bookEndPresenter.startBookShelf()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOSHELF)
+            bookEndPresenter.uploadLog(book,StartLogClickUtil.TOSHELF)
             finish()
         }
         /**
@@ -154,7 +152,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
          */
         txt_bookstore.setOnClickListener {
             bookEndPresenter.startBookStore()
-            bookEndPresenter?.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
+            bookEndPresenter.uploadLog(book,StartLogClickUtil.TOBOOKSTORE)
             finish()
         }
 
@@ -185,7 +183,7 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
         book?.let {
             bookEndPresenter.requestBookSource(it)
             bookEndPresenter.requestRecommend(it.book_id)
-            loadingPage?.setReloadAction(Callable<Void> {
+            loadingPage.setReloadAction(Callable<Void> {
                 bookEndPresenter.requestBookSource(it)
                 bookEndPresenter.requestRecommend(it.book_id)
                 null
@@ -215,18 +213,9 @@ class BookEndActivity : BaseCacheableActivity(), BookEndContract {
     private fun refreshRecommendBooks() {
         bookEndPresenter.changeRecommendBooks()
         val refresh = HashMap<String, String>()
-        refresh.put("module", "1")
+        refresh["module"] = "1"
         StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE,
                 StartLogClickUtil.REPLACE, refresh)
-    }
-
-    private fun refreshNewBooks() {
-        bookEndPresenter.changeRecommendBooks()
-
-        val data = HashMap<String, String>()
-        data.put("module", "2")
-        StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKENDPAGE_PAGE,
-                StartLogClickUtil.REPLACE, data)
     }
 
     override fun onResume() {
