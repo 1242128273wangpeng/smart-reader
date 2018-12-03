@@ -1,4 +1,4 @@
-package com.intelligent.reader.widget.topshadow
+package net.lzbook.kit.ui.widget.topshadow
 
 import android.content.Context
 import android.os.Build

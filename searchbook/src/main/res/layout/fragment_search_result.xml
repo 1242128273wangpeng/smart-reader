@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.intelligent.reader.widget.topshadow.TopShadowWebView
+    <net.lzbook.kit.ui.widget.topshadow.TopShadowWebView
         android:id="@+id/search_result_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
