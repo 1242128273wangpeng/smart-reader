@@ -36,11 +36,11 @@ object ToastUtil {
             }else{
                 if (mToast == null) {
                     mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), id, Toast.LENGTH_SHORT)
-                    mToast!!.show()
+                    mToast?.show()
                 } else {
-                    mToast!!.setText(id)
-                    mToast!!.setDuration(Toast.LENGTH_SHORT)
-                    mToast!!.show()
+                    mToast?.setText(id)
+                    mToast?.duration = Toast.LENGTH_SHORT
+                    mToast?.show()
                 }
             }
 
@@ -58,11 +58,11 @@ object ToastUtil {
             }else {
                 if (mToast == null) {
                     mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), message, Toast.LENGTH_SHORT)
-                    mToast!!.show()
+                    mToast?.show()
                 } else {
-                    mToast!!.setText(message)
-                    mToast!!.setDuration(Toast.LENGTH_SHORT)
-                    mToast!!.show()
+                    mToast?.setText(message)
+                    mToast?.duration = Toast.LENGTH_SHORT
+                    mToast?.show()
                 }
             }
         }
