@@ -27,7 +27,7 @@ class WebResourceCache {
     companion object {
 
         //TODO 各壳存储位置不一致，需要上线修改
-        const val embeddedFile = "qbmfkkydq/201812011102.zip"
+        const val embeddedFile = "qbmfkkydq/201812031726.zip"
 
         const val internetPath = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/"
 

@@ -70,7 +70,7 @@ object Config {
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201812011102"
+                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201812031726"
                 }
                 field
             }
@@ -84,6 +84,12 @@ object Config {
     fun beginInit(context: Context) {
         Config.context = context
 
+//        MicroAPI.microHost = "https://uniontest.bookapi.cn"
+//        ContentAPI.contentHost = "https://uniontest.bookapi.cn"
+//        MicroAPI.microHost = ReplaceConstants.getReplaceConstants().MICRO_API_HOST
+//        ContentAPI.contentHost = ReplaceConstants.getReplaceConstants().CONTENT_API_HOST
+
+//        requestAPIHost = "http://10.80.122.214:8081"
         requestAPIHost = ReplaceConstants.getReplaceConstants().BOOK_NOVEL_DEPLOY_HOST
         webViewHost = ReplaceConstants.getReplaceConstants().BOOK_WEBVIEW_HOST
 
