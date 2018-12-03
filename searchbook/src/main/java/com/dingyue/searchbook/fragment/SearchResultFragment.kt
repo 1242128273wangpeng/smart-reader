@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.pointpage.EventPoint
 import net.lzbook.kit.ui.widget.LoadingPage
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.BDCrawler
 import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.router.RouterConfig
@@ -74,8 +75,12 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun hideLoading() {
-        loadingPage?.onSuccess()
-        loadingPage = null
+        if (NetWorkUtils.isNetworkAvailable(requireContext())) {
+            loadingPage?.onSuccessGone()
+            loadingPage = null
+        } else {
+            loadingPage?.onErrorVisable()
+        }
     }
 
     /**
@@ -262,7 +267,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
         runOnMain {
             loadingPage?.postDelayed({
                 hideLoading()
-            },300)
+            }, 300)
         }
     }
 
