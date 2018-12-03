@@ -16,6 +16,7 @@ import com.dy.reader.setting.ReaderStatus
 import kotlinx.android.synthetic.qbmfkkydq.reader_option_header.view.*
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.app.base.BaseBookApplication
+import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.StatServiceUtils
 import net.lzbook.kit.utils.download.CacheManager
 import net.lzbook.kit.utils.download.DownloadState
@@ -90,7 +91,7 @@ class ReaderSettingHeader : FrameLayout {
 
             val readerHeaderMorePopup = ReaderHeaderMorePopup(context)
 
-            val isMarkPage = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group,ReaderStatus.position.offset)
+            val isMarkPage = RequestRepositoryFactory.loadRequestRepositoryFactory(BaseBookApplication.getGlobalContext()).isBookMarkExist(ReaderStatus.book.book_id, ReaderStatus.position.group, ReaderStatus.position.offset)
 
             if (isMarkPage) {
                 readerHeaderMorePopup.insertBookmarkContent("删除书签")
@@ -99,11 +100,15 @@ class ReaderSettingHeader : FrameLayout {
             }
 
             readerHeaderMorePopup.changeSourceListener = {
-                StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
-                presenter?.changeSource()
-                readerHeaderMorePopup.dismiss()
+                if (!NetWorkUtils.isNetworkAvailable(context)) {
+                    ToastUtil.showToastMessage("当前无网络")
+                } else {
+                    StatServiceUtils.statAppBtnClick(context, StatServiceUtils.rb_click_change_source_btn)
+                    presenter?.changeSource()
+                    readerHeaderMorePopup.dismiss()
 
-                EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
+                    EventBus.getDefault().post(EventSetting(EventSetting.Type.MENU_STATE_CHANGE, false))
+                }
             }
 
             readerHeaderMorePopup.handleBookmarkListener = {
