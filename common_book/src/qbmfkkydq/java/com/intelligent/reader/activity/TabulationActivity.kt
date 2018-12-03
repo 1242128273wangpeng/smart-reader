@@ -35,7 +35,7 @@ import net.lzbook.kit.utils.web.JSInterfaceObject
 import java.util.*
 
 /**
- * Desc：WebView二级页面
+ * Desc：WebView二级页面,标题栏写在h5页面中
  * Author：JoannChen
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/10/26 0026 10:29
@@ -58,7 +58,6 @@ class TabulationActivity : FrameActivity() {
     private var supportSlide = true
 
     private var urls = ArrayList<String?>()
-    private var titles = ArrayList<String?>()
 
     private var url: String? = null
     private var title: String? = null
@@ -87,7 +86,6 @@ class TabulationActivity : FrameActivity() {
             urls.add(this.url)
 
             this.title = intent.getStringExtra("title")
-            this.titles.add(this.title)
 
             fromType = intent.getStringExtra("from")
 
@@ -102,7 +100,7 @@ class TabulationActivity : FrameActivity() {
         initParameter()
 
         if (url != null && url?.isNotEmpty() == true) {
-            requestWebViewData(url, title)
+            requestWebViewData(url)
         }
     }
 
@@ -116,9 +114,8 @@ class TabulationActivity : FrameActivity() {
             val index = urls.size - 1 - backClickCount
 
             this.url = urls[index]
-            this.title = titles[index]
 
-            requestWebViewData(this.url, this.title)
+            requestWebViewData(this.url)
         }
     }
 
@@ -142,7 +139,7 @@ class TabulationActivity : FrameActivity() {
         find_book_detail_main?.setLayerType(View.LAYER_TYPE_NONE, null)
 
 
-        loadingPage = LoadingPage(this, find_book_detail_main, LoadingPage.setting_result)
+        loadingPage = LoadingPage(this, rank_content, LoadingPage.setting_result)
 
         if (rank_content != null) {
             customWebClient = CustomWebClient(this, rank_content)
@@ -201,9 +198,8 @@ class TabulationActivity : FrameActivity() {
                     val index = urls.size - 1 - backClickCount
 
                     url = urls[index]
-                    title = titles[index]
 
-                    requestWebViewData(url, title)
+                    requestWebViewData(url)
                 }
             }
 
@@ -235,10 +231,9 @@ class TabulationActivity : FrameActivity() {
         this.title = title
 
         urls.add(this.url)
-        titles.add(title)
 
         runOnMain {
-            requestWebViewData(this.url, this.title)
+            requestWebViewData(this.url)
         }
     }
 
@@ -331,7 +326,7 @@ class TabulationActivity : FrameActivity() {
         }
     }
 
-    private fun requestWebViewData(url: String?, name: String?) {
+    private fun requestWebViewData(url: String?) {
         startLoadingWebViewData(url)
 
         initWebViewCallback()
