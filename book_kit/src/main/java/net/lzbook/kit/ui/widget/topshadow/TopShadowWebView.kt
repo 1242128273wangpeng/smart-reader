@@ -1,6 +1,7 @@
 package com.intelligent.reader.widget.topshadow
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.webkit.WebView
@@ -21,6 +22,10 @@ class TopShadowWebView @JvmOverloads constructor(context: Context, attrs: Attrib
     init {
         val density = resources.displayMetrics.density//屏幕密度
         distance = (distance * density + 0.5f).toInt()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setWebContentsDebuggingEnabled(true)
+        }
     }
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {

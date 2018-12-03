@@ -2,6 +2,7 @@ package com.intelligent.reader.view.scroll
 
 import android.content.Context
 import android.graphics.RectF
+import android.os.Build
 import android.support.v4.view.MotionEventCompat
 import android.support.v4.view.NestedScrollingChild
 import android.support.v4.view.NestedScrollingChildHelper
@@ -20,6 +21,10 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
 
     init {
         init()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setWebContentsDebuggingEnabled(true)
+        }
     }
 
 
