@@ -45,6 +45,8 @@ class WebViewFragment : Fragment(), View.OnClickListener {
     private var customWebClient: CustomWebClient? = null
     private var customChangeListener: CustomWebView.ScrollChangeListener? = null
 
+    private var jSInterfaceObject: JSInterfaceObject? = null
+
     private var loadDataState = false
     private var initializeState = false
 
@@ -80,9 +82,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
         }
 
-        if (NetWorkUtils.isNetworkAvailable(context)) {
-            loadingPage = LoadingPage(requireActivity(), rl_web_content)
-        }
+        loadingPage = LoadingPage(requireActivity(), rl_web_content)
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
 
@@ -99,7 +99,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             web_view_content.insertScrollChangeListener(customChangeListener)
         }
 
-        web_view_content?.addJavascriptInterface(object : JSInterfaceObject(requireActivity()) {
+        jSInterfaceObject = object : JSInterfaceObject(requireActivity()) {
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
                 val intent = Intent()
@@ -162,7 +162,9 @@ class WebViewFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-        }, "J_search")
+        }
+
+        web_view_content?.addJavascriptInterface(jSInterfaceObject, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
     }
@@ -209,7 +211,13 @@ class WebViewFragment : Fragment(), View.OnClickListener {
             }
 
             customWebClient?.setLoadingWebViewFinish {
-                loadingPage?.onSuccessGone()
+                //无网无缓存（error）
+                val isOfflineNotStorage = jSInterfaceObject?.isOfflineNotStorage() ?: false
+                if (!NetWorkUtils.isNetworkAvailable(requireContext()) && isOfflineNotStorage) {
+                    loadingPage?.onErrorVisable()
+                } else {
+                    loadingPage?.onSuccessGone()
+                }
             }
         }
 

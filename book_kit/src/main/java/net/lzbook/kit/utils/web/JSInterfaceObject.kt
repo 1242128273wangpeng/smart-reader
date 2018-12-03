@@ -288,6 +288,21 @@ abstract class JSInterfaceObject(var activity: Activity) {
         }
     }
 
+
+    /**
+     * 判断首次启动离线缓存是否加载数据
+     */
+    private var isOfflineNotStorage = false
+
+    @JavascriptInterface
+    fun offlineNotStorage(isOffline: Boolean) {
+        isOfflineNotStorage = isOffline
+    }
+
+    fun isOfflineNotStorage(): Boolean {
+        return isOfflineNotStorage
+    }
+
     /**
      * H5调用,搜索无结果回调
      */

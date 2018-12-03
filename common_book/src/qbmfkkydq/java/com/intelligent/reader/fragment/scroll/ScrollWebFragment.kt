@@ -91,17 +91,16 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
         }
     }
 
-    var time = 0L
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
     private fun initView() {
 
-        web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
-
-        if (NetWorkUtils.isNetworkAvailable(context)) {
-            time = System.currentTimeMillis()
-            loge("JoannChen---------------")
-//            loadingPage = LoadingPage(requireActivity(), fl_content_layout)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            web_view_content?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        } else {
+            web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
         }
+
+        loadingPage = LoadingPage(requireActivity(), fl_content_layout)
 
         customWebClient = CustomWebClient(requireContext(), web_view_content)
 
@@ -168,8 +167,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
 
             override fun hideWebViewLoading() {
                 runOnMain {
-                    //                    loadingPage?.onSuccessGone()
-                    loge("JoannChen结束: ${System.currentTimeMillis() - time}")
+                    loadingPage?.onSuccessGone()
                 }
             }
 
@@ -232,22 +230,28 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
             }
 
             customWebClient?.setLoadingWebViewError {
-                //                loadingPage?.onErrorVisable()
+                loadingPage?.onErrorVisable()
             }
 
             customWebClient?.setLoadingWebViewFinish {
-                //                loadingPage?.onSuccessGone()
-                loge("JoannChen回调: ${System.currentTimeMillis() - time}")
+
+                //有网有缓存（html）
+                //有网无缓存（不存在）
+                //无网有缓存（html）
+                //无网无缓存（error）
+                val isOfflineNotStorage = jSInterfaceObject?.isOfflineNotStorage() ?: false
+                if (!NetWorkUtils.isNetworkAvailable(requireContext()) && isOfflineNotStorage) {
+                    loadingPage?.onErrorVisable()
+                } else {
+                    loadingPage?.onSuccessGone()
+                }
             }
         }
 
-
-//        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-//            customWebClient?.initParameter()
-//            web_view_content?.reload()
-//        })
-
-
+        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+            customWebClient?.initParameter()
+            web_view_content?.reload()
+        })
     }
 
     override fun onClick(v: View) {
