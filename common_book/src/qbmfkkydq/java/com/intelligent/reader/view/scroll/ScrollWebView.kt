@@ -22,9 +22,9 @@ class ScrollWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
     init {
         init()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setWebContentsDebuggingEnabled(true)
-        }
+        }*/
     }
 
 

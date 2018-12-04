@@ -23,9 +23,9 @@ class TopShadowWebView @JvmOverloads constructor(context: Context, attrs: Attrib
         val density = resources.displayMetrics.density//屏幕密度
         distance = (distance * density + 0.5f).toInt()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setWebContentsDebuggingEnabled(true)
-        }
+        }*/
     }
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {

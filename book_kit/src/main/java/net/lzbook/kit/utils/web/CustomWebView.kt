@@ -20,11 +20,11 @@ class CustomWebView @kotlin.jvm.JvmOverloads constructor(context: Context, attrs
 
     private var scrollChangeListener: ScrollChangeListener? = null
 
-    init {
+    /*init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setWebContentsDebuggingEnabled(true)
         }
-    }
+    }*/
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
         super.onScrollChanged(l, t, oldl, oldt)
