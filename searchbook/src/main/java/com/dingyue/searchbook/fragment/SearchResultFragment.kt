@@ -21,6 +21,7 @@ import com.dingyue.statistics.DyStatService
 import kotlinx.android.synthetic.main.fragment_search_result.*
 import net.lzbook.kit.bean.CrawlerResult
 import net.lzbook.kit.pointpage.EventPoint
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.BDCrawler
@@ -75,7 +76,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     }
 
     override fun hideLoading() {
-        if (NetWorkUtils.isNetworkAvailable(requireContext())) {
+        if (NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext())) {
             loadingPage?.onSuccessGone()
             loadingPage = null
         } else {
