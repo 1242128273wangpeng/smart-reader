@@ -406,16 +406,6 @@ class TabulationActivity : FrameActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (rank_content != null) {
-            rank_content?.post {
-                try {
-                    rank_content?.loadUrl("javascript:refreshNew()")
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                    finish()
-                }
-            }
-        }
         StatService.onResume(this)
     }
 
