@@ -25,7 +25,6 @@ import net.lzbook.kit.receiver.ConnectionChangeReceiver
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.NetWorkUtils
-import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -57,9 +56,13 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
 
     private var jSInterfaceObject: JSInterfaceObject? = null
 
+    private var loadDataState = false
+    private var initializeState = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bundle = this.arguments
+
         if (bundle != null) {
             this.url = bundle.getString("url")
             this.type = bundle.getString("type")
@@ -70,29 +73,18 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
         return inflater.inflate(R.layout.webview_scroll_layout, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         AppUtils.disableAccessibility(requireContext())
-        initView()
+        initializeView()
 
+        initializeState = true
         ConnectionChangeReceiver.bindRefreshWebViewList(this)
-
-        loge("WebView Url: $url")
-
-        if (type == "recommend") {
-            requestWebViewData(url)
-            jSInterfaceObject?.requestWebViewResult(Config.webViewData)
-        } else {
-            handler.postDelayed({
-                requestWebViewData(url)
-            }, 1000)
-        }
     }
 
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
-    private fun initView() {
+    private fun initializeView() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             web_view_content?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
@@ -186,9 +178,18 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
         web_view_content?.addJavascriptInterface(jSInterfaceObject, "J_search")
 
         web_view_content?.addJavascriptInterface(JsPositionInterface(), "J_position")
-
     }
 
+    fun checkViewVisibleState() {
+        Logger.e("CheckViewVisibleState $type $initializeState $loadDataState")
+
+        if (initializeState && !loadDataState) {
+
+            loadDataState = true
+
+            requestWebViewData(url)
+        }
+    }
 
     private fun requestWebViewData(url: String?) {
         startLoadingWebViewData(url)

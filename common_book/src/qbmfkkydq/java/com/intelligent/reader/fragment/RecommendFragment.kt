@@ -20,7 +20,6 @@ import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.web.WebResourceCache
 import net.lzbook.kit.utils.web.WebViewIndex
-import java.io.File
 
 /**
  * Date: 2018/7/19 11:52
