@@ -86,11 +86,7 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
     private fun initializeView() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            web_view_content?.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        } else {
-            web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
-        }
+        web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
         loadingPage = LoadingPage(requireActivity(), fl_content_layout)
 
@@ -103,7 +99,6 @@ class ScrollWebFragment : Fragment(), View.OnClickListener, ConnectionChangeRece
         }
 
         web_view_content?.webViewClient = customWebClient
-
 
         if (customChangeListener != null) {
             web_view_content.insertScrollChangeListener(customChangeListener)

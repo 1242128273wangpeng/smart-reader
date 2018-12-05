@@ -9,18 +9,16 @@ import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.text.TextUtils
 import android.view.View
 import android.webkit.*
 import android.webkit.WebSettings.LayoutAlgorithm
 import android.webkit.WebSettings.RenderPriority
-import com.ding.basic.net.Config
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
+import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.utils.NetWorkUtils
 import net.lzbook.kit.utils.toast.ToastUtil
-import java.io.File
 
 class CustomWebClient(var context: Context?, internal var webView: WebView?) : WebViewClient() {
 
@@ -31,7 +29,7 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
     private var webSettings: WebSettings? = null
 
-    private var customWebViewCache = WebResourceCache.loadWebResourceCache()
+    private var webResourceCache = WebResourceCache.loadWebResourceCache()
 
     /***
      * WebView加载开始监听
@@ -204,19 +202,25 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
      * **/
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun interceptWebViewRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-        if (request != null && request.url != null && !TextUtils.isEmpty(request.url.toString())) {
+        if (request != null && request.url != null && request.url.toString().isNotEmpty()) {
             val url = request.url.toString()
-            val schema = request.url.scheme
+            val webResourceCached = webResourceCache.loadWebViewCache(url)
 
-            return if (!TextUtils.isEmpty(url) && schema != null && schema == "http" || schema == "https") {
-                val host = request.url.host
-                if (interceptHostList.contains(host)) {
-                    handleInterceptRequest(view, request, url)
-                } else {
-                    super.shouldInterceptRequest(view, request)
+            if (webResourceCached != null) {
+                Logger.e("命中缓存: $url")
+                return WebResourceResponse(webResourceCached.mimeType, webResourceCached.encoding, webResourceCached.file.inputStream())
+            }
+
+            return when {
+                url.startsWith("http") -> {
+                    val host = request.url.host
+                    when {
+                        interceptHostList.contains(host) -> handleInterceptRequest(view, request, url)
+                        else -> super.shouldInterceptRequest(view, request)
+                    }
                 }
-            } else {
-                super.shouldInterceptRequest(view, request)
+                url.startsWith("file://") -> handleInterceptRequest(view, request, url)
+                else -> return super.shouldInterceptRequest(view, request)
             }
         } else {
             return super.shouldInterceptRequest(view, request)
@@ -233,31 +237,12 @@ class CustomWebClient(var context: Context?, internal var webView: WebView?) : W
 
         return if (fileExtension.isNotEmpty()) {
             if ((mimeType == "image/jpeg" || mimeType == "image/png")) {
-                customWebViewCache.handleImageRequest(url, mimeType)
-                        ?: super.shouldInterceptRequest(view, request)
+                webResourceCache.handleImageRequest(url, mimeType) ?: super.shouldInterceptRequest(view, request)
             } else if (fileExtension == "js" || fileExtension == "css") {
-                return try {
-                    customWebViewCache.handleOtherRequest(url, mimeType)
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-
-                    if (url.startsWith("file://")) {
-                        webView?.handler?.post {
-                            loadingWebViewError?.invoke()
-
-                            File(url.replace("file://", "")).deleteOnExit()
-
-                            customWebViewCache.checkLocalResourceFile(Config.webViewBaseHost)
-                        }
-                        null
-                    } else {
-                        super.shouldInterceptRequest(view, request)
-                    }
-                }
+                return webResourceCache.handleOtherRequest(url, mimeType) ?: super.shouldInterceptRequest(view, request)
             } else {
                 super.shouldInterceptRequest(view, request)
             }
-
         } else {
             super.shouldInterceptRequest(view, request)
         }

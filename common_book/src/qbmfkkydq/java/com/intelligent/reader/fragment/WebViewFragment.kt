@@ -75,12 +75,7 @@ class WebViewFragment : Fragment(), View.OnClickListener {
 
     @SuppressLint("JavascriptInterface", "AddJavascriptInterface")
     private fun initializeView() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            web_view_content?.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
-        }
+        web_view_content?.setLayerType(View.LAYER_TYPE_NONE, null)
 
         loadingPage = LoadingPage(requireActivity(), rl_web_content)
 

@@ -3,6 +3,7 @@ package net.lzbook.kit.utils.web
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.webkit.MimeTypeMap
 import android.webkit.WebResourceResponse
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
@@ -14,6 +15,7 @@ import net.lzbook.kit.utils.doAsync
 import net.lzbook.kit.utils.file.FileUtils
 import net.lzbook.kit.utils.file.ZIPUtils
 import java.io.File
+import java.io.Serializable
 import java.net.URL
 
 /**
@@ -27,7 +29,7 @@ class WebResourceCache {
     companion object {
 
         //TODO 各壳存储位置不一致，需要上线修改
-        const val embeddedFile = "qbmfkkydq/201812031726.zip"
+        const val embeddedFile = "qbmfkkydq/201812051021.zip"
 
         const val internetPath = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/"
 
@@ -35,6 +37,9 @@ class WebResourceCache {
 
         @Volatile
         private var webResourceCache: WebResourceCache? = null
+
+        @Volatile
+        var webResourceCachedMap = HashMap<String, WebResourceCached>()
 
         @Volatile
         private var cachingResource = ArrayList<String>()
@@ -81,10 +86,29 @@ class WebResourceCache {
     @Throws(Exception::class)
     fun handleOtherRequest(url: String, mimeType: String?): WebResourceResponse? {
         return if (url.startsWith("http")) {
-            val localFileUrl = url.replace(internetPath, localPath)
-            WebResourceResponse(mimeType, "UTF-8", URL(localFileUrl).openConnection().getInputStream())
+            val filePath = url.replace(internetPath, localPath)
+            val file = File(filePath)
+
+            if (file.exists()) {
+                webResourceCachedMap[url] = WebResourceCached(mimeType, "UTF-8", file)
+                return WebResourceResponse(mimeType, "UTF-8", file.inputStream())
+            } else {
+                cacheWebViewSource(url, filePath)
+                null
+            }
+        } else if (url.startsWith("file://")) {
+            val filePath = url.replace("file://", "")
+            val file = File(filePath)
+
+            if (file.exists()) {
+                webResourceCachedMap[url] = WebResourceCached(mimeType, "UTF-8", file)
+                return WebResourceResponse(mimeType, "UTF-8", file.inputStream())
+            } else {
+                cacheWebViewSource(url.replace(localPath, internetPath), filePath)
+                null
+            }
         } else {
-            WebResourceResponse(mimeType, "UTF-8", URL(url).openConnection().getInputStream())
+            null
         }
     }
 
@@ -155,6 +179,10 @@ class WebResourceCache {
         }
     }
 
+    fun loadWebViewCache(url: String): WebResourceCached? {
+        return webResourceCachedMap[url]
+    }
+
     /***
      * 检查本地最新文件是否存在
      * **/
@@ -180,9 +208,18 @@ class WebResourceCache {
                         doAsync {
                             cacheWebViewSource(resource, resourceFilePath)
                         }
+                    } else {
+                        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(resource)
+                        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
+
+                        webResourceCachedMap[resource] = WebResourceCached(mimeType, "UTF-8", resourceFile)
+
+                        webResourceCachedMap[resource.replace(internetPath, localPath)] = WebResourceCached(mimeType, "UTF-8", resourceFile)
                     }
                 }
             }
         }
     }
+
+    inner class WebResourceCached(var mimeType: String?, var encoding: String?, var file: File): Serializable
 }
