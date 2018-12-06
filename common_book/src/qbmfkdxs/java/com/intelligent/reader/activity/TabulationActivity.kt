@@ -242,6 +242,7 @@ class TabulationActivity : FrameActivity() {
 
         web_tabulation_content?.addJavascriptInterface(object : JSInterfaceObject(this@TabulationActivity) {
 
+
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
 
@@ -268,6 +269,15 @@ class TabulationActivity : FrameActivity() {
                         exception.printStackTrace()
                     }
                 }
+            }
+
+            override fun handleBackAction() {
+            }
+
+            override fun hideWebViewLoading() {
+            }
+
+            override fun handleWebRequestResult(method: String?) {
             }
 
         }, "J_search")

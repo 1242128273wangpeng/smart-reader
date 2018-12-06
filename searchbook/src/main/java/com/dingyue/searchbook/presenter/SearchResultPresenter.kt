@@ -24,7 +24,7 @@ class SearchResultPresenter(private var searchResultView: ISearchResultView) : B
         searchResultModel = SearchResultModel()
         historyModel = HistoryModel()
 
-        searchResultModel?.initJSModel(this, searchResultView.getCurrentActivity(), searchResultView.loadContentWebView())?.let {
+        searchResultModel?.initJSModel(this, searchResultView.getCurrentActivity())?.let {
             searchResultView.obtainJSInterface(it)
         }
     }
