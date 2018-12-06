@@ -8,15 +8,11 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ding.basic.net.Config
 import com.intelligent.reader.R
-import com.orhanobut.logger.Logger
+import com.intelligent.reader.util.fragmentBundle
 import kotlinx.android.synthetic.qbmfkkydq.frag_category_layout.*
-import net.lzbook.kit.constants.ReplaceConstants
-
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.web.WebResourceCache
 import net.lzbook.kit.utils.web.WebViewIndex
 
 /**
@@ -31,25 +27,11 @@ class CategoryFragment : Fragment() {
     private var initializeState = false
 
     private val fragmentMale: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-
-        val bundle = Bundle()
-        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.category_male))
-
-        fragment.arguments = bundle
-
-        fragment
+        fragmentBundle(webViewIndex = WebViewIndex.category_male)
     }
 
     private val fragmentFemale: WebViewFragment by lazy {
-        val fragment = WebViewFragment()
-
-        val bundle = Bundle()
-        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.category_female))
-
-        fragment.arguments = bundle
-
-        fragment
+        fragmentBundle(webViewIndex = WebViewIndex.category_female)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,7 +70,7 @@ class CategoryFragment : Fragment() {
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
 
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
             }
@@ -98,7 +80,7 @@ class CategoryFragment : Fragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                when(position) {
+                when (position) {
                     0 -> fragmentMale.checkViewVisibleState()
                     1 -> fragmentFemale.checkViewVisibleState()
                 }
@@ -116,26 +98,13 @@ class CategoryFragment : Fragment() {
     private fun checkViewVisibleState() {
         if (initializeState && visibleState) {
             val index = view_pager.currentItem
-            when(index) {
+            when (index) {
                 0 -> fragmentMale.checkViewVisibleState()
                 1 -> fragmentFemale.checkViewVisibleState()
             }
         }
     }
 
-    private fun loadChildViewBundleUrl(url: String): String {
-        val webViewHost = Config.webViewBaseHost
-
-        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
-
-        Logger.e("WebView地址: $webViewHost ${Config.webCacheAvailable}")
-
-        return if (Config.webCacheAvailable) {
-            "file://$filePath$url"
-        } else {
-            Config.webViewBaseHost + "/index.html" + url
-        }
-    }
 
     inner class VPAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
         private val mFragments: ArrayList<Fragment> = ArrayList()

@@ -9,16 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.ding.basic.net.Config
 import com.intelligent.reader.R
 import com.intelligent.reader.fragment.scroll.ScrollWebFragment
-import com.orhanobut.logger.Logger
+import com.intelligent.reader.util.scrollFragmentBundle
 import kotlinx.android.synthetic.qbmfkkydq.frag_recommend_layout.*
-import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
-import net.lzbook.kit.utils.web.WebResourceCache
 import net.lzbook.kit.utils.web.WebViewIndex
 
 /**
@@ -37,51 +34,19 @@ class RecommendFragment : Fragment() {
     private var initializeState = false
 
     private val fragmentSelection: ScrollWebFragment by lazy {
-        val fragment = ScrollWebFragment()
-
-        val bundle = Bundle()
-        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.recommend))
-        bundle.putString("type", "recommend")
-
-        fragment.arguments = bundle
-
-        fragment
+        scrollFragmentBundle("recommend", WebViewIndex.recommend)
     }
 
     private val fragmentMale: ScrollWebFragment by lazy {
-        val fragment = ScrollWebFragment()
-
-        val bundle = Bundle()
-        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.recommend_male))
-        bundle.putString("type", "recommendMale")
-
-        fragment.arguments = bundle
-
-        fragment
+        scrollFragmentBundle("recommendMale", WebViewIndex.recommend_male)
     }
 
     private val fragmentFemale: ScrollWebFragment by lazy {
-        val fragment = ScrollWebFragment()
-
-        val bundle = Bundle()
-        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.recommend_female))
-        bundle.putString("type", "recommendFemale")
-
-        fragment.arguments = bundle
-
-        fragment
+        scrollFragmentBundle("recommendFemale", WebViewIndex.recommend_female)
     }
 
     private val fragmentFinish: ScrollWebFragment by lazy {
-        val fragment = ScrollWebFragment()
-
-        val bundle = Bundle()
-        bundle.putString("url", loadChildViewBundleUrl(WebViewIndex.recommend_finish))
-        bundle.putString("type", "recommendFinish")
-
-        fragment.arguments = bundle
-
-        fragment
+        scrollFragmentBundle("recommendFinish", WebViewIndex.recommend_finish)
     }
 
 
@@ -137,7 +102,7 @@ class RecommendFragment : Fragment() {
         tablayout_indicator.setupWithTabLayout(tab_layout)
         tablayout_indicator.setupWithViewPager(view_pager)
 
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
             }
@@ -147,7 +112,7 @@ class RecommendFragment : Fragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                when(position) {
+                when (position) {
                     0 -> fragmentSelection.checkViewVisibleState()
                     1 -> fragmentMale.checkViewVisibleState()
                     2 -> fragmentFemale.checkViewVisibleState()
@@ -169,7 +134,7 @@ class RecommendFragment : Fragment() {
     private fun checkViewVisibleState() {
         if (initializeState && visibleState) {
             val index = view_pager.currentItem
-            when(index) {
+            when (index) {
                 0 -> fragmentSelection.checkViewVisibleState()
                 1 -> fragmentMale.checkViewVisibleState()
                 2 -> fragmentFemale.checkViewVisibleState()
@@ -178,19 +143,7 @@ class RecommendFragment : Fragment() {
         }
     }
 
-    private fun loadChildViewBundleUrl(url: String): String {
-        val webViewHost = Config.webViewBaseHost
 
-        val filePath = webViewHost.replace(WebResourceCache.internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
-
-        Logger.e("WebView地址: $webViewHost ${Config.webCacheAvailable}")
-
-        return if (Config.webCacheAvailable) {
-            "file://$filePath$url"
-        } else {
-            Config.webViewBaseHost + "/index.html" + url
-        }
-    }
 
     inner class VPAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
         private val mFragments: ArrayList<ScrollWebFragment> = ArrayList()
