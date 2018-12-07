@@ -1,7 +1,6 @@
 package com.intelligent.reader.activity
 
 import android.annotation.SuppressLint
-
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -13,36 +12,25 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI.activity
-
 import com.baidu.mobstat.StatService
+import com.ding.basic.net.Config
 import com.ding.basic.net.api.service.RequestService
-
 import com.dingyue.searchbook.activity.SearchBookActivity
 import com.google.gson.Gson
 import com.intelligent.reader.R
-
 import com.orhanobut.logger.Logger
-
-import net.lzbook.kit.appender_loghub.StartLogClickUtil
-
-
-import java.util.ArrayList
-import java.util.HashMap
-
-
 import kotlinx.android.synthetic.qbmfkdxs.act_tabulation.*
+import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.bean.PagerDesc
 import net.lzbook.kit.ui.activity.base.FrameActivity
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.*
-import net.lzbook.kit.utils.book.CommonContract
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.swipeback.ActivityLifecycleHelper
 import net.lzbook.kit.utils.web.CustomWebClient
 import net.lzbook.kit.utils.web.JSInterfaceObject
-import net.lzbook.kit.utils.webview.UrlUtils
+import java.util.*
 
 
 @Route(path = RouterConfig.TABULATION_ACTIVITY)
@@ -110,51 +98,6 @@ class TabulationActivity : FrameActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        StatService.onResume(this)
-        if (web_tabulation_content != null) {
-            web_tabulation_content?.post {
-                try {
-                    web_tabulation_content.loadUrl("javascript:refreshNew()")
-                } catch (exception: Exception) {
-                    exception.printStackTrace()
-                    finish()
-                }
-            }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        StatService.onPause(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (web_tabulation_content != null) {
-            web_tabulation_content?.clearCache(false)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (web_tabulation_content?.parent != null) {
-                    (web_tabulation_content?.parent as ViewGroup).removeView(web_tabulation_content)
-                }
-                web_tabulation_content?.stopLoading()
-                web_tabulation_content?.settings?.javaScriptEnabled = false
-                web_tabulation_content?.clearHistory()
-                web_tabulation_content?.removeAllViews()
-                web_tabulation_content?.destroy()
-            } else {
-                web_tabulation_content?.stopLoading()
-                web_tabulation_content?.settings?.javaScriptEnabled = false
-                web_tabulation_content?.clearHistory()
-                web_tabulation_content?.removeAllViews()
-                web_tabulation_content?.destroy()
-                if (web_tabulation_content?.parent != null) {
-                    (web_tabulation_content?.parent as ViewGroup).removeView(web_tabulation_content)
-                }
-            }
-        }
-    }
 
     override fun onBackPressed() {
         if (urls.size - backClickCount <= 1) {
@@ -260,7 +203,7 @@ class TabulationActivity : FrameActivity() {
 
                         if (redirect?.url != null && redirect.title != null) {
                             try {
-                                refreshTabulationContent(redirect.url, redirect.title)
+                                refreshTabulationContent(Config.webViewBaseHost + redirect.url, redirect.title)
                             } catch (exception: Exception) {
                                 exception.printStackTrace()
                             }
@@ -271,13 +214,39 @@ class TabulationActivity : FrameActivity() {
                 }
             }
 
+            @JavascriptInterface
             override fun handleBackAction() {
+                statisticsTabulationBack()
+
+                if (urls.size - backClickCount <= 1) {
+                    this@TabulationActivity.finish()
+                } else {
+                    backClickCount++
+                    val index = urls.size - 1 - backClickCount
+
+                    url = urls[index]
+                    title = titles[index]
+
+                    requestWebViewData(url, title)
+                }
             }
 
+            @JavascriptInterface
             override fun hideWebViewLoading() {
+                runOnMain {
+                    loadingPage?.onSuccessGone()
+                }
             }
 
+            @JavascriptInterface
             override fun handleWebRequestResult(method: String?) {
+                if (null != web_tabulation_content) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        web_tabulation_content.evaluateJavascript(method) { value -> Logger.e("ReceivedValue: $value") }
+                    } else {
+                        web_tabulation_content.loadUrl(method)
+                    }
+                }
             }
 
         }, "J_search")
@@ -389,23 +358,9 @@ class TabulationActivity : FrameActivity() {
     }
 
     private fun requestWebViewData(url: String?, name: String?) {
-        var request = url
-        var parameters: Map<String, String>? = null
-        if (request != null) {
-            val array = request.split("\\?".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            request = array[0]
-            if (array.size == 2) {
-                parameters = UrlUtils.getUrlParams(array[1])
-            } else if (array.size == 1) {
-                parameters = HashMap()
-            }
-
-            request = UrlUtils.buildWebUrl(request, parameters)
-        }
-
         insertTabulationTitle(name)
 
-        startLoadingWebViewData(request)
+        startLoadingWebViewData(url)
 
         initWebViewCallback()
     }
@@ -430,9 +385,7 @@ class TabulationActivity : FrameActivity() {
      * 处理WebView请求
      * **/
     private fun handleLoadingWebViewData(url: String?) {
-        if (customWebClient != null) {
-            customWebClient?.initParameter()
-        }
+        customWebClient?.initParameter()
 
         if (url != null && url.isNotEmpty()) {
             try {
@@ -456,26 +409,33 @@ class TabulationActivity : FrameActivity() {
 
             customWebClient?.setLoadingWebViewFinish {
                 Logger.e("WebView页面加载结束！")
-                if (loadingPage != null) {
+                if (NetWorkUtils.isNetworkAvailable(this)) {
                     loadingPage?.onSuccessGone()
+                    requestWebViewPager(web_tabulation_content)
+                } else {
+                    loadingPage?.onErrorVisable()
                 }
             }
 
             customWebClient?.setLoadingWebViewError {
                 Logger.e("WebView页面加载异常！")
-                if (loadingPage != null) {
-                    loadingPage?.onErrorVisable()
-                }
+                loadingPage?.onErrorVisable()
             }
         }
 
-        if (loadingPage != null) {
-            loadingPage?.setReloadAction(LoadingPage.reloadCallback {
-                if (customWebClient != null) {
-                    customWebClient?.initParameter()
-                }
-                web_tabulation_content?.reload()
-            })
+
+        loadingPage?.setReloadAction(LoadingPage.reloadCallback {
+            customWebClient?.initParameter()
+            web_tabulation_content?.reload()
+        })
+    }
+
+    /***
+     * 获取H5页面信息
+     * **/
+    private fun requestWebViewPager(rank_content: WebView?) {
+        if (needInterceptSlide && rank_content != null) {
+            rank_content.loadUrl("javascript:getViewPagerInfo()")
         }
     }
 
@@ -484,5 +444,51 @@ class TabulationActivity : FrameActivity() {
         return if ("cc.quanben.novel" == AppUtils.getPackageName()) {
             true
         } else super.shouldLightStatusBase()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        StatService.onResume(this)
+        if (web_tabulation_content != null) {
+            web_tabulation_content?.post {
+                try {
+                    web_tabulation_content.loadUrl("javascript:refreshNew()")
+                } catch (exception: Exception) {
+                    exception.printStackTrace()
+                    finish()
+                }
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        StatService.onPause(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (web_tabulation_content != null) {
+            web_tabulation_content?.clearCache(false)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (web_tabulation_content?.parent != null) {
+                    (web_tabulation_content?.parent as ViewGroup).removeView(web_tabulation_content)
+                }
+                web_tabulation_content?.stopLoading()
+                web_tabulation_content?.settings?.javaScriptEnabled = false
+                web_tabulation_content?.clearHistory()
+                web_tabulation_content?.removeAllViews()
+                web_tabulation_content?.destroy()
+            } else {
+                web_tabulation_content?.stopLoading()
+                web_tabulation_content?.settings?.javaScriptEnabled = false
+                web_tabulation_content?.clearHistory()
+                web_tabulation_content?.removeAllViews()
+                web_tabulation_content?.destroy()
+                if (web_tabulation_content?.parent != null) {
+                    (web_tabulation_content?.parent as ViewGroup).removeView(web_tabulation_content)
+                }
+            }
+        }
     }
 }
