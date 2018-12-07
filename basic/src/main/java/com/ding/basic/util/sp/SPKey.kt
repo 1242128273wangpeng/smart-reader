@@ -12,7 +12,7 @@ class SPKey {
         @JvmField
         val SHARE_ONLINE_CONFIG = 1  // 保存的是 onlineconfig_agent_online_setting_ + AppUtils.getPackageName()
 
-        fun getSHAREDPREFERENCES_KEY():String{
+        fun getSHAREDPREFERENCES_KEY(): String {
             val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
             return "onlineconfig_agent_online_setting_" + buidCofig.getPackageName()
         }
@@ -203,11 +203,12 @@ class SPKey {
         /**
          * Bookshelf
          */
-       //书架引导  和versionCode拼接
-        fun getBOOKSHELF_GUIDE_TAG():String{
+        //书架引导  和versionCode拼接
+        fun getBOOKSHELF_GUIDE_TAG(): String {
             val buidCofig = ARouter.getInstance().build(BUILD_CONFIG_PROVIDER).navigation() as IBuildConfigProvider
             return buidCofig.getVersionCode().toString() + "bookshelf_guide_tag"
         }
+
         const val BOOKSHELF_ISSHOW_CHANGE_GUIDE = "isShowChangAnGuide" //判断是否显示长按删除书籍引导  快读替 新版引导页
         const val BOOKSHELF_BOOK_RACKUP_DATETIME = "bookRackUpdateTime"
         const val BOOKSHELF_PERSON_RED = "bookshelf_preson_red" //用于书架页上的红点显示隐藏
@@ -252,7 +253,6 @@ class SPKey {
         val PUSH_LATEST_SHOW_SETTING_DIALOG_TIME = "push_latest_show_setting_dialog_time"
 
 
-
         const val READER_TYPE_FACE = "reader_type_face" //阅读页当前使用的字体
 
         /**
@@ -261,17 +261,16 @@ class SPKey {
         const val HAS_SELECT_INTEREST = "has_select_interest" // 是否已经选择兴趣标识
         const val SELECTED_INTEREST_DATA = "selected_interest_data" // 已经选择的兴趣数据
         /**
-        * 分享功能开关
-        */
+         * 分享功能开关
+         */
         const val SHARE_SWITCH = "SHARE_SWITCH" //分享开关
         const val READER_SHARE_PROMPT = "reader_share_prompt" //阅读页分享提示
         const val COVER_SHARE_PROMPT = "cover_share_prompt" // 封面页分享提示
+        const val BOOKSHELF_SHARE_PROMPT = "bookshelf_share_prompt" // 书架页分享提示
+
         const val APPLICATION_SHARE_ACTION = "application_share_action"
 
         const val SHIELD_BOOK = "shield_book"//北京上海屏蔽书单
-
-
-
 
 
         /***
@@ -283,7 +282,6 @@ class SPKey {
         const val LOCATION_LATITUDE = "location_latitude"
         //用于存储用户的经度
         const val LOCATION_LONGITUDE = "location_longitude"
-
 
 
         /***
@@ -304,11 +302,14 @@ class SPKey {
         const val CONTENT_AUTH_PRIVATE_KEY = "content_auth_private_key_"
 
 
-
-
-
-        const val WEB_VIEW_HOST = "web_view_host"
+        const val WEB_VIEW_HOST = "web_view_host_"
 
         const val WEB_VENDOR_COPY_FLAG = "web_vendor_copy_flag_"
+
+        /**
+         * 新用户首次进入精选页时,增加 “全站书籍 永久免费” 的弹窗
+         */
+        const val FIRST_COME_IN_RECOMMEND = "first_come_in_recommend"
+
     }
 }

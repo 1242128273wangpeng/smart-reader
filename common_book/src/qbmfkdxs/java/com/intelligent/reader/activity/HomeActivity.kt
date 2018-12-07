@@ -337,6 +337,10 @@ class HomeActivity : BaseCacheableActivity(),
             if (intent.hasExtra(EventBookStore.BOOKSTORE)) {
                 position = intent.getIntExtra(EventBookStore.BOOKSTORE, 0)
                 this.changeHomePagerIndex(position)
+                if (SPUtils.getDefaultSharedBoolean(SPKey.FIRST_COME_IN_RECOMMEND, true)) {
+                    bookStoreDialog.show()
+                    SPUtils.putDefaultSharedBoolean(SPKey.FIRST_COME_IN_RECOMMEND, false)
+                }
             } else {
                 val intExtra = intent.getIntExtra(EventBookStore.BOOKSTORE, EventBookStore.TYPE_ERROR)
                 if (intExtra != EventBookStore.TYPE_ERROR) {
