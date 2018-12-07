@@ -765,6 +765,8 @@ public class SplashActivity extends FrameActivity {
             //开启缓存服务
             CacheManager.INSTANCE.checkService();
 
+            requestWebViewConfig();
+
             return null;
         }
     }
@@ -783,6 +785,30 @@ public class SplashActivity extends FrameActivity {
         }
 
     }
+
+    private void requestWebViewConfig() {
+        insertDisposable(RequestRepositoryFactory.Companion.loadRequestRepositoryFactory(
+                BaseBookApplication.getGlobalContext()).requestWebViewConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(result -> {
+                    if (result != null && result.checkResultAvailable()) {
+                        String url = result.getData();
+                        if (url != null && !url.isEmpty()) {
+
+                            SPUtils.INSTANCE.insertPrivateSharedString(
+                                    SPKey.WEB_VIEW_HOST + AppUtils.getPackageName(), url);
+
+                            WebResourceCache webResourceCache =
+                                    WebResourceCache.Companion.loadWebResourceCache();
+                            webResourceCache.checkLocalResourceFile(url);
+
+                        }
+                    }
+                })
+        );
+    }
+
 
     @Override
     public boolean shouldShowNightShadow() {
