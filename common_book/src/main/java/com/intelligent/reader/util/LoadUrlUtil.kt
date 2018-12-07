@@ -26,7 +26,7 @@ fun fragmentBundle(type: String = "", webViewIndex: String): WebViewFragment {
 /**
  * WebView加载，判断是加载本地还是在线地址
  */
-fun loadWebViewUrl(url: String): String {
+fun loadWebViewUrl(webViewIndex: String): String {
     val webViewHost = Config.webViewBaseHost
 
     val filePath = webViewHost.replace(WebViewConfig.urlPath,
@@ -35,8 +35,8 @@ fun loadWebViewUrl(url: String): String {
     Logger.e("JoannChen WebView地址: $webViewHost ${Config.webCacheAvailable}")
 
     return if (Config.webCacheAvailable) {
-        "file://$filePath$url"
+        "file://$filePath$webViewIndex"
     } else {
-        Config.webViewBaseHost + "/index.html" + url
+        Config.webViewBaseHost + "/index.html" + webViewIndex
     }
 }

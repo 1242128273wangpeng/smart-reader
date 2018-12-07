@@ -15,23 +15,21 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.baidu.mobstat.StatService
 import com.bumptech.glide.Glide
-import com.ding.basic.net.api.service.RequestService
 import com.ding.basic.util.sp.SPKey
 import com.ding.basic.util.sp.SPUtils
 import com.dingyue.bookshelf.BookShelfFragment
 import com.dingyue.bookshelf.BookShelfInterface
 import com.dy.media.MediaLifecycle
 import com.intelligent.reader.R
-import com.intelligent.reader.app.BookApplication
 import com.intelligent.reader.fragment.RecommendFragment
 import com.intelligent.reader.fragment.WebViewFragment
+import com.intelligent.reader.util.fragmentBundle
+import com.intelligent.reader.view.BookStoreDialog
 import com.intelligent.reader.view.PushSettingDialog
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,27 +42,21 @@ import net.lzbook.kit.bean.EventBookStore
 import net.lzbook.kit.constants.ActionConstants
 import net.lzbook.kit.presenter.HomePresenter
 import net.lzbook.kit.service.CheckNovelUpdateService
-import net.lzbook.kit.service.DownloadAPKService
 import net.lzbook.kit.ui.activity.DownloadErrorActivity
-import net.lzbook.kit.ui.activity.WelfareCenterActivity
 import net.lzbook.kit.ui.activity.base.BaseCacheableActivity
 import net.lzbook.kit.ui.widget.BannerDialog
 import net.lzbook.kit.utils.*
 import net.lzbook.kit.utils.AppUtils.fixInputMethodManagerLeak
 import net.lzbook.kit.utils.encrypt.MD5Utils
-import net.lzbook.kit.utils.logger.AppLog
 import net.lzbook.kit.utils.logger.HomeLogger
-import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.user.UserManager
-import net.lzbook.kit.utils.webview.JSInterfaceHelper
-import net.lzbook.kit.utils.webview.UrlUtils
+import net.lzbook.kit.utils.web.WebViewIndex
 import net.lzbook.kit.view.HomeView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.io.File
-import java.util.*
 
 @Route(path = RouterConfig.HOME_ACTIVITY)
 class HomeActivity : BaseCacheableActivity(),
@@ -85,16 +77,35 @@ class HomeActivity : BaseCacheableActivity(),
 
     private var guideLongPress: Boolean = true
 
-
     private lateinit var apkUpdateUtils: ApkUpdateUtils
 
-    private var bookShelfFragment: BookShelfFragment? = null
+    private val bookStoreDialog: BookStoreDialog by lazy {
+        BookStoreDialog(this)
+    }
 
-    private var recommendFragment: RecommendFragment? = null
+    private val bookShelfFragment: BookShelfFragment by lazy {
+        BookShelfFragment()
+    }
 
-    private var rankingFragment: WebViewFragment? = null
+    private val recommendFragment: RecommendFragment by lazy {
+        RecommendFragment()
+    }
 
-    private var categoryFragment: WebViewFragment? = null
+    private val rankingFragment: WebViewFragment by lazy {
+        fragmentBundle("rank", WebViewIndex.rank)
+    }
+
+    private val categoryFragment: WebViewFragment by lazy {
+        fragmentBundle("category", WebViewIndex.category)
+    }
+
+    private val fragmentList: ArrayList<Fragment> = arrayListOf(
+            bookShelfFragment,
+            recommendFragment,
+            rankingFragment,
+            categoryFragment
+    )
+
     private var registerShareCallback = false
 
     private val pushSettingDialog: PushSettingDialog by lazy {
@@ -109,7 +120,7 @@ class HomeActivity : BaseCacheableActivity(),
     }
 
     private val bannerDialog: BannerDialog by lazy {
-        BannerDialog(this,Intent(this, FindBookDetail::class.java))
+        BannerDialog(this, Intent(this, FindBookDetail::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,7 +141,6 @@ class HomeActivity : BaseCacheableActivity(),
         checkAppUpdate()
 
         initPosition()
-
 
         AndroidLogStorage.getInstance().clear()
 
@@ -188,10 +198,6 @@ class HomeActivity : BaseCacheableActivity(),
         this.unregisterReceiver(homeBroadcastReceiver)
         MediaLifecycle.onDestroy()
         try {
-            bookShelfFragment = null
-            recommendFragment = null
-            rankingFragment = null
-            categoryFragment = null
             homeAdapter = null
             homePresenter = null
             Glide.get(this).clearMemory()
@@ -206,7 +212,7 @@ class HomeActivity : BaseCacheableActivity(),
     override fun onBackPressed() {
         when {
             view_pager?.currentItem != 0 -> changeHomePagerIndex(0)
-            bookShelfFragment?.isRemoveMenuShow() == true -> bookShelfFragment?.dismissRemoveMenu()
+            bookShelfFragment.isRemoveMenuShow() -> bookShelfFragment.dismissRemoveMenu()
             else -> doubleClickFinish()
         }
     }
@@ -291,8 +297,8 @@ class HomeActivity : BaseCacheableActivity(),
     private fun onChangeNavigation(position: Int) {
         currentIndex = position
 
-        if (currentIndex != 0 && bookShelfFragment?.isRemoveMenuShow() == true) {
-            bookShelfFragment?.dismissRemoveMenu()
+        if (currentIndex != 0 && bookShelfFragment.isRemoveMenuShow()) {
+            bookShelfFragment.dismissRemoveMenu()
         }
 
         ll_bottom_tab_bookshelf.isSelected = position == 0
@@ -404,18 +410,6 @@ class HomeActivity : BaseCacheableActivity(),
     }
 
 
-//        if (recommendFragment != null) {
-//            jsInterfaceHelper.setOnH5PagerInfo(JSInterfaceHelper.OnH5PagerInfoListener { x, y, width, height ->
-//                AppLog.e("manRecommendFragment", x.toString() + "" + y + "" + width + "" + height)
-//                recommendFragment?.recommendFragment?.mPagerDesc = PagerDesc(y, x, x + width, y + height)
-//                recommendFragment?.recommendWomanFragment?.mPagerDesc = PagerDesc(y, x, x + width, y + height)
-//                recommendFragment?.recommendManFragment?.mPagerDesc = PagerDesc(y, x, x + width, y + height)
-//            })
-//        }
-
-
-
-
     override fun supportSlideBack(): Boolean {
         return false
     }
@@ -425,46 +419,10 @@ class HomeActivity : BaseCacheableActivity(),
      * **/
     inner class HomeAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
-        override fun getCount(): Int = 4
+        override fun getCount(): Int = fragmentList.size
 
         override fun getItem(position: Int): Fragment? {
-            return when (position) {
-                0 -> {
-                    if (bookShelfFragment == null) {
-                        bookShelfFragment = BookShelfFragment()
-                    }
-                    bookShelfFragment
-                }
-                1 -> {
-                    if (recommendFragment == null) {
-                        recommendFragment = RecommendFragment()
-                    }
-                    recommendFragment
-                }
-                2 -> {
-                    if (rankingFragment == null) {
-                        rankingFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", "rank")
-                        val uri = RequestService.WEB_RANK_H5.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        rankingFragment?.arguments = bundle
-                    }
-                    rankingFragment
-                }
-                3 -> {
-                    if (categoryFragment == null) {
-                        categoryFragment = WebViewFragment()
-                        val bundle = Bundle()
-                        bundle.putString("type", "category")
-                        val uri = RequestService.WEB_CATEGORY_H5.replace("{packageName}", AppUtils.getPackageName())
-                        bundle.putString("url", UrlUtils.buildWebUrl(uri, HashMap()))
-                        categoryFragment?.arguments = bundle
-                    }
-                    categoryFragment
-                }
-                else -> null
-            }
+            return fragmentList[position]
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -487,9 +445,7 @@ class HomeActivity : BaseCacheableActivity(),
     inner class HomeBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ActionConstants.ACTION_CHECK_UPDATE_FINISH) {
-                if (bookShelfFragment != null) {
-                    bookShelfFragment?.updateUI()
-                }
+                bookShelfFragment.updateUI()
             } else if (intent.action == ActionConstants.ACTION_DOWNLOAD_APP_SUCCESS) {
                 val bundle = intent.extras
 
@@ -515,13 +471,9 @@ class HomeActivity : BaseCacheableActivity(),
                     }
                 }
             } else if (intent.action == ActionConstants.ACTION_CHECK_QING_STATE_SUCCESS) {
-                if (bookShelfFragment != null) {
-                    bookShelfFragment?.updateUI()
-                }
+                bookShelfFragment.updateUI()
             } else if (intent.action == ActionConstants.ACTION_ADD_DEFAULT_SHELF) {
-                if (bookShelfFragment != null) {
-                    bookShelfFragment?.updateUI()
-                }
+                bookShelfFragment.updateUI()
             }
         }
     }

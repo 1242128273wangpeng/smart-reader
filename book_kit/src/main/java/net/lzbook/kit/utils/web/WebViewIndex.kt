@@ -20,6 +20,11 @@ object WebViewIndex {
     const val recommend_cate_fantasy = "#/finish?cate=fantasy"  //玄幻
     const val recommend_cate_modern = "#/finish?cate=modern"    //现代言情
 
+    const val finish_Detail_finish = "#/finishDetail?genre=&id=完结"    //完结
+    const val finish_Detail_fantasy = "#/finishDetail?genre=玄幻&id="   //玄幻传参
+    const val finish_Detail_modern = "#/finishDetail?genre=现代言情&id=" //现代言情传参
+
+
     // 新壳4
     const val recommend = "#/recommend"
     const val recommend_male = "#/gender?gender=male"
