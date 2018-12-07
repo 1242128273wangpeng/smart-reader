@@ -20,7 +20,7 @@
             android:layout_height="48dp">
 
             <ImageView
-                android:id="@id/img_back"
+                android:id="@+id/img_back"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_centerVertical="true"
