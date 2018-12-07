@@ -233,7 +233,8 @@ abstract class JSInterfaceObject(var activity: Activity) {
     }
 
     /**
-     * 请求WebView结果
+     * 请求WebView结果,返给h5
+     * h5方法：handleWebViewResponse
      */
     @JavascriptInterface
     fun requestWebViewResult(data: String?) {
@@ -241,7 +242,7 @@ abstract class JSInterfaceObject(var activity: Activity) {
             try {
                 val config = Gson().fromJson(data, JSConfig()::class.java)
 
-                Logger.e("RequestWebViewResult: ${config}")
+                Logger.e("RequestWebViewResult: $config")
 
                 val url = config.url
                 val method = config.method
@@ -264,7 +265,8 @@ abstract class JSInterfaceObject(var activity: Activity) {
                         )
                     } else if ("post" == config.method) {
 
-                        val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body ?: "")
+                        val requestBody = RequestBody.create(MediaType.parse("Content-Type: application/x-www-form-urlencoded"), config.body
+                                ?: "")
 
                         compositeDisposable.add(RequestRepositoryFactory.loadRequestRepositoryFactory(activity).requestWebViewResult(url, requestBody, microFlag)
                                 .subscribeOn(Schedulers.io())

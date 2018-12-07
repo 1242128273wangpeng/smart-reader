@@ -1,6 +1,5 @@
 package com.intelligent.reader.app;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -10,9 +9,8 @@ import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.alibaba.sdk.android.feedback.util.ErrorCode;
-import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.baidu.mobstat.StatService;
+import com.ding.basic.config.WebViewConfig;
 import com.ding.basic.net.Config;
 import com.ding.basic.util.sp.SPKey;
 import com.ding.basic.util.sp.SPUtils;
@@ -61,6 +59,7 @@ public class BookApplication extends BaseBookApplication {
 
         Reader.INSTANCE.init(this);
 
+        WebViewConfig.initWebViewConfig();
         checkWebViewResourceUnzip();
 
         if (AppUtils.isMainProcess(this)) {

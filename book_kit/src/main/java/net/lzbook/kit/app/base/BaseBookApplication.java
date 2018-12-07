@@ -74,8 +74,6 @@ public abstract class BaseBookApplication extends Application {
             // 统计SDK初始化
             DyStatService.init(this, OpenUDID.getOpenUDIDInContext(this), AppUtils.getChannelId());
             DyStatService.onEvent(EventPoint.SYSTEM_APPINIT);
-
-            Config.INSTANCE.beginInit(this);
         }
 
         EventBus.getDefault().register(this);
@@ -106,6 +104,7 @@ public abstract class BaseBookApplication extends Application {
         g_context = this;
         initARouter();
         initData();
+        Config.INSTANCE.beginInit(this);
     }
 
     private void initData() {

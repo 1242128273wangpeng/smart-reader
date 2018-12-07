@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Environment
 import android.text.TextUtils
 import com.ding.basic.config.ParameterConfig
+import com.ding.basic.config.WebViewConfig
 import com.ding.basic.net.api.ContentAPI
 import com.ding.basic.net.api.MicroAPI
 import com.ding.basic.util.ReplaceConstants
@@ -66,11 +67,11 @@ object Config {
             return if (field.isNotEmpty()) {
                 field
             } else {
-                val value = SPUtils.loadPrivateSharedString(SPKey.WEB_VIEW_HOST)
+                val value = SPUtils.loadPrivateSharedString(SPKey.WEB_VIEW_HOST + Config.loadRequestParameter("packageName"))
                 field = if (value.isNotEmpty()) {
                     value
                 } else {
-                    "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/201812031726"
+                    WebViewConfig.urlPathTimeTemp
                 }
                 field
             }

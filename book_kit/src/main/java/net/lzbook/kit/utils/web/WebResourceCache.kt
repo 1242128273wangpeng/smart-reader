@@ -7,6 +7,7 @@ import android.webkit.MimeTypeMap
 import android.webkit.WebResourceResponse
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
+import com.ding.basic.config.WebViewConfig
 import com.ding.basic.net.Config
 import com.orhanobut.logger.Logger
 import net.lzbook.kit.app.base.BaseBookApplication
@@ -26,12 +27,8 @@ import java.net.URL
  */
 class WebResourceCache {
 
+
     companion object {
-
-        //TODO 各壳存储位置不一致，需要上线修改
-        const val embeddedFile = "qbmfkkydq/201812051021.zip"
-
-        const val internetPath = "https://sta-cnqbmfkkydqreader.bookapi.cn/cn-qbmfkkydq-reader/"
 
         val localPath = "file://" + ReplaceConstants.getReplaceConstants().APP_PATH_CACHE
 
@@ -86,7 +83,7 @@ class WebResourceCache {
     @Throws(Exception::class)
     fun handleOtherRequest(url: String, mimeType: String?): WebResourceResponse? {
         return if (url.startsWith("http")) {
-            val filePath = url.replace(internetPath, localPath)
+            val filePath = url.replace(WebViewConfig.urlPath, localPath)
             val file = File(filePath)
 
             if (file.exists()) {
@@ -104,7 +101,7 @@ class WebResourceCache {
                 webResourceCachedMap[url] = WebResourceCached(mimeType, "UTF-8", file)
                 return WebResourceResponse(mimeType, "UTF-8", file.inputStream())
             } else {
-                cacheWebViewSource(url.replace(localPath, internetPath), filePath)
+                cacheWebViewSource(url.replace(localPath, WebViewConfig.urlPath), filePath)
                 null
             }
         } else {
@@ -172,7 +169,7 @@ class WebResourceCache {
 
                 file.mkdirs()
 
-                ZIPUtils.unZipAssets(context, embeddedFile, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE, true)
+                ZIPUtils.unZipAssets(context, WebViewConfig.zipPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE, true)
             } catch (exception: Exception) {
                 exception.printStackTrace()
             }
@@ -198,7 +195,7 @@ class WebResourceCache {
             for (resource in resourceList) {
                 if (!resource.isEmpty()) {
 
-                    val resourceFilePath = resource.replace(internetPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE)
+                    val resourceFilePath = resource.replace(WebViewConfig.urlPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE)
 
                     val resourceFile = File(resourceFilePath)
 
@@ -214,12 +211,12 @@ class WebResourceCache {
 
                         webResourceCachedMap[resource] = WebResourceCached(mimeType, "UTF-8", resourceFile)
 
-                        webResourceCachedMap[resource.replace(internetPath, localPath)] = WebResourceCached(mimeType, "UTF-8", resourceFile)
+                        webResourceCachedMap[resource.replace(WebViewConfig.urlPath, localPath)] = WebResourceCached(mimeType, "UTF-8", resourceFile)
                     }
                 }
             }
         }
     }
 
-    inner class WebResourceCached(var mimeType: String?, var encoding: String?, var file: File): Serializable
+    inner class WebResourceCached(var mimeType: String?, var encoding: String?, var file: File) : Serializable
 }
