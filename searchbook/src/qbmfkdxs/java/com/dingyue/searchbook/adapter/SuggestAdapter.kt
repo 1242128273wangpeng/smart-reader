@@ -20,14 +20,7 @@ import net.lzbook.kit.utils.AppUtils
  * Mail：yongzuo_chen@dingyuegroup.cn
  * Date：2018/9/25 0025 17:18
  */
-class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : BaseAdapter() {
-
-    private var editInput: String? = ""
-
-    init {
-        this.editInput = editInput
-
-    }
+class SuggestAdapter(private val list: MutableList<Any>?, val editInput: String) : BaseAdapter() {
 
     override fun getViewTypeCount(): Int {
         return ITEM_VIEW_TYPE_COUNT
@@ -75,8 +68,9 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
                     suggestView = LayoutInflater.from(context).inflate(R.layout.item_suggest, parent, false)
 
                     holder = ViewHolder()
-
+                    holder.iv_icon = suggestView.findViewById(R.id.iv_icon)
                     holder.iv_type = suggestView.findViewById(R.id.iv_type)
+                    holder.iv_shadow = suggestView.findViewById(R.id.iv_shadow)
                     holder.tv_search_item = suggestView.findViewById(R.id.tv_search_item)
 
                     suggestView.tag = holder
@@ -88,20 +82,42 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
                 val bean = list!![position] as SearchCommonBeanYouHua
 
 
-                when (bean.wordtype) {
-                    "author" -> holder.iv_type.setImageResource(R.drawable.search_author)
-                    "label" -> holder.iv_type.setImageResource(R.drawable.search_biaoqian)
-                    "fenlei" -> holder.iv_type.setImageResource(R.drawable.search_fenlei)
-                    else -> holder.iv_type.setImageResource(R.drawable.search_transparent)
-                }
+                //如果不是以上三种的话，说明返回的数据为书籍名，则通过url加载后台返回的图片URL地址（加上非空判断）
 
+                // 动态修改关键字颜色
+                when (bean.wordtype) {
+                    "author" -> {
+                        holder.iv_shadow.visibility = View.GONE
+                        holder.iv_icon.setImageResource(R.drawable.search_personal)
+                        holder.iv_type.setImageResource(R.drawable.search_writer)
+
+                    }
+                    "label" -> {
+                        holder.iv_shadow.visibility = View.GONE
+                        holder.iv_icon.setImageResource(R.drawable.search_label_icon)
+                        holder.iv_type.setImageResource(R.drawable.search_label)
+
+                    }
+                    "name" -> {
+                        holder.iv_shadow.visibility = View.VISIBLE
+                        //如果不是以上三种的话，说明返回的数据为书籍名，则通过url加载后台返回的图片URL地址（加上非空判断）
+                        if (bean.image_url != null) {
+                            Glide.with(context).load(bean.image_url).placeholder(
+                                    R.drawable.bg_book_cover_default).error(
+                                    R.drawable.bg_book_cover_default).into(holder.iv_icon)
+                        } else {
+                            holder.iv_icon.setImageResource(R.drawable.bg_book_cover_default)
+                        }
+                        holder.iv_type.setImageResource(R.drawable.search_book)
+                    }
+                }
 
                 // 动态修改关键字颜色
                 var content = bean.suggest
                 val finalInput = AppUtils.deleteAllIllegalChar(editInput)
                 val color = ContextCompat.getColor(context, R.color.primary)
                 val colorTag = String.format("<font color='%s'>", AppUtils.colorHoHex(color))
-                content = content.replace(finalInput.toRegex(), colorTag + finalInput + "</font>")
+                content = content.replace(finalInput.toRegex(), "$colorTag$finalInput</font>")
                 holder.tv_search_item.text = Html.fromHtml(content)
 
             }
@@ -128,12 +144,10 @@ class SuggestAdapter(private val list: MutableList<Any>?, editInput: String) : B
     }
 
     private class ViewHolder {
+        lateinit var iv_icon: ImageView
         lateinit var tv_search_item: TextView
         lateinit var iv_type: ImageView
-    }
-
-    fun setEditInput(editInput: String) {
-        this.editInput = editInput
+        lateinit var iv_shadow: ImageView
     }
 
     companion object {

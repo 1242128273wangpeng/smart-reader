@@ -22,7 +22,7 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
 
     override fun getCount(): Int {
         return if (list.isNotEmpty()) {
-            if (list.size >= 5) 6 else list.size
+            if (list.size >= 9) 9 else list.size
         } else {
             0
         }
@@ -53,9 +53,6 @@ class HotWordAdapter(private var list: List<HotWordBean>) : BaseAdapter() {
         val dataBean = list[position]
         holder.hotWordText.text = dataBean.keyword
 
-        if (!TextUtils.isEmpty(dataBean.color)) {
-            holder.hotWordText.setTextColor(Color.parseColor(dataBean.color))
-        }
         return hotView
     }
 
