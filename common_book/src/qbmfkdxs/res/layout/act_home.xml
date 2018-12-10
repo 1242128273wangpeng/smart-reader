@@ -143,33 +143,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/img_guide_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|bottom"
-                android:layout_marginBottom="18.5dp"
                 android:layout_marginRight="12dp"
+                android:layout_marginBottom="18.5dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_guide_cate"
-                android:visibility="gone"
-                />
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/img_guide_remove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/home_guide_bottom"
                 android:layout_marginLeft="22dp"
-
+                android:layout_marginBottom="@dimen/home_guide_bottom"
                 android:scaleType="fitXY"
                 android:src="@drawable/bookshelf_guide_remove"
-                android:visibility="gone"
-                />
+                android:visibility="gone"/>
+
         </FrameLayout>
 
     </RelativeLayout>

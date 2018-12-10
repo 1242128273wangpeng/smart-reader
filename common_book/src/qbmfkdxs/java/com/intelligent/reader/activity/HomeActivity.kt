@@ -132,7 +132,8 @@ class HomeActivity : BaseCacheableActivity(),
         homePresenter = HomePresenter(this, this.packageManager)
 
         initView()
-        initGuide()
+//        V1.3.7新用户首次安装进入精选页，并增加“全站书籍 永久免费”的弹窗，因此移除书架和分类引导
+//        initGuide()
 
         homePresenter?.initParameters()
 
