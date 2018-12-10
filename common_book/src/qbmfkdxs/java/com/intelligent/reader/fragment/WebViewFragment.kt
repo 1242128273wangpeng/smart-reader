@@ -19,6 +19,7 @@ import com.google.gson.Gson
 import com.intelligent.reader.R
 import com.orhanobut.logger.Logger
 import kotlinx.android.synthetic.qbmfkdxs.frag_web_view.*
+import net.lzbook.kit.app.base.BaseBookApplication
 import net.lzbook.kit.appender_loghub.StartLogClickUtil
 import net.lzbook.kit.ui.widget.LoadingPage
 import net.lzbook.kit.utils.AppUtils
@@ -319,7 +320,7 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
         customWebClient?.setLoadingWebViewFinish {
             //无网无缓存（error）
             val isOfflineNotStorage = jsInterfaceObject?.isOfflineNotStorage() ?: false
-            if (!NetWorkUtils.isNetworkAvailable(requireContext()) && isOfflineNotStorage) {
+            if (!NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext()) && isOfflineNotStorage) {
                 loadingPage?.onErrorVisable()
             } else {
                 loadingPage?.onSuccessGone()
