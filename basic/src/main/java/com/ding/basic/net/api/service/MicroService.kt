@@ -23,7 +23,7 @@ interface MicroService {
         const val CHECK_UPDATE = "/union/book/check"
 
         //书架每天一次批量更新接口
-        const val COVER_BATCH="/union/book/coverBatch"
+        const val COVER_BATCH = "/union/book/coverBatch"
 
         //获得缓存方式和package 列表
         const val DOWN_TASK_CONFIG = "/union/book/down"
@@ -34,7 +34,7 @@ interface MicroService {
         //默认书架
         const val DEFAULT_BOOK = "/union/bookrack/labelCover"
 
-
+        // webView优化：获取h5最新版本
         const val WEB_VIEW_CONFIG = "/RECOMMEND/h5version/versionInfo"
     }
 
@@ -66,8 +66,6 @@ interface MicroService {
     @POST(COVER_BATCH)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun requestCoverBatch(@Body json: RequestBody): Flowable<BasicResult<List<Book>>>
-
-
 
 
     @GET()
