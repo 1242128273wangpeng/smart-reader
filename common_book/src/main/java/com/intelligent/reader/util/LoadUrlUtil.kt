@@ -37,6 +37,6 @@ fun loadWebViewUrl(webViewIndex: String): String {
     return if (Config.webCacheAvailable) {
         "file://$filePath$webViewIndex"
     } else {
-        Config.webViewBaseHost + "/index.html" + webViewIndex
+        "${Config.webViewBaseHost}/index.html$webViewIndex"
     }
 }

@@ -53,4 +53,10 @@ object WebViewIndex {
      */
     const val search = "#/search"
 
+    /**
+     * 作者主页
+     */
+    const val author = "#/author"
+
+
 }
