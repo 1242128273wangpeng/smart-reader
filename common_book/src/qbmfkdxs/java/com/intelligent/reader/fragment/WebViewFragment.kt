@@ -319,8 +319,9 @@ open class WebViewFragment : Fragment(), View.OnClickListener {
 
         customWebClient?.setLoadingWebViewFinish {
             //无网无缓存（error）
-            val isOfflineNotStorage = jsInterfaceObject?.isOfflineNotStorage() ?: false
-            if (!NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext()) && isOfflineNotStorage) {
+//            val isOfflineNotStorage = jsInterfaceObject?.isOfflineNotStorage() ?: false
+//            if (!NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext()) && isOfflineNotStorage) {
+            if (!NetWorkUtils.isNetworkAvailable(BaseBookApplication.getGlobalContext())) {
                 loadingPage?.onErrorVisable()
             } else {
                 loadingPage?.onSuccessGone()
