@@ -55,8 +55,8 @@ object WebViewConfig {
             }
 
             "cc.quanbennovel" -> { //今日多看
-                zipPath = "qbmfkdxs/201812101448.zip"
-                urlPath = "https://zn-h5-dev.bookapi.cn/cc-quanbennovel/"
+                zipPath = "qbmfkdxs/201812111537.zip"
+                urlPath = "https://sta-ccquanbennovel.zhuishuwang.com/cc-quanbennovel/"
             }
 
             "cc.remennovel" -> { //智胜电子书替
