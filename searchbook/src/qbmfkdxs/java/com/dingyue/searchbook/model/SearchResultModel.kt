@@ -228,7 +228,7 @@ class SearchResultModel {
         val searchWord: String
 
         if (word.isNotEmpty()) {
-            searchWord = word
+            searchWord = AppUtils.StringFilter(word)
 
             if (searchType == "2" && isAuthor == 1) {
 
