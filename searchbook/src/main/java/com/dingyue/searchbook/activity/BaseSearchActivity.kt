@@ -137,17 +137,17 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
 
                 // 【修复】搜索输入框未输入内容的情况下，不应该显示上一次的搜索补全内容
                 if (!inputEditText.isFocusable) {
-                    if (!inputEditText.isFocusable) {
-                        showInputEditClickEvent()//搜索框无焦点的时候调用
-                    }
-
-                    // 【修复】在搜索结果页，点击输入框，应显示自动补全页，目前显示搜索结果页
-                    if (inputEditText.text.toString().isNotEmpty()) {
-                        showInputEditClickEvent()
-                    }
-
-                    searchResultFragment.resetResult()
+                    showInputEditClickEvent() //搜索框无焦点的时候调用
                 }
+
+                // 【修复】在搜索结果页，点击输入框，应显示自动补全页，目前显示搜索结果页
+                if (inputEditText.text.toString().isNotEmpty()) {
+                    showInputEditClickEvent()
+                }
+
+                searchResultFragment.resetResult()
+
+
             }
             R.id.search_result_focus -> {
                 focusTextView.visibility = View.GONE
