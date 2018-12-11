@@ -1,5 +1,11 @@
 package net.lzbook.kit.utils;
 
+import static android.content.Context.BATTERY_SERVICE;
+import static android.content.Context.TELEPHONY_SERVICE;
+
+import static net.lzbook.kit.utils.NotchHelperKt.getVivoRoundedSize;
+import static net.lzbook.kit.utils.NotchHelperKt.vivoNotch;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
@@ -79,11 +85,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static android.content.Context.BATTERY_SERVICE;
-import static android.content.Context.TELEPHONY_SERVICE;
-import static net.lzbook.kit.utils.NotchHelperKt.getVivoRoundedSize;
-import static net.lzbook.kit.utils.NotchHelperKt.vivoNotch;
+import java.util.regex.PatternSyntaxException;
 
 public class AppUtils {
     public static final int LOG_TYPE_BAIDUPUSH = 0;
@@ -220,7 +222,7 @@ public class AppUtils {
     }
 
     public static void setLongPreferences(Context context, String preName,
-                                          Long value) {
+            Long value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context)
                 .edit();
         editor.putLong(preName, value);
@@ -228,7 +230,7 @@ public class AppUtils {
     }
 
     public static void setBooleanPreferences(Context context, String preName,
-                                             boolean value) {
+            boolean value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context)
                 .edit();
         editor.putBoolean(preName, value);
@@ -236,14 +238,14 @@ public class AppUtils {
     }
 
     public static boolean getBooleanPreferences(Context context,
-                                                String preName, boolean defaultValue) {
+            String preName, boolean defaultValue) {
         SharedPreferences defaultPf = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return defaultPf.getBoolean(preName, defaultValue);
     }
 
     public static long getLongPreferences(Context context, String preName,
-                                          long defaultValue) {
+            long defaultValue) {
         SharedPreferences defaultPf = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return defaultPf.getLong(preName, defaultValue);
@@ -1478,8 +1480,6 @@ public class AppUtils {
 
     /**
      * 获取今天日期字符串
-     *
-     * @return
      */
     public static String getTodayDateStr() {
         return formatter.format(new Date());
@@ -1487,7 +1487,6 @@ public class AppUtils {
 
     /**
      * 获取屏幕宽高
-     * @param activity
      */
     public static void initNormalWindow(Activity activity) {
         if (normalScreenWidth == 0) {
@@ -1506,5 +1505,24 @@ public class AppUtils {
                 normalScreenHeight -= uselessSize;
             }
         }
+    }
+
+    /**
+     * 过滤特殊字符、空格
+     */
+    public static String StringFilter(String str) throws PatternSyntaxException {
+        // 只允许字母和数字
+        // String regEx  =  "[^a-zA-Z0-9]";
+        // 清除掉所有特殊字符
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        String result = "";
+        try {
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(str);
+            result = m.replaceAll("").trim();
+        } catch (PatternSyntaxException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
