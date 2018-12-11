@@ -88,7 +88,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     private var bookChapterId: String = ""
 
     private var coverPagePresenter: CoverPagePresenter? = null
-    private var transformReadDialog: TransformReadDialog?=null
+    private var transformReadDialog: TransformReadDialog? = null
     private var coverDetail: Book? = null
 
     private var isFromPush = false
@@ -111,7 +111,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
         if (!TextUtils.isEmpty(bookId) && (!TextUtils.isEmpty(bookSourceId) || !TextUtils.isEmpty(bookChapterId))) {
             coverPagePresenter = CoverPagePresenter(bookId, bookSourceId, bookChapterId, this, this, this)
             requestBookDetail()
-            transformReadDialog= TransformReadDialog(this)
+            transformReadDialog = TransformReadDialog(this)
 
             transformReadDialog?.insertContinueListener {
                 val data = HashMap<String, String>()
@@ -166,8 +166,6 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
                 bundle.putInt("offset", 0)
             }
 
-//            updateBookInformation()
-
             bundle.putSerializable("book", book)
         } else {
             bundle.putSerializable("book", coverDetail)
@@ -180,14 +178,18 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
      * 处理跳转阅读页请求
      * **/
     override fun handleReadingAction(coverDetail: Book?) {
-        this.coverDetail=coverDetail
+        this.coverDetail = coverDetail
         if (this.isFinishing) {
             return
         }
 
         if (!this.isFinishing) {
             if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+                if (SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)) {
+                    intoReadingActivity()
+                } else {
+                    transformReadDialog?.show()
+                }
             }
 
 
@@ -197,7 +199,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     /***
      * 处理跳转目录操作
      * **/
-    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean,coverDetail: Book?) {
+    override fun handleCatalogAction(intent: Intent, sequence: Int, indexLast: Boolean, coverDetail: Book?) {
         if (coverDetail != null) {
 
             val bundle = Bundle()
@@ -212,6 +214,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             this.startActivity(intent)
         }
     }
+
     override fun showCleanDialog(): Dialog {
         val cleanDialog = MyDialog(this, R.layout.dialog_download_clean)
         cleanDialog.setCanceledOnTouchOutside(false)
@@ -224,7 +227,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
     /***
      * 判断是否跳转到搜索页
      * **/
-    override  fun checkStartSearchActivity(view: View) {
+    override fun checkStartSearchActivity(view: View) {
         val intent = Intent()
         if (view is RecommendItemView) {
             intent.putExtra("word", view.title)
@@ -442,7 +445,7 @@ class CoverPageActivity : BaseCacheableActivity(), OnClickListener, CoverPageCon
             }
 
         } else {
-           ToastUtil.showToastMessage(R.string.book_cover_no_resource)
+            ToastUtil.showToastMessage(R.string.book_cover_no_resource)
             if (NetWorkUtils.NETWORK_TYPE != NetWorkUtils.NETWORK_NONE) {
                 finish()
             }

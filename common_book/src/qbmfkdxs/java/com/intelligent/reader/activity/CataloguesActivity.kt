@@ -15,6 +15,8 @@ import com.ding.basic.RequestRepositoryFactory
 import com.ding.basic.bean.Book
 import com.ding.basic.bean.Bookmark
 import com.ding.basic.bean.Chapter
+import com.ding.basic.util.sp.SPKey
+import com.ding.basic.util.sp.SPUtils
 import com.intelligent.reader.R
 import com.intelligent.reader.adapter.CataloguesAdapter
 import com.intelligent.reader.view.TransformReadDialog
@@ -260,7 +262,11 @@ class CataloguesActivity : BaseCacheableActivity(), View.OnClickListener, Catalo
     override fun showReadDialog(){
         if (!this.isFinishing) {
             if (!transformReadDialog!!.isShow()) {
-                transformReadDialog!!.show()
+                if (SPUtils.getDefaultSharedBoolean(SPKey.NOT_SHOW_NEXT_TIME, false)) {
+                    intoReadingActivity()
+                } else {
+                    transformReadDialog?.show()
+                }
             }
             StartLogClickUtil.upLoadEventLog(this, StartLogClickUtil.BOOKCATALOG, StartLogClickUtil.CATALOG_TRANSCODEREAD)
         }
