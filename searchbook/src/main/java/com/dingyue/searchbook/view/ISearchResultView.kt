@@ -3,6 +3,7 @@ package com.dingyue.searchbook.view
 import android.app.Activity
 import android.webkit.WebView
 import com.dingyue.searchbook.interfaces.OnSearchResult
+import net.lzbook.kit.utils.web.JSInterfaceObject
 
 
 /**
@@ -13,7 +14,7 @@ import com.dingyue.searchbook.interfaces.OnSearchResult
  */
 interface ISearchResultView : IBaseView, OnSearchResult {
 
-    fun obtainJSInterface(jsInterface: Any)
+    fun obtainJSInterface(jsInterface: JSInterfaceObject)
 
     fun getCurrentActivity(): Activity
 

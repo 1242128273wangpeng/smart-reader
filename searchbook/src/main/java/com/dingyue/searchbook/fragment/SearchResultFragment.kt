@@ -31,6 +31,7 @@ import net.lzbook.kit.utils.router.RouterUtil
 import net.lzbook.kit.utils.runOnMain
 import net.lzbook.kit.utils.toast.ToastUtil
 import net.lzbook.kit.utils.web.CustomWebClient
+import net.lzbook.kit.utils.web.JSInterfaceObject
 
 
 /**
@@ -99,7 +100,7 @@ class SearchResultFragment : Fragment(), ISearchResultView {
     override fun getCurrentActivity(): Activity = requireActivity()
 
     @SuppressLint("AddJavascriptInterface", "JavascriptInterface")
-    override fun obtainJSInterface(jsInterface: Any) {
+    override fun obtainJSInterface(jsInterface: JSInterfaceObject) {
 
         if (Build.VERSION.SDK_INT >= 14) {
             search_result_content?.setLayerType(View.LAYER_TYPE_NONE, null)

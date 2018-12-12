@@ -53,7 +53,7 @@ class SearchResultModel {
     fun loadSearchResultData(listener: OnResultListener<SearchAutoCompleteBeanYouHua>) {}
 
     fun setStartedAction() {
-        wordInfoMap.put(word, WordInfo())
+        wordInfoMap[word] = WordInfo()
     }
 
     fun onLoadFinished() {
@@ -106,6 +106,7 @@ class SearchResultModel {
 
     fun initJSModel(listener: OnSearchResult?, activity: Activity, webView: WebView?): JSInterfaceObject {
         return (object : JSInterfaceObject(activity) {
+
             @JavascriptInterface
             override fun startSearchActivity(data: String?) {
                 if (data != null && data.isNotEmpty() && !activity.isFinishing) {
@@ -157,6 +158,7 @@ class SearchResultModel {
                 listener?.hideWebViewLoading()
             }
 
+            @JavascriptInterface
             override fun handleWebRequestResult(method: String?) {
                 if (null != webView) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -217,7 +219,6 @@ class SearchResultModel {
 
     /**
      * isAuthor：0 不显示作者  1 显示作者
-     * 在自动
      */
     fun startLoadData(listener: OnSearchResult?, isAuthor: Int = 0): String? {
 
@@ -243,6 +244,7 @@ class SearchResultModel {
                 }
 
             } else {
+
                 mUrl = if (mUrl.isNullOrEmpty()) {
 
                     val commonParams = "&searchType=$searchType&searchEmpty=1&isAuthor=$isAuthor&author="
@@ -270,6 +272,4 @@ class SearchResultModel {
 
         return mUrl
     }
-
-
 }

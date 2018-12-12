@@ -163,23 +163,48 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                 DyStatService.onEvent(EventPoint.SEARCH_BAR)
             }
             R.id.search_result_btn -> {
-                val keyword = inputEditText.text.toString()
-                if (TextUtils.isEmpty(keyword.trim())) {
-                    ToastUtil.showToastMessage(R.string.search_click_check_isright)
-                } else {
-                    if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
-                        return
-                    }
-                    if (!searchResultFragment.isLoading) {
-                        val data = HashMap<String, String>()
-                        data["type"] = "0"
-                        data["keyword"] = keyword
-                        DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
-                        showFragment(searchResultFragment)
-                        searchResultFragment.resetResult()
-                        searchResultFragment.loadKeyWord(keyword)
-                    }
+                doSearchEvent("0")
+            }
+        }
+    }
+
+
+    /**
+     * 拦截键盘的回车事件
+     */
+    private fun interceptKeyBoard() {
+        inputEditText.setOnKeyListener { _, keyCode, _ ->
+
+            when (keyCode) {
+                KeyEvent.KEYCODE_ENTER -> {
+                    doSearchEvent("1")
+                    true
                 }
+                else -> false
+            }
+        }
+    }
+
+
+    /**
+     * 执行搜索方法
+     */
+    private fun doSearchEvent(pointType: String) {
+        val keyword = inputEditText.text.toString()
+        if (TextUtils.isEmpty(keyword.trim())) {
+            ToastUtil.showToastMessage(R.string.search_click_check_isright)
+        } else {
+            if (OneClickUtil.isDoubleClick(System.currentTimeMillis())) {
+                return
+            }
+            if (!searchResultFragment.isLoading) {
+                val data = HashMap<String, String>()
+                data["type"] = pointType
+                data["keyword"] = keyword
+                DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
+                showFragment(searchResultFragment)
+                searchResultFragment.resetResult()
+                searchResultFragment.loadKeyWord(keyword)
             }
         }
     }
@@ -372,34 +397,6 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
         im.hideSoftInputFromWindow(this.currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
-
-    /**
-     * 拦截键盘的回车事件
-     */
-    private fun interceptKeyBoard() {
-
-        inputEditText.setOnKeyListener { _, keyCode, _ ->
-
-            when (keyCode) {
-                KeyEvent.KEYCODE_ENTER -> {
-                    val keyword = inputEditText.text.toString()
-                    if (TextUtils.isEmpty(keyword.trim())) {
-                        ToastUtil.showToastMessage(R.string.search_click_check_isright)
-                    } else {
-                        val data = HashMap<String, String>()
-                        data["type"] = "1"
-                        data["keyword"] = keyword
-                        DyStatService.onEvent(EventPoint.SEARCH_SEARCHBUTTON, data)
-                        showFragment(searchResultFragment)
-                        searchResultFragment.loadKeyWord(keyword)
-                        hideKeyboard()
-                    }
-                    true
-                }
-                else -> false
-            }
-        }
-    }
 
     override fun onResume() {
         super.onResume()
