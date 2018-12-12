@@ -34,7 +34,8 @@ object ToastUtil {
             if ("cn.mfxsqbyd.reader" == AppUtils.getPackageName()) {
                 TopSnackBarUtils.show(id)
             }else{
-                if (mToast == null) {
+                // 注意：小米8单例Toast不显示
+                if (mToast == null || AppUtils.getPhoneModel() =="MI 8") {
                     mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), id, Toast.LENGTH_SHORT)
                     mToast?.show()
                 } else {
@@ -56,7 +57,8 @@ object ToastUtil {
             if ("cn.mfxsqbyd.reader" == AppUtils.getPackageName()) {
                 TopSnackBarUtils.show(message)
             }else {
-                if (mToast == null) {
+                // 注意：小米8单例Toast不显示
+                if (mToast == null || AppUtils.getPhoneModel() =="MI 8") {
                     mToast = Toast.makeText(BaseBookApplication.getGlobalContext(), message, Toast.LENGTH_SHORT)
                     mToast?.show()
                 } else {
