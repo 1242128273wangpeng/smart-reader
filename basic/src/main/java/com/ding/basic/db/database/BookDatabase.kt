@@ -149,8 +149,8 @@ abstract class BookDatabase : RoomDatabase() {
             var result = false
             var cursor: Cursor? = null
             try {
-                cursor = dataBase.query("SELECT * FROM $tableName LIMIT 0", null)
-                result = cursor != null && cursor.getColumnIndex(columnName) != -1
+                cursor = dataBase.query("select * from sqlite_master where name = ? and sql like ?", arrayOf(tableName, "%$columnName%"))
+                result = null != cursor && cursor.moveToFirst()
             } catch (exception: Exception) {
                 exception.printStackTrace()
             } finally {
