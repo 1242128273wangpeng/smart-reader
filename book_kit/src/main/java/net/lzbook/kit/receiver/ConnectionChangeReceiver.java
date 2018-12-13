@@ -55,24 +55,25 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null) {
                 int nType = networkInfo.getType();
-                if (nType == ConnectivityManager.TYPE_MOBILE) {
-                    NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_MOBILE;
-                    mobileType = getMobileType(networkInfo.getSubtype());
-
-                    CacheManager.INSTANCE.onNetTypeChange();
-
-                } else if (nType == ConnectivityManager.TYPE_WIFI) {
-                    NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_WIFI;
-                    mobileType = WIFI;
-
-                    CacheManager.INSTANCE.onNetTypeChange();
-
-                } else {
-                    NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
-                    mobileType = G0;
+                switch (nType) {
+                    case ConnectivityManager.TYPE_MOBILE:
+                        NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_MOBILE;
+                        mobileType = getMobileType(networkInfo.getSubtype());
+                        CacheManager.INSTANCE.onNetTypeChange();
+                        netListener(context);
+                        break;
+                    case ConnectivityManager.TYPE_WIFI:
+                        NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_WIFI;
+                        mobileType = WIFI;
+                        CacheManager.INSTANCE.onNetTypeChange();
+                        netListener(context);
+                        break;
+                    default:
+                        NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
+                        mobileType = G0;
+                        break;
                 }
-                AppLog.d(TAG, "Network Type  = " + networkInfo.getTypeName());
-                AppLog.d(TAG, "Network State = " + networkInfo.getState());
+
                 if (networkInfo.isConnected() && canReload) {
                     canReload = false;
                     AppLog.i(TAG, "Network connected");
@@ -82,27 +83,31 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                     context.startService(intent_service);
                 }
 
-                //当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
-                if (nType == ConnectivityManager.TYPE_WIFI
-                        || nType == ConnectivityManager.TYPE_MOBILE) {
-                    new DynamicParameter(context).requestCheck();
-                    DynamicService.startDynaService(BaseBookApplication.getGlobalContext());
-
-                    for (RefreshWebViewData refreshWebViewData : refreshWebViewList) {
-                        refreshWebViewData.onRefreshWebViewData();
-                        AppLog.e("JoannChen:refreshWebViewData");
-                    }
-
-                }
-
+            } else {
+                canReload = true;
+                AppLog.e(TAG, "Network unavailable");
+                NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
+                mobileType = G0;
             }
-        } else {
-            canReload = true;
-            AppLog.e(TAG, "Network unavailable");
-            NetWorkUtils.NETWORK_TYPE = NetWorkUtils.NETWORK_NONE;
-            mobileType = G0;
+
         }
     }
+
+
+    /**
+     * 1.当连接网络时，重新加载动态参数，如果成功过一次后续网络发生变化时不再加载
+     * 2.webView优化：断网重连刷新数据
+     */
+    private void netListener(Context context) {
+        new DynamicParameter(context).requestCheck();
+        DynamicService.startDynaService(BaseBookApplication.getGlobalContext());
+
+        for (RefreshWebViewData refreshWebViewData : refreshWebViewList) {
+            refreshWebViewData.onRefreshWebViewData();
+            AppLog.e("JoannChen:refreshWebViewData");
+        }
+    }
+
 
     /**
      * ScrollWebFragment 断网重连刷新数据
