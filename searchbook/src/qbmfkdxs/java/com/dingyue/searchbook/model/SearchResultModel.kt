@@ -235,7 +235,7 @@ class SearchResultModel {
 
                 mUrl = if (mUrl.isNullOrEmpty()) {
                     if (Config.webCacheAvailable) {
-                        "file://$filePath${WebViewIndex.author}?author=$searchWord}"
+                        "file://$filePath${WebViewIndex.author}?author=$searchWord"
                     } else {
                         "${Config.webViewBaseHost}/index.html${WebViewIndex.author}?author=$searchWord"
                     }
