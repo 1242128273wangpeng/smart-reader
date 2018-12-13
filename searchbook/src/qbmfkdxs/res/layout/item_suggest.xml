@@ -65,6 +65,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="18dp"
-        android:src="@drawable/search_label"/>
+        android:src="@drawable/more"/>
 
 </RelativeLayout>
