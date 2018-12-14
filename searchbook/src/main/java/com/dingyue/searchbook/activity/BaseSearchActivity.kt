@@ -205,6 +205,7 @@ abstract class BaseSearchActivity : FrameActivity(), View.OnClickListener, TextW
                 showFragment(searchResultFragment)
                 searchResultFragment.resetResult()
                 searchResultFragment.loadKeyWord(keyword)
+                hideKeyboard()
             }
         }
     }
