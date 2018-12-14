@@ -9,15 +9,13 @@ import android.webkit.WebView
 import com.ding.basic.bean.SearchAutoCompleteBeanYouHua
 import com.ding.basic.config.WebViewConfig
 import com.ding.basic.net.Config
-import com.ding.basic.net.api.service.RequestService
-import com.ding.basic.util.sp.SPUtils
 import com.dingyue.searchbook.interfaces.OnResultListener
 import com.dingyue.searchbook.interfaces.OnSearchResult
 import com.google.gson.Gson
 import com.orhanobut.logger.Logger
-import net.lzbook.kit.constants.Constants
 import net.lzbook.kit.constants.ReplaceConstants
 import net.lzbook.kit.utils.AppUtils
+import net.lzbook.kit.utils.loge
 import net.lzbook.kit.utils.oneclick.OneClickUtil
 import net.lzbook.kit.utils.router.RouterConfig
 import net.lzbook.kit.utils.router.RouterUtil
@@ -26,7 +24,6 @@ import net.lzbook.kit.utils.statistic.buildSearch
 import net.lzbook.kit.utils.statistic.model.Search
 import net.lzbook.kit.utils.web.JSInterfaceObject
 import net.lzbook.kit.utils.web.WebViewIndex
-import net.lzbook.kit.utils.webview.UrlUtils
 import java.net.URLEncoder
 import java.util.*
 
@@ -42,6 +39,11 @@ class SearchResultModel {
     private val wordInfoMap = HashMap<String, WordInfo>()
 
     private var mUrl: String? = null
+
+    /**
+     * 上次搜索词类型
+     */
+    private var lastSearchType: String = ""
 
     private var word: String = ""
     private var searchType = "0"
@@ -219,9 +221,9 @@ class SearchResultModel {
 
     /**
      * isAuthor：0 不显示作者  1 显示作者
+     * debug进入不了，log信息请勿删除
      */
     fun startLoadData(listener: OnSearchResult?, isAuthor: Int = 0): String? {
-
 
         val webViewHost = Config.webViewBaseHost
         val filePath = webViewHost.replace(WebViewConfig.urlPath, ReplaceConstants.getReplaceConstants().APP_PATH_CACHE) + "/index.html"
@@ -229,24 +231,26 @@ class SearchResultModel {
         val searchWord: String
 
         if (word.isNotEmpty()) {
+
             searchWord = AppUtils.StringFilter(word)
 
             if (searchType == "2" && isAuthor == 1) {
 
-                mUrl = if (mUrl.isNullOrEmpty()) {
-                    if (Config.webCacheAvailable) {
-                        "file://$filePath${WebViewIndex.author}?author=$searchWord"
-                    } else {
-                        "${Config.webViewBaseHost}/index.html${WebViewIndex.author}?author=$searchWord"
-                    }
+                mUrl = if (Config.webCacheAvailable) {
+                    "file://$filePath${WebViewIndex.author}?author=$searchWord"
                 } else {
-                    String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
+                    "${Config.webViewBaseHost}/index.html${WebViewIndex.author}?author=$searchWord"
                 }
+
+
+                loge("JoannChen:author:--$mUrl")
+                loge("JoannChen:author:--$searchWord--searchType$searchType--isAuthor$isAuthor--显示作者")
 
             } else {
 
-                mUrl = if (mUrl.isNullOrEmpty()) {
-
+                mUrl = if (lastSearchType == searchType) {
+                    String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
+                } else {
                     val commonParams = "&searchType=$searchType&searchEmpty=1&isAuthor=$isAuthor&author="
 
                     if (Config.webCacheAvailable) {
@@ -257,17 +261,17 @@ class SearchResultModel {
                         }
                     } else {
                         try {
-                            "${Config.webViewBaseHost}/index.html${WebViewIndex.search}" +
-                                    "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}$commonParams"
+                            "${Config.webViewBaseHost}/index.html${WebViewIndex.search}" + "?keyword=${URLEncoder.encode(searchWord, "UTF-8")}$commonParams"
                         } catch (exception: Exception) {
-                            "${Config.webViewBaseHost}/index.html${WebViewIndex.search}" +
-                                    "?keyword=$searchWord$commonParams"
+                            "${Config.webViewBaseHost}/index.html${WebViewIndex.search}" + "?keyword=$searchWord$commonParams"
                         }
                     }
-                } else {
-                    String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
                 }
+                loge("JoannChen:search:--$mUrl")
+                loge("JoannChen:search:--$searchWord--searchType$searchType--isAuthor$isAuthor--隐藏作者")
             }
+
+            lastSearchType = searchType
         }
 
         return mUrl

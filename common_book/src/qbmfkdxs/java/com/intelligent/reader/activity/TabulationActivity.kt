@@ -160,7 +160,7 @@ class TabulationActivity : FrameActivity() {
 
 
         //判断是否是作者主页
-        if (url != null && url?.contains(RequestService.WEB_AUTHOR.replace("{packageName}", AppUtils.getPackageName())) == true) {
+        if (url != null && url?.contains("author") == true) {
             img_tabulation_header_search?.visibility = View.GONE
         } else {
             img_tabulation_header_search?.visibility = View.VISIBLE
