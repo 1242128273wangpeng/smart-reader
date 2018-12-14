@@ -255,7 +255,7 @@ class SettingActivity : BaseCacheableActivity(), View.OnClickListener, SwitchBut
             this.doAsync {
                 CacheManager.removeAll()
                 UIHelper.clearAppCache()
-                DataCleanManager.clearAllCache(this.applicationContext)
+//                DataCleanManager.clearAllCache(this.applicationContext)
                 Thread.sleep(1000)
                 uiThread {
                     dialog.dismiss()

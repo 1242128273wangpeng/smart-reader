@@ -41,9 +41,10 @@ class SearchResultModel {
     private var mUrl: String? = null
 
     /**
-     * 上次搜索词类型
+     * 上次搜索页面
      */
-    private var lastSearchType: String = ""
+    private var requestPage: String = ""
+    private var lastRequestPage: String = ""
 
     private var word: String = ""
     private var searchType = "0"
@@ -236,19 +237,28 @@ class SearchResultModel {
 
             if (searchType == "2" && isAuthor == 1) {
 
-                mUrl = if (Config.webCacheAvailable) {
-                    "file://$filePath${WebViewIndex.author}?author=$searchWord"
+                requestPage = "author"
+
+                mUrl = if (lastRequestPage != "" && requestPage == lastRequestPage) {
+                    String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
                 } else {
-                    "${Config.webViewBaseHost}/index.html${WebViewIndex.author}?author=$searchWord"
+                    if (Config.webCacheAvailable) {
+                        "file://$filePath${WebViewIndex.author}?author=$searchWord"
+                    } else {
+                        "${Config.webViewBaseHost}/index.html${WebViewIndex.author}?author=$searchWord"
+                    }
                 }
 
+                lastRequestPage = "author"
 
                 loge("JoannChen:author:--$mUrl")
                 loge("JoannChen:author:--$searchWord--searchType$searchType--isAuthor$isAuthor--显示作者")
 
             } else {
 
-                mUrl = if (lastSearchType == searchType) {
+                requestPage = "search"
+
+                mUrl = if (lastRequestPage != "" && requestPage == lastRequestPage) {
                     String.format(Locale.getDefault(), "%s:%s", "javascript", "refreshContentView('$searchWord','$searchType')")
                 } else {
                     val commonParams = "&searchType=$searchType&searchEmpty=1&isAuthor=$isAuthor&author="
@@ -267,11 +277,14 @@ class SearchResultModel {
                         }
                     }
                 }
+
+                lastRequestPage = "search"
+
                 loge("JoannChen:search:--$mUrl")
                 loge("JoannChen:search:--$searchWord--searchType$searchType--isAuthor$isAuthor--隐藏作者")
+
             }
 
-            lastSearchType = searchType
         }
 
         return mUrl
